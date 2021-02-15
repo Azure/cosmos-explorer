@@ -3,16 +3,13 @@ import { Dispatch } from "redux";
 import MonacoEditor from "@nteract/monaco-editor";
 import { PrimaryButton } from "office-ui-fabric-react";
 import { ChoiceGroup, IChoiceGroupOption } from "office-ui-fabric-react/lib/ChoiceGroup";
-import Input from "@nteract/stateful-components/lib/inputs/input";
-import Editor from "@nteract/stateful-components/lib/inputs/editor";
-import { Source } from "@nteract/presentational-components";
 import Outputs from "@nteract/stateful-components/lib/outputs";
 import { KernelOutputError, StreamText } from "@nteract/outputs";
 import TransformMedia from "@nteract/stateful-components/lib/outputs/transform-media";
-import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import { actions, selectors, AppState, ContentRef, KernelRef } from "@nteract/core";
 import loadTransform from "../NotebookComponent/loadTransform";
 import { connect } from "react-redux";
+import Immutable from "immutable";
 
 import "./MongoQueryComponent.less";
 interface MongoQueryComponentPureProps {
@@ -26,12 +23,14 @@ interface MongoQueryComponentDispatchProps {
   runCell: (contentRef: ContentRef, cellId: string) => void;
   addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => void;
   onChange: (text: string, id: string, contentRef: ContentRef) => void;
+  save: (contentRef: ContentRef) => void;
 }
 
 type OutputType = "rich" | "json";
 
 interface MongoQueryComponentState {
   outputType: OutputType;
+  selectedId: string;
 }
 
 const options: IChoiceGroupOption[] = [
@@ -39,12 +38,21 @@ const options: IChoiceGroupOption[] = [
   { key: "json", text: "Json Output" }
 ];
 
+interface MongoKernelJsonOutput {
+  results: any;
+}
+
+interface MongoDocument {
+  id: string;
+}
+
 type MongoQueryComponentProps = MongoQueryComponentPureProps & StateProps & MongoQueryComponentDispatchProps;
 export class MongoQueryComponent extends React.Component<MongoQueryComponentProps, MongoQueryComponentState> {
   constructor(props: MongoQueryComponentProps) {
     super(props);
     this.state = {
-      outputType: "rich"
+      outputType: "json",
+      selectedId: undefined
     };
   }
 
@@ -54,6 +62,7 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
 
   private onExecute = () => {
     this.props.runCell(this.props.contentRef, this.props.firstCellId);
+    this.props.save(this.props.contentRef);
   };
 
   /**
@@ -78,7 +87,7 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
   };
 
   render(): JSX.Element {
-    const { firstCellId: id, contentRef } = this.props;
+    const { firstCellId: id, contentRef, outputDocuments } = this.props;
 
     if (!id) {
       return <></>;
@@ -91,7 +100,7 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
             language="json" onChange={this.onInputChange}
             value={this.props.inputValue} />
         </div>
-        <PrimaryButton text="Primary" onClick={this.onExecute} disabled={!this.props.firstCellId} />
+        <PrimaryButton text="Apply" onClick={this.onExecute} disabled={!this.props.firstCellId} />
         <ChoiceGroup
           selectedKey={this.state.outputType}
           options={options}
@@ -99,6 +108,20 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
           label="Output Type"
           styles={{ input: { marginTop: 0 }, root: { marginTop: 0 } }}
         />
+        <hr />
+        <div style={ { display: "flex" } }>
+          <ul>
+            {outputDocuments && outputDocuments.map(d => (
+              <li key={d.id}>
+                <a onClick={() => this.setState({ selectedId: id })}>{d.id}</a>
+              </li>
+              ))}
+          </ul>
+          <div style={{ width: "100%" }} >
+          <MonacoEditor id={""} contentRef={""} theme={""} language="json" onChange={() => {}}
+            value={JSON.stringify(outputDocuments.find(doc => doc.id ===this.state.selectedId)) ?? ""} />
+          </div>
+        </div>
         <hr />
         <Outputs id={id} contentRef={contentRef}>
           <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
@@ -114,6 +137,7 @@ export class MongoQueryComponent extends React.Component<MongoQueryComponentProp
 interface StateProps {
   firstCellId: string;
   inputValue: string;
+  outputDocuments: MongoDocument[];
 }
 interface InitialProps {
   contentRef: string;
@@ -125,6 +149,7 @@ const makeMapStateToProps = (state: AppState, initialProps: InitialProps) => {
   const mapStateToProps = (state: AppState) => {
     let firstCellId;
     let inputValue = "";
+    let outputDocuments = [];
     const content = selectors.content(state, { contentRef });
     if (content?.type === "notebook") {
       const cellOrder = selectors.notebook.cellOrder(content.model);
@@ -144,12 +169,23 @@ const makeMapStateToProps = (state: AppState, initialProps: InitialProps) => {
             console.error("Could not parse", e);
           }
         }
+        const outputs = cell.get("outputs", Immutable.List());
+        // Extract "application/json" mime-type
+        let jsonOutput: MongoKernelJsonOutput;
+        for (const output of outputs) {
+          if (Object.prototype.hasOwnProperty.call(output.data, "application/json")) {
+            jsonOutput = output.data["application/json"];
+            break;
+          }
+        }
+        outputDocuments = jsonOutput?.results ?? [];
       }
     }
 
     return {
       firstCellId,
-      inputValue
+      inputValue,
+      outputDocuments
     };
   };
   return mapStateToProps;
@@ -176,6 +212,9 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: MongoQu
       },
       onChange: (text: string, id: string, contentRef: ContentRef) => {
         dispatch(actions.updateCellSource({ id, contentRef, value: text }));
+      },
+      save: (contentRef: ContentRef) => {
+        dispatch(actions.save({ contentRef }));
       }
     };
   };
