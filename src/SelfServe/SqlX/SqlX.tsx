@@ -14,7 +14,7 @@ import {
   refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource,
   deleteDedicatedGatewayResource,
-  getCurrentProvisioningState
+  getCurrentProvisioningState,
 } from "./SqlX.rp";
 
 let disableAttributesOnDedicatedGatewayChange = false;
@@ -23,13 +23,21 @@ const onEnableDedicatedGatewayChange = (
   currentState: Map<string, SmartUiInput>,
   newValue: InputType
 ): Map<string, SmartUiInput> => {
-    const sku = currentState.get("sku");
-    const instances = currentState.get("instances");
-    const hideAttributes = newValue === undefined || !(newValue as boolean);
-    currentState.set("enableDedicatedGateway", { value: newValue });
-    currentState.set("sku", { value: sku.value, hidden: hideAttributes, disabled: disableAttributesOnDedicatedGatewayChange});
-    currentState.set("instances", { value: instances.value, hidden: hideAttributes, disabled: disableAttributesOnDedicatedGatewayChange});
-    return currentState;
+  const sku = currentState.get("sku");
+  const instances = currentState.get("instances");
+  const hideAttributes = newValue === undefined || !(newValue as boolean);
+  currentState.set("enableDedicatedGateway", { value: newValue });
+  currentState.set("sku", {
+    value: sku.value,
+    hidden: hideAttributes,
+    disabled: disableAttributesOnDedicatedGatewayChange,
+  });
+  currentState.set("instances", {
+    value: instances.value,
+    hidden: hideAttributes,
+    disabled: disableAttributesOnDedicatedGatewayChange,
+  });
+  return currentState;
 };
 
 const skuDropDownItems: ChoiceItem[] = [
@@ -64,57 +72,48 @@ export default class SqlX extends SelfServeBaseClass {
     const response = await getCurrentProvisioningState();
 
     // null implies the resource has not been provisioned.
-    if (response.status !== undefined && response.status !== ResourceStatus.Running.toString())
-    {
-      switch(response.status)
-      {
+    if (response.status !== undefined && response.status !== ResourceStatus.Running.toString()) {
+      switch (response.status) {
         case ResourceStatus.Creating.toString():
-          return {message: "CreateMessage", type: SelfServeNotificationType.error};
+          return { message: "CreateMessage", type: SelfServeNotificationType.error };
         case ResourceStatus.Updating.toString():
-          return {message: "UpdateMessage", type: SelfServeNotificationType.error};
+          return { message: "UpdateMessage", type: SelfServeNotificationType.error };
         case ResourceStatus.Deleting.toString():
-          return {message: "DeleteMessage", type: SelfServeNotificationType.error};
+          return { message: "DeleteMessage", type: SelfServeNotificationType.error };
         default:
-          return {message: "CannotSave", type: SelfServeNotificationType.error}
+          return { message: "CannotSave", type: SelfServeNotificationType.error };
       }
     }
 
     const enableDedicatedGateway = currentValues.get("enableDedicatedGateway")?.value as boolean;
 
-    if (response.status !== undefined)
-    {
-      if (!enableDedicatedGateway)
-      {
-        try 
-        {
+    if (response.status !== undefined) {
+      if (!enableDedicatedGateway) {
+        try {
           await deleteDedicatedGatewayResource();
           return { message: "DedicatedGateway resource will be deleted.", type: SelfServeNotificationType.info };
+        } catch (e) {
+          return {
+            message: "Deleting Dedicated Gateway resource failed. DedicatedGateway will not be deleted.",
+            type: SelfServeNotificationType.error,
+          };
         }
-        catch(e)
-        {
-          return { message: "Deleting Dedicated Gateway resource failed. DedicatedGateway will not be deleted.", type: SelfServeNotificationType.error };
-        }
+      } else {
+        // Check for scaling up/down/in/out
       }
-      else
-      {
-        // Check for scaling up/down/in/out 
-      }
-    }
-    else
-    {
+    } else {
       if (enableDedicatedGateway) {
         const sku = currentValues.get("sku")?.value as string;
         const instances = currentValues.get("instances").value as number;
-        try 
-        {
+        try {
           await updateDedicatedGatewayResource(sku, instances);
           return { message: "Dedicated Gateway resource will be provisioned.", type: SelfServeNotificationType.info };
+        } catch (e) {
+          return {
+            message: "Updating Dedicated Gateway resource failed. Dedicated Gateway will not be updated.",
+            type: SelfServeNotificationType.error,
+          };
         }
-        catch(e)
-        {
-          return { message: "Updating Dedicated Gateway resource failed. Dedicated Gateway will not be updated.", type: SelfServeNotificationType.error };
-        }
-
       }
     }
     return { message: "No updates were applied at this time", type: SelfServeNotificationType.warning };
@@ -125,16 +124,15 @@ export default class SqlX extends SelfServeBaseClass {
     // Based on the RP call enableDedicatedGateway will be true if it has not yet been enabled and false if it has.
     const defaults = new Map<string, SmartUiInput>();
     const enableDedicatedGateway = false;
-    defaults.set("enableDedicatedGateway", { value: enableDedicatedGateway, hidden: false, disabled: false});
-    defaults.set("sku", { value: "Cosmos.D4s", hidden: !enableDedicatedGateway, disabled: false});
-    defaults.set("instances", { value: await getInstancesMin(), hidden: !enableDedicatedGateway, disabled: false});    
-    const response = await getCurrentProvisioningState()
-    if (response.status !== undefined)
-    {
+    defaults.set("enableDedicatedGateway", { value: enableDedicatedGateway, hidden: false, disabled: false });
+    defaults.set("sku", { value: "Cosmos.D4s", hidden: !enableDedicatedGateway, disabled: false });
+    defaults.set("instances", { value: await getInstancesMin(), hidden: !enableDedicatedGateway, disabled: false });
+    const response = await getCurrentProvisioningState();
+    if (response.status !== undefined) {
       disableAttributesOnDedicatedGatewayChange = true;
-      defaults.set("enableDedicatedGateway", { value: true, hidden: false, disabled: false});
-      defaults.set("sku", { value: response.sku, hidden: false, disabled: true});
-      defaults.set("instances", { value: response.instances, hidden: false, disabled: true});
+      defaults.set("enableDedicatedGateway", { value: true, hidden: false, disabled: false });
+      defaults.set("sku", { value: response.sku, hidden: false, disabled: true });
+      defaults.set("instances", { value: response.instances, hidden: false, disabled: true });
     }
 
     return defaults;
