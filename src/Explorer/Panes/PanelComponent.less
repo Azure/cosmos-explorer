@@ -1,0 +1,57 @@
+@import "../../../less/Common/Constants";
+
+.panelContentContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .panelMainContent {
+    flex-grow: 1;
+  }
+}
+
+.panelHeader {
+  color: @BaseDark;
+  font-size: @largeFontSize;
+  font-weight: 400;
+}
+
+.panelWarningErrorContainer {
+  background-color: @BaseLow;
+  padding: @DefaultSpace;
+  display: inline-flex;
+  margin-bottom: 24px;
+
+  .panelWarningIcon {
+    font-size: @WarningErrorIconSize;
+    width: @WarningErrorIconSize;
+    margin: auto 0 auto @SmallSpace;
+    color: @WarningIconColor;
+  }
+
+  .panelErrorIcon {
+    font-size: @WarningErrorIconSize;
+    width: @WarningErrorIconSize;
+    margin: auto 0 auto @SmallSpace;
+    color: @ErrorIconColor;
+  }
+
+  .panelWarningErrorDetailsLinkContainer {
+    display: flex;
+    flex-direction: column;
+    padding-left: @MediumSpace;
+
+    .paneErrorLink {
+      cursor: pointer;
+      font-size: @mediumFontSize;
+    }
+  }
+}
+
+.panelFooter button {
+  height: 30px;
+}
+
+.deleteCollectionFeedback {
+  margin-top: 12px;
+}

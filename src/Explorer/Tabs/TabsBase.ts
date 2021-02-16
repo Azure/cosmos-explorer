@@ -177,7 +177,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return Q();
   }
 
-  protected getContainer(): Explorer {
+  public getContainer(): Explorer {
     return (this.collection && this.collection.container) || (this.database && this.database.container);
   }
 

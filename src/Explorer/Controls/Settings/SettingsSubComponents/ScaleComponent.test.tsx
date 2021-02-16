@@ -18,6 +18,7 @@ describe("ScaleComponent", () => {
 
   const baseProps: ScaleComponentProps = {
     collection: collection,
+    database: undefined,
     container: container,
     isFixedContainer: false,
     onThroughputChange: () => {

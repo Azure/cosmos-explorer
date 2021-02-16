@@ -45,7 +45,8 @@ describe("Component Registerer", () => {
   });
 
   it("should register settings-tab-v2 component", () => {
-    expect(ko.components.isRegistered("settings-tab-v2")).toBe(true);
+    expect(ko.components.isRegistered("database-settings-tab-v2")).toBe(true);
+    expect(ko.components.isRegistered("collection-settings-tab-v2")).toBe(true);
   });
 
   it("should register query-tab component", () => {

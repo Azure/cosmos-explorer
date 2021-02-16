@@ -18,7 +18,7 @@ import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-out
 import InterruptKernelIcon from "../../../images/notebook/Notebook-stop.svg";
 import KillKernelIcon from "../../../images/notebook/Notebook-stop.svg";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas, ArmApiVersions } from "../../Common/Constants";
 import { CommandBarComponentButtonFactory } from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
@@ -117,7 +117,7 @@ export default class NotebookTabV2 extends TabsBase {
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
   }
 
-  protected getContainer(): Explorer {
+  public getContainer(): Explorer {
     return this.container;
   }
 
@@ -485,6 +485,10 @@ export default class NotebookTabV2 extends TabsBase {
   }
 
   private publishToGallery = async () => {
+    TelemetryProcessor.trace(Action.NotebooksGalleryClickPublishToGallery, ActionModifiers.Mark, {
+      source: Source.CommandBarMenu,
+    });
+
     const notebookContent = this.notebookComponentAdapter.getContent();
     await this.container.publishNotebook(
       notebookContent.name,

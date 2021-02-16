@@ -11,7 +11,7 @@ import Explorer from "../../Explorer";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import SettingsTab from "../../Tabs/SettingsTabV2";
+import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import {
@@ -58,7 +58,7 @@ interface ButtonV2 {
 }
 
 export interface SettingsComponentProps {
-  settingsTab: SettingsTab;
+  settingsTab: SettingsTabV2;
 }
 
 export interface SettingsComponentState {
@@ -116,7 +116,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private discardSettingsChangesButton: ButtonV2;
 
   private isAnalyticalStorageEnabled: boolean;
+  private isCollectionSettingsTab: boolean;
   private collection: ViewModels.Collection;
+  private database: ViewModels.Database;
+  private offer: DataModels.Offer;
   private container: Explorer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
@@ -126,20 +129,28 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   constructor(props: SettingsComponentProps) {
     super(props);
 
-    this.collection = this.props.settingsTab.collection as ViewModels.Collection;
-    this.container = this.collection?.container;
-    this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
-    this.shouldShowIndexingPolicyEditor =
-      this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
+    this.isCollectionSettingsTab = this.props.settingsTab.tabKind === ViewModels.CollectionTabKind.CollectionSettingsV2;
+    if (this.isCollectionSettingsTab) {
+      this.collection = this.props.settingsTab.collection as ViewModels.Collection;
+      this.container = this.collection?.container;
+      this.offer = this.collection?.offer();
+      this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
+      this.shouldShowIndexingPolicyEditor =
+        this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
-    this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
-      Constants.Features.enableChangeFeedPolicy
-    );
+      this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
+        Constants.Features.enableChangeFeedPolicy
+      );
 
-    // Mongo container with system partition key still treat as "Fixed"
-    this.isFixedContainer =
-      this.container.isPreferredApiMongoDB() &&
-      (!this.collection.partitionKey || this.collection.partitionKey.systemKey);
+      // Mongo container with system partition key still treat as "Fixed"
+      this.isFixedContainer =
+        this.container.isPreferredApiMongoDB() &&
+        (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
+    } else {
+      this.database = this.props.settingsTab.database;
+      this.container = this.database?.container;
+      this.offer = this.database?.offer();
+    }
 
     this.state = {
       throughput: undefined,
@@ -206,18 +217,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   componentDidMount(): void {
-    this.refreshIndexTransformationProgress();
-    this.loadMongoIndexes();
+    if (this.isCollectionSettingsTab) {
+      this.refreshIndexTransformationProgress();
+      this.loadMongoIndexes();
+    }
+
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getSettingsTabContainer().onUpdateTabsButtons(this.getTabsButtons());
+      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
     }
   }
 
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getSettingsTabContainer().onUpdateTabsButtons(this.getTabsButtons());
+      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
     }
   }
 
@@ -270,7 +284,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   private setAutoPilotStates = (): void => {
-    const autoscaleMaxThroughput = this.collection?.offer()?.autoscaleMaxThroughput;
+    const autoscaleMaxThroughput = this.offer?.autoscaleMaxThroughput;
 
     if (autoscaleMaxThroughput && AutoPilotUtils.isValidAutoPilotThroughput(autoscaleMaxThroughput)) {
       this.setState({
@@ -295,7 +309,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     !!this.collection.conflictResolutionPolicy();
 
   public isOfferReplacePending = (): boolean => {
-    return this.collection?.offer()?.offerReplacePending;
+    return this.offer?.offerReplacePending;
   };
 
   public onSaveClick = async (): Promise<void> => {
@@ -309,174 +323,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       tabTitle: this.props.settingsTab.tabTitle(),
     });
 
-    const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
-
     try {
-      if (
-        this.state.isSubSettingsSaveable ||
-        this.state.isIndexingPolicyDirty ||
-        this.state.isConflictResolutionDirty
-      ) {
-        let defaultTtl: number;
-        switch (this.state.timeToLive) {
-          case TtlType.On:
-            defaultTtl = Number(this.state.timeToLiveSeconds);
-            break;
-          case TtlType.OnNoDefault:
-            defaultTtl = -1;
-            break;
-          case TtlType.Off:
-          default:
-            defaultTtl = undefined;
-            break;
-        }
-
-        const wasIndexingPolicyModified = this.state.isIndexingPolicyDirty;
-        newCollection.defaultTtl = defaultTtl;
-
-        newCollection.indexingPolicy = this.state.indexingPolicyContent;
-
-        newCollection.changeFeedPolicy =
-          this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
-            ? {
-                retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
-              }
-            : undefined;
-
-        newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
-
-        newCollection.geospatialConfig = {
-          type: this.state.geospatialConfigType,
-        };
-
-        const conflictResolutionChanges: DataModels.ConflictResolutionPolicy = this.getUpdatedConflictResolutionPolicy();
-        if (conflictResolutionChanges) {
-          newCollection.conflictResolutionPolicy = conflictResolutionChanges;
-        }
-
-        const updatedCollection: DataModels.Collection = await updateCollection(
-          this.collection.databaseId,
-          this.collection.id(),
-          newCollection
-        );
-        this.collection.rawDataModel = updatedCollection;
-        this.collection.defaultTtl(updatedCollection.defaultTtl);
-        this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
-        this.collection.id(updatedCollection.id);
-        this.collection.indexingPolicy(updatedCollection.indexingPolicy);
-        this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
-        this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
-        this.collection.geospatialConfig(updatedCollection.geospatialConfig);
-
-        if (wasIndexingPolicyModified) {
-          await this.refreshIndexTransformationProgress();
-        }
-
-        this.setState({
-          isSubSettingsSaveable: false,
-          isSubSettingsDiscardable: false,
-          isIndexingPolicyDirty: false,
-          isConflictResolutionDirty: false,
-        });
-      }
-
-      if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
-        try {
-          const newMongoIndexes = this.getMongoIndexesToSave();
-          const newMongoCollection: MongoDBCollectionResource = {
-            ...this.mongoDBCollectionResource,
-            indexes: newMongoIndexes,
-          };
-
-          this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
-            this.collection.databaseId,
-            this.collection.id(),
-            newMongoCollection
-          );
-
-          await this.refreshIndexTransformationProgress();
-          this.setState({
-            isMongoIndexingPolicySaveable: false,
-            indexesToDrop: [],
-            indexesToAdd: [],
-            currentMongoIndexes: [...this.mongoDBCollectionResource.indexes],
-          });
-          traceSuccess(
-            Action.MongoIndexUpdated,
-            {
-              databaseAccountName: this.container.databaseAccount()?.name,
-              databaseName: this.collection?.databaseId,
-              collectionName: this.collection?.id(),
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.props.settingsTab.tabTitle(),
-            },
-            startKey
-          );
-        } catch (error) {
-          traceFailure(
-            Action.MongoIndexUpdated,
-            {
-              databaseAccountName: this.container.databaseAccount()?.name,
-              databaseName: this.collection?.databaseId,
-              collectionName: this.collection?.id(),
-              defaultExperience: this.container.defaultExperience(),
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.props.settingsTab.tabTitle(),
-              error: getErrorMessage(error),
-              errorStack: getErrorStack(error),
-            },
-            startKey
-          );
-          throw error;
-        }
-      }
-
-      if (this.state.isScaleSaveable) {
-        const updateOfferParams: DataModels.UpdateOfferParams = {
-          databaseId: this.collection.databaseId,
-          collectionId: this.collection.id(),
-          currentOffer: this.collection.offer(),
-          autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
-          manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
-        };
-        if (this.hasProvisioningTypeChanged()) {
-          if (this.state.isAutoPilotSelected) {
-            updateOfferParams.migrateToAutoPilot = true;
-          } else {
-            updateOfferParams.migrateToManual = true;
-          }
-        }
-        const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
-        this.collection.offer(updatedOffer);
-        this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
-        if (this.state.isAutoPilotSelected) {
-          this.setState({
-            autoPilotThroughput: updatedOffer.autoscaleMaxThroughput,
-            autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput,
-          });
-        } else {
-          this.setState({
-            throughput: updatedOffer.manualThroughput,
-            throughputBaseline: updatedOffer.manualThroughput,
-          });
-        }
-      }
-      this.container.isRefreshingExplorer(false);
-      this.setBaseline();
-      this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
-      traceSuccess(
-        Action.SettingsV2Updated,
-        {
-          databaseAccountName: this.container.databaseAccount()?.name,
-          databaseName: this.collection?.databaseId,
-          collectionName: this.collection?.id(),
-          defaultExperience: this.container.defaultExperience(),
-          dataExplorerArea: Constants.Areas.Tab,
-          tabTitle: this.props.settingsTab.tabTitle(),
-        },
-        startKey
-      );
+      await (this.isCollectionSettingsTab
+        ? this.saveCollectionSettings(startKey)
+        : this.saveDatabaseSettings(startKey));
     } catch (error) {
       this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
@@ -495,8 +345,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         },
         startKey
       );
+    } finally {
+      this.props.settingsTab.isExecuting(false);
     }
-    this.props.settingsTab.isExecuting(false);
   };
 
   public onRevertClick = (): void => {
@@ -693,6 +544,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   };
 
   public setBaseline = (): void => {
+    const offerThroughput = this.offer?.manualThroughput;
+
+    if (!this.isCollectionSettingsTab) {
+      this.setState({
+        throughput: offerThroughput,
+        throughputBaseline: offerThroughput,
+      });
+
+      return;
+    }
+
     const defaultTtl = this.collection.defaultTtl();
 
     let timeToLive: TtlType = this.state.timeToLive;
@@ -725,7 +587,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    const offerThroughput = this.collection.offer()?.manualThroughput;
     const changeFeedPolicy = this.collection.rawDataModel?.changeFeedPolicy
       ? ChangeFeedPolicyState.On
       : ChangeFeedPolicyState.Off;
@@ -811,9 +672,225 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setState({ selectedTab: selectedTab });
   };
 
+  private saveDatabaseSettings = async (startKey: number): Promise<void> => {
+    if (this.state.isScaleSaveable) {
+      const updateOfferParams: DataModels.UpdateOfferParams = {
+        databaseId: this.database.id(),
+        currentOffer: this.database.offer(),
+        autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
+        manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
+      };
+      if (this.hasProvisioningTypeChanged()) {
+        if (this.state.isAutoPilotSelected) {
+          updateOfferParams.migrateToAutoPilot = true;
+        } else {
+          updateOfferParams.migrateToManual = true;
+        }
+      }
+      const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+      this.database.offer(updatedOffer);
+      this.offer = updatedOffer;
+      this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
+      if (this.state.isAutoPilotSelected) {
+        this.setState({
+          autoPilotThroughput: updatedOffer.autoscaleMaxThroughput,
+          autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput,
+        });
+      } else {
+        this.setState({
+          throughput: updatedOffer.manualThroughput,
+          throughputBaseline: updatedOffer.manualThroughput,
+        });
+      }
+    }
+
+    this.container.isRefreshingExplorer(false);
+    this.setBaseline();
+    this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
+    traceSuccess(
+      Action.SettingsV2Updated,
+      {
+        databaseAccountName: this.container.databaseAccount()?.name,
+        databaseName: this.database.id(),
+        defaultExperience: this.container.defaultExperience(),
+        dataExplorerArea: Constants.Areas.Tab,
+        tabTitle: this.props.settingsTab.tabTitle(),
+      },
+      startKey
+    );
+  };
+
+  private saveCollectionSettings = async (startKey: number): Promise<void> => {
+    const newCollection: DataModels.Collection = { ...this.collection.rawDataModel };
+
+    if (this.state.isSubSettingsSaveable || this.state.isIndexingPolicyDirty || this.state.isConflictResolutionDirty) {
+      let defaultTtl: number;
+      switch (this.state.timeToLive) {
+        case TtlType.On:
+          defaultTtl = Number(this.state.timeToLiveSeconds);
+          break;
+        case TtlType.OnNoDefault:
+          defaultTtl = -1;
+          break;
+        case TtlType.Off:
+        default:
+          defaultTtl = undefined;
+          break;
+      }
+
+      const wasIndexingPolicyModified = this.state.isIndexingPolicyDirty;
+      newCollection.defaultTtl = defaultTtl;
+
+      newCollection.indexingPolicy = this.state.indexingPolicyContent;
+
+      newCollection.changeFeedPolicy =
+        this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
+          ? {
+              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
+            }
+          : undefined;
+
+      newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
+
+      newCollection.geospatialConfig = {
+        type: this.state.geospatialConfigType,
+      };
+
+      const conflictResolutionChanges: DataModels.ConflictResolutionPolicy = this.getUpdatedConflictResolutionPolicy();
+      if (conflictResolutionChanges) {
+        newCollection.conflictResolutionPolicy = conflictResolutionChanges;
+      }
+
+      const updatedCollection: DataModels.Collection = await updateCollection(
+        this.collection.databaseId,
+        this.collection.id(),
+        newCollection
+      );
+      this.collection.rawDataModel = updatedCollection;
+      this.collection.defaultTtl(updatedCollection.defaultTtl);
+      this.collection.analyticalStorageTtl(updatedCollection.analyticalStorageTtl);
+      this.collection.id(updatedCollection.id);
+      this.collection.indexingPolicy(updatedCollection.indexingPolicy);
+      this.collection.conflictResolutionPolicy(updatedCollection.conflictResolutionPolicy);
+      this.collection.changeFeedPolicy(updatedCollection.changeFeedPolicy);
+      this.collection.geospatialConfig(updatedCollection.geospatialConfig);
+
+      if (wasIndexingPolicyModified) {
+        await this.refreshIndexTransformationProgress();
+      }
+
+      this.setState({
+        isSubSettingsSaveable: false,
+        isSubSettingsDiscardable: false,
+        isIndexingPolicyDirty: false,
+        isConflictResolutionDirty: false,
+      });
+    }
+
+    if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
+      try {
+        const newMongoIndexes = this.getMongoIndexesToSave();
+        const newMongoCollection: MongoDBCollectionResource = {
+          ...this.mongoDBCollectionResource,
+          indexes: newMongoIndexes,
+        };
+
+        this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
+          this.collection.databaseId,
+          this.collection.id(),
+          newMongoCollection
+        );
+
+        await this.refreshIndexTransformationProgress();
+        this.setState({
+          isMongoIndexingPolicySaveable: false,
+          indexesToDrop: [],
+          indexesToAdd: [],
+          currentMongoIndexes: [...this.mongoDBCollectionResource.indexes],
+        });
+        traceSuccess(
+          Action.MongoIndexUpdated,
+          {
+            databaseAccountName: this.container.databaseAccount()?.name,
+            databaseName: this.collection?.databaseId,
+            collectionName: this.collection?.id(),
+            defaultExperience: this.container.defaultExperience(),
+            dataExplorerArea: Constants.Areas.Tab,
+            tabTitle: this.props.settingsTab.tabTitle(),
+          },
+          startKey
+        );
+      } catch (error) {
+        traceFailure(
+          Action.MongoIndexUpdated,
+          {
+            databaseAccountName: this.container.databaseAccount()?.name,
+            databaseName: this.collection?.databaseId,
+            collectionName: this.collection?.id(),
+            defaultExperience: this.container.defaultExperience(),
+            dataExplorerArea: Constants.Areas.Tab,
+            tabTitle: this.props.settingsTab.tabTitle(),
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error),
+          },
+          startKey
+        );
+        throw error;
+      }
+    }
+
+    if (this.state.isScaleSaveable) {
+      const updateOfferParams: DataModels.UpdateOfferParams = {
+        databaseId: this.collection.databaseId,
+        collectionId: this.collection.id(),
+        currentOffer: this.collection.offer(),
+        autopilotThroughput: this.state.isAutoPilotSelected ? this.state.autoPilotThroughput : undefined,
+        manualThroughput: this.state.isAutoPilotSelected ? undefined : this.state.throughput,
+      };
+      if (this.hasProvisioningTypeChanged()) {
+        if (this.state.isAutoPilotSelected) {
+          updateOfferParams.migrateToAutoPilot = true;
+        } else {
+          updateOfferParams.migrateToManual = true;
+        }
+      }
+      const updatedOffer: DataModels.Offer = await updateOffer(updateOfferParams);
+      this.collection.offer(updatedOffer);
+      this.offer = updatedOffer;
+      this.setState({ isScaleSaveable: false, isScaleDiscardable: false });
+      if (this.state.isAutoPilotSelected) {
+        this.setState({
+          autoPilotThroughput: updatedOffer.autoscaleMaxThroughput,
+          autoPilotThroughputBaseline: updatedOffer.autoscaleMaxThroughput,
+        });
+      } else {
+        this.setState({
+          throughput: updatedOffer.manualThroughput,
+          throughputBaseline: updatedOffer.manualThroughput,
+        });
+      }
+    }
+    this.container.isRefreshingExplorer(false);
+    this.setBaseline();
+    this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
+    traceSuccess(
+      Action.SettingsV2Updated,
+      {
+        databaseAccountName: this.container.databaseAccount()?.name,
+        databaseName: this.collection?.databaseId,
+        collectionName: this.collection?.id(),
+        defaultExperience: this.container.defaultExperience(),
+        dataExplorerArea: Constants.Areas.Tab,
+        tabTitle: this.props.settingsTab.tabTitle(),
+      },
+      startKey
+    );
+  };
+
   public render(): JSX.Element {
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
+      database: this.database,
       container: this.container,
       isFixedContainer: this.isFixedContainer,
       onThroughputChange: this.onThroughputChange,
@@ -829,6 +906,16 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       initialNotification: this.props.settingsTab.pendingNotification(),
     };
+
+    if (!this.isCollectionSettingsTab) {
+      return (
+        <div className="settingsV2MainContainer">
+          <div className="settingsV2TabsContainer">
+            <ScaleComponent {...scaleComponentProps} />
+          </div>
+        </div>
+      );
+    }
 
     const subSettingsComponentProps: SubSettingsComponentProps = {
       collection: this.collection,
@@ -899,7 +986,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
 
     const tabs: SettingsV2TabInfo[] = [];
-    if (!hasDatabaseSharedThroughput(this.collection) && this.collection.offer()) {
+    if (!hasDatabaseSharedThroughput(this.collection) && this.offer) {
       tabs.push({
         tab: SettingsV2TabTypes.ScaleTab,
         content: <ScaleComponent {...scaleComponentProps} />,

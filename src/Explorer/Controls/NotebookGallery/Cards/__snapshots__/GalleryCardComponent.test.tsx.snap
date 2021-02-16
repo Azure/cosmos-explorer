@@ -5,6 +5,11 @@ exports[`GalleryCardComponent renders 1`] = `
   aria-label="name"
   data-is-focusable="true"
   onClick={[Function]}
+  style={
+    Object {
+      "background": "white",
+    }
+  }
   tokens={
     Object {
       "childrenGap": 0,
@@ -88,7 +93,7 @@ exports[`GalleryCardComponent renders 1`] = `
         styles={
           Object {
             "root": Object {
-              "color": undefined,
+              "color": "#605E5C",
               "paddingRight": 8,
             },
           }
@@ -112,7 +117,7 @@ exports[`GalleryCardComponent renders 1`] = `
         styles={
           Object {
             "root": Object {
-              "color": undefined,
+              "color": "#605E5C",
               "paddingRight": 8,
             },
           }
@@ -136,7 +141,7 @@ exports[`GalleryCardComponent renders 1`] = `
         styles={
           Object {
             "root": Object {
-              "color": undefined,
+              "color": "#605E5C",
               "paddingRight": 8,
             },
           }
@@ -185,7 +190,7 @@ exports[`GalleryCardComponent renders 1`] = `
             "gapSpace": 0,
           }
         }
-        content="Like"
+        content="Favorite"
         id="TooltipHost-IconButton-Heart"
         styles={
           Object {
@@ -197,14 +202,14 @@ exports[`GalleryCardComponent renders 1`] = `
         }
       >
         <CustomizedIconButton
-          ariaLabel="Like"
+          ariaLabel="Favorite"
           iconProps={
             Object {
               "iconName": "Heart",
             }
           }
           onClick={[Function]}
-          title="Like"
+          title="Favorite"
         />
       </StyledTooltipHostBase>
       <StyledTooltipHostBase

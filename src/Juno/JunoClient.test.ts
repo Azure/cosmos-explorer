@@ -225,7 +225,7 @@ describe("Gallery", () => {
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleDatabaseAccount.name}/gallery/${id}/downloads`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${sampleDatabaseAccount.name}/gallery/${id}/downloads`,
       {
         method: "PATCH",
         headers: {
@@ -248,7 +248,7 @@ describe("Gallery", () => {
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/${sampleDatabaseAccount.name}/gallery/${id}/favorite`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${sampleDatabaseAccount.name}/gallery/${id}/favorite`,
       {
         method: "PATCH",
         headers: {
@@ -270,13 +270,16 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}/unfavorite`, {
-      method: "PATCH",
-      headers: {
-        [authorizationHeader.header]: authorizationHeader.token,
-        [HttpHeaders.contentType]: "application/json",
-      },
-    });
+    expect(window.fetch).toBeCalledWith(
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${sampleDatabaseAccount.name}/gallery/${id}/unfavorite`,
+      {
+        method: "PATCH",
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [HttpHeaders.contentType]: "application/json",
+        },
+      }
+    );
   });
 
   it("getFavoriteNotebooks", async () => {
@@ -289,12 +292,15 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/favorites`, {
-      headers: {
-        [authorizationHeader.header]: authorizationHeader.token,
-        [HttpHeaders.contentType]: "application/json",
-      },
-    });
+    expect(window.fetch).toBeCalledWith(
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${sampleDatabaseAccount.name}/gallery/favorites`,
+      {
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [HttpHeaders.contentType]: "application/json",
+        },
+      }
+    );
   });
 
   it("getPublishedNotebooks", async () => {
@@ -308,7 +314,7 @@ describe("Gallery", () => {
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/gallery/published`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${sampleDatabaseAccount.name}/gallery/published`,
       {
         headers: {
           [authorizationHeader.header]: authorizationHeader.token,
@@ -329,13 +335,16 @@ describe("Gallery", () => {
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
-    expect(window.fetch).toBeCalledWith(`${configContext.JUNO_ENDPOINT}/api/notebooks/gallery/${id}`, {
-      method: "DELETE",
-      headers: {
-        [authorizationHeader.header]: authorizationHeader.token,
-        [HttpHeaders.contentType]: "application/json",
-      },
-    });
+    expect(window.fetch).toBeCalledWith(
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${sampleDatabaseAccount.name}/gallery/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [HttpHeaders.contentType]: "application/json",
+        },
+      }
+    );
   });
 
   it("publishNotebook", async () => {
@@ -364,7 +373,7 @@ describe("Gallery", () => {
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(window.fetch).toBeCalledWith(
-      `${configContext.JUNO_ENDPOINT}/api/notebooks/${sampleSubscriptionId}/${sampleDatabaseAccount.name}/gallery`,
+      `${configContext.JUNO_ENDPOINT}/api/notebooks/subscriptions/${sampleSubscriptionId}/databaseAccounts/${sampleDatabaseAccount.name}/gallery`,
       {
         method: "PUT",
         headers: {

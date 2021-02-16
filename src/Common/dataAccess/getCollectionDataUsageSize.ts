@@ -76,7 +76,7 @@ export const getCollectionUsageSizeInKB = async (databaseName: string, container
     return dataUsageSizeInKb + indexUsageSizeInKb;
   } catch (error) {
     handleError(error, "getCollectionUsageSize");
-    throw error;
+    return undefined;
   }
 };
 

@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import React from "react";
 import { SettingsComponentProps, SettingsComponent, SettingsComponentState } from "./SettingsComponent";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import SettingsTabV2 from "../../Tabs/SettingsTabV2";
+import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { collection } from "./TestUtils";
 import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
@@ -37,16 +37,15 @@ jest.mock("../../../Common/dataAccess/updateOffer", () => ({
 
 describe("SettingsComponent", () => {
   const baseProps: SettingsComponentProps = {
-    settingsTab: new SettingsTabV2({
+    settingsTab: new CollectionSettingsTabV2({
       collection: collection,
-      tabKind: ViewModels.CollectionTabKind.SettingsV2,
+      tabKind: ViewModels.CollectionTabKind.CollectionSettingsV2,
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
       hashLocation: "settings",
       isActive: ko.observable(false),
       onUpdateTabsButtons: undefined,
-      getPendingNotification: Promise.resolve(undefined),
     }),
   };
 
@@ -139,6 +138,7 @@ describe("SettingsComponent", () => {
       readSettings: undefined,
       onSettingsClick: undefined,
       loadOffer: undefined,
+      getPendingThroughputSplitNotification: undefined,
     } as ViewModels.Database;
     newCollection.getDatabase = () => newDatabase;
     newCollection.offer = ko.observable(undefined);

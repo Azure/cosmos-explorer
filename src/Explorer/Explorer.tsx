@@ -1,3 +1,4 @@
+import React from "react";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
@@ -47,7 +48,6 @@ import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { FileSystemUtil } from "./Notebook/FileSystemUtil";
 import { handleOpenAction } from "./OpenActions";
-import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
@@ -91,6 +91,8 @@ import { appInsights } from "../Shared/appInsights";
 import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
+import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
+import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -110,6 +112,8 @@ export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
+  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  closeSidePanel: () => void;
 }
 
 export default class Explorer {
@@ -157,6 +161,8 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
+  private openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  private closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -278,6 +284,8 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
+    this.openSidePanel = params?.openSidePanel;
+    this.closeSidePanel = params?.closeSidePanel;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -423,8 +431,8 @@ export default class Explorer {
     this.shouldShowShareDialogContents = ko.observable<boolean>(false);
     this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
     this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
-    this.isGalleryPublishEnabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
+    this.isGalleryPublishEnabled = ko.computed<boolean>(
+      () => configContext.ENABLE_GALLERY_PUBLISH || this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
     );
     this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableLinkInjection)
@@ -1889,6 +1897,9 @@ export default class Explorer {
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
     }
+    if (flights.indexOf(Constants.Flights.GalleryPublish) !== -1) {
+      this.isGalleryPublishEnabled = ko.computed<boolean>(() => true);
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
@@ -2249,7 +2260,7 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(name: string, content: string | unknown, parentDomElement: HTMLElement): Promise<void> {
+  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(
         name,
@@ -2810,9 +2821,35 @@ export default class Explorer {
     }
   }
 
-  public async openGallery(notebookUrl?: string, galleryItem?: IGalleryItem, isFavorite?: boolean) {
+  public async openGallery(
+    selectedTab?: GalleryTab,
+    notebookUrl?: string,
+    galleryItem?: IGalleryItem,
+    isFavorite?: boolean
+  ) {
     let title: string = "Gallery";
     let hashLocation: string = "gallery";
+
+    const galleryTabOptions: any = {
+      // GalleryTabOptions
+      account: userContext.databaseAccount,
+      container: this,
+      junoClient: this.notebookManager?.junoClient,
+      selectedTab: selectedTab || GalleryTab.OfficialSamples,
+      notebookUrl,
+      galleryItem,
+      isFavorite,
+      // TabOptions
+      tabKind: ViewModels.CollectionTabKind.Gallery,
+      title: title,
+      tabPath: title,
+      documentClientUtility: null,
+      isActive: ko.observable(false),
+      hashLocation: hashLocation,
+      onUpdateTabsButtons: this.onUpdateTabsButtons,
+      isTabsContentExpanded: ko.observable(true),
+      onLoadStartKey: null,
+    };
 
     const galleryTabs = this.tabsManager.getTabs(
       ViewModels.CollectionTabKind.Gallery,
@@ -2822,31 +2859,12 @@ export default class Explorer {
 
     if (galleryTab) {
       this.tabsManager.activateTab(galleryTab);
+      (galleryTab as any).reset(galleryTabOptions);
     } else {
       if (!this.galleryTab) {
         this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
       }
-
-      const newTab = new this.galleryTab.default({
-        // GalleryTabOptions
-        account: userContext.databaseAccount,
-        container: this,
-        junoClient: this.notebookManager?.junoClient,
-        notebookUrl,
-        galleryItem,
-        isFavorite,
-        // TabOptions
-        tabKind: ViewModels.CollectionTabKind.Gallery,
-        title: title,
-        tabPath: title,
-        documentClientUtility: null,
-        isActive: ko.observable(false),
-        hashLocation: hashLocation,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-      });
-
+      const newTab = new this.galleryTab.default(galleryTabOptions);
       this.tabsManager.activateNewTab(newTab);
     }
   }
@@ -3027,5 +3045,18 @@ export default class Explorer {
       // use has created an empty database without shared throughput
       return false;
     });
+  }
+
+  public openDeleteCollectionConfirmationPane(): void {
+    this.isFeatureEnabled(Constants.Features.enableKOPanel)
+      ? this.deleteCollectionConfirmationPane.open()
+      : this.openSidePanel(
+          "Delete Collection",
+          <DeleteCollectionConfirmationPanel
+            explorer={this}
+            closePanel={() => this.closeSidePanel()}
+            openNotificationConsole={() => this.expandConsole()}
+          />
+        );
   }
 }

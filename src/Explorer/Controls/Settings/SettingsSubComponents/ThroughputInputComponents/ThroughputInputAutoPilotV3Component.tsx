@@ -40,6 +40,7 @@ import { userContext } from "../../../../../UserContext";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
 import { usageInGB, calculateEstimateNumber } from "../../../../../Utils/PricingUtils";
 import { Features } from "../../../../../Common/Constants";
+import { minAutoPilotThroughput } from "../../../../../Utils/AutoPilotUtils";
 
 import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../../../../Shared/Telemetry/TelemetryConstants";
@@ -541,6 +542,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         step={AutoPilotUtils.autoPilotIncrementStep}
         value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
         onChange={this.onAutoPilotThroughputChange}
+        min={minAutoPilotThroughput}
       />
       {!this.overrideWithProvisionedThroughputSettings() && this.getAutoPilotUsageCost()}
       {this.minRUperGBSurvey()}
@@ -579,6 +581,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
             : this.props.throughput?.toString()
         }
         onChange={this.onThroughputChange}
+        min={this.props.minimum}
       />
       {this.state.exceedFreeTierThroughput && (
         <MessageBar

@@ -6,6 +6,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
 >
   <div
     className="notificationConsoleHeader"
+    id="notificationConsoleHeader"
     onClick={[Function]}
     onKeyDown={[Function]}
     tabIndex={0}
@@ -169,6 +170,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
 >
   <div
     className="notificationConsoleHeader"
+    id="notificationConsoleHeader"
     onClick={[Function]}
     onKeyDown={[Function]}
     tabIndex={0}

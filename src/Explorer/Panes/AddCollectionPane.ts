@@ -818,7 +818,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let indexingPolicy: DataModels.IndexingPolicy;
     let createMongoWildcardIndex: boolean;
     // todo - remove mongo indexing policy ticket # 616274
-    if (this.container.isPreferredApiMongoDB()) {
+    if (this.container.isPreferredApiMongoDB() && this.container.isEnableMongoCapabilityPresent()) {
       createMongoWildcardIndex = this.shouldCreateMongoWildcardIndex();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {
