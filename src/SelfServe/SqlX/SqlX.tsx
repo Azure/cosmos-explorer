@@ -1,5 +1,4 @@
 import { IsDisplayable, OnChange, Values } from "../Decorators";
-import { userContext } from "../../UserContext";
 import {
   ChoiceItem,
   InputType,
@@ -11,14 +10,12 @@ import {
   SmartUiInput,
 } from "../SelfServeTypes";
 import {
+  ResourceStatus,
   refreshDedicatedGatewayProvisioning,
-  getDedicatedGatewayResource,
   updateDedicatedGatewayResource,
   deleteDedicatedGatewayResource,
-  SKU,
   getCurrentProvisioningState
 } from "./SqlX.rp";
-import { Console } from "console";
 
 let disableAttributesOnDedicatedGatewayChange = false;
 
@@ -26,7 +23,6 @@ const onEnableDedicatedGatewayChange = (
   currentState: Map<string, SmartUiInput>,
   newValue: InputType
 ): Map<string, SmartUiInput> => {
-    console.log("Disable Attributes is " + disableAttributesOnDedicatedGatewayChange);
     const sku = currentState.get("sku");
     const instances = currentState.get("instances");
     const hideAttributes = newValue === undefined || !(newValue as boolean);
@@ -37,10 +33,10 @@ const onEnableDedicatedGatewayChange = (
 };
 
 const skuDropDownItems: ChoiceItem[] = [
-  { label: "CosmosD4s", key: SKU.CosmosD4s },
-  { label: "CosmosD8s", key: SKU.CosmosD8s },
-  { label: "CosmosD16s", key: SKU.CosmosD16s },
-  { label: "CosmosD32s", key: SKU.CosmosD32s },
+  { label: "CosmosD4s", key: "Cosmos.D4s" },
+  { label: "CosmosD8s", key: "Cosmos.D8s" },
+  { label: "CosmosD16s", key: "Cosmos.D16s" },
+  { label: "CosmosD32s", key: "Cosmos.D32s" },
 ];
 
 const getSkus = async (): Promise<ChoiceItem[]> => {
@@ -58,11 +54,6 @@ const getInstancesMax = async (): Promise<number> => {
   return 5;
 };
 
-const validate = (currentValues: Map<string, SmartUiInput>): void => {
-  // TODO: add cusom validation logic to be called before Saving the data.
-  throw new Error(`validate not implemented. No. of properties to validate: ${currentValues.size}`);
-};
-
 @IsDisplayable()
 export default class SqlX extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
@@ -73,25 +64,24 @@ export default class SqlX extends SelfServeBaseClass {
     const response = await getCurrentProvisioningState();
 
     // null implies the resource has not been provisioned.
-    if (response.status != null && response.status != "Running")
+    if (response.status !== undefined && response.status !== ResourceStatus.Running.toString())
     {
       switch(response.status)
       {
-        case "Creating":
+        case ResourceStatus.Creating.toString():
           return {message: "CreateMessage", type: SelfServeNotificationType.error};
-        case "Updating":
+        case ResourceStatus.Updating.toString():
           return {message: "UpdateMessage", type: SelfServeNotificationType.error};
-        case "Deleting":
+        case ResourceStatus.Deleting.toString():
           return {message: "DeleteMessage", type: SelfServeNotificationType.error};
         default:
-          console.log("UnexpectedStatus: " + response.status);
           return {message: "CannotSave", type: SelfServeNotificationType.error}
       }
     }
 
     const enableDedicatedGateway = currentValues.get("enableDedicatedGateway")?.value as boolean;
 
-    if (response.status != null)
+    if (response.status !== undefined)
     {
       if (!enableDedicatedGateway)
       {
@@ -102,7 +92,6 @@ export default class SqlX extends SelfServeBaseClass {
         }
         catch(e)
         {
-          console.log(e);
           return { message: "Deleting Dedicated Gateway resource failed. DedicatedGateway will not be deleted.", type: SelfServeNotificationType.error };
         }
       }
@@ -123,7 +112,6 @@ export default class SqlX extends SelfServeBaseClass {
         }
         catch(e)
         {
-          console.log(e);
           return { message: "Updating Dedicated Gateway resource failed. Dedicated Gateway will not be updated.", type: SelfServeNotificationType.error };
         }
 
@@ -138,10 +126,10 @@ export default class SqlX extends SelfServeBaseClass {
     const defaults = new Map<string, SmartUiInput>();
     const enableDedicatedGateway = false;
     defaults.set("enableDedicatedGateway", { value: enableDedicatedGateway, hidden: false, disabled: false});
-    defaults.set("sku", { value: SKU.CosmosD4s, hidden: !enableDedicatedGateway, disabled: false});
+    defaults.set("sku", { value: "Cosmos.D4s", hidden: !enableDedicatedGateway, disabled: false});
     defaults.set("instances", { value: await getInstancesMin(), hidden: !enableDedicatedGateway, disabled: false});    
     const response = await getCurrentProvisioningState()
-    if (response.status != null)
+    if (response.status !== undefined)
     {
       disableAttributesOnDedicatedGatewayChange = true;
       defaults.set("enableDedicatedGateway", { value: true, hidden: false, disabled: false});

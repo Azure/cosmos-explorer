@@ -9,6 +9,13 @@ import {
 
 const apiVersion = "2020-06-01-preview";
 
+export enum ResourceStatus {
+  Running,
+  Creating,
+  Updating,
+  Deleting
+}
+
 export interface DedicatedGatewayResponse {
   sku: string;
   instances: number;
@@ -16,16 +23,13 @@ export interface DedicatedGatewayResponse {
   endpoint: string;
 }
 
-export enum SKU {
-  CosmosD4s = "Cosmos.D4s",
-  CosmosD8s = "Cosmos.D8s",
-  CosmosD16s = "Cosmos.D16s",
-  CosmosD32s = "Cosmos.D32s"
+export const getPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/sqlx`;
 }
 
 export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<void> => {
   // TODO: write RP call to update dedicated gateway provisioning
-  const path = `/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/services/sqlx`;
+  const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const body: UpdateDedicatedGatewayRequestParameters = {
     properties: {
       instanceSize: sku,
@@ -37,12 +41,12 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
 };
 
 export const deleteDedicatedGatewayResource = async (): Promise<void> => {
-  const path = `/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/services/sqlx`;
+  const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
 }
 
 export const getDedicatedGatewayResource = async() : Promise<SqlxServiceResource> => {
-  const path = `/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/services/sqlx`;
+  const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   return armRequest<SqlxServiceResource>({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }
 
@@ -54,7 +58,7 @@ export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayRes
   }
   catch (e)
   {
-    return {sku: null, instances: null, status: null, endpoint: null};
+    return {sku: undefined, instances: undefined, status: undefined, endpoint: undefined};
   }
 };
 
@@ -63,27 +67,25 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
   try
   {
     const response = await getDedicatedGatewayResource();
-    if (response.properties.status == "Running")
+    if (response.properties.status === ResourceStatus.Running.toString())
     {
-      return {isUpdateInProgress: false}
+      return {isUpdateInProgress: false, notificationMessage: undefined}
     }
-    else if (response.properties.status == "Creating")
+    else if (response.properties.status === ResourceStatus.Creating.toString())
     {
       return {isUpdateInProgress: true, notificationMessage: "CreateMessage"};
     }
-    else if (response.properties.status == "Deleting")
+    else if (response.properties.status === ResourceStatus.Deleting.toString())
     {
-      console.log(response.properties.status);
       return {isUpdateInProgress: true, notificationMessage: "DeleteMessage"};
     }
     else
     {
-      console.log(response.properties.status);
       return {isUpdateInProgress: true, notificationMessage: "UpdateMessage"};
     }
   }
   catch
   {
-    return {isUpdateInProgress: false}
+    return {isUpdateInProgress: false, notificationMessage: undefined}
   }
 };
