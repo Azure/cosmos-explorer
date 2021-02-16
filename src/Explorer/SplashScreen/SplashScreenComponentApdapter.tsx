@@ -19,10 +19,11 @@ import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 
-/**
- * TODO Remove this when fully ported to ReactJS
- */
-export class SplashScreenComponentAdapter implements ReactAdapter {
+export interface SplashScreenComponentAdapterProps {
+  explorer: Explorer;
+}
+
+export class SplashScreenComponentAdapter extends React.Component<SplashScreenComponentAdapterProps> {
   private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
   private static readonly throughputEstimatorUrl = "https://cosmos.azure.com/capacitycalculator";
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
@@ -30,7 +31,8 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
   private readonly container: Explorer;
 
-  constructor(props: { explorer: Explorer }) {
+  constructor(props: SplashScreenComponentAdapterProps) {
+    super(props);
     this.container = props.explorer;
     this.parameters = ko.observable<number>(Date.now());
     this.container.tabsManager.openedTabs.subscribe((tabs) => {

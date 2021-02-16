@@ -1141,8 +1141,19 @@ exports[`SettingsComponent renders 1`] = `
                 "splashScreenAdapter": SplashScreenComponentAdapter {
                   "clearMostRecent": [Function],
                   "container": [Circular],
+                  "context": undefined,
                   "forceRender": [Function],
                   "parameters": [Function],
+                  "props": Object {
+                    "explorer": [Circular],
+                  },
+                  "refs": Object {},
+                  "updater": Object {
+                    "enqueueForceUpdate": [Function],
+                    "enqueueReplaceState": [Function],
+                    "enqueueSetState": [Function],
+                    "isMounted": [Function],
+                  },
                 },
                 "splitter": Splitter {
                   "bounds": Object {
@@ -2386,8 +2397,19 @@ exports[`SettingsComponent renders 1`] = `
               "splashScreenAdapter": SplashScreenComponentAdapter {
                 "clearMostRecent": [Function],
                 "container": [Circular],
+                "context": undefined,
                 "forceRender": [Function],
                 "parameters": [Function],
+                "props": Object {
+                  "explorer": [Circular],
+                },
+                "refs": Object {},
+                "updater": Object {
+                  "enqueueForceUpdate": [Function],
+                  "enqueueReplaceState": [Function],
+                  "enqueueSetState": [Function],
+                  "isMounted": [Function],
+                },
               },
               "splitter": Splitter {
                 "bounds": Object {
@@ -3644,8 +3666,19 @@ exports[`SettingsComponent renders 1`] = `
                 "splashScreenAdapter": SplashScreenComponentAdapter {
                   "clearMostRecent": [Function],
                   "container": [Circular],
+                  "context": undefined,
                   "forceRender": [Function],
                   "parameters": [Function],
+                  "props": Object {
+                    "explorer": [Circular],
+                  },
+                  "refs": Object {},
+                  "updater": Object {
+                    "enqueueForceUpdate": [Function],
+                    "enqueueReplaceState": [Function],
+                    "enqueueSetState": [Function],
+                    "isMounted": [Function],
+                  },
                 },
                 "splitter": Splitter {
                   "bounds": Object {
@@ -4889,8 +4922,19 @@ exports[`SettingsComponent renders 1`] = `
               "splashScreenAdapter": SplashScreenComponentAdapter {
                 "clearMostRecent": [Function],
                 "container": [Circular],
+                "context": undefined,
                 "forceRender": [Function],
                 "parameters": [Function],
+                "props": Object {
+                  "explorer": [Circular],
+                },
+                "refs": Object {},
+                "updater": Object {
+                  "enqueueForceUpdate": [Function],
+                  "enqueueReplaceState": [Function],
+                  "enqueueSetState": [Function],
+                  "isMounted": [Function],
+                },
               },
               "splitter": Splitter {
                 "bounds": Object {
