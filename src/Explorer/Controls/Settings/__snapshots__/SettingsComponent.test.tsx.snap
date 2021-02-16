@@ -1138,7 +1138,7 @@ exports[`SettingsComponent renders 1`] = `
                 "shouldShowShareDialogContents": [Function],
                 "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
-                "splashScreenAdapter": SplashScreenComponentAdapter {
+                "splashScreenAdapter": SplashScreen {
                   "clearMostRecent": [Function],
                   "container": [Circular],
                   "context": undefined,
@@ -2394,7 +2394,7 @@ exports[`SettingsComponent renders 1`] = `
               "shouldShowShareDialogContents": [Function],
               "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
-              "splashScreenAdapter": SplashScreenComponentAdapter {
+              "splashScreenAdapter": SplashScreen {
                 "clearMostRecent": [Function],
                 "container": [Circular],
                 "context": undefined,
@@ -3663,7 +3663,7 @@ exports[`SettingsComponent renders 1`] = `
                 "shouldShowShareDialogContents": [Function],
                 "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
-                "splashScreenAdapter": SplashScreenComponentAdapter {
+                "splashScreenAdapter": SplashScreen {
                   "clearMostRecent": [Function],
                   "container": [Circular],
                   "context": undefined,
@@ -4919,7 +4919,7 @@ exports[`SettingsComponent renders 1`] = `
               "shouldShowShareDialogContents": [Function],
               "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
-              "splashScreenAdapter": SplashScreenComponentAdapter {
+              "splashScreenAdapter": SplashScreen {
                 "clearMostRecent": [Function],
                 "container": [Circular],
                 "context": undefined,

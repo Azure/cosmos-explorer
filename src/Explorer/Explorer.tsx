@@ -63,7 +63,7 @@ import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { SplashScreenComponentAdapter } from "./SplashScreen/SplashScreenComponentApdapter";
+import { SplashScreen } from "./SplashScreen/SplashScreen";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { StringInputPane } from "./Panes/StringInputPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
@@ -263,7 +263,7 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private splashScreenAdapter: SplashScreenComponentAdapter;
+  private splashScreenAdapter: SplashScreen;
   private dialogComponentAdapter: DialogComponentAdapter;
   private _dialogProps: ko.Observable<DialogProps>;
   private addSynapseLinkDialog: DialogComponentAdapter;
@@ -986,7 +986,7 @@ export default class Explorer {
     });
     this.dialogComponentAdapter = new DialogComponentAdapter();
     this.dialogComponentAdapter.parameters = this._dialogProps;
-    this.splashScreenAdapter = new SplashScreenComponentAdapter({ explorer: this });
+    this.splashScreenAdapter = new SplashScreen({ explorer: this });
     this.mostRecentActivity = new MostRecentActivity.MostRecentActivity(this);
 
     this._addSynapseLinkDialogProps = ko.observable<DialogProps>({

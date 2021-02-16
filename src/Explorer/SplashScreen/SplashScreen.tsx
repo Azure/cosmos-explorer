@@ -3,7 +3,6 @@
  */
 import * as ko from "knockout";
 import * as React from "react";
-import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../Contracts/ViewModels";
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
@@ -19,11 +18,11 @@ import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 
-export interface SplashScreenComponentAdapterProps {
+export interface SplashScreenProps {
   explorer: Explorer;
 }
 
-export class SplashScreenComponentAdapter extends React.Component<SplashScreenComponentAdapterProps> {
+export class SplashScreen extends React.Component<SplashScreenProps> {
   private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
   private static readonly throughputEstimatorUrl = "https://cosmos.azure.com/capacitycalculator";
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
@@ -31,7 +30,7 @@ export class SplashScreenComponentAdapter extends React.Component<SplashScreenCo
   public parameters: ko.Observable<number>;
   private readonly container: Explorer;
 
-  constructor(props: SplashScreenComponentAdapterProps) {
+  constructor(props: SplashScreenProps) {
     super(props);
     this.container = props.explorer;
     this.parameters = ko.observable<number>(Date.now());
@@ -202,7 +201,7 @@ export class SplashScreenComponentAdapter extends React.Component<SplashScreenCo
       iconSrc: MostRecentActivity.MostRecentActivity.getItemIcon(item),
       title: item.title,
       description: item.description,
-      info: SplashScreenComponentAdapter.getInfo(item),
+      info: SplashScreen.getInfo(item),
       onClick: () => this.container.mostRecentActivity.onItemClicked(item),
     }));
   }
@@ -213,19 +212,19 @@ export class SplashScreenComponentAdapter extends React.Component<SplashScreenCo
         iconSrc: null,
         title: "Data Modeling",
         description: "Learn more about modeling",
-        onClick: () => window.open(SplashScreenComponentAdapter.dataModelingUrl),
+        onClick: () => window.open(SplashScreen.dataModelingUrl),
       },
       {
         iconSrc: null,
         title: "Cost & Throughput Calculation",
         description: "Learn more about cost calculation",
-        onClick: () => window.open(SplashScreenComponentAdapter.throughputEstimatorUrl),
+        onClick: () => window.open(SplashScreen.throughputEstimatorUrl),
       },
       {
         iconSrc: null,
         title: "Configure automatic failover",
         description: "Learn more about Cosmos DB high-availability",
-        onClick: () => window.open(SplashScreenComponentAdapter.failoverUrl),
+        onClick: () => window.open(SplashScreen.failoverUrl),
       },
     ];
   }
