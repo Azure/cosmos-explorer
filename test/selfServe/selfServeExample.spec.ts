@@ -2,6 +2,7 @@ import { Frame } from "puppeteer";
 import { TestExplorerParams } from "../testExplorer/TestExplorerParams";
 import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
 import { SelfServeType } from "../../src/SelfServe/SelfServeUtils";
+import { ApiKind } from "../../src/Contracts/DataModels";
 
 jest.setTimeout(300000);
 
@@ -10,8 +11,12 @@ describe("Self Serve", () => {
   it("Launch Self Serve Example", async () => {
     try {
       frame = await getTestExplorerFrame(
+        ApiKind.SQL,
         new Map<string, string>([[TestExplorerParams.selfServeType, SelfServeType.example]])
       );
+
+      // wait for refresh RP call to end
+      await frame.waitFor(10000);
 
       // id of the display element is in the format {PROPERTY_NAME}-{DISPLAY_NAME}-{DISPLAY_TYPE}
       await frame.waitForSelector("#description-text-display");

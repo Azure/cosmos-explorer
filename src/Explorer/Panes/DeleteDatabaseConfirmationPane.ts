@@ -52,81 +52,71 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title(),
     });
-    // TODO: Should not be a Q promise anymore, but the Cassandra code requires it
-    let promise: Q.Promise<any>;
-    if (this.container.isPreferredApiCassandra()) {
-      promise = (<CassandraAPIDataClient>this.container.tableDataClient).deleteTableOrKeyspace(
-        this.container.databaseAccount().properties.cassandraEndpoint,
-        this.container.databaseAccount().id,
-        `DROP KEYSPACE ${selectedDatabase.id()};`,
-        this.container
-      );
-    } else {
-      promise = Q(deleteDatabase(selectedDatabase.id()));
-    }
-    return promise.then(
-      () => {
-        this.isExecuting(false);
-        this.close();
-        this.container.refreshAllDatabases();
-        this.container.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
-        this.container.selectedNode(null);
-        selectedDatabase
-          .collections()
-          .forEach((collection: ViewModels.Collection) =>
-            this.container.tabsManager.closeTabsByComparator(
-              (tab) =>
-                tab.node?.id() === collection.id() &&
-                (tab.node as ViewModels.Collection).databaseId === collection.databaseId
-            )
-          );
-        this.resetData();
-        TelemetryProcessor.traceSuccess(
-          Action.DeleteDatabase,
-          {
-            databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience(),
-            databaseId: selectedDatabase.id(),
-            dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title(),
-          },
-          startKey
-        );
-
-        if (this.shouldRecordFeedback()) {
-          let deleteFeedback = new DeleteFeedback(
-            this.container.databaseAccount().id,
-            this.container.databaseAccount().name,
-            DefaultExperienceUtility.getApiKindFromDefaultExperience(this.container.defaultExperience()),
-            this.databaseDeleteFeedback()
+    return Q(
+      deleteDatabase(selectedDatabase.id()).then(
+        () => {
+          this.isExecuting(false);
+          this.close();
+          this.container.refreshAllDatabases();
+          this.container.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
+          this.container.selectedNode(null);
+          selectedDatabase
+            .collections()
+            .forEach((collection: ViewModels.Collection) =>
+              this.container.tabsManager.closeTabsByComparator(
+                (tab) =>
+                  tab.node?.id() === collection.id() &&
+                  (tab.node as ViewModels.Collection).databaseId === collection.databaseId
+              )
+            );
+          this.resetData();
+          TelemetryProcessor.traceSuccess(
+            Action.DeleteDatabase,
+            {
+              databaseAccountName: this.container.databaseAccount().name,
+              defaultExperience: this.container.defaultExperience(),
+              databaseId: selectedDatabase.id(),
+              dataExplorerArea: Constants.Areas.ContextualPane,
+              paneTitle: this.title(),
+            },
+            startKey
           );
 
-          TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
-            message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
-          });
+          if (this.shouldRecordFeedback()) {
+            let deleteFeedback = new DeleteFeedback(
+              this.container.databaseAccount().id,
+              this.container.databaseAccount().name,
+              DefaultExperienceUtility.getApiKindFromDefaultExperience(this.container.defaultExperience()),
+              this.databaseDeleteFeedback()
+            );
 
-          this.databaseDeleteFeedback("");
+            TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
+              message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
+            });
+
+            this.databaseDeleteFeedback("");
+          }
+        },
+        (error: any) => {
+          this.isExecuting(false);
+          const errorMessage = getErrorMessage(error);
+          this.formErrors(errorMessage);
+          this.formErrorsDetails(errorMessage);
+          TelemetryProcessor.traceFailure(
+            Action.DeleteDatabase,
+            {
+              databaseAccountName: this.container.databaseAccount().name,
+              defaultExperience: this.container.defaultExperience(),
+              databaseId: selectedDatabase.id(),
+              dataExplorerArea: Constants.Areas.ContextualPane,
+              paneTitle: this.title(),
+              error: errorMessage,
+              errorStack: getErrorStack(error),
+            },
+            startKey
+          );
         }
-      },
-      (error: any) => {
-        this.isExecuting(false);
-        const errorMessage = getErrorMessage(error);
-        this.formErrors(errorMessage);
-        this.formErrorsDetails(errorMessage);
-        TelemetryProcessor.traceFailure(
-          Action.DeleteDatabase,
-          {
-            databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience(),
-            databaseId: selectedDatabase.id(),
-            dataExplorerArea: Constants.Areas.ContextualPane,
-            paneTitle: this.title(),
-            error: errorMessage,
-            errorStack: getErrorStack(error),
-          },
-          startKey
-        );
-      }
+      )
     );
   }
 

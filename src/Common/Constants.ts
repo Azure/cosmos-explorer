@@ -119,7 +119,9 @@ export class Features {
   public static readonly enableSchema = "enableschema";
   public static readonly enableSDKoperations = "enablesdkoperations";
   public static readonly showMinRUSurvey = "showminrusurvey";
+  public static readonly enableDatabaseSettingsTabV1 = "enabledbsettingsv1";
   public static readonly selfServeType = "selfservetype";
+  public static readonly enableKOPanel = "enablekopanel";
 }
 
 // flight names returned from the portal are always lowercase
@@ -128,6 +130,7 @@ export class Flights {
   public static readonly MongoIndexEditor = "mongoindexeditor";
   public static readonly MongoIndexing = "mongoindexing";
   public static readonly AutoscaleTest = "autoscaletest";
+  public static readonly GalleryPublish = "gallerypublish";
 }
 
 export class AfecFeatures {

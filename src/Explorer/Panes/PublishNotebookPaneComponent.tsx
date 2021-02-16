@@ -14,7 +14,7 @@ export interface PublishNotebookPaneProps {
   notebookAuthor: string;
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
-  notebookParentDomElement: HTMLElement;
+  notebookParentDomElement?: HTMLElement;
   onChangeName: (newValue: string) => void;
   onChangeDescription: (newValue: string) => void;
   onChangeTags: (newValue: string) => void;
@@ -54,7 +54,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     super(props);
 
     this.state = {
-      type: ImageTypes.Url,
+      type: ImageTypes.CustomImage,
       notebookName: props.notebookName,
       notebookDescription: "",
       notebookTags: "",
@@ -110,7 +110,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     };
 
     this.descriptionPara1 =
-      "This notebook has your data. Please make sure you delete any sensitive data/output before publishing.";
+      "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.";
 
     this.descriptionPara2 = `Would you like to publish and share "${FileSystemUtil.stripExtension(
       this.props.notebookName,
@@ -120,6 +120,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     this.thumbnailUrlProps = {
       label: "Cover image url",
       ariaLabel: "Cover image url",
+      required: true,
       onChange: (event, newValue) => {
         this.props.onChangeImageSrc(newValue);
         this.setState({ imageSrc: newValue });
@@ -140,17 +141,23 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       this.props.onError(formError, formErrorDetail, area);
     };
 
+    const options: ImageTypes[] = [ImageTypes.CustomImage, ImageTypes.Url];
+
+    if (this.props.notebookParentDomElement) {
+      options.push(ImageTypes.TakeScreenshot);
+      if (this.props.notebookObject) {
+        options.push(ImageTypes.UseFirstDisplayOutput);
+      }
+    }
+
     this.thumbnailSelectorProps = {
       label: "Cover image",
-      defaultSelectedKey: ImageTypes.Url,
+      defaultSelectedKey: ImageTypes.CustomImage,
       ariaLabel: "Cover image",
-      options: [
-        ImageTypes.Url,
-        ImageTypes.CustomImage,
-        ImageTypes.TakeScreenshot,
-        ImageTypes.UseFirstDisplayOutput,
-      ].map((value: string) => ({ text: value, key: value })),
+      options: options.map((value: string) => ({ text: value, key: value })),
       onChange: async (event, options) => {
+        this.setState({ imageSrc: undefined });
+        this.props.onChangeImageSrc(undefined);
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
           try {
@@ -172,11 +179,12 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     this.nameProps = {
       label: "Name",
       ariaLabel: "Name",
-      defaultValue: this.props.notebookName,
+      defaultValue: FileSystemUtil.stripExtension(this.props.notebookName, "ipynb"),
       required: true,
       onChange: (event, newValue) => {
-        this.props.onChangeName(newValue);
-        this.setState({ notebookName: newValue });
+        const notebookName = newValue + ".ipynb";
+        this.props.onChangeName(notebookName);
+        this.setState({ notebookName });
       },
     };
 
@@ -293,16 +301,16 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
                 thumbnailUrl: this.state.imageSrc,
                 created: this.props.notebookCreatedDate,
                 isSample: false,
-                downloads: 0,
-                favorites: 0,
-                views: 0,
+                downloads: undefined,
+                favorites: undefined,
+                views: undefined,
                 newCellId: undefined,
                 policyViolations: undefined,
                 pendingScanJobIds: undefined,
               }}
-              isFavorite={false}
-              showDownload={true}
-              showDelete={true}
+              isFavorite={undefined}
+              showDownload={false}
+              showDelete={false}
               onClick={undefined}
               onTagClick={undefined}
               onFavoriteClick={undefined}

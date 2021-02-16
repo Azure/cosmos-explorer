@@ -7,14 +7,20 @@ import {
 } from "./GalleryAndNotebookViewerComponent";
 
 export class GalleryAndNotebookViewerComponentAdapter implements ReactAdapter {
+  private key: string;
   public parameters: ko.Observable<number>;
 
   constructor(private props: GalleryAndNotebookViewerComponentProps) {
+    this.reset();
     this.parameters = ko.observable<number>(Date.now());
   }
 
   public renderComponent(): JSX.Element {
-    return <GalleryAndNotebookViewerComponent {...this.props} />;
+    return <GalleryAndNotebookViewerComponent key={this.key} {...this.props} />;
+  }
+
+  public reset(): void {
+    this.key = `GalleryAndNotebookViewerComponent-${Date.now()}`;
   }
 
   public triggerRender(): void {

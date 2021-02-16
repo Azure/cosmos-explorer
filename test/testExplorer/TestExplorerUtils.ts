@@ -1,18 +1,30 @@
 import { Frame } from "puppeteer";
 import { TestExplorerParams } from "./TestExplorerParams";
 import { ClientSecretCredential } from "@azure/identity";
+import { ApiKind } from "../../src/Contracts/DataModels";
 
 let testExplorerFrame: Frame;
-export const getTestExplorerFrame = async (params?: Map<string, string>): Promise<Frame> => {
+export const getTestExplorerFrame = async (apiKind?: ApiKind, params?: Map<string, string>): Promise<Frame> => {
   if (testExplorerFrame) {
     return testExplorerFrame;
+  }
+
+  let portalRunnerDatabaseAccount: string;
+  let portalRunnerDatabaseAccountKey: string;
+
+  switch (apiKind) {
+    case ApiKind.MongoDB:
+      portalRunnerDatabaseAccount = process.env.PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT;
+      portalRunnerDatabaseAccountKey = process.env.PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT_KEY;
+      break;
+    default:
+      portalRunnerDatabaseAccount = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT;
+      portalRunnerDatabaseAccountKey = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT_KEY;
   }
 
   const notebooksTestRunnerTenantId = process.env.NOTEBOOKS_TEST_RUNNER_TENANT_ID;
   const notebooksTestRunnerClientId = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_ID;
   const notebooksTestRunnerClientSecret = process.env.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET;
-  const portalRunnerDatabaseAccount = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT;
-  const portalRunnerDatabaseAccountKey = process.env.PORTAL_RUNNER_DATABASE_ACCOUNT_KEY;
   const portalRunnerSubscripton = process.env.PORTAL_RUNNER_SUBSCRIPTION;
   const portalRunnerResourceGroup = process.env.PORTAL_RUNNER_RESOURCE_GROUP;
 

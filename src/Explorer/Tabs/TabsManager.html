@@ -143,7 +143,11 @@
       <!-- /ko -->
 
       <!-- ko if: $data.tabKind === 20 -->
-      <settings-tab-v2 params="{data: $data}"></settings-tab-v2>
+      <collection-settings-tab-v2 params="{data: $data}"></collection-settings-tab-v2>
+      <!-- /ko -->
+
+      <!-- ko if: $data.tabKind === 21 -->
+      <database-settings-tab-v2 params="{data: $data}"></database-settings-tab-v2>
       <!-- /ko -->
     </div>
     <!-- /ko -->
