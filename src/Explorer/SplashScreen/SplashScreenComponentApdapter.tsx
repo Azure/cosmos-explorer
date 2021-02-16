@@ -28,8 +28,10 @@ export class SplashScreenComponentAdapter implements ReactAdapter {
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
 
   public parameters: ko.Observable<number>;
+  private readonly container: Explorer;
 
-  constructor(private container: Explorer) {
+  constructor(props: { explorer: Explorer }) {
+    this.container = props.explorer;
     this.parameters = ko.observable<number>(Date.now());
     this.container.tabsManager.openedTabs.subscribe((tabs) => {
       if (tabs.length === 0) {

@@ -986,7 +986,7 @@ export default class Explorer {
     });
     this.dialogComponentAdapter = new DialogComponentAdapter();
     this.dialogComponentAdapter.parameters = this._dialogProps;
-    this.splashScreenAdapter = new SplashScreenComponentAdapter(this);
+    this.splashScreenAdapter = new SplashScreenComponentAdapter({ explorer: this });
     this.mostRecentActivity = new MostRecentActivity.MostRecentActivity(this);
 
     this._addSynapseLinkDialogProps = ko.observable<DialogProps>({

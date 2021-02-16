@@ -25,7 +25,7 @@ describe("SplashScreenComponentAdapter", () => {
     // Sample is supported
     jest.spyOn(dataSampleUtil, "isSampleContainerCreationSupported").mockImplementation(() => true);
 
-    const splashScreenAdapter = new SplashScreenComponentAdapter(explorer);
+    const splashScreenAdapter = new SplashScreenComponentAdapter({ explorer });
     jest.spyOn(splashScreenAdapter, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
     const mainButtons = splashScreenAdapter.createMainItems();
 
@@ -50,7 +50,7 @@ describe("SplashScreenComponentAdapter", () => {
     // Sample is not supported
     jest.spyOn(dataSampleUtil, "isSampleContainerCreationSupported").mockImplementation(() => false);
 
-    const splashScreenAdapter = new SplashScreenComponentAdapter(explorerStub);
+    const splashScreenAdapter = new SplashScreenComponentAdapter({ explorer: explorerStub });
     jest.spyOn(splashScreenAdapter, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
     const mainButtons = splashScreenAdapter.createMainItems();
 
