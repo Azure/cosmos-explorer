@@ -48,17 +48,14 @@ const skuDropDownItems: ChoiceItem[] = [
 ];
 
 const getSkus = async (): Promise<ChoiceItem[]> => {
-  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
   return skuDropDownItems;
 };
 
 const getInstancesMin = async (): Promise<number> => {
-  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
   return 1;
 };
 
 const getInstancesMax = async (): Promise<number> => {
-  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
   return 5;
 };
 
@@ -120,7 +117,6 @@ export default class SqlX extends SelfServeBaseClass {
   };
 
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-    // TODO: RP call to check if dedicated gateway has already been provisioned.
     // Based on the RP call enableDedicatedGateway will be true if it has not yet been enabled and false if it has.
     const defaults = new Map<string, SmartUiInput>();
     const enableDedicatedGateway = false;

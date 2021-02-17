@@ -25,7 +25,6 @@ export const getPath = (subscriptionId: string, resourceGroup: string, name: str
 };
 
 export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<void> => {
-  // TODO: write RP call to update dedicated gateway provisioning
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const body: UpdateDedicatedGatewayRequestParameters = {
     properties: {
@@ -62,7 +61,6 @@ export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayRes
 };
 
 export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResult> => {
-  // TODO: write RP call to check if dedicated gateway update has gone through
   try {
     const response = await getDedicatedGatewayResource();
     if (response.properties.status === ResourceStatus.Running.toString()) {
