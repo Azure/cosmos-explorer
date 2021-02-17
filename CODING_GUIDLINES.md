@@ -90,7 +90,7 @@ This setup will catch most linting/formatting/type errors as you develop.
 
 ### Mocking
 
-☑️ YOU SHOULD try to write code that does not require mocking
+☑️ YOU SHOULD write code that does not require mocking
 
 ☑️ YOU SHOULD build components that do not require mocking extremely large or difficult to mock objects (like Explorer.ts). Pass _only_ what you need.
 
