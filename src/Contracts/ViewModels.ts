@@ -393,7 +393,16 @@ export interface DataExplorerInputsFrame {
   isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
-  selfServeType?: SelfServeType;
+}
+
+export interface SelfServeFrameInputs {
+  selfServeType: SelfServeType;
+  databaseAccount: any;
+  subscriptionId: string;
+  resourceGroup: string;
+  authorizationToken: string;
+  csmEndpoint: string;
+  flights?: readonly string[];
 }
 
 export interface CollectionCreationDefaults {

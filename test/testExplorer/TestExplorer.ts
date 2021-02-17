@@ -127,8 +127,16 @@ const initTestExplorer = async (): Promise<void> => {
   iframe.name = "explorer";
   iframe.classList.add("iframe");
   iframe.title = "explorer";
-  iframe.src = "explorer.html?platform=Portal&disablePortalInitCache";
+  iframe.src = getIframeSrc(selfServeType);
   document.body.appendChild(iframe);
+};
+
+const getIframeSrc = (selfServeType: string): string => {
+  let iframeSrc = "explorer.html?platform=Portal&disablePortalInitCache";
+  if (selfServeType) {
+    iframeSrc = `selfServe.html?selfServeType=${selfServeType}`;
+  }
+  return iframeSrc;
 };
 
 initTestExplorer();

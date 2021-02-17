@@ -91,17 +91,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer">
-      <div
-        id="divSelfServe"
-        className="flexContainer"
-        data-bind="visible: selfServeType() && selfServeType() !== 'none', react: selfServeComponentAdapter"
-      ></div>
-      <div
-        id="divExplorer"
-        data-bind="if: selfServeType() === 'none'"
-        className="flexContainer hideOverflows"
-        style={{ display: "none" }}
-      >
+      <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
         {/* Main Command Bar - Start */}
         <div data-bind="react: commandBarComponentAdapter" />
         {/* Main Command Bar - End */}
@@ -299,21 +289,17 @@ const App: React.FunctionComponent = () => {
         </div>
       </div>
       {/* Global loader - Start */}
-
       <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
         <div className="splashLoaderContentContainer">
-          <div data-bind="visible: selfServeType() === undefined, react: selfServeLoadingComponentAdapter"></div>
-          <div data-bind="if: selfServeType() === 'none'" style={{ display: "none" }}>
-            <p className="connectExplorerContent">
-              <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-            </p>
-            <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-              Welcome to Azure Cosmos DB
-            </p>
-            <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-              Connecting...
-            </p>
-          </div>
+          <p className="connectExplorerContent">
+            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+          </p>
+          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+            Welcome to Azure Cosmos DB
+          </p>
+          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+            Connecting...
+          </p>
         </div>
       </div>
       {/* Global loader - End */}
