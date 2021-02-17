@@ -1,6 +1,6 @@
 import "expect-puppeteer";
 import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
-import { createDatabase, savePolicy } from "../utils/shared";
+import { createDatabase, onClickSaveButton } from "../utils/shared";
 import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
@@ -77,7 +77,7 @@ describe("MongoDB Index policy tests", () => {
       index++;
 
       // click save Button
-      await savePolicy(frame);
+      await onClickSaveButton(frame);
 
       // check the array
       let singleFieldIndexInserted = false,
@@ -104,13 +104,13 @@ describe("MongoDB Index policy tests", () => {
       for (let i = 0; i < deleteButton.length; i++) {
         await frame.click(`button[aria-label="Delete index Button"]`);
       }
-      await savePolicy(frame);
+      await onClickSaveButton(frame);
 
       //check for cleaning
       await frame.waitFor(CREATE_DELAY);
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
-      const completedDeleted = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
-      expect(completedDeleted).toHaveLength(2);
+      const isDeletionComplete = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
+      expect(isDeletionComplete).toHaveLength(2);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;

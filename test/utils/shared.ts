@@ -29,10 +29,9 @@ export function generateUniqueName(baseName = "", length = 4): string {
 export async function createDatabase(frame: Frame) {
   const dbId = generateUniqueName("db");
   const collectionId = generateUniqueName("col");
-  const sharedKey = `${generateUniqueName()}`;
+  const shardKey = `${generateUniqueName()}`;
   // create new collection
   await frame.waitFor('button[data-test="New Collection"]', { visible: true });
-  await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
   await frame.click('button[data-test="New Collection"]');
 
   // check new database
@@ -59,14 +58,14 @@ export async function createDatabase(frame: Frame) {
   await frame.waitFor('input[data-test="addCollection-partitionKeyValue"]');
   const keyInput = await frame.$('input[data-test="addCollection-partitionKeyValue"]');
   await keyInput.press("Backspace");
-  await keyInput.type(sharedKey);
+  await keyInput.type(shardKey);
 
   // click submit
   await frame.waitFor("#submitBtnAddCollection");
   await frame.click("#submitBtnAddCollection");
 }
 
-export async function savePolicy(frame: Frame) {
+export async function onClickSaveButton(frame: Frame) {
   await frame.waitFor(`button[data-test="Save"]`), { visible: true };
   await frame.waitFor(LOADING_STATE_DELAY);
   await frame.click(`button[data-test="Save"]`);
