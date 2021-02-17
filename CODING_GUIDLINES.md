@@ -25,7 +25,7 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 ⚠️ YOU SHOULD NOT strongly consider not doing this. If not following this advice, please comment code with why and proactively begin a discussion as part of the PR process.
 
-✔️ YOU MAY consider this advice if appropriate to your situation. Other team members may comment on this as part of PR review, but there is no need to be proactive.
+💭 YOU MAY consider this advice if appropriate to your situation. Other team members may comment on this as part of PR review, but there is no need to be proactive.
 
 ## Development Environment
 
