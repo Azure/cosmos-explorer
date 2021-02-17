@@ -1,7 +1,6 @@
 /**
  * Accordion top class
  */
-import * as ko from "knockout";
 import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
@@ -39,29 +38,23 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private static readonly throughputEstimatorUrl = "https://cosmos.azure.com/capacitycalculator";
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
 
-  public parameters: ko.Observable<number>;
   private readonly container: Explorer;
 
   constructor(props: SplashScreenProps) {
     super(props);
     this.container = props.explorer;
-    this.parameters = ko.observable<number>(Date.now());
-    this.container.tabsManager.openedTabs.subscribe((tabs) => {
-      if (tabs.length === 0) {
-        this.forceRender();
-      }
-    });
-    this.container.selectedNode.subscribe(this.forceRender);
-    this.container.isNotebookEnabled.subscribe(this.forceRender);
+    this.container.tabsManager.openedTabs.subscribe(() => this.setState({}));
+    this.container.selectedNode.subscribe(() => this.setState({}));
+    this.container.isNotebookEnabled.subscribe(() => this.setState({}));
   }
 
-  public forceRender = (): void => {
-    window.requestAnimationFrame(() => this.parameters(Date.now()));
-  };
+  public shouldComponentUpdate() {
+    return this.container.tabsManager.openedTabs.length === 0;
+  }
 
   private clearMostRecent = (): void => {
     this.container.mostRecentActivity.clear(userContext.databaseAccount?.id);
-    this.forceRender();
+    this.setState({});
   };
 
   public render(): JSX.Element {
