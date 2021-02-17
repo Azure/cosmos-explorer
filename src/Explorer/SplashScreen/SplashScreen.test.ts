@@ -25,9 +25,9 @@ describe("SplashScreen", () => {
     // Sample is supported
     jest.spyOn(dataSampleUtil, "isSampleContainerCreationSupported").mockImplementation(() => true);
 
-    const splashScreenAdapter = new SplashScreen({ explorer });
-    jest.spyOn(splashScreenAdapter, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
-    const mainButtons = splashScreenAdapter.createMainItems();
+    const splashScreen = new SplashScreen({ explorer });
+    jest.spyOn(splashScreen, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
+    const mainButtons = splashScreen.createMainItems();
 
     // Press all buttons and make sure create gets called
     mainButtons.forEach((button) => {
@@ -50,9 +50,9 @@ describe("SplashScreen", () => {
     // Sample is not supported
     jest.spyOn(dataSampleUtil, "isSampleContainerCreationSupported").mockImplementation(() => false);
 
-    const splashScreenAdapter = new SplashScreen({ explorer: explorerStub });
-    jest.spyOn(splashScreenAdapter, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
-    const mainButtons = splashScreenAdapter.createMainItems();
+    const splashScreen = new SplashScreen({ explorer: explorerStub });
+    jest.spyOn(splashScreen, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
+    const mainButtons = splashScreen.createMainItems();
 
     // Press all buttons and make sure create doesn't get called
     mainButtons.forEach((button) => {
