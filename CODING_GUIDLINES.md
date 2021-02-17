@@ -38,7 +38,9 @@ This setup will catch most linting/formatting/type errors as you develop.
 
 ☑️ YOU SHOULD use the [GitHub CLI](https://cli.github.com/). It has helpful workflows for submitting PRs as well as for checking out other team members PRs.
 
-✔️ YOU MAY use Windows, Linux (including WSL), or OSX. We have team members on all three environments. When modifying any engineering systems please keep cross platform compatability in mind.
+💭 YOU MAY use Windows, Linux (including WSL), or OSX. We have team members on all three environments.
+
+✅ DO maintain cross platform compatability when modifying any engineering systems.
 
 ## Formatting
 
@@ -48,7 +50,7 @@ This setup will catch most linting/formatting/type errors as you develop.
 
 ✅ DO use [ESLint](https://eslint.org/) to check for linting errors your code. This can also be performed by `npm run lint`
 
-✔️ YOU MAY consider adding new lint rules. If you find yourself performing "nits" as part of PR review, consider if it is possible to add a lint rule that will autuomatically catch the error in the future
+💭 YOU MAY consider adding new lint rules. If you find yourself performing "nits" as part of PR review, consider if it is possible to add a lint rule that will autuomatically catch the error in the future
 
 ⚠️ YOU SHOULD NOT disable any lint rules. They are there as guidance and to catch common mistakes. You will find places we disable specific lint rules, but is should be exceptional. If a rule does need to be disabled, prefer disabling a specific line instead of the entire file.
 
@@ -66,11 +68,11 @@ This setup will catch most linting/formatting/type errors as you develop.
 
 ☑️ YOU SHOULD use pure functional components when no state is required
 
-✔️ YOU MAY consider using functional (hooks) or class components. The project contains examples of both and neither is strongly preferred right now.
+💭 YOU MAY consider using functional (hooks) or class components. The project contains examples of both and neither is strongly preferred right now.
 
 ## Libraries
 
-⛔️ DO NOT add new libraries to package.json. Adding libraries has the possibility to bring in code that explodes our bundled size and/or attempts to run NodeJS code in the browser. Consult with project owners first.
+⚠️ YOU SHOULD NOT add new libraries to package.json. Adding libraries has the possibility to bring in code that explodes our bundled size and/or attempts to run NodeJS code in the browser. Consult with project owners first.
 
 ## Testing
 
