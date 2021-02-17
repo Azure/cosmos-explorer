@@ -15,7 +15,7 @@ The Stack:
 
 ## Requirements
 
-Cosmos Explorer has been under constant development for over 5 years. As a result there are many different patterns and practices in the code base. This document serves as a guide to how we _should_ be writing code and helps avoid propagating practices which are no longer preferred. Each requirement in this document is labelled and color-coded to show the relative importance. In order from highest importance to lowest importance:
+Cosmos Explorer has been under constant development for over 5 years. As a result there are many different patterns and practices in the code base. This document serves as a guide to how we write code and helps avoid propagating practices which are no longer preferred. Each requirement in this document is labelled and color-coded to show the relative importance. In order from highest importance to lowest importance:
 
 ✅ DO this. If you feel you need an exception, engage with the project owners _prior_ to implementation.
 
