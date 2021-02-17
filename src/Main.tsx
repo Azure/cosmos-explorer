@@ -30,7 +30,7 @@ import "./Explorer/Panes/GraphNewVertexPane.less";
 import "./Explorer/Tabs/QueryTab.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
-import "./Explorer/SplashScreen/SplashScreenComponent.less";
+import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
 
 // Image Dependencies

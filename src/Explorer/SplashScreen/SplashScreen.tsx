@@ -4,25 +4,37 @@
 import * as ko from "knockout";
 import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
+import * as Constants from "../../Common/Constants";
+import { Link } from "office-ui-fabric-react/lib/Link";
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
 import OpenQueryIcon from "../../../images/BrowseQuery.svg";
 import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
 import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
-import { SplashScreenComponent, SplashScreenItem } from "./SplashScreenComponent";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
+import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
+
+export interface SplashScreenItem {
+  iconSrc: string;
+  title: string;
+  info?: string;
+  description: string;
+  onClick: () => void;
+}
 
 export interface SplashScreenProps {
   explorer: Explorer;
 }
 
 export class SplashScreen extends React.Component<SplashScreenProps> {
+  private static readonly seeMoreItemTitle: string = "See more Cosmos DB documentation";
+  private static readonly seeMoreItemUrl: string = "https://aka.ms/cosmosdbdocument";
   private static readonly dataModelingUrl = "https://docs.microsoft.com/azure/cosmos-db/modeling-data";
   private static readonly throughputEstimatorUrl = "https://cosmos.azure.com/capacitycalculator";
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
@@ -53,14 +65,104 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   };
 
   public renderComponent(): JSX.Element {
+    const mainItems = this.createMainItems();
+    const commonTaskItems = this.createCommonTaskItems();
+    const recentItems = this.createRecentItems();
+    const tipsItems = this.createTipsItems();
+    const onClearRecent = this.clearMostRecent;
+
     return (
-      <SplashScreenComponent
-        mainItems={this.createMainItems()}
-        commonTaskItems={this.createCommonTaskItems()}
-        recentItems={this.createRecentItems()}
-        tipsItems={this.createTipsItems()}
-        onClearRecent={this.clearMostRecent}
-      />
+      <div className="splashScreenContainer">
+        <div className="splashScreen">
+          <div className="title">
+            Welcome to Cosmos DB
+            <FeaturePanelLauncher />
+          </div>
+          <div className="subtitle">Globally distributed, multi-model database service for any scale</div>
+          <div className="mainButtonsContainer">
+            {mainItems.map((item) => (
+              <div
+                className="mainButton focusable"
+                key={`${item.title}`}
+                onClick={item.onClick}
+                onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+                tabIndex={0}
+                role="button"
+              >
+                <img src={item.iconSrc} alt="" />
+                <div className="legendContainer">
+                  <div className="legend">{item.title}</div>
+                  <div className="description">{item.description}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="moreStuffContainer">
+            <div className="moreStuffColumn commonTasks">
+              <div className="title">Common Tasks</div>
+              <ul>
+                {commonTaskItems.map((item) => (
+                  <li
+                    className="focusable"
+                    key={`${item.title}${item.description}`}
+                    onClick={item.onClick}
+                    onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+                    tabIndex={0}
+                    role="button"
+                  >
+                    <img src={item.iconSrc} alt="" />
+                    <span className="oneLineContent" title={item.info}>
+                      {item.title}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="moreStuffColumn">
+              <div className="title">Recents</div>
+              <ul>
+                {recentItems.map((item, index) => (
+                  <li key={`${item.title}${item.description}${index}`}>
+                    <img src={item.iconSrc} alt="" />
+                    <span className="twoLineContent">
+                      <Link onClick={item.onClick} title={item.info}>
+                        {item.title}
+                      </Link>
+                      <div className="description">{item.description}</div>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              {recentItems.length > 0 && <Link onClick={() => onClearRecent()}>Clear Recents</Link>}
+            </div>
+            <div className="moreStuffColumn tipsContainer">
+              <div className="title">Tips</div>
+              <ul>
+                {tipsItems.map((item) => (
+                  <li
+                    className="tipContainer focusable"
+                    key={`${item.title}${item.description}`}
+                    onClick={item.onClick}
+                    onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+                    tabIndex={0}
+                    role="link"
+                  >
+                    <div className="title" title={item.info}>
+                      {item.title}
+                    </div>
+                    <div className="description">{item.description}</div>
+                  </li>
+                ))}
+                <li>
+                  <a role="link" href={SplashScreen.seeMoreItemUrl} target="_blank" tabIndex={0}>
+                    {SplashScreen.seeMoreItemTitle}
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -227,5 +329,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         onClick: () => window.open(SplashScreen.failoverUrl),
       },
     ];
+  }
+
+  private onSplashScreenItemKeyPress(event: React.KeyboardEvent, callback: () => void) {
+    if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+      callback();
+      event.stopPropagation();
+    }
   }
 }

@@ -377,7 +377,6 @@ src/Explorer/Notebook/temp/inputs/editor.tsx
 src/Explorer/Notebook/temp/markdown-cell.tsx
 src/Explorer/Notebook/temp/source.tsx
 src/Explorer/Notebook/temp/syntax-highlighter/index.tsx
-src/Explorer/SplashScreen/SplashScreenComponent.tsx
 src/Explorer/SplashScreen/SplashScreen.tsx
 src/Explorer/Tabs/GalleryTab.tsx
 src/Explorer/Tabs/NotebookViewerTab.tsx
