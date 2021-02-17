@@ -263,7 +263,6 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private splashScreenAdapter: SplashScreen;
   private dialogComponentAdapter: DialogComponentAdapter;
   private _dialogProps: ko.Observable<DialogProps>;
   private addSynapseLinkDialog: DialogComponentAdapter;
@@ -986,7 +985,6 @@ export default class Explorer {
     });
     this.dialogComponentAdapter = new DialogComponentAdapter();
     this.dialogComponentAdapter.parameters = this._dialogProps;
-    this.splashScreenAdapter = new SplashScreen({ explorer: this });
     this.mostRecentActivity = new MostRecentActivity.MostRecentActivity(this);
 
     this._addSynapseLinkDialogProps = ko.observable<DialogProps>({

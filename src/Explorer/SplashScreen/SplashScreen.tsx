@@ -64,7 +64,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.forceRender();
   };
 
-  public renderComponent(): JSX.Element {
+  public render(): JSX.Element {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
     const recentItems = this.createRecentItems();

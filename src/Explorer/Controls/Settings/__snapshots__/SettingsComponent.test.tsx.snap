@@ -1138,23 +1138,6 @@ exports[`SettingsComponent renders 1`] = `
                 "shouldShowShareDialogContents": [Function],
                 "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
-                "splashScreenAdapter": SplashScreen {
-                  "clearMostRecent": [Function],
-                  "container": [Circular],
-                  "context": undefined,
-                  "forceRender": [Function],
-                  "parameters": [Function],
-                  "props": Object {
-                    "explorer": [Circular],
-                  },
-                  "refs": Object {},
-                  "updater": Object {
-                    "enqueueForceUpdate": [Function],
-                    "enqueueReplaceState": [Function],
-                    "enqueueSetState": [Function],
-                    "isMounted": [Function],
-                  },
-                },
                 "splitter": Splitter {
                   "bounds": Object {
                     "max": 400,
@@ -2394,23 +2377,6 @@ exports[`SettingsComponent renders 1`] = `
               "shouldShowShareDialogContents": [Function],
               "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
-              "splashScreenAdapter": SplashScreen {
-                "clearMostRecent": [Function],
-                "container": [Circular],
-                "context": undefined,
-                "forceRender": [Function],
-                "parameters": [Function],
-                "props": Object {
-                  "explorer": [Circular],
-                },
-                "refs": Object {},
-                "updater": Object {
-                  "enqueueForceUpdate": [Function],
-                  "enqueueReplaceState": [Function],
-                  "enqueueSetState": [Function],
-                  "isMounted": [Function],
-                },
-              },
               "splitter": Splitter {
                 "bounds": Object {
                   "max": 400,
@@ -3663,23 +3629,6 @@ exports[`SettingsComponent renders 1`] = `
                 "shouldShowShareDialogContents": [Function],
                 "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
-                "splashScreenAdapter": SplashScreen {
-                  "clearMostRecent": [Function],
-                  "container": [Circular],
-                  "context": undefined,
-                  "forceRender": [Function],
-                  "parameters": [Function],
-                  "props": Object {
-                    "explorer": [Circular],
-                  },
-                  "refs": Object {},
-                  "updater": Object {
-                    "enqueueForceUpdate": [Function],
-                    "enqueueReplaceState": [Function],
-                    "enqueueSetState": [Function],
-                    "isMounted": [Function],
-                  },
-                },
                 "splitter": Splitter {
                   "bounds": Object {
                     "max": 400,
@@ -4919,23 +4868,6 @@ exports[`SettingsComponent renders 1`] = `
               "shouldShowShareDialogContents": [Function],
               "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
-              "splashScreenAdapter": SplashScreen {
-                "clearMostRecent": [Function],
-                "container": [Circular],
-                "context": undefined,
-                "forceRender": [Function],
-                "parameters": [Function],
-                "props": Object {
-                  "explorer": [Circular],
-                },
-                "refs": Object {},
-                "updater": Object {
-                  "enqueueForceUpdate": [Function],
-                  "enqueueReplaceState": [Function],
-                  "enqueueSetState": [Function],
-                  "isMounted": [Function],
-                },
-              },
               "splitter": Splitter {
                 "bounds": Object {
                   "max": 400,

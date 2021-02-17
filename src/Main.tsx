@@ -68,6 +68,7 @@ import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
+import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 
 initializeIcons();
 
@@ -87,7 +88,7 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
   };
   const config = useConfig();
-  useKnockoutExplorer(config?.platform, explorerParams);
+  const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
   return (
     <div className="flexContainer">
@@ -275,7 +276,7 @@ const App: React.FunctionComponent = () => {
             data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
           >
             <form className="connectExplorerFormContainer">
-              <div className="connectExplorer" data-bind="react: splashScreenAdapter" />
+              <SplashScreen explorer={explorer} />
             </form>
           </div>
           <div
