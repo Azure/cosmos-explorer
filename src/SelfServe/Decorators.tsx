@@ -80,7 +80,11 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
 };
 
 export const OnChange = (
-  onChange: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>
+  onChange: (
+    currentState: Map<string, SmartUiInput>,
+    newValue: InputType,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>
 ): PropertyDecorator => {
   return addToMap({ name: "onChange", value: onChange });
 };

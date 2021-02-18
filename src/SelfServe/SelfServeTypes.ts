@@ -3,7 +3,11 @@ interface BaseInput {
   errorMessage?: string;
   type: InputTypeValue;
   labelTKey?: (() => Promise<string>) | string;
-  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
+  onChange?: (
+    currentState: Map<string, SmartUiInput>,
+    newValue: InputType,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>;
   placeholderTKey?: (() => Promise<string>) | string;
 }
 
@@ -44,7 +48,14 @@ export interface Node {
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  onSave?: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<void>;
+  getOnSaveNotification?: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => SelfServeNotification;
   inputNames?: string[];
   onRefresh?: () => Promise<RefreshResult>;
 }
@@ -53,7 +64,14 @@ export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput 
 
 export abstract class SelfServeBaseClass {
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
-  public abstract onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  public abstract onSave: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<void>;
+  public abstract getOnSaveNotification: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => SelfServeNotification;
   public abstract onRefresh: () => Promise<RefreshResult>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
@@ -66,6 +84,9 @@ export abstract class SelfServeBaseClass {
     if (!this.onSave) {
       throw new Error(`onSave() was not declared for the class '${className}'`);
     }
+    if (!this.getOnSaveNotification) {
+      throw new Error(`getOnSaveNotification() was not declared for the class '${className}'`);
+    }
     if (!this.onRefresh) {
       throw new Error(`onRefresh() was not declared for the class '${className}'`);
     }
@@ -75,6 +96,7 @@ export abstract class SelfServeBaseClass {
 
     selfServeDescriptor.initialize = this.initialize;
     selfServeDescriptor.onSave = this.onSave;
+    selfServeDescriptor.getOnSaveNotification = this.getOnSaveNotification;
     selfServeDescriptor.onRefresh = this.onRefresh;
     return selfServeDescriptor;
   }

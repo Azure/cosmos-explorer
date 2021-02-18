@@ -5,7 +5,11 @@ describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize: () => Promise<Map<string, SmartUiInput>>;
-      public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+      public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
+      public getOnSaveNotification: (
+        currentValues: Map<string, SmartUiInput>,
+        baselineValues: ReadonlyMap<string, SmartUiInput>
+      ) => SelfServeNotification;
       public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
@@ -14,16 +18,36 @@ describe("SelfServeUtils", () => {
   it("onSave should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize = jest.fn();
-      public onSave: () => Promise<SelfServeNotification>;
+      public onSave: () => Promise<void>;
+      public getOnSaveNotification: (
+        currentValues: Map<string, SmartUiInput>,
+        baselineValues: ReadonlyMap<string, SmartUiInput>
+      ) => SelfServeNotification;
       public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'Test'");
+  });
+
+  it("getOnSaveNotification should be declared for self serve classes", () => {
+    class Test extends SelfServeBaseClass {
+      public initialize = jest.fn();
+      public onSave = jest.fn();
+      public getOnSaveNotification: (
+        currentValues: Map<string, SmartUiInput>,
+        baselineValues: ReadonlyMap<string, SmartUiInput>
+      ) => SelfServeNotification;
+      public onRefresh: () => Promise<RefreshResult>;
+    }
+    expect(() => new Test().toSelfServeDescriptor()).toThrow(
+      "getOnSaveNotification() was not declared for the class 'Test'"
+    );
   });
 
   it("onRefresh should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize = jest.fn();
       public onSave = jest.fn();
+      public getOnSaveNotification = jest.fn();
       public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'Test'");
@@ -33,6 +57,7 @@ describe("SelfServeUtils", () => {
     class Test extends SelfServeBaseClass {
       public initialize = jest.fn();
       public onSave = jest.fn();
+      public getOnSaveNotification = jest.fn();
       public onRefresh = jest.fn();
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow(
