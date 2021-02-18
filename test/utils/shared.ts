@@ -29,7 +29,7 @@ export function generateUniqueName(baseName = "", length = 4): string {
 export async function createDatabase(frame: Frame) {
   const dbId = generateUniqueName("db");
   const collectionId = generateUniqueName("col");
-  const shardKey = `${generateUniqueName()}`;
+  const shardKey = generateUniqueName();
   // create new collection
   await frame.waitFor('button[data-test="New Collection"]', { visible: true });
   await frame.click('button[data-test="New Collection"]');
