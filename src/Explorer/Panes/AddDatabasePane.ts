@@ -271,6 +271,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public open() {
     super.open();
     this.resetData();
+    this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
     const addDatabasePaneOpenMessage = {
       databaseAccountName: this.container.databaseAccount().name,
       defaultExperience: this.container.defaultExperience(),
