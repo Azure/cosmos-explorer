@@ -140,13 +140,13 @@ describe("SelfServeComponent", () => {
     wrapper.update();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, updatedValues);
-    selfServeComponent.resetBaselineValues();
+    selfServeComponent.updateBaselineValues();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, defaultValues);
     isEqual(state.currentValues, state.baselineValues);
 
     // clicking refresh calls onRefresh. If component is not updating, it calls initialize() as well
-    selfServeComponent.onRefreshClicked(true);
+    selfServeComponent.onRefreshClicked();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(onRefreshMock).toHaveBeenCalledTimes(2);
     expect(initializeMock).toHaveBeenCalledTimes(2);

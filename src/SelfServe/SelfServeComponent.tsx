@@ -39,6 +39,7 @@ export interface SelfServeComponentState {
   currentValues: Map<string, SmartUiInput>;
   baselineValues: Map<string, SmartUiInput>;
   isInitializing: boolean;
+  isSaving: boolean;
   hasErrors: boolean;
   compileErrorMessage: string;
   notification: SelfServeNotification;
@@ -60,6 +61,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       currentValues: new Map(),
       baselineValues: new Map(),
       isInitializing: true,
+      isSaving: false,
       hasErrors: false,
       compileErrorMessage: undefined,
       notification: undefined,
@@ -109,7 +111,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.setState({ currentValues, baselineValues });
   };
 
-  public resetBaselineValues = (): void => {
+  public updateBaselineValues = (): void => {
     const currentValues = this.state.currentValues;
     let baselineValues = this.state.baselineValues;
     for (const key of currentValues.keys()) {
@@ -228,9 +230,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       this.state.currentValues,
       this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
     );
-    this.resetBaselineValues();
-    this.onRefreshClicked(false);
     this.setState({
+      isSaving: true,
       notification: {
         message: onSaveNotification.message,
         type: onSaveNotification.type,
@@ -239,6 +240,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
     onSavePromise.catch((error) => {
       this.setState({
+        isSaving: false,
         notification: {
           message: `${error.message}`,
           type: SelfServeNotificationType.error,
@@ -246,11 +248,16 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       });
     });
     onSavePromise.then(() => {
-      this.onRefreshClicked(true);
+      this.onRefreshClicked();
+      this.updateBaselineValues();
+      this.setState({ isSaving: false });
     });
   };
 
   public isDiscardButtonDisabled = (): boolean => {
+    if (this.state.isSaving) {
+      return true;
+    }
     for (const key of this.state.currentValues.keys()) {
       const currentValue = JSON.stringify(this.state.currentValues.get(key));
       const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
@@ -263,7 +270,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public isSaveButtonDisabled = (): boolean => {
-    if (this.state.hasErrors) {
+    if (this.state.hasErrors || this.state.isSaving) {
       return true;
     }
     for (const key of this.state.currentValues.keys()) {
@@ -283,10 +290,10 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return refreshResult;
   };
 
-  public onRefreshClicked = async (shouldReinitialize: boolean): Promise<void> => {
+  public onRefreshClicked = async (): Promise<void> => {
     this.setState({ isInitializing: true });
     const refreshResult = await this.performRefresh();
-    if (!refreshResult.isUpdateInProgress && shouldReinitialize) {
+    if (!refreshResult.isUpdateInProgress) {
       this.initializeSmartUiComponent();
     }
     this.setState({ isInitializing: false });
@@ -323,7 +330,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         iconProps: { iconName: "Refresh" },
         split: true,
         onClick: () => {
-          this.onRefreshClicked(true);
+          this.onRefreshClicked();
         },
       },
     ];
@@ -375,7 +382,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                       </MessageBar>
                     )}
                     <SmartUiComponent
-                      disabled={this.state.refreshResult?.isUpdateInProgress}
+                      disabled={this.state.refreshResult?.isUpdateInProgress || this.state.isSaving}
                       descriptor={this.state.root as SmartUiDescriptor}
                       currentValues={this.state.currentValues}
                       onInputChange={this.onInputChange}
