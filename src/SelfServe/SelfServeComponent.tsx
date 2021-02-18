@@ -204,7 +204,11 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
   private onInputChange = (input: AnyDisplay, newValue: InputType) => {
     if (input.onChange) {
-      const newValues = input.onChange(this.state.currentValues, newValue);
+      const newValues = input.onChange(
+        this.state.currentValues,
+        newValue,
+        this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+      );
       this.setState({ currentValues: newValues });
     } else {
       const dataFieldName = input.dataFieldName;
@@ -216,7 +220,10 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public onSaveButtonClick = (): void => {
-    const onSavePromise = this.props.descriptor.onSave(this.state.currentValues);
+    const onSavePromise = this.props.descriptor.onSave(
+      this.state.currentValues,
+      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+    );
     onSavePromise.catch((error) => {
       this.setState({
         notification: {

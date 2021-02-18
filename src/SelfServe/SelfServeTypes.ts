@@ -3,7 +3,11 @@ interface BaseInput {
   errorMessage?: string;
   type: InputTypeValue;
   labelTKey?: (() => Promise<string>) | string;
-  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
+  onChange?: (
+    currentState: Map<string, SmartUiInput>,
+    newValue: InputType,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>;
   placeholderTKey?: (() => Promise<string>) | string;
 }
 
@@ -44,7 +48,10 @@ export interface Node {
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  onSave?: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<SelfServeNotification>;
   inputNames?: string[];
   onRefresh?: () => Promise<RefreshResult>;
 }
@@ -53,7 +60,10 @@ export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput 
 
 export abstract class SelfServeBaseClass {
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
-  public abstract onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  public abstract onSave: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<SelfServeNotification>;
   public abstract onRefresh: () => Promise<RefreshResult>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {

@@ -57,9 +57,15 @@ const onEnableDbLevelThroughputChange = (
   return currentState;
 };
 
-const validate = (currentvalues: Map<string, SmartUiInput>): void => {
+const validate = (
+  currentvalues: Map<string, SmartUiInput>,
+  baselineValues: ReadonlyMap<string, SmartUiInput>
+): void => {
+  if (currentvalues.get("dbThroughput") === baselineValues.get("dbThroughput")) {
+    throw new Error("DbThroughputValidationError");
+  }
   if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
-    throw new Error("ValidationError");
+    throw new Error("RegionsAndAccountNameValidationError");
   }
 };
 
@@ -109,18 +115,23 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   /*
   onSave()
-    - input: (currentValues: Map<string, InputType>) => Promise<void>
+    - input: (currentValues: Map<string, InputType>, baselineValues: ReadonlyMap<string, SmartUiInput>) => Promise<void>
     - role: Callback that is triggerred when the submit button is clicked. You should perform your rest API
             calls here using the data from the different inputs passed as a Map to this callback function.
 
             In this example, the onSave callback simply sets the value for keys corresponding to the field name
-            in the SessionStorage.
+            in the SessionStorage. It uses the currentValues and baselineValues maps to perform custom validations
+            as well.
+
     - returns: SelfServeNotification -
                 message: The message to be displayed in the message bar after the onSave is completed
                 type: The type of message bar to be used (info, warning, error)
   */
-  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
-    validate(currentValues);
+  public onSave = async (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ): Promise<SelfServeNotification> => {
+    validate(currentValues, baselineValues);
     const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];
     const enableLogging = currentValues.get("enableLogging")?.value as boolean;
     const accountName = currentValues.get("accountName")?.value as string;
@@ -192,8 +203,8 @@ export default class SelfServeExample extends SelfServeBaseClass {
   /*
   @OnChange()
     - optional
-    - input: (currentValues: Map<string, InputType>, newValue: InputType) => Map<string, InputType>
-    - role: Takes a Map of current values and the newValue for this property as inputs. This is called when a property,
+    - input: (currentValues: Map<string, InputType>, newValue: InputType, baselineValues: ReadonlyMap<string, SmartUiInput>) => Map<string, InputType>
+    - role: Takes a Map of current values, the newValue for this property and a ReadonlyMap of baselineValues as inputs. This is called when a property,
             say prop1, changes its value in the UI. This can be used to 
             a) Change the value (and reflect it in the UI) for prop2 based on prop1.
             b) Change the visibility for prop2 in the UI, based on prop1

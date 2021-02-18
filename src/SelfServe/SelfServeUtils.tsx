@@ -44,9 +44,11 @@ export interface DecoratorProperties {
   uiType?: string;
   errorMessage?: string;
   description?: (() => Promise<Description>) | Description;
-  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
-  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
-  initialize?: () => Promise<Map<string, SmartUiInput>>;
+  onChange?: (
+    currentState: Map<string, SmartUiInput>,
+    newValue: InputType,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>;
 }
 
 const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
