@@ -106,7 +106,7 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("sku", { value: "Cosmos.D4s", hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
     const response = await getCurrentProvisioningState();
-    if (response.status !== undefined) {
+    if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: true });

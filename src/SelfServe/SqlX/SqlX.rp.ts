@@ -7,10 +7,10 @@ import { SqlxServiceResource, UpdateDedicatedGatewayRequestParameters } from "./
 const apiVersion = "2020-06-01-preview";
 
 export enum ResourceStatus {
-  Running,
-  Creating,
-  Updating,
-  Deleting,
+  Running = "Running",
+  Creating = "Creating",
+  Updating = "Updating",
+  Deleting = "Deleting"
 }
 
 export interface DedicatedGatewayResponse {
