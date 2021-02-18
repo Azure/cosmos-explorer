@@ -17,7 +17,10 @@ describe("SelfServeComponent", () => {
 
   const initializeMock = jest.fn(async () => new Map(defaultValues));
   const onSaveMock = jest.fn(async () => {
-    return { message: "submitted successfully", type: SelfServeNotificationType.info };
+    return;
+  });
+  const getOnSaveNotificationMock = jest.fn(() => {
+    return { message: "sample notification", type: SelfServeNotificationType.info };
   });
   const onRefreshMock = jest.fn(async () => {
     return { isUpdateInProgress: false, notificationMessage: "refresh performed successfully" };
@@ -29,6 +32,7 @@ describe("SelfServeComponent", () => {
   const exampleData: SelfServeDescriptor = {
     initialize: initializeMock,
     onSave: onSaveMock,
+    getOnSaveNotification: getOnSaveNotificationMock,
     onRefresh: onRefreshMock,
     inputNames: ["throughput", "analyticalStore", "database"],
     root: {
@@ -142,7 +146,7 @@ describe("SelfServeComponent", () => {
     isEqual(state.currentValues, state.baselineValues);
 
     // clicking refresh calls onRefresh. If component is not updating, it calls initialize() as well
-    selfServeComponent.onRefreshClicked();
+    selfServeComponent.onRefreshClicked(true);
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(onRefreshMock).toHaveBeenCalledTimes(2);
     expect(initializeMock).toHaveBeenCalledTimes(2);

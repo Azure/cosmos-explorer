@@ -26,7 +26,8 @@
             "Enable DB level throughput": "Enable DB level throughput",
             "Database Throughput": "Database Throughput",
             "RefreshMessage": "Self Serve Example successfully refreshing",
-            "SubmissionMessage": "Submitted successfully"
+            "SubmissionMessageForNewRegion": "Submitted successfully. Region Changed!",
+            "SubmissionMessageForSameRegion": "Submitted successfully. Region Unchanged!"
         },
         "SqlX": {
         }

@@ -45,11 +45,21 @@ const validate = (currentValues: Map<string, SmartUiInput>): void => {
 
 @IsDisplayable()
 export default class SqlX extends SelfServeBaseClass {
+  public getOnSaveNotification = (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ): SelfServeNotification => {
+    // TODO: Add logic to return correct notification after on save is called.
+    throw new Error(
+      `getOnSaveNotification not implemented. currentValues size: ${currentValues.size}, baselineValues size: ${baselineValues.size}`
+    );
+  };
+
   public onRefresh = async (): Promise<RefreshResult> => {
     return refreshDedicatedGatewayProvisioning();
   };
 
-  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
+  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<void> => {
     validate(currentValues);
     // TODO: add pre processing logic before calling the updateDedicatedGatewayProvisioning() RP call.
     throw new Error(`onSave not implemented. No. of properties to save: ${currentValues.size}`);

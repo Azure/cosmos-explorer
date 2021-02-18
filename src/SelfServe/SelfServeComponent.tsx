@@ -224,6 +224,19 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       this.state.currentValues,
       this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
     );
+    const onSaveNotification = this.props.descriptor.getOnSaveNotification(
+      this.state.currentValues,
+      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+    );
+    this.resetBaselineValues();
+    this.onRefreshClicked(false);
+    this.setState({
+      notification: {
+        message: onSaveNotification.message,
+        type: onSaveNotification.type,
+      },
+    });
+
     onSavePromise.catch((error) => {
       this.setState({
         notification: {
@@ -232,15 +245,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         },
       });
     });
-    onSavePromise.then((notification: SelfServeNotification) => {
-      this.setState({
-        notification: {
-          message: notification.message,
-          type: notification.type,
-        },
-      });
-      this.resetBaselineValues();
-      this.onRefreshClicked();
+    onSavePromise.then(() => {
+      this.onRefreshClicked(true);
     });
   };
 
@@ -277,10 +283,10 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return refreshResult;
   };
 
-  public onRefreshClicked = async (): Promise<void> => {
+  public onRefreshClicked = async (shouldReinitialize: boolean): Promise<void> => {
     this.setState({ isInitializing: true });
     const refreshResult = await this.performRefresh();
-    if (!refreshResult.isUpdateInProgress) {
+    if (!refreshResult.isUpdateInProgress && shouldReinitialize) {
       this.initializeSmartUiComponent();
     }
     this.setState({ isInitializing: false });
@@ -317,7 +323,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         iconProps: { iconName: "Refresh" },
         split: true,
         onClick: () => {
-          this.onRefreshClicked();
+          this.onRefreshClicked(true);
         },
       },
     ];
