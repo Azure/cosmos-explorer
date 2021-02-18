@@ -88,6 +88,8 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 - Use inheritance for sharing component behavior.
   - React documentation covers this topic in detail https://reactjs.org/docs/composition-vs-inheritance.html
+- Suffix your file or component name with "Component"
+  - Even though the code has examples of it, we are ending the practice.
 
 ## Libraries
 
@@ -99,7 +101,7 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 ⛔️ DO NOT
 
-- Use underscore
+- Use underscore.js
   - Much of this library is now native to JS and will be automatically transpiled
 - Use jQuery
   - Much of this library is not native to the DOM.
@@ -164,6 +166,9 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 - Add test specfic `data-*` attributes to dom elements
   - This is a common current practice, but one we would like to avoid in the future
+- Add arbitrary time delays to wait for page to render or element to be ready.
+  - All the time delays add up and slow down testing.
+  - Prefer using the framework's "wait for..." functionality.
 
 ### Migrating Knockout to React
 
@@ -180,7 +185,8 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 ✅ DO
 
+- Support all [browsers supported by the Azure Portal](https://docs.microsoft.com/en-us/azure/azure-portal/azure-portal-supported-browsers-devices)
 - Support IE11
   - In practice, this should not need to be considered as part of a normal development workflow
   - Polyfills and transpilation are already provided by our engineering systems.
-  - This requirement will be removed on March 30th, 2020 when Azure drops IE11 support.
+  - This requirement will be removed on March 30th, 2021 when Azure drops IE11 support.
