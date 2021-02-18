@@ -39,6 +39,7 @@ export interface SelfServeComponentState {
   currentValues: Map<string, SmartUiInput>;
   baselineValues: Map<string, SmartUiInput>;
   isInitializing: boolean;
+  isSaving: boolean;
   hasErrors: boolean;
   compileErrorMessage: string;
   notification: SelfServeNotification;
@@ -60,6 +61,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       currentValues: new Map(),
       baselineValues: new Map(),
       isInitializing: true,
+      isSaving: false,
       hasErrors: false,
       compileErrorMessage: undefined,
       notification: undefined,
@@ -109,7 +111,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.setState({ currentValues, baselineValues });
   };
 
-  public resetBaselineValues = (): void => {
+  public updateBaselineValues = (): void => {
     const currentValues = this.state.currentValues;
     let baselineValues = this.state.baselineValues;
     for (const key of currentValues.keys()) {
@@ -204,7 +206,11 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
   private onInputChange = (input: AnyDisplay, newValue: InputType) => {
     if (input.onChange) {
-      const newValues = input.onChange(this.state.currentValues, newValue);
+      const newValues = input.onChange(
+        this.state.currentValues,
+        newValue,
+        this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+      );
       this.setState({ currentValues: newValues });
     } else {
       const dataFieldName = input.dataFieldName;
@@ -216,28 +222,42 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public onSaveButtonClick = (): void => {
-    const onSavePromise = this.props.descriptor.onSave(this.state.currentValues);
+    const onSavePromise = this.props.descriptor.onSave(
+      this.state.currentValues,
+      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+    );
+    const onSaveNotification = this.props.descriptor.getOnSaveNotification(
+      this.state.currentValues,
+      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+    );
+    this.setState({
+      isSaving: true,
+      notification: {
+        message: onSaveNotification.message,
+        type: onSaveNotification.type,
+      },
+    });
+
     onSavePromise.catch((error) => {
       this.setState({
+        isSaving: false,
         notification: {
           message: `${error.message}`,
           type: SelfServeNotificationType.error,
         },
       });
     });
-    onSavePromise.then((notification: SelfServeNotification) => {
-      this.setState({
-        notification: {
-          message: notification.message,
-          type: notification.type,
-        },
-      });
-      this.resetBaselineValues();
+    onSavePromise.then(() => {
       this.onRefreshClicked();
+      this.updateBaselineValues();
+      this.setState({ isSaving: false });
     });
   };
 
   public isDiscardButtonDisabled = (): boolean => {
+    if (this.state.isSaving) {
+      return true;
+    }
     for (const key of this.state.currentValues.keys()) {
       const currentValue = JSON.stringify(this.state.currentValues.get(key));
       const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
@@ -250,7 +270,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public isSaveButtonDisabled = (): boolean => {
-    if (this.state.hasErrors) {
+    if (this.state.hasErrors || this.state.isSaving) {
       return true;
     }
     for (const key of this.state.currentValues.keys()) {
@@ -362,7 +382,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                       </MessageBar>
                     )}
                     <SmartUiComponent
-                      disabled={this.state.refreshResult?.isUpdateInProgress}
+                      disabled={this.state.refreshResult?.isUpdateInProgress || this.state.isSaving}
                       descriptor={this.state.root as SmartUiDescriptor}
                       currentValues={this.state.currentValues}
                       onInputChange={this.onInputChange}

@@ -17,7 +17,10 @@ describe("SelfServeComponent", () => {
 
   const initializeMock = jest.fn(async () => new Map(defaultValues));
   const onSaveMock = jest.fn(async () => {
-    return { message: "submitted successfully", type: SelfServeNotificationType.info };
+    return;
+  });
+  const getOnSaveNotificationMock = jest.fn(() => {
+    return { message: "sample notification", type: SelfServeNotificationType.info };
   });
   const onRefreshMock = jest.fn(async () => {
     return { isUpdateInProgress: false, notificationMessage: "refresh performed successfully" };
@@ -29,6 +32,7 @@ describe("SelfServeComponent", () => {
   const exampleData: SelfServeDescriptor = {
     initialize: initializeMock,
     onSave: onSaveMock,
+    getOnSaveNotification: getOnSaveNotificationMock,
     onRefresh: onRefreshMock,
     inputNames: ["throughput", "analyticalStore", "database"],
     root: {
@@ -136,7 +140,7 @@ describe("SelfServeComponent", () => {
     wrapper.update();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, updatedValues);
-    selfServeComponent.resetBaselineValues();
+    selfServeComponent.updateBaselineValues();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, defaultValues);
     isEqual(state.currentValues, state.baselineValues);
