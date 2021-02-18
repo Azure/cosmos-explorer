@@ -166,6 +166,8 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 - Add test specfic `data-*` attributes to dom elements
   - This is a common current practice, but one we would like to avoid in the future
+  - End to end tests need to use semantic HTML and accesible attributes to be truely end to end
+  - No user or screen reader actually navigates an app using `data-*` attributes
 - Add arbitrary time delays to wait for page to render or element to be ready.
   - All the time delays add up and slow down testing.
   - Prefer using the framework's "wait for..." functionality.
