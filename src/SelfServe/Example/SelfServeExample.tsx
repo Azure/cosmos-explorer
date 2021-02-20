@@ -4,10 +4,10 @@ import {
   Info,
   InputType,
   NumberUiType,
+  OnSavePortalNotification,
+  PortalNotificationType,
   RefreshResult,
   SelfServeBaseClass,
-  SelfServeNotification,
-  SelfServeNotificationType,
   SmartUiInput,
 } from "../SelfServeTypes";
 import {
@@ -113,10 +113,22 @@ export default class SelfServeExample extends SelfServeBaseClass {
     return onRefreshSelfServeExample();
   };
 
+  /*
+  onSave()
+    - input: (currentValues: Map<string, InputType>, baselineValues: ReadonlyMap<string, SmartUiInput>) => Promise<string>
+    - role: Callback that is triggerred when the submit button is clicked. You should perform your rest API
+            calls here using the data from the different inputs passed as a Map to this callback function.
+
+            In this example, the onSave callback simply sets the value for keys corresponding to the field name
+            in the SessionStorage. It uses the currentValues and baselineValues maps to perform custom validations
+            as well.
+
+    - returns: The message to be displayed in the Portal Notification bar after the onSave is completed
+  */
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
-  ): Promise<void> => {
+  ): Promise<OnSavePortalNotification> => {
     validate(currentValues, baselineValues);
     const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];
     const enableLogging = currentValues.get("enableLogging")?.value as boolean;
@@ -125,36 +137,27 @@ export default class SelfServeExample extends SelfServeBaseClass {
     const enableDbLevelThroughput = currentValues.get("enableDbLevelThroughput")?.value as boolean;
     let dbThroughput = currentValues.get("dbThroughput")?.value as number;
     dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
-    await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
-  };
-  /*
-  onSave()
-    - input: (currentValues: Map<string, InputType>, baselineValues: ReadonlyMap<string, SmartUiInput>) => Promise<void>
-    - role: Callback that is triggerred when the submit button is clicked. You should perform your rest API
-            calls here using the data from the different inputs passed as a Map to this callback function.
-
-            In this example, the onSave callback simply sets the value for keys corresponding to the field name
-            in the SessionStorage. It uses the currentValues and baselineValues maps to perform custom validations
-            as well.
-  */
-
-  /*
-  getOnSaveNotification()
-    - input: (currentValues: Map<string, InputType>, baselineValues: ReadonlyMap<string, SmartUiInput>) => Promise<void>
-    - role: Callback that is triggered once the onSave function is launched. This returns the notification message to be shown.
-
-    - returns: SelfServeNotification -
-                message: The message to be displayed in the message bar after the onSave is completed
-                type: The type of message bar to be used (info, warning, error)
-  */
-  public getOnSaveNotification = (
-    currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
-  ): SelfServeNotification => {
-    if (currentValues.get("regions") === baselineValues.get("regions")) {
-      return { message: "SubmissionMessageForSameRegion", type: SelfServeNotificationType.info };
-    } else {
-      return { message: "SubmissionMessageForNewRegion", type: SelfServeNotificationType.info };
+    try {
+      await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
+      if (currentValues.get("regions") === baselineValues.get("regions")) {
+        return {
+          titleTKey: "SubmissionMessageSuccessTitle",
+          messageTKey: "SubmissionMessageForSameRegionText",
+          type: PortalNotificationType.InProgress,
+        };
+      } else {
+        return {
+          titleTKey: "SubmissionMessageSuccessTitle",
+          messageTKey: "SubmissionMessageForNewRegionText",
+          type: PortalNotificationType.InProgress,
+        };
+      }
+    } catch (error) {
+      return {
+        titleTKey: "SubmissionMessageErrorTitle",
+        messageTKey: "SubmissionMessageErrorText",
+        type: PortalNotificationType.Failure,
+      };
     }
   };
 

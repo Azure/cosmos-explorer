@@ -15,20 +15,26 @@ import {
   InputType,
   RefreshResult,
   SelfServeDescriptor,
-  SelfServeNotification,
   SmartUiInput,
   DescriptionDisplay,
   StringInput,
   NumberInput,
   BooleanInput,
   ChoiceInput,
-  SelfServeNotificationType,
+  PortalNotificationType,
 } from "./SelfServeTypes";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { getMessageBarType } from "./SelfServeUtils";
 import { Translation } from "react-i18next";
 import { TFunction } from "i18next";
 import "../i18n";
+import { sendMessage } from "../Common/MessageHandler";
+import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
+
+interface SelfServeNotification {
+  message: string;
+  type: MessageBarType;
+  isCancellable: boolean;
+}
 
 export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
@@ -42,12 +48,13 @@ export interface SelfServeComponentState {
   isSaving: boolean;
   hasErrors: boolean;
   compileErrorMessage: string;
-  notification: SelfServeNotification;
   refreshResult: RefreshResult;
+  notification: SelfServeNotification;
 }
 
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
   private smartUiGeneratorClassName: string;
+  private translationFunction: TFunction;
 
   componentDidMount(): void {
     this.performRefresh();
@@ -64,8 +71,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       isSaving: false,
       hasErrors: false,
       compileErrorMessage: undefined,
-      notification: undefined,
       refreshResult: undefined,
+      notification: undefined,
     };
     this.smartUiGeneratorClassName = this.props.descriptor.root.id;
   }
@@ -222,19 +229,24 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public performSave = async (): Promise<void> => {
-    this.setState({ isSaving: true });
+    this.setState({ isSaving: true, notification: undefined });
     try {
-      await this.props.descriptor.onSave(
+      const portalNotificationMessage = await this.props.descriptor.onSave(
         this.state.currentValues,
         this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
       );
+      const onSaveNotificationTitle = this.getTranslation(portalNotificationMessage.titleTKey);
+      const onSaveNotificationMessage = this.getTranslation(portalNotificationMessage.messageTKey);
+      this.sendNotificationMessage(onSaveNotificationTitle, onSaveNotificationMessage, portalNotificationMessage.type);
     } catch (error) {
       this.setState({
         notification: {
-          message: `${error.message}`,
-          type: SelfServeNotificationType.error,
+          type: MessageBarType.error,
+          isCancellable: true,
+          message: this.getTranslation(error.message),
         },
       });
+      throw error;
     } finally {
       this.setState({ isSaving: false });
     }
@@ -244,16 +256,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
   public onSaveButtonClick = (): void => {
     this.performSave();
-    const onSaveNotification = this.props.descriptor.getOnSaveNotification(
-      this.state.currentValues,
-      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
-    );
-    this.setState({
-      notification: {
-        message: onSaveNotification.message,
-        type: onSaveNotification.type,
-      },
-    });
   };
 
   public isDiscardButtonDisabled = (): boolean => {
@@ -288,7 +290,27 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
   private performRefresh = async (): Promise<RefreshResult> => {
     const refreshResult = await this.props.descriptor.onRefresh();
-    this.setState({ refreshResult: { ...refreshResult } });
+    let updateInProgressNotification: SelfServeNotification;
+    if (this.state.refreshResult?.isUpdateInProgress && !refreshResult.isUpdateInProgress) {
+      const updateCompletedPortalNotification = this.state.refreshResult.updateCompletedMessage;
+      const updateCompletedNotificationTitle = this.getTranslation(updateCompletedPortalNotification.titleTKey);
+      const updateCompletedNotificationMessage = this.getTranslation(updateCompletedPortalNotification.messageTKey);
+      this.sendNotificationMessage(
+        updateCompletedNotificationTitle,
+        updateCompletedNotificationMessage,
+        updateCompletedPortalNotification.type
+      );
+    } else {
+      updateInProgressNotification = {
+        type: MessageBarType.info,
+        isCancellable: false,
+        message: this.getTranslation(refreshResult.updateInProgressMessage),
+      };
+    }
+    this.setState({
+      refreshResult: { ...refreshResult },
+      notification: updateInProgressNotification,
+    });
     return refreshResult;
   };
 
@@ -301,23 +323,32 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.setState({ isInitializing: false });
   };
 
-  public getCommonTranslation = (translationFunction: TFunction, key: string): string => {
-    return translationFunction(`Common.${key}`);
+  public getCommonTranslation = (key: string): string => {
+    return this.getTranslation(key, "Common");
   };
 
-  private getCommandBarItems = (translate: TFunction): ICommandBarItemProps[] => {
+  private getTranslation = (messageKey: string, prefix = `${this.smartUiGeneratorClassName}`): string => {
+    const translationKey = `${prefix}.${messageKey}`;
+    const translation = this.translationFunction ? this.translationFunction(translationKey) : messageKey;
+    if (translation === translationKey) {
+      return messageKey;
+    }
+    return translation;
+  };
+
+  private getCommandBarItems = (): ICommandBarItemProps[] => {
     return [
       {
         key: "save",
-        text: this.getCommonTranslation(translate, "Save"),
+        text: this.getCommonTranslation("Save"),
         iconProps: { iconName: "Save" },
         split: true,
         disabled: this.isSaveButtonDisabled(),
-        onClick: this.onSaveButtonClick,
+        onClick: () => this.onSaveButtonClick(),
       },
       {
         key: "discard",
-        text: this.getCommonTranslation(translate, "Discard"),
+        text: this.getCommonTranslation("Discard"),
         iconProps: { iconName: "Undo" },
         split: true,
         disabled: this.isDiscardButtonDisabled(),
@@ -327,7 +358,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       },
       {
         key: "refresh",
-        text: this.getCommonTranslation(translate, "Refresh"),
+        text: this.getCommonTranslation("Refresh"),
         disabled: this.state.isInitializing,
         iconProps: { iconName: "Refresh" },
         split: true,
@@ -338,12 +369,15 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     ];
   };
 
-  private getNotificationMessageTranslation = (translationFunction: TFunction, messageKey: string): string => {
-    const translation = translationFunction(messageKey);
-    if (translation === `${this.smartUiGeneratorClassName}.${messageKey}`) {
-      return messageKey;
-    }
-    return translation;
+  private sendNotificationMessage = (title: string, message: string, type: PortalNotificationType): void => {
+    sendMessage({
+      type: SelfServeMessageTypes.Notification,
+      data: {
+        title: title,
+        message: message,
+        type: type,
+      },
+    });
   };
 
   public render(): JSX.Element {
@@ -354,14 +388,14 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return (
       <Translation>
         {(translate) => {
-          const getTranslation = (key: string): string => {
-            return translate(`${this.smartUiGeneratorClassName}.${key}`);
-          };
+          if (!this.translationFunction) {
+            this.translationFunction = translate;
+          }
 
           return (
             <div style={{ overflowX: "auto" }}>
               <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
-                <CommandBar styles={{ root: { paddingLeft: 0 } }} items={this.getCommandBarItems(translate)} />
+                <CommandBar styles={{ root: { paddingLeft: 0 } }} items={this.getCommandBarItems()} />
                 {this.state.isInitializing ? (
                   <Spinner
                     size={SpinnerSize.large}
@@ -369,18 +403,17 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                   />
                 ) : (
                   <>
-                    {this.state.refreshResult?.isUpdateInProgress && (
-                      <MessageBar messageBarType={MessageBarType.info} styles={{ root: { width: 400 } }}>
-                        {getTranslation(this.state.refreshResult.notificationMessage)}
-                      </MessageBar>
-                    )}
                     {this.state.notification && (
                       <MessageBar
-                        messageBarType={getMessageBarType(this.state.notification.type)}
+                        messageBarType={this.state.notification.type}
                         styles={{ root: { width: 400 } }}
-                        onDismiss={() => this.setState({ notification: undefined })}
+                        onDismiss={
+                          this.state.notification.isCancellable
+                            ? () => this.setState({ notification: undefined })
+                            : undefined
+                        }
                       >
-                        {this.getNotificationMessageTranslation(getTranslation, this.state.notification.message)}
+                        {this.state.notification.message}
                       </MessageBar>
                     )}
                     <SmartUiComponent
@@ -389,7 +422,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                       currentValues={this.state.currentValues}
                       onInputChange={this.onInputChange}
                       onError={this.onError}
-                      getTranslation={getTranslation}
+                      getTranslation={this.getTranslation}
                     />
                   </>
                 )}

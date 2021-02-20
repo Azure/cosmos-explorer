@@ -3,9 +3,9 @@ import {
   ChoiceItem,
   InputType,
   NumberUiType,
+  OnSavePortalNotification,
   RefreshResult,
   SelfServeBaseClass,
-  SelfServeNotification,
   SmartUiInput,
 } from "../SelfServeTypes";
 import { refreshDedicatedGatewayProvisioning } from "./SqlX.rp";
@@ -45,21 +45,11 @@ const validate = (currentValues: Map<string, SmartUiInput>): void => {
 
 @IsDisplayable()
 export default class SqlX extends SelfServeBaseClass {
-  public getOnSaveNotification = (
-    currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
-  ): SelfServeNotification => {
-    // TODO: Add logic to return correct notification after on save is called.
-    throw new Error(
-      `getOnSaveNotification not implemented. currentValues size: ${currentValues.size}, baselineValues size: ${baselineValues.size}`
-    );
-  };
-
   public onRefresh = async (): Promise<RefreshResult> => {
     return refreshDedicatedGatewayProvisioning();
   };
 
-  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<void> => {
+  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<OnSavePortalNotification> => {
     validate(currentValues);
     // TODO: add pre processing logic before calling the updateDedicatedGatewayProvisioning() RP call.
     throw new Error(`onSave not implemented. No. of properties to save: ${currentValues.size}`);
