@@ -1,4 +1,4 @@
-import { RefreshResult } from "../SelfServeTypes";
+import { PortalNotificationType, RefreshResult } from "../SelfServeTypes";
 import { userContext } from "../../UserContext";
 import { armRequest } from "../../Utils/arm/request";
 import { configContext } from "../../ConfigContext";
@@ -83,15 +83,30 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
   try {
     const response = await getDedicatedGatewayResource();
     if (response.properties.status === ResourceStatus.Running.toString()) {
-      return { isUpdateInProgress: false, notificationMessage: undefined };
+      return {
+        isUpdateInProgress: false,
+        updateCompletedMessage: {
+          titleTKey: "Resource Provisioned",
+          messageTKey: "Resource has been provisioned",
+          type: PortalNotificationType.Success,
+        },
+      };
     } else if (response.properties.status === ResourceStatus.Creating.toString()) {
-      return { isUpdateInProgress: true, notificationMessage: "CreateMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessage: "CreateMessage" };
     } else if (response.properties.status === ResourceStatus.Deleting.toString()) {
-      return { isUpdateInProgress: true, notificationMessage: "DeleteMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessage: "DeleteMessage" };
     } else {
-      return { isUpdateInProgress: true, notificationMessage: "UpdateMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessage: "UpdateMessage" };
     }
   } catch {
-    return { isUpdateInProgress: false, notificationMessage: undefined };
+    //TODO differentiate between different failures
+    return {
+      isUpdateInProgress: false,
+      updateCompletedMessage: {
+        titleTKey: "Resource Deleted",
+        messageTKey: "Resource has been deleted",
+        type: PortalNotificationType.Success,
+      },
+    };
   }
 };

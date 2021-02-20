@@ -292,7 +292,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     const refreshResult = await this.props.descriptor.onRefresh();
     let updateInProgressNotification: SelfServeNotification;
     if (this.state.refreshResult?.isUpdateInProgress && !refreshResult.isUpdateInProgress) {
-      const updateCompletedPortalNotification = this.state.refreshResult.updateCompletedMessage;
+      const updateCompletedPortalNotification = refreshResult.updateCompletedMessage;
       const updateCompletedNotificationTitle = this.getTranslation(updateCompletedPortalNotification.titleTKey);
       const updateCompletedNotificationMessage = this.getTranslation(updateCompletedPortalNotification.messageTKey);
       this.sendNotificationMessage(
@@ -300,7 +300,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         updateCompletedNotificationMessage,
         updateCompletedPortalNotification.type
       );
-    } else {
+    }
+    if (refreshResult.isUpdateInProgress) {
       updateInProgressNotification = {
         type: MessageBarType.info,
         isCancellable: false,

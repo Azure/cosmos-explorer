@@ -75,16 +75,28 @@ export default class SqlX extends SelfServeBaseClass {
     if (dedicatedGatewayOriginallyEnabled) {
       if (!dedicatedGatewayCurrentlyEnabled) {
         await deleteDedicatedGatewayResource();
-        return { titleTKey: "Deleting resource", messageTKey: "DedicatedGateway resource will be deleted.", type: PortalNotificationType.InProgress };
+        return {
+          titleTKey: "Deleting resource",
+          messageTKey: "DedicatedGateway resource will be deleted.",
+          type: PortalNotificationType.InProgress,
+        };
       } else {
         // Check for scaling up/down/in/out
-        return { titleTKey: "Updating resource", messageTKey: "DedicatedGateway resource will be updated.", type: PortalNotificationType.InProgress };
+        return {
+          titleTKey: "Updating resource",
+          messageTKey: "DedicatedGateway resource will be updated.",
+          type: PortalNotificationType.InProgress,
+        };
       }
     } else {
       const sku = currentValues.get("sku")?.value as string;
       const instances = currentValues.get("instances").value as number;
       await updateDedicatedGatewayResource(sku, instances);
-      return { titleTKey: "Provisioning resource", messageTKey: "Dedicated Gateway resource will be provisioned.", type: PortalNotificationType.InProgress };
+      return {
+        titleTKey: "Provisioning resource",
+        messageTKey: "Dedicated Gateway resource will be provisioned.",
+        type: PortalNotificationType.InProgress,
+      };
     }
   };
 
