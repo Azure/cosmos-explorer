@@ -45,6 +45,7 @@ interface Options {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
   body?: unknown;
   queryParams?: ARMQueryParams;
+  shouldPollOperationStatus?: boolean;
 }
 
 // TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
@@ -55,6 +56,7 @@ export async function armRequest<T>({
   method,
   body: requestBody,
   queryParams,
+  shouldPollOperationStatus = true,
 }: Options): Promise<T> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -93,7 +95,7 @@ export async function armRequest<T>({
   }
 
   const operationStatusUrl = response.headers && response.headers.get("location");
-  if (operationStatusUrl) {
+  if (shouldPollOperationStatus && operationStatusUrl) {
     return await promiseRetry(() => getOperationStatus(operationStatusUrl));
   }
 
