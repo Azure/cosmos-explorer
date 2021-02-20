@@ -10,7 +10,7 @@ export enum ResourceStatus {
   Running = "Running",
   Creating = "Creating",
   Updating = "Updating",
-  Deleting = "Deleting"
+  Deleting = "Deleting",
 }
 
 export interface DedicatedGatewayResponse {
@@ -33,17 +33,36 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
       serviceType: "Sqlx",
     },
   };
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body });
+  await armRequest({
+    host: configContext.ARM_ENDPOINT,
+    path,
+    method: "PUT",
+    apiVersion,
+    body,
+    shouldPollOperationStatus: false,
+  });
 };
 
 export const deleteDedicatedGatewayResource = async (): Promise<void> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "DELETE", apiVersion });
+  await armRequest({
+    host: configContext.ARM_ENDPOINT,
+    path,
+    method: "DELETE",
+    apiVersion,
+    shouldPollOperationStatus: false,
+  });
 };
 
 export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  return armRequest<SqlxServiceResource>({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
+  return await armRequest<SqlxServiceResource>({
+    host: configContext.ARM_ENDPOINT,
+    path,
+    method: "GET",
+    apiVersion,
+    shouldPollOperationStatus: false,
+  });
 };
 
 export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayResponse> => {

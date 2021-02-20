@@ -16,27 +16,27 @@ import {
   getCurrentProvisioningState,
 } from "./SqlX.rp";
 
-let disableAttributesOnDedicatedGatewayChange = false;
-
 const onEnableDedicatedGatewayChange = (
-  currentState: Map<string, SmartUiInput>,
-  newValue: InputType
+  currentValues: Map<string, SmartUiInput>,
+  newValue: InputType,
+  baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
-  const sku = currentState.get("sku");
-  const instances = currentState.get("instances");
+  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+  const sku = currentValues.get("sku");
+  const instances = currentValues.get("instances");
   const hideAttributes = newValue === undefined || !(newValue as boolean);
-  currentState.set("enableDedicatedGateway", { value: newValue });
-  currentState.set("sku", {
+  currentValues.set("enableDedicatedGateway", { value: newValue });
+  currentValues.set("sku", {
     value: sku.value,
     hidden: hideAttributes,
-    disabled: disableAttributesOnDedicatedGatewayChange,
+    disabled: dedicatedGatewayOriginallyEnabled,
   });
-  currentState.set("instances", {
+  currentValues.set("instances", {
     value: instances.value,
     hidden: hideAttributes,
-    disabled: disableAttributesOnDedicatedGatewayChange,
+    disabled: dedicatedGatewayOriginallyEnabled,
   });
-  return currentState;
+  return currentValues;
 };
 
 const skuDropDownItems: ChoiceItem[] = [
@@ -68,34 +68,37 @@ export default class SqlX extends SelfServeBaseClass {
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
     if (dedicatedGatewayOriginallyEnabled) {
       if (!dedicatedGatewayCurrentlyEnabled) {
-          return { message: "DedicatedGateway resource will be deleted.", type: SelfServeNotificationType.info };
+        return { message: "DedicatedGateway resource will be deleted.", type: SelfServeNotificationType.info };
       } else {
         // Check for scaling up/down/in/out
         return { message: "DedicatedGateway resource will be updated.", type: SelfServeNotificationType.info };
       }
     } else {
-        return { message: "Dedicated Gateway resource will be provisioned.", type: SelfServeNotificationType.info };
+      return { message: "Dedicated Gateway resource will be provisioned.", type: SelfServeNotificationType.info };
     }
   };
 
   public onRefresh = async (): Promise<RefreshResult> => {
-    return refreshDedicatedGatewayProvisioning();
+    return await refreshDedicatedGatewayProvisioning();
   };
 
-  public onSave = async (currentValues: Map<string, SmartUiInput>, baselineValues: Map<string, SmartUiInput>): Promise<void> => {
+  public onSave = async (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: Map<string, SmartUiInput>
+  ): Promise<void> => {
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
 
     if (dedicatedGatewayOriginallyEnabled) {
       if (!dedicatedGatewayCurrentlyEnabled) {
-          await deleteDedicatedGatewayResource();
+        await deleteDedicatedGatewayResource();
       } else {
         // Check for scaling up/down/in/out
       }
     } else {
-        const sku = currentValues.get("sku")?.value as string;
-        const instances = currentValues.get("instances").value as number;
-        await updateDedicatedGatewayResource(sku, instances);
+      const sku = currentValues.get("sku")?.value as string;
+      const instances = currentValues.get("instances").value as number;
+      await updateDedicatedGatewayResource(sku, instances);
     }
   };
 

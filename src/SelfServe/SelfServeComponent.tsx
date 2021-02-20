@@ -221,36 +221,38 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     }
   };
 
-  public onSaveButtonClick = (): void => {
-    const onSavePromise = this.props.descriptor.onSave(
-      this.state.currentValues,
-      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
-    );
-    const onSaveNotification = this.props.descriptor.getOnSaveNotification(
-      this.state.currentValues,
-      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
-    );
-    this.setState({
-      isSaving: true,
-      notification: {
-        message: onSaveNotification.message,
-        type: onSaveNotification.type,
-      },
-    });
-
-    onSavePromise.catch((error) => {
+  public performSave = async (): Promise<void> => {
+    this.setState({ isSaving: true });
+    try {
+      await this.props.descriptor.onSave(
+        this.state.currentValues,
+        this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+      );
+    } catch (error) {
       this.setState({
-        isSaving: false,
         notification: {
           message: `${error.message}`,
           type: SelfServeNotificationType.error,
         },
       });
-    });
-    onSavePromise.then(() => {
-      this.onRefreshClicked();
-      this.updateBaselineValues();
+    } finally {
       this.setState({ isSaving: false });
+    }
+    await this.onRefreshClicked();
+    this.updateBaselineValues();
+  };
+
+  public onSaveButtonClick = (): void => {
+    this.performSave();
+    const onSaveNotification = this.props.descriptor.getOnSaveNotification(
+      this.state.currentValues,
+      this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
+    );
+    this.setState({
+      notification: {
+        message: onSaveNotification.message,
+        type: onSaveNotification.type,
+      },
     });
   };
 
@@ -294,7 +296,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.setState({ isInitializing: true });
     const refreshResult = await this.performRefresh();
     if (!refreshResult.isUpdateInProgress) {
-      this.initializeSmartUiComponent();
+      await this.initializeSmartUiComponent();
     }
     this.setState({ isInitializing: false });
   };
