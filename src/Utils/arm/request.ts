@@ -56,7 +56,7 @@ export async function armRequest<T>({
   method,
   body: requestBody,
   queryParams,
-  shouldPollOperationStatus,
+  shouldPollOperationStatus = true,
 }: Options): Promise<T> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
