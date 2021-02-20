@@ -144,6 +144,6 @@ export interface OnRefreshPortalNotification extends PortalNotification {
 
 export interface RefreshResult {
   isUpdateInProgress: boolean;
-  updateInProgressMessage: string;
-  updateCompletedMessage: OnRefreshPortalNotification;
+  updateInProgressMessage?: string;
+  updateCompletedMessage?: OnRefreshPortalNotification;
 }
