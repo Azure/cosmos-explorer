@@ -3,10 +3,10 @@ import {
   ChoiceItem,
   InputType,
   NumberUiType,
+  OnSavePortalNotification,
+  PortalNotificationType,
   RefreshResult,
   SelfServeBaseClass,
-  SelfServeNotification,
-  SelfServeNotificationType,
   SmartUiInput,
 } from "../SelfServeTypes";
 import {
@@ -60,24 +60,6 @@ const getInstancesMax = async (): Promise<number> => {
 
 @IsDisplayable()
 export default class SqlX extends SelfServeBaseClass {
-  public getOnSaveNotification = (
-    currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
-  ): SelfServeNotification => {
-    const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
-    const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
-    if (dedicatedGatewayOriginallyEnabled) {
-      if (!dedicatedGatewayCurrentlyEnabled) {
-        return { message: "DedicatedGateway resource will be deleted.", type: SelfServeNotificationType.info };
-      } else {
-        // Check for scaling up/down/in/out
-        return { message: "DedicatedGateway resource will be updated.", type: SelfServeNotificationType.info };
-      }
-    } else {
-      return { message: "Dedicated Gateway resource will be provisioned.", type: SelfServeNotificationType.info };
-    }
-  };
-
   public onRefresh = async (): Promise<RefreshResult> => {
     return await refreshDedicatedGatewayProvisioning();
   };
@@ -85,20 +67,24 @@ export default class SqlX extends SelfServeBaseClass {
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
-  ): Promise<void> => {
+  ): Promise<OnSavePortalNotification> => {
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
 
+    //TODO : Ad try catch for each RP call and return relevant notifications
     if (dedicatedGatewayOriginallyEnabled) {
       if (!dedicatedGatewayCurrentlyEnabled) {
         await deleteDedicatedGatewayResource();
+        return { titleTKey: "Deleting resource", messageTKey: "DedicatedGateway resource will be deleted.", type: PortalNotificationType.InProgress };
       } else {
         // Check for scaling up/down/in/out
+        return { titleTKey: "Updating resource", messageTKey: "DedicatedGateway resource will be updated.", type: PortalNotificationType.InProgress };
       }
     } else {
       const sku = currentValues.get("sku")?.value as string;
       const instances = currentValues.get("instances").value as number;
       await updateDedicatedGatewayResource(sku, instances);
+      return { titleTKey: "Provisioning resource", messageTKey: "Dedicated Gateway resource will be provisioned.", type: PortalNotificationType.InProgress };
     }
   };
 

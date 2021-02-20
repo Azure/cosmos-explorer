@@ -25,9 +25,14 @@
             "Collection Throughput": "Collection Throughput",
             "Enable DB level throughput": "Enable DB level throughput",
             "Database Throughput": "Database Throughput",
-            "RefreshMessage": "Self Serve Example successfully refreshing",
-            "SubmissionMessageForNewRegion": "Submitted successfully. Region Changed!",
-            "SubmissionMessageForSameRegion": "Submitted successfully. Region Unchanged!"
+            "UpdateInProgressMessage": "Self Serve Example is being updated",
+            "UpdateCompletedMessageTitle":"Update Succeeded",
+            "UpdateCompletedMessageText":  "Self Serve Example update completed",
+            "SubmissionMessageSuccessTitle": "Submission Succeeded",
+            "SubmissionMessageForNewRegionText": "Submitted successfully. Region Changed!",
+            "SubmissionMessageForSameRegionText": "Submitted successfully. Region Unchanged!",
+            "SubmissionMessageErrorTitle": "Submission Failed",
+            "SubmissionMessageErrorText": "Submitted Failed because of errors"
         },
         "SqlX": {
             "DedicatedGatewayDescription": "Provisioning dedicated gateways for SqlX accounts.",

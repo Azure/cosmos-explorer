@@ -1,4 +1,3 @@
-import { MessageBarType } from "office-ui-fabric-react";
 import "reflect-metadata";
 import {
   Node,
@@ -15,7 +14,6 @@ import {
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
-  SelfServeNotificationType,
 } from "./SelfServeTypes";
 
 export enum SelfServeType {
@@ -174,16 +172,5 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
         value.errorMessage = `label and choices are required for Choice input '${value.id}'.`;
       }
       return value as ChoiceInput;
-  }
-};
-
-export const getMessageBarType = (type: SelfServeNotificationType): MessageBarType => {
-  switch (type) {
-    case SelfServeNotificationType.info:
-      return MessageBarType.info;
-    case SelfServeNotificationType.warning:
-      return MessageBarType.warning;
-    case SelfServeNotificationType.error:
-      return MessageBarType.error;
   }
 };

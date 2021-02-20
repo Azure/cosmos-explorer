@@ -51,11 +51,7 @@ export interface SelfServeDescriptor {
   onSave?: (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
-  ) => Promise<void>;
-  getOnSaveNotification?: (
-    currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
-  ) => SelfServeNotification;
+  ) => Promise<OnSavePortalNotification>;
   inputNames?: string[];
   onRefresh?: () => Promise<RefreshResult>;
 }
@@ -67,11 +63,7 @@ export abstract class SelfServeBaseClass {
   public abstract onSave: (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
-  ) => Promise<void>;
-  public abstract getOnSaveNotification: (
-    currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
-  ) => SelfServeNotification;
+  ) => Promise<OnSavePortalNotification>;
   public abstract onRefresh: () => Promise<RefreshResult>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
@@ -84,9 +76,6 @@ export abstract class SelfServeBaseClass {
     if (!this.onSave) {
       throw new Error(`onSave() was not declared for the class '${className}'`);
     }
-    if (!this.getOnSaveNotification) {
-      throw new Error(`getOnSaveNotification() was not declared for the class '${className}'`);
-    }
     if (!this.onRefresh) {
       throw new Error(`onRefresh() was not declared for the class '${className}'`);
     }
@@ -96,7 +85,6 @@ export abstract class SelfServeBaseClass {
 
     selfServeDescriptor.initialize = this.initialize;
     selfServeDescriptor.onSave = this.onSave;
-    selfServeDescriptor.getOnSaveNotification = this.getOnSaveNotification;
     selfServeDescriptor.onRefresh = this.onRefresh;
     return selfServeDescriptor;
   }
@@ -135,18 +123,27 @@ export interface SmartUiInput {
   disabled?: boolean;
 }
 
-export enum SelfServeNotificationType {
-  info = "info",
-  warning = "warning",
-  error = "error",
+export enum PortalNotificationType {
+  InProgress = "InProgress",
+  Success = "Success",
+  Failure = "Failure",
 }
 
-export interface SelfServeNotification {
-  message: string;
-  type: SelfServeNotificationType;
+interface PortalNotification {
+  titleTKey: string;
+  messageTKey: string;
+}
+
+export interface OnSavePortalNotification extends PortalNotification {
+  type: PortalNotificationType.InProgress | PortalNotificationType.Failure;
+}
+
+export interface OnRefreshPortalNotification extends PortalNotification {
+  type: PortalNotificationType.Success | PortalNotificationType.Failure;
 }
 
 export interface RefreshResult {
   isUpdateInProgress: boolean;
-  notificationMessage: string;
+  updateInProgressMessage: string;
+  updateCompletedMessage: OnRefreshPortalNotification;
 }

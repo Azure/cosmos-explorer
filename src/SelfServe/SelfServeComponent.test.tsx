@@ -1,7 +1,14 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
-import { NumberUiType, SelfServeDescriptor, SelfServeNotificationType, SmartUiInput } from "./SelfServeTypes";
+import {
+  NumberUiType,
+  SelfServeDescriptor,
+  PortalNotificationType,
+  SmartUiInput,
+  OnSavePortalNotification,
+  OnRefreshPortalNotification,
+} from "./SelfServeTypes";
 
 describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, SmartUiInput>([
@@ -17,22 +24,32 @@ describe("SelfServeComponent", () => {
 
   const initializeMock = jest.fn(async () => new Map(defaultValues));
   const onSaveMock = jest.fn(async () => {
-    return;
+    return {
+      titleTKey: "SampleMessageTitleKey",
+      messageTKey: "SampleMessageTextKey",
+      type: PortalNotificationType.InProgress,
+    } as OnSavePortalNotification;
   });
-  const getOnSaveNotificationMock = jest.fn(() => {
-    return { message: "sample notification", type: SelfServeNotificationType.info };
-  });
+  const refreshResult = {
+    isUpdateInProgress: false,
+    updateInProgressMessage: "refresh performed successfully",
+    updateCompletedMessage: {
+      titleTKey: "SampleMessageTitleKey",
+      messageTKey: "SampleMessageTextKey",
+      type: PortalNotificationType.Success,
+    } as OnRefreshPortalNotification,
+  };
+
   const onRefreshMock = jest.fn(async () => {
-    return { isUpdateInProgress: false, notificationMessage: "refresh performed successfully" };
+    return { ...refreshResult };
   });
   const onRefreshIsUpdatingMock = jest.fn(async () => {
-    return { isUpdateInProgress: true, notificationMessage: "refresh performed successfully" };
+    return { ...refreshResult, isUpdateInProgress: true };
   });
 
   const exampleData: SelfServeDescriptor = {
     initialize: initializeMock,
     onSave: onSaveMock,
-    getOnSaveNotification: getOnSaveNotificationMock,
     onRefresh: onRefreshMock,
     inputNames: ["throughput", "analyticalStore", "database"],
     root: {
