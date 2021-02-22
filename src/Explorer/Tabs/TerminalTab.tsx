@@ -56,7 +56,7 @@ export default class TerminalTab extends TabsBase {
     });
   }
 
-  protected getContainer(): Explorer {
+  public getContainer(): Explorer {
     return this.container;
   }
 

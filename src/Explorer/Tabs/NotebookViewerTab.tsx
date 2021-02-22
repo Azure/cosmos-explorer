@@ -58,7 +58,7 @@ export default class NotebookViewerTab extends TabsBase {
     });
   }
 
-  protected getContainer(): Explorer {
+  public getContainer(): Explorer {
     return this.container;
   }
 

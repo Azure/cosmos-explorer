@@ -29,7 +29,7 @@ export default class SparkMasterTab extends TabsBase {
     this.sparkMasterSrc = ko.observable<string>(sparkMasterEndpoint && sparkMasterEndpoint.endpoint);
   }
 
-  protected getContainer() {
+  public getContainer() {
     return this._container;
   }
 }

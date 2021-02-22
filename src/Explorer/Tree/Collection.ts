@@ -26,7 +26,7 @@ import MongoQueryTab from "../Tabs/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
-import SettingsTabV2 from "../Tabs/SettingsTabV2";
+import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -544,10 +544,12 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
-    const pendingNotificationsPromise: Promise<DataModels.Notification> = this._getPendingThroughputSplitNotification();
-    const matchingTabs = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.SettingsV2, (tab) => {
-      return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
-    });
+    const matchingTabs = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.CollectionSettingsV2,
+      (tab) => {
+        return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
+      }
+    );
 
     const traceStartData = {
       databaseAccountName: this.container.databaseAccount().name,
@@ -569,26 +571,20 @@ export default class Collection implements ViewModels.Collection {
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     };
 
-    let settingsTabV2 = matchingTabs && (matchingTabs[0] as SettingsTabV2);
-    this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions, pendingNotificationsPromise);
+    let settingsTabV2 = matchingTabs && (matchingTabs[0] as CollectionSettingsTabV2);
+    this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions);
   };
 
   private launchSettingsTabV2 = (
-    settingsTabV2: SettingsTabV2,
+    settingsTabV2: CollectionSettingsTabV2,
     traceStartData: any,
-    settingsTabOptions: ViewModels.TabOptions,
-    getPendingNotification: Promise<DataModels.Notification>
+    settingsTabOptions: ViewModels.TabOptions
   ): void => {
-    const settingsTabV2Options: ViewModels.SettingsTabV2Options = {
-      ...settingsTabOptions,
-      getPendingNotification: getPendingNotification,
-    };
-
     if (!settingsTabV2) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, traceStartData);
-      settingsTabV2Options.onLoadStartKey = startKey;
-      settingsTabV2Options.tabKind = ViewModels.CollectionTabKind.SettingsV2;
-      settingsTabV2 = new SettingsTabV2(settingsTabV2Options);
+      settingsTabOptions.onLoadStartKey = startKey;
+      settingsTabOptions.tabKind = ViewModels.CollectionTabKind.CollectionSettingsV2;
+      settingsTabV2 = new CollectionSettingsTabV2(settingsTabOptions);
       this.container.tabsManager.activateNewTab(settingsTabV2);
     } else {
       this.container.tabsManager.activateTab(settingsTabV2);
@@ -973,10 +969,6 @@ export default class Collection implements ViewModels.Collection {
     this.uploadFiles(event.originalEvent.dataTransfer.files);
   }
 
-  public onDeleteCollectionContextMenuClick(source: ViewModels.Collection, event: MouseEvent | KeyboardEvent) {
-    this.container.deleteCollectionConfirmationPane.open();
-  }
-
   public uploadFiles = (fileList: FileList): Promise<UploadDetails> => {
     // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
     if (configContext.platform === Platform.Hosted && userContext.authType === AuthType.AAD) {
@@ -1044,6 +1036,41 @@ export default class Collection implements ViewModels.Collection {
     });
   };
 
+  public async getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
+    if (!this.container) {
+      return undefined;
+    }
+
+    try {
+      const notifications: DataModels.Notification[] = await fetchPortalNotifications();
+      if (!notifications || notifications.length === 0) {
+        return undefined;
+      }
+
+      return _.find(notifications, (notification: DataModels.Notification) => {
+        const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
+        return (
+          notification.kind === "message" &&
+          notification.collectionName === this.id() &&
+          notification.description &&
+          throughputUpdateRegExp.test(notification.description)
+        );
+      });
+    } catch (error) {
+      Logger.logError(
+        JSON.stringify({
+          error: getErrorMessage(error),
+          accountName: this.container && this.container.databaseAccount(),
+          databaseName: this.databaseId,
+          collectionName: this.id(),
+        }),
+        "Settings tree node"
+      );
+
+      return undefined;
+    }
+  }
+
   private async _uploadFilesCors(files: FileList): Promise<UploadDetails> {
     const data = await Promise.all(Array.from(files).map((file) => this._uploadFile(file)));
 
@@ -1102,37 +1129,6 @@ export default class Collection implements ViewModels.Collection {
       record.errors = [...record.errors, error.message];
       return record;
     }
-  }
-
-  private async _getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
-    if (!this.container) {
-      return undefined;
-    }
-
-    const throughputUpdateRegExp = new RegExp("Throughput update (.*) in progress");
-    try {
-      const notifications = await fetchPortalNotifications();
-      if (!notifications) {
-        return undefined;
-      }
-
-      return notifications.find(
-        ({ kind, collectionName, description = "" }) =>
-          kind === "message" && collectionName === this.id() && throughputUpdateRegExp.test(description)
-      );
-    } catch (error) {
-      Logger.logError(
-        JSON.stringify({
-          error: getErrorMessage(error),
-          accountName: this.container && this.container.databaseAccount(),
-          databaseName: this.databaseId,
-          collectionName: this.id(),
-        }),
-        "Settings tree node"
-      );
-    }
-
-    return undefined;
   }
 
   private _logUploadDetailsInConsole(uploadDetails: UploadDetails): void {

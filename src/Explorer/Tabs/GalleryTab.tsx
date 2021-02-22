@@ -61,7 +61,7 @@ export default class GalleryTab extends TabsBase {
     this.galleryAndNotebookViewerComponentAdapter.triggerRender();
   }
 
-  protected getContainer(): Explorer {
+  public getContainer(): Explorer {
     return this.container;
   }
 }
