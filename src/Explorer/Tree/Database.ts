@@ -329,7 +329,7 @@ export default class Database implements ViewModels.Database {
           subscriptionId: userContext.subscriptionId,
           resourceGroup: userContext.resourceGroup,
           accountName: userContext.databaseAccount.name,
-          resource: `dbs/${this.id}/colls/${collection.id}`,
+          resource: `dbs/${this.id()}/colls/${collection.id}`,
           status: "new",
         });
         checkForSchema = setInterval(async () => {
