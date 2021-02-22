@@ -22,7 +22,7 @@ export async function updateStoredProcedure(
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {

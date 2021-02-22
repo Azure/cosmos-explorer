@@ -34,7 +34,7 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
     if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
       throw new Error("Creating database resources is not allowed for tables accounts");
     }
-    const database: DataModels.Database = await (window.authType === AuthType.AAD && !userContext.useSDKOperations
+    const database: DataModels.Database = await (userContext.authType === AuthType.AAD && !userContext.useSDKOperations
       ? createDatabaseWithARM(params)
       : createDatabaseWithSDK(params));
 

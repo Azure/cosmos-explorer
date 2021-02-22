@@ -87,7 +87,7 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
   };
   const config = useConfig();
-  useKnockoutExplorer(config, explorerParams);
+  useKnockoutExplorer(config?.platform, explorerParams);
 
   return (
     <div className="flexContainer">

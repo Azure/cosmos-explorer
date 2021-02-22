@@ -14,7 +14,7 @@ export async function readTriggers(
   const clearMessage = logConsoleProgress(`Querying triggers for container ${collectionId}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {

@@ -6,7 +6,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
-  if (window.authType === AuthType.EncryptedToken) {
+  if (userContext.authType === AuthType.EncryptedToken) {
     return {
       header: Constants.HttpHeaders.guestAccessToken,
       token: userContext.accessToken,

@@ -9,7 +9,7 @@ export async function readMongoDBCollectionThroughRP(
   databaseId: string,
   collectionId: string
 ): Promise<MongoDBCollectionResource> {
-  if (window.authType !== AuthType.AAD) {
+  if (userContext.authType !== AuthType.AAD) {
     return undefined;
   }
   let collection: MongoDBCollectionResource;

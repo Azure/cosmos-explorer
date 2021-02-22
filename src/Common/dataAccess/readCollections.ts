@@ -15,7 +15,7 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
       userContext.defaultExperience !== DefaultAccountExperienceType.Table

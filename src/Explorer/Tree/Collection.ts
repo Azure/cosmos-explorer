@@ -971,7 +971,7 @@ export default class Collection implements ViewModels.Collection {
 
   public uploadFiles = (fileList: FileList): Promise<UploadDetails> => {
     // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
-    if (configContext.platform === Platform.Hosted && window.authType === AuthType.AAD) {
+    if (configContext.platform === Platform.Hosted && userContext.authType === AuthType.AAD) {
       return this._uploadFilesCors(fileList);
     }
     const documentUploader: Worker = new UploadWorker();

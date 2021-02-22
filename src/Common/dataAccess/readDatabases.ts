@@ -15,7 +15,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   const clearMessage = logConsoleProgress(`Querying databases`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience !== DefaultAccountExperienceType.Table
     ) {

@@ -261,7 +261,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     const clearMessage =
       shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
     try {
-      const authType = window.authType;
+      const authType = userContext.authType;
       const apiEndpoint: string =
         authType === AuthType.EncryptedToken
           ? Constants.CassandraBackend.guestQueryApi
@@ -425,7 +425,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching keys for table ${collection.id()}`
     );
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
@@ -475,7 +475,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching schema for table ${collection.id()}`
     );
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
@@ -519,7 +519,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private createOrDeleteQuery(cassandraEndpoint: string, resourceId: string, query: string): Q.Promise<any> {
     const deferred = Q.defer();
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi

@@ -10,7 +10,7 @@ export async function deleteUserDefinedFunction(databaseId: string, collectionId
   const clearMessage = logConsoleProgress(`Deleting user defined function ${id}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {

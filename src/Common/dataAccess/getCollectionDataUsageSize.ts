@@ -41,7 +41,7 @@ interface MetricsResponse {
 }
 
 export const getCollectionUsageSizeInKB = async (databaseName: string, containerName: string): Promise<number> => {
-  if (window.authType !== AuthType.AAD) {
+  if (userContext.authType !== AuthType.AAD) {
     return undefined;
   }
 

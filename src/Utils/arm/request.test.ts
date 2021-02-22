@@ -10,8 +10,8 @@ interface Global {
 ((global as unknown) as Global).Headers = ((fetch as unknown) as Global).Headers;
 
 describe("ARM request", () => {
-  window.authType = AuthType.AAD;
   updateUserContext({
+    authType: AuthType.AAD,
     authorizationToken: "some-token",
   });
 
@@ -57,8 +57,8 @@ describe("ARM request", () => {
   });
 
   it("should throw token error", async () => {
-    window.authType = AuthType.AAD;
     updateUserContext({
+      authType: AuthType.AAD,
       authorizationToken: undefined,
     });
     const headers = new Headers();
