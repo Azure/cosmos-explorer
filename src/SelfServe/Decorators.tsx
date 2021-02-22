@@ -33,6 +33,7 @@ export interface ChoiceInputOptions extends InputOptionsBase {
 }
 
 export interface DescriptionDisplayOptions {
+  labelTKey?: string;
   description?: (() => Promise<Description>) | Description;
 }
 
@@ -115,7 +116,10 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
       { name: "choices", value: inputOptions.choices }
     );
   } else if (isDescriptionDisplayOptions(inputOptions)) {
-    return addToMap({ name: "description", value: inputOptions.description });
+    return addToMap(
+      { name: "labelTKey", value: inputOptions.labelTKey },
+      { name: "description", value: inputOptions.description }
+    );
   } else {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
