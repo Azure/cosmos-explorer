@@ -427,7 +427,7 @@ export class JunoClient {
   public async requestSchema(
     schemaRequest: DataModels.ISchemaRequest
   ): Promise<IJunoResponse<DataModels.ISchemaRequest>> {
-    const response = await window.fetch(`${this.getAnalyticsUrl()}/${schemaRequest.accountName}/schema/request`, {
+    const response = await window.fetch(`${this.getAnalyticsUrl()}/schema/request`, {
       method: "POST",
       body: JSON.stringify(schemaRequest),
       headers: JunoClient.getHeaders(),
@@ -445,12 +445,14 @@ export class JunoClient {
   }
 
   public async getSchema(
+    subscriptionId: string,
+    resourceGroup: string,
     accountName: string,
     databaseName: string,
     containerName: string
   ): Promise<IJunoResponse<DataModels.ISchema>> {
     const response = await window.fetch(
-      `${this.getAnalyticsUrl()}/${accountName}/schema/${databaseName}/${containerName}`,
+      `${this.getAnalyticsUrl()}/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/databaseAccounts/${accountName}/schema/${databaseName}/${containerName}`,
       {
         method: "GET",
         headers: JunoClient.getHeaders(),

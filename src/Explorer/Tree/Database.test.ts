@@ -74,6 +74,8 @@ describe("Add Schema", () => {
     });
     expect(checkForSchema).not.toBeNull();
     expect(database.junoClient.getSchema).toBeCalledWith(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
       userContext.databaseAccount.name,
       database.id(),
       collection.id
