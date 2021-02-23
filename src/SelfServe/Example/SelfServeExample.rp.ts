@@ -73,7 +73,7 @@ export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
   const databaseAccountGetResults = await get(subscriptionId, resourceGroup, databaseAccountName);
   const isUpdateInProgress = databaseAccountGetResults.properties.provisioningState !== "Succeeded";
 
-  const progressToBeSent = refreshCount % 2 === 0 ? isUpdateInProgress : true;
+  const progressToBeSent = refreshCount % 5 === 0 ? isUpdateInProgress : true;
   SessionStorageUtility.setEntry("refreshCount", (refreshCount + 1).toString());
 
   return {
