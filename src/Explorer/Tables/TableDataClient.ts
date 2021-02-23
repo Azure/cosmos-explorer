@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import Q from "q";
 
-import { displayTokenRenewalPromptForStatus, getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AuthType } from "../../AuthType";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { FeedOptions } from "@azure/cosmos";
@@ -281,7 +281,6 @@ export class CassandraAPIDataClient extends TableDataClient {
           paginationToken,
         },
         beforeSend: this.setAuthorizationHeader,
-        error: this.handleAjaxError,
         cache: false,
       });
       shouldNotify &&
@@ -444,7 +443,6 @@ export class CassandraAPIDataClient extends TableDataClient {
         tableId: collection.id(),
       },
       beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
       cache: false,
     })
       .then(
@@ -494,7 +492,6 @@ export class CassandraAPIDataClient extends TableDataClient {
         tableId: collection.id(),
       },
       beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
       cache: false,
     })
       .then(
@@ -533,7 +530,6 @@ export class CassandraAPIDataClient extends TableDataClient {
         query: query,
       },
       beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
       cache: false,
     }).then(
       (data: any) => {
@@ -582,12 +578,4 @@ export class CassandraAPIDataClient extends TableDataClient {
   private getCassandraPartitionKeyProperty(collection: ViewModels.Collection): string {
     return collection.cassandraKeys.partitionKeys[0].property;
   }
-
-  private handleAjaxError = (xhrObj: XMLHttpRequest, textStatus: string, errorThrown: string): void => {
-    if (!xhrObj) {
-      return;
-    }
-
-    displayTokenRenewalPromptForStatus(xhrObj.status);
-  };
 }

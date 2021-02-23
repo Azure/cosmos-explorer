@@ -47,18 +47,16 @@ import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { FileSystemUtil } from "./Notebook/FileSystemUtil";
-import { handleOpenAction } from "./OpenActions";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
-import { sendMessage, sendCachedDataMessage, handleCachedDataMessage } from "../Common/MessageHandler";
+import { sendMessage, sendCachedDataMessage } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { RenewAdHocAccessPane } from "./Panes/RenewAdHocAccessPane";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
@@ -204,7 +202,6 @@ export default class Explorer {
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public settingsPane: SettingsPane;
   public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public renewAdHocAccessPane: RenewAdHocAccessPane;
   public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
@@ -715,13 +712,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.renewAdHocAccessPane = new RenewAdHocAccessPane({
-      id: "renewadhocaccesspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.uploadItemsPane = new UploadItemsPane({
       id: "uploaditemspane",
       visible: ko.observable<boolean>(false),
@@ -790,7 +780,6 @@ export default class Explorer {
       this.cassandraAddCollectionPane,
       this.settingsPane,
       this.executeSprocParamsPane,
-      this.renewAdHocAccessPane,
       this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
@@ -1173,136 +1162,8 @@ export default class Explorer {
     );
   }
 
-  public renewShareAccess(token: string): Q.Promise<void> {
-    if (!this.renewExplorerShareAccess) {
-      return Q.reject("Not implemented");
-    }
-
-    const deferred: Q.Deferred<void> = Q.defer<void>();
-    const id: string = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Initiating connection to account"
-    );
-    this.renewExplorerShareAccess(this, token)
-      .then(
-        () => {
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Connection successful");
-          this.renewAdHocAccessPane && this.renewAdHocAccessPane.close();
-          deferred.resolve();
-        },
-        (error: any) => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to connect: ${getErrorMessage(error)}`
-          );
-          deferred.reject(error);
-        }
-      )
-      .finally(() => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-      });
-
-    return deferred.promise;
-  }
-
-  public displayGuestAccessTokenRenewalPrompt(): void {
-    if (!$("#dataAccessTokenModal").dialog("instance")) {
-      const connectButton = {
-        text: "Connect",
-        class: "connectDialogButtons connectButton connectOkBtns",
-        click: () => {
-          this.renewAdHocAccessPane.open();
-          $("#dataAccessTokenModal").dialog("close");
-        },
-      };
-      const cancelButton = {
-        text: "Cancel",
-        class: "connectDialogButtons cancelBtn",
-        click: () => {
-          $("#dataAccessTokenModal").dialog("close");
-        },
-      };
-
-      $("#dataAccessTokenModal").dialog({
-        autoOpen: false,
-        buttons: [connectButton, cancelButton],
-        closeOnEscape: false,
-        draggable: false,
-        dialogClass: "no-close",
-        height: 180,
-        modal: true,
-        position: { my: "center center", at: "center center", of: window },
-        resizable: false,
-        title: "Temporary access expired",
-        width: 435,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false),
-      });
-      $("#dataAccessTokenModal").dialog("option", "classes", {
-        "ui-dialog-titlebar": "connectTitlebar",
-      });
-    }
-    this.shouldShowDataAccessExpiryDialog(true);
-    $("#dataAccessTokenModal").dialog("open");
-  }
-
   public isConnectExplorerVisible(): boolean {
     return $("#connectExplorer").is(":visible") || false;
-  }
-
-  public displayContextSwitchPromptForConnectionString(connectionString: string): void {
-    const yesButton = {
-      text: "OK",
-      class: "connectDialogButtons okBtn connectOkBtns",
-      click: () => {
-        $("#contextSwitchPrompt").dialog("close");
-        this.tabsManager.closeTabs(); // clear all tabs so we dont leave any tabs from previous session open
-        this.renewShareAccess(connectionString);
-      },
-    };
-    const noButton = {
-      text: "Cancel",
-      class: "connectDialogButtons cancelBtn",
-      click: () => {
-        $("#contextSwitchPrompt").dialog("close");
-      },
-    };
-
-    if (!$("#contextSwitchPrompt").dialog("instance")) {
-      $("#contextSwitchPrompt").dialog({
-        autoOpen: false,
-        buttons: [yesButton, noButton],
-        closeOnEscape: false,
-        draggable: false,
-        dialogClass: "no-close",
-        height: 255,
-        modal: true,
-        position: { my: "center center", at: "center center", of: window },
-        resizable: false,
-        title: "Switch account",
-        width: 440,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false),
-      });
-      $("#contextSwitchPrompt").dialog("option", "classes", {
-        "ui-dialog-titlebar": "connectTitlebar",
-      });
-      $("#contextSwitchPrompt").dialog("option", "open", (event: Event, ui: JQueryUI.DialogUIParams) => {
-        $(".ui-dialog ").css("z-index", 1001);
-        $("#contextSwitchPrompt").parent().siblings(".ui-widget-overlay").css("z-index", 1000);
-      });
-    }
-    $("#contextSwitchPrompt").dialog("option", "buttons", [yesButton, noButton]); // rebind buttons so callbacks accept current connection string
-    this.shouldShowContextSwitchPrompt(true);
-    $("#contextSwitchPrompt").dialog("open");
-  }
-
-  public displayConnectExplorerForm(): void {
-    $("#divExplorer").hide();
-    $("#connectExplorer").css("display", "flex");
-  }
-
-  public hideConnectExplorerForm(): void {
-    $("#connectExplorer").hide();
-    $("#divExplorer").show();
   }
 
   public isReadWriteToggled: () => boolean = (): boolean => {
@@ -1727,60 +1588,6 @@ export default class Explorer {
     this._addSynapseLinkDialogProps().visible = false;
     this._addSynapseLinkDialogProps.valueHasMutated();
   };
-
-  public handleMessage(message: any) {
-    const openAction: ActionContracts.DataExplorerAction = message.openAction;
-    if (!!openAction) {
-      if (this.isRefreshingExplorer()) {
-        const subscription = this.databases.subscribe((databases: ViewModels.Database[]) => {
-          handleOpenAction(openAction, this.nonSystemDatabases(), this);
-          subscription.dispose();
-        });
-      } else {
-        handleOpenAction(openAction, this.nonSystemDatabases(), this);
-      }
-    }
-    if (message.actionType === ActionContracts.ActionType.TransmitCachedData) {
-      handleCachedDataMessage(message);
-      return;
-    }
-    if (message.type) {
-      switch (message.type) {
-        case MessageTypes.UpdateLocationHash:
-          if (!message.locationHash) {
-            break;
-          }
-          hasher.replaceHash(message.locationHash);
-          RouteHandler.getInstance().parseHash(message.locationHash);
-          break;
-        case MessageTypes.SendNotification:
-          if (!message.message) {
-            break;
-          }
-          NotificationConsoleUtils.logConsoleMessage(
-            message.consoleDataType || ConsoleDataType.Info,
-            message.message,
-            message.id
-          );
-          break;
-        case MessageTypes.ClearNotification:
-          if (!message.id) {
-            break;
-          }
-          NotificationConsoleUtils.clearInProgressMessageWithId(message.id);
-          break;
-        case MessageTypes.LoadingStatus:
-          if (!message.text) {
-            break;
-          }
-          this._setLoadingStatusText(message.text, message.title);
-          break;
-      }
-      return;
-    }
-
-    this.splashScreenAdapter.forceRender();
-  }
 
   public findSelectedDatabase(): ViewModels.Database {
     if (!this.selectedNode()) {
