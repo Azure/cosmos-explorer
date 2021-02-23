@@ -201,6 +201,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
             e) Text (with optional hyperlink) for descriptions
   */
   @Values({
+    labelTKey: "DescriptionLabel",
     description: {
       textTKey: "DescriptionText",
       link: {

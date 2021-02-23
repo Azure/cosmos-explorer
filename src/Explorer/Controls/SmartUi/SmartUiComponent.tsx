@@ -6,7 +6,7 @@ import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import { TextField } from "office-ui-fabric-react/lib/TextField";
 import { Text } from "office-ui-fabric-react/lib/Text";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
-import { Link, MessageBar, MessageBarType, Toggle } from "office-ui-fabric-react";
+import { Label, Link, MessageBar, MessageBarType, Toggle } from "office-ui-fabric-react";
 import * as InputUtils from "./InputUtils";
 import "./SmartUiComponent.less";
 import {
@@ -29,13 +29,13 @@ import { TFunction } from "i18next";
  */
 
 interface BaseDisplay {
+  labelTKey: string;
   dataFieldName: string;
   errorMessage?: string;
   type: InputTypeValue;
 }
 
 interface BaseInput extends BaseDisplay {
-  labelTKey: string;
   placeholderTKey?: string;
   errorMessage?: string;
 }
@@ -166,14 +166,17 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private renderDescription(input: DescriptionDisplay): JSX.Element {
     const description = input.description;
     return (
-      <Text id={`${input.dataFieldName}-text-display`}>
-        {this.props.getTranslation(input.description.textTKey)}{" "}
-        {description.link && (
-          <Link target="_blank" href={input.description.link.href}>
-            {this.props.getTranslation(input.description.link.textTKey)}
-          </Link>
-        )}
-      </Text>
+      <>
+        {input.labelTKey && <Label>{this.props.getTranslation(input.labelTKey)}</Label>}
+        <Text id={`${input.dataFieldName}-text-display`}>
+          {this.props.getTranslation(input.description.textTKey)}{" "}
+          {description.link && (
+            <Link target="_blank" href={input.description.link.href}>
+              {this.props.getTranslation(input.description.link.textTKey)}
+            </Link>
+          )}
+        </Text>
+      </>
     );
   }
 
