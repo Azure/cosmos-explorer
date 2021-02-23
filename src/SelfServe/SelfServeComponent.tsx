@@ -259,7 +259,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     } finally {
       this.setState({ isSaving: false });
     }
-    this.onRefreshClicked();
+    await this.onRefreshClicked();
     this.updateBaselineValues();
   };
 
