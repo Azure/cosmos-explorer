@@ -162,7 +162,7 @@ src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValueValidator.ts
 src/Explorer/Panes/UploadFilePane.ts
 src/Explorer/Panes/UploadItemsPane.ts
-src/Explorer/SplashScreen/SplashScreenComponentAdapter.test.ts
+src/Explorer/SplashScreen/SplashScreen.test.ts
 src/Explorer/Tables/Constants.ts
 src/Explorer/Tables/DataTable/CacheBase.ts
 src/Explorer/Tables/DataTable/DataTableBindingManager.ts
@@ -377,8 +377,7 @@ src/Explorer/Notebook/temp/inputs/editor.tsx
 src/Explorer/Notebook/temp/markdown-cell.tsx
 src/Explorer/Notebook/temp/source.tsx
 src/Explorer/Notebook/temp/syntax-highlighter/index.tsx
-src/Explorer/SplashScreen/SplashScreenComponent.tsx
-src/Explorer/SplashScreen/SplashScreenComponentApdapter.tsx
+src/Explorer/SplashScreen/SplashScreen.tsx
 src/Explorer/Tabs/GalleryTab.tsx
 src/Explorer/Tabs/NotebookViewerTab.tsx
 src/Explorer/Tabs/TerminalTab.tsx
