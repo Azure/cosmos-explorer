@@ -3,7 +3,11 @@ interface BaseInput {
   errorMessage?: string;
   type: InputTypeValue;
   labelTKey?: (() => Promise<string>) | string;
-  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
+  onChange?: (
+    currentState: Map<string, SmartUiInput>,
+    newValue: InputType,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>;
   placeholderTKey?: (() => Promise<string>) | string;
 }
 
@@ -44,7 +48,10 @@ export interface Node {
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  onSave?: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<OnSavePortalNotification>;
   inputNames?: string[];
   onRefresh?: () => Promise<RefreshResult>;
 }
@@ -53,7 +60,10 @@ export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput 
 
 export abstract class SelfServeBaseClass {
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
-  public abstract onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  public abstract onSave: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<OnSavePortalNotification>;
   public abstract onRefresh: () => Promise<RefreshResult>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
@@ -113,18 +123,27 @@ export interface SmartUiInput {
   disabled?: boolean;
 }
 
-export enum SelfServeNotificationType {
-  info = "info",
-  warning = "warning",
-  error = "error",
+export enum PortalNotificationType {
+  InProgress = "InProgress",
+  Success = "Success",
+  Failure = "Failure",
 }
 
-export interface SelfServeNotification {
-  message: string;
-  type: SelfServeNotificationType;
+interface PortalNotification {
+  titleTKey: string;
+  messageTKey: string;
+}
+
+export interface OnSavePortalNotification extends PortalNotification {
+  type: PortalNotificationType.InProgress | PortalNotificationType.Failure;
+}
+
+export interface OnRefreshPortalNotification extends PortalNotification {
+  type: PortalNotificationType.Success | PortalNotificationType.Failure;
 }
 
 export interface RefreshResult {
   isUpdateInProgress: boolean;
-  notificationMessage: string;
+  updateInProgressMessage?: string;
+  updateCompletedMessage?: OnRefreshPortalNotification;
 }

@@ -78,7 +78,7 @@ const initTestExplorer = async (): Promise<void> => {
       subscriptionId: portalRunnerSubscripton,
       resourceGroup: portalRunnerResourceGroup,
       authorizationToken: `Bearer ${token}`,
-      features: { sampleFeature: "sampleFeatureValue" },
+      features: {},
       hasWriteAccess: true,
       csmEndpoint: "https://management.azure.com",
       dnsSuffix: "documents.azure.com",

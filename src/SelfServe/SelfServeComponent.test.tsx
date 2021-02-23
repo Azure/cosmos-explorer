@@ -1,7 +1,14 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
-import { NumberUiType, SelfServeDescriptor, SelfServeNotificationType, SmartUiInput } from "./SelfServeTypes";
+import {
+  NumberUiType,
+  SelfServeDescriptor,
+  PortalNotificationType,
+  SmartUiInput,
+  OnSavePortalNotification,
+  OnRefreshPortalNotification,
+} from "./SelfServeTypes";
 
 describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, SmartUiInput>([
@@ -17,13 +24,27 @@ describe("SelfServeComponent", () => {
 
   const initializeMock = jest.fn(async () => new Map(defaultValues));
   const onSaveMock = jest.fn(async () => {
-    return { message: "submitted successfully", type: SelfServeNotificationType.info };
+    return {
+      titleTKey: "SampleMessageTitleKey",
+      messageTKey: "SampleMessageTextKey",
+      type: PortalNotificationType.InProgress,
+    } as OnSavePortalNotification;
   });
+  const refreshResult = {
+    isUpdateInProgress: false,
+    updateInProgressMessage: "refresh performed successfully",
+    updateCompletedMessage: {
+      titleTKey: "SampleMessageTitleKey",
+      messageTKey: "SampleMessageTextKey",
+      type: PortalNotificationType.Success,
+    } as OnRefreshPortalNotification,
+  };
+
   const onRefreshMock = jest.fn(async () => {
-    return { isUpdateInProgress: false, notificationMessage: "refresh performed successfully" };
+    return { ...refreshResult };
   });
   const onRefreshIsUpdatingMock = jest.fn(async () => {
-    return { isUpdateInProgress: true, notificationMessage: "refresh performed successfully" };
+    return { ...refreshResult, isUpdateInProgress: true };
   });
 
   const exampleData: SelfServeDescriptor = {
@@ -136,16 +157,15 @@ describe("SelfServeComponent", () => {
     wrapper.update();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, updatedValues);
-    selfServeComponent.resetBaselineValues();
+    selfServeComponent.updateBaselineValues();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, defaultValues);
     isEqual(state.currentValues, state.baselineValues);
 
-    // clicking refresh calls onRefresh. If component is not updating, it calls initialize() as well
+    // clicking refresh calls onRefresh.
     selfServeComponent.onRefreshClicked();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(onRefreshMock).toHaveBeenCalledTimes(2);
-    expect(initializeMock).toHaveBeenCalledTimes(2);
 
     selfServeComponent.onSaveButtonClick();
     expect(onSaveMock).toHaveBeenCalledTimes(1);

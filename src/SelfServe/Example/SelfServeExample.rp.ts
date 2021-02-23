@@ -1,7 +1,7 @@
 import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { userContext } from "../../UserContext";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
-import { RefreshResult } from "../SelfServeTypes";
+import { PortalNotificationType, RefreshResult } from "../SelfServeTypes";
 export enum Regions {
   NorthCentralUS = "NorthCentralUS",
   WestUS = "WestUS",
@@ -64,13 +64,25 @@ export const initialize = async (): Promise<InitializeResponse> => {
 };
 
 export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
+  const refreshCountString = SessionStorageUtility.getEntry("refreshCount");
+  const refreshCount = refreshCountString ? parseInt(refreshCountString) : 0;
+
   const subscriptionId = userContext.subscriptionId;
   const resourceGroup = userContext.resourceGroup;
   const databaseAccountName = userContext.databaseAccount.name;
   const databaseAccountGetResults = await get(subscriptionId, resourceGroup, databaseAccountName);
   const isUpdateInProgress = databaseAccountGetResults.properties.provisioningState !== "Succeeded";
+
+  const progressToBeSent = refreshCount % 5 === 0 ? isUpdateInProgress : true;
+  SessionStorageUtility.setEntry("refreshCount", (refreshCount + 1).toString());
+
   return {
-    isUpdateInProgress: isUpdateInProgress,
-    notificationMessage: "RefreshMessage",
+    isUpdateInProgress: progressToBeSent,
+    updateInProgressMessage: "UpdateInProgressMessage",
+    updateCompletedMessage: {
+      titleTKey: "UpdateCompletedMessageTitle",
+      messageTKey: "UpdateCompletedMessageText",
+      type: PortalNotificationType.Success,
+    },
   };
 };

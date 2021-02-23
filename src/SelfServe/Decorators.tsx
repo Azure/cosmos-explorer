@@ -33,6 +33,7 @@ export interface ChoiceInputOptions extends InputOptionsBase {
 }
 
 export interface DescriptionDisplayOptions {
+  labelTKey?: string;
   description?: (() => Promise<Description>) | Description;
 }
 
@@ -80,7 +81,11 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
 };
 
 export const OnChange = (
-  onChange: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>
+  onChange: (
+    currentState: Map<string, SmartUiInput>,
+    newValue: InputType,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>
 ): PropertyDecorator => {
   return addToMap({ name: "onChange", value: onChange });
 };
@@ -111,7 +116,10 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
       { name: "choices", value: inputOptions.choices }
     );
   } else if (isDescriptionDisplayOptions(inputOptions)) {
-    return addToMap({ name: "description", value: inputOptions.description });
+    return addToMap(
+      { name: "labelTKey", value: inputOptions.labelTKey },
+      { name: "description", value: inputOptions.description }
+    );
   } else {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
