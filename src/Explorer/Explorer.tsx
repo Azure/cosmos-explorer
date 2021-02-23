@@ -235,8 +235,6 @@ export default class Explorer {
   public shareAccessUrl: ko.Observable<string>;
   public shareUrlCopyHelperText: ko.Observable<string>;
   public shareTokenCopyHelperText: ko.Observable<string>;
-  public shouldShowDataAccessExpiryDialog: ko.Observable<boolean>;
-  public shouldShowContextSwitchPrompt: ko.Observable<boolean>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -426,8 +424,6 @@ export default class Explorer {
       }
     });
     this.shouldShowShareDialogContents = ko.observable<boolean>(false);
-    this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
-    this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
     this.isGalleryPublishEnabled = ko.computed<boolean>(
       () => configContext.ENABLE_GALLERY_PUBLISH || this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
     );

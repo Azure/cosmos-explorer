@@ -354,33 +354,7 @@ const App: React.FunctionComponent = () => {
       <KOCommentIfStart if="isCopyNotebookPaneEnabled" />
       <div data-bind="react: copyNotebookPaneAdapter" />
       <KOCommentEnd />
-      {/* Global access token expiration dialog - Start */}
-      <div
-        id="dataAccessTokenModal"
-        className="dataAccessTokenModal"
-        style={{ display: "none" }}
-        data-bind="visible: shouldShowDataAccessExpiryDialog"
-      >
-        <div className="dataAccessTokenModalContent">
-          <p className="dataAccessTokenExpireText">Please reconnect to the account using the connection string.</p>
-        </div>
-      </div>
       {/* Global access token expiration dialog - End */}
-      {/* Context switch prompt - Start */}
-      <div
-        id="contextSwitchPrompt"
-        className="dataAccessTokenModal"
-        style={{ display: "none" }}
-        data-bind="visible: shouldShowContextSwitchPrompt"
-      >
-        <div className="dataAccessTokenModalContent">
-          <p className="dataAccessTokenExpireText">
-            Please save your work before you switch! When you switch to a different Azure Cosmos DB account, current
-            Data Explorer tabs will be closed.
-          </p>
-          <p className="dataAccessTokenExpireText">Proceed anyway?</p>
-        </div>
-      </div>
       <div data-bind="react: dialogComponentAdapter" />
       <div data-bind="react: addSynapseLinkDialog" />
     </div>
