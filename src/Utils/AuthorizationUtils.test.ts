@@ -58,48 +58,4 @@ describe("AuthorizationUtils", () => {
       ).toBeDefined();
     });
   });
-
-  describe("displayTokenRenewalPromptForStatus()", () => {
-    let explorer = new Explorer() as jest.Mocked<Explorer>;
-
-    beforeEach(() => {
-      jest.clearAllMocks();
-      window.dataExplorer = explorer;
-      updateConfigContext({
-        platform: Platform.Hosted,
-      });
-    });
-
-    afterEach(() => {
-      window.dataExplorer = undefined;
-    });
-
-    it("should not open token renewal prompt if status code is undefined", () => {
-      AuthorizationUtils.displayTokenRenewalPromptForStatus(undefined);
-      expect(explorer.displayGuestAccessTokenRenewalPrompt).not.toHaveBeenCalled();
-    });
-
-    it("should not open token renewal prompt if status code is null", () => {
-      AuthorizationUtils.displayTokenRenewalPromptForStatus(null);
-      expect(explorer.displayGuestAccessTokenRenewalPrompt).not.toHaveBeenCalled();
-    });
-
-    it("should not open token renewal prompt if status code is not 401", () => {
-      AuthorizationUtils.displayTokenRenewalPromptForStatus(Constants.HttpStatusCodes.Forbidden);
-      expect(explorer.displayGuestAccessTokenRenewalPrompt).not.toHaveBeenCalled();
-    });
-
-    it("should not open token renewal prompt if running on a different platform", () => {
-      updateConfigContext({
-        platform: Platform.Portal,
-      });
-      AuthorizationUtils.displayTokenRenewalPromptForStatus(Constants.HttpStatusCodes.Unauthorized);
-      expect(explorer.displayGuestAccessTokenRenewalPrompt).not.toHaveBeenCalled();
-    });
-
-    it("should open token renewal prompt if running on hosted platform and status code is 401", () => {
-      AuthorizationUtils.displayTokenRenewalPromptForStatus(Constants.HttpStatusCodes.Unauthorized);
-      expect(explorer.displayGuestAccessTokenRenewalPrompt).toHaveBeenCalled();
-    });
-  });
 });

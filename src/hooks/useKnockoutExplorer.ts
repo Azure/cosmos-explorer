@@ -8,6 +8,7 @@ import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import Explorer, { ExplorerParams } from "../Explorer/Explorer";
+import { handleOpenAction } from "../Explorer/OpenActions";
 import {
   AAD,
   ConnectionString,
@@ -199,6 +200,7 @@ function configurePortal() {
       // Check for init message
       const message: PortalMessage = event.data?.data;
       const inputs = message?.inputs;
+      const openAction = message?.openAction;
       if (inputs) {
         if (
           configContext.BACKEND_ENDPOINT &&
@@ -210,6 +212,9 @@ function configurePortal() {
 
         explorer.configure(inputs);
         applyExplorerBindings(explorer);
+        if (openAction) {
+          handleOpenAction(openAction, explorer.nonSystemDatabases(), explorer);
+        }
       }
     },
     false

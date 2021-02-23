@@ -40,17 +40,3 @@ export function decryptJWTToken(token: string) {
 
   return JSON.parse(tokenPayload);
 }
-
-export function displayTokenRenewalPromptForStatus(httpStatusCode: number): void {
-  const explorer = window.dataExplorer;
-
-  if (
-    httpStatusCode == null ||
-    httpStatusCode != Constants.HttpStatusCodes.Unauthorized ||
-    configContext.platform !== Platform.Hosted
-  ) {
-    return;
-  }
-
-  explorer.displayGuestAccessTokenRenewalPrompt();
-}

@@ -146,12 +146,6 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
   ) {
     explorer.closeAllPanes();
     !explorer.isConnectExplorerVisible() && explorer.settingsPane.open();
-  } else if (
-    action.paneKind === ActionContracts.PaneKind.AdHocAccess ||
-    (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.AdHocAccess]
-  ) {
-    explorer.closeAllPanes();
-    !explorer.isConnectExplorerVisible() && explorer.renewAdHocAccessPane.open();
   }
 }
 
