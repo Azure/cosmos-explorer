@@ -162,11 +162,10 @@ describe("SelfServeComponent", () => {
     isEqual(state.baselineValues, defaultValues);
     isEqual(state.currentValues, state.baselineValues);
 
-    // clicking refresh calls onRefresh. If component is not updating, it calls initialize() as well
+    // clicking refresh calls onRefresh.
     selfServeComponent.onRefreshClicked();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(onRefreshMock).toHaveBeenCalledTimes(2);
-    expect(initializeMock).toHaveBeenCalledTimes(2);
 
     selfServeComponent.onSaveButtonClick();
     expect(onSaveMock).toHaveBeenCalledTimes(1);

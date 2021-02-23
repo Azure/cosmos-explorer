@@ -29,6 +29,8 @@ import { TFunction } from "i18next";
 import "../i18n";
 import { sendMessage } from "../Common/MessageHandler";
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
+import promiseRetry, { AbortError } from "p-retry";
+import { SessionStorageUtility } from "../Shared/StorageUtility";
 
 interface SelfServeNotification {
   message: string;
@@ -229,6 +231,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public performSave = async (): Promise<void> => {
+    this.clearCorrelationId();
     this.setState({ isSaving: true, notification: undefined });
     try {
       const portalNotificationMessage = await this.props.descriptor.onSave(
@@ -237,7 +240,13 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       );
       const onSaveNotificationTitle = this.getTranslation(portalNotificationMessage.titleTKey);
       const onSaveNotificationMessage = this.getTranslation(portalNotificationMessage.messageTKey);
-      this.sendNotificationMessage(onSaveNotificationTitle, onSaveNotificationMessage, portalNotificationMessage.type);
+      this.sendNotificationMessage(
+        onSaveNotificationTitle,
+        onSaveNotificationMessage,
+        portalNotificationMessage.type,
+        this.getCorrelationId()
+      );
+      promiseRetry(() => this.pollRefresh());
     } catch (error) {
       this.setState({
         notification: {
@@ -250,7 +259,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     } finally {
       this.setState({ isSaving: false });
     }
-    await this.onRefreshClicked();
+    this.onRefreshClicked();
     this.updateBaselineValues();
   };
 
@@ -288,7 +297,20 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return true;
   };
 
-  private performRefresh = async (): Promise<RefreshResult> => {
+  private getCorrelationId = (): string => {
+    let correlationId = SessionStorageUtility.getEntry(`${this.smartUiGeneratorClassName}CorrelationId`);
+    if (!correlationId) {
+      correlationId = new Date().toUTCString();
+      SessionStorageUtility.setEntry(`${this.smartUiGeneratorClassName}CorrelationId`, correlationId);
+    }
+    return correlationId;
+  };
+
+  private clearCorrelationId = (): void => {
+    SessionStorageUtility.setEntry(`${this.smartUiGeneratorClassName}CorrelationId`, "");
+  };
+
+  private performRefresh = async (): Promise<void> => {
     const refreshResult = await this.props.descriptor.onRefresh();
     let updateInProgressNotification: SelfServeNotification;
     if (this.state.refreshResult?.isUpdateInProgress && !refreshResult.isUpdateInProgress) {
@@ -298,8 +320,11 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       this.sendNotificationMessage(
         updateCompletedNotificationTitle,
         updateCompletedNotificationMessage,
-        updateCompletedPortalNotification.type
+        updateCompletedPortalNotification.type,
+        this.getCorrelationId()
       );
+      this.clearCorrelationId();
+      await this.initializeSmartUiComponent();
     }
     if (refreshResult.isUpdateInProgress) {
       updateInProgressNotification = {
@@ -312,16 +337,24 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       refreshResult: { ...refreshResult },
       notification: updateInProgressNotification,
     });
-    return refreshResult;
   };
 
   public onRefreshClicked = async (): Promise<void> => {
     this.setState({ isInitializing: true });
-    const refreshResult = await this.performRefresh();
-    if (!refreshResult.isUpdateInProgress) {
-      await this.initializeSmartUiComponent();
-    }
+    await this.performRefresh();
     this.setState({ isInitializing: false });
+  };
+
+  public pollRefresh = async (): Promise<void> => {
+    try {
+      await this.performRefresh();
+    } catch (error) {
+      throw new AbortError(error);
+    }
+    const refreshResult = this.state.refreshResult;
+    if (refreshResult.isUpdateInProgress) {
+      throw new Error("update in progress. retrying ...");
+    }
   };
 
   public getCommonTranslation = (key: string): string => {
@@ -370,13 +403,19 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     ];
   };
 
-  private sendNotificationMessage = (title: string, message: string, type: PortalNotificationType): void => {
+  private sendNotificationMessage = (
+    title: string,
+    message: string,
+    type: PortalNotificationType,
+    correlationId: string
+  ): void => {
     sendMessage({
       type: SelfServeMessageTypes.Notification,
       data: {
         title: title,
         message: message,
         type: type,
+        correlationId: correlationId,
       },
     });
   };
