@@ -8,6 +8,7 @@ import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import Explorer, { ExplorerParams } from "../Explorer/Explorer";
+import { handleOpenAction } from "../Explorer/OpenActions";
 import {
   AAD,
   ConnectionString,
@@ -171,18 +172,18 @@ function configurePortal() {
   });
   // In development mode, try to load the iframe message from session storage.
   // This allows webpack hot reload to function properly in the portal
-  if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
-    const initMessage = sessionStorage.getItem("portalDataExplorerInitMessage");
-    if (initMessage) {
-      const message = JSON.parse(initMessage);
-      console.warn(
-        "Loaded cached portal iframe message from session storage. Do a full page refresh to get a new message"
-      );
-      console.dir(message);
-      explorer.configure(message);
-      applyExplorerBindings(explorer);
-    }
-  }
+  // if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
+  //   const initMessage = sessionStorage.getItem("portalDataExplorerInitMessage");
+  //   if (initMessage) {
+  //     const message = JSON.parse(initMessage);
+  //     console.warn(
+  //       "Loaded cached portal iframe message from session storage. Do a full page refresh to get a new message"
+  //     );
+  //     console.dir(message);
+  //     explorer.configure(message);
+  //     applyExplorerBindings(explorer);
+  //   }
+  // }
 
   // In the Portal, configuration of Explorer happens via iframe message
   window.addEventListener(
@@ -199,6 +200,7 @@ function configurePortal() {
       // Check for init message
       const message: PortalMessage = event.data?.data;
       const inputs = message?.inputs;
+      const openAction = message?.openAction;
       if (inputs) {
         if (
           configContext.BACKEND_ENDPOINT &&
@@ -210,6 +212,9 @@ function configurePortal() {
 
         explorer.configure(inputs);
         applyExplorerBindings(explorer);
+        if (openAction) {
+          handleOpenAction(openAction, explorer.nonSystemDatabases(), explorer);
+        }
       }
     },
     false
