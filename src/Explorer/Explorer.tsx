@@ -252,10 +252,8 @@ export default class Explorer {
   public notebookManager?: any; // This is dynamically loaded
 
   private _panes: ContextualPaneBase[] = [];
-  private _importExplorerConfigComplete: boolean = false;
   private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
-  private _isInitializingSparkConnectionInfo: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
   private notebookToImport: {
@@ -314,7 +312,6 @@ export default class Explorer {
     this.isAccountReady = ko.observable<boolean>(false);
     this.selfServeType = ko.observable<SelfServeType>(undefined);
     this._isInitializingNotebooks = false;
-    this._isInitializingSparkConnectionInfo = false;
     this.arcadiaToken = ko.observable<string>();
     this.arcadiaToken.subscribe((token: string) => {
       if (token) {
@@ -1661,7 +1658,6 @@ export default class Explorer {
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
       this.setSelfServeType(inputs);
-      this._importExplorerConfigComplete = true;
 
       updateConfigContext({
         BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
