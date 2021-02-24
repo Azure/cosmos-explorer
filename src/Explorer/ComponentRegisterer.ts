@@ -39,7 +39,6 @@ ko.components.register("mongo-shell-tab", new TabComponents.MongoShellTab());
 ko.components.register("conflicts-tab", new TabComponents.ConflictsTab());
 ko.components.register("notebookv2-tab", new TabComponents.NotebookV2Tab());
 ko.components.register("terminal-tab", new TabComponents.TerminalTab());
-ko.components.register("spark-master-tab", new TabComponents.SparkMasterTab());
 ko.components.register("gallery-tab", new TabComponents.GalleryTab());
 ko.components.register("notebook-viewer-tab", new TabComponents.NotebookViewerTab());
 
