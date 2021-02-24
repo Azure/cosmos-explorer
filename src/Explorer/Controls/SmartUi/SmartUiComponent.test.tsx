@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { SmartUiComponent, SmartUiDescriptor } from "./SmartUiComponent";
-import { NumberUiType, SmartUiInput } from "../../../SelfServe/SelfServeTypes";
+import { NumberUiType, SmartUiInput, DescriptionType } from "../../../SelfServe/SelfServeTypes";
 
 describe("SmartUiComponent", () => {
   const exampleData: SmartUiDescriptor = {
@@ -23,6 +23,7 @@ describe("SmartUiComponent", () => {
             type: "string",
             description: {
               textTKey: "this is an example description text.",
+              type: DescriptionType.Text,
               link: {
                 href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
                 textTKey: "Click here for more information.",
