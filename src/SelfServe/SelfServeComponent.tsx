@@ -330,7 +330,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       updateInProgressNotification = {
         type: MessageBarType.info,
         isCancellable: false,
-        message: this.getTranslation(refreshResult.updateInProgressMessage),
+        message: this.getTranslation(refreshResult.updateInProgressMessageTKey),
       };
     }
     this.setState({

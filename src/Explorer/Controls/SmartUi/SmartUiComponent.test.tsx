@@ -18,6 +18,7 @@ describe("SmartUiComponent", () => {
         {
           id: "description",
           input: {
+            labelTKey: undefined,
             dataFieldName: "description",
             type: "string",
             description: {
