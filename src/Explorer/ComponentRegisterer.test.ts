@@ -69,10 +69,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("terminal-tab")).toBe(true);
   });
 
-  it("should register spark-master-tab component", () => {
-    expect(ko.components.isRegistered("spark-master-tab")).toBe(true);
-  });
-
   it("should register mongo-shell-tab component", () => {
     expect(ko.components.isRegistered("mongo-shell-tab")).toBe(true);
   });
