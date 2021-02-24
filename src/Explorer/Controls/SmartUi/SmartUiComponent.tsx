@@ -371,4 +371,3 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return this.renderNode(this.props.descriptor.root);
   }
 }
-//{node.info && this.renderInfo(node.info as Info)}

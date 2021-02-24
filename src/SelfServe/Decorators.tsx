@@ -133,9 +133,3 @@ export const IsDisplayable = (): ClassDecorator => {
     buildSmartUiDescriptor(target.name, target.prototype);
   };
 };
-
-export const ClassInfo = (info: (() => Promise<Info>) | Info): ClassDecorator => {
-  return (target) => {
-    addPropertyToMap(target.prototype, "root", target.name, "info", info);
-  };
-};

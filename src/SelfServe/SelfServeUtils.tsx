@@ -108,14 +108,12 @@ export const mapToSmartUiDescriptor = (
   className: string,
   context: Map<string, DecoratorProperties>
 ): SelfServeDescriptor => {
-  const root = context.get("root");
-  context.delete("root");
   const inputNames: string[] = [];
 
   const smartUiDescriptor: SelfServeDescriptor = {
     root: {
       id: className,
-      info: root?.info,
+      info: undefined,
       children: [],
     },
   };

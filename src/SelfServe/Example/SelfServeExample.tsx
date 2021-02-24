@@ -1,4 +1,4 @@
-import { PropertyInfo, OnChange, Values, IsDisplayable, ClassInfo } from "../Decorators";
+import { PropertyInfo, OnChange, Values, IsDisplayable } from "../Decorators";
 import {
   ChoiceItem,
   Info,
@@ -26,10 +26,6 @@ const regionDropdownItems: ChoiceItem[] = [
   { label: "West US", key: Regions.WestUS },
   { label: "East US 2", key: Regions.EastUS2 },
 ];
-
-const selfServeExampleInfo: Info = {
-  messageTKey: "ClassInfo",
-};
 
 const regionDropdownInfo: Info = {
   messageTKey: "RegionDropdownInfo",
@@ -91,13 +87,6 @@ const validate = (
     - role: Indicates to the compiler that UI should be generated from this class.
 */
 @IsDisplayable()
-/*
-  @ClassInfo()
-    - optional
-    - input: Info | () => Promise<Info>
-    - role: Display an Info bar as the first element of the UI.
-*/
-@ClassInfo(selfServeExampleInfo)
 export default class SelfServeExample extends SelfServeBaseClass {
   /*
   onRefresh()
