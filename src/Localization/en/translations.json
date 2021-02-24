@@ -9,7 +9,7 @@
             "North Central US": "North Central US",
             "West US": "West US",
             "East US 2": "East US 2",
-            "ClassInfo": "This is a self serve class",
+            "Current Region": "Current Region",
             "RegionDropdownInfo": "More regions can be added in the future.",
             "RegionsAndAccountNameValidationError": "Regions and AccountName should not be empty.",
             "DbThroughputValidationError": "Please update Db Throughput.",

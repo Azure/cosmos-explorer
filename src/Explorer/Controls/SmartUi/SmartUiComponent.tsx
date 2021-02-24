@@ -38,7 +38,6 @@ interface BaseDisplay {
 
 interface BaseInput extends BaseDisplay {
   placeholderTKey?: string;
-  errorMessage?: string;
 }
 
 /**
@@ -68,7 +67,8 @@ interface ChoiceInput extends BaseInput {
 }
 
 interface DescriptionDisplay extends BaseDisplay {
-  description: Description;
+  description?: Description;
+  isDynamicDescription?: boolean;
 }
 
 type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
@@ -159,16 +159,19 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   }
 
   private renderDescription(input: DescriptionDisplay, labelId: string): JSX.Element {
-    const description = input.description;
-    return (
-      <Text id={`${input.dataFieldName}-text-display`} aria-labelledby={labelId}>
-        {this.props.getTranslation(input.description.textTKey)}{" "}
+    const dataFieldName = input.dataFieldName;
+    const description = input.description || (this.props.currentValues.get(dataFieldName)?.value as Description);
+    return description ? (
+      <Text id={`${dataFieldName}-text-display`} aria-labelledby={labelId}>
+        {this.props.getTranslation(description.textTKey)}{" "}
         {description.link && (
-          <Link target="_blank" href={input.description.link.href}>
-            {this.props.getTranslation(input.description.link.textTKey)}
+          <Link target="_blank" href={description.link.href}>
+            {this.props.getTranslation(description.link.textTKey)}
           </Link>
         )}
       </Text>
+    ) : (
+      this.renderError("Description is not provided.")
     );
   }
 
@@ -310,13 +313,13 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  private renderError(input: AnyDisplay): JSX.Element {
-    return <MessageBar messageBarType={MessageBarType.error}>Error: {input.errorMessage}</MessageBar>;
+  private renderError(errorMessage: string): JSX.Element {
+    return <MessageBar messageBarType={MessageBarType.error}>Error: {errorMessage}</MessageBar>;
   }
 
   private renderDisplayWithInfoBubble(input: AnyDisplay, info: Info): JSX.Element {
     if (input.errorMessage) {
-      return this.renderError(input);
+      return this.renderError(input.errorMessage);
     }
     const inputHidden = this.props.currentValues.get(input.dataFieldName)?.hidden;
     if (inputHidden) {
@@ -341,7 +344,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
   private renderDisplay(input: AnyDisplay, labelId: string): JSX.Element {
     switch (input.type) {
       case "string":
-        if ("description" in input) {
+        if ("description" in input || "isDynamicDescription" in input) {
           return this.renderDescription(input as DescriptionDisplay, labelId);
         }
         return this.renderTextInput(input as StringInput, labelId);

@@ -76,6 +76,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
           >
             <CustomizedSpinButton
               aria-labelledby="throughput-label"
+              ariaLabel="Throughput (input)"
               decrementButtonIcon={
                 Object {
                   "iconName": "ChevronDownSmall",
@@ -126,6 +127,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
             id="throughput2-slider-input"
           >
             <StyledSliderBase
+              ariaLabel="Throughput (Slider)"
               disabled={true}
               max={500}
               min={400}
@@ -391,6 +393,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
           >
             <CustomizedSpinButton
               aria-labelledby="throughput-label"
+              ariaLabel="Throughput (input)"
               decrementButtonIcon={
                 Object {
                   "iconName": "ChevronDownSmall",
@@ -441,6 +444,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
             id="throughput2-slider-input"
           >
             <StyledSliderBase
+              ariaLabel="Throughput (Slider)"
               max={500}
               min={400}
               onChange={[Function]}

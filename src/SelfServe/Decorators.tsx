@@ -35,6 +35,7 @@ export interface ChoiceInputOptions extends InputOptionsBase {
 export interface DescriptionDisplayOptions {
   labelTKey?: string;
   description?: (() => Promise<Description>) | Description;
+  isDynamicDescription?: boolean;
 }
 
 type InputOptions =
@@ -57,7 +58,7 @@ const isChoiceInputOptions = (inputOptions: InputOptions): inputOptions is Choic
 };
 
 const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions is DescriptionDisplayOptions => {
-  return "description" in inputOptions;
+  return "description" in inputOptions || "isDynamicDescription" in inputOptions;
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
@@ -118,7 +119,8 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
   } else if (isDescriptionDisplayOptions(inputOptions)) {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
-      { name: "description", value: inputOptions.description }
+      { name: "description", value: inputOptions.description },
+      { name: "isDynamicDescription", value: inputOptions.isDynamicDescription }
     );
   } else {
     return addToMap(

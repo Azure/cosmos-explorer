@@ -1,6 +1,7 @@
 import { PropertyInfo, OnChange, Values, IsDisplayable } from "../Decorators";
 import {
   ChoiceItem,
+  Description,
   Info,
   InputType,
   NumberUiType,
@@ -33,6 +34,10 @@ const regionDropdownInfo: Info = {
 
 const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
   currentState.set("regions", { value: newValue });
+
+  const currentRegionText = `current region selected is ${newValue}`;
+  currentState.set("currentRegionText", { value: { textTKey: currentRegionText } as Description, hidden: false });
+
   const currentEnableLogging = currentState.get("enableLogging");
   if (newValue === Regions.NorthCentralUS) {
     currentState.set("enableLogging", { value: false, disabled: true });
@@ -168,6 +173,8 @@ export default class SelfServeExample extends SelfServeBaseClass {
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
     const initializeResponse = await initialize();
     const defaults = new Map<string, SmartUiInput>();
+    const currentRegionText = `current region selected is ${initializeResponse.regions}`;
+    defaults.set("currentRegionText", { value: { textTKey: currentRegionText } as Description, hidden: false });
     defaults.set("regions", { value: initializeResponse.regions });
     defaults.set("enableLogging", { value: initializeResponse.enableLogging });
     const accountName = initializeResponse.accountName;
@@ -200,6 +207,13 @@ export default class SelfServeExample extends SelfServeBaseClass {
     },
   })
   description: string;
+
+  @Values({
+    labelTKey: "Current Region",
+    isDynamicDescription: true,
+  })
+  currentRegionText: string;
+
   /*
   @PropertyInfo()
     - optional

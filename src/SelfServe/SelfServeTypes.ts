@@ -99,7 +99,7 @@ export enum NumberUiType {
 
 export type ChoiceItem = { label: string; key: string };
 
-export type InputType = number | string | boolean | ChoiceItem;
+export type InputType = number | string | boolean | ChoiceItem | Description;
 
 export interface Info {
   messageTKey: string;

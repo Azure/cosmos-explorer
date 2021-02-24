@@ -42,6 +42,7 @@ export interface DecoratorProperties {
   uiType?: string;
   errorMessage?: string;
   description?: (() => Promise<Description>) | Description;
+  isDynamicDescription?: boolean;
   onChange?: (
     currentState: Map<string, SmartUiInput>,
     newValue: InputType,
@@ -153,7 +154,10 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
       }
       return value as NumberInput;
     case "string":
-      if (value.description) {
+      if (value.description || value.isDynamicDescription) {
+        if (value.description && value.isDynamicDescription) {
+          value.errorMessage = `dynamic descriptions should not have defaults set here.`;
+        }
         return value as DescriptionDisplay;
       }
       if (!value.labelTKey) {
