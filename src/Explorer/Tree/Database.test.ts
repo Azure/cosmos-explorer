@@ -69,7 +69,7 @@ describe("Add Schema", () => {
       subscriptionId: userContext.subscriptionId,
       resourceGroup: userContext.resourceGroup,
       accountName: userContext.databaseAccount.name,
-      resource: `dbs/${database.id}/colls/${collection.id}`,
+      resource: `dbs/${database.id()}/colls/${collection.id}`,
       status: "new",
     });
     expect(checkForSchema).not.toBeNull();
