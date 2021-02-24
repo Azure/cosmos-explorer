@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { CommandBarComponentButtonFactory } from "./CommandBarComponentButtonFactory";
+import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import NotebookManager from "../../Notebook/NotebookManager";
 import Explorer from "../../Explorer";

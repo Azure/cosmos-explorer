@@ -108,7 +108,7 @@ export interface CollectionBase extends TreeNode {
   isCollectionExpanded: ko.Observable<boolean>;
 
   onDocumentDBDocumentsClick(): void;
-  onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void;
+  onNewQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
   expandCollection(): void;
   collapseCollection(): void;
   getDatabase(): Database;
@@ -140,11 +140,11 @@ export interface Collection extends CollectionBase {
   onSettingsClick: () => Promise<void>;
 
   onNewGraphClick(): void;
-  onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string): void;
+  onNewMongoQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
   onNewMongoShellClick(): void;
-  onNewStoredProcedureClick(source: Collection, event: MouseEvent): void;
-  onNewUserDefinedFunctionClick(source: Collection, event: MouseEvent): void;
-  onNewTriggerClick(source: Collection, event: MouseEvent): void;
+  onNewStoredProcedureClick(source: Collection, event?: MouseEvent): void;
+  onNewUserDefinedFunctionClick(source: Collection, event?: MouseEvent): void;
+  onNewTriggerClick(source: Collection, event?: MouseEvent): void;
   storedProcedures: ko.Computed<StoredProcedure[]>;
   userDefinedFunctions: ko.Computed<UserDefinedFunction[]>;
   triggers: ko.Computed<Trigger[]>;

@@ -7,7 +7,7 @@ import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { CommandBarComponentButtonFactory } from "./CommandBarComponentButtonFactory";
+import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import { StyleConstants } from "../../../Common/Constants";
 import * as CommandBarUtil from "./CommandBarUtil";

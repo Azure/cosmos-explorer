@@ -103,11 +103,9 @@ const App: React.FunctionComponent = () => {
         className="flexContainer hideOverflows"
         style={{ display: "none" }}
       >
-        {/* Main Command Bar - Start */}
         <div data-bind="react: commandBarComponentAdapter" />
-        {/* Main Command Bar - End */}
         {/* Share url flyout - Start */}
-        <div
+        {/* <div
           id="shareDataAccessFlyout"
           className="shareDataAccessFlyout"
           data-bind="visible: shouldShowShareDialogContents"
@@ -169,7 +167,7 @@ const App: React.FunctionComponent = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
         {/* Share url flyout - End */}
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
