@@ -26,7 +26,6 @@ import { configContext, Platform } from "../../../ConfigContext";
 import Explorer from "../../Explorer";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import * as React from "react";
-import { Text } from "office-ui-fabric-react";
 import { OpenFullScreen } from "../../OpenFullScreen";
 
 let counter = 0;
