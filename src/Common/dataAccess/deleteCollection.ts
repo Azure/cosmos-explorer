@@ -13,7 +13,7 @@ import { client } from "../CosmosClient";
 export async function deleteCollection(databaseId: string, collectionId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting container ${collectionId}`);
   try {
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
       await deleteCollectionWithARM(databaseId, collectionId);
     } else {
       await client().database(databaseId).container(collectionId).delete();

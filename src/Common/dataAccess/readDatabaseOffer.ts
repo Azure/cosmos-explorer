@@ -15,7 +15,7 @@ export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promis
 
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience !== DefaultAccountExperienceType.Table
     ) {

@@ -680,6 +680,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.formWarnings("");
     this.databaseCreateNewShared(this.getSharedThroughputDefault());
     this.shouldCreateMongoWildcardIndex(this.container.isMongoIndexingEnabled());
+    this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    this.isSharedAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
     if (this.isPreferredApiTable() && !databaseId) {
       databaseId = SharedConstants.CollectionCreation.TablesAPIDefaultDatabase;
     }

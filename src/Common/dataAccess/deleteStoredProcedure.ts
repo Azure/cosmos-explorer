@@ -14,7 +14,7 @@ export async function deleteStoredProcedure(
   const clearMessage = logConsoleProgress(`Deleting stored procedure ${storedProcedureId}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {

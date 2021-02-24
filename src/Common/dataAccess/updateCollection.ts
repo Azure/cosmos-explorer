@@ -41,7 +41,7 @@ export async function updateCollection(
 
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
       userContext.defaultExperience !== DefaultAccountExperienceType.Table

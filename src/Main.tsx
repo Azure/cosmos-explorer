@@ -30,7 +30,7 @@ import "./Explorer/Panes/GraphNewVertexPane.less";
 import "./Explorer/Tabs/QueryTab.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
-import "./Explorer/SplashScreen/SplashScreenComponent.less";
+import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
 
 // Image Dependencies
@@ -68,6 +68,7 @@ import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
+import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 
 initializeIcons();
 
@@ -87,7 +88,7 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
   };
   const config = useConfig();
-  useKnockoutExplorer(config, explorerParams);
+  const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
   return (
     <div className="flexContainer">
@@ -275,7 +276,7 @@ const App: React.FunctionComponent = () => {
             data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
           >
             <form className="connectExplorerFormContainer">
-              <div className="connectExplorer" data-bind="react: splashScreenAdapter" />
+              <SplashScreen explorer={explorer} />
             </form>
           </div>
           <div
@@ -340,7 +341,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "upload-items-pane", params: { data: uploadItemsPane} }' />
       <div data-bind='component: { name: "load-query-pane", params: { data: loadQueryPane} }' />
       <div data-bind='component: { name: "execute-sproc-params-pane", params: { data: executeSprocParamsPane} }' />
-      <div data-bind='component: { name: "renew-adhoc-access-pane", params: { data: renewAdHocAccessPane} }' />
       <div data-bind='component: { name: "save-query-pane", params: { data: saveQueryPane} }' />
       <div data-bind='component: { name: "browse-queries-pane", params: { data: browseQueriesPane} }' />
       <div data-bind='component: { name: "upload-file-pane", params: { data: uploadFilePane} }' />
@@ -355,33 +355,7 @@ const App: React.FunctionComponent = () => {
       <KOCommentIfStart if="isCopyNotebookPaneEnabled" />
       <div data-bind="react: copyNotebookPaneAdapter" />
       <KOCommentEnd />
-      {/* Global access token expiration dialog - Start */}
-      <div
-        id="dataAccessTokenModal"
-        className="dataAccessTokenModal"
-        style={{ display: "none" }}
-        data-bind="visible: shouldShowDataAccessExpiryDialog"
-      >
-        <div className="dataAccessTokenModalContent">
-          <p className="dataAccessTokenExpireText">Please reconnect to the account using the connection string.</p>
-        </div>
-      </div>
       {/* Global access token expiration dialog - End */}
-      {/* Context switch prompt - Start */}
-      <div
-        id="contextSwitchPrompt"
-        className="dataAccessTokenModal"
-        style={{ display: "none" }}
-        data-bind="visible: shouldShowContextSwitchPrompt"
-      >
-        <div className="dataAccessTokenModalContent">
-          <p className="dataAccessTokenExpireText">
-            Please save your work before you switch! When you switch to a different Azure Cosmos DB account, current
-            Data Explorer tabs will be closed.
-          </p>
-          <p className="dataAccessTokenExpireText">Proceed anyway?</p>
-        </div>
-      </div>
       <div data-bind="react: dialogComponentAdapter" />
       <div data-bind="react: addSynapseLinkDialog" />
     </div>

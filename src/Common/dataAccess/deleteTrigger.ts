@@ -10,7 +10,7 @@ export async function deleteTrigger(databaseId: string, collectionId: string, tr
   const clearMessage = logConsoleProgress(`Deleting trigger ${triggerId}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {
