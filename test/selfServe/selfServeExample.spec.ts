@@ -20,6 +20,7 @@ describe("Self Serve", () => {
 
       // id of the display element is in the format {PROPERTY_NAME}-{DISPLAY_NAME}-{DISPLAY_TYPE}
       await frame.waitForSelector("#description-text-display");
+      await frame.waitForSelector("#currentRegionText-text-display");
 
       const regions = await frame.waitForSelector("#regions-dropdown-input");
       let disabledLoggingToggle = await frame.$$("#enableLogging-toggle-input[disabled]");

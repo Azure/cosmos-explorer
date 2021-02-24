@@ -78,7 +78,7 @@ export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
 
   return {
     isUpdateInProgress: progressToBeSent,
-    updateInProgressMessage: "UpdateInProgressMessage",
+    updateInProgressMessageTKey: "UpdateInProgressMessage",
     updateCompletedMessage: {
       titleTKey: "UpdateCompletedMessageTitle",
       messageTKey: "UpdateCompletedMessageText",

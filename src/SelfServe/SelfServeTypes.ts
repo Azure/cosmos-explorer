@@ -99,7 +99,7 @@ export enum NumberUiType {
 
 export type ChoiceItem = { label: string; key: string };
 
-export type InputType = number | string | boolean | ChoiceItem;
+export type InputType = number | string | boolean | ChoiceItem | Description;
 
 export interface Info {
   messageTKey: string;
@@ -144,6 +144,6 @@ export interface OnRefreshPortalNotification extends PortalNotification {
 
 export interface RefreshResult {
   isUpdateInProgress: boolean;
-  updateInProgressMessage?: string;
+  updateInProgressMessageTKey?: string;
   updateCompletedMessage?: OnRefreshPortalNotification;
 }
