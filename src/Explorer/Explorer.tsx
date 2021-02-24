@@ -95,11 +95,6 @@ BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
 var tmp = ComponentRegisterer;
 
-interface AdHocAccessData {
-  readWriteUrl: string;
-  readUrl: string;
-}
-
 export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
