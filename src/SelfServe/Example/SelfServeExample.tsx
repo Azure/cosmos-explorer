@@ -2,6 +2,7 @@ import { PropertyInfo, OnChange, Values, IsDisplayable } from "../Decorators";
 import {
   ChoiceItem,
   Description,
+  DescriptionType,
   Info,
   InputType,
   NumberUiType,
@@ -36,7 +37,10 @@ const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: Inpu
   currentState.set("regions", { value: newValue });
 
   const currentRegionText = `current region selected is ${newValue}`;
-  currentState.set("currentRegionText", { value: { textTKey: currentRegionText } as Description, hidden: false });
+  currentState.set("currentRegionText", {
+    value: { textTKey: currentRegionText, type: DescriptionType.Text } as Description,
+    hidden: false,
+  });
 
   const currentEnableLogging = currentState.get("enableLogging");
   if (newValue === Regions.NorthCentralUS) {
@@ -174,7 +178,10 @@ export default class SelfServeExample extends SelfServeBaseClass {
     const initializeResponse = await initialize();
     const defaults = new Map<string, SmartUiInput>();
     const currentRegionText = `current region selected is ${initializeResponse.regions}`;
-    defaults.set("currentRegionText", { value: { textTKey: currentRegionText } as Description, hidden: false });
+    defaults.set("currentRegionText", {
+      value: { textTKey: currentRegionText, type: DescriptionType.Text } as Description,
+      hidden: false,
+    });
     defaults.set("regions", { value: initializeResponse.regions });
     defaults.set("enableLogging", { value: initializeResponse.enableLogging });
     const accountName = initializeResponse.accountName;
@@ -200,6 +207,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     labelTKey: "DescriptionLabel",
     description: {
       textTKey: "DescriptionText",
+      type: DescriptionType.Text,
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
         textTKey: "DecriptionLinkText",

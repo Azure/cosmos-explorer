@@ -109,8 +109,15 @@ export interface Info {
   };
 }
 
+export enum DescriptionType {
+  Text,
+  InfoMessageBar,
+  WarningMessageBar,
+}
+
 export interface Description {
   textTKey: string;
+  type: DescriptionType;
   link?: {
     href: string;
     textTKey: string;
