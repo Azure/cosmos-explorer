@@ -20,10 +20,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("graph-style")).toBe(true);
   });
 
-  it("should register collapsible-panel component", () => {
-    expect(ko.components.isRegistered("collapsible-panel")).toBe(true);
-  });
-
   it("should register json-editor component", () => {
     expect(ko.components.isRegistered("json-editor")).toBe(true);
   });
