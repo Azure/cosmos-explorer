@@ -92,6 +92,7 @@
     "react-i18next": "11.8.5",
     "react-notification-system": "0.2.17",
     "react-redux": "7.1.3",
+    "react-use": "17.1.1",
     "redux": "4.0.4",
     "reflect-metadata": "0.1.13",
     "rx-jupyter": "5.5.12",

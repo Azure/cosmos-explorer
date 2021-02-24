@@ -27,6 +27,7 @@ import Explorer from "../../Explorer";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import * as React from "react";
 import { Text } from "office-ui-fabric-react";
+import { OpenFullScreen } from "../../OpenFullScreen";
 
 let counter = 0;
 
@@ -179,14 +180,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
       iconSrc: OpenInTabIcon,
       iconAlt: label,
       onCommandClick: () => {
-        container.openSidePanel(
-          "Open Full Screen",
-          <Text>
-            Open this database account in a new browser tab with Cosmos DB Explorer. Or copy the read-write or read only
-            access urls below to share with others. For security purposes, the URLs grant time-bound access to the
-            account. When access expires, you can reconnect, using a valid connection string for the account.
-          </Text>
-        );
+        container.openSidePanel("Open Full Screen", <OpenFullScreen />);
       },
       commandButtonLabel: undefined,
       ariaLabel: label,

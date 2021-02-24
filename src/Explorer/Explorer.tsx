@@ -1033,25 +1033,6 @@ export default class Explorer {
     // TODO: return result
   }
 
-  public generateSharedAccessData(): void {
-    const id: string = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Generating share url");
-    AuthHeadersUtil.generateEncryptedToken().then(
-      (tokenResponse: DataModels.GenerateTokenResponse) => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Successfully generated share url");
-        this._openShareDialog();
-      },
-      (error: any) => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to generate share url: ${getErrorMessage(error)}`
-        );
-        console.error(error);
-      }
-    );
-  }
-
   public isDatabaseNodeOrNoneSelected(): boolean {
     return this.isNoneSelected() || this.isDatabaseNodeSelected();
   }
