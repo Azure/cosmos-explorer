@@ -2,11 +2,10 @@ import { Spinner, Stack, Text, TextField } from "office-ui-fabric-react";
 import { DefaultButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import * as React from "react";
 import { useFullScreenURLs } from "../hooks/useFullScreenURLs";
-import { useCopyToClipboard } from "react-use";
+import copyToClipboard from "clipboard-copy";
 
 export const OpenFullScreen: React.FunctionComponent = () => {
   const result = useFullScreenURLs();
-  const [, copyToClipboard] = useCopyToClipboard();
   if (!result) {
     return <Spinner label="Generating URLs..." ariaLive="assertive" labelPosition="right" />;
   }
