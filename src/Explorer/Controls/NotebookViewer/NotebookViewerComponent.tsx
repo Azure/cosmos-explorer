@@ -11,7 +11,7 @@ import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
-import { DialogComponent, DialogProps, TextFieldProps } from "../DialogReactComponent/DialogComponent";
+import { Dialog, DialogProps, TextFieldProps } from "../Dialog";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
 import Explorer from "../../Explorer";
@@ -179,7 +179,7 @@ export class NotebookViewerComponent
           hidePrompts: this.props.hidePrompts,
         })}
 
-        {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
+        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
       </div>
     );
   }

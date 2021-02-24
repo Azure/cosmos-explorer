@@ -23,7 +23,7 @@ import {
 import * as React from "react";
 import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
+import { Dialog, DialogProps } from "../Dialog";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
 import { HttpStatusCodes } from "../../../Common/Constants";
@@ -196,7 +196,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       <div className="galleryContainer">
         <Pivot {...pivotProps}>{pivotItems}</Pivot>
 
-        {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
+        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
       </div>
     );
   }

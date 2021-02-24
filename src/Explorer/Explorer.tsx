@@ -40,8 +40,7 @@ import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { DialogComponentAdapter } from "./Controls/DialogReactComponent/DialogComponentAdapter";
-import { DialogProps, TextFieldProps } from "./Controls/DialogReactComponent/DialogComponent";
+import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
@@ -111,6 +110,8 @@ export interface ExplorerParams {
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
   closeSidePanel: () => void;
+  closeDialog: () => void;
+  openDialog: (props: DialogProps) => void;
 }
 
 export default class Explorer {
@@ -250,6 +251,8 @@ export default class Explorer {
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: any; // This is dynamically loaded
+  public openDialog: ExplorerParams["openDialog"];
+  public closeDialog: ExplorerParams["closeDialog"];
 
   private _panes: ContextualPaneBase[] = [];
   private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
@@ -263,10 +266,6 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private dialogComponentAdapter: DialogComponentAdapter;
-  private _dialogProps: ko.Observable<DialogProps>;
-  private addSynapseLinkDialog: DialogComponentAdapter;
-  private _addSynapseLinkDialogProps: ko.Observable<DialogProps>;
   private selfServeLoadingComponentAdapter: SelfServeLoadingComponentAdapter;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
@@ -277,6 +276,8 @@ export default class Explorer {
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
     this.openSidePanel = params?.openSidePanel;
     this.closeSidePanel = params?.closeSidePanel;
+    this.closeDialog = params?.closeDialog;
+    this.openDialog = params?.openDialog;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -905,7 +906,6 @@ export default class Explorer {
         this.notebookManager = new notebookManagerModule.default();
         this.notebookManager.initialize({
           container: this,
-          dialogProps: this._dialogProps,
           notebookBasePath: this.notebookBasePath,
           resourceTree: this.resourceTree,
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
@@ -973,32 +973,7 @@ export default class Explorer {
       featureSubcription.dispose();
     });
 
-    this._dialogProps = ko.observable<DialogProps>({
-      isModal: false,
-      visible: false,
-      title: undefined,
-      subText: undefined,
-      primaryButtonText: undefined,
-      secondaryButtonText: undefined,
-      onPrimaryButtonClick: undefined,
-      onSecondaryButtonClick: undefined,
-    });
-    this.dialogComponentAdapter = new DialogComponentAdapter();
-    this.dialogComponentAdapter.parameters = this._dialogProps;
     this.mostRecentActivity = new MostRecentActivity.MostRecentActivity(this);
-
-    this._addSynapseLinkDialogProps = ko.observable<DialogProps>({
-      isModal: false,
-      visible: false,
-      title: undefined,
-      subText: undefined,
-      primaryButtonText: undefined,
-      secondaryButtonText: undefined,
-      onPrimaryButtonClick: undefined,
-      onSecondaryButtonClick: undefined,
-    });
-    this.addSynapseLinkDialog = new DialogComponentAdapter();
-    this.addSynapseLinkDialog.parameters = this._addSynapseLinkDialogProps;
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -1060,7 +1035,7 @@ export default class Explorer {
         TelemetryProcessor.traceCancel(Action.EnableAzureSynapseLink);
       },
     };
-    this._addSynapseLinkDialogProps(addSynapseLinkDialogProps);
+    this.openDialog(addSynapseLinkDialogProps);
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
@@ -1496,6 +1471,7 @@ export default class Explorer {
       );
       return;
     }
+
     const resetConfirmationDialogProps: DialogProps = {
       isModal: true,
       visible: true,
@@ -1506,7 +1482,7 @@ export default class Explorer {
       onPrimaryButtonClick: this._resetNotebookWorkspace,
       onSecondaryButtonClick: this._closeModalDialog,
     };
-    this._dialogProps(resetConfirmationDialogProps);
+    this.openDialog(resetConfirmationDialogProps);
   }
 
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
@@ -1570,13 +1546,11 @@ export default class Explorer {
   };
 
   private _closeModalDialog = () => {
-    this._dialogProps().visible = false;
-    this._dialogProps.valueHasMutated();
+    this.closeDialog();
   };
 
   private _closeSynapseLinkModalDialog = () => {
-    this._addSynapseLinkDialogProps().visible = false;
-    this._addSynapseLinkDialogProps.valueHasMutated();
+    this.closeDialog();
   };
 
   public findSelectedDatabase(): ViewModels.Database {
@@ -2080,7 +2054,7 @@ export default class Explorer {
   }
 
   public showOkModalDialog(title: string, msg: string): void {
-    this._dialogProps({
+    this.openDialog({
       isModal: true,
       visible: true,
       title,
@@ -2103,7 +2077,7 @@ export default class Explorer {
     textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    this._dialogProps({
+    this.openDialog({
       isModal: true,
       visible: true,
       title,
@@ -2437,7 +2411,7 @@ export default class Explorer {
     }
 
     if (item.type === NotebookContentItemType.Directory && item.children && item.children.length > 0) {
-      this._dialogProps({
+      this.openDialog({
         isModal: true,
         visible: true,
         title: "Unable to delete file",
