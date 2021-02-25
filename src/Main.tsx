@@ -58,7 +58,6 @@ import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { ExplorerParams } from "./Explorer/Explorer";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import copyImage from "../images/Copy.svg";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
 import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
@@ -69,6 +68,7 @@ import { useSidePanel } from "./hooks/useSidePanel";
 import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
+import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
 
 initializeIcons();
 
@@ -78,6 +78,17 @@ const App: React.FunctionComponent = () => {
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
 
+  const [dialogProps, setDialogProps] = useState<DialogProps>();
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+
+  const openDialog = (props: DialogProps) => {
+    setDialogProps(props);
+    setShowDialog(true);
+  };
+  const closeDialog = () => {
+    setShowDialog(false);
+  };
+
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
 
   const explorerParams: ExplorerParams = {
@@ -86,6 +97,8 @@ const App: React.FunctionComponent = () => {
     setInProgressConsoleDataIdToBeDeleted,
     openSidePanel,
     closeSidePanel,
+    openDialog,
+    closeDialog,
   };
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
@@ -103,74 +116,7 @@ const App: React.FunctionComponent = () => {
         className="flexContainer hideOverflows"
         style={{ display: "none" }}
       >
-        {/* Main Command Bar - Start */}
         <div data-bind="react: commandBarComponentAdapter" />
-        {/* Main Command Bar - End */}
-        {/* Share url flyout - Start */}
-        <div
-          id="shareDataAccessFlyout"
-          className="shareDataAccessFlyout"
-          data-bind="visible: shouldShowShareDialogContents"
-        >
-          <div className="shareDataAccessFlyoutContent">
-            <div className="urlContainer">
-              <span className="urlContentText">
-                Open this database account in a new browser tab with Cosmos DB Explorer. Or copy the read-write or read
-                only access urls below to share with others. For security purposes, the URLs grant time-bound access to
-                the account. When access expires, you can reconnect, using a valid connection string for the account.
-              </span>
-              <br />
-              <div
-                className="toggles"
-                data-bind="event: { keydown: onToggleKeyDown }, visible: shareAccessData().readWriteUrl != null"
-                tabIndex={0}
-                aria-label="Read-Write and Read toggle"
-              >
-                <div className="tab">
-                  <input type="radio" className="radio" defaultValue="readwrite" />
-                  <span
-                    className="toggleSwitch"
-                    role="presentation"
-                    data-bind="click: toggleReadWrite, css:{ selectedToggle: isReadWriteToggled(), unselectedToggle: !isReadWriteToggled() }"
-                  >
-                    Read-Write
-                  </span>
-                </div>
-                <div className="tab">
-                  <input type="radio" className="radio" defaultValue="read" />
-                  <span
-                    className="toggleSwitch"
-                    role="presentation"
-                    data-bind="click: toggleRead, css:{ selectedToggle: isReadToggled(), unselectedToggle: !isReadToggled() }"
-                  >
-                    Read
-                  </span>
-                </div>
-              </div>
-              <div className="urlSpace">
-                <input
-                  id="shareUrlLink"
-                  aria-label="Share url link"
-                  className="shareLink"
-                  type="text"
-                  read-only={true}
-                  data-bind="value: shareAccessUrl"
-                />
-                <span
-                  className="urlTokenCopyInfoTooltip"
-                  data-bind="click: copyUrlLink, event: { keypress: onCopyUrlLinkKeyPress }"
-                  aria-label="Copy url link"
-                  role="button"
-                  tabIndex={0}
-                >
-                  <img src={copyImage} alt="Copy link" />
-                  <span className="urlTokenCopyTooltiptext" data-bind="text: shareUrlCopyHelperText" />
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Share url flyout - End */}
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
           {/* Collections Tree - Start */}
@@ -355,9 +301,7 @@ const App: React.FunctionComponent = () => {
       <KOCommentIfStart if="isCopyNotebookPaneEnabled" />
       <div data-bind="react: copyNotebookPaneAdapter" />
       <KOCommentEnd />
-      {/* Global access token expiration dialog - End */}
-      <div data-bind="react: dialogComponentAdapter" />
-      <div data-bind="react: addSynapseLinkDialog" />
+      {showDialog && <Dialog {...dialogProps} />}
     </div>
   );
 };

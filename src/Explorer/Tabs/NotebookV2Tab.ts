@@ -20,7 +20,7 @@ import KillKernelIcon from "../../../images/notebook/Notebook-stop.svg";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import { Areas, ArmApiVersions } from "../../Common/Constants";
-import { CommandBarComponentButtonFactory } from "../Menus/CommandBar/CommandBarComponentButtonFactory";
+import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";

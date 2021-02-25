@@ -20,7 +20,6 @@ describe("OpenActions", () => {
       explorer.cassandraAddCollectionPane = {} as CassandraAddCollectionPane;
       explorer.cassandraAddCollectionPane.open = jest.fn();
       explorer.closeAllPanes = () => {};
-      explorer.isConnectExplorerVisible = () => false;
 
       database = {
         id: ko.observable("db"),

@@ -28,14 +28,11 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_addSynapseLinkDialogProps": [Function],
                 "_closeModalDialog": [Function],
                 "_closeSynapseLinkModalDialog": [Function],
-                "_dialogProps": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_isSystemDatabasePredicate": [Function],
-                "_openShareDialog": [Function],
                 "_panes": Array [
                   AddDatabasePane {
                     "autoPilotUsageCost": [Function],
@@ -677,9 +674,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "addDatabaseText": [Function],
-                "addSynapseLinkDialog": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "addTableEntityPane": AddTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -786,6 +780,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "clickHostedAccountSwitch": [Function],
                 "clickHostedDirectorySwitch": [Function],
+                "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
@@ -841,9 +836,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "deleteDatabaseText": [Function],
-                "dialogComponentAdapter": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "editTableEntityPane": EditTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -947,8 +939,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isPreferredApiMongoDB": [Function],
                 "isPreferredApiTable": [Function],
                 "isPublishNotebookPaneEnabled": [Function],
-                "isReadToggled": [Function],
-                "isReadWriteToggled": [Function],
                 "isRefreshingExplorer": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
                 "isRightPanelV2Enabled": [Function],
@@ -1003,7 +993,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
-                "onToggleKeyDown": [Function],
+                "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -1033,8 +1023,6 @@ exports[`SettingsComponent renders 1`] = `
                 "refreshDatabaseAccount": [Function],
                 "refreshNotebookList": [Function],
                 "refreshTreeTitle": [Function],
-                "renewToken": [Function],
-                "renewTokenError": [Function],
                 "resourceTokenCollection": [Function],
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
@@ -1130,12 +1118,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "shareAccessData": [Function],
-                "shareAccessToggleState": [Function],
-                "shareAccessUrl": [Function],
-                "shareTokenCopyHelperText": [Function],
-                "shareUrlCopyHelperText": [Function],
-                "shouldShowShareDialogContents": [Function],
                 "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
                 "splitter": Splitter {
@@ -1195,9 +1177,6 @@ exports[`SettingsComponent renders 1`] = `
                   "openedTabs": [Function],
                 },
                 "toggleLeftPaneExpandedKeyPress": [Function],
-                "toggleRead": [Function],
-                "toggleReadWrite": [Function],
-                "tokenForRenewal": [Function],
                 "uploadFilePane": UploadFilePane {
                   "container": [Circular],
                   "extensions": [Function],
@@ -1267,14 +1246,11 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_addSynapseLinkDialogProps": [Function],
               "_closeModalDialog": [Function],
               "_closeSynapseLinkModalDialog": [Function],
-              "_dialogProps": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_isSystemDatabasePredicate": [Function],
-              "_openShareDialog": [Function],
               "_panes": Array [
                 AddDatabasePane {
                   "autoPilotUsageCost": [Function],
@@ -1916,9 +1892,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "addDatabaseText": [Function],
-              "addSynapseLinkDialog": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "addTableEntityPane": AddTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -2025,6 +1998,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "clickHostedAccountSwitch": [Function],
               "clickHostedDirectorySwitch": [Function],
+              "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
@@ -2080,9 +2054,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "deleteDatabaseText": [Function],
-              "dialogComponentAdapter": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "editTableEntityPane": EditTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -2186,8 +2157,6 @@ exports[`SettingsComponent renders 1`] = `
               "isPreferredApiMongoDB": [Function],
               "isPreferredApiTable": [Function],
               "isPublishNotebookPaneEnabled": [Function],
-              "isReadToggled": [Function],
-              "isReadWriteToggled": [Function],
               "isRefreshingExplorer": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
               "isRightPanelV2Enabled": [Function],
@@ -2242,7 +2211,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
-              "onToggleKeyDown": [Function],
+              "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
@@ -2272,8 +2241,6 @@ exports[`SettingsComponent renders 1`] = `
               "refreshDatabaseAccount": [Function],
               "refreshNotebookList": [Function],
               "refreshTreeTitle": [Function],
-              "renewToken": [Function],
-              "renewTokenError": [Function],
               "resourceTokenCollection": [Function],
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],
@@ -2369,12 +2336,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "shareAccessData": [Function],
-              "shareAccessToggleState": [Function],
-              "shareAccessUrl": [Function],
-              "shareTokenCopyHelperText": [Function],
-              "shareUrlCopyHelperText": [Function],
-              "shouldShowShareDialogContents": [Function],
               "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
               "splitter": Splitter {
@@ -2434,9 +2395,6 @@ exports[`SettingsComponent renders 1`] = `
                 "openedTabs": [Function],
               },
               "toggleLeftPaneExpandedKeyPress": [Function],
-              "toggleRead": [Function],
-              "toggleReadWrite": [Function],
-              "tokenForRenewal": [Function],
               "uploadFilePane": UploadFilePane {
                 "container": [Circular],
                 "extensions": [Function],
@@ -2519,14 +2477,11 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_addSynapseLinkDialogProps": [Function],
                 "_closeModalDialog": [Function],
                 "_closeSynapseLinkModalDialog": [Function],
-                "_dialogProps": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_isSystemDatabasePredicate": [Function],
-                "_openShareDialog": [Function],
                 "_panes": Array [
                   AddDatabasePane {
                     "autoPilotUsageCost": [Function],
@@ -3168,9 +3123,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "addDatabaseText": [Function],
-                "addSynapseLinkDialog": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "addTableEntityPane": AddTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -3277,6 +3229,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "clickHostedAccountSwitch": [Function],
                 "clickHostedDirectorySwitch": [Function],
+                "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
@@ -3332,9 +3285,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "deleteDatabaseText": [Function],
-                "dialogComponentAdapter": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "editTableEntityPane": EditTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -3438,8 +3388,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isPreferredApiMongoDB": [Function],
                 "isPreferredApiTable": [Function],
                 "isPublishNotebookPaneEnabled": [Function],
-                "isReadToggled": [Function],
-                "isReadWriteToggled": [Function],
                 "isRefreshingExplorer": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
                 "isRightPanelV2Enabled": [Function],
@@ -3494,7 +3442,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
-                "onToggleKeyDown": [Function],
+                "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -3524,8 +3472,6 @@ exports[`SettingsComponent renders 1`] = `
                 "refreshDatabaseAccount": [Function],
                 "refreshNotebookList": [Function],
                 "refreshTreeTitle": [Function],
-                "renewToken": [Function],
-                "renewTokenError": [Function],
                 "resourceTokenCollection": [Function],
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
@@ -3621,12 +3567,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "shareAccessData": [Function],
-                "shareAccessToggleState": [Function],
-                "shareAccessUrl": [Function],
-                "shareTokenCopyHelperText": [Function],
-                "shareUrlCopyHelperText": [Function],
-                "shouldShowShareDialogContents": [Function],
                 "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
                 "splitter": Splitter {
@@ -3686,9 +3626,6 @@ exports[`SettingsComponent renders 1`] = `
                   "openedTabs": [Function],
                 },
                 "toggleLeftPaneExpandedKeyPress": [Function],
-                "toggleRead": [Function],
-                "toggleReadWrite": [Function],
-                "tokenForRenewal": [Function],
                 "uploadFilePane": UploadFilePane {
                   "container": [Circular],
                   "extensions": [Function],
@@ -3758,14 +3695,11 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_addSynapseLinkDialogProps": [Function],
               "_closeModalDialog": [Function],
               "_closeSynapseLinkModalDialog": [Function],
-              "_dialogProps": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_isSystemDatabasePredicate": [Function],
-              "_openShareDialog": [Function],
               "_panes": Array [
                 AddDatabasePane {
                   "autoPilotUsageCost": [Function],
@@ -4407,9 +4341,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "addDatabaseText": [Function],
-              "addSynapseLinkDialog": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "addTableEntityPane": AddTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -4516,6 +4447,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "clickHostedAccountSwitch": [Function],
               "clickHostedDirectorySwitch": [Function],
+              "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
@@ -4571,9 +4503,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "deleteDatabaseText": [Function],
-              "dialogComponentAdapter": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "editTableEntityPane": EditTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -4677,8 +4606,6 @@ exports[`SettingsComponent renders 1`] = `
               "isPreferredApiMongoDB": [Function],
               "isPreferredApiTable": [Function],
               "isPublishNotebookPaneEnabled": [Function],
-              "isReadToggled": [Function],
-              "isReadWriteToggled": [Function],
               "isRefreshingExplorer": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
               "isRightPanelV2Enabled": [Function],
@@ -4733,7 +4660,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
-              "onToggleKeyDown": [Function],
+              "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
@@ -4763,8 +4690,6 @@ exports[`SettingsComponent renders 1`] = `
               "refreshDatabaseAccount": [Function],
               "refreshNotebookList": [Function],
               "refreshTreeTitle": [Function],
-              "renewToken": [Function],
-              "renewTokenError": [Function],
               "resourceTokenCollection": [Function],
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],
@@ -4860,12 +4785,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "shareAccessData": [Function],
-              "shareAccessToggleState": [Function],
-              "shareAccessUrl": [Function],
-              "shareTokenCopyHelperText": [Function],
-              "shareUrlCopyHelperText": [Function],
-              "shouldShowShareDialogContents": [Function],
               "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
               "splitter": Splitter {
@@ -4925,9 +4844,6 @@ exports[`SettingsComponent renders 1`] = `
                 "openedTabs": [Function],
               },
               "toggleLeftPaneExpandedKeyPress": [Function],
-              "toggleRead": [Function],
-              "toggleReadWrite": [Function],
-              "tokenForRenewal": [Function],
               "uploadFilePane": UploadFilePane {
                 "container": [Circular],
                 "extensions": [Function],
