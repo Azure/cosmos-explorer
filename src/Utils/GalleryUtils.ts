@@ -8,7 +8,7 @@ import {
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
 import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
-import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
+import { TextFieldProps } from "../Explorer/Controls/Dialog";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import { HttpStatusCodes } from "../Common/Constants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
