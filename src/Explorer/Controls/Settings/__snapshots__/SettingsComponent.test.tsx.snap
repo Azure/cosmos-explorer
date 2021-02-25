@@ -28,10 +28,8 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_addSynapseLinkDialogProps": [Function],
                 "_closeModalDialog": [Function],
                 "_closeSynapseLinkModalDialog": [Function],
-                "_dialogProps": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_isSystemDatabasePredicate": [Function],
@@ -676,9 +674,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "addDatabaseText": [Function],
-                "addSynapseLinkDialog": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "addTableEntityPane": AddTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -785,6 +780,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "clickHostedAccountSwitch": [Function],
                 "clickHostedDirectorySwitch": [Function],
+                "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
@@ -840,9 +836,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "deleteDatabaseText": [Function],
-                "dialogComponentAdapter": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "editTableEntityPane": EditTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -1000,6 +993,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
+                "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -1252,10 +1246,8 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_addSynapseLinkDialogProps": [Function],
               "_closeModalDialog": [Function],
               "_closeSynapseLinkModalDialog": [Function],
-              "_dialogProps": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_isSystemDatabasePredicate": [Function],
@@ -1900,9 +1892,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "addDatabaseText": [Function],
-              "addSynapseLinkDialog": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "addTableEntityPane": AddTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -2009,6 +1998,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "clickHostedAccountSwitch": [Function],
               "clickHostedDirectorySwitch": [Function],
+              "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
@@ -2064,9 +2054,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "deleteDatabaseText": [Function],
-              "dialogComponentAdapter": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "editTableEntityPane": EditTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -2224,6 +2211,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
+              "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
@@ -2489,10 +2477,8 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_addSynapseLinkDialogProps": [Function],
                 "_closeModalDialog": [Function],
                 "_closeSynapseLinkModalDialog": [Function],
-                "_dialogProps": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_isSystemDatabasePredicate": [Function],
@@ -3137,9 +3123,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "addDatabaseText": [Function],
-                "addSynapseLinkDialog": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "addTableEntityPane": AddTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -3246,6 +3229,7 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "clickHostedAccountSwitch": [Function],
                 "clickHostedDirectorySwitch": [Function],
+                "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
@@ -3301,9 +3285,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "deleteDatabaseText": [Function],
-                "dialogComponentAdapter": DialogComponentAdapter {
-                  "parameters": [Function],
-                },
                 "editTableEntityPane": EditTableEntityPane {
                   "addButtonLabel": "Add Property",
                   "attributeNameLabel": "Property Name",
@@ -3461,6 +3442,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
                 "onSwitchToConnectionString": [Function],
+                "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -3713,10 +3695,8 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_addSynapseLinkDialogProps": [Function],
               "_closeModalDialog": [Function],
               "_closeSynapseLinkModalDialog": [Function],
-              "_dialogProps": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_isSystemDatabasePredicate": [Function],
@@ -4361,9 +4341,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "addDatabaseText": [Function],
-              "addSynapseLinkDialog": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "addTableEntityPane": AddTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -4470,6 +4447,7 @@ exports[`SettingsComponent renders 1`] = `
               },
               "clickHostedAccountSwitch": [Function],
               "clickHostedDirectorySwitch": [Function],
+              "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
@@ -4525,9 +4503,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "deleteDatabaseText": [Function],
-              "dialogComponentAdapter": DialogComponentAdapter {
-                "parameters": [Function],
-              },
               "editTableEntityPane": EditTableEntityPane {
                 "addButtonLabel": "Add Property",
                 "attributeNameLabel": "Property Name",
@@ -4685,6 +4660,7 @@ exports[`SettingsComponent renders 1`] = `
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
               "onSwitchToConnectionString": [Function],
+              "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {

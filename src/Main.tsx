@@ -68,6 +68,7 @@ import { useSidePanel } from "./hooks/useSidePanel";
 import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
+import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
 
 initializeIcons();
 
@@ -77,6 +78,17 @@ const App: React.FunctionComponent = () => {
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
 
+  const [dialogProps, setDialogProps] = useState<DialogProps>();
+  const [showDialog, setShowDialog] = useState<boolean>(false);
+
+  const openDialog = (props: DialogProps) => {
+    setDialogProps(props);
+    setShowDialog(true);
+  };
+  const closeDialog = () => {
+    setShowDialog(false);
+  };
+
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
 
   const explorerParams: ExplorerParams = {
@@ -85,6 +97,8 @@ const App: React.FunctionComponent = () => {
     setInProgressConsoleDataIdToBeDeleted,
     openSidePanel,
     closeSidePanel,
+    openDialog,
+    closeDialog,
   };
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
@@ -287,9 +301,7 @@ const App: React.FunctionComponent = () => {
       <KOCommentIfStart if="isCopyNotebookPaneEnabled" />
       <div data-bind="react: copyNotebookPaneAdapter" />
       <KOCommentEnd />
-      {/* Global access token expiration dialog - End */}
-      <div data-bind="react: dialogComponentAdapter" />
-      <div data-bind="react: addSynapseLinkDialog" />
+      {showDialog && <Dialog {...dialogProps} />}
     </div>
   );
 };

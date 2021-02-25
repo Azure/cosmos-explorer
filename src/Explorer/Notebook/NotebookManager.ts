@@ -18,7 +18,6 @@ import { contents } from "rx-jupyter";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { MemoryUsageInfo } from "../../Contracts/DataModels";
 import { NotebookContentClient } from "./NotebookContentClient";
-import { DialogProps } from "../Controls/DialogReactComponent/DialogComponent";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { getFullName } from "../../Utils/UserUtils";
@@ -31,7 +30,6 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 export interface NotebookManagerOptions {
   container: Explorer;
   notebookBasePath: ko.Observable<string>;
-  dialogProps: ko.Observable<DialogProps>;
   resourceTree: ResourceTreeAdapter;
   refreshCommandBarButtons: () => void;
   refreshNotebookList: () => void;
@@ -181,10 +179,8 @@ export default class NotebookManager {
           multiline: true,
           defaultValue: commitMsg,
           rows: 3,
-          onChange: (_, newValue: string) => {
+          onChange: (_: unknown, newValue: string) => {
             commitMsg = newValue;
-            this.params.dialogProps().primaryButtonDisabled = !commitMsg;
-            this.params.dialogProps.valueHasMutated();
           },
         },
         !commitMsg
