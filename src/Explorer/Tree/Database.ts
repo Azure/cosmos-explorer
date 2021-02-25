@@ -329,11 +329,13 @@ export default class Database implements ViewModels.Database {
           subscriptionId: userContext.subscriptionId,
           resourceGroup: userContext.resourceGroup,
           accountName: userContext.databaseAccount.name,
-          resource: `dbs/${this.id}/colls/${collection.id}`,
+          resource: `dbs/${this.id()}/colls/${collection.id}`,
           status: "new",
         });
         checkForSchema = setInterval(async () => {
           const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(
+            userContext.subscriptionId,
+            userContext.resourceGroup,
             userContext.databaseAccount.name,
             this.id(),
             collection.id
