@@ -94,8 +94,7 @@ export default class UserDefinedFunction {
     this.container.selectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "UDF item node",
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }

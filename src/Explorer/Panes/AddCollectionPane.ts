@@ -691,8 +691,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseId(databaseId);
 
     const addCollectionPaneOpenMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       collection: ko.toJS({
         id: this.collectionId(),
         storage: this.storage(),
@@ -786,8 +784,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
 
     const addCollectionPaneStartMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
         new: this.databaseCreateNew(),
@@ -861,8 +857,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.close();
         this.container.refreshAllDatabases();
         const addCollectionPaneSuccessMessage = {
-          databaseAccountName: this.container.databaseAccount().name,
-          defaultExperience: this.container.defaultExperience(),
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),
@@ -895,8 +889,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.formErrors(errorMessage);
         this.formErrorsDetails(errorMessage);
         const addCollectionPaneFailedMessage = {
-          databaseAccountName: this.container.databaseAccount().name,
-          defaultExperience: this.container.defaultExperience(),
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),

@@ -221,8 +221,6 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                     if (window.confirm("Are you sure you want to delete this query?")) {
                       const container = window.dataExplorer;
                       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
-                        databaseAccountName: container && container.databaseAccount().name,
-                        defaultExperience: container && container.defaultExperience(),
                         dataExplorerArea: Constants.Areas.ContextualPane,
                         paneTitle: container && container.browseQueriesPane.title(),
                       });
@@ -231,8 +229,6 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                         TelemetryProcessor.traceSuccess(
                           Action.DeleteSavedQuery,
                           {
-                            databaseAccountName: container && container.databaseAccount().name,
-                            defaultExperience: container && container.defaultExperience(),
                             dataExplorerArea: Constants.Areas.ContextualPane,
                             paneTitle: container && container.browseQueriesPane.title(),
                           },
@@ -242,8 +238,6 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                         TelemetryProcessor.traceFailure(
                           Action.DeleteSavedQuery,
                           {
-                            databaseAccountName: container && container.databaseAccount().name,
-                            defaultExperience: container && container.defaultExperience(),
                             dataExplorerArea: Constants.Areas.ContextualPane,
                             paneTitle: container && container.browseQueriesPane.title(),
                             error: getErrorMessage(error),

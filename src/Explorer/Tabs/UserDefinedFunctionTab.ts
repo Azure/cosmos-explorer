@@ -30,8 +30,6 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateUDF, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -47,8 +45,6 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
           TelemetryProcessor.traceSuccess(
             Action.UpdateUDF,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -66,8 +62,6 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
           TelemetryProcessor.traceFailure(
             Action.UpdateUDF,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),
@@ -101,8 +95,6 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateUDF, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -128,9 +120,8 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
           TelemetryProcessor.traceSuccess(
             Action.CreateUDF,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
               dataExplorerArea: Constants.Areas.Tab,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
+
               tabTitle: this.tabTitle(),
             },
             startKey
@@ -143,8 +134,6 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
           TelemetryProcessor.traceFailure(
             Action.CreateUDF,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),

@@ -511,8 +511,6 @@ export default class NotebookTabV2 extends TabsBase {
 
   private traceTelemetry(actionType: number) {
     TelemetryProcessor.trace(actionType, ActionModifiers.Mark, {
-      databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
       dataExplorerArea: Areas.Notebook,
     });
   }

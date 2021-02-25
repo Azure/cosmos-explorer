@@ -329,8 +329,6 @@ export default class Explorer {
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.Notebook,
             });
 
@@ -978,7 +976,7 @@ export default class Explorer {
             ConsoleDataType.Info,
             "Enabled Azure Synapse Link for this account"
           );
-          TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, startTime);
+          TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
           this.databaseAccount(databaseAccount);
         } catch (error) {
           NotificationConsoleUtils.clearInProgressMessageWithId(logId);
@@ -986,7 +984,7 @@ export default class Explorer {
             ConsoleDataType.Error,
             `Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`
           );
-          TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, startTime);
+          TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, {}, startTime);
         } finally {
           this.isSynapseLinkUpdating(false);
         }
@@ -1081,15 +1079,11 @@ export default class Explorer {
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
     this.isRefreshingExplorer(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     let resourceTreeStartKey: number = null;
     if (isInitialLoad) {
       resourceTreeStartKey = TelemetryProcessor.traceStart(Action.LoadResourceTree, {
-        databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-        defaultExperience: this.defaultExperience && this.defaultExperience(),
         dataExplorerArea: Constants.Areas.ResourceTree,
       });
     }
@@ -1103,8 +1097,6 @@ export default class Explorer {
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
           },
           startKey
@@ -1136,8 +1128,6 @@ export default class Explorer {
         TelemetryProcessor.traceFailure(
           Action.LoadDatabases,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
             error: errorMessage,
             errorStack: getErrorStack(error),
@@ -1157,8 +1147,6 @@ export default class Explorer {
           TelemetryProcessor.traceSuccess(
             Action.LoadResourceTree,
             {
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
             },
             resourceTreeStartKey
@@ -1170,8 +1158,6 @@ export default class Explorer {
           TelemetryProcessor.traceFailure(
             Action.LoadResourceTree,
             {
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
               error: getErrorMessage(error),
               errorStack: getErrorStack(error),
@@ -1194,8 +1180,6 @@ export default class Explorer {
   public onRefreshResourcesClick = (source: any, event: MouseEvent): void => {
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       description: "Refresh button clicked",
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.isRefreshingExplorer(true);
@@ -1493,9 +1477,7 @@ export default class Explorer {
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
-          resourceId: this.databaseAccount && this.databaseAccount().id,
           dataExplorerArea: Constants.Areas.ResourceTree,
-          databaseAccount: this.databaseAccount && this.databaseAccount(),
         },
         inputs.loadDatabaseAccountTimestamp
       );
@@ -1629,8 +1611,6 @@ export default class Explorer {
         : this.databases().filter((db) => db.isDatabaseExpanded());
 
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     databasesToLoad.forEach(async (database: ViewModels.Database) => {
@@ -1656,8 +1636,6 @@ export default class Explorer {
         TelemetryProcessor.traceFailure(
           Action.LoadCollections,
           {
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
             error: getErrorMessage(error),
             errorStack: getErrorStack(error),
@@ -2223,8 +2201,6 @@ export default class Explorer {
     );
 
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateNewNotebook, {
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.Notebook,
     });
 
@@ -2235,8 +2211,6 @@ export default class Explorer {
         TelemetryProcessor.traceSuccess(
           Action.CreateNewNotebook,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
           },
           startKey
@@ -2250,8 +2224,6 @@ export default class Explorer {
         TelemetryProcessor.traceFailure(
           Action.CreateNewNotebook,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
             error: errorMessage,
             errorStack: getErrorStack(error),
