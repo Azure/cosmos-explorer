@@ -94,16 +94,6 @@ BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
 var tmp = ComponentRegisterer;
 
-enum ShareAccessToggleState {
-  ReadWrite,
-  Read,
-}
-
-interface AdHocAccessData {
-  readWriteUrl: string;
-  readUrl: string;
-}
-
 export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
@@ -159,8 +149,8 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
-  private openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
-  private closeSidePanel: () => void;
+  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -226,15 +216,6 @@ export default class Explorer {
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
 
-  public shouldShowShareDialogContents: ko.Observable<boolean>;
-  public shareAccessData: ko.Observable<AdHocAccessData>;
-  public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
-  public renewTokenError: ko.Observable<string>;
-  public tokenForRenewal: ko.Observable<string>;
-  public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;
-  public shareAccessUrl: ko.Observable<string>;
-  public shareUrlCopyHelperText: ko.Observable<string>;
-  public shareTokenCopyHelperText: ko.Observable<string>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -401,25 +382,6 @@ export default class Explorer {
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
     this.isAuthWithResourceToken = ko.observable<boolean>(false);
-
-    this.shareAccessData = ko.observable<AdHocAccessData>({
-      readWriteUrl: undefined,
-      readUrl: undefined,
-    });
-    this.tokenForRenewal = ko.observable<string>("");
-    this.renewTokenError = ko.observable<string>("");
-    this.shareAccessUrl = ko.observable<string>();
-    this.shareUrlCopyHelperText = ko.observable<string>("Click to copy");
-    this.shareTokenCopyHelperText = ko.observable<string>("Click to copy");
-    this.shareAccessToggleState = ko.observable<ShareAccessToggleState>(ShareAccessToggleState.ReadWrite);
-    this.shareAccessToggleState.subscribe((toggleState: ShareAccessToggleState) => {
-      if (toggleState === ShareAccessToggleState.ReadWrite) {
-        this.shareAccessUrl(this.shareAccessData && this.shareAccessData().readWriteUrl);
-      } else {
-        this.shareAccessUrl(this.shareAccessData && this.shareAccessData().readUrl);
-      }
-    });
-    this.shouldShowShareDialogContents = ko.observable<boolean>(false);
     this.isGalleryPublishEnabled = ko.computed<boolean>(
       () => configContext.ENABLE_GALLERY_PUBLISH || this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
     );
@@ -1040,123 +1002,6 @@ export default class Explorer {
 
     // TODO: return result
   }
-
-  public copyUrlLink(src: any, event: MouseEvent): void {
-    const urlLinkInput: HTMLInputElement = document.getElementById("shareUrlLink") as HTMLInputElement;
-    urlLinkInput && urlLinkInput.select();
-    document.execCommand("copy");
-    this.shareUrlCopyHelperText("Copied");
-    setTimeout(() => this.shareUrlCopyHelperText("Click to copy"), Constants.ClientDefaults.copyHelperTimeoutMs);
-
-    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      description: "Copy full screen URL",
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ShareDialog,
-    });
-  }
-
-  public onCopyUrlLinkKeyPress(src: any, event: KeyboardEvent): boolean {
-    if (event.keyCode === Constants.KeyCodes.Enter || event.keyCode === Constants.KeyCodes.Space) {
-      this.copyUrlLink(src, null);
-      return false;
-    }
-
-    return true;
-  }
-
-  public copyToken(src: any, event: MouseEvent): void {
-    const tokenInput: HTMLInputElement = document.getElementById("shareToken") as HTMLInputElement;
-    tokenInput && tokenInput.select();
-    document.execCommand("copy");
-    this.shareTokenCopyHelperText("Copied");
-    setTimeout(() => this.shareTokenCopyHelperText("Click to copy"), Constants.ClientDefaults.copyHelperTimeoutMs);
-  }
-
-  public onCopyTokenKeyPress(src: any, event: KeyboardEvent): boolean {
-    if (event.keyCode === Constants.KeyCodes.Enter || event.keyCode === Constants.KeyCodes.Space) {
-      this.copyToken(src, null);
-      return false;
-    }
-
-    return true;
-  }
-
-  public renewToken = (): void => {
-    TelemetryProcessor.trace(Action.ConnectEncryptionToken);
-    this.renewTokenError("");
-    const id: string = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Initiating connection to account"
-    );
-    this.renewExplorerShareAccess(this, this.tokenForRenewal())
-      .fail((error: any) => {
-        const stringifiedError: string = getErrorMessage(error);
-        this.renewTokenError("Invalid connection string specified");
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to initiate connection to account: ${stringifiedError}`
-        );
-      })
-      .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
-  };
-
-  public generateSharedAccessData(): void {
-    const id: string = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Generating share url");
-    AuthHeadersUtil.generateEncryptedToken().then(
-      (tokenResponse: DataModels.GenerateTokenResponse) => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Successfully generated share url");
-        this.shareAccessData({
-          readWriteUrl: this._getShareAccessUrlForToken(tokenResponse.readWrite),
-          readUrl: this._getShareAccessUrlForToken(tokenResponse.read),
-        });
-        !this.shareAccessData().readWriteUrl && this.shareAccessToggleState(ShareAccessToggleState.Read); // select read toggle by default for readers
-        this.shareAccessToggleState.valueHasMutated(); // to set initial url and token state
-        this.shareAccessData.valueHasMutated();
-        this._openShareDialog();
-      },
-      (error: any) => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to generate share url: ${getErrorMessage(error)}`
-        );
-        console.error(error);
-      }
-    );
-  }
-
-  public isConnectExplorerVisible(): boolean {
-    return $("#connectExplorer").is(":visible") || false;
-  }
-
-  public isReadWriteToggled: () => boolean = (): boolean => {
-    return this.shareAccessToggleState() === ShareAccessToggleState.ReadWrite;
-  };
-
-  public isReadToggled: () => boolean = (): boolean => {
-    return this.shareAccessToggleState() === ShareAccessToggleState.Read;
-  };
-
-  public toggleReadWrite: (src: any, event: MouseEvent) => void = (src: any, event: MouseEvent) => {
-    this.shareAccessToggleState(ShareAccessToggleState.ReadWrite);
-  };
-
-  public toggleRead: (src: any, event: MouseEvent) => void = (src: any, event: MouseEvent) => {
-    this.shareAccessToggleState(ShareAccessToggleState.Read);
-  };
-
-  public onToggleKeyDown: (src: any, event: KeyboardEvent) => boolean = (src: any, event: KeyboardEvent) => {
-    if (event.keyCode === Constants.KeyCodes.LeftArrow) {
-      this.toggleReadWrite(src, null);
-      return false;
-    } else if (event.keyCode === Constants.KeyCodes.RightArrow) {
-      this.toggleRead(src, null);
-      return false;
-    }
-    return true;
-  };
 
   public isDatabaseNodeOrNoneSelected(): boolean {
     return this.isNoneSelected() || this.isDatabaseNodeSelected();
@@ -1822,83 +1667,6 @@ export default class Explorer {
       }
     );
     return deferred.promise;
-  }
-
-  // TODO: Abstract this elsewhere
-  private _openShareDialog: () => void = (): void => {
-    if (!$("#shareDataAccessFlyout").dialog("instance")) {
-      const accountMetadataInfo = {
-        databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-        defaultExperience: this.defaultExperience && this.defaultExperience(),
-        dataExplorerArea: Constants.Areas.ShareDialog,
-      };
-      const openFullscreenButton = {
-        text: "Open",
-        class: "openFullScreenBtn openFullScreenCancelBtn",
-        click: () => {
-          TelemetryProcessor.trace(
-            Action.SelectItem,
-            ActionModifiers.Mark,
-            _.extend({}, { description: "Open full screen" }, accountMetadataInfo)
-          );
-
-          const hiddenAnchorElement: HTMLAnchorElement = document.createElement("a");
-          hiddenAnchorElement.href = this.shareAccessUrl();
-          hiddenAnchorElement.target = "_blank";
-          $("#shareDataAccessFlyout").dialog("close");
-          hiddenAnchorElement.click();
-        },
-      };
-      const cancelButton = {
-        text: "Cancel",
-        class: "shareCancelButton openFullScreenCancelBtn",
-        click: () => {
-          TelemetryProcessor.trace(
-            Action.SelectItem,
-            ActionModifiers.Mark,
-            _.extend({}, { description: "Cancel open full screen" }, accountMetadataInfo)
-          );
-          $("#shareDataAccessFlyout").dialog("close");
-        },
-      };
-      $("#shareDataAccessFlyout").dialog({
-        autoOpen: false,
-        buttons: [openFullscreenButton, cancelButton],
-        closeOnEscape: true,
-        draggable: false,
-        dialogClass: "no-close",
-        position: { my: "right top", at: "right bottom", of: $(".OpenFullScreen") },
-        resizable: false,
-        title: "Open Full Screen",
-        width: 400,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowShareDialogContents(false),
-      });
-      $("#shareDataAccessFlyout").dialog("option", "classes", {
-        "ui-widget-content": "shareUrlDialog",
-        "ui-widget-header": "shareUrlTitle",
-        "ui-dialog-titlebar-close": "shareClose",
-        "ui-button": "shareCloseIcon",
-        "ui-button-icon": "cancelIcon",
-        "ui-icon": "",
-      });
-      $("#shareDataAccessFlyout").dialog("option", "open", (event: Event, ui: JQueryUI.DialogUIParams) =>
-        $(".openFullScreenBtn").focus()
-      );
-    }
-    $("#shareDataAccessFlyout").dialog("close");
-    this.shouldShowShareDialogContents(true);
-    $("#shareDataAccessFlyout").dialog("open");
-  };
-
-  private _getShareAccessUrlForToken(token: string): string {
-    if (!token) {
-      return undefined;
-    }
-
-    const urlPrefixWithKeyParam: string = `${configContext.hostedExplorerURL}?key=`;
-    const currentActiveTab = this.tabsManager.activeTab();
-
-    return `${urlPrefixWithKeyParam}${token}#/${(currentActiveTab && currentActiveTab.hashLocation()) || ""}`;
   }
 
   private _initSettings() {
