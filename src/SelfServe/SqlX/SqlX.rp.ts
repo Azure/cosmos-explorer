@@ -92,11 +92,11 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
         },
       };
     } else if (response.properties.status === ResourceStatus.Creating.toString()) {
-      return { isUpdateInProgress: true, updateInProgressMessage: "CreateMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessageTKey: "CreateMessage" };
     } else if (response.properties.status === ResourceStatus.Deleting.toString()) {
-      return { isUpdateInProgress: true, updateInProgressMessage: "DeleteMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessageTKey: "DeleteMessage" };
     } else {
-      return { isUpdateInProgress: true, updateInProgressMessage: "UpdateMessage" };
+      return { isUpdateInProgress: true, updateInProgressMessageTKey: "UpdateMessage" };
     }
   } catch {
     //TODO differentiate between different failures

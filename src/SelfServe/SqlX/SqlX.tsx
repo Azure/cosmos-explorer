@@ -1,6 +1,7 @@
 import { IsDisplayable, OnChange, Values } from "../Decorators";
 import {
   ChoiceItem,
+  DescriptionType,
   InputType,
   NumberUiType,
   OnSavePortalNotification,
@@ -119,6 +120,7 @@ export default class SqlX extends SelfServeBaseClass {
   @Values({
     description: {
       textTKey: "DedicatedGatewayDescription",
+      type: DescriptionType.Text,
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
         textTKey: "LearnAboutDedicatedGateway",

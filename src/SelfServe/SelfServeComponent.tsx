@@ -246,7 +246,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         portalNotificationMessage.type,
         this.getCorrelationId()
       );
-      promiseRetry(() => this.pollRefresh());
+      promiseRetry(() => this.pollRefresh(), { forever: true, randomize: true });
     } catch (error) {
       this.setState({
         notification: {
