@@ -964,13 +964,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "memoryUsageInfo": [Function],
-                "mostRecentActivity": MostRecentActivity {
-                  "container": [Circular],
-                  "storedData": Object {
-                    "itemsMap": Object {},
-                    "schemaVersion": "1",
-                  },
-                },
                 "newVertexPane": NewVertexPane {
                   "buildString": [Function],
                   "container": [Circular],
@@ -2182,13 +2175,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "memoryUsageInfo": [Function],
-              "mostRecentActivity": MostRecentActivity {
-                "container": [Circular],
-                "storedData": Object {
-                  "itemsMap": Object {},
-                  "schemaVersion": "1",
-                },
-              },
               "newVertexPane": NewVertexPane {
                 "buildString": [Function],
                 "container": [Circular],
@@ -3413,13 +3399,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "memoryUsageInfo": [Function],
-                "mostRecentActivity": MostRecentActivity {
-                  "container": [Circular],
-                  "storedData": Object {
-                    "itemsMap": Object {},
-                    "schemaVersion": "1",
-                  },
-                },
                 "newVertexPane": NewVertexPane {
                   "buildString": [Function],
                   "container": [Circular],
@@ -4631,13 +4610,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "memoryUsageInfo": [Function],
-              "mostRecentActivity": MostRecentActivity {
-                "container": [Circular],
-                "storedData": Object {
-                  "itemsMap": Object {},
-                  "schemaVersion": "1",
-                },
-              },
               "newVertexPane": NewVertexPane {
                 "buildString": [Function],
                 "container": [Circular],
