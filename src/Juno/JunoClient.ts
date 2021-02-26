@@ -362,8 +362,7 @@ export class JunoClient {
     tags: string[],
     author: string,
     thumbnailUrl: string,
-    content: string,
-    isLinkInjectionEnabled: boolean
+    content: string
   ): Promise<IJunoResponse<IGalleryItem>> {
     const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/gallery`, {
       method: "PUT",
@@ -375,7 +374,7 @@ export class JunoClient {
         author,
         thumbnailUrl,
         content: JSON.parse(content),
-        addLinkToNotebookViewer: isLinkInjectionEnabled,
+        addLinkToNotebookViewer: true,
       } as IPublishNotebookRequest),
     });
 
