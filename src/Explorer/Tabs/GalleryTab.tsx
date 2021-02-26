@@ -31,7 +31,6 @@ export default class GalleryTab extends TabsBase {
 
     this.galleryAndNotebookViewerComponentProps = {
       container: options.container,
-      isGalleryPublishEnabled: options.container.isGalleryPublishEnabled(),
       junoClient: options.junoClient,
       notebookUrl: options.notebookUrl,
       galleryItem: options.galleryItem,
