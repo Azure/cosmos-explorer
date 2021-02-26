@@ -289,7 +289,9 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
   public open() {
     super.open();
-    this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    if (!this.container.isServerlessEnabled()) {
+      this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    }
     const addCollectionPaneOpenMessage = {
       collection: ko.toJS({
         id: this.tableId(),
