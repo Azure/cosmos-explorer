@@ -36,7 +36,6 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
-  isGalleryPublishEnabled: boolean;
   junoClient: JunoClient;
   selectedTab: GalleryTab;
   sortBy: SortBy;
@@ -140,17 +139,13 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         text: GalleryViewerComponent.mostRecentText,
       },
     ];
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      this.sortingOptions.push({
-        key: SortBy.MostFavorited,
-        text: GalleryViewerComponent.mostFavoritedText,
-      });
-    }
+    this.sortingOptions.push({
+      key: SortBy.MostFavorited,
+      text: GalleryViewerComponent.mostFavoritedText,
+    });
 
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
-    }
+    this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
   }
 
   public render(): JSX.Element {
@@ -158,20 +153,16 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
     const tabs: GalleryTabInfo[] = [this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
 
-    if (this.props.isGalleryPublishEnabled) {
-      tabs.push(
-        this.createPublicGalleryTab(
-          GalleryTab.PublicGallery,
-          this.state.publicNotebooks,
-          this.state.isCodeOfConductAccepted
-        )
-      );
-    }
+    tabs.push(
+      this.createPublicGalleryTab(
+        GalleryTab.PublicGallery,
+        this.state.publicNotebooks,
+        this.state.isCodeOfConductAccepted
+      )
+    );
 
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-      tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
-    }
+    tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
+    tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
 
     const pivotProps: IPivotProps = {
       onLinkClick: this.onPivotChange,
@@ -406,11 +397,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
-          {this.props.isGalleryPublishEnabled && (
-            <Stack.Item>
-              <InfoComponent />
-            </Stack.Item>
-          )}
+          <Stack.Item>
+            <InfoComponent />
+          </Stack.Item>
         </Stack>
         <Stack.Item>{content}</Stack.Item>
       </Stack>
@@ -664,10 +653,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
-    let isFavorite: boolean;
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
-    }
+    const isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,

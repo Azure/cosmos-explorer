@@ -717,7 +717,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       },
     ];
 
-    if (this.container.isGalleryPublishEnabled() && item.type === NotebookContentItemType.Notebook) {
+    if (item.type === NotebookContentItemType.Notebook) {
       items.push({
         label: "Publish to gallery",
         iconSrc: PublishIcon,
