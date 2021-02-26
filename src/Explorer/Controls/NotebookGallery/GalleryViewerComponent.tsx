@@ -73,6 +73,7 @@ interface GalleryViewerComponentState {
   isCodeOfConductAccepted: boolean;
   isFetchingPublishedNotebooks: boolean;
   isFetchingFavouriteNotebooks: boolean;
+  isDeletingPublishedNotebook: boolean;
 }
 
 interface GalleryTabInfo {
@@ -124,6 +125,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       isCodeOfConductAccepted: undefined,
       isFetchingFavouriteNotebooks: true,
       isFetchingPublishedNotebooks: true,
+      isDeletingPublishedNotebook: false,
     };
 
     this.sortingOptions = [
@@ -332,26 +334,39 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createPublishedNotebooksTabContent = (data: IGalleryItem[]): JSX.Element => {
     const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(data);
     const content = (
-      <Stack tokens={{ childrenGap: 20 }}>
-        {published?.length > 0 &&
-          this.createPublishedNotebooksSectionContent(
-            undefined,
-            "You have successfully published and shared the following notebook(s) to the public gallery.",
-            this.createCardsTabContent(published)
-          )}
-        {underReview?.length > 0 &&
-          this.createPublishedNotebooksSectionContent(
-            "Under Review",
-            "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
-            this.createCardsTabContent(underReview)
-          )}
-        {removed?.length > 0 &&
-          this.createPublishedNotebooksSectionContent(
-            "Removed",
-            "These notebooks were found to contain illegal content and has been taken down.",
-            this.createPolicyViolationsListContent(removed)
-          )}
-      </Stack>
+      <>
+        {this.state.isDeletingPublishedNotebook && (
+          <Overlay
+            isDarkThemed
+            styles={{
+              root: { display: "flex", justifyContent: "center", alignContent: "center", alignItems: "center" },
+            }}
+          >
+            <Spinner size={SpinnerSize.large} styles={{ root: { position: "relative", display: "flex" } }} />
+          </Overlay>
+        )}
+
+        <Stack tokens={{ childrenGap: 20 }}>
+          {published?.length > 0 &&
+            this.createPublishedNotebooksSectionContent(
+              undefined,
+              "You have successfully published and shared the following notebook(s) to the public gallery.",
+              this.createCardsTabContent(published)
+            )}
+          {underReview?.length > 0 &&
+            this.createPublishedNotebooksSectionContent(
+              "Under Review",
+              "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
+              this.createCardsTabContent(underReview)
+            )}
+          {removed?.length > 0 &&
+            this.createPublishedNotebooksSectionContent(
+              "Removed",
+              "These notebooks were found to contain illegal content and has been taken down.",
+              this.createPolicyViolationsListContent(removed)
+            )}
+        </Stack>
+      </>
     );
 
     return this.createSearchBarHeader(content);
@@ -723,10 +738,17 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private deleteItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, (item) => {
-      this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
-      this.refreshSelectedTab(item);
-    });
+    GalleryUtils.deleteItem(
+      this.props.container,
+      this.props.junoClient,
+      data,
+      (item) => {
+        this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
+        this.refreshSelectedTab(item);
+      },
+      () => this.setState({ isDeletingPublishedNotebook: true }),
+      () => this.setState({ isDeletingPublishedNotebook: false })
+    );
   };
 
   private onPivotChange = (item: PivotItem): void => {
