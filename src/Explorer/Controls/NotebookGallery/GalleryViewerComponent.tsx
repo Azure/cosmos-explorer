@@ -33,6 +33,7 @@ import { InfoComponent } from "./InfoComponent/InfoComponent";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { configContext, Platform } from "../../../ConfigContext";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -161,8 +162,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       )
     );
 
-    tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-    tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
+    if (configContext.platform !== Platform.Hosted) {
+      tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
+      tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
+    }
 
     const pivotProps: IPivotProps = {
       onLinkClick: this.onPivotChange,
