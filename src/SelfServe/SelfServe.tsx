@@ -11,6 +11,7 @@ import { configContext, updateConfigContext } from "../ConfigContext";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { updateUserContext } from "../UserContext";
 import "./SelfServe.less";
+import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 initializeIcons();
 
 const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDescriptor> => {
@@ -33,6 +34,10 @@ const renderComponent = (selfServeDescriptor: SelfServeDescriptor): JSX.Element 
     return <h1>Invalid self serve type!</h1>;
   }
   return <SelfServeComponent descriptor={selfServeDescriptor} />;
+};
+
+const renderSpinner = (): JSX.Element => {
+  return <Spinner size={SpinnerSize.large}></Spinner>;
 };
 
 const handleMessage = async (event: MessageEvent): Promise<void> => {
@@ -82,5 +87,6 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
   ReactDOM.render(renderComponent(descriptor), document.getElementById("selfServeContent"));
 };
 
+ReactDOM.render(renderSpinner(), document.getElementById("selfServeContent"));
 window.addEventListener("message", handleMessage, false);
 sendMessage("ready");
