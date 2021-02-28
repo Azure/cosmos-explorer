@@ -33,7 +33,6 @@ import { InfoComponent } from "./InfoComponent/InfoComponent";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { configContext, Platform } from "../../../ConfigContext";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -162,7 +161,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       )
     );
 
-    if (configContext.platform !== Platform.Hosted) {
+    if (this.props.container) {
       tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
       tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
     }
