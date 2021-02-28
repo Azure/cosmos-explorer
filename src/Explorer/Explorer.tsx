@@ -205,8 +205,6 @@ export default class Explorer {
   public copyNotebookPaneAdapter: ReactAdapter;
 
   // features
-  public isGalleryPublishEnabled: ko.Computed<boolean>;
-  public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -380,12 +378,6 @@ export default class Explorer {
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
     this.isAuthWithResourceToken = ko.observable<boolean>(false);
-    this.isGalleryPublishEnabled = ko.computed<boolean>(
-      () => configContext.ENABLE_GALLERY_PUBLISH || this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
-    );
-    this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableLinkInjection)
-    );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -1496,9 +1488,6 @@ export default class Explorer {
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
     }
-    if (flights.indexOf(Constants.Flights.GalleryPublish) !== -1) {
-      this.isGalleryPublishEnabled = ko.computed<boolean>(() => true);
-    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
@@ -1780,12 +1769,7 @@ export default class Explorer {
 
   public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(
-        name,
-        content,
-        parentDomElement,
-        this.isLinkInjectionEnabled()
-      );
+      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
