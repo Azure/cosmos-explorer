@@ -73,7 +73,6 @@ interface GalleryViewerComponentState {
   isCodeOfConductAccepted: boolean;
   isFetchingPublishedNotebooks: boolean;
   isFetchingFavouriteNotebooks: boolean;
-  isDeletingPublishedNotebook: boolean;
 }
 
 interface GalleryTabInfo {
@@ -125,7 +124,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       isCodeOfConductAccepted: undefined,
       isFetchingFavouriteNotebooks: true,
       isFetchingPublishedNotebooks: true,
-      isDeletingPublishedNotebook: false,
     };
 
     this.sortingOptions = [
@@ -335,17 +333,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(data);
     const content = (
       <>
-        {this.state.isDeletingPublishedNotebook && (
-          <Overlay
-            isDarkThemed
-            styles={{
-              root: { display: "flex", justifyContent: "center", alignContent: "center", alignItems: "center" },
-            }}
-          >
-            <Spinner size={SpinnerSize.large} styles={{ root: { position: "relative", display: "flex" } }} />
-          </Overlay>
-        )}
-
         <Stack tokens={{ childrenGap: 20 }}>
           {published?.length > 0 &&
             this.createPublishedNotebooksSectionContent(
@@ -693,7 +680,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       onFavoriteClick: () => this.favoriteItem(data),
       onUnfavoriteClick: () => this.unfavoriteItem(data),
       onDownloadClick: () => this.downloadItem(data),
-      onDeleteClick: () => this.deleteItem(data),
+      onDeleteClick: (beforeDelete: () => void, afterDelete: () => void) =>
+        this.deleteItem(data, beforeDelete, afterDelete),
     };
 
     return (
@@ -737,7 +725,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   };
 
-  private deleteItem = async (data: IGalleryItem): Promise<void> => {
+  private deleteItem = async (data: IGalleryItem, beforeDelete: () => void, afterDelete: () => void): Promise<void> => {
     GalleryUtils.deleteItem(
       this.props.container,
       this.props.junoClient,
@@ -746,8 +734,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
         this.refreshSelectedTab(item);
       },
-      () => this.setState({ isDeletingPublishedNotebook: true }),
-      () => this.setState({ isDeletingPublishedNotebook: false })
+      beforeDelete,
+      afterDelete
     );
   };
 

@@ -13,6 +13,8 @@ import {
   LinkBase,
   Separator,
   TooltipHost,
+  Spinner,
+  SpinnerSize,
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
@@ -29,10 +31,14 @@ export interface GalleryCardComponentProps {
   onFavoriteClick: () => void;
   onUnfavoriteClick: () => void;
   onDownloadClick: () => void;
-  onDeleteClick: () => void;
+  onDeleteClick: (beforeDelete: () => void, afterDelete: () => void) => void;
 }
 
-export class GalleryCardComponent extends React.Component<GalleryCardComponentProps> {
+interface GalleryCardComponentState {
+  isDeletingPublishedNotebook: boolean;
+}
+
+export class GalleryCardComponent extends React.Component<GalleryCardComponentProps, GalleryCardComponentState> {
   public static readonly CARD_WIDTH = 256;
   private static readonly cardImageHeight = 144;
   public static readonly cardHeightToWidthRatio =
@@ -40,6 +46,14 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private static readonly cardDescriptionMaxChars = 80;
   private static readonly cardItemGapBig = 10;
   private static readonly cardItemGapSmall = 8;
+  private static readonly cardDeleteSpinnerHeight = 360;
+
+  constructor(props: GalleryCardComponentProps) {
+    super(props);
+    this.state = {
+      isDeletingPublishedNotebook: false,
+    };
+  }
 
   public render(): JSX.Element {
     const cardButtonsVisible = this.props.isFavorite !== undefined || this.props.showDownload || this.props.showDelete;
@@ -59,91 +73,110 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
         tokens={{ width: GalleryCardComponent.CARD_WIDTH, childrenGap: 0 }}
         onClick={(event) => this.onClick(event, this.props.onClick)}
       >
-        <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
-          <Persona
-            imageUrl={this.props.data.isSample && CosmosDBLogo}
-            text={this.props.data.author}
-            secondaryText={dateString}
-          />
-        </Card.Item>
+        {this.state.isDeletingPublishedNotebook && (
+          <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
+            <Spinner
+              size={SpinnerSize.large}
+              label="Deleting notebook"
+              styles={{ root: { height: GalleryCardComponent.cardDeleteSpinnerHeight } }}
+            />
+          </Card.Item>
+        )}
+        {!this.state.isDeletingPublishedNotebook && (
+          <>
+            <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
+              <Persona
+                imageUrl={this.props.data.isSample && CosmosDBLogo}
+                text={this.props.data.author}
+                secondaryText={dateString}
+              />
+            </Card.Item>
 
-        <Card.Item>
-          <Image
-            src={this.props.data.thumbnailUrl}
-            width={GalleryCardComponent.CARD_WIDTH}
-            height={GalleryCardComponent.cardImageHeight}
-            imageFit={ImageFit.cover}
-            alt={`${cardTitle} cover image`}
-          />
-        </Card.Item>
+            <Card.Item>
+              <Image
+                src={this.props.data.thumbnailUrl}
+                width={GalleryCardComponent.CARD_WIDTH}
+                height={GalleryCardComponent.cardImageHeight}
+                imageFit={ImageFit.cover}
+                alt={`${cardTitle} cover image`}
+              />
+            </Card.Item>
 
-        <Card.Section styles={{ root: { padding: GalleryCardComponent.cardItemGapBig } }}>
-          <Text variant="small" nowrap>
-            {this.props.data.tags ? (
-              this.props.data.tags.map((tag, index, array) => (
-                <span key={tag}>
-                  <Link onClick={(event) => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
-                  {index === array.length - 1 ? <></> : ", "}
-                </span>
-              ))
-            ) : (
-              <br />
-            )}
-          </Text>
-
-          <Text
-            styles={{
-              root: {
-                fontWeight: FontWeights.semibold,
-                paddingTop: GalleryCardComponent.cardItemGapSmall,
-                paddingBottom: GalleryCardComponent.cardItemGapSmall,
-              },
-            }}
-            nowrap
-          >
-            {cardTitle}
-          </Text>
-
-          <Text variant="small" styles={{ root: { height: 36 } }}>
-            {this.renderTruncatedDescription()}
-          </Text>
-
-          <span>
-            {this.props.data.views !== undefined && this.generateIconText("RedEye", this.props.data.views.toString())}
-            {this.props.data.downloads !== undefined &&
-              this.generateIconText("Download", this.props.data.downloads.toString())}
-            {this.props.data.favorites !== undefined &&
-              this.generateIconText("Heart", this.props.data.favorites.toString())}
-          </span>
-        </Card.Section>
-
-        {cardButtonsVisible && (
-          <Card.Section
-            styles={{
-              root: {
-                marginLeft: GalleryCardComponent.cardItemGapBig,
-                marginRight: GalleryCardComponent.cardItemGapBig,
-              },
-            }}
-          >
-            <Separator styles={{ root: { padding: 0, height: 1 } }} />
-
-            <span>
-              {this.props.isFavorite !== undefined &&
-                this.generateIconButtonWithTooltip(
-                  this.props.isFavorite ? "HeartFill" : "Heart",
-                  this.props.isFavorite ? "Unfavorite" : "Favorite",
-                  "left",
-                  this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick
+            <Card.Section styles={{ root: { padding: GalleryCardComponent.cardItemGapBig } }}>
+              <Text variant="small" nowrap>
+                {this.props.data.tags ? (
+                  this.props.data.tags.map((tag, index, array) => (
+                    <span key={tag}>
+                      <Link onClick={(event) => this.onClick(event, () => this.props.onTagClick(tag))}>{tag}</Link>
+                      {index === array.length - 1 ? <></> : ", "}
+                    </span>
+                  ))
+                ) : (
+                  <br />
                 )}
+              </Text>
 
-              {this.props.showDownload &&
-                this.generateIconButtonWithTooltip("Download", "Download", "left", this.props.onDownloadClick)}
+              <Text
+                styles={{
+                  root: {
+                    fontWeight: FontWeights.semibold,
+                    paddingTop: GalleryCardComponent.cardItemGapSmall,
+                    paddingBottom: GalleryCardComponent.cardItemGapSmall,
+                  },
+                }}
+                nowrap
+              >
+                {cardTitle}
+              </Text>
 
-              {this.props.showDelete &&
-                this.generateIconButtonWithTooltip("Delete", "Remove", "right", this.props.onDeleteClick)}
-            </span>
-          </Card.Section>
+              <Text variant="small" styles={{ root: { height: 36 } }}>
+                {this.renderTruncatedDescription()}
+              </Text>
+
+              <span>
+                {this.props.data.views !== undefined &&
+                  this.generateIconText("RedEye", this.props.data.views.toString())}
+                {this.props.data.downloads !== undefined &&
+                  this.generateIconText("Download", this.props.data.downloads.toString())}
+                {this.props.data.favorites !== undefined &&
+                  this.generateIconText("Heart", this.props.data.favorites.toString())}
+              </span>
+            </Card.Section>
+
+            {cardButtonsVisible && (
+              <Card.Section
+                styles={{
+                  root: {
+                    marginLeft: GalleryCardComponent.cardItemGapBig,
+                    marginRight: GalleryCardComponent.cardItemGapBig,
+                  },
+                }}
+              >
+                <Separator styles={{ root: { padding: 0, height: 1 } }} />
+
+                <span>
+                  {this.props.isFavorite !== undefined &&
+                    this.generateIconButtonWithTooltip(
+                      this.props.isFavorite ? "HeartFill" : "Heart",
+                      this.props.isFavorite ? "Unfavorite" : "Favorite",
+                      "left",
+                      this.props.isFavorite ? this.props.onUnfavoriteClick : this.props.onFavoriteClick
+                    )}
+
+                  {this.props.showDownload &&
+                    this.generateIconButtonWithTooltip("Download", "Download", "left", this.props.onDownloadClick)}
+
+                  {this.props.showDelete &&
+                    this.generateIconButtonWithTooltip("Delete", "Remove", "right", () =>
+                      this.props.onDeleteClick(
+                        () => this.setState({ isDeletingPublishedNotebook: true }),
+                        () => this.setState({ isDeletingPublishedNotebook: false })
+                      )
+                    )}
+                </span>
+              </Card.Section>
+            )}
+          </>
         )}
       </Card>
     );

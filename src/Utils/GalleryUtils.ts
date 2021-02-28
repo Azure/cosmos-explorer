@@ -369,16 +369,13 @@ export async function unfavoriteItem(
   }
 }
 
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
 export function deleteItem(
   container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
   onComplete: (item: IGalleryItem) => void,
-  onDeleteStart?: () => void,
-  onDeleteEnd?: () => void
+  beforeDelete?: () => void,
+  afterDelete?: () => void
 ): void {
   if (container) {
     trace(Action.NotebooksGalleryClickDelete, ActionModifiers.Mark, { notebookId: data.id });
@@ -388,8 +385,8 @@ export function deleteItem(
       `Would you like to remove ${data.name} from the gallery?`,
       "Remove",
       async () => {
-        if (onDeleteStart) {
-          onDeleteStart();
+        if (beforeDelete) {
+          beforeDelete();
         }
         const name = data.name;
         const notificationId = NotificationConsoleUtils.logConsoleMessage(
@@ -400,8 +397,6 @@ export function deleteItem(
         const startKey = traceStart(Action.NotebooksGalleryDelete, { notebookId: data.id });
 
         try {
-          await delay(30000);
-          /*
           const response = await junoClient.deleteNotebook(data.id);
           if (!response.data) {
             throw new Error(`Received HTTP ${response.status} while removing ${name}`);
@@ -411,7 +406,6 @@ export function deleteItem(
 
           NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully removed ${name} from gallery`);
           onComplete(response.data);
-          */
         } catch (error) {
           traceFailure(
             Action.NotebooksGalleryDelete,
@@ -421,8 +415,8 @@ export function deleteItem(
 
           handleError(error, "GalleryUtils/deleteItem", `Failed to remove ${name} from gallery`);
         } finally {
-          if (onDeleteEnd) {
-            onDeleteEnd();
+          if (afterDelete) {
+            afterDelete();
           }
         }
 
