@@ -1031,10 +1031,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       TelemetryProcessor.traceSuccess(
         Action.Tab,
         {
-          databaseAccountName: this.props.resourceId,
           databaseName: this.props.databaseId,
           collectionName: this.props.collectionId,
-          defaultExperience: Constants.DefaultAccountExperience.Graph,
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: "Graph",
         },
