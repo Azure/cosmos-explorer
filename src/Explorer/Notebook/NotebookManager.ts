@@ -160,9 +160,6 @@ export default class NotebookManager {
         primaryButtonLabel || "Commit",
         () => {
           TelemetryProcessor.trace(Action.NotebooksGitHubCommit, ActionModifiers.Mark, {
-            databaseAccountName:
-              this.params.container.databaseAccount() && this.params.container.databaseAccount().name,
-            defaultExperience: this.params.container.defaultExperience && this.params.container.defaultExperience(),
             dataExplorerArea: Areas.Notebook,
           });
           resolve(commitMsg);

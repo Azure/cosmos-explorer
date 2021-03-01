@@ -48,8 +48,6 @@ export default class MongoDocumentsTab extends DocumentsTab {
     const documentContent = JSON.parse(this.selectedDocumentContent());
     this.displayedError("");
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -69,8 +67,6 @@ export default class MongoDocumentsTab extends DocumentsTab {
       TelemetryProcessor.traceFailure(
         Action.CreateDocument,
         {
-          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-          defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           error: message,
@@ -107,8 +103,6 @@ export default class MongoDocumentsTab extends DocumentsTab {
           TelemetryProcessor.traceSuccess(
             Action.CreateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -122,8 +116,6 @@ export default class MongoDocumentsTab extends DocumentsTab {
           TelemetryProcessor.traceFailure(
             Action.CreateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
@@ -142,8 +134,6 @@ export default class MongoDocumentsTab extends DocumentsTab {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -171,8 +161,6 @@ export default class MongoDocumentsTab extends DocumentsTab {
           TelemetryProcessor.traceSuccess(
             Action.UpdateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -186,8 +174,6 @@ export default class MongoDocumentsTab extends DocumentsTab {
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
@@ -246,10 +232,9 @@ export default class MongoDocumentsTab extends DocumentsTab {
             TelemetryProcessor.traceSuccess(
               Action.Tab,
               {
-                databaseAccountName: this.collection.container.databaseAccount().name,
                 databaseName: this.collection.databaseId,
                 collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
+
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
               },
@@ -263,10 +248,9 @@ export default class MongoDocumentsTab extends DocumentsTab {
             TelemetryProcessor.traceFailure(
               Action.Tab,
               {
-                databaseAccountName: this.collection.container.databaseAccount().name,
                 databaseName: this.collection.databaseId,
                 collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
+
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
                 error: getErrorMessage(error),

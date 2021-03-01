@@ -261,8 +261,6 @@ export default class ConflictsTab extends TabsBase {
     const selectedConflict = this.selectedConflictId();
 
     const startKey: number = TelemetryProcessor.traceStart(Action.ResolveConflict, {
-      databaseAccountName: this._container.databaseAccount().name,
-      defaultExperience: this._container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       conflictResourceType: selectedConflict.resourceType,
@@ -308,8 +306,6 @@ export default class ConflictsTab extends TabsBase {
       TelemetryProcessor.traceSuccess(
         Action.ResolveConflict,
         {
-          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-          defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           conflictResourceType: selectedConflict.resourceType,
@@ -325,8 +321,6 @@ export default class ConflictsTab extends TabsBase {
       TelemetryProcessor.traceFailure(
         Action.ResolveConflict,
         {
-          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-          defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           conflictResourceType: selectedConflict.resourceType,
@@ -349,8 +343,6 @@ export default class ConflictsTab extends TabsBase {
     const selectedConflict = this.selectedConflictId();
 
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteConflict, {
-      databaseAccountName: this._container.databaseAccount().name,
-      defaultExperience: this._container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       conflictResourceType: selectedConflict.resourceType,
@@ -368,8 +360,6 @@ export default class ConflictsTab extends TabsBase {
       TelemetryProcessor.traceSuccess(
         Action.DeleteConflict,
         {
-          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-          defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           conflictResourceType: selectedConflict.resourceType,
@@ -385,8 +375,6 @@ export default class ConflictsTab extends TabsBase {
       TelemetryProcessor.traceFailure(
         Action.DeleteConflict,
         {
-          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-          defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           conflictResourceType: selectedConflict.resourceType,
@@ -443,10 +431,9 @@ export default class ConflictsTab extends TabsBase {
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
-              databaseAccountName: this.collection.container.databaseAccount().name,
               databaseName: this.collection.databaseId,
               collectionName: this.collection.id(),
-              defaultExperience: this.collection.container.defaultExperience(),
+
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
@@ -493,10 +480,9 @@ export default class ConflictsTab extends TabsBase {
             TelemetryProcessor.traceSuccess(
               Action.Tab,
               {
-                databaseAccountName: this.collection.container.databaseAccount().name,
                 databaseName: this.collection.databaseId,
                 collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
+
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
               },
@@ -511,10 +497,9 @@ export default class ConflictsTab extends TabsBase {
             TelemetryProcessor.traceFailure(
               Action.Tab,
               {
-                databaseAccountName: this.collection.container.databaseAccount().name,
                 databaseName: this.collection.databaseId,
                 collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
+
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
                 error: getErrorMessage(error),

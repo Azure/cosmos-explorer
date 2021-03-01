@@ -77,8 +77,6 @@ export default class StoredProcedureTab extends ScriptTabBase {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateStoredProcedure, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -97,8 +95,6 @@ export default class StoredProcedureTab extends ScriptTabBase {
           TelemetryProcessor.traceSuccess(
             Action.UpdateStoredProcedure,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -110,8 +106,6 @@ export default class StoredProcedureTab extends ScriptTabBase {
           TelemetryProcessor.traceFailure(
             Action.UpdateStoredProcedure,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
@@ -232,8 +226,6 @@ export default class StoredProcedureTab extends ScriptTabBase {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateStoredProcedure, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -259,8 +251,6 @@ export default class StoredProcedureTab extends ScriptTabBase {
           TelemetryProcessor.traceSuccess(
             Action.CreateStoredProcedure,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -274,8 +264,6 @@ export default class StoredProcedureTab extends ScriptTabBase {
           TelemetryProcessor.traceFailure(
             Action.CreateStoredProcedure,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),

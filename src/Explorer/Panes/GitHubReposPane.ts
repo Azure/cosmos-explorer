@@ -157,8 +157,6 @@ export class GitHubReposPane extends ContextualPaneBase {
     this.isExecuting(false);
     this.title(GitHubReposComponent.ManageGitHubRepoTitle); // Used for telemetry
     TelemetryProcessor.trace(Action.NotebooksGitHubManageRepo, ActionModifiers.Mark, {
-      databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
       dataExplorerArea: Areas.Notebook,
     });
     this.triggerRender();
@@ -339,8 +337,6 @@ export class GitHubReposPane extends ContextualPaneBase {
   private connectToGitHub(scope: string): void {
     this.isExecuting(true);
     TelemetryProcessor.trace(Action.NotebooksGitHubAuthorize, ActionModifiers.Mark, {
-      databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
       dataExplorerArea: Areas.Notebook,
       scopesSelected: scope,
     });

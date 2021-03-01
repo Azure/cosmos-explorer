@@ -161,8 +161,10 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       )
     );
 
-    tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
-    tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
+    if (this.props.container) {
+      tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
+      tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
+    }
 
     const pivotProps: IPivotProps = {
       onLinkClick: this.onPivotChange,
