@@ -213,6 +213,7 @@
     "format": "prettier --write \"{src,test}/**/*.{ts,tsx,html}\" \"*.{js,html}\"",
     "format:check": "prettier --check \"{src,test}/**/*.{ts,tsx,html}\" \"*.{js,html}\"",
     "lint": "tslint --project tsconfig.json && eslint \"**/*.{ts,tsx}\"",
+    "lint:important": "eslint --no-ingore --no-eslintrc -c ./eslintrc.important.js \"**/*.{ts,tsx}\"",
     "build:contracts": "npm run compile:contracts",
     "strictEligibleFiles": "node ./strict-migration-tools/index.js",
     "autoAddStrictEligibleFiles": "node ./strict-migration-tools/autoAdd.js",
