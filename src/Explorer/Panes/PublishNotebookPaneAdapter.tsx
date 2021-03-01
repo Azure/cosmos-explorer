@@ -152,10 +152,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     }
 
     try {
-      startKey = traceStart(Action.NotebooksGalleryPublish, {
-        databaseAccountName: this.container.databaseAccount()?.name,
-        defaultExperience: this.container.defaultExperience(),
-      });
+      startKey = traceStart(Action.NotebooksGalleryPublish, {});
 
       const response = await this.junoClient.publishNotebook(
         this.name,
@@ -183,8 +180,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         traceSuccess(
           Action.NotebooksGalleryPublish,
           {
-            databaseAccountName: this.container.databaseAccount()?.name,
-            defaultExperience: this.container.defaultExperience(),
             notebookId: data.id,
             isPublishPending,
           },
@@ -195,8 +190,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       traceFailure(
         Action.NotebooksGalleryPublish,
         {
-          databaseAccountName: this.container.databaseAccount()?.name,
-          defaultExperience: this.container.defaultExperience(),
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },

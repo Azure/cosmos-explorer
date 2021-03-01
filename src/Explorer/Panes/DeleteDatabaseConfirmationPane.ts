@@ -46,8 +46,6 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
     this.isExecuting(true);
     const selectedDatabase = this.container.findSelectedDatabase();
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDatabase, {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       databaseId: selectedDatabase.id(),
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title(),
@@ -73,8 +71,6 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
           TelemetryProcessor.traceSuccess(
             Action.DeleteDatabase,
             {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
               databaseId: selectedDatabase.id(),
               dataExplorerArea: Constants.Areas.ContextualPane,
               paneTitle: this.title(),
@@ -105,8 +101,6 @@ export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
           TelemetryProcessor.traceFailure(
             Action.DeleteDatabase,
             {
-              databaseAccountName: this.container.databaseAccount().name,
-              defaultExperience: this.container.defaultExperience(),
               databaseId: selectedDatabase.id(),
               dataExplorerArea: Constants.Areas.ContextualPane,
               paneTitle: this.title(),

@@ -381,8 +381,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.isExecuting(true);
 
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateSettings, {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -417,9 +415,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       TelemetryProcessor.traceFailure(
         Action.UpdateSettings,
         {
-          databaseAccountName: this.container.databaseAccount().name,
           databaseName: this.database && this.database.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           error: errorMessage,

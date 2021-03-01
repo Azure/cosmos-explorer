@@ -74,8 +74,6 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
 
   private onAddRepoButtonClick = async (): Promise<void> => {
     const startKey: number = TelemetryProcessor.traceStart(Action.NotebooksGitHubManualRepoAdd, {
-      databaseAccountName: this.props.container.databaseAccount() && this.props.container.databaseAccount().name,
-      defaultExperience: this.props.container.defaultExperience && this.props.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Notebook,
     });
     let enteredUrl = this.state.textFieldValue;
@@ -105,8 +103,6 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
         TelemetryProcessor.traceSuccess(
           Action.NotebooksGitHubManualRepoAdd,
           {
-            databaseAccountName: this.props.container.databaseAccount() && this.props.container.databaseAccount().name,
-            defaultExperience: this.props.container.defaultExperience && this.props.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
           },
           startKey
@@ -121,8 +117,6 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
     TelemetryProcessor.traceFailure(
       Action.NotebooksGitHubManualRepoAdd,
       {
-        databaseAccountName: this.props.container.databaseAccount() && this.props.container.databaseAccount().name,
-        defaultExperience: this.props.container.defaultExperience && this.props.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Notebook,
         error: AddRepoComponent.TextFieldErrorMessage,
       },

@@ -611,8 +611,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "Disconnect from GitHub",
         onClick: () => {
           TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
-            databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
             dataExplorerArea: Areas.Notebook,
           });
           this.container.notebookManager?.gitHubOAuthService.logout();

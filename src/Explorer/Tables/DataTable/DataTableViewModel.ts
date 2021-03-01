@@ -203,10 +203,8 @@ abstract class DataTableViewModel {
       TelemetryProcessor.traceSuccess(
         Action.Tab,
         {
-          databaseAccountName: this.queryTablesTab.collection.container.databaseAccount().name,
           databaseName: this.queryTablesTab.collection.databaseId,
           collectionName: this.queryTablesTab.collection.id(),
-          defaultExperience: this.queryTablesTab.collection.container.defaultExperience(),
           dataExplorerArea: CommonConstants.Areas.Tab,
           tabTitle: this.queryTablesTab.tabTitle(),
         },
