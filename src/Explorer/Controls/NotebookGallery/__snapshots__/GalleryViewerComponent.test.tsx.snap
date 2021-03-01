@@ -180,34 +180,6 @@ exports[`GalleryViewerComponent renders 1`] = `
         </Stack>
       </div>
     </PivotItem>
-    <PivotItem
-      headerText="My favorites"
-      itemKey="Favorites"
-      key="Favorites"
-      style={
-        Object {
-          "marginTop": 20,
-        }
-      }
-    >
-      <StyledSpinnerBase
-        size={3}
-      />
-    </PivotItem>
-    <PivotItem
-      headerText="My published work"
-      itemKey="Published"
-      key="Published"
-      style={
-        Object {
-          "marginTop": 20,
-        }
-      }
-    >
-      <StyledSpinnerBase
-        size={3}
-      />
-    </PivotItem>
   </StyledPivotBase>
 </div>
 `;
