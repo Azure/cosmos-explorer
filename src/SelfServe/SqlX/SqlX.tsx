@@ -1,4 +1,5 @@
-import { IsDisplayable, OnChange, Values } from "../Decorators";
+import { values } from "underscore";
+import { IsDisplayable, OnChange, Values, PropertyInfo} from "../Decorators";
 import {
   ChoiceItem,
   DescriptionType,
@@ -9,6 +10,8 @@ import {
   RefreshResult,
   SelfServeBaseClass,
   SmartUiInput,
+  Info,
+  Description,
 } from "../SelfServeTypes";
 import {
   refreshDedicatedGatewayProvisioning,
@@ -16,6 +19,74 @@ import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
 } from "./SqlX.rp";
+
+const skuInfo: Info = {
+  messageTKey: "SkuInfo",
+};
+
+const resourceCostInfo: Info = {
+  messageTKey: "ResourceCostInfo",
+  link: {
+    href: "https://azure.microsoft.com/en-us/pricing/details/virtual-machines/windows/",
+    textTKey: "SkuCostInfo",
+  },
+};
+
+const getSKUDetails = (sku: string): string => {
+  if (sku === "Cosmos.D4s")
+  {
+    return "CosmosD4Details";
+  }
+  else if (sku === "Cosmos.D8s")
+  {
+    return "CosmosD8Details";
+  }
+  else if (sku === "Cosmos.D16s")
+  {
+    return "CosmosD16Details";
+  }
+  else if (sku == "Cosmos.D32s")
+  {
+    return "CosmosD32Details";
+  }
+  return "Not Supported Yet";
+}
+
+const displayCostCalculation = (
+  sku: string, 
+  numberOfInstances: string
+) : string => {
+  return `${numberOfInstances} * Hourly cost of ${sku}`
+}
+
+const onSKUChange = (
+  currentValues: Map<string, SmartUiInput>,
+  newValue: InputType,
+  baselineValues: ReadonlyMap<string, SmartUiInput>
+): Map<string, SmartUiInput> => {
+  currentValues.set("sku", {value: newValue});
+  const currentCostText = displayCostCalculation(currentValues.get("sku").value.toString(), currentValues.get("instances").value.toString());
+  currentValues.set("currentCostCalculation", {
+    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+  });
+  currentValues.set("skuDetails", {
+    value: { textTKey: getSKUDetails(`${newValue.toString()}`), type: DescriptionType.Text } as Description,
+  });
+  return currentValues
+}
+
+const onNumberOfInstancesChange = (
+  currentValues: Map<string, SmartUiInput>,
+  newValue: InputType,
+  baselineValues: ReadonlyMap<string, SmartUiInput>
+): Map<string, SmartUiInput> => {
+  currentValues.set("instances", {value: newValue});
+  const currentCostText = displayCostCalculation(currentValues.get("sku").value.toString(), currentValues.get("instances").value.toString());
+  currentValues.set("currentCostCalculation", {
+    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+  });
+  return currentValues
+}
 
 const onEnableDedicatedGatewayChange = (
   currentValues: Map<string, SmartUiInput>,
@@ -37,6 +108,20 @@ const onEnableDedicatedGatewayChange = (
     hidden: hideAttributes,
     disabled: dedicatedGatewayOriginallyEnabled,
   });
+
+  const currentCostText = displayCostCalculation(currentValues.get("sku").value.toString(), currentValues.get("instances").value.toString());
+  currentValues.set("currentCostCalculation", {
+    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+    hidden: hideAttributes,
+    disabled: dedicatedGatewayOriginallyEnabled,
+  });
+  currentValues.set("skuDetails", {
+    value: { textTKey: getSKUDetails(`${currentValues.get("sku").value}`), type: DescriptionType.Text } as Description,
+    hidden: hideAttributes,
+    disabled: dedicatedGatewayOriginallyEnabled,
+  });
+
+
   return currentValues;
 };
 
@@ -107,11 +192,22 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("enableDedicatedGateway", { value: false });
     defaults.set("sku", { value: "Cosmos.D4s", hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
+    defaults.set("currentCostCalculation", {value: "0", hidden: true});
+    defaults.set("skuDetails", {value: "NoValue", hidden: true});
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: true });
+      const currentCostText = displayCostCalculation(defaults.get("sku").value.toString(), defaults.get("instances").value.toString());
+      defaults.set("currentCostCalculation", {
+        value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+        hidden: false,
+      });
+      defaults.set("skuDetails", {
+        value: { textTKey: getSKUDetails(`${defaults.get("sku").value}`), type: DescriptionType.Text } as Description,
+        hidden: false,
+      });
     }
 
     return defaults;
@@ -137,6 +233,8 @@ export default class SqlX extends SelfServeBaseClass {
   })
   enableDedicatedGateway: boolean;
 
+  @PropertyInfo(skuInfo)
+  @OnChange(onSKUChange)
   @Values({
     labelTKey: "SKUs",
     choices: getSkus,
@@ -145,6 +243,13 @@ export default class SqlX extends SelfServeBaseClass {
   sku: ChoiceItem;
 
   @Values({
+    labelTKey: "SKUDetails",
+    isDynamicDescription: true,
+  })
+  skuDetails: string;
+
+  @OnChange(onNumberOfInstancesChange)
+  @Values({
     labelTKey: "NumberOfInstances",
     min: getInstancesMin,
     max: getInstancesMax,
@@ -152,4 +257,11 @@ export default class SqlX extends SelfServeBaseClass {
     uiType: NumberUiType.Spinner,
   })
   instances: number;
+
+  @PropertyInfo(resourceCostInfo)
+  @Values({
+    labelTKey: "CurrentCostCalculation",
+    isDynamicDescription: true,
+  })
+  currentCostCalculation: string;
 }
