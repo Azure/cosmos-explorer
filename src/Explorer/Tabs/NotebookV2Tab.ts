@@ -162,16 +162,14 @@ export default class NotebookTabV2 extends TabsBase {
       });
     }
 
-    if (this.container.isGalleryPublishEnabled()) {
-      saveButtonChildren.push({
-        iconName: "PublishContent",
-        onCommandClick: async () => await this.publishToGallery(),
-        commandButtonLabel: publishLabel,
-        hasPopup: false,
-        disabled: false,
-        ariaLabel: publishLabel,
-      });
-    }
+    saveButtonChildren.push({
+      iconName: "PublishContent",
+      onCommandClick: async () => await this.publishToGallery(),
+      commandButtonLabel: publishLabel,
+      hasPopup: false,
+      disabled: false,
+      ariaLabel: publishLabel,
+    });
 
     let buttons: CommandButtonComponentProps[] = [
       {
@@ -511,8 +509,6 @@ export default class NotebookTabV2 extends TabsBase {
 
   private traceTelemetry(actionType: number) {
     TelemetryProcessor.trace(actionType, ActionModifiers.Mark, {
-      databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
       dataExplorerArea: Areas.Notebook,
     });
   }

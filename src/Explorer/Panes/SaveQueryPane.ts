@@ -63,8 +63,6 @@ export class SaveQueryPane extends ContextualPaneBase {
       query: query,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.SaveQuery, {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title(),
     });
@@ -77,8 +75,6 @@ export class SaveQueryPane extends ContextualPaneBase {
         TelemetryProcessor.traceSuccess(
           Action.SaveQuery,
           {
-            databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
           },
@@ -94,8 +90,6 @@ export class SaveQueryPane extends ContextualPaneBase {
         TelemetryProcessor.traceFailure(
           Action.SaveQuery,
           {
-            databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience(),
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
             error: errorMessage,
@@ -113,8 +107,6 @@ export class SaveQueryPane extends ContextualPaneBase {
     }
 
     const startKey: number = TelemetryProcessor.traceStart(Action.SetupSavedQueries, {
-      databaseAccountName: this.container && this.container.databaseAccount().name,
-      defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title(),
     });
@@ -125,8 +117,6 @@ export class SaveQueryPane extends ContextualPaneBase {
       TelemetryProcessor.traceSuccess(
         Action.SetupSavedQueries,
         {
-          databaseAccountName: this.container && this.container.databaseAccount().name,
-          defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ContextualPane,
           paneTitle: this.title(),
         },
@@ -137,8 +127,6 @@ export class SaveQueryPane extends ContextualPaneBase {
       TelemetryProcessor.traceFailure(
         Action.SetupSavedQueries,
         {
-          databaseAccountName: this.container && this.container.databaseAccount().name,
-          defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.ContextualPane,
           paneTitle: this.title(),
           error: errorMessage,

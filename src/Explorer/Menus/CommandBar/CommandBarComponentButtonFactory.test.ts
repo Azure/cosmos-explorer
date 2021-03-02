@@ -19,7 +19,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebookEnabled = ko.observable(false);
@@ -61,7 +60,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
@@ -125,7 +123,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
@@ -207,7 +204,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
-      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
@@ -295,7 +291,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
-      mockExplorer.isGalleryPublishEnabled = ko.computed<boolean>(() => false);
       mockExplorer.notebookManager = new NotebookManager();
       mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);

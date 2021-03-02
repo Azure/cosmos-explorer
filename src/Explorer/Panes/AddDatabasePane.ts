@@ -272,8 +272,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     super.open();
     this.resetData();
     const addDatabasePaneOpenMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
@@ -295,8 +293,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     const offerThroughput: number = this._computeOfferThroughput();
 
     const addDatabasePaneStartMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
         shared: this.databaseCreateNewShared(),
@@ -359,8 +355,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.close();
     this.container.refreshAllDatabases();
     const addDatabasePaneSuccessMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
         shared: this.databaseCreateNewShared(),
@@ -383,8 +377,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.formErrors(errorMessage);
     this.formErrorsDetails(errorMessage);
     const addDatabasePaneFailedMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
         shared: this.databaseCreateNewShared(),

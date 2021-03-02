@@ -87,9 +87,7 @@ export default class NotebookManager {
       this.notebookContentProvider
     );
 
-    if (this.params.container.isGalleryPublishEnabled()) {
-      this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
-    }
+    this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
 
     this.copyNotebookPaneAdapter = new CopyNotebookPaneAdapter(
       this.params.container,
@@ -125,10 +123,9 @@ export default class NotebookManager {
   public async openPublishNotebookPane(
     name: string,
     content: string | ImmutableNotebook,
-    parentDomElement: HTMLElement,
-    isLinkInjectionEnabled: boolean
+    parentDomElement: HTMLElement
   ): Promise<void> {
-    await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement, isLinkInjectionEnabled);
+    await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement);
   }
 
   public openCopyNotebookPane(name: string, content: string): void {
@@ -163,9 +160,6 @@ export default class NotebookManager {
         primaryButtonLabel || "Commit",
         () => {
           TelemetryProcessor.trace(Action.NotebooksGitHubCommit, ActionModifiers.Mark, {
-            databaseAccountName:
-              this.params.container.databaseAccount() && this.params.container.databaseAccount().name,
-            defaultExperience: this.params.container.defaultExperience && this.params.container.defaultExperience(),
             dataExplorerArea: Areas.Notebook,
           });
           resolve(commitMsg);

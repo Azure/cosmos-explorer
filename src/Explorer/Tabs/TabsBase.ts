@@ -86,8 +86,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
       tabName: this.constructor.name,
-      databaseAccountName: this.getContainer().databaseAccount().name,
-      defaultExperience: this.getContainer().defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       tabId: this.tabId,
@@ -144,8 +143,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Open, {
       tabName: this.constructor.name,
-      databaseAccountName: this.getContainer().databaseAccount().name,
-      defaultExperience: this.getContainer().defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       tabId: this.tabId,
