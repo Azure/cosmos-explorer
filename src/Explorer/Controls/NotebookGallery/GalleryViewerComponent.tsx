@@ -325,28 +325,26 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createPublishedNotebooksTabContent = (data: IGalleryItem[]): JSX.Element => {
     const { published, underReview, removed } = GalleryUtils.filterPublishedNotebooks(data);
     const content = (
-      <>
-        <Stack tokens={{ childrenGap: 20 }}>
-          {published?.length > 0 &&
-            this.createPublishedNotebooksSectionContent(
-              undefined,
-              "You have successfully published and shared the following notebook(s) to the public gallery.",
-              this.createCardsTabContent(published)
-            )}
-          {underReview?.length > 0 &&
-            this.createPublishedNotebooksSectionContent(
-              "Under Review",
-              "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
-              this.createCardsTabContent(underReview)
-            )}
-          {removed?.length > 0 &&
-            this.createPublishedNotebooksSectionContent(
-              "Removed",
-              "These notebooks were found to contain illegal content and has been taken down.",
-              this.createPolicyViolationsListContent(removed)
-            )}
-        </Stack>
-      </>
+      <Stack tokens={{ childrenGap: 20 }}>
+        {published?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            undefined,
+            "You have successfully published and shared the following notebook(s) to the public gallery.",
+            this.createCardsTabContent(published)
+          )}
+        {underReview?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            "Under Review",
+            "Content of a notebook you published is currently being scanned for illegal content. It will not be available to public gallery until the review is completed (may take a few days)",
+            this.createCardsTabContent(underReview)
+          )}
+        {removed?.length > 0 &&
+          this.createPublishedNotebooksSectionContent(
+            "Removed",
+            "These notebooks were found to contain illegal content and has been taken down.",
+            this.createPolicyViolationsListContent(removed)
+          )}
+      </Stack>
     );
 
     return this.createSearchBarHeader(content);

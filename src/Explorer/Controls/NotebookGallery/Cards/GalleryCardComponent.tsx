@@ -77,7 +77,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
           <Card.Item tokens={{ padding: GalleryCardComponent.cardItemGapBig }}>
             <Spinner
               size={SpinnerSize.large}
-              label="Deleting notebook"
+              label={`Deleting '${cardTitle}'`}
               styles={{ root: { height: GalleryCardComponent.cardDeleteSpinnerHeight } }}
             />
           </Card.Item>
