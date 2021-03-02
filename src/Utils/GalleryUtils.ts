@@ -373,7 +373,9 @@ export function deleteItem(
   container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
-  onComplete: (item: IGalleryItem) => void
+  onComplete: (item: IGalleryItem) => void,
+  beforeDelete?: () => void,
+  afterDelete?: () => void
 ): void {
   if (container) {
     trace(Action.NotebooksGalleryClickDelete, ActionModifiers.Mark, { notebookId: data.id });
@@ -383,6 +385,9 @@ export function deleteItem(
       `Would you like to remove ${data.name} from the gallery?`,
       "Remove",
       async () => {
+        if (beforeDelete) {
+          beforeDelete();
+        }
         const name = data.name;
         const notificationId = NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.InProgress,
@@ -409,6 +414,10 @@ export function deleteItem(
           );
 
           handleError(error, "GalleryUtils/deleteItem", `Failed to remove ${name} from gallery`);
+        } finally {
+          if (afterDelete) {
+            afterDelete();
+          }
         }
 
         NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);

@@ -666,7 +666,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       onFavoriteClick: () => this.favoriteItem(data),
       onUnfavoriteClick: () => this.unfavoriteItem(data),
       onDownloadClick: () => this.downloadItem(data),
-      onDeleteClick: () => this.deleteItem(data),
+      onDeleteClick: (beforeDelete: () => void, afterDelete: () => void) =>
+        this.deleteItem(data, beforeDelete, afterDelete),
     };
 
     return (
@@ -710,11 +711,18 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   };
 
-  private deleteItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, (item) => {
-      this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
-      this.refreshSelectedTab(item);
-    });
+  private deleteItem = async (data: IGalleryItem, beforeDelete: () => void, afterDelete: () => void): Promise<void> => {
+    GalleryUtils.deleteItem(
+      this.props.container,
+      this.props.junoClient,
+      data,
+      (item) => {
+        this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
+        this.refreshSelectedTab(item);
+      },
+      beforeDelete,
+      afterDelete
+    );
   };
 
   private onPivotChange = (item: PivotItem): void => {
