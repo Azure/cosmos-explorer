@@ -548,8 +548,6 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
     onCommandClick: () => {
       if (!connectedToGitHub) {
         TelemetryProcessor.trace(Action.NotebooksGitHubConnect, ActionModifiers.Mark, {
-          databaseAccountName: container.databaseAccount() && container.databaseAccount().name,
-          defaultExperience: container.defaultExperience && container.defaultExperience(),
           dataExplorerArea: Areas.Notebook,
         });
       }

@@ -1,4 +1,3 @@
 {
- "JUNO_ENDPOINT": "https://tools-staging.cosmos.azure.com",
- "ENABLE_GALLERY_PUBLISH": true
+ "JUNO_ENDPOINT": "https://tools-staging.cosmos.azure.com"
 }

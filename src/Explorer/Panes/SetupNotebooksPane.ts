@@ -54,8 +54,6 @@ export class SetupNotebooksPane extends ContextualPaneBase {
     }
 
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateNotebookWorkspace, {
-      databaseAccountName: this.container && this.container.databaseAccount().name,
-      defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
       paneTitle: this.title(),
     });
@@ -74,8 +72,6 @@ export class SetupNotebooksPane extends ContextualPaneBase {
       TelemetryProcessor.traceSuccess(
         Action.CreateNotebookWorkspace,
         {
-          databaseAccountName: this.container && this.container.databaseAccount().name,
-          defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
         },
@@ -90,8 +86,6 @@ export class SetupNotebooksPane extends ContextualPaneBase {
       TelemetryProcessor.traceFailure(
         Action.CreateNotebookWorkspace,
         {
-          databaseAccountName: this.container && this.container.databaseAccount().name,
-          defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
           error: errorMessage,

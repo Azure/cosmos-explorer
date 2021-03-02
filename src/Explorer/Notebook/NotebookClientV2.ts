@@ -224,8 +224,6 @@ export class NotebookClientV2 {
 
     const traceErrorFct = (title: string, message: string) => {
       TelemetryProcessor.traceFailure(Action.NotebookErrorNotification, {
-        databaseAccountName: this.databaseAccountName,
-        defaultExperience: this.defaultExperience,
         dataExplorerArea: Constants.Areas.Notebook,
         title,
         message,
@@ -270,8 +268,6 @@ export class NotebookClientV2 {
   private handleNotification = (msg: Notification): void => {
     if (msg.level === "error") {
       TelemetryProcessor.traceFailure(Action.NotebookErrorNotification, {
-        databaseAccountName: this.databaseAccountName,
-        defaultExperience: this.defaultExperience,
         dataExplorerArea: Constants.Areas.Notebook,
         title: msg.title,
         message: msg.message,

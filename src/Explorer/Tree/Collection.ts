@@ -220,10 +220,10 @@ export default class Collection implements ViewModels.Collection {
     this.container.selectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Collection node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     if (this.isCollectionExpanded()) {
@@ -245,10 +245,10 @@ export default class Collection implements ViewModels.Collection {
     this.isCollectionExpanded(false);
     TelemetryProcessor.trace(Action.CollapseTreeNode, ActionModifiers.Mark, {
       description: "Collection node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -261,10 +261,10 @@ export default class Collection implements ViewModels.Collection {
     this.isCollectionExpanded(true);
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "Collection node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -274,10 +274,10 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -291,10 +291,9 @@ export default class Collection implements ViewModels.Collection {
       this.container.tabsManager.activateTab(documentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
         databaseName: this.databaseId,
         collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Items",
       });
@@ -323,10 +322,10 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Conflicts node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -340,10 +339,9 @@ export default class Collection implements ViewModels.Collection {
       this.container.tabsManager.activateTab(conflictsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
         databaseName: this.databaseId,
         collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Conflicts",
       });
@@ -372,10 +370,10 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.QueryTables);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Entities node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -400,10 +398,9 @@ export default class Collection implements ViewModels.Collection {
         title = `Rows`;
       }
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
         databaseName: this.databaseId,
         collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: title,
       });
@@ -431,10 +428,10 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -450,10 +447,9 @@ export default class Collection implements ViewModels.Collection {
       this.documentIds([]);
       const title = "Graph";
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
         databaseName: this.databaseId,
         collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: title,
       });
@@ -486,10 +482,10 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -503,10 +499,9 @@ export default class Collection implements ViewModels.Collection {
       this.container.tabsManager.activateTab(mongoDocumentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
         databaseName: this.databaseId,
         collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Documents",
       });
@@ -536,10 +531,10 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -552,10 +547,9 @@ export default class Collection implements ViewModels.Collection {
     );
 
     const traceStartData = {
-      databaseAccountName: this.container.databaseAccount().name,
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: tabTitle,
     };
@@ -596,10 +590,9 @@ export default class Collection implements ViewModels.Collection {
     const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-      databaseAccountName: this.container.databaseAccount().name,
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: title,
     });
@@ -627,10 +620,9 @@ export default class Collection implements ViewModels.Collection {
 
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-      databaseAccountName: this.container.databaseAccount().name,
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: title,
     });
@@ -656,10 +648,9 @@ export default class Collection implements ViewModels.Collection {
     const title: string = "Graph Query " + id;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-      databaseAccountName: this.container.databaseAccount().name,
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: title,
     });
@@ -771,20 +762,20 @@ export default class Collection implements ViewModels.Collection {
         this.isStoredProceduresExpanded(true);
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
           description: "Stored procedures node",
-          databaseAccountName: this.container.databaseAccount().name,
+
           databaseName: this.databaseId,
           collectionName: this.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.ResourceTree,
         });
       },
       (error) => {
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Failed, {
           description: "Stored procedures node",
-          databaseAccountName: this.container.databaseAccount().name,
+
           databaseName: this.databaseId,
           collectionName: this.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.ResourceTree,
           error: getErrorMessage(error),
         });
@@ -800,10 +791,10 @@ export default class Collection implements ViewModels.Collection {
     this.isStoredProceduresExpanded(false);
     TelemetryProcessor.trace(Action.CollapseTreeNode, ActionModifiers.Mark, {
       description: "Stored procedures node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -830,20 +821,20 @@ export default class Collection implements ViewModels.Collection {
         this.isUserDefinedFunctionsExpanded(true);
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
           description: "UDF node",
-          databaseAccountName: this.container.databaseAccount().name,
+
           databaseName: this.databaseId,
           collectionName: this.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.ResourceTree,
         });
       },
       (error) => {
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Failed, {
           description: "UDF node",
-          databaseAccountName: this.container.databaseAccount().name,
+
           databaseName: this.databaseId,
           collectionName: this.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.ResourceTree,
           error: getErrorMessage(error),
         });
@@ -859,10 +850,10 @@ export default class Collection implements ViewModels.Collection {
     this.isUserDefinedFunctionsExpanded(false);
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "UDF node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -889,10 +880,10 @@ export default class Collection implements ViewModels.Collection {
         this.isTriggersExpanded(true);
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
           description: "Triggers node",
-          databaseAccountName: this.container.databaseAccount().name,
+
           databaseName: this.databaseId,
           collectionName: this.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.ResourceTree,
         });
       },
@@ -900,10 +891,10 @@ export default class Collection implements ViewModels.Collection {
         this.isTriggersExpanded(true);
         TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
           description: "Triggers node",
-          databaseAccountName: this.container.databaseAccount().name,
+
           databaseName: this.databaseId,
           collectionName: this.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.ResourceTree,
           error: getErrorMessage(error),
         });
@@ -919,10 +910,10 @@ export default class Collection implements ViewModels.Collection {
     this.isTriggersExpanded(false);
     TelemetryProcessor.trace(Action.CollapseTreeNode, ActionModifiers.Mark, {
       description: "Triggers node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -1211,10 +1202,8 @@ export default class Collection implements ViewModels.Collection {
     if (!this.container.isServerlessEnabled() && !this.offer()) {
       this.container.isRefreshingExplorer(true);
       const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
-        databaseAccountName: this.container.databaseAccount().name,
         databaseName: this.databaseId,
         collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
       });
 
       const params: DataModels.ReadCollectionOfferParams = {
@@ -1230,10 +1219,8 @@ export default class Collection implements ViewModels.Collection {
         TelemetryProcessor.traceSuccess(
           Action.LoadOffers,
           {
-            databaseAccountName: this.container.databaseAccount().name,
             databaseName: this.databaseId,
             collectionName: this.id(),
-            defaultExperience: this.container.defaultExperience(),
           },
           startKey
         );
@@ -1241,10 +1228,9 @@ export default class Collection implements ViewModels.Collection {
         TelemetryProcessor.traceFailure(
           Action.LoadOffers,
           {
-            databaseAccountName: this.container.databaseAccount().name,
             databaseName: this.databaseId,
             collectionName: this.id(),
-            defaultExperience: this.container.defaultExperience(),
+
             error: getErrorMessage(error),
             errorStack: getErrorStack(error),
           },

@@ -41,8 +41,6 @@ export class BrowseQueriesPane extends ContextualPaneBase {
     }
 
     const startKey: number = TelemetryProcessor.traceStart(Action.SetupSavedQueries, {
-      databaseAccountName: this.container && this.container.databaseAccount().name,
-      defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
       paneTitle: this.title(),
     });
@@ -53,8 +51,6 @@ export class BrowseQueriesPane extends ContextualPaneBase {
       TelemetryProcessor.traceSuccess(
         Action.SetupSavedQueries,
         {
-          databaseAccountName: this.container && this.container.databaseAccount().name,
-          defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
         },
@@ -65,8 +61,6 @@ export class BrowseQueriesPane extends ContextualPaneBase {
       TelemetryProcessor.traceFailure(
         Action.SetupSavedQueries,
         {
-          databaseAccountName: this.container && this.container.databaseAccount().name,
-          defaultExperience: this.container && this.container.defaultExperience(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: this.title(),
           error: errorMessage,
@@ -97,8 +91,6 @@ export class BrowseQueriesPane extends ContextualPaneBase {
     queryTab.initialEditorContent(savedQuery.query);
     queryTab.sqlQueryEditorContent(savedQuery.query);
     TelemetryProcessor.trace(Action.LoadSavedQuery, ActionModifiers.Mark, {
-      databaseAccountName: this.container && this.container.databaseAccount().name,
-      defaultExperience: this.container && this.container.defaultExperience(),
       dataExplorerArea: Areas.ContextualPane,
       queryName: savedQuery.queryName,
       paneTitle: this.title(),

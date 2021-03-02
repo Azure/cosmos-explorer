@@ -44,7 +44,7 @@ export class CodeOfConductComponent extends React.Component<CodeOfConductCompone
         throw new Error(`Received HTTP ${response.status} when accepting code of conduct`);
       }
 
-      traceSuccess(Action.NotebooksGalleryAcceptCodeOfConduct, startKey);
+      traceSuccess(Action.NotebooksGalleryAcceptCodeOfConduct, {}, startKey);
 
       this.props.onAcceptCodeOfConduct(response.data);
     } catch (error) {

@@ -42,8 +42,6 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
     this.isExecuting(true);
     const selectedCollection = <ViewModels.Collection>this.container.findSelectedCollection();
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteCollection, {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       collectionId: selectedCollection.id(),
       dataExplorerArea: Constants.Areas.ContextualPane,
       paneTitle: this.title(),
@@ -63,8 +61,6 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         TelemetryProcessor.traceSuccess(
           Action.DeleteCollection,
           {
-            databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
@@ -94,8 +90,6 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
         TelemetryProcessor.traceFailure(
           Action.DeleteCollection,
           {
-            databaseAccountName: this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience(),
             collectionId: selectedCollection.id(),
             dataExplorerArea: Constants.Areas.ContextualPane,
             paneTitle: this.title(),
