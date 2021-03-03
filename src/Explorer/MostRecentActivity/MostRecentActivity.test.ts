@@ -23,10 +23,8 @@ describe("MostRecentActivity", () => {
     const activity = mostRecentActivity.getItems(accountId);
     expect(activity).toEqual([
       expect.objectContaining({
-        data: {
-          collectionId,
-          databaseId,
-        },
+        collectionId,
+        databaseId,
       }),
     ]);
   });
@@ -39,7 +37,7 @@ describe("MostRecentActivity", () => {
     mostRecentActivity.notebookWasItemOpened(accountId, notebook);
 
     const activity = mostRecentActivity.getItems(accountId);
-    expect(activity).toEqual([expect.objectContaining({ data: notebook })]);
+    expect(activity).toEqual([expect.objectContaining(notebook)]);
   });
 
   it("Filters out duplicates", () => {
@@ -53,7 +51,7 @@ describe("MostRecentActivity", () => {
 
     const activity = mostRecentActivity.getItems(accountId);
     expect(activity.length).toEqual(1);
-    expect(activity).toEqual([expect.objectContaining({ data: notebook })]);
+    expect(activity).toEqual([expect.objectContaining(notebook)]);
   });
 
   it("Allows for multiple accounts", () => {
@@ -67,8 +65,8 @@ describe("MostRecentActivity", () => {
     mostRecentActivity.notebookWasItemOpened(accountId, notebook);
     mostRecentActivity.notebookWasItemOpened(anotherAccountId, anotherNotebook);
 
-    expect(mostRecentActivity.getItems(accountId)).toEqual([expect.objectContaining({ data: notebook })]);
-    expect(mostRecentActivity.getItems(anotherAccountId)).toEqual([expect.objectContaining({ data: anotherNotebook })]);
+    expect(mostRecentActivity.getItems(accountId)).toEqual([expect.objectContaining(notebook)]);
+    expect(mostRecentActivity.getItems(anotherAccountId)).toEqual([expect.objectContaining(anotherNotebook)]);
   });
 
   it("Can store multiple distinct elements, in FIFO order", () => {
@@ -83,6 +81,6 @@ describe("MostRecentActivity", () => {
     mostRecentActivity.notebookWasItemOpened(accountId, third);
 
     const activity = mostRecentActivity.getItems(accountId);
-    expect(activity).toEqual([third, second, first].map((data) => expect.objectContaining({ data })));
+    expect(activity).toEqual([third, second, first].map(expect.objectContaining));
   });
 });

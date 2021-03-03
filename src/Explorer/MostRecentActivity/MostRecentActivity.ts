@@ -8,21 +8,18 @@ export enum Type {
 }
 
 export interface OpenNotebookItem {
+  type: Type.OpenNotebook;
   name: string;
   path: string;
 }
 
 export interface OpenCollectionItem {
+  type: Type.OpenCollection;
   databaseId: string;
   collectionId: string;
 }
 
-export interface Item {
-  type: Type;
-  title: string;
-  description: string;
-  data: OpenNotebookItem | OpenCollectionItem;
-}
+type Item = OpenNotebookItem | OpenCollectionItem;
 
 // Update schemaVersion if you are going to change this interface
 interface StoredData {
@@ -34,7 +31,7 @@ interface StoredData {
  * Stores most recent activity
  */
 class MostRecentActivity {
-  private static readonly schemaVersion: string = "1";
+  private static readonly schemaVersion: string = "2";
   private static itemsMaxNumber: number = 5;
   private storedData: StoredData;
   constructor() {
@@ -94,7 +91,7 @@ class MostRecentActivity {
     LocalStorageUtility.setEntryString(StorageKey.MostRecentActivity, JSON.stringify(this.storedData));
   }
 
-  public addItem(accountId: string, newItem: Item): void {
+  private addItem(accountId: string, newItem: Item): void {
     // When debugging, accountId is "undefined": most recent activity cannot be saved by account. Uncomment to disable.
     // if (!accountId) {
     //   return;
@@ -117,21 +114,16 @@ class MostRecentActivity {
     const collectionId = id();
     this.addItem(accountId, {
       type: Type.OpenCollection,
-      title: collectionId,
-      description: "Data",
-      data: {
-        databaseId,
-        collectionId,
-      },
+      databaseId,
+      collectionId,
     });
   }
 
   public notebookWasItemOpened(accountId: string, { name, path }: Pick<NotebookContentItem, "name" | "path">) {
     this.addItem(accountId, {
       type: Type.OpenNotebook,
-      title: name,
-      description: "Notebook",
-      data: { name, path },
+      name,
+      path,
     });
   }
 
@@ -152,11 +144,7 @@ class MostRecentActivity {
     let index = -1;
     for (let i = 0; i < itemsArray.length; i++) {
       const currentItem = itemsArray[i];
-      if (
-        currentItem.title === item.title &&
-        currentItem.description === item.description &&
-        JSON.stringify(currentItem.data) === JSON.stringify(item.data)
-      ) {
+      if (JSON.stringify(currentItem) === JSON.stringify(item)) {
         index = i;
         break;
       }
