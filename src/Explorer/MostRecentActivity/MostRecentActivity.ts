@@ -1,4 +1,6 @@
+import { CollectionBase } from "../../Contracts/ViewModels";
 import { StorageKey, LocalStorageUtility } from "../../Shared/StorageUtility";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 
 export enum Type {
   OpenCollection,
@@ -109,6 +111,28 @@ class MostRecentActivity {
 
   public getItems(accountId: string): Item[] {
     return this.storedData.itemsMap[accountId] || [];
+  }
+
+  public collectionWasOpened(accountId: string, { id, databaseId }: Pick<CollectionBase, "id" | "databaseId">) {
+    const collectionId = id();
+    this.addItem(accountId, {
+      type: Type.OpenCollection,
+      title: collectionId,
+      description: "Data",
+      data: {
+        databaseId,
+        collectionId,
+      },
+    });
+  }
+
+  public notebookWasItemOpened(accountId: string, { name, path }: Pick<NotebookContentItem, "name" | "path">) {
+    this.addItem(accountId, {
+      type: Type.OpenNotebook,
+      title: name,
+      description: "Notebook",
+      data: { name, path },
+    });
   }
 
   public clear(accountId: string): void {
