@@ -41,17 +41,27 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
 
   private readonly container: Explorer;
+  private subscriptions: Array<{ dispose: () => void }>;
 
   constructor(props: SplashScreenProps) {
     super(props);
     this.container = props.explorer;
-    this.container.tabsManager.openedTabs.subscribe(() => this.setState({}));
-    this.container.selectedNode.subscribe(() => this.setState({}));
-    this.container.isNotebookEnabled.subscribe(() => this.setState({}));
   }
 
   public shouldComponentUpdate() {
     return this.container.tabsManager.openedTabs.length === 0;
+  }
+
+  public componentWillUnmount() {
+    while (this.subscriptions.length) this.subscriptions.pop().dispose();
+  }
+
+  public componentDidMount() {
+    this.subscriptions.push(
+      this.container.tabsManager.openedTabs.subscribe(() => this.setState({})),
+      this.container.selectedNode.subscribe(() => this.setState({})),
+      this.container.isNotebookEnabled.subscribe(() => this.setState({}))
+    );
   }
 
   private clearMostRecent = (): void => {
