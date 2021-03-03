@@ -53,7 +53,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   public componentWillUnmount() {
-    while (this.subscriptions.length) this.subscriptions.pop().dispose();
+    while (this.subscriptions.length) {
+      this.subscriptions.pop().dispose();
+    }
   }
 
   public componentDidMount() {
