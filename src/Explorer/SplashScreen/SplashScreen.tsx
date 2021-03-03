@@ -18,6 +18,8 @@ import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
+import CollectionIcon from "../../../images/tree-collection.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -53,7 +55,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private clearMostRecent = (): void => {
-    this.container.mostRecentActivity.clear(userContext.databaseAccount?.id);
+    MostRecentActivity.mostRecentActivity.clear(userContext.databaseAccount?.id);
     this.setState({});
   };
 
@@ -202,6 +204,42 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     return heroes;
   }
 
+  private getItemIcon(item: MostRecentActivity.Item): string {
+    switch (item.type) {
+      case MostRecentActivity.Type.OpenCollection:
+        return CollectionIcon;
+      case MostRecentActivity.Type.OpenNotebook:
+        return NotebookIcon;
+      default:
+        return null;
+    }
+  }
+
+  private onItemClicked(item: MostRecentActivity.Item) {
+    switch (item.type) {
+      case MostRecentActivity.Type.OpenCollection: {
+        const openCollectionitem = item.data as MostRecentActivity.OpenCollectionItem;
+        const collection = this.container.findCollection(
+          openCollectionitem.databaseId,
+          openCollectionitem.collectionId
+        );
+        if (collection) {
+          collection.openTab();
+        }
+        break;
+      }
+      case MostRecentActivity.Type.OpenNotebook: {
+        const openNotebookItem = item.data as MostRecentActivity.OpenNotebookItem;
+        const notebookItem = this.container.createNotebookContentItemFile(openNotebookItem.name, openNotebookItem.path);
+        notebookItem && this.container.openNotebook(notebookItem);
+        break;
+      }
+      default:
+        console.error("Unknown item type", item);
+        break;
+    }
+  }
+
   private createCommonTaskItems(): SplashScreenItem[] {
     const items: SplashScreenItem[] = [];
 
@@ -292,12 +330,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return this.container.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((item) => ({
-      iconSrc: MostRecentActivity.MostRecentActivity.getItemIcon(item),
+    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((item) => ({
+      iconSrc: this.getItemIcon(item),
       title: item.title,
       description: item.description,
       info: SplashScreen.getInfo(item),
-      onClick: () => this.container.mostRecentActivity.onItemClicked(item),
+      onClick: () => this.onItemClicked(item),
     }));
   }
 
