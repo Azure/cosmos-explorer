@@ -46,6 +46,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   constructor(props: SplashScreenProps) {
     super(props);
     this.container = props.explorer;
+    this.subscriptions = [];
   }
 
   public shouldComponentUpdate() {
