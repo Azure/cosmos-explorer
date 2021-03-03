@@ -63,6 +63,7 @@ export class ContainerSampleGenerator {
     if (!database) {
       return undefined;
     }
+    await database.loadCollections();
     return database.findCollectionWithId(this.sampleDataFile.collectionId);
   }
 
