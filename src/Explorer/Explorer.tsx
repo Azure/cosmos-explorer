@@ -3,7 +3,6 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
 import * as ko from "knockout";
-import * as MostRecentActivity from "./MostRecentActivity/MostRecentActivity";
 import * as path from "path";
 import * as SharedConstants from "../Shared/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -140,7 +139,6 @@ export default class Explorer {
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
-  public mostRecentActivity: MostRecentActivity.MostRecentActivity;
 
   // Notification Console
   private setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
@@ -924,8 +922,6 @@ export default class Explorer {
 
       featureSubcription.dispose();
     });
-
-    this.mostRecentActivity = new MostRecentActivity.MostRecentActivity(this);
   }
 
   public openEnableSynapseLinkDialog(): void {

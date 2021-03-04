@@ -1,9 +1,4 @@
-import * as ViewModels from "../../Contracts/ViewModels";
 import { StorageKey, LocalStorageUtility } from "../../Shared/StorageUtility";
-
-import CollectionIcon from "../../../images/tree-collection.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
-import Explorer from "../Explorer";
 
 export enum Type {
   OpenCollection,
@@ -36,11 +31,11 @@ interface StoredData {
 /**
  * Stores most recent activity
  */
-export class MostRecentActivity {
+class MostRecentActivity {
   private static readonly schemaVersion: string = "1";
   private static itemsMaxNumber: number = 5;
   private storedData: StoredData;
-  constructor(private container: Explorer) {
+  constructor() {
     // Retrieve from local storage
     if (LocalStorageUtility.hasItem(StorageKey.MostRecentActivity)) {
       const rawData = LocalStorageUtility.getEntryString(StorageKey.MostRecentActivity);
@@ -121,42 +116,6 @@ export class MostRecentActivity {
     this.saveToLocalStorage();
   }
 
-  public onItemClicked(item: Item) {
-    switch (item.type) {
-      case Type.OpenCollection: {
-        const openCollectionitem = item.data as OpenCollectionItem;
-        const collection = this.container.findCollection(
-          openCollectionitem.databaseId,
-          openCollectionitem.collectionId
-        );
-        if (collection) {
-          collection.openTab();
-        }
-        break;
-      }
-      case Type.OpenNotebook: {
-        const openNotebookItem = item.data as OpenNotebookItem;
-        const notebookItem = this.container.createNotebookContentItemFile(openNotebookItem.name, openNotebookItem.path);
-        notebookItem && this.container.openNotebook(notebookItem);
-        break;
-      }
-      default:
-        console.error("Unknown item type", item);
-        break;
-    }
-  }
-
-  public static getItemIcon(item: Item): string {
-    switch (item.type) {
-      case Type.OpenCollection:
-        return CollectionIcon;
-      case Type.OpenNotebook:
-        return NotebookIcon;
-      default:
-        return null;
-    }
-  }
-
   /**
    * Find items by doing strict comparison and remove from array if duplicate is found
    * @param item
@@ -203,3 +162,5 @@ export class MostRecentActivity {
     }
   }
 }
+
+export const mostRecentActivity = new MostRecentActivity();

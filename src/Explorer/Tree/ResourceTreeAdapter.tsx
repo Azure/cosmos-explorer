@@ -264,7 +264,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
+        MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",
@@ -625,7 +625,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private pushItemToMostRecent(item: NotebookContentItem) {
-    this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
+    MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
       type: MostRecentActivity.Type.OpenNotebook,
       title: item.name,
       description: "Notebook",
