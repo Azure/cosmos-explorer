@@ -143,9 +143,21 @@ jobs:
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
   endtoendhosted:
-    name: "End to End Hosted Tests"
+    name: "End to End Tests"
     needs: [lint, format, compile, unittest]
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        test-file:
+          - cassandra/container.spec.ts
+          - mongo/container.spec.ts
+          - mongo/mongoIndexPolicy.spec.ts
+          - mongo/openAccount.spec.ts
+          - notebooks/uploadAndOpenNotebook.spec.ts
+          - selfServe/selfServeExample.spec.ts
+          - sql/container.spec.ts
+          - sql/resourceToken.spec.ts
+          - tables/container.spec.ts
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
@@ -158,7 +170,7 @@ jobs:
           npm start &
           node utils/cleanupDBs.js
           npm run wait-for-server
-          npm run test:e2e
+          npx jest -c ./jest.config.e2e.js --detectOpenHandles ${{ matrix['test-file'] }}
         shell: bash
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
