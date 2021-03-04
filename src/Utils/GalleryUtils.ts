@@ -13,6 +13,8 @@ import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHand
 import { HttpStatusCodes } from "../Common/Constants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import { Notebook } from "@nteract/commutable";
+import { NotebookV4 } from "@nteract/commutable/lib/v4";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
@@ -243,7 +245,10 @@ export function downloadItem(
           throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
         }
 
-        await container.importAndOpenContent(data.name, response.data);
+        const notebook = JSON.parse(response.data) as Notebook;
+        removeNotebookViewerLink(notebook, data.newCellId);
+
+        await container.importAndOpenContent(data.name, JSON.stringify(notebook));
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Info,
           `Successfully downloaded ${name} to My Notebooks`
@@ -280,6 +285,17 @@ export function downloadItem(
     undefined
   );
 }
+
+export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {
+  if (!newCellId) {
+    return;
+  }
+  const notebookV4 = notebook as NotebookV4;
+  if (notebookV4?.cells[0]?.source[0]?.search(newCellId)) {
+    notebookV4.cells.splice(0, 1);
+    notebook = notebookV4;
+  }
+};
 
 export async function favoriteItem(
   container: Explorer,
