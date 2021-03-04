@@ -139,26 +139,38 @@ export default class SelfServeExample extends SelfServeBaseClass {
       if (currentValues.get("regions") === baselineValues.get("regions")) {
         return {
           operationStatusUrl: undefined,
-          portalNotification: {
+          requestInitializedPortalNotification: {
             titleTKey: "SubmissionMessageSuccessTitle",
             messageTKey: "SubmissionMessageForSameRegionText",
+          },
+          requestCompletedPortalNotification: {
+            titleTKey: "UpdateCompletedMessageTitle",
+            messageTKey: "UpdateCompletedMessageText",
           },
         };
       } else {
         return {
           operationStatusUrl: undefined,
-          portalNotification: {
+          requestInitializedPortalNotification: {
+            titleTKey: "UpdateCompletedMessageTitle",
+            messageTKey: "UpdateCompletedMessageText",
+          },
+          requestCompletedPortalNotification: {
             titleTKey: "SubmissionMessageSuccessTitle",
-            messageTKey: "SubmissionMessageForNewRegionText",
+            messageTKey: "SubmissionMessageForSameRegionText",
           },
         };
       }
     } catch (error) {
       return {
         operationStatusUrl: undefined,
-        portalNotification: {
+        requestInitializedPortalNotification: {
           titleTKey: "SubmissionMessageErrorTitle",
           messageTKey: "SubmissionMessageErrorText",
+        },
+        requestCompletedPortalNotification: {
+          titleTKey: "UpdateCompletedMessageTitle",
+          messageTKey: "UpdateCompletedMessageText",
         },
       };
     }

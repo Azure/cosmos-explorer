@@ -155,18 +155,26 @@ export default class SqlX extends SelfServeBaseClass {
         const operationStatusUrl = await deleteDedicatedGatewayResource();
         return {
           operationStatusUrl: operationStatusUrl,
-          portalNotification: {
+          requestInitializedPortalNotification: {
             titleTKey: "Deleting resource",
             messageTKey: "DedicatedGateway resource will be deleted.",
+          },
+          requestCompletedPortalNotification: {
+            titleTKey: "Resource Deleted",
+            messageTKey: "DedicatedGateway resource deleted.",
           },
         };
       } else {
         // Check for scaling up/down/in/out
         return {
           operationStatusUrl: undefined,
-          portalNotification: {
+          requestInitializedPortalNotification: {
             titleTKey: "Updating resource",
             messageTKey: "DedicatedGateway resource will be updated.",
+          },
+          requestCompletedPortalNotification: {
+            titleTKey: "Resource Updated",
+            messageTKey: "DedicatedGateway resource updated.",
           },
         };
       }
@@ -176,9 +184,13 @@ export default class SqlX extends SelfServeBaseClass {
       const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
       return {
         operationStatusUrl: operationStatusUrl,
-        portalNotification: {
+        requestInitializedPortalNotification: {
           titleTKey: "Provisioning resource",
           messageTKey: "Dedicated Gateway resource will be provisioned.",
+        },
+        requestCompletedPortalNotification: {
+          titleTKey: "Resource provisioned",
+          messageTKey: "Dedicated Gateway resource provisioned.",
         },
       };
     }

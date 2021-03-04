@@ -133,7 +133,11 @@ export interface SmartUiInput {
 
 export interface OnSaveResult {
   operationStatusUrl: string;
-  portalNotification: {
+  requestInitializedPortalNotification: {
+    titleTKey: string;
+    messageTKey: string;
+  };
+  requestCompletedPortalNotification: {
     titleTKey: string;
     messageTKey: string;
   };

@@ -36,6 +36,18 @@ interface SelfServeNotification {
   isCancellable: boolean;
 }
 
+interface PortalNotificationContent {
+  operationStatusUrl: string;
+  requestInitializedNotification: {
+    title: string;
+    message: string;
+  };
+  requestCompletedNotification: {
+    title: string;
+    message: string;
+  };
+}
+
 export interface SelfServeComponentProps {
   descriptor: SelfServeDescriptor;
 }
@@ -236,10 +248,19 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         this.state.currentValues,
         this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
       );
-      const portalNotification = onSaveResult.portalNotification;
-      const onSaveNotificationTitle = this.getTranslation(portalNotification.titleTKey);
-      const onSaveNotificationMessage = this.getTranslation(portalNotification.messageTKey);
-      this.sendNotificationMessage(onSaveNotificationTitle, onSaveNotificationMessage, onSaveResult.operationStatusUrl);
+      const requestInitializedPortalNotification = onSaveResult.requestInitializedPortalNotification;
+      const requestCompletedPortalNotification = onSaveResult.requestCompletedPortalNotification;
+      this.sendNotificationMessage({
+        operationStatusUrl: onSaveResult.operationStatusUrl,
+        requestInitializedNotification: {
+          title: this.getTranslation(requestInitializedPortalNotification.titleTKey),
+          message: this.getTranslation(requestInitializedPortalNotification.messageTKey),
+        },
+        requestCompletedNotification: {
+          title: this.getTranslation(requestCompletedPortalNotification.titleTKey),
+          message: this.getTranslation(requestCompletedPortalNotification.messageTKey),
+        },
+      });
 
       const retryOptions: promiseRetry.Options = { forever: true };
       if (this.props.descriptor.refreshParams) {
@@ -382,14 +403,10 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     ];
   };
 
-  private sendNotificationMessage = (title: string, message: string, operationStatusUrl: string): void => {
+  private sendNotificationMessage = (portalNotificationContent: PortalNotificationContent): void => {
     sendMessage({
       type: SelfServeMessageTypes.Notification,
-      data: {
-        title: title,
-        message: message,
-        operationStatusUrl: operationStatusUrl,
-      },
+      data: { portalNotificationContent },
     });
   };
 
