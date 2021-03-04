@@ -1,14 +1,7 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
-import {
-  NumberUiType,
-  SelfServeDescriptor,
-  PortalNotificationType,
-  SmartUiInput,
-  OnSavePortalNotification,
-  OnRefreshPortalNotification,
-} from "./SelfServeTypes";
+import { NumberUiType, OnSaveResult, SelfServeDescriptor, SmartUiInput } from "./SelfServeTypes";
 
 describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, SmartUiInput>([
@@ -25,19 +18,16 @@ describe("SelfServeComponent", () => {
   const initializeMock = jest.fn(async () => new Map(defaultValues));
   const onSaveMock = jest.fn(async () => {
     return {
-      titleTKey: "SampleMessageTitleKey",
-      messageTKey: "SampleMessageTextKey",
-      type: PortalNotificationType.InProgress,
-    } as OnSavePortalNotification;
+      operationStatusUrl: undefined,
+      requestInitializedPortalNotification: {
+        titleTKey: "SampleMessageTitleKey",
+        messageTKey: "SampleMessageTextKey",
+      },
+    } as OnSaveResult;
   });
   const refreshResult = {
     isUpdateInProgress: false,
-    updateInProgressMessage: "refresh performed successfully",
-    updateCompletedMessage: {
-      titleTKey: "SampleMessageTitleKey",
-      messageTKey: "SampleMessageTextKey",
-      type: PortalNotificationType.Success,
-    } as OnRefreshPortalNotification,
+    updateInProgressMessageTKey: "refresh performed successfully",
   };
 
   const onRefreshMock = jest.fn(async () => {

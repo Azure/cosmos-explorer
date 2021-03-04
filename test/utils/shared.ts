@@ -26,7 +26,7 @@ export function generateUniqueName(baseName = "", length = 4): string {
   return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
 }
 
-export async function createDatabase(frame: Frame) {
+export async function createDatabase(frame: Frame): Promise<void> {
   const dbId = generateUniqueName("db");
   const collectionId = generateUniqueName("col");
   const shardKey = generateUniqueName();
@@ -65,7 +65,7 @@ export async function createDatabase(frame: Frame) {
   await frame.click("#submitBtnAddCollection");
 }
 
-export async function onClickSaveButton(frame: Frame) {
+export async function onClickSaveButton(frame: Frame): Promise<void> {
   await frame.waitFor(`button[data-test="Save"]`), { visible: true };
   await frame.waitFor(LOADING_STATE_DELAY);
   await frame.click(`button[data-test="Save"]`);

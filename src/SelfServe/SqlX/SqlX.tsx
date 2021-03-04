@@ -1,13 +1,15 @@
-import { IsDisplayable, OnChange, Values } from "../Decorators";
+import { IsDisplayable, OnChange, Values, PropertyInfo, RefreshOptions } from "../Decorators";
 import {
   ChoiceItem,
+  DescriptionType,
   InputType,
   NumberUiType,
-  OnSavePortalNotification,
-  PortalNotificationType,
   RefreshResult,
   SelfServeBaseClass,
   SmartUiInput,
+  Info,
+  Description,
+  OnSaveResult,
 } from "../SelfServeTypes";
 import {
   refreshDedicatedGatewayProvisioning,
@@ -15,6 +17,65 @@ import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
 } from "./SqlX.rp";
+
+const skuInfo: Info = {
+  messageTKey: "SkuInfo",
+};
+
+const resourceCostInfo: Info = {
+  messageTKey: "ResourceCostInfo",
+  link: {
+    href: "https://azure.microsoft.com/en-us/pricing/details/virtual-machines/windows/",
+    textTKey: "SkuCostInfo",
+  },
+};
+
+const getSKUDetails = (sku: string): string => {
+  if (sku === "Cosmos.D4s") {
+    return "CosmosD4Details";
+  } else if (sku === "Cosmos.D8s") {
+    return "CosmosD8Details";
+  } else if (sku === "Cosmos.D16s") {
+    return "CosmosD16Details";
+  } else if (sku === "Cosmos.D32s") {
+    return "CosmosD32Details";
+  }
+  return "Not Supported Yet";
+};
+
+const displayCostCalculation = (sku: string, numberOfInstances: string): string => {
+  return `${numberOfInstances} * Hourly cost of ${sku}`;
+};
+
+const onSKUChange = (currentValues: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+  currentValues.set("sku", { value: newValue });
+  const currentCostText = displayCostCalculation(
+    currentValues.get("sku").value.toString(),
+    currentValues.get("instances").value.toString()
+  );
+  currentValues.set("currentCostCalculation", {
+    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+  });
+  currentValues.set("skuDetails", {
+    value: { textTKey: getSKUDetails(`${newValue.toString()}`), type: DescriptionType.Text } as Description,
+  });
+  return currentValues;
+};
+
+const onNumberOfInstancesChange = (
+  currentValues: Map<string, SmartUiInput>,
+  newValue: InputType
+): Map<string, SmartUiInput> => {
+  currentValues.set("instances", { value: newValue });
+  const currentCostText = displayCostCalculation(
+    currentValues.get("sku").value.toString(),
+    currentValues.get("instances").value.toString()
+  );
+  currentValues.set("currentCostCalculation", {
+    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+  });
+  return currentValues;
+};
 
 const onEnableDedicatedGatewayChange = (
   currentValues: Map<string, SmartUiInput>,
@@ -36,6 +97,22 @@ const onEnableDedicatedGatewayChange = (
     hidden: hideAttributes,
     disabled: dedicatedGatewayOriginallyEnabled,
   });
+
+  const currentCostText = displayCostCalculation(
+    currentValues.get("sku").value.toString(),
+    currentValues.get("instances").value.toString()
+  );
+  currentValues.set("currentCostCalculation", {
+    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+    hidden: hideAttributes,
+    disabled: dedicatedGatewayOriginallyEnabled,
+  });
+  currentValues.set("skuDetails", {
+    value: { textTKey: getSKUDetails(`${currentValues.get("sku").value}`), type: DescriptionType.Text } as Description,
+    hidden: hideAttributes,
+    disabled: dedicatedGatewayOriginallyEnabled,
+  });
+
   return currentValues;
 };
 
@@ -59,6 +136,7 @@ const getInstancesMax = async (): Promise<number> => {
 };
 
 @IsDisplayable()
+@RefreshOptions({ retryIntervalInMs: 20000 })
 export default class SqlX extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
     return await refreshDedicatedGatewayProvisioning();
@@ -67,35 +145,53 @@ export default class SqlX extends SelfServeBaseClass {
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
-  ): Promise<OnSavePortalNotification> => {
+  ): Promise<OnSaveResult> => {
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
 
     //TODO : Ad try catch for each RP call and return relevant notifications
     if (dedicatedGatewayOriginallyEnabled) {
       if (!dedicatedGatewayCurrentlyEnabled) {
-        await deleteDedicatedGatewayResource();
+        const operationStatusUrl = await deleteDedicatedGatewayResource();
         return {
-          titleTKey: "Deleting resource",
-          messageTKey: "DedicatedGateway resource will be deleted.",
-          type: PortalNotificationType.InProgress,
+          operationStatusUrl: operationStatusUrl,
+          requestInitializedPortalNotification: {
+            titleTKey: "Deleting resource",
+            messageTKey: "DedicatedGateway resource will be deleted.",
+          },
+          requestCompletedPortalNotification: {
+            titleTKey: "Resource Deleted",
+            messageTKey: "DedicatedGateway resource deleted.",
+          },
         };
       } else {
         // Check for scaling up/down/in/out
         return {
-          titleTKey: "Updating resource",
-          messageTKey: "DedicatedGateway resource will be updated.",
-          type: PortalNotificationType.InProgress,
+          operationStatusUrl: undefined,
+          requestInitializedPortalNotification: {
+            titleTKey: "Updating resource",
+            messageTKey: "DedicatedGateway resource will be updated.",
+          },
+          requestCompletedPortalNotification: {
+            titleTKey: "Resource Updated",
+            messageTKey: "DedicatedGateway resource updated.",
+          },
         };
       }
     } else {
       const sku = currentValues.get("sku")?.value as string;
       const instances = currentValues.get("instances").value as number;
-      await updateDedicatedGatewayResource(sku, instances);
+      const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
       return {
-        titleTKey: "Provisioning resource",
-        messageTKey: "Dedicated Gateway resource will be provisioned.",
-        type: PortalNotificationType.InProgress,
+        operationStatusUrl: operationStatusUrl,
+        requestInitializedPortalNotification: {
+          titleTKey: "Provisioning resource",
+          messageTKey: "Dedicated Gateway resource will be provisioned.",
+        },
+        requestCompletedPortalNotification: {
+          titleTKey: "Resource provisioned",
+          messageTKey: "Dedicated Gateway resource provisioned.",
+        },
       };
     }
   };
@@ -106,11 +202,25 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("enableDedicatedGateway", { value: false });
     defaults.set("sku", { value: "Cosmos.D4s", hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
+    defaults.set("currentCostCalculation", { value: "0", hidden: true });
+    defaults.set("skuDetails", { value: "NoValue", hidden: true });
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: true });
+      const currentCostText = displayCostCalculation(
+        defaults.get("sku").value.toString(),
+        defaults.get("instances").value.toString()
+      );
+      defaults.set("currentCostCalculation", {
+        value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
+        hidden: false,
+      });
+      defaults.set("skuDetails", {
+        value: { textTKey: getSKUDetails(`${defaults.get("sku").value}`), type: DescriptionType.Text } as Description,
+        hidden: false,
+      });
     }
 
     return defaults;
@@ -119,6 +229,7 @@ export default class SqlX extends SelfServeBaseClass {
   @Values({
     description: {
       textTKey: "DedicatedGatewayDescription",
+      type: DescriptionType.Text,
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
         textTKey: "LearnAboutDedicatedGateway",
@@ -135,6 +246,8 @@ export default class SqlX extends SelfServeBaseClass {
   })
   enableDedicatedGateway: boolean;
 
+  @PropertyInfo(skuInfo)
+  @OnChange(onSKUChange)
   @Values({
     labelTKey: "SKUs",
     choices: getSkus,
@@ -143,6 +256,13 @@ export default class SqlX extends SelfServeBaseClass {
   sku: ChoiceItem;
 
   @Values({
+    labelTKey: "SKUDetails",
+    isDynamicDescription: true,
+  })
+  skuDetails: string;
+
+  @OnChange(onNumberOfInstancesChange)
+  @Values({
     labelTKey: "NumberOfInstances",
     min: getInstancesMin,
     max: getInstancesMax,
@@ -150,4 +270,11 @@ export default class SqlX extends SelfServeBaseClass {
     uiType: NumberUiType.Spinner,
   })
   instances: number;
+
+  @PropertyInfo(resourceCostInfo)
+  @Values({
+    labelTKey: "CurrentCostCalculation",
+    isDynamicDescription: true,
+  })
+  currentCostCalculation: string;
 }
