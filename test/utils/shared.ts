@@ -22,8 +22,8 @@ export async function login(connectionString: string): Promise<Frame> {
   return frame;
 }
 
-export function generateUniqueName(baseName = "", length = 4): string {
-  return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
+export function generateUniqueName(baseName = "", length = 2): string {
+  return `${baseName}${crypto.randomBytes(length).toString("hex")}-${Date.now()}`;
 }
 
 export async function createDatabase(frame: Frame) {
