@@ -1,6 +1,6 @@
 import "expect-puppeteer";
 import { Frame } from "puppeteer";
-import { generateUniqueName, login } from "../utils/shared";
+import { generateDatabaseName, generateUniqueName, login } from "../utils/shared";
 
 jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
