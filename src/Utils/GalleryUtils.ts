@@ -291,7 +291,7 @@ export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string):
     return;
   }
   const notebookV4 = notebook as NotebookV4;
-  if (notebookV4 && notebookV4.cells[0].source[0].search(newCellId)) {
+  if (notebookV4?.cells[0]?.source[0]?.search(newCellId)) {
     notebookV4.cells.splice(0, 1);
     notebook = notebookV4;
   }
