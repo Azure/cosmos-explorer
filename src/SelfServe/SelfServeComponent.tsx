@@ -269,7 +269,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         },
       });
 
-      const retryOptions: promiseRetry.Options = { forever: true, maxTimeout: retryIntervalInMs };
+      const retryOptions: promiseRetry.Options = { forever: true, maxTimeout: retryIntervalInMs, minTimeout: retryIntervalInMs };
       promiseRetry(() => this.pollRefresh(), retryOptions);
     } catch (error) {
       this.setState({
