@@ -1,7 +1,7 @@
 import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { userContext } from "../../UserContext";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
-import { PortalNotificationType, RefreshResult } from "../SelfServeTypes";
+import { RefreshResult } from "../SelfServeTypes";
 export enum Regions {
   NorthCentralUS = "NorthCentralUS",
   WestUS = "WestUS",
@@ -79,10 +79,5 @@ export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
   return {
     isUpdateInProgress: progressToBeSent,
     updateInProgressMessageTKey: "UpdateInProgressMessage",
-    updateCompletedMessage: {
-      titleTKey: "UpdateCompletedMessageTitle",
-      messageTKey: "UpdateCompletedMessageText",
-      type: PortalNotificationType.Success,
-    },
   };
 };

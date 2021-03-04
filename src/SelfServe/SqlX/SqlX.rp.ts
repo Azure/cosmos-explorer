@@ -1,6 +1,6 @@
-import { PortalNotificationType, RefreshResult } from "../SelfServeTypes";
+import { RefreshResult } from "../SelfServeTypes";
 import { userContext } from "../../UserContext";
-import { armRequest } from "../../Utils/arm/request";
+import { armRequestWithoutPolling } from "../../Utils/arm/request";
 import { configContext } from "../../ConfigContext";
 import { SqlxServiceResource, UpdateDedicatedGatewayRequestParameters } from "./SqlxTypes";
 
@@ -24,7 +24,7 @@ export const getPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/sqlx`;
 };
 
-export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<void> => {
+export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const body: UpdateDedicatedGatewayRequestParameters = {
     properties: {
@@ -33,36 +33,36 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
       serviceType: "Sqlx",
     },
   };
-  await armRequest({
+  const armRequestResult = await armRequestWithoutPolling({
     host: configContext.ARM_ENDPOINT,
     path,
     method: "PUT",
     apiVersion,
     body,
-    shouldPollOperationStatus: false,
   });
+  return armRequestResult.operationStatusUrl;
 };
 
-export const deleteDedicatedGatewayResource = async (): Promise<void> => {
+export const deleteDedicatedGatewayResource = async (): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  await armRequest({
+  const armRequestResult = await armRequestWithoutPolling({
     host: configContext.ARM_ENDPOINT,
     path,
     method: "DELETE",
     apiVersion,
-    shouldPollOperationStatus: false,
   });
+  return armRequestResult.operationStatusUrl;
 };
 
 export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  return await armRequest<SqlxServiceResource>({
+  const armRequestResult = await armRequestWithoutPolling<SqlxServiceResource>({
     host: configContext.ARM_ENDPOINT,
     path,
     method: "GET",
     apiVersion,
-    shouldPollOperationStatus: false,
   });
+  return armRequestResult.result;
 };
 
 export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayResponse> => {
@@ -83,14 +83,7 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
   try {
     const response = await getDedicatedGatewayResource();
     if (response.properties.status === ResourceStatus.Running.toString()) {
-      return {
-        isUpdateInProgress: false,
-        updateCompletedMessage: {
-          titleTKey: "Resource Provisioned",
-          messageTKey: "Resource has been provisioned",
-          type: PortalNotificationType.Success,
-        },
-      };
+      return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
     } else if (response.properties.status === ResourceStatus.Creating.toString()) {
       return { isUpdateInProgress: true, updateInProgressMessageTKey: "CreateMessage" };
     } else if (response.properties.status === ResourceStatus.Deleting.toString()) {
@@ -100,13 +93,6 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
     }
   } catch {
     //TODO differentiate between different failures
-    return {
-      isUpdateInProgress: false,
-      updateCompletedMessage: {
-        titleTKey: "Resource Deleted",
-        messageTKey: "Resource has been deleted",
-        type: PortalNotificationType.Success,
-      },
-    };
+    return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
   }
 };

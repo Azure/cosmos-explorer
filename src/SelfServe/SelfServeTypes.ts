@@ -51,9 +51,10 @@ export interface SelfServeDescriptor {
   onSave?: (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
-  ) => Promise<OnSavePortalNotification>;
+  ) => Promise<OnSaveResult>;
   inputNames?: string[];
   onRefresh?: () => Promise<RefreshResult>;
+  refreshParams?: RefreshParams;
 }
 
 export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
@@ -63,7 +64,7 @@ export abstract class SelfServeBaseClass {
   public abstract onSave: (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
-  ) => Promise<OnSavePortalNotification>;
+  ) => Promise<OnSaveResult>;
   public abstract onRefresh: () => Promise<RefreshResult>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
@@ -80,7 +81,7 @@ export abstract class SelfServeBaseClass {
       throw new Error(`onRefresh() was not declared for the class '${className}'`);
     }
     if (!selfServeDescriptor?.root) {
-      throw new Error(`@SmartUi decorator was not declared for the class '${className}'`);
+      throw new Error(`@IsDisplayable decorator was not declared for the class '${className}'`);
     }
 
     selfServeDescriptor.initialize = this.initialize;
@@ -130,27 +131,19 @@ export interface SmartUiInput {
   disabled?: boolean;
 }
 
-export enum PortalNotificationType {
-  InProgress = "InProgress",
-  Success = "Success",
-  Failure = "Failure",
-}
-
-interface PortalNotification {
-  titleTKey: string;
-  messageTKey: string;
-}
-
-export interface OnSavePortalNotification extends PortalNotification {
-  type: PortalNotificationType.InProgress | PortalNotificationType.Failure;
-}
-
-export interface OnRefreshPortalNotification extends PortalNotification {
-  type: PortalNotificationType.Success | PortalNotificationType.Failure;
+export interface OnSaveResult {
+  operationStatusUrl: string;
+  portalNotification: {
+    titleTKey: string;
+    messageTKey: string;
+  };
 }
 
 export interface RefreshResult {
   isUpdateInProgress: boolean;
-  updateInProgressMessageTKey?: string;
-  updateCompletedMessage?: OnRefreshPortalNotification;
+  updateInProgressMessageTKey: string;
+}
+
+export interface RefreshParams {
+  retryIntervalInMs: number;
 }

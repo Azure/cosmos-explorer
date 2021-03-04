@@ -1,17 +1,15 @@
-import { values } from "underscore";
-import { IsDisplayable, OnChange, Values, PropertyInfo} from "../Decorators";
+import { IsDisplayable, OnChange, Values, PropertyInfo, RefreshOptions } from "../Decorators";
 import {
   ChoiceItem,
   DescriptionType,
   InputType,
   NumberUiType,
-  OnSavePortalNotification,
-  PortalNotificationType,
   RefreshResult,
   SelfServeBaseClass,
   SmartUiInput,
   Info,
   Description,
+  OnSaveResult,
 } from "../SelfServeTypes";
 import {
   refreshDedicatedGatewayProvisioning,
@@ -33,60 +31,51 @@ const resourceCostInfo: Info = {
 };
 
 const getSKUDetails = (sku: string): string => {
-  if (sku === "Cosmos.D4s")
-  {
+  if (sku === "Cosmos.D4s") {
     return "CosmosD4Details";
-  }
-  else if (sku === "Cosmos.D8s")
-  {
+  } else if (sku === "Cosmos.D8s") {
     return "CosmosD8Details";
-  }
-  else if (sku === "Cosmos.D16s")
-  {
+  } else if (sku === "Cosmos.D16s") {
     return "CosmosD16Details";
-  }
-  else if (sku == "Cosmos.D32s")
-  {
+  } else if (sku === "Cosmos.D32s") {
     return "CosmosD32Details";
   }
   return "Not Supported Yet";
-}
+};
 
-const displayCostCalculation = (
-  sku: string, 
-  numberOfInstances: string
-) : string => {
-  return `${numberOfInstances} * Hourly cost of ${sku}`
-}
+const displayCostCalculation = (sku: string, numberOfInstances: string): string => {
+  return `${numberOfInstances} * Hourly cost of ${sku}`;
+};
 
-const onSKUChange = (
-  currentValues: Map<string, SmartUiInput>,
-  newValue: InputType,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
-): Map<string, SmartUiInput> => {
-  currentValues.set("sku", {value: newValue});
-  const currentCostText = displayCostCalculation(currentValues.get("sku").value.toString(), currentValues.get("instances").value.toString());
+const onSKUChange = (currentValues: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+  currentValues.set("sku", { value: newValue });
+  const currentCostText = displayCostCalculation(
+    currentValues.get("sku").value.toString(),
+    currentValues.get("instances").value.toString()
+  );
   currentValues.set("currentCostCalculation", {
     value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
   });
   currentValues.set("skuDetails", {
     value: { textTKey: getSKUDetails(`${newValue.toString()}`), type: DescriptionType.Text } as Description,
   });
-  return currentValues
-}
+  return currentValues;
+};
 
 const onNumberOfInstancesChange = (
   currentValues: Map<string, SmartUiInput>,
-  newValue: InputType,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
+  newValue: InputType
 ): Map<string, SmartUiInput> => {
-  currentValues.set("instances", {value: newValue});
-  const currentCostText = displayCostCalculation(currentValues.get("sku").value.toString(), currentValues.get("instances").value.toString());
+  currentValues.set("instances", { value: newValue });
+  const currentCostText = displayCostCalculation(
+    currentValues.get("sku").value.toString(),
+    currentValues.get("instances").value.toString()
+  );
   currentValues.set("currentCostCalculation", {
     value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
   });
-  return currentValues
-}
+  return currentValues;
+};
 
 const onEnableDedicatedGatewayChange = (
   currentValues: Map<string, SmartUiInput>,
@@ -109,7 +98,10 @@ const onEnableDedicatedGatewayChange = (
     disabled: dedicatedGatewayOriginallyEnabled,
   });
 
-  const currentCostText = displayCostCalculation(currentValues.get("sku").value.toString(), currentValues.get("instances").value.toString());
+  const currentCostText = displayCostCalculation(
+    currentValues.get("sku").value.toString(),
+    currentValues.get("instances").value.toString()
+  );
   currentValues.set("currentCostCalculation", {
     value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
     hidden: hideAttributes,
@@ -120,7 +112,6 @@ const onEnableDedicatedGatewayChange = (
     hidden: hideAttributes,
     disabled: dedicatedGatewayOriginallyEnabled,
   });
-
 
   return currentValues;
 };
@@ -145,6 +136,7 @@ const getInstancesMax = async (): Promise<number> => {
 };
 
 @IsDisplayable()
+@RefreshOptions({ retryIntervalInMs: 20000 })
 export default class SqlX extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
     return await refreshDedicatedGatewayProvisioning();
@@ -153,35 +145,41 @@ export default class SqlX extends SelfServeBaseClass {
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
-  ): Promise<OnSavePortalNotification> => {
+  ): Promise<OnSaveResult> => {
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
 
     //TODO : Ad try catch for each RP call and return relevant notifications
     if (dedicatedGatewayOriginallyEnabled) {
       if (!dedicatedGatewayCurrentlyEnabled) {
-        await deleteDedicatedGatewayResource();
+        const operationStatusUrl = await deleteDedicatedGatewayResource();
         return {
-          titleTKey: "Deleting resource",
-          messageTKey: "DedicatedGateway resource will be deleted.",
-          type: PortalNotificationType.InProgress,
+          operationStatusUrl: operationStatusUrl,
+          portalNotification: {
+            titleTKey: "Deleting resource",
+            messageTKey: "DedicatedGateway resource will be deleted.",
+          },
         };
       } else {
         // Check for scaling up/down/in/out
         return {
-          titleTKey: "Updating resource",
-          messageTKey: "DedicatedGateway resource will be updated.",
-          type: PortalNotificationType.InProgress,
+          operationStatusUrl: undefined,
+          portalNotification: {
+            titleTKey: "Updating resource",
+            messageTKey: "DedicatedGateway resource will be updated.",
+          },
         };
       }
     } else {
       const sku = currentValues.get("sku")?.value as string;
       const instances = currentValues.get("instances").value as number;
-      await updateDedicatedGatewayResource(sku, instances);
+      const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
       return {
-        titleTKey: "Provisioning resource",
-        messageTKey: "Dedicated Gateway resource will be provisioned.",
-        type: PortalNotificationType.InProgress,
+        operationStatusUrl: operationStatusUrl,
+        portalNotification: {
+          titleTKey: "Provisioning resource",
+          messageTKey: "Dedicated Gateway resource will be provisioned.",
+        },
       };
     }
   };
@@ -192,14 +190,17 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("enableDedicatedGateway", { value: false });
     defaults.set("sku", { value: "Cosmos.D4s", hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
-    defaults.set("currentCostCalculation", {value: "0", hidden: true});
-    defaults.set("skuDetails", {value: "NoValue", hidden: true});
+    defaults.set("currentCostCalculation", { value: "0", hidden: true });
+    defaults.set("skuDetails", { value: "NoValue", hidden: true });
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: true });
-      const currentCostText = displayCostCalculation(defaults.get("sku").value.toString(), defaults.get("instances").value.toString());
+      const currentCostText = displayCostCalculation(
+        defaults.get("sku").value.toString(),
+        defaults.get("instances").value.toString()
+      );
       defaults.set("currentCostCalculation", {
         value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
         hidden: false,
