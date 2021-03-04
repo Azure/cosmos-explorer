@@ -2,8 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *----------------------------------------------------------*/
 
-export default class ThemeUtility {
-  public static getMonacoTheme(theme: string): string {
+export function getMonacoTheme(theme: string): string {
     switch (theme) {
       case "default":
       case "hc-white":
@@ -16,4 +15,3 @@ export default class ThemeUtility {
         return "vs";
     }
   }
-}

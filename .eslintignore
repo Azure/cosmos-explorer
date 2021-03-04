@@ -30,7 +30,6 @@ src/Common/ObjectCache.test.ts
 src/Common/ObjectCache.ts
 src/Common/QueriesClient.ts
 src/Common/Splitter.ts
-src/Common/ThemeUtility.ts
 src/Common/UrlUtility.ts
 src/Config.ts
 src/Contracts/ActionContracts.ts
