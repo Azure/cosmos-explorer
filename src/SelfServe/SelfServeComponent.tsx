@@ -37,6 +37,7 @@ interface SelfServeNotification {
 }
 
 interface PortalNotificationContent {
+  retryIntervalInMs: number;
   operationStatusUrl: string;
   requestInitializedNotification: {
     title: string;
@@ -244,6 +245,11 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   public performSave = async (): Promise<void> => {
     this.setState({ isSaving: true, notification: undefined });
     try {
+      let retryIntervalInMs = this.props.descriptor.refreshParams?.retryIntervalInMs;
+      if (!retryIntervalInMs) {
+        retryIntervalInMs = SelfServeComponent.defaultRetryIntervalInMs;
+      }
+
       const onSaveResult = await this.props.descriptor.onSave(
         this.state.currentValues,
         this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
@@ -251,6 +257,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       const requestInitializedPortalNotification = onSaveResult.requestInitializedPortalNotification;
       const requestCompletedPortalNotification = onSaveResult.requestCompletedPortalNotification;
       this.sendNotificationMessage({
+        retryIntervalInMs: retryIntervalInMs,
         operationStatusUrl: onSaveResult.operationStatusUrl,
         requestInitializedNotification: {
           title: this.getTranslation(requestInitializedPortalNotification.titleTKey),
@@ -262,13 +269,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         },
       });
 
-      const retryOptions: promiseRetry.Options = { forever: true };
-      if (this.props.descriptor.refreshParams) {
-        retryOptions.maxTimeout = this.props.descriptor.refreshParams.retryIntervalInMs;
-      } else {
-        retryOptions.maxTimeout = SelfServeComponent.defaultRetryIntervalInMs;
-      }
-
+      const retryOptions: promiseRetry.Options = { forever: true, maxTimeout: retryIntervalInMs };
       promiseRetry(() => this.pollRefresh(), retryOptions);
     } catch (error) {
       this.setState({
