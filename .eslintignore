@@ -18,8 +18,6 @@ src/Common/HashMap.test.ts
 src/Common/HashMap.ts
 src/Common/HeadersUtility.test.ts
 src/Common/HeadersUtility.ts
-src/Common/IteratorUtilities.test.ts
-src/Common/IteratorUtilities.ts
 src/Common/Logger.test.ts
 src/Common/MessageHandler.test.ts
 src/Common/MessageHandler.ts

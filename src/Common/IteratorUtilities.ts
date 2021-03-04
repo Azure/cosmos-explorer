@@ -1,7 +1,7 @@
 import { QueryResults } from "../Contracts/ViewModels";
 
 interface QueryResponse {
-  resources: any[];
+  resources: unknown[];
   hasMoreResults: boolean;
   activityId: string;
   requestCharge: number;
@@ -16,6 +16,7 @@ export interface MinimalQueryIterator {
 export function nextPage(documentsIterator: MinimalQueryIterator, firstItemIndex: number): Promise<QueryResults> {
   return documentsIterator.fetchNext().then((response) => {
     const documents = response.resources;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const headers = (response as any).headers || {}; // TODO this is a private key. Remove any
     const itemCount = (documents && documents.length) || 0;
     return {
