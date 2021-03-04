@@ -11,7 +11,7 @@ const RENDER_DELAY = 1000;
 describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
     try {
-      const dbId = generateUniqueName("db");
+      const dbId = generateDatabaseName();
       const collectionId = generateUniqueName("col");
       const sharedKey = `/skey${generateUniqueName()}`;
       const frame = await login(process.env.PORTAL_RUNNER_CONNECTION_STRING);
