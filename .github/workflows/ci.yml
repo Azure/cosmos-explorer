@@ -149,15 +149,15 @@ jobs:
     strategy:
       matrix:
         test-file:
-          - cassandra/container.spec.ts
-          - mongo/container.spec.ts
-          - mongo/mongoIndexPolicy.spec.ts
-          - mongo/openAccount.spec.ts
-          - notebooks/uploadAndOpenNotebook.spec.ts
-          - selfServe/selfServeExample.spec.ts
-          - sql/container.spec.ts
-          - sql/resourceToken.spec.ts
-          - tables/container.spec.ts
+          - ./test/cassandra/container.spec.ts
+          - ./test/mongo/container.spec.ts
+          - ./test/mongo/mongoIndexPolicy.spec.ts
+          - ./test/mongo/openMongoAccount.spec.ts
+          - ./test/notebooks/uploadAndOpenNotebook.spec.ts
+          - ./test/selfServe/selfServeExample.spec.ts
+          - ./test/sql/container.spec.ts
+          - ./test/sql/resourceToken.spec.ts
+          - ./test/tables/container.spec.ts
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 12.x
