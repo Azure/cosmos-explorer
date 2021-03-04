@@ -1,7 +1,9 @@
 import { QueryResults } from "../Contracts/ViewModels";
 
 interface QueryResponse {
-  resources: unknown[];
+  // [Todo] remove any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  resources: any[];
   hasMoreResults: boolean;
   activityId: string;
   requestCharge: number;
