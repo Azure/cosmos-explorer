@@ -36,32 +36,6 @@
             "SubmissionMessageErrorText": "Submitted Failed because of errors"
         },
         "SqlX": {
-            "DedicatedGatewayDescription": "Provisioning dedicated gateways for SqlX accounts.",
-            "DedicatedGateway": "Dedicated Gateway",
-            "Enable": "Enable",
-            "Disable": "Disable",
-            "LearnAboutDedicatedGateway": "Learn more about dedicated gateway.",
-            "SKUs": "SKUs",
-            "NumberOfInstances": "Number of instances",
-            "CosmosD4s": "Cosmos.D4s",
-            "CosmosD8s": "Cosmos.D8s",
-            "CosmosD16s": "Cosmos.D16s",
-            "CosmosD32s": "Cosmos.D32s",
-            "CreateMessage": "DedicatedGateway resource is being created.",
-            "UpdateMessage": "DedicatedGateway resource is being updated.",
-            "DeleteMessage": "DedicatedGateway resource is being deleted.",
-            "CannotSave": "Cannot save the changes to the DedicatedGateway resource at the moment",
-            "DedicatedGatewayEndpoint": "DedicatedGatewayEndpoint",
-            "NoValue": "",
-            "SkuInfo": "Cosmos.D4s: 4 vCPUs, 16 GB Memory\n\nCosmos.D8s: 8 vCPUs, 32 GB Memory\n\nCosmos.D16s: 16 vCPUs, 64 GB Memory",
-            "CurrentCostCalculation": "The hourly cost of the current selection is ",
-            "SKUDetails": "SKU Details: ",
-            "CosmosD4Details": "4 vCPUs, 16 GB Memory",
-            "CosmosD8Details": "8 vCPUs, 32 GB Memory",
-            "CosmosD16Details": "16 vCPUs, 64 GB Memory",
-            "CosmosD32Details": "32 vCPUs, 128 GB Memory",
-            "ResourceCostInfo": "Cost of the dedicated gateway resource depends on the sku selection and the number of instances used.",
-            "SkuCostInfo": "Click here for more details on SKU pricing"
         }
     }
 }
