@@ -14,6 +14,7 @@ import {
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
+  RefreshParams,
 } from "./SelfServeTypes";
 
 export enum SelfServeType {
@@ -43,6 +44,7 @@ export interface DecoratorProperties {
   errorMessage?: string;
   description?: (() => Promise<Description>) | Description;
   isDynamicDescription?: boolean;
+  refreshParams?: RefreshParams;
   onChange?: (
     currentState: Map<string, SmartUiInput>,
     newValue: InputType,
@@ -84,7 +86,7 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
   descriptorValue: K
 ): void => {
   if (!(context instanceof Map)) {
-    throw new Error(`@SmartUi should be the first decorator for the class '${className}'.`);
+    throw new Error(`@IsDisplayable should be the first decorator for the class '${className}'.`);
   }
 
   const propertyObject = context.get(propertyName) ?? { id: propertyName };
@@ -110,6 +112,8 @@ export const mapToSmartUiDescriptor = (
   context: Map<string, DecoratorProperties>
 ): SelfServeDescriptor => {
   const inputNames: string[] = [];
+  const root = context.get("root");
+  context.delete("root");
 
   const smartUiDescriptor: SelfServeDescriptor = {
     root: {
@@ -117,6 +121,7 @@ export const mapToSmartUiDescriptor = (
       info: undefined,
       children: [],
     },
+    refreshParams: root?.refreshParams,
   };
 
   while (context.size > 0) {

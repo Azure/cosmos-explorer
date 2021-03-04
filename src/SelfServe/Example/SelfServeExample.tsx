@@ -6,8 +6,7 @@ import {
   Info,
   InputType,
   NumberUiType,
-  OnSavePortalNotification,
-  PortalNotificationType,
+  OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
   SmartUiInput,
@@ -126,7 +125,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
-  ): Promise<OnSavePortalNotification> => {
+  ): Promise<OnSaveResult> => {
     validate(currentValues, baselineValues);
     const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];
     const enableLogging = currentValues.get("enableLogging")?.value as boolean;
@@ -139,22 +138,28 @@ export default class SelfServeExample extends SelfServeBaseClass {
       await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
       if (currentValues.get("regions") === baselineValues.get("regions")) {
         return {
-          titleTKey: "SubmissionMessageSuccessTitle",
-          messageTKey: "SubmissionMessageForSameRegionText",
-          type: PortalNotificationType.InProgress,
+          operationStatusUrl: undefined,
+          portalNotification: {
+            titleTKey: "SubmissionMessageSuccessTitle",
+            messageTKey: "SubmissionMessageForSameRegionText",
+          },
         };
       } else {
         return {
-          titleTKey: "SubmissionMessageSuccessTitle",
-          messageTKey: "SubmissionMessageForNewRegionText",
-          type: PortalNotificationType.InProgress,
+          operationStatusUrl: undefined,
+          portalNotification: {
+            titleTKey: "SubmissionMessageSuccessTitle",
+            messageTKey: "SubmissionMessageForNewRegionText",
+          },
         };
       }
     } catch (error) {
       return {
-        titleTKey: "SubmissionMessageErrorTitle",
-        messageTKey: "SubmissionMessageErrorText",
-        type: PortalNotificationType.Failure,
+        operationStatusUrl: undefined,
+        portalNotification: {
+          titleTKey: "SubmissionMessageErrorTitle",
+          messageTKey: "SubmissionMessageErrorText",
+        },
       };
     }
   };

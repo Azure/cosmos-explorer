@@ -45,19 +45,16 @@ interface Options {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
   body?: unknown;
   queryParams?: ARMQueryParams;
-  shouldPollOperationStatus?: boolean;
 }
 
-// TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
-export async function armRequest<T>({
+export async function armRequestWithoutPolling<T>({
   host,
   path,
   apiVersion,
   method,
   body: requestBody,
   queryParams,
-  shouldPollOperationStatus = true,
-}: Options): Promise<T> {
+}: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
   if (queryParams) {
@@ -95,12 +92,32 @@ export async function armRequest<T>({
   }
 
   const operationStatusUrl = response.headers && response.headers.get("location");
-  if (shouldPollOperationStatus && operationStatusUrl) {
+  const responseBody = (await response.json()) as T;
+  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+}
+
+// TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
+export async function armRequest<T>({
+  host,
+  path,
+  apiVersion,
+  method,
+  body: requestBody,
+  queryParams,
+}: Options): Promise<T> {
+  const armRequestResult = await armRequestWithoutPolling<T>({
+    host,
+    path,
+    apiVersion,
+    method,
+    body: requestBody,
+    queryParams,
+  });
+  const operationStatusUrl = armRequestResult.operationStatusUrl;
+  if (operationStatusUrl) {
     return await promiseRetry(() => getOperationStatus(operationStatusUrl));
   }
-
-  const responseBody = (await response.json()) as T;
-  return responseBody;
+  return armRequestResult.result;
 }
 
 async function getOperationStatus(operationStatusUrl: string) {

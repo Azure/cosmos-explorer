@@ -21,7 +21,6 @@ import {
   NumberInput,
   BooleanInput,
   ChoiceInput,
-  PortalNotificationType,
 } from "./SelfServeTypes";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import { Translation } from "react-i18next";
@@ -30,7 +29,6 @@ import "../i18n";
 import { sendMessage } from "../Common/MessageHandler";
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
 import promiseRetry, { AbortError } from "p-retry";
-import { SessionStorageUtility } from "../Shared/StorageUtility";
 
 interface SelfServeNotification {
   message: string;
@@ -55,6 +53,7 @@ export interface SelfServeComponentState {
 }
 
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
+  private static readonly defaultRetryIntervalInMs = 30000;
   private smartUiGeneratorClassName: string;
   private translationFunction: TFunction;
 
@@ -231,22 +230,25 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public performSave = async (): Promise<void> => {
-    this.clearCorrelationId();
     this.setState({ isSaving: true, notification: undefined });
     try {
-      const portalNotificationMessage = await this.props.descriptor.onSave(
+      const onSaveResult = await this.props.descriptor.onSave(
         this.state.currentValues,
         this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
       );
-      const onSaveNotificationTitle = this.getTranslation(portalNotificationMessage.titleTKey);
-      const onSaveNotificationMessage = this.getTranslation(portalNotificationMessage.messageTKey);
-      this.sendNotificationMessage(
-        onSaveNotificationTitle,
-        onSaveNotificationMessage,
-        portalNotificationMessage.type,
-        this.getCorrelationId()
-      );
-      promiseRetry(() => this.pollRefresh(), { forever: true, randomize: true });
+      const portalNotification = onSaveResult.portalNotification;
+      const onSaveNotificationTitle = this.getTranslation(portalNotification.titleTKey);
+      const onSaveNotificationMessage = this.getTranslation(portalNotification.messageTKey);
+      this.sendNotificationMessage(onSaveNotificationTitle, onSaveNotificationMessage, onSaveResult.operationStatusUrl);
+
+      const retryOptions: promiseRetry.Options = { forever: true };
+      if (this.props.descriptor.refreshParams) {
+        retryOptions.maxTimeout = this.props.descriptor.refreshParams.retryIntervalInMs;
+      } else {
+        retryOptions.maxTimeout = SelfServeComponent.defaultRetryIntervalInMs;
+      }
+
+      promiseRetry(() => this.pollRefresh(), retryOptions);
     } catch (error) {
       this.setState({
         notification: {
@@ -297,33 +299,10 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return true;
   };
 
-  private getCorrelationId = (): string => {
-    let correlationId = SessionStorageUtility.getEntry(`${this.smartUiGeneratorClassName}CorrelationId`);
-    if (!correlationId) {
-      correlationId = new Date().toUTCString();
-      SessionStorageUtility.setEntry(`${this.smartUiGeneratorClassName}CorrelationId`, correlationId);
-    }
-    return correlationId;
-  };
-
-  private clearCorrelationId = (): void => {
-    SessionStorageUtility.setEntry(`${this.smartUiGeneratorClassName}CorrelationId`, "");
-  };
-
   private performRefresh = async (): Promise<void> => {
     const refreshResult = await this.props.descriptor.onRefresh();
     let updateInProgressNotification: SelfServeNotification;
     if (this.state.refreshResult?.isUpdateInProgress && !refreshResult.isUpdateInProgress) {
-      const updateCompletedPortalNotification = refreshResult.updateCompletedMessage;
-      const updateCompletedNotificationTitle = this.getTranslation(updateCompletedPortalNotification.titleTKey);
-      const updateCompletedNotificationMessage = this.getTranslation(updateCompletedPortalNotification.messageTKey);
-      this.sendNotificationMessage(
-        updateCompletedNotificationTitle,
-        updateCompletedNotificationMessage,
-        updateCompletedPortalNotification.type,
-        this.getCorrelationId()
-      );
-      this.clearCorrelationId();
       await this.initializeSmartUiComponent();
     }
     if (refreshResult.isUpdateInProgress) {
@@ -403,19 +382,13 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     ];
   };
 
-  private sendNotificationMessage = (
-    title: string,
-    message: string,
-    type: PortalNotificationType,
-    correlationId: string
-  ): void => {
+  private sendNotificationMessage = (title: string, message: string, operationStatusUrl: string): void => {
     sendMessage({
       type: SelfServeMessageTypes.Notification,
       data: {
         title: title,
         message: message,
-        type: type,
-        correlationId: correlationId,
+        operationStatusUrl: operationStatusUrl,
       },
     });
   };

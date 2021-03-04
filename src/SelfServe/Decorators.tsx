@@ -1,4 +1,4 @@
-import { ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput } from "./SelfServeTypes";
+import { ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput, RefreshParams } from "./SelfServeTypes";
 import { addPropertyToMap, DecoratorProperties, buildSmartUiDescriptor } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
@@ -133,5 +133,11 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
 export const IsDisplayable = (): ClassDecorator => {
   return (target) => {
     buildSmartUiDescriptor(target.name, target.prototype);
+  };
+};
+
+export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
+  return (target) => {
+    addPropertyToMap(target.prototype, "root", target.name, "refreshParams", refreshParams);
   };
 };

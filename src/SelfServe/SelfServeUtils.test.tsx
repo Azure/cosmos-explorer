@@ -1,17 +1,11 @@
-import {
-  NumberUiType,
-  OnSavePortalNotification,
-  RefreshResult,
-  SelfServeBaseClass,
-  SmartUiInput,
-} from "./SelfServeTypes";
+import { NumberUiType, OnSaveResult, RefreshResult, SelfServeBaseClass, SmartUiInput } from "./SelfServeTypes";
 import { DecoratorProperties, mapToSmartUiDescriptor, updateContextWithDecorator } from "./SelfServeUtils";
 
 describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize: () => Promise<Map<string, SmartUiInput>>;
-      public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<OnSavePortalNotification>;
+      public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
@@ -20,7 +14,7 @@ describe("SelfServeUtils", () => {
   it("onSave should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize = jest.fn();
-      public onSave: () => Promise<OnSavePortalNotification>;
+      public onSave: () => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'Test'");
@@ -35,14 +29,14 @@ describe("SelfServeUtils", () => {
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'Test'");
   });
 
-  it("@SmartUi decorator must be present for self serve classes", () => {
+  it("@IsDisplayable decorator must be present for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize = jest.fn();
       public onSave = jest.fn();
       public onRefresh = jest.fn();
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow(
-      "@SmartUi decorator was not declared for the class 'Test'"
+      "@IsDisplayable decorator was not declared for the class 'Test'"
     );
   });
 
