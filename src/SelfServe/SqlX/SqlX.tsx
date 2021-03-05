@@ -190,7 +190,8 @@ export default class SqlX extends SelfServeBaseClass {
         },
         requestCompletedPortalNotification: {
           titleTKey: "Resource provisioned",
-          messageTKey: "Dedicated Gateway resource provisioned.",
+          messageTKey:
+            "Dedicated Gateway resource provisioned. Please go to <a href='../Keys'>keys blade</a> to use the keys.",
         },
       };
     }
