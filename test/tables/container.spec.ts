@@ -21,7 +21,7 @@ describe("Collection Add and Delete Tables spec", () => {
       // type database id
       await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
       const dbInput = await frame.$('input[data-test="addCollection-newDatabaseId"]');
-      await dbInput.press("Backspace");
+      await frame.waitFor(1000);
       await dbInput.type(tableId);
 
       // click submit

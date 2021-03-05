@@ -1,7 +1,6 @@
 const msRestNodeAuth = require("@azure/ms-rest-nodeauth");
 const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
 const ms = require("ms");
-const { time } = require("console");
 
 const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
 const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
