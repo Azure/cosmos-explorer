@@ -67,6 +67,7 @@ export async function createDatabase(frame: Frame) {
   // click submit
   await frame.waitFor("#submitBtnAddCollection");
   await frame.click("#submitBtnAddCollection");
+  return dbId;
 }
 
 export async function onClickSaveButton(frame: Frame) {
