@@ -1,7 +1,7 @@
 import * as DataModels from "../../Contracts/DataModels";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { StringUtils } from "../../Utils/StringUtils";
-import { FileSystemUtil } from "./FileSystemUtil";
+import * as FileSystemUtil from "./FileSystemUtil";
 import { NotebookUtil } from "./NotebookUtil";
 
 import { ServerConfig, IContent, IContentProvider, FileType, IEmptyContent } from "@nteract/core";

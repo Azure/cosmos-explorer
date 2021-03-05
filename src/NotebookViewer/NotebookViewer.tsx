@@ -10,7 +10,7 @@ import {
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
-import { FileSystemUtil } from "../Explorer/Notebook/FileSystemUtil";
+import * as FileSystemUtil from "../Explorer/Notebook/FileSystemUtil";
 import { GalleryTab } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 
 const onInit = async () => {

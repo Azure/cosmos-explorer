@@ -43,7 +43,7 @@ import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
-import { FileSystemUtil } from "./Notebook/FileSystemUtil";
+import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
