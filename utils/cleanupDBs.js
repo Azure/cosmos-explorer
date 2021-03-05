@@ -9,9 +9,9 @@ const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const resourceGroupName = "runners";
 
-const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20).getTime();
+const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 30).getTime();
 
-// Deletes all SQL and Mongo databases created more than 20 minutes ago in the test runner accounts
+// Deletes all SQL and Mongo databases created more than 30 minutes ago in the test runner accounts
 async function main() {
   const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
   const client = new CosmosDBManagementClient(credentials, subscriptionId);
@@ -21,7 +21,7 @@ async function main() {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
         const timestamp = database.name.split("-")[1];
-        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+        if (!timestamp || Number(timestamp) < thirtyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
         } else {
@@ -32,7 +32,7 @@ async function main() {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
       for (const database of sqlDatabases) {
         const timestamp = database.name.split("-")[1];
-        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+        if (!timestamp || Number(timestamp) < thirtyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
         } else {
