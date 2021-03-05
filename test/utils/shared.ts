@@ -26,10 +26,14 @@ export function generateUniqueName(baseName = "", length = 4): string {
   return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
 }
 
+export function generateDatabaseName(baseName = "db", length = 1): string {
+  return `${baseName}${crypto.randomBytes(length).toString("hex")}-${Date.now()}`;
+}
+
 export async function createDatabase(frame: Frame) {
-  const dbId = generateUniqueName("db");
+  const dbId = generateDatabaseName();
   const collectionId = generateUniqueName("col");
-  const shardKey = generateUniqueName();
+  const shardKey = "partitionKey";
   // create new collection
   await frame.waitFor('button[data-test="New Collection"]', { visible: true });
   await frame.click('button[data-test="New Collection"]');
