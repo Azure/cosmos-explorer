@@ -281,7 +281,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         notification: {
           type: MessageBarType.error,
           isCancellable: true,
-          message: this.getTranslation(error.message),
+          message: this.getTranslation(error),
         },
       });
       throw error;
@@ -442,7 +442,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                     {this.state.notification && (
                       <MessageBar
                         messageBarType={this.state.notification.type}
-                        styles={{ root: { width: 400 } }}
                         onDismiss={
                           this.state.notification.isCancellable
                             ? () => this.setState({ notification: undefined })
