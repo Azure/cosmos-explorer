@@ -152,12 +152,12 @@ export default class SelfServeExample extends SelfServeBaseClass {
         return {
           operationStatusUrl: undefined,
           requestInitializedPortalNotification: {
-            titleTKey: "UpdateCompletedMessageTitle",
-            messageTKey: "UpdateCompletedMessageText",
+            titleTKey: "SubmissionMessageSuccessTitle",
+            messageTKey: "SubmissionMessageForNewRegionText",
           },
           requestCompletedPortalNotification: {
-            titleTKey: "SubmissionMessageSuccessTitle",
-            messageTKey: "SubmissionMessageForSameRegionText",
+            titleTKey: "UpdateCompletedMessageTitle",
+            messageTKey: "UpdateCompletedMessageText",
           },
         };
       }
@@ -226,7 +226,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
       textTKey: "DescriptionText",
       type: DescriptionType.Text,
       link: {
-        href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+        href: "https://aka.ms/cosmos-create-account-portal",
         textTKey: "DecriptionLinkText",
       },
     },

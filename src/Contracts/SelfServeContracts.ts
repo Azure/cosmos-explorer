@@ -4,6 +4,6 @@
  */
 
 export enum SelfServeMessageTypes {
-  TelemetryInfo = 0,
-  Notification = 1,
+  TelemetryInfo = "TelemetryInfo",
+  Notification = "Notification",
 }

@@ -23,6 +23,10 @@ describe("SelfServeComponent", () => {
         titleTKey: "SampleMessageTitleKey",
         messageTKey: "SampleMessageTextKey",
       },
+      requestCompletedPortalNotification: {
+        titleTKey: "SampleMessageTitleKey",
+        messageTKey: "SampleMessageTextKey",
+      },
     } as OnSaveResult;
   });
   const refreshResult = {
