@@ -279,7 +279,6 @@ src/Utils/AutoPilotUtils.test.ts
 src/Utils/AutoPilotUtils.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
-src/Utils/JunoUtils.ts
 src/Utils/MessageValidation.ts
 src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
