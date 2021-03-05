@@ -68,10 +68,16 @@ export interface SelfServeComponentState {
 export class SelfServeComponent extends React.Component<SelfServeComponentProps, SelfServeComponentState> {
   private static readonly defaultRetryIntervalInMs = 30000;
   private smartUiGeneratorClassName: string;
+  private retryIntervalInMs: number;
+  private retryOptions: promiseRetry.Options;
   private translationFunction: TFunction;
 
   componentDidMount(): void {
-    this.performRefresh();
+    this.performRefresh().then(() => {
+      if (this.state.refreshResult?.isUpdateInProgress) {
+        promiseRetry(() => this.pollRefresh(), this.retryOptions);
+      }
+    });
     this.initializeSmartUiComponent();
   }
 
@@ -89,6 +95,11 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       notification: undefined,
     };
     this.smartUiGeneratorClassName = this.props.descriptor.root.id;
+    this.retryIntervalInMs = this.props.descriptor.refreshParams?.retryIntervalInMs;
+    if (!this.retryIntervalInMs) {
+      this.retryIntervalInMs = SelfServeComponent.defaultRetryIntervalInMs;
+    }
+    this.retryOptions = { forever: true, maxTimeout: this.retryIntervalInMs, minTimeout: this.retryIntervalInMs };
   }
 
   private onError = (hasErrors: boolean): void => {
@@ -245,11 +256,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   public performSave = async (): Promise<void> => {
     this.setState({ isSaving: true, notification: undefined });
     try {
-      let retryIntervalInMs = this.props.descriptor.refreshParams?.retryIntervalInMs;
-      if (!retryIntervalInMs) {
-        retryIntervalInMs = SelfServeComponent.defaultRetryIntervalInMs;
-      }
-
       const onSaveResult = await this.props.descriptor.onSave(
         this.state.currentValues,
         this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
@@ -257,7 +263,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       const requestInitializedPortalNotification = onSaveResult.requestInitializedPortalNotification;
       const requestCompletedPortalNotification = onSaveResult.requestCompletedPortalNotification;
       this.sendNotificationMessage({
-        retryIntervalInMs: retryIntervalInMs,
+        retryIntervalInMs: this.retryIntervalInMs,
         operationStatusUrl: onSaveResult.operationStatusUrl,
         requestInitializedNotification: {
           title: this.getTranslation(requestInitializedPortalNotification.titleTKey),
@@ -269,18 +275,13 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         },
       });
 
-      const retryOptions: promiseRetry.Options = {
-        forever: true,
-        maxTimeout: retryIntervalInMs,
-        minTimeout: retryIntervalInMs,
-      };
-      promiseRetry(() => this.pollRefresh(), retryOptions);
+      promiseRetry(() => this.pollRefresh(), this.retryOptions);
     } catch (error) {
       this.setState({
         notification: {
           type: MessageBarType.error,
           isCancellable: true,
-          message: this.getTranslation(error.message),
+          message: this.getTranslation(error),
         },
       });
       throw error;
@@ -441,7 +442,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                     {this.state.notification && (
                       <MessageBar
                         messageBarType={this.state.notification.type}
-                        styles={{ root: { width: 400 } }}
                         onDismiss={
                           this.state.notification.isCancellable
                             ? () => this.setState({ notification: undefined })
