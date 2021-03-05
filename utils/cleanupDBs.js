@@ -1,5 +1,7 @@
 const msRestNodeAuth = require("@azure/ms-rest-nodeauth");
 const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
+const ms = require("ms");
+const { time } = require("console");
 
 const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
 const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
@@ -7,7 +9,7 @@ const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const resourceGroupName = "runners";
 
-const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20);
+const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20).getTime();
 
 // Deletes all SQL and Mongo databases created more than 20 minutes ago in the test runner accounts
 async function main() {
@@ -19,22 +21,22 @@ async function main() {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
         const timestamp = database.name.split("-")[1];
-        if (!timestamp || new Date(timestamp) < twentyMinutesAgo) {
+        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Timestamp: ${Date.now()}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Timestamp: ${Date.now()}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
         }
       }
     } else if (account.kind === "GlobalDocumentDB") {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
       for (const database of sqlDatabases) {
         const timestamp = database.name.split("-")[1];
-        if (!timestamp || new Date(timestamp) < twentyMinutesAgo) {
+        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Timestamp: ${Date.now()}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Timestamp: ${Date.now()}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
         }
       }
     }

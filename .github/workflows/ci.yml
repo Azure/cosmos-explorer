@@ -194,7 +194,6 @@ jobs:
           path: failed-*
   cleanupaccounts:
     name: "Cleanup Test Database Accounts"
-    needs: [lint, format, compile, unittest]
     runs-on: ubuntu-latest
     env:
       NOTEBOOKS_TEST_RUNNER_CLIENT_ID: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_ID }}
