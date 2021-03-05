@@ -5,7 +5,6 @@ import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
 const LOADING_STATE_DELAY = 3000;
-const CREATE_DELAY = 5000;
 jest.setTimeout(300000);
 
 describe("MongoDB Index policy tests", () => {
@@ -24,15 +23,16 @@ describe("MongoDB Index policy tests", () => {
       let databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
       if (databases.length === 0) {
         await createDatabase(frame);
+        await frame.waitFor(25000);
         databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
       }
 
-      const selectedDbId = await frame.evaluate((element) => {
-        return element.attributes["data-test"].textContent;
-      }, databases[0]);
+      const selectedDbId = (await frame.evaluate((element) => element.innerText, databases[0]))
+        .replace(/[\u{0080}-\u{FFFF}]/gu, "")
+        .trim();
 
       // click on database
-      await frame.waitFor(`div[data-test="${selectedDbId}"]`);
+      await frame.waitForSelector(`div[data-test="${selectedDbId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.click(`div[data-test="${selectedDbId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
@@ -41,9 +41,9 @@ describe("MongoDB Index policy tests", () => {
       const containers = await frame.$$(
         `div[class="nodeChildren"] > div[class="collectionHeader main2 nodeItem "]> div[class="treeNodeHeader "]`
       );
-      const selectedContainer = await frame.evaluate((element) => {
-        return element.attributes["data-test"].textContent;
-      }, containers[0]);
+      const selectedContainer = (await frame.evaluate((element) => element.innerText, containers[0]))
+        .replace(/[\u{0080}-\u{FFFF}]/gu, "")
+        .trim();
       await frame.waitFor(`div[data-test="${selectedContainer}"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.click(`div[data-test="${selectedContainer}"]`);
@@ -94,7 +94,7 @@ describe("MongoDB Index policy tests", () => {
           singleFieldIndexInserted = true;
         }
       }
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(20000);
       expect(wildCardIndexInserted).toBe(true);
       expect(singleFieldIndexInserted).toBe(true);
 
@@ -107,7 +107,7 @@ describe("MongoDB Index policy tests", () => {
       await onClickSaveButton(frame);
 
       //check for cleaning
-      await frame.waitFor(CREATE_DELAY);
+      await frame.waitFor(20000);
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
       const isDeletionComplete = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
       expect(isDeletionComplete).toHaveLength(2);
