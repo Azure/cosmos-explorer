@@ -49,5 +49,6 @@ main()
   })
   .catch((err) => {
     console.error(err);
-    process.exit(1);
+    console.log("Cleanup failed! Exiting with success. Cleanup should always fail safe.");
+    process.exit(0);
   });
