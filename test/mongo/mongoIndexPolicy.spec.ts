@@ -20,21 +20,12 @@ describe("MongoDB Index policy tests", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      let databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
-      if (databases.length === 0) {
-        await createDatabase(frame);
-        await frame.waitFor(25000);
-        databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
-      }
-
-      const selectedDbId = (await frame.evaluate((element) => element.innerText, databases[0]))
-        .replace(/[\u{0080}-\u{FFFF}]/gu, "")
-        .trim();
-
+      const dbId = await createDatabase(frame);
+      await frame.waitFor(25000);
       // click on database
-      await frame.waitForSelector(`div[data-test="${selectedDbId}"]`);
+      await frame.waitForSelector(`div[data-test="${dbId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.click(`div[data-test="${selectedDbId}"]`);
+      await frame.click(`div[data-test="${dbId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
 
       // click on scale & setting
@@ -114,7 +105,7 @@ describe("MongoDB Index policy tests", () => {
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
-      await page.screenshot({ path: `Test Failed ${testName}.jpg` });
+      await page.screenshot({ path: `failed-${testName}.jpg` });
       throw error;
     }
   });
