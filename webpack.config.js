@@ -70,23 +70,6 @@ const typescriptRule = {
   exclude: /node_modules/,
 };
 
-// Third party modules are compiled with babel since using ts-loader that much causes webpack to run out of memory
-const ModulesRule = {
-  test: /\.js$/,
-  use: [
-    {
-      loader: "babel-loader",
-      options: {
-        cacheDirectory: ".cache/babel",
-        presets: [["@babel/preset-env", { targets: { ie: "11" }, useBuiltIns: false }]],
-      },
-    },
-  ],
-  include: /node_modules/,
-  // Exclude large modules we know don't need transpiling
-  exclude: /vega|monaco|plotly/,
-};
-
 module.exports = function (env = {}, argv = {}) {
   const mode = argv.mode || "development";
   const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
@@ -96,7 +79,6 @@ module.exports = function (env = {}, argv = {}) {
   };
 
   if (mode === "production") {
-    rules.push(ModulesRule);
     envVars.NODE_ENV = "production";
   }
 

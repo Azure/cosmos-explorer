@@ -38,21 +38,10 @@ import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import "../images/favicon.ico";
 
 import "./Shared/appInsights";
-import "babel-polyfill";
-import "es6-symbol/implement";
-import "webcrypto-liner/build/webcrypto-liner.shim.min";
 import "./Libs/jquery";
 import "bootstrap/dist/js/npm";
 import "../externals/jquery.typeahead.min.js";
 import "../externals/jquery-ui.min.js";
-import "promise-polyfill/src/polyfill";
-import "abort-controller/polyfill";
-import "whatwg-fetch";
-import "es6-object-assign/auto";
-import "promise.prototype.finally/auto";
-import "object.entries/auto";
-import "./Libs/is-integer-polyfill";
-import "url-polyfill/url-polyfill.min";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import { ExplorerParams } from "./Explorer/Explorer";
