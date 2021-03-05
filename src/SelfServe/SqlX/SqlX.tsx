@@ -11,6 +11,7 @@ import {
   Description,
   OnSaveResult,
 } from "../SelfServeTypes";
+import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource,
@@ -190,8 +191,9 @@ export default class SqlX extends SelfServeBaseClass {
         },
         requestCompletedPortalNotification: {
           titleTKey: "Resource provisioned",
-          messageTKey:
-            "Dedicated Gateway resource provisioned. Please go to <a href='../Keys'>keys blade</a> to use the keys.",
+          messageTKey: `Dedicated Gateway resource provisioned. Please go to <a href='${generateBladeLink(
+            BladeType.SqlKeys
+          )}'>keys blade</a> to use the keys.`,
         },
       };
     }
