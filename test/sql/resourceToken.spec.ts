@@ -1,7 +1,7 @@
 /* eslint-disable jest/expect-expect */
 import "expect-puppeteer";
 import { Frame } from "puppeteer";
-import { generateUniqueName } from "../utils/shared";
+import { generateDatabaseName, generateUniqueName } from "../utils/shared";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
 
 jest.setTimeout(300000);
@@ -10,7 +10,7 @@ const CREATE_DELAY = 10000;
 
 describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
-    const dbId = generateUniqueName("db");
+    const dbId = generateDatabaseName();
     const collectionId = generateUniqueName("col");
     const connectionString = process.env.PORTAL_RUNNER_CONNECTION_STRING;
     const client = new CosmosClient(connectionString);
