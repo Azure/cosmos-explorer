@@ -16,7 +16,7 @@ export function getLocalDateTime(dateTime: string): string {
 }
 
 export function getUTCDateTime(dateTime: string): string {
-  const dateTimeObject: Date = new Date(dateTime);
+  const dateTimeObject = new Date(dateTime);
   return dateTimeObject.toISOString();
 }
 
