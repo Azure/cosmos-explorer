@@ -13,6 +13,7 @@ import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
+import "./Explorer/Controls/ThroughputInput/ThroughputInput.less";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Panes/PanelComponent.less";
 import "../less/TableStyles/queryBuilder.less";

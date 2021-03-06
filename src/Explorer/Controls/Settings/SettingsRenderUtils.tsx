@@ -116,8 +116,6 @@ export const addMongoIndexSubElementsTokens: IStackTokens = {
   childrenGap: 20,
 };
 
-export const accordionIconStyles: IIconStyles = { root: { paddingTop: 7 } };
-
 export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
 
 export const shortWidthTextFieldStyles: Partial<ITextFieldStyles> = { root: { paddingLeft: 10, width: 210 } };

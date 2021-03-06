@@ -89,6 +89,7 @@ import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -1489,6 +1490,7 @@ export default class Explorer {
         subscriptionId: inputs.subscriptionId,
         subscriptionType: inputs.subscriptionType,
         quotaId: inputs.quotaId,
+        serverId: inputs.serverId,
       });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -2598,5 +2600,17 @@ export default class Explorer {
             openNotificationConsole={() => this.expandConsole()}
           />
         );
+  }
+
+  public async openAddCollectionPanel(): Promise<void> {
+    await this.loadDatabaseOffers();
+    this.openSidePanel(
+      "New Collection",
+      <AddCollectionPanel
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        openNotificationConsole={() => this.expandConsole()}
+      />
+    );
   }
 }

@@ -10,11 +10,10 @@ import { Areas } from "../../Common/Constants";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import { PanelErrorComponent, PanelErrorProps } from "./PanelErrorComponent";
+import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
+import { PanelLoadingScreen } from "./PanelLoadingScreen";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import Explorer from "../Explorer";
-import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
-
 export interface DeleteCollectionConfirmationPanelProps {
   explorer: Explorer;
   closePanel: () => void;
@@ -44,8 +43,8 @@ export class DeleteCollectionConfirmationPanel extends React.Component<
 
   render(): JSX.Element {
     return (
-      <div className="panelContentContainer">
-        <PanelErrorComponent {...this.getPanelErrorProps()} />
+      <form className="panelFormWrapper" onSubmit={this.submit.bind(this)}>
+        <PanelInfoErrorComponent {...this.getPanelErrorProps()} />
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
             <span className="mandatoryStar">* </span>
@@ -79,18 +78,16 @@ export class DeleteCollectionConfirmationPanel extends React.Component<
             </div>
           )}
         </div>
-        <PanelFooterComponent buttonLabel="OK" onOKButtonClicked={() => this.submit()} />
-        <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!this.state.isExecuting}>
-          <img className="dataExplorerLoader" src={LoadingIndicator_3Squares} />
-        </div>
-      </div>
+        <PanelFooterComponent buttonLabel="OK" />
+        {this.state.isExecuting && <PanelLoadingScreen />}
+      </form>
     );
   }
 
-  private getPanelErrorProps(): PanelErrorProps {
+  private getPanelErrorProps(): PanelInfoErrorProps {
     if (this.state.formError) {
       return {
-        isWarning: false,
+        messageType: "error",
         message: this.state.formError,
         showErrorDetails: true,
         openNotificationConsole: this.props.openNotificationConsole,
@@ -98,7 +95,7 @@ export class DeleteCollectionConfirmationPanel extends React.Component<
     }
 
     return {
-      isWarning: true,
+      messageType: "warning",
       showErrorDetails: false,
       message:
         "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",

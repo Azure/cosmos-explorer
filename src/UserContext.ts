@@ -17,6 +17,7 @@ interface UserContext {
   useSDKOperations?: boolean;
   subscriptionType?: SubscriptionType;
   quotaId?: string;
+  serverId?: string;
 }
 
 const userContext: Readonly<UserContext> = {} as const;
