@@ -231,7 +231,7 @@ function createNewCollectionGroup(container: Explorer): CommandButtonComponentPr
   return {
     iconSrc: AddCollectionIcon,
     iconAlt: label,
-    onCommandClick: () => container.openAddCollectionPanel(),
+    onCommandClick: () => container.onNewCollectionClicked(),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

@@ -122,6 +122,7 @@ export class Features {
   public static readonly enableDatabaseSettingsTabV1 = "enabledbsettingsv1";
   public static readonly selfServeType = "selfservetype";
   public static readonly enableKOPanel = "enablekopanel";
+  public static readonly enableReactPane = "enablereactpane";
 }
 
 // flight names returned from the portal are always lowercase

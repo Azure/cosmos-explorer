@@ -2458,10 +2458,12 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (this.isPreferredApiCassandra()) {
       this.cassandraAddCollectionPane.open();
+    } else if (this.isFeatureEnabled(Constants.Features.enableReactPane)) {
+      this.openAddCollectionPanel();
     } else {
       this.addCollectionPane.open(this.selectedDatabaseId());
+      document.getElementById("linkAddCollection").focus();
     }
-    document.getElementById("linkAddCollection").focus();
   }
 
   private refreshCommandBarButtons(): void {

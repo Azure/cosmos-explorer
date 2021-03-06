@@ -23,7 +23,6 @@ import {
   ITextStyles,
   IDetailsRowStyles,
   IStackStyles,
-  IIconStyles,
   IDetailsListStyles,
   IDropdownStyles,
   ISeparatorStyles,
