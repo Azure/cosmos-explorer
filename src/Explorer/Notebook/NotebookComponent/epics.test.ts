@@ -8,7 +8,7 @@ import * as sinon from "sinon";
 
 import { CdbAppState, makeCdbRecord } from "./types";
 import { launchWebSocketKernelEpic } from "./epics";
-import { NotebookUtil } from "../NotebookUtil";
+import * as NotebookUtil from "../NotebookUtil";
 
 import { sessions } from "rx-jupyter";
 

@@ -17,7 +17,7 @@ import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
 import FileIcon from "../../../images/notebook/file-cosmos.svg";
 import PublishIcon from "../../../images/notebook/publish_content.svg";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
-import { NotebookUtil } from "../Notebook/NotebookUtil";
+import * as NotebookUtil from "../Notebook/NotebookUtil";
 import _ from "underscore";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
