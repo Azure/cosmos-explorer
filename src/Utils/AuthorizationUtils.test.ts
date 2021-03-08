@@ -1,9 +1,7 @@
 import * as Constants from "../Common/Constants";
 import * as AuthorizationUtils from "./AuthorizationUtils";
 import { AuthType } from "../AuthType";
-import Explorer from "../Explorer/Explorer";
 import { updateUserContext } from "../UserContext";
-import { Platform, updateConfigContext } from "../ConfigContext";
 jest.mock("../Explorer/Explorer");
 
 describe("AuthorizationUtils", () => {
@@ -35,7 +33,7 @@ describe("AuthorizationUtils", () => {
     });
 
     it("should throw an error if token is null", () => {
-      expect(() => AuthorizationUtils.decryptJWTToken(null)).toThrowError();
+      expect(() => AuthorizationUtils.decryptJWTToken(undefined)).toThrowError();
     });
 
     it("should throw an error if token is empty", () => {
