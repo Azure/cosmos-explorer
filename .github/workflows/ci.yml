@@ -167,7 +167,6 @@ jobs:
         test-file:
           - ./test/cassandra/container.spec.ts
           - ./test/mongo/mongoIndexPolicy.spec.ts
-          - ./test/mongo/openMongoAccount.spec.ts
           - ./test/notebooks/uploadAndOpenNotebook.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
           - ./test/sql/container.spec.ts
