@@ -32,10 +32,6 @@ describe("AuthorizationUtils", () => {
       expect(() => AuthorizationUtils.decryptJWTToken(undefined)).toThrowError();
     });
 
-    it("should throw an error if token is null", () => {
-      expect(() => AuthorizationUtils.decryptJWTToken(undefined)).toThrowError();
-    });
-
     it("should throw an error if token is empty", () => {
       expect(() => AuthorizationUtils.decryptJWTToken("")).toThrowError();
     });
