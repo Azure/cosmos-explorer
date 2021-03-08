@@ -4,7 +4,7 @@ import { createDatabase, onClickSaveButton } from "../utils/shared";
 import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
-const LOADING_STATE_DELAY = 3000;
+const LOADING_STATE_DELAY = 5000;
 jest.setTimeout(300000);
 
 describe("MongoDB Index policy tests", () => {
@@ -74,6 +74,7 @@ describe("MongoDB Index policy tests", () => {
       let singleFieldIndexInserted = false,
         wildCardIndexInserted = false;
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
+      await frame.waitFor(20000);
 
       const elements = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
       for (let i = 0; i < elements.length; i++) {
