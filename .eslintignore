@@ -288,7 +288,6 @@ src/applyExplorerBindings.ts
 src/global.d.ts
 src/quickstart.ts
 src/setupTests.ts
-src/workers/upload/definitions.ts
 src/workers/upload/index.ts
 src/Explorer/Controls/AccessibleElement/AccessibleElement.tsx
 src/Explorer/Controls/Accordion/AccordionComponent.tsx

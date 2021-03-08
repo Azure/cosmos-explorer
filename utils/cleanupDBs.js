@@ -9,7 +9,7 @@ const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const resourceGroupName = "runners";
 
-const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20).getTime();
+const sixtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 60).getTime();
 
 // Deletes all SQL and Mongo databases created more than 20 minutes ago in the test runner accounts
 async function main() {
@@ -21,7 +21,7 @@ async function main() {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
         const timestamp = Number(database.name.split("-")[1]);
-        if (timestamp || timestamp < twentyMinutesAgo) {
+        if (timestamp && timestamp < sixtyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         } else {
@@ -32,7 +32,7 @@ async function main() {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
       for (const database of sqlDatabases) {
         const timestamp = Number(database.name.split("-")[1]);
-        if (timestamp || timestamp < twentyMinutesAgo) {
+        if (timestamp && timestamp < sixtyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         } else {
