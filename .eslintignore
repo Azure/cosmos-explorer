@@ -176,8 +176,6 @@ src/Explorer/Tables/Entities.ts
 src/Explorer/Tables/QueryBuilder/ClauseGroup.ts
 src/Explorer/Tables/QueryBuilder/ClauseGroupViewModel.ts
 src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
-src/Explorer/Tables/QueryBuilder/DateTimeUtilities.test.ts
-src/Explorer/Tables/QueryBuilder/DateTimeUtilities.ts
 src/Explorer/Tables/QueryBuilder/QueryBuilderViewModel.ts
 src/Explorer/Tables/QueryBuilder/QueryClauseViewModel.ts
 src/Explorer/Tables/QueryBuilder/QueryViewModel.ts
