@@ -1,51 +1,54 @@
-const { CosmosClient } = require("@azure/cosmos");
+const msRestNodeAuth = require("@azure/ms-rest-nodeauth");
+const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
+const ms = require("ms");
+const { time } = require("console");
 
-// TODO: Add support for other API connection strings
-const mongoRegex = RegExp("mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com");
+const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
+const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
+const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
+const resourceGroupName = "runners";
 
-const connectionString = process.env.PORTAL_RUNNER_CONNECTION_STRING;
+const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20).getTime();
 
-async function cleanup() {
-  if (!connectionString) {
-    throw new Error("Connection string not provided");
-  }
-
-  let client;
-  switch (true) {
-    case connectionString.includes("mongodb://"): {
-      const [, key, accountName] = connectionString.match(mongoRegex);
-      client = new CosmosClient({
-        key,
-        endpoint: `https://${accountName}.documents.azure.com:443/`,
-      });
-      break;
-    }
-    // TODO: Add support for other API connection strings
-    default:
-      client = new CosmosClient(connectionString);
-      break;
-  }
-
-  const response = await client.databases.readAll().fetchAll();
-  return Promise.all(
-    response.resources.map(async (db) => {
-      const dbTimestamp = new Date(db._ts * 1000);
-      const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20);
-      if (dbTimestamp < twentyMinutesAgo) {
-        await client.database(db.id).delete();
-        console.log(`DELETED: ${db.id} | Timestamp: ${dbTimestamp}`);
-      } else {
-        console.log(`SKIPPED: ${db.id} | Timestamp: ${dbTimestamp}`);
+// Deletes all SQL and Mongo databases created more than 20 minutes ago in the test runner accounts
+async function main() {
+  const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
+  const client = new CosmosDBManagementClient(credentials, subscriptionId);
+  const accounts = await client.databaseAccounts.list(resourceGroupName);
+  for (const account of accounts) {
+    if (account.kind === "MongoDB") {
+      const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
+      for (const database of mongoDatabases) {
+        const timestamp = database.name.split("-")[1];
+        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+          await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+        }
       }
-    })
-  );
+    } else if (account.kind === "GlobalDocumentDB") {
+      const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
+      for (const database of sqlDatabases) {
+        const timestamp = database.name.split("-")[1];
+        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+          await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+        }
+      }
+    }
+  }
 }
 
-cleanup()
+main()
   .then(() => {
+    console.log("Completed");
     process.exit(0);
   })
-  .catch((error) => {
-    console.error(error);
+  .catch((err) => {
+    console.error(err);
     process.exit(1);
   });
