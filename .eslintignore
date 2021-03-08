@@ -273,7 +273,6 @@ src/TokenProviders/PortalTokenProvider.ts
 src/TokenProviders/TokenProviderFactory.ts
 src/Utils/AuthorizationUtils.test.ts
 src/Utils/AuthorizationUtils.ts
-src/Utils/AutoPilotUtils.test.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
 src/Utils/JunoUtils.ts
