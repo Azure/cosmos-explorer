@@ -287,7 +287,6 @@ src/Utils/StringUtils.test.ts
 src/Utils/StringUtils.ts
 src/applyExplorerBindings.ts
 src/global.d.ts
-src/quickstart.ts
 src/setupTests.ts
 src/workers/upload/index.ts
 src/Explorer/Controls/AccessibleElement/AccessibleElement.tsx
