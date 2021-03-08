@@ -74,6 +74,7 @@ describe("MongoDB Index policy tests", () => {
       let singleFieldIndexInserted = false,
         wildCardIndexInserted = false;
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
+      await frame.waitFor(20000);
 
       const elements = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
       for (let i = 0; i < elements.length; i++) {
