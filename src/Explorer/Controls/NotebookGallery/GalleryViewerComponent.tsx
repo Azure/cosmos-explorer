@@ -23,7 +23,7 @@ import {
 import * as React from "react";
 import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import { DialogComponent, DialogProps } from "../DialogReactComponent/DialogComponent";
+import { Dialog, DialogProps } from "../Dialog";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import "./GalleryViewerComponent.less";
 import { HttpStatusCodes } from "../../../Common/Constants";
@@ -36,7 +36,6 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
-  isGalleryPublishEnabled: boolean;
   junoClient: JunoClient;
   selectedTab: GalleryTab;
   sortBy: SortBy;
@@ -48,8 +47,8 @@ export interface GalleryViewerComponentProps {
 }
 
 export enum GalleryTab {
-  OfficialSamples,
   PublicGallery,
+  OfficialSamples,
   Favorites,
   Published,
 }
@@ -140,35 +139,28 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         text: GalleryViewerComponent.mostRecentText,
       },
     ];
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      this.sortingOptions.push({
-        key: SortBy.MostFavorited,
-        text: GalleryViewerComponent.mostFavoritedText,
-      });
-    }
+    this.sortingOptions.push({
+      key: SortBy.MostFavorited,
+      text: GalleryViewerComponent.mostFavoritedText,
+    });
 
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
-    }
+    this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
   }
 
   public render(): JSX.Element {
     this.traceViewGallery();
 
-    const tabs: GalleryTabInfo[] = [this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
+    const tabs: GalleryTabInfo[] = [
+      this.createPublicGalleryTab(
+        GalleryTab.PublicGallery,
+        this.state.publicNotebooks,
+        this.state.isCodeOfConductAccepted
+      ),
+      this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks),
+    ];
 
-    if (this.props.isGalleryPublishEnabled) {
-      tabs.push(
-        this.createPublicGalleryTab(
-          GalleryTab.PublicGallery,
-          this.state.publicNotebooks,
-          this.state.isCodeOfConductAccepted
-        )
-      );
-    }
-
-    if (this.props.container?.isGalleryPublishEnabled()) {
+    if (this.props.container) {
       tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
       tabs.push(this.createPublishedNotebooksTab(GalleryTab.Published, this.state.publishedNotebooks));
     }
@@ -196,7 +188,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       <div className="galleryContainer">
         <Pivot {...pivotProps}>{pivotItems}</Pivot>
 
-        {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
+        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
       </div>
     );
   }
@@ -208,18 +200,18 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
 
     switch (this.state.selectedTab) {
-      case GalleryTab.OfficialSamples:
-        if (!this.viewOfficialSamplesTraced) {
-          this.resetViewGalleryTabTracedFlags();
-          this.viewOfficialSamplesTraced = true;
-          trace(Action.NotebooksGalleryViewOfficialSamples);
-        }
-        break;
       case GalleryTab.PublicGallery:
         if (!this.viewPublicGalleryTraced) {
           this.resetViewGalleryTabTracedFlags();
           this.viewPublicGalleryTraced = true;
           trace(Action.NotebooksGalleryViewPublicGallery);
+        }
+        break;
+      case GalleryTab.OfficialSamples:
+        if (!this.viewOfficialSamplesTraced) {
+          this.resetViewGalleryTabTracedFlags();
+          this.viewOfficialSamplesTraced = true;
+          trace(Action.NotebooksGalleryViewOfficialSamples);
         }
         break;
       case GalleryTab.Favorites:
@@ -406,11 +398,9 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
           <Stack.Item styles={{ root: { minWidth: 200 } }}>
             <Dropdown options={this.sortingOptions} selectedKey={this.state.sortBy} onChange={this.onDropdownChange} />
           </Stack.Item>
-          {this.props.isGalleryPublishEnabled && (
-            <Stack.Item>
-              <InfoComponent />
-            </Stack.Item>
-          )}
+          <Stack.Item>
+            <InfoComponent />
+          </Stack.Item>
         </Stack>
         <Stack.Item>{content}</Stack.Item>
       </Stack>
@@ -453,12 +443,12 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private loadTabContent(tab: GalleryTab, searchText: string, sortBy: SortBy, offline: boolean): void {
     switch (tab) {
-      case GalleryTab.OfficialSamples:
-        this.loadSampleNotebooks(searchText, sortBy, offline);
-        break;
-
       case GalleryTab.PublicGallery:
         this.loadPublicNotebooks(searchText, sortBy, offline);
+        break;
+
+      case GalleryTab.OfficialSamples:
+        this.loadSampleNotebooks(searchText, sortBy, offline);
         break;
 
       case GalleryTab.Favorites:
@@ -664,10 +654,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
-    let isFavorite: boolean;
-    if (this.props.container?.isGalleryPublishEnabled()) {
-      isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
-    }
+    const isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,
@@ -678,7 +665,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       onFavoriteClick: () => this.favoriteItem(data),
       onUnfavoriteClick: () => this.unfavoriteItem(data),
       onDownloadClick: () => this.downloadItem(data),
-      onDeleteClick: () => this.deleteItem(data),
+      onDeleteClick: (beforeDelete: () => void, afterDelete: () => void) =>
+        this.deleteItem(data, beforeDelete, afterDelete),
     };
 
     return (
@@ -722,11 +710,18 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   };
 
-  private deleteItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, (item) => {
-      this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
-      this.refreshSelectedTab(item);
-    });
+  private deleteItem = async (data: IGalleryItem, beforeDelete: () => void, afterDelete: () => void): Promise<void> => {
+    GalleryUtils.deleteItem(
+      this.props.container,
+      this.props.junoClient,
+      data,
+      (item) => {
+        this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
+        this.refreshSelectedTab(item);
+      },
+      beforeDelete,
+      afterDelete
+    );
   };
 
   private onPivotChange = (item: PivotItem): void => {

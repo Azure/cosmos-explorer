@@ -11,6 +11,7 @@ import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import { FileSystemUtil } from "../Explorer/Notebook/FileSystemUtil";
+import { GalleryTab } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 
 const onInit = async () => {
   initializeIcons();
@@ -21,7 +22,10 @@ const onInit = async () => {
   let onBackClick: () => void;
   if (galleryViewerProps.selectedTab !== undefined) {
     backNavigationText = GalleryUtils.getTabTitle(galleryViewerProps.selectedTab);
-    onBackClick = () => (window.location.href = `${configContext.hostedExplorerURL}gallery.html`);
+    onBackClick = () =>
+      (window.location.href = `${configContext.hostedExplorerURL}gallery.html?tab=${
+        GalleryTab[galleryViewerProps.selectedTab]
+      }`);
   }
   const hideInputs = notebookViewerProps.hideInputs;
 

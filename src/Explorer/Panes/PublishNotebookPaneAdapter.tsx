@@ -32,7 +32,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
   private isCodeOfConductAccepted: boolean;
-  private isLinkInjectionEnabled: boolean;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
@@ -101,8 +100,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     name: string,
     author: string,
     notebookContent: string | ImmutableNotebook,
-    parentDomElement: HTMLElement,
-    isLinkInjectionEnabled: boolean
+    parentDomElement: HTMLElement
   ): Promise<void> {
     try {
       const response = await this.junoClient.isCodeOfConductAccepted();
@@ -130,7 +128,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.parentDomElement = parentDomElement;
 
     this.isOpened = true;
-    this.isLinkInjectionEnabled = isLinkInjectionEnabled;
     this.triggerRender();
   }
 
@@ -155,10 +152,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     }
 
     try {
-      startKey = traceStart(Action.NotebooksGalleryPublish, {
-        databaseAccountName: this.container.databaseAccount()?.name,
-        defaultExperience: this.container.defaultExperience(),
-      });
+      startKey = traceStart(Action.NotebooksGalleryPublish, {});
 
       const response = await this.junoClient.publishNotebook(
         this.name,
@@ -166,8 +160,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         this.tags?.split(","),
         this.author,
         this.imageSrc,
-        this.content,
-        this.isLinkInjectionEnabled
+        this.content
       );
 
       const data = response.data;
@@ -187,8 +180,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         traceSuccess(
           Action.NotebooksGalleryPublish,
           {
-            databaseAccountName: this.container.databaseAccount()?.name,
-            defaultExperience: this.container.defaultExperience(),
             notebookId: data.id,
             isPublishPending,
           },
@@ -199,8 +190,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       traceFailure(
         Action.NotebooksGalleryPublish,
         {
-          databaseAccountName: this.container.databaseAccount()?.name,
-          defaultExperience: this.container.defaultExperience(),
           error: getErrorMessage(error),
           errorStack: getErrorStack(error),
         },
@@ -248,6 +237,5 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.notebookObject = undefined;
     this.parentDomElement = undefined;
     this.isCodeOfConductAccepted = undefined;
-    this.isLinkInjectionEnabled = undefined;
   };
 }

@@ -207,9 +207,6 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     this.isAutoPilotSelected.subscribe((value) => {
       TelemetryProcessor.trace(Action.ToggleAutoscaleSetting, ActionModifiers.Mark, {
         changedSelectedValueTo: value ? ActionModifiers.ToggleAutoscaleOn : ActionModifiers.ToggleAutoscaleOff,
-        databaseAccountName: userContext.databaseAccount?.name,
-        subscriptionId: userContext.subscriptionId,
-        apiKind: userContext.defaultExperience,
         dataExplorerArea: "Scale Tab V1",
       });
     });

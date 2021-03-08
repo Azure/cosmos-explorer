@@ -16,8 +16,6 @@ src/Common/DocumentClientUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
-src/Common/HeadersUtility.test.ts
-src/Common/HeadersUtility.ts
 src/Common/IteratorUtilities.test.ts
 src/Common/IteratorUtilities.ts
 src/Common/Logger.test.ts
@@ -162,7 +160,7 @@ src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValueValidator.ts
 src/Explorer/Panes/UploadFilePane.ts
 src/Explorer/Panes/UploadItemsPane.ts
-src/Explorer/SplashScreen/SplashScreenComponentAdapter.test.ts
+src/Explorer/SplashScreen/SplashScreen.test.ts
 src/Explorer/Tables/Constants.ts
 src/Explorer/Tables/DataTable/CacheBase.ts
 src/Explorer/Tables/DataTable/DataTableBindingManager.ts
@@ -200,7 +198,6 @@ src/Explorer/Tabs/QueryTab.test.ts
 src/Explorer/Tabs/QueryTab.ts
 src/Explorer/Tabs/QueryTablesTab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
-src/Explorer/Tabs/SparkMasterTab.ts
 src/Explorer/Tabs/StoredProcedureTab.ts
 src/Explorer/Tabs/TabComponents.ts
 src/Explorer/Tabs/TabsBase.ts
@@ -292,7 +289,6 @@ src/applyExplorerBindings.ts
 src/global.d.ts
 src/quickstart.ts
 src/setupTests.ts
-src/workers/upload/definitions.ts
 src/workers/upload/index.ts
 src/Explorer/Controls/AccessibleElement/AccessibleElement.tsx
 src/Explorer/Controls/Accordion/AccordionComponent.tsx
@@ -377,8 +373,7 @@ src/Explorer/Notebook/temp/inputs/editor.tsx
 src/Explorer/Notebook/temp/markdown-cell.tsx
 src/Explorer/Notebook/temp/source.tsx
 src/Explorer/Notebook/temp/syntax-highlighter/index.tsx
-src/Explorer/SplashScreen/SplashScreenComponent.tsx
-src/Explorer/SplashScreen/SplashScreenComponentApdapter.tsx
+src/Explorer/SplashScreen/SplashScreen.tsx
 src/Explorer/Tabs/GalleryTab.tsx
 src/Explorer/Tabs/NotebookViewerTab.tsx
 src/Explorer/Tabs/TerminalTab.tsx

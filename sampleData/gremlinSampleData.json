@@ -3,6 +3,7 @@
   "offerThroughput": 400,
   "databaseLevelThroughput": false,
   "collectionId": "Persons",
+  "createNewDatabase": true,
   "partitionKey": { "kind": "Hash", "paths": ["/name"] },
   "data": [
     "g.addV('person').property(id, '1').property('name', 'Eva').property('age', 44)",

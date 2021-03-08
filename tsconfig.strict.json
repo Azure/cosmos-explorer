@@ -41,7 +41,6 @@
     "./src/Definitions/plotly.js-cartesian-dist.d-min.ts",
     "./src/Definitions/svg.d.ts",
     "./src/Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.ts",
-    "./src/Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.ts",
     "./src/Explorer/Controls/GitHub/GitHubStyleConstants.ts",
     "./src/Explorer/Controls/InputTypeahead/InputTypeahead.ts",
     "./src/Explorer/Controls/SmartUi/InputUtils.ts",

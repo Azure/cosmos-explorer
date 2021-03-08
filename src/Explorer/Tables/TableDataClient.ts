@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import Q from "q";
 
-import { displayTokenRenewalPromptForStatus, getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AuthType } from "../../AuthType";
 import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { FeedOptions } from "@azure/cosmos";
@@ -261,7 +261,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     const clearMessage =
       shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
     try {
-      const authType = window.authType;
+      const authType = userContext.authType;
       const apiEndpoint: string =
         authType === AuthType.EncryptedToken
           ? Constants.CassandraBackend.guestQueryApi
@@ -281,7 +281,6 @@ export class CassandraAPIDataClient extends TableDataClient {
           paginationToken,
         },
         beforeSend: this.setAuthorizationHeader,
-        error: this.handleAjaxError,
         cache: false,
       });
       shouldNotify &&
@@ -425,7 +424,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching keys for table ${collection.id()}`
     );
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
@@ -444,7 +443,6 @@ export class CassandraAPIDataClient extends TableDataClient {
         tableId: collection.id(),
       },
       beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
       cache: false,
     })
       .then(
@@ -475,7 +473,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching schema for table ${collection.id()}`
     );
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
@@ -494,7 +492,6 @@ export class CassandraAPIDataClient extends TableDataClient {
         tableId: collection.id(),
       },
       beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
       cache: false,
     })
       .then(
@@ -519,7 +516,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private createOrDeleteQuery(cassandraEndpoint: string, resourceId: string, query: string): Q.Promise<any> {
     const deferred = Q.defer();
-    const authType = window.authType;
+    const authType = userContext.authType;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi
@@ -533,7 +530,6 @@ export class CassandraAPIDataClient extends TableDataClient {
         query: query,
       },
       beforeSend: this.setAuthorizationHeader,
-      error: this.handleAjaxError,
       cache: false,
     }).then(
       (data: any) => {
@@ -582,12 +578,4 @@ export class CassandraAPIDataClient extends TableDataClient {
   private getCassandraPartitionKeyProperty(collection: ViewModels.Collection): string {
     return collection.cassandraKeys.partitionKeys[0].property;
   }
-
-  private handleAjaxError = (xhrObj: XMLHttpRequest, textStatus: string, errorThrown: string): void => {
-    if (!xhrObj) {
-      return;
-    }
-
-    displayTokenRenewalPromptForStatus(xhrObj.status);
-  };
 }

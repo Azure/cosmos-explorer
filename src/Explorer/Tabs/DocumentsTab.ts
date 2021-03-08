@@ -425,8 +425,6 @@ export default class DocumentsTab extends TabsBase {
   public onSaveNewDocumentClick = (): Promise<any> => {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -453,8 +451,6 @@ export default class DocumentsTab extends TabsBase {
           TelemetryProcessor.traceSuccess(
             Action.CreateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -468,8 +464,6 @@ export default class DocumentsTab extends TabsBase {
           TelemetryProcessor.traceFailure(
             Action.CreateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
@@ -501,8 +495,6 @@ export default class DocumentsTab extends TabsBase {
 
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -522,8 +514,6 @@ export default class DocumentsTab extends TabsBase {
           TelemetryProcessor.traceSuccess(
             Action.UpdateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -537,8 +527,6 @@ export default class DocumentsTab extends TabsBase {
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: errorMessage,
@@ -620,10 +608,9 @@ export default class DocumentsTab extends TabsBase {
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
-              databaseAccountName: this.collection.container.databaseAccount().name,
               databaseName: this.collection.databaseId,
               collectionName: this.collection.id(),
-              defaultExperience: this.collection.container.defaultExperience(),
+
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
@@ -649,8 +636,6 @@ export default class DocumentsTab extends TabsBase {
   private _deleteDocument(selectedDocumentId: DocumentId): Promise<void> {
     this.isExecutionError(false);
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -665,8 +650,6 @@ export default class DocumentsTab extends TabsBase {
           TelemetryProcessor.traceSuccess(
             Action.DeleteDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -679,8 +662,6 @@ export default class DocumentsTab extends TabsBase {
           TelemetryProcessor.traceFailure(
             Action.DeleteDocument,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(error),
@@ -738,10 +719,9 @@ export default class DocumentsTab extends TabsBase {
             TelemetryProcessor.traceSuccess(
               Action.Tab,
               {
-                databaseAccountName: this.collection.container.databaseAccount().name,
                 databaseName: this.collection.databaseId,
                 collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
+
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
               },
@@ -758,10 +738,9 @@ export default class DocumentsTab extends TabsBase {
             TelemetryProcessor.traceFailure(
               Action.Tab,
               {
-                databaseAccountName: this.collection.container.databaseAccount().name,
                 databaseName: this.collection.databaseId,
                 collectionName: this.collection.id(),
-                defaultExperience: this.collection.container.defaultExperience(),
+
                 dataExplorerArea: Constants.Areas.Tab,
                 tabTitle: this.tabTitle(),
                 error: errorMessage,

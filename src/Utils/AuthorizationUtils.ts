@@ -6,7 +6,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 
 export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMetadata {
-  if (window.authType === AuthType.EncryptedToken) {
+  if (userContext.authType === AuthType.EncryptedToken) {
     return {
       header: Constants.HttpHeaders.guestAccessToken,
       token: userContext.accessToken,
@@ -39,18 +39,4 @@ export function decryptJWTToken(token: string) {
   );
 
   return JSON.parse(tokenPayload);
-}
-
-export function displayTokenRenewalPromptForStatus(httpStatusCode: number): void {
-  const explorer = window.dataExplorer;
-
-  if (
-    httpStatusCode == null ||
-    httpStatusCode != Constants.HttpStatusCodes.Unauthorized ||
-    configContext.platform !== Platform.Hosted
-  ) {
-    return;
-  }
-
-  explorer.displayGuestAccessTokenRenewalPrompt();
 }

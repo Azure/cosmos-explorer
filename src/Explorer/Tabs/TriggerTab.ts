@@ -42,8 +42,6 @@ export default class TriggerTab extends ScriptTabBase {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateTrigger, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       tabTitle: this.tabTitle(),
     });
 
@@ -65,8 +63,6 @@ export default class TriggerTab extends ScriptTabBase {
           TelemetryProcessor.traceSuccess(
             Action.UpdateTrigger,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -84,8 +80,6 @@ export default class TriggerTab extends ScriptTabBase {
           TelemetryProcessor.traceFailure(
             Action.UpdateTrigger,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),
@@ -125,8 +119,6 @@ export default class TriggerTab extends ScriptTabBase {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateTrigger, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -153,8 +145,6 @@ export default class TriggerTab extends ScriptTabBase {
           TelemetryProcessor.traceSuccess(
             Action.CreateTrigger,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
             },
@@ -168,8 +158,6 @@ export default class TriggerTab extends ScriptTabBase {
           TelemetryProcessor.traceFailure(
             Action.CreateTrigger,
             {
-              databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-              defaultExperience: this.collection && this.collection.container.defaultExperience(),
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: this.tabTitle(),
               error: getErrorMessage(createError),

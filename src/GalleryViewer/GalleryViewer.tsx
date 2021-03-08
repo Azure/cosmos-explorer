@@ -25,9 +25,8 @@ const onInit = async () => {
   const galleryViewerProps = GalleryUtils.getGalleryViewerProps(window.location.search);
 
   const props: GalleryAndNotebookViewerComponentProps = {
-    isGalleryPublishEnabled: configContext.ENABLE_GALLERY_PUBLISH,
     junoClient: new JunoClient(),
-    selectedTab: galleryViewerProps.selectedTab || GalleryTab.OfficialSamples,
+    selectedTab: galleryViewerProps.selectedTab || GalleryTab.PublicGallery,
     sortBy: galleryViewerProps.sortBy || SortBy.MostViewed,
     searchText: galleryViewerProps.searchText,
   };

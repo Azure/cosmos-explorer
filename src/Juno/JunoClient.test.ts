@@ -354,21 +354,13 @@ describe("Gallery", () => {
     const author = "author";
     const thumbnailUrl = "thumbnailUrl";
     const content = `{ "key": "value" }`;
-    const addLinkToNotebookViewer = false;
+    const addLinkToNotebookViewer = true;
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
       json: () => undefined as any,
     });
 
-    const response = await junoClient.publishNotebook(
-      name,
-      description,
-      tags,
-      author,
-      thumbnailUrl,
-      content,
-      addLinkToNotebookViewer
-    );
+    const response = await junoClient.publishNotebook(name, description, tags, author, thumbnailUrl, content);
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);

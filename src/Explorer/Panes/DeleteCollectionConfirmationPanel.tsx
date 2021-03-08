@@ -122,8 +122,6 @@ export class DeleteCollectionConfirmationPanel extends React.Component<
     this.setState({ formError: "", isExecuting: true });
 
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteCollection, {
-      databaseAccountName: userContext.databaseAccount?.name,
-      defaultExperience: userContext.defaultExperience,
       collectionId: collection.id(),
       dataExplorerArea: Areas.ContextualPane,
       paneTitle: "Delete Collection",
@@ -142,8 +140,6 @@ export class DeleteCollectionConfirmationPanel extends React.Component<
       TelemetryProcessor.traceSuccess(
         Action.DeleteCollection,
         {
-          databaseAccountName: userContext.databaseAccount?.name,
-          defaultExperience: userContext.defaultExperience,
           collectionId: collection.id(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: "Delete Collection",
@@ -171,8 +167,6 @@ export class DeleteCollectionConfirmationPanel extends React.Component<
       TelemetryProcessor.traceFailure(
         Action.DeleteCollection,
         {
-          databaseAccountName: userContext.databaseAccount?.name,
-          defaultExperience: userContext.defaultExperience,
           collectionId: collection.id(),
           dataExplorerArea: Areas.ContextualPane,
           paneTitle: "Delete Collection",
