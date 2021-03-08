@@ -180,7 +180,6 @@ jobs:
           node-version: 14.x
       - run: npm ci
       - run: npm start &
-      - run: node utils/cleanupDBs.js
       - run: npm run wait-for-server
       - name: ${{ matrix['test-file'] }}
         run: npx jest -c ./jest.config.e2e.js --detectOpenHandles ${{ matrix['test-file'] }}
