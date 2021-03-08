@@ -271,11 +271,8 @@ src/Terminal/NotebookAppContracts.d.ts
 src/Terminal/index.ts
 src/TokenProviders/PortalTokenProvider.ts
 src/TokenProviders/TokenProviderFactory.ts
-src/Utils/AutoPilotUtils.test.ts
-src/Utils/AutoPilotUtils.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
-src/Utils/JunoUtils.ts
 src/Utils/MessageValidation.ts
 src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
@@ -285,7 +282,6 @@ src/Utils/StringUtils.test.ts
 src/Utils/StringUtils.ts
 src/applyExplorerBindings.ts
 src/global.d.ts
-src/quickstart.ts
 src/setupTests.ts
 src/workers/upload/index.ts
 src/Explorer/Controls/AccessibleElement/AccessibleElement.tsx
