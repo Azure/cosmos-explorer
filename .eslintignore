@@ -284,7 +284,6 @@ src/Utils/MessageValidation.ts
 src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
 src/Utils/QueryUtils.test.ts
-src/Utils/QueryUtils.ts
 src/Utils/StringUtils.test.ts
 src/Utils/StringUtils.ts
 src/applyExplorerBindings.ts

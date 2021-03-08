@@ -6,7 +6,7 @@ import Explorer from "../Explorer/Explorer";
 import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { QueryUtils } from "../Utils/QueryUtils";
+import * as  QueryUtils  from "../Utils/QueryUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
 import { userContext } from "../UserContext";
 import { queryDocumentsPage } from "./dataAccess/queryDocumentsPage";

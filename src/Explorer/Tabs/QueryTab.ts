@@ -9,7 +9,7 @@ import * as HeadersUtility from "../../Common/HeadersUtility";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
-import { QueryUtils } from "../../Utils/QueryUtils";
+import * as  QueryUtils from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
