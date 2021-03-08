@@ -275,7 +275,6 @@ src/Utils/AuthorizationUtils.test.ts
 src/Utils/AuthorizationUtils.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
-src/Utils/JunoUtils.ts
 src/Utils/MessageValidation.ts
 src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
