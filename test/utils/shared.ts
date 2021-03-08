@@ -30,7 +30,7 @@ export function generateDatabaseName(baseName = "db", length = 1): string {
   return `${baseName}${crypto.randomBytes(length).toString("hex")}-${Date.now()}`;
 }
 
-export async function createDatabase(frame: Frame) {
+export async function createDatabase(frame: Frame): Promise<string> {
   const dbId = generateDatabaseName();
   const collectionId = generateUniqueName("col");
   const shardKey = "partitionKey";
@@ -70,7 +70,7 @@ export async function createDatabase(frame: Frame) {
   return dbId;
 }
 
-export async function onClickSaveButton(frame: Frame) {
+export async function onClickSaveButton(frame: Frame): Promise<void> {
   await frame.waitFor(`button[data-test="Save"]`), { visible: true };
   await frame.waitFor(LOADING_STATE_DELAY);
   await frame.click(`button[data-test="Save"]`);
