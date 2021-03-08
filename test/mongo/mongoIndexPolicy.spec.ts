@@ -4,7 +4,7 @@ import { createDatabase, onClickSaveButton } from "../utils/shared";
 import { generateUniqueName } from "../utils/shared";
 import { ApiKind } from "../../src/Contracts/DataModels";
 
-const LOADING_STATE_DELAY = 3000;
+const LOADING_STATE_DELAY = 5000;
 jest.setTimeout(300000);
 
 describe("MongoDB Index policy tests", () => {
