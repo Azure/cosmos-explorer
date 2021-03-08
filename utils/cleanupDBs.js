@@ -21,7 +21,7 @@ async function main() {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
         const timestamp = Number(database.name.split("-")[1]);
-        if (timestamp || timestamp < twentyMinutesAgo) {
+        if (timestamp && timestamp < twentyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         } else {
@@ -32,7 +32,7 @@ async function main() {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
       for (const database of sqlDatabases) {
         const timestamp = Number(database.name.split("-")[1]);
-        if (timestamp || timestamp < twentyMinutesAgo) {
+        if (timestamp && timestamp < twentyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
           console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         } else {
