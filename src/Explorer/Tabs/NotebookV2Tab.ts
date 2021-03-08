@@ -24,7 +24,7 @@ import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBa
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
-import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
+import * as NotebookConfigurationUtils  from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
