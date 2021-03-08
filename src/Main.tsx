@@ -69,6 +69,8 @@ import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConso
 import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
+import { ResourceTree } from "./Explorer/Tree/ResourceTree";
+import { useNotebooks } from "./hooks/useNotebooks";
 
 initializeIcons();
 
@@ -90,6 +92,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
+  const {lastRefreshTime, refreshList} = useNotebooks();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -99,9 +102,19 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
     openDialog,
     closeDialog,
+    onRefreshNotebookList: refreshList
   };
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
+
+//   const [databases, setDatabases] = useState();
+// useEffect(() => {
+// fetchDatabases().then((dbs) => {
+// setDatabases(dbs)
+// explorer.databases(dbs)
+// });
+// const databases = useDatabases(explorer)
+
 
   return (
     <div className="flexContainer">
@@ -167,7 +180,9 @@ const App: React.FunctionComponent = () => {
                     style={{ overflowY: "auto" }}
                     data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
                   />
-                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
+                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken()">
+                    <ResourceTree explorer={explorer} lastRefreshedTime={lastRefreshTime} />
+                  </div>
                 </div>
                 {/*  Collections Window - End */}
               </div>

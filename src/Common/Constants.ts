@@ -392,6 +392,9 @@ export class Notebook {
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
+
+  public static readonly MyNotebooksTitle = "My Notebooks";
+  public static readonly GitHubReposTitle = "GitHub repos";
 }
 
 export class SparkLibrary {

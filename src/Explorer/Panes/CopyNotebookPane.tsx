@@ -8,10 +8,9 @@ import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRight
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
 import { IDropdownOption } from "office-ui-fabric-react";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
-import { HttpStatusCodes } from "../../Common/Constants";
+import { HttpStatusCodes, Notebook } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItemType, NotebookContentItem } from "../Notebook/NotebookContentItem";
-import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { handleError, getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 interface Location {
@@ -151,7 +150,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     switch (location.type) {
       case "MyNotebooks":
         parent = {
-          name: ResourceTreeAdapter.MyNotebooksTitle,
+          name: Notebook.MyNotebooksTitle,
           path: this.container.getNotebookBasePath(),
           type: NotebookContentItemType.Directory,
         };
@@ -159,7 +158,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
 
       case "GitHub":
         parent = {
-          name: ResourceTreeAdapter.GitHubReposTitle,
+          name: Notebook.GitHubReposTitle,
           path: GitHubUtils.toContentUri(
             this.selectedLocation.owner,
             this.selectedLocation.repo,

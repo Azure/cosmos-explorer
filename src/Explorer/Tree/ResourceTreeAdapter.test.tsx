@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import React from "react";
-import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
+import { ResourceTreeAdapter } from "./ResourceTree";
 import { shallow } from "enzyme";
 import { TreeComponent, TreeNode, TreeComponentProps } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";

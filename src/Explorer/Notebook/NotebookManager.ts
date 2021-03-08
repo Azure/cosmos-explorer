@@ -18,7 +18,6 @@ import { contents } from "rx-jupyter";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { MemoryUsageInfo } from "../../Contracts/DataModels";
 import { NotebookContentClient } from "./NotebookContentClient";
-import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { getFullName } from "../../Utils/UserUtils";
 import { ImmutableNotebook } from "@nteract/commutable";
@@ -30,7 +29,7 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 export interface NotebookManagerOptions {
   container: Explorer;
   notebookBasePath: ko.Observable<string>;
-  resourceTree: ResourceTreeAdapter;
+  // resourceTree: ResourceTreeAdapter;
   refreshCommandBarButtons: () => void;
   refreshNotebookList: () => void;
 }

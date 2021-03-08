@@ -1,7 +1,6 @@
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as React from "react";
 import { IPinnedRepo } from "../../Juno/JunoClient";
-import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import {
   Stack,
   Label,
@@ -13,6 +12,7 @@ import {
   IRenderFunction,
   ISelectableOption,
 } from "office-ui-fabric-react";
+import { Notebook } from "../../Common/Constants";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";
@@ -70,8 +70,8 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
 
     options.push({
       key: "MyNotebooks-Item",
-      text: ResourceTreeAdapter.MyNotebooksTitle,
-      title: ResourceTreeAdapter.MyNotebooksTitle,
+      text: Notebook.MyNotebooksTitle,
+      title: Notebook.MyNotebooksTitle,
       data: {
         type: "MyNotebooks",
       } as Location,
@@ -86,7 +86,7 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
 
       options.push({
         key: "GitHub-Header",
-        text: ResourceTreeAdapter.GitHubReposTitle,
+        text: Notebook.GitHubReposTitle,
         itemType: SelectableOptionMenuItemType.Header,
       });
 

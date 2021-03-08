@@ -1,8 +1,7 @@
 import * as ko from "knockout";
 import * as React from "react";
-import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
-import { TreeComponent, TreeNode, TreeNodeMenuItem, TreeNodeComponent } from "../Controls/TreeComponent/TreeComponent";
+import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
@@ -18,11 +17,10 @@ import FileIcon from "../../../images/notebook/file-cosmos.svg";
 import PublishIcon from "../../../images/notebook/publish_content.svg";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
-import _ from "underscore";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
-import { Areas } from "../../Common/Constants";
+import { Areas, Notebook } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
 import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
@@ -35,30 +33,44 @@ import TabsBase from "../Tabs/TabsBase";
 import { userContext } from "../../UserContext";
 import * as DataModels from "../../Contracts/DataModels";
 
-export class ResourceTreeAdapter implements ReactAdapter {
-  public static readonly MyNotebooksTitle = "My Notebooks";
-  public static readonly GitHubReposTitle = "GitHub repos";
+export interface ResourceTreeProps {
+  // TODO remove eventually
+  explorer: Explorer;
 
+  lastRefreshedTime: number;
+
+}
+
+interface ResourceTreeState {
+  galleryContentRoot: NotebookContentItem;
+  myNotebooksContentRoot: NotebookContentItem;
+  gitHubNotebooksContentRoot: NotebookContentItem;
+}
+
+export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTreeState> {
   private static readonly DataTitle = "DATA";
   private static readonly NotebooksTitle = "NOTEBOOKS";
-  private static readonly PseudoDirPath = "PsuedoDir";
-
-  public parameters: ko.Observable<number>;
-
-  public galleryContentRoot: NotebookContentItem;
-  public myNotebooksContentRoot: NotebookContentItem;
-  public gitHubNotebooksContentRoot: NotebookContentItem;
+  private static readonly PseudoDirPath = "PseudoDir";
 
   private koSubsDatabaseIdMap: ArrayHashMap<ko.Subscription>; // database id -> ko subs
   private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
   private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
 
-  public constructor(private container: Explorer) {
-    this.parameters = ko.observable(Date.now());
+  private readonly container: Explorer;
 
-    this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
-    this.container.tabsManager.activeTab.subscribe((newValue: TabsBase) => this.triggerRender());
-    this.container.isNotebookEnabled.subscribe((newValue) => this.triggerRender());
+  constructor(props: ResourceTreeProps) {
+    super(props);
+    this.state = {
+      galleryContentRoot: undefined,
+      myNotebooksContentRoot: undefined,
+      gitHubNotebooksContentRoot: undefined
+    };
+
+    this.container = props.explorer;
+
+    this.container.selectedNode.subscribe(() => this.triggerRender());
+    this.container.tabsManager.activeTab.subscribe(() => this.triggerRender());
+    this.container.isNotebookEnabled.subscribe(() => this.triggerRender());
 
     this.koSubsDatabaseIdMap = new ArrayHashMap();
     this.koSubsCollectionIdMap = new ArrayHashMap();
@@ -77,7 +89,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private traceMyNotebookTreeInfo() {
-    const myNotebooksTree = this.myNotebooksContentRoot;
+    const myNotebooksTree = this.state.myNotebooksContentRoot;
     if (myNotebooksTree.children) {
       // Count 1st generation children (tree is lazy-loaded)
       const nodeCounts = { files: 0, notebooks: 0, directories: 0 };
@@ -100,7 +112,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
   }
 
-  public renderComponent(): JSX.Element {
+  render(): JSX.Element {
     const dataRootNode = this.buildDataTree();
     const notebooksRootNode = this.buildNotebooksTrees();
 
@@ -108,15 +120,15 @@ export class ResourceTreeAdapter implements ReactAdapter {
       return (
         <>
           <AccordionComponent>
-            <AccordionItemComponent title={ResourceTreeAdapter.DataTitle} isExpanded={!this.gitHubNotebooksContentRoot}>
+            <AccordionItemComponent title={ResourceTree.DataTitle} isExpanded={!this.state.gitHubNotebooksContentRoot}>
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
             </AccordionItemComponent>
-            <AccordionItemComponent title={ResourceTreeAdapter.NotebooksTitle}>
+            <AccordionItemComponent title={ResourceTree.NotebooksTitle}>
               <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {this.galleryContentRoot && this.buildGalleryCallout()}
+          {this.state.galleryContentRoot && this.buildGalleryCallout()}
         </>
       );
     } else {
@@ -124,52 +136,71 @@ export class ResourceTreeAdapter implements ReactAdapter {
     }
   }
 
-  public async initialize(): Promise<void[]> {
+  componentDidUpdate(prevProps: ResourceTreeProps): void {
+    if (this.props.lastRefreshedTime === undefined || prevProps.lastRefreshedTime === this.props.lastRefreshedTime) {
+      return;
+    }
+
+    this.initialize();
+  }
+
+  private async initialize(): Promise<void[]> {
     const refreshTasks: Promise<void>[] = [];
 
-    this.galleryContentRoot = {
-      name: "Gallery",
-      path: "Gallery",
-      type: NotebookContentItemType.File,
-    };
+    this.setState({
+      galleryContentRoot: {
+        name: "Gallery",
+        path: "Gallery",
+        type: NotebookContentItemType.File,
+      },
 
-    this.myNotebooksContentRoot = {
-      name: ResourceTreeAdapter.MyNotebooksTitle,
-      path: this.container.getNotebookBasePath(),
-      type: NotebookContentItemType.Directory,
-    };
+      myNotebooksContentRoot: {
+        name: Notebook.MyNotebooksTitle,
+        path: this.container.getNotebookBasePath(),
+        type: NotebookContentItemType.Directory,
+      }
+    });
 
+    console.log("====> componentDidUpdate");
     // Only if notebook server is available we can refresh
     if (this.container.notebookServerInfo().notebookServerEndpoint) {
       refreshTasks.push(
-        this.container.refreshContentItem(this.myNotebooksContentRoot).then(() => {
-          this.triggerRender();
+        this.container.refreshContentItem(this.state.myNotebooksContentRoot).then(root => {
+          this.setState({ myNotebooksContentRoot: root });
+          // this.triggerRender();
           this.traceMyNotebookTreeInfo();
         })
       );
     }
 
     if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      this.gitHubNotebooksContentRoot = {
-        name: ResourceTreeAdapter.GitHubReposTitle,
-        path: ResourceTreeAdapter.PseudoDirPath,
-        type: NotebookContentItemType.Directory,
-      };
+      this.setState({
+        gitHubNotebooksContentRoot: {
+          name: Notebook.GitHubReposTitle,
+          path: ResourceTree.PseudoDirPath,
+          type: NotebookContentItemType.Directory,
+        }
+      });
     } else {
-      this.gitHubNotebooksContentRoot = undefined;
+      this.setState({
+        gitHubNotebooksContentRoot: undefined
+      })
     }
 
     return Promise.all(refreshTasks);
   }
 
   public initializeGitHubRepos(pinnedRepos: IPinnedRepo[]): void {
-    if (this.gitHubNotebooksContentRoot) {
-      this.gitHubNotebooksContentRoot.children = [];
+    if (this.state.gitHubNotebooksContentRoot) {
+      const { gitHubNotebooksContentRoot } = this.state;
+      gitHubNotebooksContentRoot.children = [];
+      this.setState({ gitHubNotebooksContentRoot });
+
       pinnedRepos?.forEach((pinnedRepo) => {
         const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
         const repoTreeItem: NotebookContentItem = {
           name: repoFullName,
-          path: ResourceTreeAdapter.PseudoDirPath,
+          path: ResourceTree.PseudoDirPath,
           type: NotebookContentItemType.Directory,
           children: [],
         };
@@ -182,7 +213,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           });
         });
 
-        this.gitHubNotebooksContentRoot.children.push(repoTreeItem);
+        this.state.gitHubNotebooksContentRoot.children.push(repoTreeItem);
       });
 
       this.triggerRender();
@@ -296,7 +327,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       children.push(schemaNode);
     }
 
-    if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+    if (ResourceTree.showScriptNodes(this.container)) {
       children.push(this.buildStoredProcedureNode(collection));
       children.push(this.buildUserDefinedFunctionsNode(collection));
       children.push(this.buildTriggerNode(collection));
@@ -337,7 +368,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         );
       },
       onExpanded: () => {
-        if (ResourceTreeAdapter.showScriptNodes(this.container)) {
+        if (ResourceTree.showScriptNodes(this.container)) {
           collection.loadStoredProcedures();
           collection.loadUserDefinedFunctions();
           collection.loadTriggers();
@@ -416,7 +447,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   public buildSchemaNode(collection: ViewModels.Collection): TreeNode {
-    if (collection.analyticalStorageTtl() == undefined) {
+    if (collection.analyticalStorageTtl() === undefined) {
       return undefined;
     }
 
@@ -437,13 +468,15 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private getSchemaNodes(fields: DataModels.IDataField[]): TreeNode[] {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const schema: any = {};
 
     //unflatten
-    fields.forEach((field: DataModels.IDataField, fieldIndex: number) => {
+    fields.forEach((field: DataModels.IDataField) => {
       const path: string[] = field.path.split(".");
       const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
-      let current: any = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let current: any = {};
       path.forEach((name: string, pathIndex: number) => {
         if (pathIndex === 0) {
           if (schema[name] === undefined) {
@@ -467,9 +500,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const traverse = (obj: any): TreeNode[] => {
       const children: TreeNode[] = [];
 
+      // eslint-disable-next-line no-null/no-null
       if (obj !== null && !Array.isArray(obj) && typeof obj === "object") {
         Object.entries(obj).forEach(([key, value]) => {
           children.push({ label: key, children: traverse(value) });
@@ -485,21 +520,21 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private buildNotebooksTrees(): TreeNode {
-    let notebooksTree: TreeNode = {
+    const notebooksTree: TreeNode = {
       label: undefined,
       isExpanded: true,
       children: [],
     };
 
-    if (this.galleryContentRoot) {
+    if (this.state.galleryContentRoot) {
       notebooksTree.children.push(this.buildGalleryNotebooksTree());
     }
 
-    if (this.myNotebooksContentRoot) {
+    if (this.state.myNotebooksContentRoot) {
       notebooksTree.children.push(this.buildMyNotebooksTree());
     }
 
-    if (this.gitHubNotebooksContentRoot) {
+    if (this.state.gitHubNotebooksContentRoot) {
       // collapse all other notebook nodes
       notebooksTree.children.forEach((node) => (node.isExpanded = false));
       notebooksTree.children.push(this.buildGitHubNotebooksTree());
@@ -569,7 +604,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   private buildMyNotebooksTree(): TreeNode {
     const myNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
-      this.myNotebooksContentRoot,
+      this.state.myNotebooksContentRoot,
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
@@ -590,7 +625,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
   private buildGitHubNotebooksTree(): TreeNode {
     const gitHubNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
-      this.gitHubNotebooksContentRoot,
+      this.state.gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
@@ -674,6 +709,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
              NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
            */
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (activeTab as any).notebookPath() === item.path
         );
       },
@@ -829,11 +865,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
           /* TODO Redesign Tab interface so that resource tree doesn't need to know about NotebookV2Tab.
              NotebookV2Tab could be dynamically imported, but not worth it to just get this type right.
            */
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (activeTab as any).notebookPath() === item.path
         );
       },
       contextMenu:
-        createDirectoryContextMenu && item.path !== ResourceTreeAdapter.PseudoDirPath
+        createDirectoryContextMenu && item.path !== ResourceTree.PseudoDirPath
           ? this.createDirectoryContextMenu(item)
           : undefined,
       data: item,
@@ -841,8 +878,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
     };
   }
 
-  public triggerRender() {
-    window.requestAnimationFrame(() => this.parameters(Date.now()));
+  private triggerRender() {
+    this.setState({});
   }
 
   /**

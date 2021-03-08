@@ -56,7 +56,6 @@ import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
@@ -102,6 +101,8 @@ export interface ExplorerParams {
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
+
+  onRefreshNotebookList: () => void;
 }
 
 export default class Explorer {
@@ -160,7 +161,6 @@ export default class Explorer {
   public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
-  private resourceTree: ResourceTreeAdapter;
   private selfServeComponentAdapter: SelfServeComponentAdapter;
 
   // Resource Token
@@ -249,7 +249,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(params?: ExplorerParams) {
+  constructor(private params?: ExplorerParams) {
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
@@ -859,7 +859,6 @@ export default class Explorer {
         this.notebookManager.initialize({
           container: this,
           notebookBasePath: this.notebookBasePath,
-          resourceTree: this.resourceTree,
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
           refreshNotebookList: () => this.refreshNotebookList(),
         });
@@ -874,7 +873,6 @@ export default class Explorer {
 
     this.isSparkEnabled = ko.observable(false);
     this.isSparkEnabled.subscribe((isEnabled: boolean) => this.refreshCommandBarButtons());
-    this.resourceTree = new ResourceTreeAdapter(this);
     this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
     this.notebookServerInfo = ko.observable<DataModels.NotebookWorkspaceConnectionInfo>({
       notebookServerEndpoint: undefined,
@@ -2109,12 +2107,16 @@ export default class Explorer {
       return false;
     }
   };
+
   private refreshNotebookList = async (): Promise<void> => {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       return;
     }
 
-    await this.resourceTree.initialize();
+    console.log("=======> refreshNotebookList");
+    // await this.resourceTree.initialize();
+    this.params?.onRefreshNotebookList();
+
     this.notebookManager?.refreshPinnedRepos();
     if (this.notebookToImport) {
       this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
@@ -2250,7 +2252,7 @@ export default class Explorer {
     });
   }
 
-  public refreshContentItem(item: NotebookContentItem): Promise<void> {
+  public refreshContentItem(item: NotebookContentItem): Promise<NotebookContentItem> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
       handleError(error, "Explorer/refreshContentItem");

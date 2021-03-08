@@ -1,6 +1,6 @@
 import Explorer from "../Explorer";
 import * as ko from "knockout";
-import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
+import { ResourceTreeAdapter } from "./ResourceTree";
 import * as ViewModels from "../../Contracts/ViewModels";
 import TabsBase from "../Tabs/TabsBase";
 
