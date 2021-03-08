@@ -20,23 +20,23 @@ async function main() {
     if (account.kind === "MongoDB") {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
-        const timestamp = database.name.split("-")[1];
-        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+        const timestamp = Number(database.name.split("-")[1]);
+        if (timestamp || timestamp < twentyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         }
       }
     } else if (account.kind === "GlobalDocumentDB") {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
       for (const database of sqlDatabases) {
-        const timestamp = database.name.split("-")[1];
-        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+        const timestamp = Number(database.name.split("-")[1]);
+        if (timestamp || timestamp < twentyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
         }
       }
     }
