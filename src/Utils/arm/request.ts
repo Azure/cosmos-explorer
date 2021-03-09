@@ -91,7 +91,7 @@ export async function armRequestWithoutPolling<T>({
     throw error;
   }
 
-  const operationStatusUrl = response.headers && response.headers.get("location");
+  const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
   const responseBody = (await response.json()) as T;
   return { result: responseBody, operationStatusUrl: operationStatusUrl };
 }
