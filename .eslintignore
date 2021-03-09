@@ -101,7 +101,6 @@ src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.ts
 src/Explorer/Menus/ContextMenu.ts
 src/Explorer/MostRecentActivity/MostRecentActivity.ts
 src/Explorer/Notebook/FileSystemUtil.ts
-src/Explorer/Notebook/NTeractUtil.ts
 src/Explorer/Notebook/NotebookClientV2.ts
 src/Explorer/Notebook/NotebookComponent/NotebookContentProvider.ts
 src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts
@@ -316,10 +315,7 @@ src/Explorer/Graph/GraphExplorerComponent/QueryContainerComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNeighborsComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
-src/Explorer/Menus/CommandBar/CommandBarComponentAdapter.tsx
-src/Explorer/Menus/CommandBar/CommandBarUtil.test.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
-src/Explorer/Menus/CommandBar/MemoryTrackerComponent.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponentAdapter.tsx
