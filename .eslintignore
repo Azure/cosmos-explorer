@@ -14,8 +14,6 @@ src/Common/DataAccessUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
-src/Common/IteratorUtilities.test.ts
-src/Common/IteratorUtilities.ts
 src/Common/Logger.test.ts
 src/Common/MessageHandler.test.ts
 src/Common/MessageHandler.ts
