@@ -42,7 +42,7 @@ export class Splitter {
   }
 
   public initialize() {
-    if (document.getElementById(this.splitterId) !== null && document.getElementById(this.leftSideId) != null) {
+    if (document.getElementById(this.splitterId) !== undefined && document.getElementById(this.leftSideId) !== undefined) {
       this.splitter = <HTMLElement>document.getElementById(this.splitterId);
       this.leftSide = <HTMLElement>document.getElementById(this.leftSideId);
     }
@@ -73,7 +73,7 @@ export class Splitter {
     $(this.leftSide).resizable(splitterOptions);
   }
 
-  private onResizeStart: JQueryUI.ResizableEvent = (e: Event, ui: JQueryUI.ResizableUIParams) => {
+  private onResizeStart: JQueryUI.ResizableEvent = () => {
     if (this.direction === SplitterDirection.Vertical) {
       $(".ui-resizable-helper").height("100%");
     } else {
@@ -82,7 +82,7 @@ export class Splitter {
     $("iframe").css("pointer-events", "none");
   };
 
-  private onResizeStop: JQueryUI.ResizableEvent = (e: Event, ui: JQueryUI.ResizableUIParams) => {
+  private onResizeStop: JQueryUI.ResizableEvent = () => {
     $("iframe").css("pointer-events", "auto");
   };
 

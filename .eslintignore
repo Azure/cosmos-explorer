@@ -5,12 +5,8 @@ src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
 src/Bindings/ReactBindingHandler.ts
-src/Common/ArrayHashMap.ts
 src/Common/Constants.ts
 src/Common/CosmosClient.test.ts
-src/Common/CosmosClient.ts
-src/Common/DataAccessUtilityBase.test.ts
-src/Common/DataAccessUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
@@ -25,7 +21,6 @@ src/Common/NotificationsClientBase.ts
 src/Common/ObjectCache.test.ts
 src/Common/ObjectCache.ts
 src/Common/QueriesClient.ts
-src/Common/Splitter.ts
 src/Common/UrlUtility.ts
 src/Config.ts
 src/Contracts/ActionContracts.ts
