@@ -388,7 +388,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createSearchBarHeader(content: JSX.Element): JSX.Element {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
-        <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
+        <Stack horizontal wrap tokens={{ childrenGap: 20, padding: 10 }}>
           <Stack.Item grow>
             <SearchBox value={this.state.searchText} placeholder="Search" onChange={this.onSearchBoxChange} />
           </Stack.Item>
