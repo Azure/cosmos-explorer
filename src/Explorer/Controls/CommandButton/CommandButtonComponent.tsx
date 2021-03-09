@@ -1,4 +1,4 @@
-import { StringUtils } from "../../../Utils/StringUtils";
+import * as StringUtils from "../../../Utils/StringUtils";
 import { KeyCodes } from "../../../Common/Constants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
