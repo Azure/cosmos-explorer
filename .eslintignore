@@ -320,11 +320,6 @@ src/Explorer/Menus/CommandBar/CommandBarComponentAdapter.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.test.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Menus/CommandBar/MemoryTrackerComponent.tsx
-src/Explorer/Menus/NavBar/ControlBarComponent.tsx
-src/Explorer/Menus/NavBar/ControlBarComponentAdapter.tsx
-src/Explorer/Menus/NavBar/MeControlComponent.test.tsx
-src/Explorer/Menus/NavBar/MeControlComponent.tsx
-src/Explorer/Menus/NavBar/MeControlComponentAdapter.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponentAdapter.tsx
