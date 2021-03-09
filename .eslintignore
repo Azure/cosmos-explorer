@@ -314,11 +314,6 @@ src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNeighborsComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
-src/Explorer/Menus/NavBar/ControlBarComponent.tsx
-src/Explorer/Menus/NavBar/ControlBarComponentAdapter.tsx
-src/Explorer/Menus/NavBar/MeControlComponent.test.tsx
-src/Explorer/Menus/NavBar/MeControlComponent.tsx
-src/Explorer/Menus/NavBar/MeControlComponentAdapter.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponentAdapter.tsx
