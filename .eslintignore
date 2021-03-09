@@ -11,8 +11,6 @@ src/Common/CosmosClient.test.ts
 src/Common/CosmosClient.ts
 src/Common/DataAccessUtilityBase.test.ts
 src/Common/DataAccessUtilityBase.ts
-src/Common/DeleteFeedback.ts
-src/Common/DocumentClientUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
@@ -55,8 +53,6 @@ src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
 src/Explorer/ContextMenuButtonFactory.ts
 src/Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.ts
-src/Explorer/Controls/CommandButton/CommandButton.test.ts
-src/Explorer/Controls/CommandButton/CommandButton.ts
 src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
 src/Explorer/Controls/DynamicList/DynamicList.test.ts
 src/Explorer/Controls/DynamicList/DynamicListComponent.ts
@@ -92,8 +88,6 @@ src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.ts
 src/Explorer/Graph/GraphExplorerComponent/EdgeInfoCache.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.ts
-src/Explorer/Graph/GraphExplorerComponent/GraphUtil.test.ts
-src/Explorer/Graph/GraphExplorerComponent/GraphUtil.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.test.ts
