@@ -12,8 +12,8 @@ import {
 import { refreshDedicatedGatewayProvisioning } from "./SqlX.rp";
 
 const onEnableDedicatedGatewayChange = (
-  currentState: Map<string, SmartUiInput>,
-  newValue: InputType
+  newValue: InputType,
+  currentState: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   const sku = currentState.get("sku");
   const instances = currentState.get("instances");

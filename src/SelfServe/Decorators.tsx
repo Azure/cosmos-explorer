@@ -83,8 +83,8 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
 
 export const OnChange = (
   onChange: (
-    currentState: Map<string, SmartUiInput>,
     newValue: InputType,
+    currentState: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
   ) => Map<string, SmartUiInput>
 ): PropertyDecorator => {
