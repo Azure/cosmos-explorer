@@ -12,7 +12,9 @@ describe("NotificationConsoleComponent", () => {
       consoleData: undefined,
       isConsoleExpanded: false,
       inProgressConsoleDataIdToBeDeleted: "",
-      setIsConsoleExpanded: (isExpanded: boolean): void => {},
+      setIsConsoleExpanded: (): void => {
+        /**/
+      },
     };
   };
 
@@ -98,7 +100,7 @@ describe("NotificationConsoleComponent", () => {
     wrapper.setProps(props);
     expect(wrapper.find(".notificationConsoleData .date").text()).toEqual(date);
     expect(wrapper.find(".notificationConsoleData .message").text()).toEqual(message);
-    expect(wrapper.exists(`.notificationConsoleData .${iconClassName}`));
+    expect(wrapper.exists(`.notificationConsoleData .${iconClassName}`)).toBe(true);
   };
 
   it("renders progress notifications", () => {
@@ -139,7 +141,7 @@ describe("NotificationConsoleComponent", () => {
     wrapper.setProps(props);
 
     wrapper.find(".clearNotificationsButton").simulate("click");
-    expect(!wrapper.exists(".notificationConsoleData"));
+    expect(wrapper.exists(".notificationConsoleData")).toBe(true);
   });
 
   it("collapses and hide content", () => {
@@ -155,7 +157,7 @@ describe("NotificationConsoleComponent", () => {
     wrapper.setProps(props);
 
     wrapper.find(".notificationConsoleHeader").simulate("click");
-    expect(!wrapper.exists(".notificationConsoleContent"));
+    expect(wrapper.exists(".notificationConsoleContent")).toBe(false);
   });
 
   it("display latest data in header", () => {

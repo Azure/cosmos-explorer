@@ -76,7 +76,7 @@ export class NotificationConsoleComponent extends React.Component<
   public componentDidUpdate(
     prevProps: NotificationConsoleComponentProps,
     prevState: NotificationConsoleComponentState
-  ) {
+  ): void {
     const currentHeaderStatus = NotificationConsoleComponent.extractHeaderStatus(this.props.consoleData);
 
     if (
@@ -97,7 +97,7 @@ export class NotificationConsoleComponent extends React.Component<
     }
   }
 
-  public setElememntRef = (element: HTMLElement) => {
+  public setElememntRef = (element: HTMLElement): void => {
     this.consoleHeaderElement = element;
   };
 
@@ -116,7 +116,7 @@ export class NotificationConsoleComponent extends React.Component<
           className="notificationConsoleHeader"
           id="notificationConsoleHeader"
           ref={this.setElememntRef}
-          onClick={(event: React.MouseEvent<HTMLDivElement>) => this.expandCollapseConsole()}
+          onClick={() => this.expandCollapseConsole()}
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
           tabIndex={0}
         >

@@ -325,9 +325,6 @@ src/Explorer/Menus/NavBar/ControlBarComponentAdapter.tsx
 src/Explorer/Menus/NavBar/MeControlComponent.test.tsx
 src/Explorer/Menus/NavBar/MeControlComponent.tsx
 src/Explorer/Menus/NavBar/MeControlComponentAdapter.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponent.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
