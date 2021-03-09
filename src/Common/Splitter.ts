@@ -42,7 +42,10 @@ export class Splitter {
   }
 
   public initialize() {
-    if (document.getElementById(this.splitterId) !== undefined && document.getElementById(this.leftSideId) !== undefined) {
+    if (
+      document.getElementById(this.splitterId) !== undefined &&
+      document.getElementById(this.leftSideId) !== undefined
+    ) {
       this.splitter = <HTMLElement>document.getElementById(this.splitterId);
       this.leftSide = <HTMLElement>document.getElementById(this.leftSideId);
     }
