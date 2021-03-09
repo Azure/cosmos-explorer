@@ -73,7 +73,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public shouldShowStatusBar: ko.Computed<boolean>;
   public throughputTitle: ko.PureComputed<string>;
   public throughputAriaLabel: ko.PureComputed<string>;
-  public userCanChangeProvisioningTypes: ko.Observable<boolean>;
   public autoPilotUsageCost: ko.PureComputed<string>;
   public warningMessage: ko.Computed<string>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
@@ -106,7 +105,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this._wasAutopilotOriginallySet = ko.observable(false);
     this.isAutoPilotSelected = editable.observable(false);
     this.autoPilotThroughput = editable.observable<number>();
-    this.userCanChangeProvisioningTypes = ko.observable(true);
 
     const autoscaleMaxThroughput = this.database?.offer()?.autoscaleMaxThroughput;
     if (autoscaleMaxThroughput) {
@@ -118,9 +116,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     }
 
     this._hasProvisioningTypeChanged = ko.pureComputed<boolean>(() => {
-      if (!this.userCanChangeProvisioningTypes()) {
-        return false;
-      }
       if (this._wasAutopilotOriginallySet() !== this.isAutoPilotSelected()) {
         return true;
       }
@@ -448,7 +443,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.isAutoPilotSelected.setBaseline(AutoPilotUtils.isValidAutoPilotThroughput(offer.autoscaleMaxThroughput));
     this.autoPilotThroughput.setBaseline(offer.autoscaleMaxThroughput);
     this.throughput.setBaseline(offer.manualThroughput);
-    this.userCanChangeProvisioningTypes(true);
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
