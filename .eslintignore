@@ -29,13 +29,8 @@ src/Common/Splitter.ts
 src/Common/UrlUtility.ts
 src/Config.ts
 src/Contracts/ActionContracts.ts
-src/Contracts/DataModels.ts
-src/Contracts/Diagnostics.ts
-src/Contracts/ExplorerContracts.ts
 src/Contracts/Versions.ts
 src/Contracts/ViewModels.ts
-src/Controls/Heatmap/Heatmap.test.ts
-src/Controls/Heatmap/Heatmap.ts
 src/Controls/Heatmap/HeatmapDatatypes.ts
 src/Definitions/datatables.d.ts
 src/Definitions/gif.d.ts
