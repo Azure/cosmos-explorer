@@ -749,12 +749,16 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return undefined;
     }
 
-    if (this.isAutoPilotSelected()) {
-      return undefined;
-    }
-
-    if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected()) {
-      return undefined;
+    // return undefined if autopilot is selected for the new database/collection
+    if (this.databaseCreateNew()) {
+      // database is shared and autopilot is sleected for the database
+      if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected()) {
+        return undefined;
+      }
+      // database is not shared and autopilot is selected for the collection
+      if (!this.databaseCreateNewShared() && this.isAutoPilotSelected()) {
+        return undefined;
+      }
     }
 
     return this._getThroughput();
