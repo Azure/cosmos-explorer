@@ -11,8 +11,6 @@ src/Common/CosmosClient.test.ts
 src/Common/CosmosClient.ts
 src/Common/DataAccessUtilityBase.test.ts
 src/Common/DataAccessUtilityBase.ts
-src/Common/DeleteFeedback.ts
-src/Common/DocumentClientUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
@@ -28,7 +26,6 @@ src/Common/ObjectCache.test.ts
 src/Common/ObjectCache.ts
 src/Common/QueriesClient.ts
 src/Common/Splitter.ts
-src/Common/ThemeUtility.ts
 src/Common/UrlUtility.ts
 src/Config.ts
 src/Contracts/ActionContracts.ts
@@ -56,8 +53,6 @@ src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
 src/Explorer/ContextMenuButtonFactory.ts
 src/Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.ts
-src/Explorer/Controls/CommandButton/CommandButton.test.ts
-src/Explorer/Controls/CommandButton/CommandButton.ts
 src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
 src/Explorer/Controls/DynamicList/DynamicList.test.ts
 src/Explorer/Controls/DynamicList/DynamicListComponent.ts
@@ -93,8 +88,6 @@ src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.ts
 src/Explorer/Graph/GraphExplorerComponent/EdgeInfoCache.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GraphData.ts
-src/Explorer/Graph/GraphExplorerComponent/GraphUtil.test.ts
-src/Explorer/Graph/GraphExplorerComponent/GraphUtil.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.test.ts
@@ -167,7 +160,6 @@ src/Explorer/Tables/DataTable/DataTableBuilder.ts
 src/Explorer/Tables/DataTable/DataTableContextMenu.ts
 src/Explorer/Tables/DataTable/DataTableOperationManager.ts
 src/Explorer/Tables/DataTable/DataTableOperations.ts
-src/Explorer/Tables/DataTable/DataTableUtilities.ts
 src/Explorer/Tables/DataTable/DataTableViewModel.ts
 src/Explorer/Tables/DataTable/TableCommands.ts
 src/Explorer/Tables/DataTable/TableEntityCache.ts
@@ -176,8 +168,6 @@ src/Explorer/Tables/Entities.ts
 src/Explorer/Tables/QueryBuilder/ClauseGroup.ts
 src/Explorer/Tables/QueryBuilder/ClauseGroupViewModel.ts
 src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
-src/Explorer/Tables/QueryBuilder/DateTimeUtilities.test.ts
-src/Explorer/Tables/QueryBuilder/DateTimeUtilities.ts
 src/Explorer/Tables/QueryBuilder/QueryBuilderViewModel.ts
 src/Explorer/Tables/QueryBuilder/QueryClauseViewModel.ts
 src/Explorer/Tables/QueryBuilder/QueryViewModel.ts
@@ -270,23 +260,14 @@ src/Terminal/NotebookAppContracts.d.ts
 src/Terminal/index.ts
 src/TokenProviders/PortalTokenProvider.ts
 src/TokenProviders/TokenProviderFactory.ts
-src/Utils/AuthorizationUtils.test.ts
-src/Utils/AuthorizationUtils.ts
-src/Utils/AutoPilotUtils.test.ts
-src/Utils/AutoPilotUtils.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
-src/Utils/JunoUtils.ts
-src/Utils/MessageValidation.ts
 src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
 src/Utils/QueryUtils.test.ts
 src/Utils/QueryUtils.ts
-src/Utils/StringUtils.test.ts
-src/Utils/StringUtils.ts
 src/applyExplorerBindings.ts
 src/global.d.ts
-src/quickstart.ts
 src/setupTests.ts
 src/workers/upload/index.ts
 src/Explorer/Controls/AccessibleElement/AccessibleElement.tsx
