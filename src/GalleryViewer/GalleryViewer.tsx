@@ -26,7 +26,7 @@ const onInit = async () => {
 
   const props: GalleryAndNotebookViewerComponentProps = {
     junoClient: new JunoClient(),
-    selectedTab: galleryViewerProps.selectedTab || GalleryTab.OfficialSamples,
+    selectedTab: galleryViewerProps.selectedTab || GalleryTab.PublicGallery,
     sortBy: galleryViewerProps.sortBy || SortBy.MostViewed,
     searchText: galleryViewerProps.searchText,
   };

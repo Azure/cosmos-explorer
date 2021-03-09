@@ -4,7 +4,7 @@
 
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
-import { StringUtils } from "../../../Utils/StringUtils";
+import * as StringUtils from "../../../Utils/StringUtils";
 import { userContext } from "../../../UserContext";
 import { TerminalQueryParams } from "../../../Common/Constants";
 import { handleError } from "../../../Common/ErrorHandlingUtils";

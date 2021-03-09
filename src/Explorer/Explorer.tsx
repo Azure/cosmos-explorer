@@ -2327,7 +2327,7 @@ export default class Explorer {
       account: userContext.databaseAccount,
       container: this,
       junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTab.OfficialSamples,
+      selectedTab: selectedTab || GalleryTab.PublicGallery,
       notebookUrl,
       galleryItem,
       isFavorite,
