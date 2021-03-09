@@ -161,7 +161,6 @@ src/Explorer/Tables/DataTable/DataTableBuilder.ts
 src/Explorer/Tables/DataTable/DataTableContextMenu.ts
 src/Explorer/Tables/DataTable/DataTableOperationManager.ts
 src/Explorer/Tables/DataTable/DataTableOperations.ts
-src/Explorer/Tables/DataTable/DataTableUtilities.ts
 src/Explorer/Tables/DataTable/DataTableViewModel.ts
 src/Explorer/Tables/DataTable/TableCommands.ts
 src/Explorer/Tables/DataTable/TableEntityCache.ts
