@@ -31,11 +31,11 @@ function updateUserContext(newContext: UserContext): void {
   Object.assign(userContext, { apiType: apiType(userContext.databaseAccount) });
 }
 
-function apiType(account: DatabaseAccount): ApiType {
+function apiType(account: DatabaseAccount | undefined): ApiType {
   if (!account) {
     return "SQL";
   }
-  const capabilities = account.properties.capabilities;
+  const capabilities = account.properties?.capabilities;
   if (capabilities) {
     if (capabilities.find((c) => c.name === "EnableCassandra")) {
       return "Cassandra";
