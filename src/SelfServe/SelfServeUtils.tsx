@@ -1,4 +1,3 @@
-import { MessageBarType } from "office-ui-fabric-react";
 import "reflect-metadata";
 import {
   Node,
@@ -15,8 +14,9 @@ import {
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
-  SelfServeNotificationType,
+  RefreshParams,
 } from "./SelfServeTypes";
+import { userContext } from "../UserContext";
 
 export enum SelfServeType {
   // No self serve type passed, launch explorer
@@ -26,6 +26,14 @@ export enum SelfServeType {
   // Add your self serve types here
   example = "example",
   sqlx = "sqlx",
+}
+
+export enum BladeType {
+  SqlKeys = "keys",
+  MongoKeys = "mongoDbKeys",
+  CassandraKeys = "cassandraDbKeys",
+  GremlinKeys = "keys",
+  TableKeys = "tableKeys",
 }
 
 export interface DecoratorProperties {
@@ -44,9 +52,13 @@ export interface DecoratorProperties {
   uiType?: string;
   errorMessage?: string;
   description?: (() => Promise<Description>) | Description;
-  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
-  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<void>;
-  initialize?: () => Promise<Map<string, SmartUiInput>>;
+  isDynamicDescription?: boolean;
+  refreshParams?: RefreshParams;
+  onChange?: (
+    newValue: InputType,
+    currentState: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>;
 }
 
 const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
@@ -83,7 +95,7 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
   descriptorValue: K
 ): void => {
   if (!(context instanceof Map)) {
-    throw new Error(`@SmartUi should be the first decorator for the class '${className}'.`);
+    throw new Error(`@IsDisplayable should be the first decorator for the class '${className}'.`);
   }
 
   const propertyObject = context.get(propertyName) ?? { id: propertyName };
@@ -108,16 +120,17 @@ export const mapToSmartUiDescriptor = (
   className: string,
   context: Map<string, DecoratorProperties>
 ): SelfServeDescriptor => {
+  const inputNames: string[] = [];
   const root = context.get("root");
   context.delete("root");
-  const inputNames: string[] = [];
 
   const smartUiDescriptor: SelfServeDescriptor = {
     root: {
       id: className,
-      info: root?.info,
+      info: undefined,
       children: [],
     },
+    refreshParams: root?.refreshParams,
   };
 
   while (context.size > 0) {
@@ -155,7 +168,10 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
       }
       return value as NumberInput;
     case "string":
-      if (value.description) {
+      if (value.description || value.isDynamicDescription) {
+        if (value.description && value.isDynamicDescription) {
+          value.errorMessage = `dynamic descriptions should not have defaults set here.`;
+        }
         return value as DescriptionDisplay;
       }
       if (!value.labelTKey) {
@@ -175,13 +191,9 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
   }
 };
 
-export const getMessageBarType = (type: SelfServeNotificationType): MessageBarType => {
-  switch (type) {
-    case SelfServeNotificationType.info:
-      return MessageBarType.info;
-    case SelfServeNotificationType.warning:
-      return MessageBarType.warning;
-    case SelfServeNotificationType.error:
-      return MessageBarType.error;
-  }
+export const generateBladeLink = (blade: BladeType): string => {
+  const subscriptionId = userContext.subscriptionId;
+  const resourceGroupName = userContext.resourceGroup;
+  const databaseAccountName = userContext.databaseAccount.name;
+  return `www.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };
