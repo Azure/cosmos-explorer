@@ -108,7 +108,7 @@ export interface CollectionBase extends TreeNode {
   isCollectionExpanded: ko.Observable<boolean>;
 
   onDocumentDBDocumentsClick(): void;
-  onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void;
+  onNewQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
   expandCollection(): void;
   collapseCollection(): void;
   getDatabase(): Database;
@@ -140,11 +140,11 @@ export interface Collection extends CollectionBase {
   onSettingsClick: () => Promise<void>;
 
   onNewGraphClick(): void;
-  onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string): void;
+  onNewMongoQueryClick(source: any, event?: MouseEvent, queryText?: string): void;
   onNewMongoShellClick(): void;
-  onNewStoredProcedureClick(source: Collection, event: MouseEvent): void;
-  onNewUserDefinedFunctionClick(source: Collection, event: MouseEvent): void;
-  onNewTriggerClick(source: Collection, event: MouseEvent): void;
+  onNewStoredProcedureClick(source: Collection, event?: MouseEvent): void;
+  onNewUserDefinedFunctionClick(source: Collection, event?: MouseEvent): void;
+  onNewTriggerClick(source: Collection, event?: MouseEvent): void;
   storedProcedures: ko.Computed<StoredProcedure[]>;
   userDefinedFunctions: ko.Computed<UserDefinedFunction[]>;
   triggers: ko.Computed<Trigger[]>;
@@ -355,7 +355,7 @@ export enum CollectionTabKind {
   Notebook = 13 /* Deprecated */,
   Terminal = 14,
   NotebookV2 = 15,
-  SparkMasterTab = 16,
+  SparkMasterTab = 16 /* Deprecated */,
   Gallery = 17,
   NotebookViewer = 18,
   Schema = 19,
@@ -371,20 +371,20 @@ export enum TerminalKind {
 
 export interface DataExplorerInputsFrame {
   databaseAccount: any;
-  subscriptionId: string;
-  resourceGroup: string;
-  masterKey: string;
-  hasWriteAccess: boolean;
-  authorizationToken: string;
-  features: any;
-  csmEndpoint: string;
-  dnsSuffix: string;
-  serverId: string;
-  extensionEndpoint: string;
-  subscriptionType: SubscriptionType;
-  quotaId: string;
-  addCollectionDefaultFlight: string;
-  isTryCosmosDBSubscription: boolean;
+  subscriptionId?: string;
+  resourceGroup?: string;
+  masterKey?: string;
+  hasWriteAccess?: boolean;
+  authorizationToken?: string;
+  features: { [key: string]: string };
+  csmEndpoint?: string;
+  dnsSuffix?: string;
+  serverId?: string;
+  extensionEndpoint?: string;
+  subscriptionType?: SubscriptionType;
+  quotaId?: string;
+  addCollectionDefaultFlight?: string;
+  isTryCosmosDBSubscription?: boolean;
   loadDatabaseAccountTimestamp?: number;
   sharedThroughputMinimum?: number;
   sharedThroughputMaximum?: number;

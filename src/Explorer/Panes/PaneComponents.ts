@@ -11,7 +11,6 @@ import TableQuerySelectPaneTemplate from "./Tables/TableQuerySelectPane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import SettingsPaneTemplate from "./SettingsPane.html";
 import ExecuteSprocParamsPaneTemplate from "./ExecuteSprocParamsPane.html";
-import RenewAdHocAccessPaneTemplate from "./RenewAdHocAccessPane.html";
 import UploadItemsPaneTemplate from "./UploadItemsPane.html";
 import LoadQueryPaneTemplate from "./LoadQueryPane.html";
 import SaveQueryPaneTemplate from "./SaveQueryPane.html";
@@ -140,15 +139,6 @@ export class ExecuteSprocParamsComponent {
     return {
       viewModel: PaneComponent,
       template: ExecuteSprocParamsPaneTemplate,
-    };
-  }
-}
-
-export class RenewAdHocAccessPane {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: RenewAdHocAccessPaneTemplate,
     };
   }
 }

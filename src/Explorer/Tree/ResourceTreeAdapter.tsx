@@ -264,7 +264,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
+        MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",
@@ -611,8 +611,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "Disconnect from GitHub",
         onClick: () => {
           TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
-            databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
-            defaultExperience: this.container.defaultExperience && this.container.defaultExperience(),
             dataExplorerArea: Areas.Notebook,
           });
           this.container.notebookManager?.gitHubOAuthService.logout();
@@ -627,7 +625,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private pushItemToMostRecent(item: NotebookContentItem) {
-    this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
+    MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
       type: MostRecentActivity.Type.OpenNotebook,
       title: item.name,
       description: "Notebook",
@@ -717,7 +715,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       },
     ];
 
-    if (this.container.isGalleryPublishEnabled() && item.type === NotebookContentItemType.Notebook) {
+    if (item.type === NotebookContentItemType.Notebook) {
       items.push({
         label: "Publish to gallery",
         iconSrc: PublishIcon,

@@ -19,14 +19,6 @@ describe("SelfServeComponent", () => {
   const onSaveMock = jest.fn(async () => {
     return {
       operationStatusUrl: undefined,
-      requestInitializedPortalNotification: {
-        titleTKey: "SampleMessageTitleKey",
-        messageTKey: "SampleMessageTextKey",
-      },
-      requestCompletedPortalNotification: {
-        titleTKey: "SampleMessageTitleKey",
-        messageTKey: "SampleMessageTextKey",
-      },
     } as OnSaveResult;
   });
   const refreshResult = {

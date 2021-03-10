@@ -8,11 +8,13 @@ import {
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
 import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
-import { TextFieldProps } from "../Explorer/Controls/DialogReactComponent/DialogComponent";
+import { TextFieldProps } from "../Explorer/Controls/Dialog";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import { HttpStatusCodes } from "../Common/Constants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import { Notebook } from "@nteract/commutable";
+import { NotebookV4 } from "@nteract/commutable/lib/v4";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
@@ -243,7 +245,10 @@ export function downloadItem(
           throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
         }
 
-        await container.importAndOpenContent(data.name, response.data);
+        const notebook = JSON.parse(response.data) as Notebook;
+        removeNotebookViewerLink(notebook, data.newCellId);
+
+        await container.importAndOpenContent(data.name, JSON.stringify(notebook));
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Info,
           `Successfully downloaded ${name} to My Notebooks`
@@ -280,6 +285,17 @@ export function downloadItem(
     undefined
   );
 }
+
+export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {
+  if (!newCellId) {
+    return;
+  }
+  const notebookV4 = notebook as NotebookV4;
+  if (notebookV4?.cells[0]?.source[0]?.search(newCellId)) {
+    notebookV4.cells.splice(0, 1);
+    notebook = notebookV4;
+  }
+};
 
 export async function favoriteItem(
   container: Explorer,
@@ -373,7 +389,9 @@ export function deleteItem(
   container: Explorer,
   junoClient: JunoClient,
   data: IGalleryItem,
-  onComplete: (item: IGalleryItem) => void
+  onComplete: (item: IGalleryItem) => void,
+  beforeDelete?: () => void,
+  afterDelete?: () => void
 ): void {
   if (container) {
     trace(Action.NotebooksGalleryClickDelete, ActionModifiers.Mark, { notebookId: data.id });
@@ -383,6 +401,9 @@ export function deleteItem(
       `Would you like to remove ${data.name} from the gallery?`,
       "Remove",
       async () => {
+        if (beforeDelete) {
+          beforeDelete();
+        }
         const name = data.name;
         const notificationId = NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.InProgress,
@@ -409,6 +430,10 @@ export function deleteItem(
           );
 
           handleError(error, "GalleryUtils/deleteItem", `Failed to remove ${name} from gallery`);
+        } finally {
+          if (afterDelete) {
+            afterDelete();
+          }
         }
 
         NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
@@ -449,10 +474,10 @@ export function getNotebookViewerProps(search: string): NotebookViewerProps {
 
 export function getTabTitle(tab: GalleryTab): string {
   switch (tab) {
-    case GalleryTab.OfficialSamples:
-      return GalleryViewerComponent.OfficialSamplesTitle;
     case GalleryTab.PublicGallery:
       return GalleryViewerComponent.PublicGalleryTitle;
+    case GalleryTab.OfficialSamples:
+      return GalleryViewerComponent.OfficialSamplesTitle;
     case GalleryTab.Favorites:
       return GalleryViewerComponent.FavoritesTitle;
     case GalleryTab.Published:

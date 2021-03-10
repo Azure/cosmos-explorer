@@ -1,7 +1,6 @@
 import * as ko from "knockout";
 import * as PaneComponents from "./Panes/PaneComponents";
 import * as TabComponents from "./Tabs/TabComponents";
-import { CollapsiblePanelComponent } from "./Controls/CollapsiblePanel/CollapsiblePanelComponent";
 import { DiffEditorComponent } from "./Controls/DiffEditor/DiffEditorComponent";
 import { DynamicListComponent } from "./Controls/DynamicList/DynamicListComponent";
 import { EditorComponent } from "./Controls/Editor/EditorComponent";
@@ -17,7 +16,6 @@ ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);
 ko.components.register("error-display", new ErrorDisplayComponent());
 ko.components.register("graph-style", GraphStyleComponent);
-ko.components.register("collapsible-panel", new CollapsiblePanelComponent());
 ko.components.register("editor", new EditorComponent());
 ko.components.register("json-editor", new JsonEditorComponent());
 ko.components.register("diff-editor", new DiffEditorComponent());
@@ -39,7 +37,6 @@ ko.components.register("mongo-shell-tab", new TabComponents.MongoShellTab());
 ko.components.register("conflicts-tab", new TabComponents.ConflictsTab());
 ko.components.register("notebookv2-tab", new TabComponents.NotebookV2Tab());
 ko.components.register("terminal-tab", new TabComponents.TerminalTab());
-ko.components.register("spark-master-tab", new TabComponents.SparkMasterTab());
 ko.components.register("gallery-tab", new TabComponents.GalleryTab());
 ko.components.register("notebook-viewer-tab", new TabComponents.NotebookViewerTab());
 
@@ -67,7 +64,6 @@ ko.components.register("table-query-select-pane", new PaneComponents.TableQueryS
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
 ko.components.register("settings-pane", new PaneComponents.SettingsPaneComponent());
 ko.components.register("execute-sproc-params-pane", new PaneComponents.ExecuteSprocParamsComponent());
-ko.components.register("renew-adhoc-access-pane", new PaneComponents.RenewAdHocAccessPane());
 ko.components.register("upload-items-pane", new PaneComponents.UploadItemsPaneComponent());
 ko.components.register("load-query-pane", new PaneComponents.LoadQueryPaneComponent());
 ko.components.register("save-query-pane", new PaneComponents.SaveQueryPaneComponent());

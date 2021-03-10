@@ -11,11 +11,10 @@ import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
-import { DialogComponent, DialogProps, TextFieldProps } from "../DialogReactComponent/DialogComponent";
+import { Dialog, DialogProps, TextFieldProps } from "../Dialog";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
 import Explorer from "../../Explorer";
-import { NotebookV4 } from "@nteract/commutable/lib/v4";
 import { SessionStorageUtility } from "../../../Shared/StorageUtility";
 import { DialogHost } from "../../../Utils/GalleryUtils";
 import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
@@ -103,7 +102,7 @@ export class NotebookViewerComponent
       );
 
       const notebook: Notebook = await response.json();
-      this.removeNotebookViewerLink(notebook, this.props.galleryItem?.newCellId);
+      GalleryUtils.removeNotebookViewerLink(notebook, this.props.galleryItem?.newCellId);
       this.notebookComponentBootstrapper.setContent("json", notebook);
       this.setState({ content: notebook, showProgressBar: false });
 
@@ -132,17 +131,6 @@ export class NotebookViewerComponent
       handleError(error, "NotebookViewerComponent/loadNotebookContent", "Failed to load notebook content");
     }
   }
-
-  private removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {
-    if (!newCellId) {
-      return;
-    }
-    const notebookV4 = notebook as NotebookV4;
-    if (notebookV4 && notebookV4.cells[0].source[0].search(newCellId)) {
-      delete notebookV4.cells[0];
-      notebook = notebookV4;
-    }
-  };
 
   public render(): JSX.Element {
     return (
@@ -179,7 +167,7 @@ export class NotebookViewerComponent
           hidePrompts: this.props.hidePrompts,
         })}
 
-        {this.state.dialogProps && <DialogComponent {...this.state.dialogProps} />}
+        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
       </div>
     );
   }

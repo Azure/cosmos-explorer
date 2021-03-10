@@ -284,8 +284,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.isExecutionError(false);
     this._resetAggregateQueryMetrics();
     const startKey: number = TelemetryProcessor.traceStart(Action.ExecuteQuery, {
-      databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-      defaultExperience: this.collection && this.collection.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -333,8 +331,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
       TelemetryProcessor.traceSuccess(
         Action.ExecuteQuery,
         {
-          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-          defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
         },
@@ -347,8 +343,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
       TelemetryProcessor.traceFailure(
         Action.ExecuteQuery,
         {
-          databaseAccountName: this.collection && this.collection.container.databaseAccount().name,
-          defaultExperience: this.collection && this.collection.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           error: errorMessage,

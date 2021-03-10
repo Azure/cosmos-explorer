@@ -22,7 +22,7 @@ export async function updateUserDefinedFunction(
   const clearMessage = logConsoleProgress(`Updating user defined function ${userDefinedFunction.id}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {

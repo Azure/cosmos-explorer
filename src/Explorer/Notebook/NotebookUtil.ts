@@ -1,7 +1,7 @@
 import path from "path";
 import { ImmutableNotebook, ImmutableCodeCell } from "@nteract/commutable";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import { StringUtils } from "../../Utils/StringUtils";
+import * as StringUtils from "../../Utils/StringUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 
 // Must match rx-jupyter' FileType

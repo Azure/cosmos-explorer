@@ -16,7 +16,7 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
 
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience !== DefaultAccountExperienceType.Table
     ) {

@@ -9,6 +9,7 @@ import { updateUserContext } from "../../UserContext";
 describe("readCollection", () => {
   beforeAll(() => {
     updateUserContext({
+      authType: AuthType.ResourceToken,
       databaseAccount: {
         name: "test",
       } as DatabaseAccount,
@@ -17,7 +18,6 @@ describe("readCollection", () => {
   });
 
   it("should call SDK if logged in with resource token", async () => {
-    window.authType = AuthType.ResourceToken;
     (client as jest.Mock).mockReturnValue({
       database: () => {
         return {

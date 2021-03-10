@@ -55,8 +55,8 @@ export interface DecoratorProperties {
   isDynamicDescription?: boolean;
   refreshParams?: RefreshParams;
   onChange?: (
-    currentState: Map<string, SmartUiInput>,
     newValue: InputType,
+    currentState: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
   ) => Map<string, SmartUiInput>;
 }

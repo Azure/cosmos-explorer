@@ -26,7 +26,6 @@ export interface ConfigContext {
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   hostedExplorerURL: string;
   armAPIVersion?: string;
-  ENABLE_GALLERY_PUBLISH?: boolean;
 }
 
 // Default configuration

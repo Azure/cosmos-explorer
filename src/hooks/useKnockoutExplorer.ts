@@ -1,13 +1,14 @@
 import { useEffect } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
-import { AccountKind, DefaultAccountExperience, ServerIds } from "../Common/Constants";
+import { AccountKind, DefaultAccountExperience } from "../Common/Constants";
 import { sendMessage } from "../Common/MessageHandler";
-import { configContext, ConfigContext, Platform } from "../ConfigContext";
+import { configContext, Platform } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import Explorer, { ExplorerParams } from "../Explorer/Explorer";
+import { handleOpenAction } from "../Explorer/OpenActions";
 import {
   AAD,
   ConnectionString,
@@ -22,7 +23,7 @@ import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
-import { CollectionCreation } from "../Shared/Constants";
+import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
@@ -33,31 +34,31 @@ import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 // Pleas tread carefully :)
 let explorer: Explorer;
 
-export function useKnockoutExplorer(config: ConfigContext, explorerParams: ExplorerParams): Explorer {
+export function useKnockoutExplorer(platform: Platform, explorerParams: ExplorerParams): Explorer {
   explorer = explorer || new Explorer(explorerParams);
   useEffect(() => {
     const effect = async () => {
-      if (config) {
-        if (config.platform === Platform.Hosted) {
-          await configureHosted(config);
+      if (platform) {
+        if (platform === Platform.Hosted) {
+          await configureHosted();
           applyExplorerBindings(explorer);
-        } else if (config.platform === Platform.Emulator) {
+        } else if (platform === Platform.Emulator) {
           configureEmulator();
           applyExplorerBindings(explorer);
-        } else if (config.platform === Platform.Portal) {
+        } else if (platform === Platform.Portal) {
           configurePortal();
         }
       }
     };
     effect();
-  }, [config]);
+  }, [platform]);
   return explorer;
 }
 
-async function configureHosted(config: ConfigContext) {
+async function configureHosted() {
   const win = (window as unknown) as HostedExplorerChildFrame;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
-    configureHostedWithEncryptedToken(win.hostedConfig, config);
+    configureHostedWithEncryptedToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
     configureHostedWithResourceToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
@@ -68,12 +69,12 @@ async function configureHosted(config: ConfigContext) {
 }
 
 async function configureHostedWithAAD(config: AAD) {
-  window.authType = AuthType.AAD;
   const account = config.databaseAccount;
   const accountResourceId = account.id;
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
   updateUserContext({
+    authType: AuthType.AAD,
     authorizationToken: `Bearer ${config.authorizationToken}`,
     databaseAccount: config.databaseAccount,
   });
@@ -83,66 +84,35 @@ async function configureHostedWithAAD(config: AAD) {
     subscriptionId,
     resourceGroup,
     masterKey: keys.primaryMasterKey,
-    hasWriteAccess: true,
     authorizationToken: `Bearer ${config.authorizationToken}`,
     features: extractFeatures(),
-    csmEndpoint: undefined,
-    dnsSuffix: undefined,
-    serverId: ServerIds.productionPortal,
-    extensionEndpoint: configContext.BACKEND_ENDPOINT,
-    subscriptionType: CollectionCreation.DefaultSubscriptionType,
-    quotaId: undefined,
-    addCollectionDefaultFlight: explorer.flight(),
-    isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
   });
-  explorer.isAccountReady(true);
 }
 
 function configureHostedWithConnectionString(config: ConnectionString) {
-  // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
-  window.authType = AuthType.EncryptedToken;
-  // Impossible to tell if this is a try cosmos sub using an encrypted token
-  explorer.isTryCosmosDBSubscription(false);
   updateUserContext({
+    // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
+    authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
   });
-
-  const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
-    config.encryptedTokenMetadata.apiKind
-  );
+  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   explorer.configure({
     databaseAccount: {
       id: "",
-      // id: Main._databaseAccountId,
       name: config.encryptedTokenMetadata.accountName,
       kind: getDatabaseAccountKindFromExperience(apiExperience),
       properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
-      tags: [],
+      tags: {},
     },
-    subscriptionId: undefined,
-    resourceGroup: undefined,
     masterKey: config.masterKey,
-    hasWriteAccess: true,
-    authorizationToken: undefined,
     features: extractFeatures(),
-    csmEndpoint: undefined,
-    dnsSuffix: undefined,
-    serverId: ServerIds.productionPortal,
-    extensionEndpoint: configContext.BACKEND_ENDPOINT,
-    subscriptionType: CollectionCreation.DefaultSubscriptionType,
-    quotaId: undefined,
-    addCollectionDefaultFlight: explorer.flight(),
-    isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
   });
-  explorer.isAccountReady(true);
 }
 
 function configureHostedWithResourceToken(config: ResourceToken) {
-  window.authType = AuthType.ResourceToken;
-  // Resource tokens can only be used with SQL API
-  const apiExperience: string = DefaultAccountExperience.DocumentDB;
   const parsedResourceToken = parseResourceTokenConnectionString(config.resourceToken);
   updateUserContext({
+    authType: AuthType.ResourceToken,
     resourceToken: parsedResourceToken.resourceToken,
     endpoint: parsedResourceToken.accountEndpoint,
   });
@@ -157,36 +127,20 @@ function configureHostedWithResourceToken(config: ResourceToken) {
       name: parsedResourceToken.accountEndpoint,
       kind: AccountKind.GlobalDocumentDB,
       properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
-      tags: { defaultExperience: apiExperience },
+      // Resource tokens can only be used with SQL API
+      tags: { defaultExperience: DefaultAccountExperience.DocumentDB },
     },
-    subscriptionId: undefined,
-    resourceGroup: undefined,
-    masterKey: undefined,
-    hasWriteAccess: true,
-    authorizationToken: undefined,
     features: extractFeatures(),
-    csmEndpoint: undefined,
-    dnsSuffix: undefined,
-    serverId: ServerIds.productionPortal,
-    extensionEndpoint: configContext.BACKEND_ENDPOINT,
-    subscriptionType: CollectionCreation.DefaultSubscriptionType,
-    quotaId: undefined,
-    addCollectionDefaultFlight: explorer.flight(),
-    isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
     isAuthWithresourceToken: true,
   });
-  explorer.isAccountReady(true);
   explorer.isRefreshingExplorer(false);
 }
 
-function configureHostedWithEncryptedToken(config: EncryptedToken, configContext: ConfigContext) {
-  window.authType = AuthType.EncryptedToken;
-  // Impossible to tell if this is a try cosmos sub using an encrypted token
-  explorer.isTryCosmosDBSubscription(false);
+function configureHostedWithEncryptedToken(config: EncryptedToken) {
   updateUserContext({
+    authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
   });
-
   const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
     config.encryptedTokenMetadata.apiKind
   );
@@ -196,34 +150,24 @@ function configureHostedWithEncryptedToken(config: EncryptedToken, configContext
       name: config.encryptedTokenMetadata.accountName,
       kind: getDatabaseAccountKindFromExperience(apiExperience),
       properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
-      tags: [],
+      tags: {},
     },
-    subscriptionId: undefined,
-    resourceGroup: undefined,
-    masterKey: undefined,
-    hasWriteAccess: true,
-    authorizationToken: undefined,
     features: extractFeatures(),
-    csmEndpoint: undefined,
-    dnsSuffix: undefined,
-    serverId: ServerIds.productionPortal,
-    extensionEndpoint: configContext.BACKEND_ENDPOINT,
-    subscriptionType: CollectionCreation.DefaultSubscriptionType,
-    quotaId: undefined,
-    addCollectionDefaultFlight: explorer.flight(),
-    isTryCosmosDBSubscription: explorer.isTryCosmosDBSubscription(),
   });
-  explorer.isAccountReady(true);
 }
 
 function configureEmulator() {
-  window.authType = AuthType.MasterKey;
+  updateUserContext({
+    authType: AuthType.MasterKey,
+  });
   explorer.databaseAccount(emulatorAccount);
   explorer.isAccountReady(true);
 }
 
 function configurePortal() {
-  window.authType = AuthType.AAD;
+  updateUserContext({
+    authType: AuthType.AAD,
+  });
   // In development mode, try to load the iframe message from session storage.
   // This allows webpack hot reload to function properly in the portal
   if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
@@ -254,6 +198,7 @@ function configurePortal() {
       // Check for init message
       const message: PortalMessage = event.data?.data;
       const inputs = message?.inputs;
+      const openAction = message?.openAction;
       if (inputs) {
         if (
           configContext.BACKEND_ENDPOINT &&
@@ -265,6 +210,9 @@ function configurePortal() {
 
         explorer.configure(inputs);
         applyExplorerBindings(explorer);
+        if (openAction) {
+          handleOpenAction(openAction, explorer.nonSystemDatabases(), explorer);
+        }
       }
     },
     false

@@ -49,10 +49,10 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.isCollectionExpanded(true);
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "Collection node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -65,10 +65,10 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.isCollectionExpanded(false);
     TelemetryProcessor.trace(Action.CollapseTreeNode, ActionModifiers.Mark, {
       description: "Collection node",
-      databaseAccountName: this.container.databaseAccount().name,
+
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -78,10 +78,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-      databaseAccountName: this.container.databaseAccount().name,
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: title,
     });
@@ -109,10 +108,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
-      databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
       databaseName: this.databaseId,
       collectionName: this.id(),
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -128,10 +126,9 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       this.container.tabsManager.activateTab(documentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount() && this.container.databaseAccount().name,
         databaseName: this.databaseId,
         collectionName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Items",
       });

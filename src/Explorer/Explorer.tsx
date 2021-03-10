@@ -3,7 +3,6 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
 import * as ko from "knockout";
-import * as MostRecentActivity from "./MostRecentActivity/MostRecentActivity";
 import * as path from "path";
 import * as SharedConstants from "../Shared/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -21,7 +20,6 @@ import { readDatabases } from "../Common/dataAccess/readDatabases";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import GraphStylingPane from "./Panes/GraphStylingPane";
-import hasher from "hasher";
 import NewVertexPane from "./Panes/NewVertexPane";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
@@ -29,7 +27,7 @@ import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import TerminalTab from "./Tabs/TerminalTab";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
-import { ActionContracts, MessageTypes } from "../Contracts/ExplorerContracts";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { AuthType } from "../AuthType";
@@ -41,24 +39,21 @@ import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { DialogComponentAdapter } from "./Controls/DialogReactComponent/DialogComponentAdapter";
-import { DialogProps, TextFieldProps } from "./Controls/DialogReactComponent/DialogComponent";
+import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { FileSystemUtil } from "./Notebook/FileSystemUtil";
-import { handleOpenAction } from "./OpenActions";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
-import { sendMessage, sendCachedDataMessage, handleCachedDataMessage } from "../Common/MessageHandler";
+import { sendMessage, sendCachedDataMessage } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueriesClient } from "../Common/QueriesClient";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { RenewAdHocAccessPane } from "./Panes/RenewAdHocAccessPane";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
@@ -66,7 +61,7 @@ import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { SplashScreenComponentAdapter } from "./SplashScreen/SplashScreenComponentApdapter";
+import { SplashScreen } from "./SplashScreen/SplashScreen";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { StringInputPane } from "./Panes/StringInputPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
@@ -95,22 +90,14 @@ BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
 var tmp = ComponentRegisterer;
 
-enum ShareAccessToggleState {
-  ReadWrite,
-  Read,
-}
-
-interface AdHocAccessData {
-  readWriteUrl: string;
-  readUrl: string;
-}
-
 export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
   closeSidePanel: () => void;
+  closeDialog: () => void;
+  openDialog: (props: DialogProps) => void;
 }
 
 export default class Explorer {
@@ -148,7 +135,6 @@ export default class Explorer {
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
-  public mostRecentActivity: MostRecentActivity.MostRecentActivity;
 
   // Notification Console
   private setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
@@ -157,8 +143,8 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
-  private openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
-  private closeSidePanel: () => void;
+  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -199,7 +185,6 @@ export default class Explorer {
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public settingsPane: SettingsPane;
   public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public renewAdHocAccessPane: RenewAdHocAccessPane;
   public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
@@ -213,8 +198,6 @@ export default class Explorer {
   public copyNotebookPaneAdapter: ReactAdapter;
 
   // features
-  public isGalleryPublishEnabled: ko.Computed<boolean>;
-  public isLinkInjectionEnabled: ko.Computed<boolean>;
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
@@ -224,17 +207,6 @@ export default class Explorer {
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
 
-  public shouldShowShareDialogContents: ko.Observable<boolean>;
-  public shareAccessData: ko.Observable<AdHocAccessData>;
-  public renewExplorerShareAccess: (explorer: Explorer, token: string) => Q.Promise<void>;
-  public renewTokenError: ko.Observable<string>;
-  public tokenForRenewal: ko.Observable<string>;
-  public shareAccessToggleState: ko.Observable<ShareAccessToggleState>;
-  public shareAccessUrl: ko.Observable<string>;
-  public shareUrlCopyHelperText: ko.Observable<string>;
-  public shareTokenCopyHelperText: ko.Observable<string>;
-  public shouldShowDataAccessExpiryDialog: ko.Observable<boolean>;
-  public shouldShowContextSwitchPrompt: ko.Observable<boolean>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -251,12 +223,12 @@ export default class Explorer {
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: any; // This is dynamically loaded
+  public openDialog: ExplorerParams["openDialog"];
+  public closeDialog: ExplorerParams["closeDialog"];
 
   private _panes: ContextualPaneBase[] = [];
-  private _importExplorerConfigComplete: boolean = false;
   private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
-  private _isInitializingSparkConnectionInfo: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
   private notebookToImport: {
@@ -266,11 +238,6 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private splashScreenAdapter: SplashScreenComponentAdapter;
-  private dialogComponentAdapter: DialogComponentAdapter;
-  private _dialogProps: ko.Observable<DialogProps>;
-  private addSynapseLinkDialog: DialogComponentAdapter;
-  private _addSynapseLinkDialogProps: ko.Observable<DialogProps>;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -280,6 +247,8 @@ export default class Explorer {
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
     this.openSidePanel = params?.openSidePanel;
     this.closeSidePanel = params?.closeSidePanel;
+    this.closeDialog = params?.closeDialog;
+    this.openDialog = params?.openDialog;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -313,7 +282,6 @@ export default class Explorer {
     });
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
-    this._isInitializingSparkConnectionInfo = false;
     this.arcadiaToken = ko.observable<string>();
     this.arcadiaToken.subscribe((token: string) => {
       if (token) {
@@ -350,8 +318,6 @@ export default class Explorer {
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.Notebook,
             });
 
@@ -403,33 +369,6 @@ export default class Explorer {
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
     this.isAuthWithResourceToken = ko.observable<boolean>(false);
-
-    this.shareAccessData = ko.observable<AdHocAccessData>({
-      readWriteUrl: undefined,
-      readUrl: undefined,
-    });
-    this.tokenForRenewal = ko.observable<string>("");
-    this.renewTokenError = ko.observable<string>("");
-    this.shareAccessUrl = ko.observable<string>();
-    this.shareUrlCopyHelperText = ko.observable<string>("Click to copy");
-    this.shareTokenCopyHelperText = ko.observable<string>("Click to copy");
-    this.shareAccessToggleState = ko.observable<ShareAccessToggleState>(ShareAccessToggleState.ReadWrite);
-    this.shareAccessToggleState.subscribe((toggleState: ShareAccessToggleState) => {
-      if (toggleState === ShareAccessToggleState.ReadWrite) {
-        this.shareAccessUrl(this.shareAccessData && this.shareAccessData().readWriteUrl);
-      } else {
-        this.shareAccessUrl(this.shareAccessData && this.shareAccessData().readUrl);
-      }
-    });
-    this.shouldShowShareDialogContents = ko.observable<boolean>(false);
-    this.shouldShowDataAccessExpiryDialog = ko.observable<boolean>(false);
-    this.shouldShowContextSwitchPrompt = ko.observable<boolean>(false);
-    this.isGalleryPublishEnabled = ko.computed<boolean>(
-      () => configContext.ENABLE_GALLERY_PUBLISH || this.isFeatureEnabled(Constants.Features.enableGalleryPublish)
-    );
-    this.isLinkInjectionEnabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableLinkInjection)
-    );
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -708,13 +647,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.renewAdHocAccessPane = new RenewAdHocAccessPane({
-      id: "renewadhocaccesspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.uploadItemsPane = new UploadItemsPane({
       id: "uploaditemspane",
       visible: ko.observable<boolean>(false),
@@ -782,7 +714,6 @@ export default class Explorer {
       this.cassandraAddCollectionPane,
       this.settingsPane,
       this.executeSprocParamsPane,
-      this.renewAdHocAccessPane,
       this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
@@ -916,7 +847,6 @@ export default class Explorer {
         this.notebookManager = new notebookManagerModule.default();
         this.notebookManager.initialize({
           container: this,
-          dialogProps: this._dialogProps,
           notebookBasePath: this.notebookBasePath,
           resourceTree: this.resourceTree,
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
@@ -983,34 +913,6 @@ export default class Explorer {
 
       featureSubcription.dispose();
     });
-
-    this._dialogProps = ko.observable<DialogProps>({
-      isModal: false,
-      visible: false,
-      title: undefined,
-      subText: undefined,
-      primaryButtonText: undefined,
-      secondaryButtonText: undefined,
-      onPrimaryButtonClick: undefined,
-      onSecondaryButtonClick: undefined,
-    });
-    this.dialogComponentAdapter = new DialogComponentAdapter();
-    this.dialogComponentAdapter.parameters = this._dialogProps;
-    this.splashScreenAdapter = new SplashScreenComponentAdapter(this);
-    this.mostRecentActivity = new MostRecentActivity.MostRecentActivity(this);
-
-    this._addSynapseLinkDialogProps = ko.observable<DialogProps>({
-      isModal: false,
-      visible: false,
-      title: undefined,
-      subText: undefined,
-      primaryButtonText: undefined,
-      secondaryButtonText: undefined,
-      onPrimaryButtonClick: undefined,
-      onSecondaryButtonClick: undefined,
-    });
-    this.addSynapseLinkDialog = new DialogComponentAdapter();
-    this.addSynapseLinkDialog.parameters = this._addSynapseLinkDialogProps;
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -1053,7 +955,7 @@ export default class Explorer {
             ConsoleDataType.Info,
             "Enabled Azure Synapse Link for this account"
           );
-          TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, startTime);
+          TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
           this.databaseAccount(databaseAccount);
         } catch (error) {
           NotificationConsoleUtils.clearInProgressMessageWithId(logId);
@@ -1061,7 +963,7 @@ export default class Explorer {
             ConsoleDataType.Error,
             `Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`
           );
-          TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, startTime);
+          TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, {}, startTime);
         } finally {
           this.isSynapseLinkUpdating(false);
         }
@@ -1072,256 +974,11 @@ export default class Explorer {
         TelemetryProcessor.traceCancel(Action.EnableAzureSynapseLink);
       },
     };
-    this._addSynapseLinkDialogProps(addSynapseLinkDialogProps);
+    this.openDialog(addSynapseLinkDialogProps);
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
   }
-
-  public copyUrlLink(src: any, event: MouseEvent): void {
-    const urlLinkInput: HTMLInputElement = document.getElementById("shareUrlLink") as HTMLInputElement;
-    urlLinkInput && urlLinkInput.select();
-    document.execCommand("copy");
-    this.shareUrlCopyHelperText("Copied");
-    setTimeout(() => this.shareUrlCopyHelperText("Click to copy"), Constants.ClientDefaults.copyHelperTimeoutMs);
-
-    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      description: "Copy full screen URL",
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
-      dataExplorerArea: Constants.Areas.ShareDialog,
-    });
-  }
-
-  public onCopyUrlLinkKeyPress(src: any, event: KeyboardEvent): boolean {
-    if (event.keyCode === Constants.KeyCodes.Enter || event.keyCode === Constants.KeyCodes.Space) {
-      this.copyUrlLink(src, null);
-      return false;
-    }
-
-    return true;
-  }
-
-  public copyToken(src: any, event: MouseEvent): void {
-    const tokenInput: HTMLInputElement = document.getElementById("shareToken") as HTMLInputElement;
-    tokenInput && tokenInput.select();
-    document.execCommand("copy");
-    this.shareTokenCopyHelperText("Copied");
-    setTimeout(() => this.shareTokenCopyHelperText("Click to copy"), Constants.ClientDefaults.copyHelperTimeoutMs);
-  }
-
-  public onCopyTokenKeyPress(src: any, event: KeyboardEvent): boolean {
-    if (event.keyCode === Constants.KeyCodes.Enter || event.keyCode === Constants.KeyCodes.Space) {
-      this.copyToken(src, null);
-      return false;
-    }
-
-    return true;
-  }
-
-  public renewToken = (): void => {
-    TelemetryProcessor.trace(Action.ConnectEncryptionToken);
-    this.renewTokenError("");
-    const id: string = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Initiating connection to account"
-    );
-    this.renewExplorerShareAccess(this, this.tokenForRenewal())
-      .fail((error: any) => {
-        const stringifiedError: string = getErrorMessage(error);
-        this.renewTokenError("Invalid connection string specified");
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to initiate connection to account: ${stringifiedError}`
-        );
-      })
-      .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(id));
-  };
-
-  public generateSharedAccessData(): void {
-    const id: string = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Generating share url");
-    AuthHeadersUtil.generateEncryptedToken().then(
-      (tokenResponse: DataModels.GenerateTokenResponse) => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Successfully generated share url");
-        this.shareAccessData({
-          readWriteUrl: this._getShareAccessUrlForToken(tokenResponse.readWrite),
-          readUrl: this._getShareAccessUrlForToken(tokenResponse.read),
-        });
-        !this.shareAccessData().readWriteUrl && this.shareAccessToggleState(ShareAccessToggleState.Read); // select read toggle by default for readers
-        this.shareAccessToggleState.valueHasMutated(); // to set initial url and token state
-        this.shareAccessData.valueHasMutated();
-        this._openShareDialog();
-      },
-      (error: any) => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to generate share url: ${getErrorMessage(error)}`
-        );
-        console.error(error);
-      }
-    );
-  }
-
-  public renewShareAccess(token: string): Q.Promise<void> {
-    if (!this.renewExplorerShareAccess) {
-      return Q.reject("Not implemented");
-    }
-
-    const deferred: Q.Deferred<void> = Q.defer<void>();
-    const id: string = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Initiating connection to account"
-    );
-    this.renewExplorerShareAccess(this, token)
-      .then(
-        () => {
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Connection successful");
-          this.renewAdHocAccessPane && this.renewAdHocAccessPane.close();
-          deferred.resolve();
-        },
-        (error: any) => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Failed to connect: ${getErrorMessage(error)}`
-          );
-          deferred.reject(error);
-        }
-      )
-      .finally(() => {
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
-      });
-
-    return deferred.promise;
-  }
-
-  public displayGuestAccessTokenRenewalPrompt(): void {
-    if (!$("#dataAccessTokenModal").dialog("instance")) {
-      const connectButton = {
-        text: "Connect",
-        class: "connectDialogButtons connectButton connectOkBtns",
-        click: () => {
-          this.renewAdHocAccessPane.open();
-          $("#dataAccessTokenModal").dialog("close");
-        },
-      };
-      const cancelButton = {
-        text: "Cancel",
-        class: "connectDialogButtons cancelBtn",
-        click: () => {
-          $("#dataAccessTokenModal").dialog("close");
-        },
-      };
-
-      $("#dataAccessTokenModal").dialog({
-        autoOpen: false,
-        buttons: [connectButton, cancelButton],
-        closeOnEscape: false,
-        draggable: false,
-        dialogClass: "no-close",
-        height: 180,
-        modal: true,
-        position: { my: "center center", at: "center center", of: window },
-        resizable: false,
-        title: "Temporary access expired",
-        width: 435,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false),
-      });
-      $("#dataAccessTokenModal").dialog("option", "classes", {
-        "ui-dialog-titlebar": "connectTitlebar",
-      });
-    }
-    this.shouldShowDataAccessExpiryDialog(true);
-    $("#dataAccessTokenModal").dialog("open");
-  }
-
-  public isConnectExplorerVisible(): boolean {
-    return $("#connectExplorer").is(":visible") || false;
-  }
-
-  public displayContextSwitchPromptForConnectionString(connectionString: string): void {
-    const yesButton = {
-      text: "OK",
-      class: "connectDialogButtons okBtn connectOkBtns",
-      click: () => {
-        $("#contextSwitchPrompt").dialog("close");
-        this.tabsManager.closeTabs(); // clear all tabs so we dont leave any tabs from previous session open
-        this.renewShareAccess(connectionString);
-      },
-    };
-    const noButton = {
-      text: "Cancel",
-      class: "connectDialogButtons cancelBtn",
-      click: () => {
-        $("#contextSwitchPrompt").dialog("close");
-      },
-    };
-
-    if (!$("#contextSwitchPrompt").dialog("instance")) {
-      $("#contextSwitchPrompt").dialog({
-        autoOpen: false,
-        buttons: [yesButton, noButton],
-        closeOnEscape: false,
-        draggable: false,
-        dialogClass: "no-close",
-        height: 255,
-        modal: true,
-        position: { my: "center center", at: "center center", of: window },
-        resizable: false,
-        title: "Switch account",
-        width: 440,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowDataAccessExpiryDialog(false),
-      });
-      $("#contextSwitchPrompt").dialog("option", "classes", {
-        "ui-dialog-titlebar": "connectTitlebar",
-      });
-      $("#contextSwitchPrompt").dialog("option", "open", (event: Event, ui: JQueryUI.DialogUIParams) => {
-        $(".ui-dialog ").css("z-index", 1001);
-        $("#contextSwitchPrompt").parent().siblings(".ui-widget-overlay").css("z-index", 1000);
-      });
-    }
-    $("#contextSwitchPrompt").dialog("option", "buttons", [yesButton, noButton]); // rebind buttons so callbacks accept current connection string
-    this.shouldShowContextSwitchPrompt(true);
-    $("#contextSwitchPrompt").dialog("open");
-  }
-
-  public displayConnectExplorerForm(): void {
-    $("#divExplorer").hide();
-    $("#connectExplorer").css("display", "flex");
-  }
-
-  public hideConnectExplorerForm(): void {
-    $("#connectExplorer").hide();
-    $("#divExplorer").show();
-  }
-
-  public isReadWriteToggled: () => boolean = (): boolean => {
-    return this.shareAccessToggleState() === ShareAccessToggleState.ReadWrite;
-  };
-
-  public isReadToggled: () => boolean = (): boolean => {
-    return this.shareAccessToggleState() === ShareAccessToggleState.Read;
-  };
-
-  public toggleReadWrite: (src: any, event: MouseEvent) => void = (src: any, event: MouseEvent) => {
-    this.shareAccessToggleState(ShareAccessToggleState.ReadWrite);
-  };
-
-  public toggleRead: (src: any, event: MouseEvent) => void = (src: any, event: MouseEvent) => {
-    this.shareAccessToggleState(ShareAccessToggleState.Read);
-  };
-
-  public onToggleKeyDown: (src: any, event: KeyboardEvent) => boolean = (src: any, event: KeyboardEvent) => {
-    if (event.keyCode === Constants.KeyCodes.LeftArrow) {
-      this.toggleReadWrite(src, null);
-      return false;
-    } else if (event.keyCode === Constants.KeyCodes.RightArrow) {
-      this.toggleRead(src, null);
-      return false;
-    }
-    return true;
-  };
 
   public isDatabaseNodeOrNoneSelected(): boolean {
     return this.isNoneSelected() || this.isDatabaseNodeSelected();
@@ -1401,15 +1058,11 @@ export default class Explorer {
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
     this.isRefreshingExplorer(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     let resourceTreeStartKey: number = null;
     if (isInitialLoad) {
       resourceTreeStartKey = TelemetryProcessor.traceStart(Action.LoadResourceTree, {
-        databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-        defaultExperience: this.defaultExperience && this.defaultExperience(),
         dataExplorerArea: Constants.Areas.ResourceTree,
       });
     }
@@ -1423,8 +1076,6 @@ export default class Explorer {
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
           },
           startKey
@@ -1456,8 +1107,6 @@ export default class Explorer {
         TelemetryProcessor.traceFailure(
           Action.LoadDatabases,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
             error: errorMessage,
             errorStack: getErrorStack(error),
@@ -1477,8 +1126,6 @@ export default class Explorer {
           TelemetryProcessor.traceSuccess(
             Action.LoadResourceTree,
             {
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
             },
             resourceTreeStartKey
@@ -1490,8 +1137,6 @@ export default class Explorer {
           TelemetryProcessor.traceFailure(
             Action.LoadResourceTree,
             {
-              databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-              defaultExperience: this.defaultExperience && this.defaultExperience(),
               dataExplorerArea: Constants.Areas.ResourceTree,
               error: getErrorMessage(error),
               errorStack: getErrorStack(error),
@@ -1514,8 +1159,6 @@ export default class Explorer {
   public onRefreshResourcesClick = (source: any, event: MouseEvent): void => {
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       description: "Refresh button clicked",
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.isRefreshingExplorer(true);
@@ -1636,6 +1279,7 @@ export default class Explorer {
       );
       return;
     }
+
     const resetConfirmationDialogProps: DialogProps = {
       isModal: true,
       visible: true,
@@ -1646,7 +1290,7 @@ export default class Explorer {
       onPrimaryButtonClick: this._resetNotebookWorkspace,
       onSecondaryButtonClick: this._closeModalDialog,
     };
-    this._dialogProps(resetConfirmationDialogProps);
+    this.openDialog(resetConfirmationDialogProps);
   }
 
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
@@ -1710,68 +1354,12 @@ export default class Explorer {
   };
 
   private _closeModalDialog = () => {
-    this._dialogProps().visible = false;
-    this._dialogProps.valueHasMutated();
+    this.closeDialog();
   };
 
   private _closeSynapseLinkModalDialog = () => {
-    this._addSynapseLinkDialogProps().visible = false;
-    this._addSynapseLinkDialogProps.valueHasMutated();
+    this.closeDialog();
   };
-
-  public handleMessage(message: any) {
-    const openAction: ActionContracts.DataExplorerAction = message.openAction;
-    if (!!openAction) {
-      if (this.isRefreshingExplorer()) {
-        const subscription = this.databases.subscribe((databases: ViewModels.Database[]) => {
-          handleOpenAction(openAction, this.nonSystemDatabases(), this);
-          subscription.dispose();
-        });
-      } else {
-        handleOpenAction(openAction, this.nonSystemDatabases(), this);
-      }
-    }
-    if (message.actionType === ActionContracts.ActionType.TransmitCachedData) {
-      handleCachedDataMessage(message);
-      return;
-    }
-    if (message.type) {
-      switch (message.type) {
-        case MessageTypes.UpdateLocationHash:
-          if (!message.locationHash) {
-            break;
-          }
-          hasher.replaceHash(message.locationHash);
-          RouteHandler.getInstance().parseHash(message.locationHash);
-          break;
-        case MessageTypes.SendNotification:
-          if (!message.message) {
-            break;
-          }
-          NotificationConsoleUtils.logConsoleMessage(
-            message.consoleDataType || ConsoleDataType.Info,
-            message.message,
-            message.id
-          );
-          break;
-        case MessageTypes.ClearNotification:
-          if (!message.id) {
-            break;
-          }
-          NotificationConsoleUtils.clearInProgressMessageWithId(message.id);
-          break;
-        case MessageTypes.LoadingStatus:
-          if (!message.text) {
-            break;
-          }
-          this._setLoadingStatusText(message.text, message.title);
-          break;
-      }
-      return;
-    }
-
-    this.splashScreenAdapter.forceRender();
-  }
 
   public findSelectedDatabase(): ViewModels.Database {
     if (!this.selectedNode()) {
@@ -1825,18 +1413,19 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.features(inputs.features);
-      this.serverId(inputs.serverId);
+      this.serverId(inputs.serverId ?? Constants.ServerIds.productionPortal);
       this.databaseAccount(databaseAccount);
-      this.subscriptionType(inputs.subscriptionType);
-      this.hasWriteAccess(inputs.hasWriteAccess);
-      this.flight(inputs.addCollectionDefaultFlight);
-      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription);
-      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken);
+      this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
+      this.hasWriteAccess(inputs.hasWriteAccess ?? true);
+      if (inputs.addCollectionDefaultFlight) {
+        this.flight(inputs.addCollectionDefaultFlight);
+      }
+      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
+      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      this._importExplorerConfigComplete = true;
 
       updateConfigContext({
-        BACKEND_ENDPOINT: inputs.extensionEndpoint || "",
+        BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
         ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
       });
 
@@ -1852,9 +1441,7 @@ export default class Explorer {
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
-          resourceId: this.databaseAccount && this.databaseAccount().id,
           dataExplorerArea: Constants.Areas.ResourceTree,
-          databaseAccount: this.databaseAccount && this.databaseAccount(),
         },
         inputs.loadDatabaseAccountTimestamp
       );
@@ -1872,9 +1459,6 @@ export default class Explorer {
     }
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
-    }
-    if (flights.indexOf(Constants.Flights.GalleryPublish) !== -1) {
-      this.isGalleryPublishEnabled = ko.computed<boolean>(() => true);
     }
   }
 
@@ -1988,8 +1572,6 @@ export default class Explorer {
         : this.databases().filter((db) => db.isDatabaseExpanded());
 
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     databasesToLoad.forEach(async (database: ViewModels.Database) => {
@@ -2015,8 +1597,6 @@ export default class Explorer {
         TelemetryProcessor.traceFailure(
           Action.LoadCollections,
           {
-            databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-            defaultExperience: this.defaultExperience && this.defaultExperience(),
             dataExplorerArea: Constants.Areas.ResourceTree,
             error: getErrorMessage(error),
             errorStack: getErrorStack(error),
@@ -2026,83 +1606,6 @@ export default class Explorer {
       }
     );
     return deferred.promise;
-  }
-
-  // TODO: Abstract this elsewhere
-  private _openShareDialog: () => void = (): void => {
-    if (!$("#shareDataAccessFlyout").dialog("instance")) {
-      const accountMetadataInfo = {
-        databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-        defaultExperience: this.defaultExperience && this.defaultExperience(),
-        dataExplorerArea: Constants.Areas.ShareDialog,
-      };
-      const openFullscreenButton = {
-        text: "Open",
-        class: "openFullScreenBtn openFullScreenCancelBtn",
-        click: () => {
-          TelemetryProcessor.trace(
-            Action.SelectItem,
-            ActionModifiers.Mark,
-            _.extend({}, { description: "Open full screen" }, accountMetadataInfo)
-          );
-
-          const hiddenAnchorElement: HTMLAnchorElement = document.createElement("a");
-          hiddenAnchorElement.href = this.shareAccessUrl();
-          hiddenAnchorElement.target = "_blank";
-          $("#shareDataAccessFlyout").dialog("close");
-          hiddenAnchorElement.click();
-        },
-      };
-      const cancelButton = {
-        text: "Cancel",
-        class: "shareCancelButton openFullScreenCancelBtn",
-        click: () => {
-          TelemetryProcessor.trace(
-            Action.SelectItem,
-            ActionModifiers.Mark,
-            _.extend({}, { description: "Cancel open full screen" }, accountMetadataInfo)
-          );
-          $("#shareDataAccessFlyout").dialog("close");
-        },
-      };
-      $("#shareDataAccessFlyout").dialog({
-        autoOpen: false,
-        buttons: [openFullscreenButton, cancelButton],
-        closeOnEscape: true,
-        draggable: false,
-        dialogClass: "no-close",
-        position: { my: "right top", at: "right bottom", of: $(".OpenFullScreen") },
-        resizable: false,
-        title: "Open Full Screen",
-        width: 400,
-        close: (event: Event, ui: JQueryUI.DialogUIParams) => this.shouldShowShareDialogContents(false),
-      });
-      $("#shareDataAccessFlyout").dialog("option", "classes", {
-        "ui-widget-content": "shareUrlDialog",
-        "ui-widget-header": "shareUrlTitle",
-        "ui-dialog-titlebar-close": "shareClose",
-        "ui-button": "shareCloseIcon",
-        "ui-button-icon": "cancelIcon",
-        "ui-icon": "",
-      });
-      $("#shareDataAccessFlyout").dialog("option", "open", (event: Event, ui: JQueryUI.DialogUIParams) =>
-        $(".openFullScreenBtn").focus()
-      );
-    }
-    $("#shareDataAccessFlyout").dialog("close");
-    this.shouldShowShareDialogContents(true);
-    $("#shareDataAccessFlyout").dialog("open");
-  };
-
-  private _getShareAccessUrlForToken(token: string): string {
-    if (!token) {
-      return undefined;
-    }
-
-    const urlPrefixWithKeyParam: string = `${configContext.hostedExplorerURL}?key=`;
-    const currentActiveTab = this.tabsManager.activeTab();
-
-    return `${urlPrefixWithKeyParam}${token}#/${(currentActiveTab && currentActiveTab.hashLocation()) || ""}`;
   }
 
   private _initSettings() {
@@ -2238,12 +1741,7 @@ export default class Explorer {
 
   public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(
-        name,
-        content,
-        parentDomElement,
-        this.isLinkInjectionEnabled()
-      );
+      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
@@ -2258,7 +1756,7 @@ export default class Explorer {
   }
 
   public showOkModalDialog(title: string, msg: string): void {
-    this._dialogProps({
+    this.openDialog({
       isModal: true,
       visible: true,
       title,
@@ -2281,7 +1779,7 @@ export default class Explorer {
     textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    this._dialogProps({
+    this.openDialog({
       isModal: true,
       visible: true,
       title,
@@ -2484,7 +1982,7 @@ export default class Explorer {
   }
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
-    const authType = window.authType as AuthType;
+    const authType = userContext.authType;
     if (
       authType === AuthType.EncryptedToken ||
       authType === AuthType.ResourceToken ||
@@ -2533,7 +2031,7 @@ export default class Explorer {
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
     const subscriptionId = userContext.subscriptionId;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = window.authType as AuthType;
+    const authType = userContext.authType;
     if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       this.isSparkEnabledForAccount(false);
@@ -2562,7 +2060,7 @@ export default class Explorer {
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
     const subscriptionId = userContext.subscriptionId;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = window.authType as AuthType;
+    const authType = userContext.authType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       return false;
@@ -2615,7 +2113,7 @@ export default class Explorer {
     }
 
     if (item.type === NotebookContentItemType.Directory && item.children && item.children.length > 0) {
-      this._dialogProps({
+      this.openDialog({
         isModal: true,
         visible: true,
         title: "Unable to delete file",
@@ -2659,8 +2157,6 @@ export default class Explorer {
     );
 
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateNewNotebook, {
-      databaseAccountName: this.databaseAccount() && this.databaseAccount().name,
-      defaultExperience: this.defaultExperience && this.defaultExperience(),
       dataExplorerArea: Constants.Areas.Notebook,
     });
 
@@ -2671,8 +2167,6 @@ export default class Explorer {
         TelemetryProcessor.traceSuccess(
           Action.CreateNewNotebook,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
           },
           startKey
@@ -2686,8 +2180,6 @@ export default class Explorer {
         TelemetryProcessor.traceFailure(
           Action.CreateNewNotebook,
           {
-            databaseAccountName: this.databaseAccount().name,
-            defaultExperience: this.defaultExperience(),
             dataExplorerArea: Constants.Areas.Notebook,
             error: errorMessage,
             errorStack: getErrorStack(error),
@@ -2811,7 +2303,7 @@ export default class Explorer {
       account: userContext.databaseAccount,
       container: this,
       junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTab.OfficialSamples,
+      selectedTab: selectedTab || GalleryTab.PublicGallery,
       notebookUrl,
       galleryItem,
       isFavorite,

@@ -26,10 +26,14 @@ export function generateUniqueName(baseName = "", length = 4): string {
   return `${baseName}${crypto.randomBytes(length).toString("hex")}`;
 }
 
-export async function createDatabase(frame: Frame): Promise<void> {
-  const dbId = generateUniqueName("db");
+export function generateDatabaseName(baseName = "db", length = 1): string {
+  return `${baseName}${crypto.randomBytes(length).toString("hex")}-${Date.now()}`;
+}
+
+export async function createDatabase(frame: Frame): Promise<string> {
+  const dbId = generateDatabaseName();
   const collectionId = generateUniqueName("col");
-  const shardKey = generateUniqueName();
+  const shardKey = "partitionKey";
   // create new collection
   await frame.waitFor('button[data-test="New Collection"]', { visible: true });
   await frame.click('button[data-test="New Collection"]');
@@ -63,6 +67,7 @@ export async function createDatabase(frame: Frame): Promise<void> {
   // click submit
   await frame.waitFor("#submitBtnAddCollection");
   await frame.click("#submitBtnAddCollection");
+  return dbId;
 }
 
 export async function onClickSaveButton(frame: Frame): Promise<void> {

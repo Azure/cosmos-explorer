@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Dialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric-react/lib/Dialog";
+import { Dialog as FluentDialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric-react/lib/Dialog";
 import { IButtonProps, PrimaryButton, DefaultButton } from "office-ui-fabric-react/lib/Button";
 import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
 import { Link } from "office-ui-fabric-react/lib/Link";
@@ -50,7 +50,7 @@ const DIALOG_TITLE_FONT_SIZE = "17px";
 const DIALOG_TITLE_FONT_WEIGHT = 400;
 const DIALOG_SUBTEXT_FONT_SIZE = "15px";
 
-export class DialogComponent extends React.Component<DialogProps, {}> {
+export class Dialog extends React.Component<DialogProps> {
   constructor(props: DialogProps) {
     super(props);
   }
@@ -91,7 +91,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
         : undefined;
 
     return (
-      <Dialog {...dialogProps}>
+      <FluentDialog {...dialogProps}>
         {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
         {textFieldProps && <TextField {...textFieldProps} />}
         {linkProps && (
@@ -104,7 +104,7 @@ export class DialogComponent extends React.Component<DialogProps, {}> {
           <PrimaryButton {...primaryButtonProps} />
           {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
         </DialogFooter>
-      </Dialog>
+      </FluentDialog>
     );
   }
 }

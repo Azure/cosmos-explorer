@@ -39,13 +39,19 @@ interface SelfServeNotification {
 interface PortalNotificationContent {
   retryIntervalInMs: number;
   operationStatusUrl: string;
-  requestInitializedNotification: {
-    title: string;
-    message: string;
-  };
-  requestCompletedNotification: {
-    title: string;
-    message: string;
+  portalNotification?: {
+    initialize: {
+      title: string;
+      message: string;
+    };
+    success: {
+      title: string;
+      message: string;
+    };
+    failure: {
+      title: string;
+      message: string;
+    };
   };
 }
 
@@ -239,8 +245,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   private onInputChange = (input: AnyDisplay, newValue: InputType) => {
     if (input.onChange) {
       const newValues = input.onChange(
-        this.state.currentValues,
         newValue,
+        this.state.currentValues,
         this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
       );
       this.setState({ currentValues: newValues });
@@ -260,28 +266,37 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         this.state.currentValues,
         this.state.baselineValues as ReadonlyMap<string, SmartUiInput>
       );
-      const requestInitializedPortalNotification = onSaveResult.requestInitializedPortalNotification;
-      const requestCompletedPortalNotification = onSaveResult.requestCompletedPortalNotification;
-      this.sendNotificationMessage({
-        retryIntervalInMs: this.retryIntervalInMs,
-        operationStatusUrl: onSaveResult.operationStatusUrl,
-        requestInitializedNotification: {
-          title: this.getTranslation(requestInitializedPortalNotification.titleTKey),
-          message: this.getTranslation(requestInitializedPortalNotification.messageTKey),
-        },
-        requestCompletedNotification: {
-          title: this.getTranslation(requestCompletedPortalNotification.titleTKey),
-          message: this.getTranslation(requestCompletedPortalNotification.messageTKey),
-        },
-      });
+      if (onSaveResult.portalNotification) {
+        const requestInitializedPortalNotification = onSaveResult.portalNotification.initialize;
+        const requestSucceededPortalNotification = onSaveResult.portalNotification.success;
+        const requestFailedPortalNotification = onSaveResult.portalNotification.failure;
 
+        this.sendNotificationMessage({
+          retryIntervalInMs: this.retryIntervalInMs,
+          operationStatusUrl: onSaveResult.operationStatusUrl,
+          portalNotification: {
+            initialize: {
+              title: this.getTranslation(requestInitializedPortalNotification.titleTKey),
+              message: this.getTranslation(requestInitializedPortalNotification.messageTKey),
+            },
+            success: {
+              title: this.getTranslation(requestSucceededPortalNotification.titleTKey),
+              message: this.getTranslation(requestSucceededPortalNotification.messageTKey),
+            },
+            failure: {
+              title: this.getTranslation(requestFailedPortalNotification.titleTKey),
+              message: this.getTranslation(requestFailedPortalNotification.messageTKey),
+            },
+          },
+        });
+      }
       promiseRetry(() => this.pollRefresh(), this.retryOptions);
     } catch (error) {
       this.setState({
         notification: {
           type: MessageBarType.error,
           isCancellable: true,
-          message: this.getTranslation(error),
+          message: this.getTranslation(error.message),
         },
       });
       throw error;

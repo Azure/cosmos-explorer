@@ -27,13 +27,17 @@ describe("createCollection", () => {
   });
 
   it("should call ARM if logged in with AAD", async () => {
-    window.authType = AuthType.AAD;
+    updateUserContext({
+      authType: AuthType.AAD,
+    });
     await createCollection(createCollectionParams);
     expect(armRequest).toHaveBeenCalled();
   });
 
   it("should call SDK if not logged in with non-AAD method", async () => {
-    window.authType = AuthType.MasterKey;
+    updateUserContext({
+      authType: AuthType.MasterKey,
+    });
     (client as jest.Mock).mockReturnValue({
       databases: {
         createIfNotExists: () => {

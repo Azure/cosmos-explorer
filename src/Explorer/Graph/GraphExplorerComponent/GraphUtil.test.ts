@@ -1,4 +1,4 @@
-import { GraphUtil } from "./GraphUtil";
+import * as GraphUtil from "./GraphUtil";
 import { GraphData, GremlinVertex, GremlinEdge } from "./GraphData";
 import * as sinon from "sinon";
 import { GraphExplorer } from "./GraphExplorer";
@@ -69,7 +69,7 @@ describe("Process Gremlin vertex", () => {
 describe("getLimitedArrayString()", () => {
   const expectedEmptyResult = { result: "", consumedCount: 0 };
   it("should handle null array", () => {
-    expect(GraphUtil.getLimitedArrayString(null, 10)).toEqual(expectedEmptyResult);
+    expect(GraphUtil.getLimitedArrayString(undefined, 10)).toEqual(expectedEmptyResult);
   });
 
   it("should handle empty array", () => {
