@@ -23,7 +23,6 @@ import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
-import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
