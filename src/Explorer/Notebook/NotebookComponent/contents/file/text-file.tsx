@@ -1,4 +1,4 @@
-import { StringUtils } from "../../../../../Utils/StringUtils";
+import * as StringUtils from "../../../../../Utils/StringUtils";
 import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import { IMonacoProps as MonacoEditorProps } from "@nteract/monaco-editor";
 import * as React from "react";

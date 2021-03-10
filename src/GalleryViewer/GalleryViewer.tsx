@@ -36,7 +36,7 @@ const onInit = async () => {
       <header>
         <GalleryHeaderComponent />
       </header>
-      <div style={{ marginLeft: 138, marginRight: 138 }}>
+      <div style={{ margin: "auto", width: "85%" }}>
         <div style={{ paddingLeft: 26, paddingRight: 26, paddingTop: 20 }}>
           <Text block>
             Welcome to the Azure Cosmos DB notebooks gallery! View the sample notebooks to learn about use cases, best

@@ -1,18 +1,19 @@
 import { IsDisplayable, OnChange, Values } from "../Decorators";
 import {
   ChoiceItem,
+  DescriptionType,
   InputType,
   NumberUiType,
+  OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SelfServeNotification,
   SmartUiInput,
 } from "../SelfServeTypes";
 import { refreshDedicatedGatewayProvisioning } from "./SqlX.rp";
 
 const onEnableDedicatedGatewayChange = (
-  currentState: Map<string, SmartUiInput>,
-  newValue: InputType
+  newValue: InputType,
+  currentState: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   const sku = currentState.get("sku");
   const instances = currentState.get("instances");
@@ -49,7 +50,7 @@ export default class SqlX extends SelfServeBaseClass {
     return refreshDedicatedGatewayProvisioning();
   };
 
-  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
+  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<OnSaveResult> => {
     validate(currentValues);
     // TODO: add pre processing logic before calling the updateDedicatedGatewayProvisioning() RP call.
     throw new Error(`onSave not implemented. No. of properties to save: ${currentValues.size}`);
@@ -63,6 +64,7 @@ export default class SqlX extends SelfServeBaseClass {
   @Values({
     description: {
       textTKey: "Provisioning dedicated gateways for SqlX accounts.",
+      type: DescriptionType.Text,
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
         textTKey: "Learn more about dedicated gateway.",

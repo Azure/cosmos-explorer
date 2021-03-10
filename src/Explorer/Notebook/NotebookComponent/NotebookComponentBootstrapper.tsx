@@ -29,7 +29,7 @@ import "@nteract/styles/global-variables.css";
 import "react-table/react-table.css";
 
 import * as CdbActions from "./actions";
-import NteractUtil from "../NTeractUtil";
+import * as NteractUtil from "../NTeractUtil";
 
 export interface NotebookComponentBootstrapperOptions {
   notebookClient: NotebookClientV2;

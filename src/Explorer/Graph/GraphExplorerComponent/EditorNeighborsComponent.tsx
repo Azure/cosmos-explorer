@@ -5,7 +5,7 @@
 
 import * as React from "react";
 import { NeighborVertexBasicInfo, EditedEdges, GraphNewEdgeData, PossibleVertex } from "./GraphExplorer";
-import { GraphUtil } from "./GraphUtil";
+import * as GraphUtil from "./GraphUtil";
 import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 import DeleteIcon from "../../../../images/delete.svg";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
