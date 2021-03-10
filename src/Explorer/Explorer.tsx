@@ -1,93 +1,91 @@
-import React from "react";
-import * as ComponentRegisterer from "./ComponentRegisterer";
-import * as Constants from "../Common/Constants";
-import * as DataModels from "../Contracts/DataModels";
 import * as ko from "knockout";
+import { IChoiceGroupProps } from "office-ui-fabric-react";
 import * as path from "path";
-import * as SharedConstants from "../Shared/Constants";
-import * as ViewModels from "../Contracts/ViewModels";
-import _ from "underscore";
-import AddCollectionPane from "./Panes/AddCollectionPane";
-import AddDatabasePane from "./Panes/AddDatabasePane";
-import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
-import AuthHeadersUtil from "../Platform/Hosted/Authorization";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
-import Database from "./Tree/Database";
-import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
-import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readCollection } from "../Common/dataAccess/readCollection";
-import { readDatabases } from "../Common/dataAccess/readDatabases";
-import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
-import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import GraphStylingPane from "./Panes/GraphStylingPane";
-import NewVertexPane from "./Panes/NewVertexPane";
-import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
-import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
-import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import TerminalTab from "./Tabs/TerminalTab";
-import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
+import React from "react";
+import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
-import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
-import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext, Platform, updateConfigContext } from "../ConfigContext";
-import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
-import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { DialogProps, TextFieldProps } from "./Controls/Dialog";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { ReactAdapter } from "../Bindings/ReactBindingHandler";
+import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
-import { ExplorerSettings } from "../Shared/ExplorerSettings";
-import { FileSystemUtil } from "./Notebook/FileSystemUtil";
-import { IGalleryItem } from "../Juno/JunoClient";
-import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import { readCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
+import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
+import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { sendMessage, sendCachedDataMessage } from "../Common/MessageHandler";
+import { sendCachedDataMessage, sendMessage } from "../Common/MessageHandler";
+import { QueriesClient } from "../Common/QueriesClient";
+import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
+import { configContext, Platform, updateConfigContext } from "../ConfigContext";
+import * as DataModels from "../Contracts/DataModels";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
+import { SubscriptionType } from "../Contracts/SubscriptionType";
+import * as ViewModels from "../Contracts/ViewModels";
+import { IGalleryItem } from "../Juno/JunoClient";
+import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
+import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
+import { RouteHandler } from "../RouteHandlers/RouteHandler";
+import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
+import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
+import { SelfServeType } from "../SelfServe/SelfServeUtils";
+import { appInsights } from "../Shared/appInsights";
+import * as SharedConstants from "../Shared/Constants";
+import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
+import { ExplorerSettings } from "../Shared/ExplorerSettings";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
+import { updateUserContext, userContext } from "../UserContext";
+import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { stringToBlob } from "../Utils/BlobUtils";
+import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import * as ComponentRegisterer from "./ComponentRegisterer";
+import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
+import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
+import { DialogProps, TextFieldProps } from "./Controls/Dialog";
+import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
+import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
+import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
+import { FileSystemUtil } from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
-import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
-import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { QueriesClient } from "../Common/QueriesClient";
-import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
-import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
-import { RouteHandler } from "../RouteHandlers/RouteHandler";
+import AddCollectionPane from "./Panes/AddCollectionPane";
+import AddDatabasePane from "./Panes/AddDatabasePane";
+import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
+import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
+import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
+import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
+import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
+import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import GraphStylingPane from "./Panes/GraphStylingPane";
+import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { SplashScreen } from "./SplashScreen/SplashScreen";
-import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { StringInputPane } from "./Panes/StringInputPane";
+import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
+import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
+import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
-import { TabsManager } from "./Tabs/TabsManager";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
-import { ReactAdapter } from "../Bindings/ReactBindingHandler";
-import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
-import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
+import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
+import TabsBase from "./Tabs/TabsBase";
+import { TabsManager } from "./Tabs/TabsManager";
+import TerminalTab from "./Tabs/TerminalTab";
+import Database from "./Tree/Database";
+import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
+import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
+import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
-import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import TabsBase from "./Tabs/TabsBase";
-import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
-import { updateUserContext, userContext } from "../UserContext";
-import { stringToBlob } from "../Utils/BlobUtils";
-import { IChoiceGroupProps } from "office-ui-fabric-react";
-import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
-import { SubscriptionType } from "../Contracts/SubscriptionType";
-import { appInsights } from "../Shared/appInsights";
-import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
-import { SelfServeType } from "../SelfServe/SelfServeUtils";
-import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
-import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
-import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -118,16 +116,52 @@ export default class Explorer {
   public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
+  /**
+   * @deprecated
+   * Use userContext.databaseAccount instead
+   * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
+  /**
+   * @deprecated
+   * Use userContext.subscriptionType instead
+   * */
   public subscriptionType: ko.Observable<SubscriptionType>;
+  /**
+   * @deprecated
+   * Use userContext.apiType instead
+   * */
   public defaultExperience: ko.Observable<string>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "SQL"
+   * */
   public isPreferredApiDocumentDB: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
+   * */
   public isPreferredApiCassandra: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
+   * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
+   * */
   public isPreferredApiGraph: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
+   * */
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
+   * */
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
