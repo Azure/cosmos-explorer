@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
-import { SplashScreenComponentAdapter } from "./SplashScreenComponentApdapter";
+import { SplashScreen } from "./SplashScreen";
 import { TabsManager } from "../Tabs/TabsManager";
 import Explorer from "../Explorer";
 jest.mock("../Explorer");
@@ -14,7 +14,7 @@ const createExplorer = () => {
   return mock as jest.Mocked<Explorer>;
 };
 
-describe("SplashScreenComponentAdapter", () => {
+describe("SplashScreen", () => {
   it("allows sample collection creation for supported api's", () => {
     const explorer = createExplorer();
     const dataSampleUtil = new DataSamplesUtil(explorer);
@@ -25,9 +25,9 @@ describe("SplashScreenComponentAdapter", () => {
     // Sample is supported
     jest.spyOn(dataSampleUtil, "isSampleContainerCreationSupported").mockImplementation(() => true);
 
-    const splashScreenAdapter = new SplashScreenComponentAdapter(explorer);
-    jest.spyOn(splashScreenAdapter, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
-    const mainButtons = splashScreenAdapter.createMainItems();
+    const splashScreen = new SplashScreen({ explorer });
+    jest.spyOn(splashScreen, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
+    const mainButtons = splashScreen.createMainItems();
 
     // Press all buttons and make sure create gets called
     mainButtons.forEach((button) => {
@@ -50,9 +50,9 @@ describe("SplashScreenComponentAdapter", () => {
     // Sample is not supported
     jest.spyOn(dataSampleUtil, "isSampleContainerCreationSupported").mockImplementation(() => false);
 
-    const splashScreenAdapter = new SplashScreenComponentAdapter(explorerStub);
-    jest.spyOn(splashScreenAdapter, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
-    const mainButtons = splashScreenAdapter.createMainItems();
+    const splashScreen = new SplashScreen({ explorer: explorerStub });
+    jest.spyOn(splashScreen, "createDataSampleUtil").mockImplementation(() => dataSampleUtil);
+    const mainButtons = splashScreen.createMainItems();
 
     // Press all buttons and make sure create doesn't get called
     mainButtons.forEach((button) => {

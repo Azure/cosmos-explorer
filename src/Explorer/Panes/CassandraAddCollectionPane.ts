@@ -289,9 +289,10 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
   public open() {
     super.open();
+    if (!this.container.isServerlessEnabled()) {
+      this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    }
     const addCollectionPaneOpenMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       collection: ko.toJS({
         id: this.tableId(),
         storage: Constants.BackendDefaults.multiPartitionStorageInGb,
@@ -342,8 +343,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     }
 
     const addCollectionPaneStartMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       collection: ko.toJS({
         id: this.tableId(),
         storage: Constants.BackendDefaults.multiPartitionStorageInGb,
@@ -388,8 +387,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         this.isExecuting(false);
         this.close();
         const addCollectionPaneSuccessMessage = {
-          databaseAccountName: this.container.databaseAccount().name,
-          defaultExperience: this.container.defaultExperience(),
           collection: ko.toJS({
             id: this.tableId(),
             storage: Constants.BackendDefaults.multiPartitionStorageInGb,
@@ -418,8 +415,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         this.formErrors(errorMessage);
         this.isExecuting(false);
         const addCollectionPaneFailedMessage = {
-          databaseAccountName: this.container.databaseAccount().name,
-          defaultExperience: this.container.defaultExperience(),
           collection: {
             id: this.tableId(),
             storage: Constants.BackendDefaults.multiPartitionStorageInGb,

@@ -7,7 +7,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { RouteHandler } from "../../RouteHandlers/RouteHandler";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import ThemeUtility from "../../Common/ThemeUtility";
+import * as ThemeUtility from "../../Common/ThemeUtility";
 import Explorer from "../Explorer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
@@ -86,8 +86,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
       tabName: this.constructor.name,
-      databaseAccountName: this.getContainer().databaseAccount().name,
-      defaultExperience: this.getContainer().defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       tabId: this.tabId,
@@ -144,8 +143,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Open, {
       tabName: this.constructor.name,
-      databaseAccountName: this.getContainer().databaseAccount().name,
-      defaultExperience: this.getContainer().defaultExperience(),
+
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       tabId: this.tabId,

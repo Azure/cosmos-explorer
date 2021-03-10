@@ -53,8 +53,7 @@ export default class Database implements ViewModels.Database {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
@@ -71,9 +70,8 @@ export default class Database implements ViewModels.Database {
       : (matchingTabs?.[0] as DatabaseSettingsTabV2);
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseAccountName: this.container.databaseAccount().name,
         databaseName: this.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Scale",
       });
@@ -105,10 +103,9 @@ export default class Database implements ViewModels.Database {
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
-              databaseAccountName: this.container.databaseAccount().name,
               databaseName: this.id(),
               collectionName: this.id(),
-              defaultExperience: this.container.defaultExperience(),
+
               dataExplorerArea: Constants.Areas.Tab,
               tabTitle: "Scale",
               error: errorMessage,
@@ -155,8 +152,7 @@ export default class Database implements ViewModels.Database {
     this.container.selectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Database node",
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -171,8 +167,7 @@ export default class Database implements ViewModels.Database {
     this.isDatabaseExpanded(true);
     TelemetryProcessor.trace(Action.ExpandTreeNode, ActionModifiers.Mark, {
       description: "Database node",
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -185,8 +180,7 @@ export default class Database implements ViewModels.Database {
     this.isDatabaseExpanded(false);
     TelemetryProcessor.trace(Action.CollapseTreeNode, ActionModifiers.Mark, {
       description: "Database node",
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
+
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
   }
@@ -329,11 +323,13 @@ export default class Database implements ViewModels.Database {
           subscriptionId: userContext.subscriptionId,
           resourceGroup: userContext.resourceGroup,
           accountName: userContext.databaseAccount.name,
-          resource: `dbs/${this.id}/colls/${collection.id}`,
+          resource: `dbs/${this.id()}/colls/${collection.id}`,
           status: "new",
         });
         checkForSchema = setInterval(async () => {
           const response: IJunoResponse<DataModels.ISchema> = await this.junoClient.getSchema(
+            userContext.subscriptionId,
+            userContext.resourceGroup,
             userContext.databaseAccount.name,
             this.id(),
             collection.id

@@ -35,8 +35,6 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
     this.close();
     this.container.isAccountReady() &&
       TelemetryProcessor.trace(Action.ContextualPane, ActionModifiers.Close, {
-        databaseAccountName: this.container.databaseAccount().name,
-        defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
         paneTitle: this.title(),
       });
@@ -56,8 +54,6 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
     this.resizePane();
     this.container.isAccountReady() &&
       TelemetryProcessor.trace(Action.ContextualPane, ActionModifiers.Open, {
-        databaseAccountName: this.container.databaseAccount().name,
-        defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
         paneTitle: this.title(),
       });
@@ -78,8 +74,6 @@ export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {
     event.stopPropagation();
     this.container.isAccountReady() &&
       TelemetryProcessor.trace(Action.ContextualPane, ActionModifiers.Submit, {
-        databaseAccountName: this.container.databaseAccount().name,
-        defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.ContextualPane,
         paneTitle: this.title(),
       });

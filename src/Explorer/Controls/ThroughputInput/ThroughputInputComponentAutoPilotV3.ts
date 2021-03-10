@@ -129,7 +129,6 @@ export interface ThroughputInputParams {
   throughputModeRadioName: string;
   maxAutoPilotThroughputSet: ViewModels.Editable<number>;
   autoPilotUsageCost: ko.Computed<string>;
-  showAutoPilot?: ko.Observable<boolean>;
   overrideWithAutoPilotSettings: ko.Observable<boolean>;
   overrideWithProvisionedThroughputSettings: ko.Observable<boolean>;
   freeTierExceedThroughputTooltip?: ko.Observable<string>;
@@ -158,7 +157,6 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
   public infoBubbleText: string | ko.Observable<string>;
   public label: ko.Observable<string>;
   public isFixed: boolean;
-  public showAutoPilot: ko.Observable<boolean>;
   public isAutoPilotSelected: ko.Observable<boolean>;
   public throughputAutoPilotRadioId: string;
   public throughputProvisionedRadioId: string;
@@ -202,14 +200,10 @@ export class ThroughputInputViewModel extends WaitsForTemplateViewModel {
     this.isFixed = !!options.isFixed;
     this.infoBubbleText = options.infoBubbleText || ko.observable<string>();
     this.label = options.label || ko.observable<string>();
-    this.showAutoPilot = options.showAutoPilot !== undefined ? options.showAutoPilot : ko.observable<boolean>(true);
     this.isAutoPilotSelected = options.isAutoPilotSelected || ko.observable<boolean>(false);
     this.isAutoPilotSelected.subscribe((value) => {
       TelemetryProcessor.trace(Action.ToggleAutoscaleSetting, ActionModifiers.Mark, {
         changedSelectedValueTo: value ? ActionModifiers.ToggleAutoscaleOn : ActionModifiers.ToggleAutoscaleOff,
-        databaseAccountName: userContext.databaseAccount?.name,
-        subscriptionId: userContext.subscriptionId,
-        apiKind: userContext.defaultExperience,
         dataExplorerArea: "Scale Tab V1",
       });
     });

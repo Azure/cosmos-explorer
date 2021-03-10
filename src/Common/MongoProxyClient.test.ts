@@ -220,7 +220,6 @@ describe("MongoProxyClient", () => {
   describe("getEndpoint", () => {
     beforeEach(() => {
       resetConfigContext();
-      delete window.authType;
       updateUserContext({
         databaseAccount,
       });
@@ -241,7 +240,9 @@ describe("MongoProxyClient", () => {
     });
 
     it("returns a guest endpoint", () => {
-      window.authType = AuthType.EncryptedToken;
+      updateUserContext({
+        authType: AuthType.EncryptedToken,
+      });
       const endpoint = getEndpoint();
       expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/guest/mongo/explorer");
     });

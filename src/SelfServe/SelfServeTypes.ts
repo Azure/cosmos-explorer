@@ -4,8 +4,8 @@ interface BaseInput {
   type: InputTypeValue;
   labelTKey?: (() => Promise<string>) | string;
   onChange?: (
-    currentState: Map<string, SmartUiInput>,
     newValue: InputType,
+    currentState: Map<string, SmartUiInput>,
     baselineValues: ReadonlyMap<string, SmartUiInput>
   ) => Map<string, SmartUiInput>;
   placeholderTKey?: (() => Promise<string>) | string;
@@ -133,13 +133,19 @@ export interface SmartUiInput {
 
 export interface OnSaveResult {
   operationStatusUrl: string;
-  requestInitializedPortalNotification: {
-    titleTKey: string;
-    messageTKey: string;
-  };
-  requestCompletedPortalNotification: {
-    titleTKey: string;
-    messageTKey: string;
+  portalNotification?: {
+    initialize: {
+      titleTKey: string;
+      messageTKey: string;
+    };
+    success: {
+      titleTKey: string;
+      messageTKey: string;
+    };
+    failure: {
+      titleTKey: string;
+      messageTKey: string;
+    };
   };
 }
 

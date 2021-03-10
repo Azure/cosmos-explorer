@@ -48,7 +48,7 @@ const displayCostCalculation = (sku: string, numberOfInstances: string): string 
   return `${numberOfInstances} * Hourly cost of ${sku}`;
 };
 
-const onSKUChange = (currentValues: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
   currentValues.set("sku", { value: newValue });
   const currentCostText = displayCostCalculation(
     currentValues.get("sku").value.toString(),
@@ -64,8 +64,8 @@ const onSKUChange = (currentValues: Map<string, SmartUiInput>, newValue: InputTy
 };
 
 const onNumberOfInstancesChange = (
-  currentValues: Map<string, SmartUiInput>,
-  newValue: InputType
+  newValue: InputType,
+  currentValues: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
   const currentCostText = displayCostCalculation(
@@ -79,8 +79,8 @@ const onNumberOfInstancesChange = (
 };
 
 const onEnableDedicatedGatewayChange = (
-  currentValues: Map<string, SmartUiInput>,
   newValue: InputType,
+  currentValues: Map<string, SmartUiInput>,
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
@@ -156,27 +156,39 @@ export default class SqlX extends SelfServeBaseClass {
         const operationStatusUrl = await deleteDedicatedGatewayResource();
         return {
           operationStatusUrl: operationStatusUrl,
-          requestInitializedPortalNotification: {
-            titleTKey: "Deleting resource",
-            messageTKey: "DedicatedGateway resource will be deleted.",
-          },
-          requestCompletedPortalNotification: {
-            titleTKey: "Resource Deleted",
-            messageTKey: "DedicatedGateway resource deleted.",
-          },
+          portalNotification : {
+            initialize: {
+              titleTKey: "Deleting resource",
+              messageTKey: "DedicatedGateway resource will be deleted.",
+            },
+            success: {
+              titleTKey: "Resource Deleted",
+              messageTKey: "DedicatedGateway resource deleted.",
+            },
+            failure: {
+              titleTKey: "Failed to delete resource.",
+              messageTKey: "DedicatedGateway resource deletion failed.",
+            }
+          }
         };
       } else {
         // Check for scaling up/down/in/out
         return {
           operationStatusUrl: undefined,
-          requestInitializedPortalNotification: {
-            titleTKey: "Updating resource",
-            messageTKey: "DedicatedGateway resource will be updated.",
-          },
-          requestCompletedPortalNotification: {
-            titleTKey: "Resource Updated",
-            messageTKey: "DedicatedGateway resource updated.",
-          },
+          portalNotification: {
+            initialize: {
+              titleTKey: "Updating resource",
+              messageTKey: "DedicatedGateway resource will be updated.",
+            },
+            success: {
+              titleTKey: "Resource Updated",
+              messageTKey: "DedicatedGateway resource updated.",
+            },
+            failure : {
+              titleTKey: "Resource Updation failed.",
+              messageTKey: "DedicatedGateway resource updation failed.",
+            }
+          }
         };
       }
     } else {
@@ -185,16 +197,22 @@ export default class SqlX extends SelfServeBaseClass {
       const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
       return {
         operationStatusUrl: operationStatusUrl,
-        requestInitializedPortalNotification: {
-          titleTKey: "Provisioning resource",
-          messageTKey: "Dedicated Gateway resource will be provisioned.",
-        },
-        requestCompletedPortalNotification: {
-          titleTKey: "Resource provisioned",
-          messageTKey: `Dedicated Gateway resource provisioned. Please go to <a href='${generateBladeLink(
-            BladeType.SqlKeys
-          )}'>keys blade</a> to use the keys.`,
-        },
+        portalNotification: {
+          initialize: {
+            titleTKey: "Provisioning resource",
+            messageTKey: "Dedicated Gateway resource will be provisioned.",  
+          },
+          success: {
+            titleTKey: "Resource provisioned",
+            messageTKey: `Dedicated Gateway resource provisioned. Please go to <a href='${generateBladeLink(
+              BladeType.SqlKeys
+            )}'>keys blade</a> to use the keys.`,  
+          },
+          failure: {
+            titleTKey: "Provisioning resource failed.",
+            messageTKey: "Dedicated Gateway resource provisioning failed.",
+          }
+        }
       };
     }
   };

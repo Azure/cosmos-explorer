@@ -35,7 +35,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
   );
   try {
     let collection: DataModels.Collection;
-    if (window.authType === AuthType.AAD && !userContext.useSDKOperations) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
       if (params.createNewDatabase) {
         const createDatabaseParams: DataModels.CreateDatabaseParams = {
           autoPilotMaxThroughput: params.autoPilotMaxThroughput,

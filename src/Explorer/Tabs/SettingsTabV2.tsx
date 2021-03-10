@@ -64,10 +64,9 @@ export class CollectionSettingsTabV2 extends SettingsTabV2 {
       traceFailure(
         Action.Tab,
         {
-          databaseAccountName: this.collection.container.databaseAccount().name,
           databaseName: this.collection.databaseId,
           collectionName: this.collection.id(),
-          defaultExperience: this.collection.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle,
           error: errorMessage,
@@ -120,9 +119,7 @@ export class DatabaseSettingsTabV2 extends SettingsTabV2 {
       traceFailure(
         Action.Tab,
         {
-          databaseAccountName: this.database?.container.databaseAccount().name,
           databaseName: this.database.id(),
-          defaultExperience: this.database?.container.defaultExperience(),
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle,
           error: errorMessage,

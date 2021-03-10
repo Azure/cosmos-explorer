@@ -14,7 +14,7 @@ export async function readUserDefinedFunctions(
   const clearMessage = logConsoleProgress(`Querying user defined functions for container ${collectionId}`);
   try {
     if (
-      window.authType === AuthType.AAD &&
+      userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
       userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {

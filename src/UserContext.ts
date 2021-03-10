@@ -1,8 +1,10 @@
+import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 
 interface UserContext {
+  authType?: AuthType;
   masterKey?: string;
   subscriptionId?: string;
   resourceGroup?: string;

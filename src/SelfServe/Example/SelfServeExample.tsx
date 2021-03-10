@@ -1,4 +1,4 @@
-import { PropertyInfo, OnChange, Values, IsDisplayable } from "../Decorators";
+import { PropertyInfo, OnChange, Values, IsDisplayable, RefreshOptions } from "../Decorators";
 import {
   ChoiceItem,
   Description,
@@ -32,7 +32,7 @@ const regionDropdownInfo: Info = {
   messageTKey: "RegionDropdownInfo",
 };
 
-const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+const onRegionsChange = (newValue: InputType, currentState: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
   currentState.set("regions", { value: newValue });
 
   const currentRegionText = `current region selected is ${newValue}`;
@@ -51,8 +51,8 @@ const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: Inpu
 };
 
 const onEnableDbLevelThroughputChange = (
-  currentState: Map<string, SmartUiInput>,
-  newValue: InputType
+  newValue: InputType,
+  currentState: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentState.set("enableDbLevelThroughput", { value: newValue });
   const currentDbThroughput = currentState.get("dbThroughput");
@@ -95,6 +95,13 @@ const validate = (
     - role: Indicates to the compiler that UI should be generated from this class.
 */
 @IsDisplayable()
+/*
+  @RefreshOptions()
+    - role: Passes the refresh options to be used by the self serve model.
+    - inputs: 
+        retryIntervalInMs - The time interval between refresh attempts when an update in ongoing.
+*/
+@RefreshOptions({ retryIntervalInMs: 2000 })
 export default class SelfServeExample extends SelfServeBaseClass {
   /*
   onRefresh()
@@ -120,7 +127,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
             in the SessionStorage. It uses the currentValues and baselineValues maps to perform custom validations
             as well.
 
-    - returns: The message to be displayed in the Portal Notification bar after the onSave is completed
+    - returns: The initialize, success and failure messages to be displayed in the Portal Notification blade after the operation is completed.
   */
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
@@ -139,40 +146,42 @@ export default class SelfServeExample extends SelfServeBaseClass {
       if (currentValues.get("regions") === baselineValues.get("regions")) {
         return {
           operationStatusUrl: undefined,
-          requestInitializedPortalNotification: {
-            titleTKey: "SubmissionMessageSuccessTitle",
-            messageTKey: "SubmissionMessageForSameRegionText",
-          },
-          requestCompletedPortalNotification: {
-            titleTKey: "UpdateCompletedMessageTitle",
-            messageTKey: "UpdateCompletedMessageText",
+          portalNotification: {
+            initialize: {
+              titleTKey: "SubmissionMessageSuccessTitle",
+              messageTKey: "SubmissionMessageForSameRegionText",
+            },
+            success: {
+              titleTKey: "UpdateCompletedMessageTitle",
+              messageTKey: "UpdateCompletedMessageText",
+            },
+            failure: {
+              titleTKey: "SubmissionMessageErrorTitle",
+              messageTKey: "SubmissionMessageErrorText",
+            },
           },
         };
       } else {
         return {
           operationStatusUrl: undefined,
-          requestInitializedPortalNotification: {
-            titleTKey: "SubmissionMessageSuccessTitle",
-            messageTKey: "SubmissionMessageForNewRegionText",
-          },
-          requestCompletedPortalNotification: {
-            titleTKey: "UpdateCompletedMessageTitle",
-            messageTKey: "UpdateCompletedMessageText",
+          portalNotification: {
+            initialize: {
+              titleTKey: "SubmissionMessageSuccessTitle",
+              messageTKey: "SubmissionMessageForNewRegionText",
+            },
+            success: {
+              titleTKey: "UpdateCompletedMessageTitle",
+              messageTKey: "UpdateCompletedMessageText",
+            },
+            failure: {
+              titleTKey: "SubmissionMessageErrorTitle",
+              messageTKey: "SubmissionMessageErrorText",
+            },
           },
         };
       }
     } catch (error) {
-      return {
-        operationStatusUrl: undefined,
-        requestInitializedPortalNotification: {
-          titleTKey: "SubmissionMessageErrorTitle",
-          messageTKey: "SubmissionMessageErrorText",
-        },
-        requestCompletedPortalNotification: {
-          titleTKey: "UpdateCompletedMessageTitle",
-          messageTKey: "UpdateCompletedMessageText",
-        },
-      };
+      throw new Error("OnSaveFailureMessage");
     }
   };
 

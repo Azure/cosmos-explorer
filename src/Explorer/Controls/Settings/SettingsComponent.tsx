@@ -316,8 +316,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     this.props.settingsTab.isExecuting(true);
     const startKey: number = traceStart(Action.SettingsV2Updated, {
-      databaseAccountName: this.container.databaseAccount()?.name,
-      defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.props.settingsTab.tabTitle(),
     });
@@ -333,10 +331,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       traceFailure(
         Action.SettingsV2Updated,
         {
-          databaseAccountName: this.container.databaseAccount()?.name,
           databaseName: this.collection?.databaseId,
           collectionName: this.collection?.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
           error: getErrorMessage(error),
@@ -409,10 +406,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       traceSuccess(
         Action.Tab,
         {
-          databaseAccountName: this.container.databaseAccount().name,
           databaseName: this.collection.databaseId,
           collectionName: this.collection.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.props.settingsTab.tabTitle(),
         },
@@ -709,9 +705,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     traceSuccess(
       Action.SettingsV2Updated,
       {
-        databaseAccountName: this.container.databaseAccount()?.name,
         databaseName: this.database.id(),
-        defaultExperience: this.container.defaultExperience(),
+
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: this.props.settingsTab.tabTitle(),
       },
@@ -810,10 +805,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         traceSuccess(
           Action.MongoIndexUpdated,
           {
-            databaseAccountName: this.container.databaseAccount()?.name,
             databaseName: this.collection?.databaseId,
             collectionName: this.collection?.id(),
-            defaultExperience: this.container.defaultExperience(),
+
             dataExplorerArea: Constants.Areas.Tab,
             tabTitle: this.props.settingsTab.tabTitle(),
           },
@@ -823,10 +817,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         traceFailure(
           Action.MongoIndexUpdated,
           {
-            databaseAccountName: this.container.databaseAccount()?.name,
             databaseName: this.collection?.databaseId,
             collectionName: this.collection?.id(),
-            defaultExperience: this.container.defaultExperience(),
+
             dataExplorerArea: Constants.Areas.Tab,
             tabTitle: this.props.settingsTab.tabTitle(),
             error: getErrorMessage(error),
@@ -875,10 +868,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     traceSuccess(
       Action.SettingsV2Updated,
       {
-        databaseAccountName: this.container.databaseAccount()?.name,
         databaseName: this.collection?.databaseId,
         collectionName: this.collection?.id(),
-        defaultExperience: this.container.defaultExperience(),
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: this.props.settingsTab.tabTitle(),
       },

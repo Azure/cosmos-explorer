@@ -9,7 +9,7 @@ import { GraphVizComponentProps } from "./GraphVizComponent";
 import * as GraphData from "./GraphData";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { GraphUtil } from "./GraphUtil";
+import * as GraphUtil from "./GraphUtil";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as GremlinClient from "./GremlinClient";
@@ -1031,10 +1031,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       TelemetryProcessor.traceSuccess(
         Action.Tab,
         {
-          databaseAccountName: this.props.resourceId,
           databaseName: this.props.databaseId,
           collectionName: this.props.collectionId,
-          defaultExperience: Constants.DefaultAccountExperience.Graph,
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: "Graph",
         },

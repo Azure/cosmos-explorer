@@ -37,23 +37,6 @@ export function containItems<T>(items: T[]): boolean {
   return items && items.length > 0;
 }
 
-// export function setTargetIcon(idToIconHandlerMap: CloudHub.Common.IToolbarElementIdIconMap, $sourceElement: JQuery, toIconState: IconState): void {
-//     if (idToIconHandlerMap) {
-//         var iconId: string = $sourceElement.attr("id");
-//         var iconHandler = idToIconHandlerMap[iconId];
-//         switch (toIconState) {
-//             case IconState.default:
-//                 iconHandler.observable(iconHandler.default);
-//                 break;
-//             case IconState.hoverState:
-//                 iconHandler.observable(iconHandler.hoverState);
-//                 break;
-//             default:
-//                 window.console.log("error");
-//         }
-//     }
-// }
-
 export function addCssClass($sourceElement: JQuery, cssClassName: string): void {
   if (!$sourceElement.hasClass(cssClassName)) {
     $sourceElement.addClass(cssClassName);
@@ -78,8 +61,9 @@ export function getPropertyIntersectionFromTableEntities(
   entities: Entities.ITableEntity[],
   isCassandraApi: boolean
 ): string[] {
-  var headerUnion: string[] = [];
+  const headerUnion: string[] = [];
   entities &&
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     entities.forEach((row: any) => {
       const keys = Object.keys(row);
       keys &&

@@ -133,25 +133,19 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.AddCollection]
   ) {
     explorer.closeAllPanes();
-    !explorer.isConnectExplorerVisible() && explorer.addCollectionPane.open();
+    explorer.addCollectionPane.open();
   } else if (
     action.paneKind === ActionContracts.PaneKind.CassandraAddCollection ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.CassandraAddCollection]
   ) {
     explorer.closeAllPanes();
-    !explorer.isConnectExplorerVisible() && explorer.cassandraAddCollectionPane.open();
+    explorer.cassandraAddCollectionPane.open();
   } else if (
     action.paneKind === ActionContracts.PaneKind.GlobalSettings ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.GlobalSettings]
   ) {
     explorer.closeAllPanes();
-    !explorer.isConnectExplorerVisible() && explorer.settingsPane.open();
-  } else if (
-    action.paneKind === ActionContracts.PaneKind.AdHocAccess ||
-    (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.AdHocAccess]
-  ) {
-    explorer.closeAllPanes();
-    !explorer.isConnectExplorerVisible() && explorer.renewAdHocAccessPane.open();
+    explorer.settingsPane.open();
   }
 }
 
