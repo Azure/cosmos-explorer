@@ -156,7 +156,7 @@ export default class SqlX extends SelfServeBaseClass {
         const operationStatusUrl = await deleteDedicatedGatewayResource();
         return {
           operationStatusUrl: operationStatusUrl,
-          portalNotification : {
+          portalNotification: {
             initialize: {
               titleTKey: "Deleting resource",
               messageTKey: "DedicatedGateway resource will be deleted.",
@@ -168,8 +168,8 @@ export default class SqlX extends SelfServeBaseClass {
             failure: {
               titleTKey: "Failed to delete resource.",
               messageTKey: "DedicatedGateway resource deletion failed.",
-            }
-          }
+            },
+          },
         };
       } else {
         // Check for scaling up/down/in/out
@@ -184,11 +184,11 @@ export default class SqlX extends SelfServeBaseClass {
               titleTKey: "Resource Updated",
               messageTKey: "DedicatedGateway resource updated.",
             },
-            failure : {
+            failure: {
               titleTKey: "Resource Updation failed.",
               messageTKey: "DedicatedGateway resource updation failed.",
-            }
-          }
+            },
+          },
         };
       }
     } else {
@@ -200,19 +200,19 @@ export default class SqlX extends SelfServeBaseClass {
         portalNotification: {
           initialize: {
             titleTKey: "Provisioning resource",
-            messageTKey: "Dedicated Gateway resource will be provisioned.",  
+            messageTKey: "Dedicated Gateway resource will be provisioned.",
           },
           success: {
             titleTKey: "Resource provisioned",
             messageTKey: `Dedicated Gateway resource provisioned. Please go to <a href='${generateBladeLink(
               BladeType.SqlKeys
-            )}'>keys blade</a> to use the keys.`,  
+            )}'>keys blade</a> to use the keys.`,
           },
           failure: {
             titleTKey: "Provisioning resource failed.",
             messageTKey: "Dedicated Gateway resource provisioning failed.",
-          }
-        }
+          },
+        },
       };
     }
   };
