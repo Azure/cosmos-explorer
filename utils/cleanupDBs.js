@@ -9,7 +9,15 @@ const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const resourceGroupName = "runners";
 
-const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20).getTime();
+const sixtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 60).getTime();
+
+function friendlyTime(date) {
+  try {
+    return ms(date);
+  } catch (error) {
+    return "Unknown";
+  }
+}
 
 // Deletes all SQL and Mongo databases created more than 20 minutes ago in the test runner accounts
 async function main() {
@@ -20,23 +28,23 @@ async function main() {
     if (account.kind === "MongoDB") {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
-        const timestamp = database.name.split("-")[1];
-        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+        const timestamp = Number(database.name.split("-")[1]);
+        if (timestamp && timestamp < sixtyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         }
       }
     } else if (account.kind === "GlobalDocumentDB") {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
       for (const database of sqlDatabases) {
-        const timestamp = database.name.split("-")[1];
-        if (!timestamp || Number(timestamp) < twentyMinutesAgo) {
+        const timestamp = Number(database.name.split("-")[1]);
+        if (timestamp && timestamp < sixtyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - Number(timestamp))}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         }
       }
     }
@@ -49,6 +57,7 @@ main()
     process.exit(0);
   })
   .catch((err) => {
-    console.error(err);
-    process.exit(1);
+    console.log(err);
+    console.log("Cleanup failed! Exiting with success. Cleanup should always fail safe.");
+    process.exit(0);
   });

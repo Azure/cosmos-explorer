@@ -150,6 +150,11 @@ module.exports = function (env = {}, argv = {}) {
       template: "src/connectToGitHub.html",
       chunks: ["connectToGitHub"],
     }),
+    new HtmlWebpackPlugin({
+      filename: "selfServe.html",
+      template: "src/SelfServe/selfServe.html",
+      chunks: ["selfServe"],
+    }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [{ from: "DataExplorer.nuspec" }, { from: "web.config" }, { from: "quickstart/*.zip" }],
@@ -173,6 +178,7 @@ module.exports = function (env = {}, argv = {}) {
       terminal: "./src/Terminal/index.ts",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
       galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
+      selfServe: "./src/SelfServe/SelfServe.tsx",
       connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     },
     node: {

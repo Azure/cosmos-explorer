@@ -7,7 +7,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { RouteHandler } from "../../RouteHandlers/RouteHandler";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import ThemeUtility from "../../Common/ThemeUtility";
+import * as ThemeUtility from "../../Common/ThemeUtility";
 import Explorer from "../Explorer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 

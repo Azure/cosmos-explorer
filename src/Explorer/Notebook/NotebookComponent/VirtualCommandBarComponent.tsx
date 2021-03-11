@@ -1,7 +1,7 @@
 import * as React from "react";
 import { AppState, ContentRef, selectors } from "@nteract/core";
 import { connect } from "react-redux";
-import NteractUtil from "../NTeractUtil";
+import * as NteractUtil from "../NTeractUtil";
 
 interface VirtualCommandBarComponentProps {
   kernelSpecName: string;
