@@ -141,7 +141,6 @@ function configureHostedWithResourceToken(config: ResourceToken) {
     features: extractFeatures(),
     isAuthWithresourceToken: true,
   });
-  explorer.isRefreshingExplorer(false);
 }
 
 function configureHostedWithEncryptedToken(config: EncryptedToken) {

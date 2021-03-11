@@ -402,7 +402,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       this._setBaseline();
       this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
     } catch (error) {
-      this.container.isRefreshingExplorer(false);
       this.isExecutionError(true);
       console.error(error);
       const errorMessage = getErrorMessage(error);
