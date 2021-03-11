@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, DefaultAccountExperience } from "../Common/Constants";
+import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage } from "../Common/MessageHandler";
-import { configContext, Platform } from "../ConfigContext";
+import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
@@ -89,20 +90,24 @@ async function configureHostedWithAAD(config: AAD) {
 }
 
 function configureHostedWithConnectionString(config: ConnectionString) {
+  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
+  const databaseAccount = {
+    id: "",
+    location: "",
+    type: "",
+    name: config.encryptedTokenMetadata.accountName,
+    kind: getDatabaseAccountKindFromExperience(apiExperience),
+    properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
+    tags: {},
+  };
   updateUserContext({
     // For legacy reasons lots of code expects a connection string login to look and act like an encrypted token login
     authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
+    databaseAccount,
   });
-  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   explorer.configure({
-    databaseAccount: {
-      id: "",
-      name: config.encryptedTokenMetadata.accountName,
-      kind: getDatabaseAccountKindFromExperience(apiExperience),
-      properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
-      tags: {},
-    },
+    databaseAccount,
     masterKey: config.masterKey,
     features: extractFeatures(),
   });
@@ -110,7 +115,18 @@ function configureHostedWithConnectionString(config: ConnectionString) {
 
 function configureHostedWithResourceToken(config: ResourceToken) {
   const parsedResourceToken = parseResourceTokenConnectionString(config.resourceToken);
+  const databaseAccount = {
+    id: "",
+    location: "",
+    type: "",
+    name: parsedResourceToken.accountEndpoint,
+    kind: AccountKind.GlobalDocumentDB,
+    properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
+    // Resource tokens can only be used with SQL API
+    tags: { defaultExperience: DefaultAccountExperience.DocumentDB },
+  };
   updateUserContext({
+    databaseAccount,
     authType: AuthType.ResourceToken,
     resourceToken: parsedResourceToken.resourceToken,
     endpoint: parsedResourceToken.accountEndpoint,
@@ -121,14 +137,7 @@ function configureHostedWithResourceToken(config: ResourceToken) {
     explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
   }
   explorer.configure({
-    databaseAccount: {
-      id: "",
-      name: parsedResourceToken.accountEndpoint,
-      kind: AccountKind.GlobalDocumentDB,
-      properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
-      // Resource tokens can only be used with SQL API
-      tags: { defaultExperience: DefaultAccountExperience.DocumentDB },
-    },
+    databaseAccount,
     features: extractFeatures(),
     isAuthWithresourceToken: true,
   });
@@ -157,6 +166,7 @@ function configureHostedWithEncryptedToken(config: EncryptedToken) {
 
 function configureEmulator() {
   updateUserContext({
+    databaseAccount: emulatorAccount,
     authType: AuthType.MasterKey,
   });
   explorer.databaseAccount(emulatorAccount);
@@ -206,6 +216,25 @@ function configurePortal() {
         ) {
           inputs.extensionEndpoint = configContext.PROXY_PATH;
         }
+
+        const authorizationToken = inputs.authorizationToken || "";
+        const masterKey = inputs.masterKey || "";
+        const databaseAccount = inputs.databaseAccount;
+
+        updateConfigContext({
+          BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
+          ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+        });
+
+        updateUserContext({
+          authorizationToken,
+          masterKey,
+          databaseAccount,
+          resourceGroup: inputs.resourceGroup,
+          subscriptionId: inputs.subscriptionId,
+          subscriptionType: inputs.subscriptionType,
+          quotaId: inputs.quotaId,
+        });
 
         explorer.configure(inputs);
         applyExplorerBindings(explorer);

@@ -11,13 +11,12 @@ import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
-import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { sendCachedDataMessage, sendMessage } from "../Common/MessageHandler";
 import { QueriesClient } from "../Common/QueriesClient";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
-import { configContext, Platform, updateConfigContext } from "../ConfigContext";
+import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
@@ -470,6 +469,7 @@ export default class Explorer {
         databaseAccount
       );
       this.defaultExperience(defaultExperience);
+      // TODO. Remove this entirely
       updateUserContext({
         defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
       });
@@ -1444,8 +1444,6 @@ export default class Explorer {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
 
-      const authorizationToken = inputs.authorizationToken || "";
-      const masterKey = inputs.masterKey || "";
       const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
@@ -1461,21 +1459,6 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
-
-      updateConfigContext({
-        BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
-        ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
-      });
-
-      updateUserContext({
-        authorizationToken,
-        masterKey,
-        databaseAccount,
-        resourceGroup: inputs.resourceGroup,
-        subscriptionId: inputs.subscriptionId,
-        subscriptionType: inputs.subscriptionType,
-        quotaId: inputs.quotaId,
-      });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
