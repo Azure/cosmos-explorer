@@ -1,7 +1,8 @@
-import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
 import { ClientSecretCredential } from "@azure/identity";
 import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
+import { updateUserContext } from "../../src/UserContext";
+import { get } from "../../src/Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 
 const resourceGroup = process.env.RESOURCE_GROUP || "";
 const subscriptionId = process.env.SUBSCRIPTION_ID || "";
@@ -32,16 +33,10 @@ console.log("Account Name: ", accountName);
 
 const initTestExplorer = async (): Promise<void> => {
   const { token } = await credentials.getToken("https://management.core.windows.net/.default");
-  const client = new CosmosDBManagementClient(
-    {
-      signRequest: async (request) => {
-        request.headers.set("authorization", `bearer ${token}`);
-        return request;
-      },
-    },
-    subscriptionId
-  );
-  const databaseAccount = await client.databaseAccounts.get(resourceGroup, accountName);
+  updateUserContext({
+    authorizationToken: `bearer ${token}`,
+  });
+  const databaseAccount = await get(subscriptionId, resourceGroup, accountName);
 
   const initTestExplorerContent = {
     inputs: {
