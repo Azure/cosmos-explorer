@@ -94,6 +94,7 @@
     "rxjs": "6.6.3",
     "styled-components": "4.3.2",
     "swr": "0.4.0",
+    "terser-webpack-plugin": "3.1.0",
     "underscore": "1.9.1",
     "utility-types": "3.10.0"
   },

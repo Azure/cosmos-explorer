@@ -9,8 +9,8 @@ const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const TerserPlugin = require("terser-webpack-plugin");
 const isCI = require("is-ci");
-const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -56,9 +56,23 @@ const htmlRule = {
   ],
 };
 
+// We compile our own code with ts-loader
+const typescriptRule = {
+  test: /\.tsx?$/,
+  use: [
+    {
+      loader: "ts-loader",
+      options: {
+        transpileOnly: true,
+      },
+    },
+  ],
+  exclude: /node_modules/,
+};
+
 module.exports = function (env = {}, argv = {}) {
   const mode = argv.mode || "development";
-  const target = mode === "development" ? "es2018" : "es2017";
+  const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
   const envVars = {
     GIT_SHA: gitSha,
     PORT: process.env.PORT || "1234",
@@ -70,26 +84,10 @@ module.exports = function (env = {}, argv = {}) {
 
   if (mode === "development") {
     envVars.NODE_ENV = "development";
+    typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
   }
 
-  const typescriptRule = {
-    test: /\.tsx?$/,
-    use: [
-      {
-        loader: "esbuild-loader",
-        options: {
-          loader: "tsx",
-          target,
-        },
-      },
-    ],
-    exclude: /node_modules/,
-  };
-
-  const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
-
   const plugins = [
-    new ESBuildPlugin(),
     new CleanWebpackPlugin(["dist"]),
     new CreateFileWebpack({
       path: "./dist",
@@ -202,8 +200,12 @@ module.exports = function (env = {}, argv = {}) {
     optimization: {
       minimize: mode === "production" ? true : false,
       minimizer: [
-        new ESBuildMinifyPlugin({
-          target,
+        new TerserPlugin({
+          terserOptions: {
+            // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
+            compress: false,
+            mangle: true,
+          },
         }),
       ],
     },
