@@ -258,7 +258,6 @@ src/TokenProviders/PortalTokenProvider.ts
 src/TokenProviders/TokenProviderFactory.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
-src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
 src/Utils/QueryUtils.test.ts
 src/Utils/QueryUtils.ts
