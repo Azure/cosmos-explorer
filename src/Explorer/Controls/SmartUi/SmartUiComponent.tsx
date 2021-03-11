@@ -127,8 +127,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return (
       info && (
         <Text>
-          {this.props.getTranslation(info.messageTKey)}
-          {` `}
+          {this.props.getTranslation(info.messageTKey)}{" "}
           {info.link && (
             <Link href={info.link.href} target="_blank">
               {this.props.getTranslation(info.link.textTKey)}
@@ -168,8 +167,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     }
     const descriptionElement = (
       <Text id={`${dataFieldName}-text-display`} aria-labelledby={labelId}>
-        {this.props.getTranslation(description.textTKey)}
-        {` `}
+        {this.props.getTranslation(description.textTKey)}{" "}
         {description.link && (
           <Link target="_blank" href={description.link.href}>
             {this.props.getTranslation(description.link.textTKey)}

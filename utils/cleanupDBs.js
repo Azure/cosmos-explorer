@@ -11,6 +11,14 @@ const resourceGroupName = "runners";
 
 const sixtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 60).getTime();
 
+function friendlyTime(date) {
+  try {
+    return ms(date);
+  } catch (error) {
+    return "Unknown";
+  }
+}
+
 // Deletes all SQL and Mongo databases created more than 20 minutes ago in the test runner accounts
 async function main() {
   const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
@@ -23,9 +31,9 @@ async function main() {
         const timestamp = Number(database.name.split("-")[1]);
         if (timestamp && timestamp < sixtyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         }
       }
     } else if (account.kind === "GlobalDocumentDB") {
@@ -34,9 +42,9 @@ async function main() {
         const timestamp = Number(database.name.split("-")[1]);
         if (timestamp && timestamp < sixtyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         }
       }
     }

@@ -23,7 +23,6 @@ import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
-import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
@@ -57,7 +56,6 @@ export function useKnockoutExplorer(platform: Platform, explorerParams: Explorer
 
 async function configureHosted() {
   const win = (window as unknown) as HostedExplorerChildFrame;
-  explorer.selfServeType(SelfServeType.none);
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
     configureHostedWithEncryptedToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
@@ -161,7 +159,6 @@ function configureEmulator() {
   updateUserContext({
     authType: AuthType.MasterKey,
   });
-  explorer.selfServeType(SelfServeType.none);
   explorer.databaseAccount(emulatorAccount);
   explorer.isAccountReady(true);
 }
