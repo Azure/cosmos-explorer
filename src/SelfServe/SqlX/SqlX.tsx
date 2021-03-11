@@ -1,4 +1,4 @@
-import { IsDisplayable, OnChange, Values, PropertyInfo, RefreshOptions } from "../Decorators";
+import { IsDisplayable, OnChange, Values, RefreshOptions } from "../Decorators";
 import {
   ChoiceItem,
   DescriptionType,
@@ -7,7 +7,6 @@ import {
   RefreshResult,
   SelfServeBaseClass,
   SmartUiInput,
-  Info,
   Description,
   OnSaveResult,
 } from "../SelfServeTypes";
@@ -19,12 +18,9 @@ import {
   getCurrentProvisioningState,
 } from "./SqlX.rp";
 
-const skuInfo: Info = {
-  messageTKey: "SkuInfo",
-};
-
-const resourceCostInfo: Info = {
-  messageTKey: "ResourceCostInfo",
+const costPerHourValue = {
+  textTKey: "CostPerHourText",
+  type: DescriptionType.Text,
   link: {
     href: "https://azure.microsoft.com/en-us/pricing/details/virtual-machines/windows/",
     textTKey: "SkuCostInfo",
@@ -44,37 +40,12 @@ const getSKUDetails = (sku: string): string => {
   return "Not Supported Yet";
 };
 
-const displayCostCalculation = (sku: string, numberOfInstances: string): string => {
-  return `${numberOfInstances} * Hourly cost of ${sku}`;
-};
-
 const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
   currentValues.set("sku", { value: newValue });
-  const currentCostText = displayCostCalculation(
-    currentValues.get("sku").value.toString(),
-    currentValues.get("instances").value.toString()
-  );
-  currentValues.set("currentCostCalculation", {
-    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
-  });
   currentValues.set("skuDetails", {
     value: { textTKey: getSKUDetails(`${newValue.toString()}`), type: DescriptionType.Text } as Description,
   });
-  return currentValues;
-};
-
-const onNumberOfInstancesChange = (
-  newValue: InputType,
-  currentValues: Map<string, SmartUiInput>
-): Map<string, SmartUiInput> => {
-  currentValues.set("instances", { value: newValue });
-  const currentCostText = displayCostCalculation(
-    currentValues.get("sku").value.toString(),
-    currentValues.get("instances").value.toString()
-  );
-  currentValues.set("currentCostCalculation", {
-    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
-  });
+  currentValues.set("costPerHour", { value: costPerHourValue as Description });
   return currentValues;
 };
 
@@ -84,6 +55,21 @@ const onEnableDedicatedGatewayChange = (
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+  currentValues.set("warningBanner", {
+    value: { textTKey: "NoValue" } as Description,
+    hidden: true,
+  });
+  if (dedicatedGatewayOriginallyEnabled === false && newValue === true) {
+    currentValues.set("warningBanner", {
+      value: { textTKey: "WarningBannerOnUpdate" } as Description,
+      hidden: false,
+    });
+  } else if (dedicatedGatewayOriginallyEnabled === true && newValue == false) {
+    currentValues.set("warningBanner", {
+      value: { textTKey: "WarningBannerOnDelete" } as Description,
+      hidden: false,
+    });
+  }
   const sku = currentValues.get("sku");
   const instances = currentValues.get("instances");
   const hideAttributes = newValue === undefined || !(newValue as boolean);
@@ -99,20 +85,13 @@ const onEnableDedicatedGatewayChange = (
     disabled: dedicatedGatewayOriginallyEnabled,
   });
 
-  const currentCostText = displayCostCalculation(
-    currentValues.get("sku").value.toString(),
-    currentValues.get("instances").value.toString()
-  );
-  currentValues.set("currentCostCalculation", {
-    value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
-    hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
-  });
   currentValues.set("skuDetails", {
     value: { textTKey: getSKUDetails(`${currentValues.get("sku").value}`), type: DescriptionType.Text } as Description,
     hidden: hideAttributes,
     disabled: dedicatedGatewayOriginallyEnabled,
   });
+
+  currentValues.set("costPerHour", { value: costPerHourValue as Description, hidden: hideAttributes });
 
   return currentValues;
 };
@@ -149,6 +128,11 @@ export default class SqlX extends SelfServeBaseClass {
   ): Promise<OnSaveResult> => {
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+
+    currentValues.set("warningBanner", {
+      value: { textTKey: "NoValue" } as Description,
+      hidden: true,
+    });
 
     //TODO : Ad try catch for each RP call and return relevant notifications
     if (dedicatedGatewayOriginallyEnabled) {
@@ -223,29 +207,33 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("enableDedicatedGateway", { value: false });
     defaults.set("sku", { value: "Cosmos.D4s", hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
-    defaults.set("currentCostCalculation", { value: "0", hidden: true });
     defaults.set("skuDetails", { value: "NoValue", hidden: true });
+    defaults.set("costPerHour", { value: "NoValue", hidden: true });
+
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: true });
-      const currentCostText = displayCostCalculation(
-        defaults.get("sku").value.toString(),
-        defaults.get("instances").value.toString()
-      );
-      defaults.set("currentCostCalculation", {
-        value: { textTKey: currentCostText, type: DescriptionType.Text } as Description,
-        hidden: false,
-      });
+      defaults.set("costPerHour", { value: costPerHourValue as Description });
       defaults.set("skuDetails", {
         value: { textTKey: getSKUDetails(`${defaults.get("sku").value}`), type: DescriptionType.Text } as Description,
         hidden: false,
       });
     }
 
+    defaults.set("warningBanner", {
+      value: { textTKey: "NoValue" } as Description,
+      hidden: true,
+    });
     return defaults;
   };
+
+  @Values({
+    labelTKey: "NoValue",
+    isDynamicDescription: true,
+  })
+  warningBanner: string;
 
   @Values({
     description: {
@@ -267,7 +255,6 @@ export default class SqlX extends SelfServeBaseClass {
   })
   enableDedicatedGateway: boolean;
 
-  @PropertyInfo(skuInfo)
   @OnChange(onSKUChange)
   @Values({
     labelTKey: "SKUs",
@@ -282,7 +269,6 @@ export default class SqlX extends SelfServeBaseClass {
   })
   skuDetails: string;
 
-  @OnChange(onNumberOfInstancesChange)
   @Values({
     labelTKey: "NumberOfInstances",
     min: getInstancesMin,
@@ -292,10 +278,9 @@ export default class SqlX extends SelfServeBaseClass {
   })
   instances: number;
 
-  @PropertyInfo(resourceCostInfo)
   @Values({
-    labelTKey: "CurrentCostCalculation",
+    labelTKey: "CostPerHour",
     isDynamicDescription: true,
   })
-  currentCostCalculation: string;
+  costPerHour: string;
 }
