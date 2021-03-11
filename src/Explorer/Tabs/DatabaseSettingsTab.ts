@@ -1,23 +1,23 @@
-import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as PricingUtils from "../../Utils/PricingUtils";
-import * as SharedConstants from "../../Shared/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import DiscardIcon from "../../../images/discard.svg";
-import editable from "../../Common/EditableUtility";
 import Q from "q";
+import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
-import TabsBase from "./TabsBase";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import Explorer from "../Explorer";
+import * as Constants from "../../Common/Constants";
 import { updateOffer } from "../../Common/dataAccess/updateOffer";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { configContext, Platform } from "../../ConfigContext";
+import editable from "../../Common/EditableUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { configContext, Platform } from "../../ConfigContext";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as SharedConstants from "../../Shared/Constants";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../Utils/PricingUtils";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../Explorer";
+import TabsBase from "./TabsBase";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -131,7 +131,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.requestUnitsUsageCost = ko.pureComputed(() => {
-      const account = this.container.databaseAccount();
+      const account = userContext.databaseAccount;
       if (!account) {
         return "";
       }
@@ -357,7 +357,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.isTemplateReady = ko.observable<boolean>(false);
 
     this.isFreeTierAccount = ko.computed<boolean>(() => {
-      const databaseAccount = this.container?.databaseAccount();
+      const databaseAccount = userContext.databaseAccount;
       return databaseAccount?.properties?.enableFreeTier;
     });
 
