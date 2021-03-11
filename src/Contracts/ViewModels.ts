@@ -3,7 +3,7 @@ import {
   Resource,
   StoredProcedureDefinition,
   TriggerDefinition,
-  UserDefinedFunctionDefinition,
+  UserDefinedFunctionDefinition
 } from "@azure/cosmos";
 import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer/Explorer";
@@ -413,12 +413,12 @@ export interface CollectionCreationDefaults {
 export interface ThroughputDefaults {
   fixed: number;
   unlimited:
-    | number
-    | {
-        collectionThreshold: number;
-        lessThanOrEqualToThreshold: number;
-        greatThanThreshold: number;
-      };
+  | number
+  | {
+    collectionThreshold: number;
+    lessThanOrEqualToThreshold: number;
+    greatThanThreshold: number;
+  };
   unlimitedmax: number;
   unlimitedmin: number;
   shared: number;

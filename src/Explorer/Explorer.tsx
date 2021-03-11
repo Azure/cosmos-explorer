@@ -55,6 +55,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
+import { DeleteDatabaseConfirmationPaneReact } from "./Panes/DeleteDatabaseConfirmationPaneReact";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
@@ -92,6 +93,7 @@ export interface ExplorerParams {
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  openDeleteDatabaseSidePanel: (headerText: string, panelContent: JSX.Element) => void;
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
@@ -177,6 +179,7 @@ export default class Explorer {
   // Panes
   public contextPanes: ContextualPaneBase[];
   public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public openDeleteDatabaseSidePanel: (headerText: string, panelContent: JSX.Element) => void;
   public closeSidePanel: () => void;
 
   // Resource Tree
@@ -283,6 +286,7 @@ export default class Explorer {
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
     this.openSidePanel = params?.openSidePanel;
+    this.openDeleteDatabaseSidePanel = params?.openDeleteDatabaseSidePanel;
     this.closeSidePanel = params?.closeSidePanel;
     this.closeDialog = params?.closeDialog;
     this.openDialog = params?.openDialog;
@@ -349,8 +353,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               !this.isAuthWithResourceToken() &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
+              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                this.isFeatureEnabled(Constants.Features.enableNotebooks))
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -372,7 +376,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                this.isFeatureEnabled(Constants.Features.enableSpark)
+              this.isFeatureEnabled(Constants.Features.enableSpark)
             );
             if (this.isSparkEnabled()) {
               appInsights.trackEvent(
@@ -2540,12 +2544,23 @@ export default class Explorer {
     this.isFeatureEnabled(Constants.Features.enableKOPanel)
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
-          "Delete Collection",
-          <DeleteCollectionConfirmationPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+        "Delete Collection",
+        <DeleteCollectionConfirmationPanel
+          explorer={this}
+          closePanel={() => this.closeSidePanel()}
+          openNotificationConsole={() => this.expandConsole()}
+        />
+      );
+  }
+
+  public openDeleteDatabaseConfirmationPane(): void {
+    this.openSidePanel(
+      "Delete Database",
+      <DeleteDatabaseConfirmationPaneReact
+        explorer={this}
+        openNotificationConsole={() => this.expandConsole()}
+        closePanel={() => this.closeSidePanel()}
+      />
+    );
   }
 }
