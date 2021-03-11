@@ -1,14 +1,3 @@
-/**
- * Lightweight gremlin client javascript library for the browser:
- * - specs: http://tinkerpop.apache.org/docs/3.0.1-incubating/#_developing_a_driver
- * - inspired from gremlin-javascript for nodejs: https://github.com/jbmusso/gremlin-javascript
- * - tested on cosmosdb gremlin server
- * - only supports sessionless gremlin requests
- * - Relies on text-encoding polyfill (github.com/inexorabletash/text-encoding) for TextEncoder/TextDecoder on IE, Edge.
- */
-
-import { TextEncoder, TextDecoder } from "text-encoding";
-
 export interface GremlinSimpleClientParameters {
   endpoint: string; // The websocket endpoint
   user: string;
