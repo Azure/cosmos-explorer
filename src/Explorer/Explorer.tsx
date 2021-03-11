@@ -3,7 +3,6 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
 import * as ko from "knockout";
-import * as MostRecentActivity from "./MostRecentActivity/MostRecentActivity";
 import * as path from "path";
 import * as SharedConstants from "../Shared/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -84,9 +83,6 @@ import { IChoiceGroupProps } from "office-ui-fabric-react";
 import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
 import { appInsights } from "../Shared/appInsights";
-import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
-import { SelfServeType } from "../SelfServe/SelfServeUtils";
-import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 
@@ -132,7 +128,6 @@ export default class Explorer {
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
-  public selfServeType: ko.Observable<SelfServeType>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
@@ -140,7 +135,6 @@ export default class Explorer {
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
-  public mostRecentActivity: MostRecentActivity.MostRecentActivity;
 
   // Notification Console
   private setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
@@ -161,7 +155,6 @@ export default class Explorer {
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
-  private selfServeComponentAdapter: SelfServeComponentAdapter;
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
@@ -245,7 +238,6 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private selfServeLoadingComponentAdapter: SelfServeLoadingComponentAdapter;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -289,7 +281,6 @@ export default class Explorer {
       }
     });
     this.isAccountReady = ko.observable<boolean>(false);
-    this.selfServeType = ko.observable<SelfServeType>(undefined);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
     this.arcadiaToken.subscribe((token: string) => {
@@ -664,7 +655,6 @@ export default class Explorer {
     });
 
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-    this.selfServeComponentAdapter = new SelfServeComponentAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
@@ -839,7 +829,6 @@ export default class Explorer {
     });
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
-    this.selfServeLoadingComponentAdapter = new SelfServeLoadingComponentAdapter();
 
     this._initSettings();
 
@@ -924,8 +913,6 @@ export default class Explorer {
 
       featureSubcription.dispose();
     });
-
-    this.mostRecentActivity = new MostRecentActivity.MostRecentActivity(this);
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -1411,20 +1398,6 @@ export default class Explorer {
     return false;
   }
 
-  public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
-    const selfServeFeature = inputs.features[Constants.Features.selfServeType];
-    if (selfServeFeature) {
-      // self serve type received from query string
-      const selfServeType = SelfServeType[selfServeFeature?.toLowerCase() as keyof typeof SelfServeType];
-      this.selfServeType(selfServeType ? selfServeType : SelfServeType.invalid);
-    } else if (inputs.selfServeType) {
-      // self serve type received from portal
-      this.selfServeType(inputs.selfServeType);
-    } else {
-      this.selfServeType(SelfServeType.none);
-    }
-  }
-
   public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
     if (inputs != null) {
       // In development mode, save the iframe message from the portal in session storage.
@@ -1450,7 +1423,6 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      this.setSelfServeType(inputs);
 
       updateConfigContext({
         BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
@@ -2331,7 +2303,7 @@ export default class Explorer {
       account: userContext.databaseAccount,
       container: this,
       junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTab.OfficialSamples,
+      selectedTab: selectedTab || GalleryTab.PublicGallery,
       notebookUrl,
       galleryItem,
       isFavorite,

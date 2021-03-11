@@ -6,12 +6,13 @@ import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
 import { TextField } from "office-ui-fabric-react/lib/TextField";
 import { Text } from "office-ui-fabric-react/lib/Text";
 import { Stack, IStackTokens } from "office-ui-fabric-react/lib/Stack";
-import { Link, MessageBar, MessageBarType, Toggle } from "office-ui-fabric-react";
+import { Label, Link, MessageBar, MessageBarType, Toggle } from "office-ui-fabric-react";
 import * as InputUtils from "./InputUtils";
 import "./SmartUiComponent.less";
 import {
   ChoiceItem,
   Description,
+  DescriptionType,
   Info,
   InputType,
   InputTypeValue,
@@ -19,6 +20,7 @@ import {
   SmartUiInput,
 } from "../../../SelfServe/SelfServeTypes";
 import { TFunction } from "i18next";
+import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
 
 /**
  * Generic UX renderer
@@ -29,15 +31,14 @@ import { TFunction } from "i18next";
  */
 
 interface BaseDisplay {
+  labelTKey: string;
   dataFieldName: string;
   errorMessage?: string;
   type: InputTypeValue;
 }
 
 interface BaseInput extends BaseDisplay {
-  labelTKey: string;
   placeholderTKey?: string;
-  errorMessage?: string;
 }
 
 /**
@@ -67,7 +68,8 @@ interface ChoiceInput extends BaseInput {
 }
 
 interface DescriptionDisplay extends BaseDisplay {
-  description: Description;
+  description?: Description;
+  isDynamicDescription?: boolean;
 }
 
 type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
@@ -123,25 +125,27 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
   private renderInfo(info: Info): JSX.Element {
     return (
-      <MessageBar styles={{ root: { width: 400 } }}>
-        {this.props.getTranslation(info.messageTKey)}
-        {info.link && (
-          <Link href={info.link.href} target="_blank">
-            {this.props.getTranslation(info.link.textTKey)}
-          </Link>
-        )}
-      </MessageBar>
+      info && (
+        <Text>
+          {this.props.getTranslation(info.messageTKey)}{" "}
+          {info.link && (
+            <Link href={info.link.href} target="_blank">
+              {this.props.getTranslation(info.link.textTKey)}
+            </Link>
+          )}
+        </Text>
+      )
     );
   }
 
-  private renderTextInput(input: StringInput): JSX.Element {
+  private renderTextInput(input: StringInput, labelId: string): JSX.Element {
     const value = this.props.currentValues.get(input.dataFieldName)?.value as string;
     const disabled = this.props.disabled || this.props.currentValues.get(input.dataFieldName)?.disabled;
     return (
       <div className="stringInputContainer">
         <TextField
           id={`${input.dataFieldName}-textField-input`}
-          label={this.props.getTranslation(input.labelTKey)}
+          aria-labelledby={labelId}
           type="text"
           value={value || ""}
           placeholder={this.props.getTranslation(input.placeholderTKey)}
@@ -149,32 +153,35 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           onChange={(_, newValue) => this.props.onInputChange(input, newValue)}
           styles={{
             root: { width: 400 },
-            subComponentStyles: {
-              label: {
-                root: {
-                  ...SmartUiComponent.labelStyle,
-                  fontWeight: 600,
-                },
-              },
-            },
           }}
         />
       </div>
     );
   }
 
-  private renderDescription(input: DescriptionDisplay): JSX.Element {
-    const description = input.description;
-    return (
-      <Text id={`${input.dataFieldName}-text-display`}>
-        {this.props.getTranslation(input.description.textTKey)}{" "}
+  private renderDescription(input: DescriptionDisplay, labelId: string): JSX.Element {
+    const dataFieldName = input.dataFieldName;
+    const description = input.description || (this.props.currentValues.get(dataFieldName)?.value as Description);
+    if (!description) {
+      return this.renderError("Description is not provided.");
+    }
+    const descriptionElement = (
+      <Text id={`${dataFieldName}-text-display`} aria-labelledby={labelId}>
+        {this.props.getTranslation(description.textTKey)}{" "}
         {description.link && (
-          <Link target="_blank" href={input.description.link.href}>
-            {this.props.getTranslation(input.description.link.textTKey)}
+          <Link target="_blank" href={description.link.href}>
+            {this.props.getTranslation(description.link.textTKey)}
           </Link>
         )}
       </Text>
     );
+
+    if (description.type === DescriptionType.Text) {
+      return descriptionElement;
+    }
+    const messageBarType =
+      description.type === DescriptionType.InfoMessageBar ? MessageBarType.info : MessageBarType.warning;
+    return <MessageBar messageBarType={messageBarType}>{descriptionElement}</MessageBar>;
   }
 
   private clearError(dataFieldName: string): void {
@@ -220,13 +227,12 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return undefined;
   };
 
-  private renderNumberInput(input: NumberInput): JSX.Element {
+  private renderNumberInput(input: NumberInput, labelId: string): JSX.Element {
     const { labelTKey, min, max, dataFieldName, step } = input;
     const props = {
-      label: this.props.getTranslation(labelTKey),
       min: min,
       max: max,
-      ariaLabel: labelTKey,
+      ariaLabel: this.props.getTranslation(labelTKey),
       step: step,
     };
 
@@ -243,13 +249,8 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             onIncrement={(newValue) => this.onIncrement(input, newValue, props.step, props.max)}
             onDecrement={(newValue) => this.onDecrement(input, newValue, props.step, props.min)}
             labelPosition={Position.top}
+            aria-labelledby={labelId}
             disabled={disabled}
-            styles={{
-              label: {
-                ...SmartUiComponent.labelStyle,
-                fontWeight: 600,
-              },
-            }}
           />
           {this.state.errors.has(dataFieldName) && (
             <MessageBar messageBarType={MessageBarType.error}>Error: {this.state.errors.get(dataFieldName)}</MessageBar>
@@ -266,10 +267,6 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
             onChange={(newValue) => this.props.onInputChange(input, newValue)}
             styles={{
               root: { width: 400 },
-              titleLabel: {
-                ...SmartUiComponent.labelStyle,
-                fontWeight: 600,
-              },
               valueLabel: SmartUiComponent.labelStyle,
             }}
           />
@@ -280,13 +277,13 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     }
   }
 
-  private renderBooleanInput(input: BooleanInput): JSX.Element {
+  private renderBooleanInput(input: BooleanInput, labelId: string): JSX.Element {
     const value = this.props.currentValues.get(input.dataFieldName)?.value as boolean;
     const disabled = this.props.disabled || this.props.currentValues.get(input.dataFieldName)?.disabled;
     return (
       <Toggle
         id={`${input.dataFieldName}-toggle-input`}
-        label={this.props.getTranslation(input.labelTKey)}
+        aria-labelledby={labelId}
         checked={value || false}
         onText={this.props.getTranslation(input.trueLabelTKey)}
         offText={this.props.getTranslation(input.falseLabelTKey)}
@@ -297,8 +294,8 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  private renderChoiceInput(input: ChoiceInput): JSX.Element {
-    const { labelTKey, defaultKey, dataFieldName, choices, placeholderTKey } = input;
+  private renderChoiceInput(input: ChoiceInput, labelId: string): JSX.Element {
+    const { defaultKey, dataFieldName, choices, placeholderTKey } = input;
     const value = this.props.currentValues.get(dataFieldName)?.value as string;
     const disabled = this.props.disabled || this.props.currentValues.get(dataFieldName)?.disabled;
     let selectedKey = value ? value : defaultKey;
@@ -308,7 +305,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return (
       <Dropdown
         id={`${input.dataFieldName}-dropdown-input`}
-        label={this.props.getTranslation(labelTKey)}
+        aria-labelledby={labelId}
         selectedKey={selectedKey}
         onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
         placeholder={this.props.getTranslation(placeholderTKey)}
@@ -319,40 +316,53 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
         }))}
         styles={{
           root: { width: 400 },
-          label: {
-            ...SmartUiComponent.labelStyle,
-            fontWeight: 600,
-          },
           dropdown: SmartUiComponent.labelStyle,
         }}
       />
     );
   }
 
-  private renderError(input: AnyDisplay): JSX.Element {
-    return <MessageBar messageBarType={MessageBarType.error}>Error: {input.errorMessage}</MessageBar>;
+  private renderError(errorMessage: string): JSX.Element {
+    return <MessageBar messageBarType={MessageBarType.error}>Error: {errorMessage}</MessageBar>;
   }
 
-  private renderDisplay(input: AnyDisplay): JSX.Element {
+  private renderDisplayWithInfoBubble(input: AnyDisplay, info: Info): JSX.Element {
     if (input.errorMessage) {
-      return this.renderError(input);
+      return this.renderError(input.errorMessage);
     }
     const inputHidden = this.props.currentValues.get(input.dataFieldName)?.hidden;
     if (inputHidden) {
       return <></>;
     }
+    const labelId = `${input.dataFieldName}-label`;
+    return (
+      <Stack>
+        {input.labelTKey && (
+          <Label id={labelId}>
+            <ToolTipLabelComponent
+              label={this.props.getTranslation(input.labelTKey)}
+              toolTipElement={this.renderInfo(info)}
+            />
+          </Label>
+        )}
+        {this.renderDisplay(input, labelId)}
+      </Stack>
+    );
+  }
+
+  private renderDisplay(input: AnyDisplay, labelId: string): JSX.Element {
     switch (input.type) {
       case "string":
-        if ("description" in input) {
-          return this.renderDescription(input as DescriptionDisplay);
+        if ("description" in input || "isDynamicDescription" in input) {
+          return this.renderDescription(input as DescriptionDisplay, labelId);
         }
-        return this.renderTextInput(input as StringInput);
+        return this.renderTextInput(input as StringInput, labelId);
       case "number":
-        return this.renderNumberInput(input as NumberInput);
+        return this.renderNumberInput(input as NumberInput, labelId);
       case "boolean":
-        return this.renderBooleanInput(input as BooleanInput);
+        return this.renderBooleanInput(input as BooleanInput, labelId);
       case "object":
-        return this.renderChoiceInput(input as ChoiceInput);
+        return this.renderChoiceInput(input as ChoiceInput, labelId);
       default:
         throw new Error(`Unknown input type: ${input.type}`);
     }
@@ -363,10 +373,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
     return (
       <Stack tokens={containerStackTokens} className="widgetRendererContainer">
-        <Stack.Item>
-          {node.info && this.renderInfo(node.info as Info)}
-          {node.input && this.renderDisplay(node.input)}
-        </Stack.Item>
+        <Stack.Item>{node.input && this.renderDisplayWithInfoBubble(node.input, node.info as Info)}</Stack.Item>
         {node.children && node.children.map((child) => <div key={child.id}>{this.renderNode(child)}</div>)}
       </Stack>
     );

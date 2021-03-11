@@ -1,8 +1,16 @@
 /* eslint-disable jest/expect-expect */
 import "expect-puppeteer";
 import { Frame } from "puppeteer";
-import { generateUniqueName } from "../utils/shared";
+import { generateDatabaseName, generateUniqueName } from "../utils/shared";
 import { CosmosClient, PermissionMode } from "@azure/cosmos";
+import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
+import * as msRestNodeAuth from "@azure/ms-rest-nodeauth";
+
+const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
+const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
+const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
+const resourceGroupName = "runners";
 
 jest.setTimeout(300000);
 const RETRY_DELAY = 5000;
@@ -10,11 +18,16 @@ const CREATE_DELAY = 10000;
 
 describe("Collection Add and Delete SQL spec", () => {
   it("creates a collection", async () => {
-    const dbId = generateUniqueName("db");
+    const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
+    const armClient = new CosmosDBManagementClient(credentials, subscriptionId);
+    const account = await armClient.databaseAccounts.get(resourceGroupName, "portal-sql-runner");
+    const keys = await armClient.databaseAccounts.listKeys(resourceGroupName, "portal-sql-runner");
+    const dbId = generateDatabaseName();
     const collectionId = generateUniqueName("col");
-    const connectionString = process.env.PORTAL_RUNNER_CONNECTION_STRING;
-    const client = new CosmosClient(connectionString);
-    const endpoint = /AccountEndpoint=(.*);/.exec(connectionString)[1];
+    const client = new CosmosClient({
+      endpoint: account.documentEndpoint,
+      key: keys.primaryMasterKey,
+    });
     const { database } = await client.databases.createIfNotExists({ id: dbId });
     const { container } = await database.containers.createIfNotExists({ id: collectionId });
     const { user } = await database.users.upsert({ id: "testUser" });
@@ -23,7 +36,7 @@ describe("Collection Add and Delete SQL spec", () => {
       permissionMode: PermissionMode.All,
       resource: container.url,
     });
-    const resourceTokenConnectionString = `AccountEndpoint=${endpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
+    const resourceTokenConnectionString = `AccountEndpoint=${account.documentEndpoint};DatabaseId=${database.id};CollectionId=${container.id};${containerPermission._token}`;
     try {
       await page.goto(process.env.DATA_EXPLORER_ENDPOINT);
       await page.waitFor("div > p.switchConnectTypeText", { visible: true });

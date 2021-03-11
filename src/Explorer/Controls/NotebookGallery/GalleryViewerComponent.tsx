@@ -47,8 +47,8 @@ export interface GalleryViewerComponentProps {
 }
 
 export enum GalleryTab {
-  OfficialSamples,
   PublicGallery,
+  OfficialSamples,
   Favorites,
   Published,
 }
@@ -151,15 +151,14 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   public render(): JSX.Element {
     this.traceViewGallery();
 
-    const tabs: GalleryTabInfo[] = [this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks)];
-
-    tabs.push(
+    const tabs: GalleryTabInfo[] = [
       this.createPublicGalleryTab(
         GalleryTab.PublicGallery,
         this.state.publicNotebooks,
         this.state.isCodeOfConductAccepted
-      )
-    );
+      ),
+      this.createSamplesTab(GalleryTab.OfficialSamples, this.state.sampleNotebooks),
+    ];
 
     if (this.props.container) {
       tabs.push(this.createFavoritesTab(GalleryTab.Favorites, this.state.favoriteNotebooks));
@@ -201,18 +200,18 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     }
 
     switch (this.state.selectedTab) {
-      case GalleryTab.OfficialSamples:
-        if (!this.viewOfficialSamplesTraced) {
-          this.resetViewGalleryTabTracedFlags();
-          this.viewOfficialSamplesTraced = true;
-          trace(Action.NotebooksGalleryViewOfficialSamples);
-        }
-        break;
       case GalleryTab.PublicGallery:
         if (!this.viewPublicGalleryTraced) {
           this.resetViewGalleryTabTracedFlags();
           this.viewPublicGalleryTraced = true;
           trace(Action.NotebooksGalleryViewPublicGallery);
+        }
+        break;
+      case GalleryTab.OfficialSamples:
+        if (!this.viewOfficialSamplesTraced) {
+          this.resetViewGalleryTabTracedFlags();
+          this.viewOfficialSamplesTraced = true;
+          trace(Action.NotebooksGalleryViewOfficialSamples);
         }
         break;
       case GalleryTab.Favorites:
@@ -389,7 +388,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createSearchBarHeader(content: JSX.Element): JSX.Element {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
-        <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
+        <Stack horizontal wrap tokens={{ childrenGap: 20, padding: 10 }}>
           <Stack.Item grow>
             <SearchBox value={this.state.searchText} placeholder="Search" onChange={this.onSearchBoxChange} />
           </Stack.Item>
@@ -444,12 +443,12 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private loadTabContent(tab: GalleryTab, searchText: string, sortBy: SortBy, offline: boolean): void {
     switch (tab) {
-      case GalleryTab.OfficialSamples:
-        this.loadSampleNotebooks(searchText, sortBy, offline);
-        break;
-
       case GalleryTab.PublicGallery:
         this.loadPublicNotebooks(searchText, sortBy, offline);
+        break;
+
+      case GalleryTab.OfficialSamples:
+        this.loadSampleNotebooks(searchText, sortBy, offline);
         break;
 
       case GalleryTab.Favorites:
@@ -666,7 +665,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       onFavoriteClick: () => this.favoriteItem(data),
       onUnfavoriteClick: () => this.unfavoriteItem(data),
       onDownloadClick: () => this.downloadItem(data),
-      onDeleteClick: () => this.deleteItem(data),
+      onDeleteClick: (beforeDelete: () => void, afterDelete: () => void) =>
+        this.deleteItem(data, beforeDelete, afterDelete),
     };
 
     return (
@@ -710,11 +710,18 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     );
   };
 
-  private deleteItem = async (data: IGalleryItem): Promise<void> => {
-    GalleryUtils.deleteItem(this.props.container, this.props.junoClient, data, (item) => {
-      this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
-      this.refreshSelectedTab(item);
-    });
+  private deleteItem = async (data: IGalleryItem, beforeDelete: () => void, afterDelete: () => void): Promise<void> => {
+    GalleryUtils.deleteItem(
+      this.props.container,
+      this.props.junoClient,
+      data,
+      (item) => {
+        this.publishedNotebooks = this.publishedNotebooks?.filter((notebook) => item.id !== notebook.id);
+        this.refreshSelectedTab(item);
+      },
+      beforeDelete,
+      afterDelete
+    );
   };
 
   private onPivotChange = (item: PivotItem): void => {

@@ -44,7 +44,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       onClick: () => {
         collection.onDocumentDBDocumentsClick();
         // push to most recent
-        this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
+        MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",

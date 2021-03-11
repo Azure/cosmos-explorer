@@ -1,4 +1,4 @@
-import { StringUtility } from "./StringUtility";
+import * as StringUtility from "./StringUtility";
 
 export class LocalStorageUtility {
   public static hasItem(key: StorageKey): boolean {
