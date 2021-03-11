@@ -29,7 +29,6 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 export interface NotebookManagerOptions {
   container: Explorer;
   notebookBasePath: ko.Observable<string>;
-  // resourceTree: ResourceTreeAdapter;
   refreshCommandBarButtons: () => void;
   refreshNotebookList: () => void;
 }
@@ -106,8 +105,8 @@ export default class NotebookManager {
     });
 
     this.junoClient.subscribeToPinnedRepos((pinnedRepos) => {
-      this.params.resourceTree.initializeGitHubRepos(pinnedRepos);
-      this.params.resourceTree.triggerRender();
+      // TODO Move this out of NotebookManager?
+      this.params.container.params.initializeGitHubRepos(pinnedRepos);
     });
     this.refreshPinnedRepos();
   }

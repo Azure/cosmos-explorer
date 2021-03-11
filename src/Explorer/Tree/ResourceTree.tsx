@@ -17,10 +17,9 @@ import FileIcon from "../../../images/notebook/file-cosmos.svg";
 import PublishIcon from "../../../images/notebook/publish_content.svg";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
-import { IPinnedRepo } from "../../Juno/JunoClient";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
-import { Areas, Notebook } from "../../Common/Constants";
+import { Areas } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
 import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
@@ -32,6 +31,7 @@ import Trigger from "./Trigger";
 import TabsBase from "../Tabs/TabsBase";
 import { userContext } from "../../UserContext";
 import * as DataModels from "../../Contracts/DataModels";
+import { DataTitle, NotebooksTitle, PseudoDirPath } from "../../hooks/useNotebooks";
 
 export interface ResourceTreeProps {
   // TODO remove eventually
@@ -39,19 +39,12 @@ export interface ResourceTreeProps {
 
   lastRefreshedTime: number;
 
-}
-
-interface ResourceTreeState {
   galleryContentRoot: NotebookContentItem;
   myNotebooksContentRoot: NotebookContentItem;
   gitHubNotebooksContentRoot: NotebookContentItem;
 }
 
-export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTreeState> {
-  private static readonly DataTitle = "DATA";
-  private static readonly NotebooksTitle = "NOTEBOOKS";
-  private static readonly PseudoDirPath = "PseudoDir";
-
+export class ResourceTree extends React.Component<ResourceTreeProps> {
   private koSubsDatabaseIdMap: ArrayHashMap<ko.Subscription>; // database id -> ko subs
   private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
   private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
@@ -63,7 +56,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
     this.state = {
       galleryContentRoot: undefined,
       myNotebooksContentRoot: undefined,
-      gitHubNotebooksContentRoot: undefined
+      gitHubNotebooksContentRoot: undefined,
     };
 
     this.container = props.explorer;
@@ -85,31 +78,6 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
     });
 
     this.container.nonSystemDatabases().forEach((database: ViewModels.Database) => this.watchDatabase(database));
-    this.triggerRender();
-  }
-
-  private traceMyNotebookTreeInfo() {
-    const myNotebooksTree = this.state.myNotebooksContentRoot;
-    if (myNotebooksTree.children) {
-      // Count 1st generation children (tree is lazy-loaded)
-      const nodeCounts = { files: 0, notebooks: 0, directories: 0 };
-      myNotebooksTree.children.forEach((treeNode) => {
-        switch ((treeNode as NotebookContentItem).type) {
-          case NotebookContentItemType.File:
-            nodeCounts.files++;
-            break;
-          case NotebookContentItemType.Directory:
-            nodeCounts.directories++;
-            break;
-          case NotebookContentItemType.Notebook:
-            nodeCounts.notebooks++;
-            break;
-          default:
-            break;
-        }
-      });
-      TelemetryProcessor.trace(Action.RefreshResourceTreeMyNotebooks, ActionModifiers.Mark, { ...nodeCounts });
-    }
   }
 
   render(): JSX.Element {
@@ -120,103 +88,19 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
       return (
         <>
           <AccordionComponent>
-            <AccordionItemComponent title={ResourceTree.DataTitle} isExpanded={!this.state.gitHubNotebooksContentRoot}>
+            <AccordionItemComponent title={DataTitle} isExpanded={!this.props.gitHubNotebooksContentRoot}>
               <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />
             </AccordionItemComponent>
-            <AccordionItemComponent title={ResourceTree.NotebooksTitle}>
+            <AccordionItemComponent title={NotebooksTitle}>
               <TreeComponent className="notebookResourceTree" rootNode={notebooksRootNode} />
             </AccordionItemComponent>
           </AccordionComponent>
 
-          {this.state.galleryContentRoot && this.buildGalleryCallout()}
+          {this.props.galleryContentRoot && this.buildGalleryCallout()}
         </>
       );
     } else {
       return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
-    }
-  }
-
-  componentDidUpdate(prevProps: ResourceTreeProps): void {
-    if (this.props.lastRefreshedTime === undefined || prevProps.lastRefreshedTime === this.props.lastRefreshedTime) {
-      return;
-    }
-
-    this.initialize();
-  }
-
-  private async initialize(): Promise<void[]> {
-    const refreshTasks: Promise<void>[] = [];
-
-    this.setState({
-      galleryContentRoot: {
-        name: "Gallery",
-        path: "Gallery",
-        type: NotebookContentItemType.File,
-      },
-
-      myNotebooksContentRoot: {
-        name: Notebook.MyNotebooksTitle,
-        path: this.container.getNotebookBasePath(),
-        type: NotebookContentItemType.Directory,
-      }
-    });
-
-    console.log("====> componentDidUpdate");
-    // Only if notebook server is available we can refresh
-    if (this.container.notebookServerInfo().notebookServerEndpoint) {
-      refreshTasks.push(
-        this.container.refreshContentItem(this.state.myNotebooksContentRoot).then(root => {
-          this.setState({ myNotebooksContentRoot: root });
-          // this.triggerRender();
-          this.traceMyNotebookTreeInfo();
-        })
-      );
-    }
-
-    if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      this.setState({
-        gitHubNotebooksContentRoot: {
-          name: Notebook.GitHubReposTitle,
-          path: ResourceTree.PseudoDirPath,
-          type: NotebookContentItemType.Directory,
-        }
-      });
-    } else {
-      this.setState({
-        gitHubNotebooksContentRoot: undefined
-      })
-    }
-
-    return Promise.all(refreshTasks);
-  }
-
-  public initializeGitHubRepos(pinnedRepos: IPinnedRepo[]): void {
-    if (this.state.gitHubNotebooksContentRoot) {
-      const { gitHubNotebooksContentRoot } = this.state;
-      gitHubNotebooksContentRoot.children = [];
-      this.setState({ gitHubNotebooksContentRoot });
-
-      pinnedRepos?.forEach((pinnedRepo) => {
-        const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
-        const repoTreeItem: NotebookContentItem = {
-          name: repoFullName,
-          path: ResourceTree.PseudoDirPath,
-          type: NotebookContentItemType.Directory,
-          children: [],
-        };
-
-        pinnedRepo.branches.forEach((branch) => {
-          repoTreeItem.children.push({
-            name: branch.name,
-            path: GitHubUtils.toContentUri(pinnedRepo.owner, pinnedRepo.name, branch.name, ""),
-            type: NotebookContentItemType.Directory,
-          });
-        });
-
-        this.state.gitHubNotebooksContentRoot.children.push(repoTreeItem);
-      });
-
-      this.triggerRender();
     }
   }
 
@@ -475,8 +359,8 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
     fields.forEach((field: DataModels.IDataField) => {
       const path: string[] = field.path.split(".");
       const fieldProperties = [field.dataType.name, `HasNulls: ${field.hasNulls}`];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let current: any = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let current: any = {};
       path.forEach((name: string, pathIndex: number) => {
         if (pathIndex === 0) {
           if (schema[name] === undefined) {
@@ -526,15 +410,15 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
       children: [],
     };
 
-    if (this.state.galleryContentRoot) {
+    if (this.props.galleryContentRoot) {
       notebooksTree.children.push(this.buildGalleryNotebooksTree());
     }
 
-    if (this.state.myNotebooksContentRoot) {
+    if (this.props.myNotebooksContentRoot) {
       notebooksTree.children.push(this.buildMyNotebooksTree());
     }
 
-    if (this.state.gitHubNotebooksContentRoot) {
+    if (this.props.gitHubNotebooksContentRoot) {
       // collapse all other notebook nodes
       notebooksTree.children.forEach((node) => (node.isExpanded = false));
       notebooksTree.children.push(this.buildGitHubNotebooksTree());
@@ -604,7 +488,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
 
   private buildMyNotebooksTree(): TreeNode {
     const myNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
-      this.state.myNotebooksContentRoot,
+      this.props.myNotebooksContentRoot,
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
@@ -625,7 +509,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
 
   private buildGitHubNotebooksTree(): TreeNode {
     const gitHubNotebooksTree: TreeNode = this.buildNotebookDirectoryNode(
-      this.state.gitHubNotebooksContentRoot,
+      this.props.gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
@@ -723,7 +607,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
       {
         label: "Rename",
         iconSrc: NotebookIcon,
-        onClick: () => this.container.renameNotebook(item),
+        onClick: () => this.container.renameNotebook(item).then(() => this.triggerRender()),
       },
       {
         label: "Delete",
@@ -812,7 +696,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
       {
         label: "New Directory",
         iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onCreateDirectory(item),
+        onClick: () => this.container.onCreateDirectory(item).then(() => this.triggerRender()),
       },
       {
         label: "New Notebook",
@@ -870,9 +754,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps, ResourceTre
         );
       },
       contextMenu:
-        createDirectoryContextMenu && item.path !== ResourceTree.PseudoDirPath
-          ? this.createDirectoryContextMenu(item)
-          : undefined,
+        createDirectoryContextMenu && item.path !== PseudoDirPath ? this.createDirectoryContextMenu(item) : undefined,
       data: item,
       children: this.buildChildNodes(item, onFileClick, createDirectoryContextMenu, createFileContextMenu),
     };

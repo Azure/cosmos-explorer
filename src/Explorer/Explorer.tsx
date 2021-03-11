@@ -45,7 +45,7 @@ import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import { ExplorerMetrics } from "../Common/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { FileSystemUtil } from "./Notebook/FileSystemUtil";
-import { IGalleryItem } from "../Juno/JunoClient";
+import { IGalleryItem, IPinnedRepo } from "../Juno/JunoClient";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
 import { sendMessage, sendCachedDataMessage } from "../Common/MessageHandler";
@@ -103,6 +103,8 @@ export interface ExplorerParams {
   openDialog: (props: DialogProps) => void;
 
   onRefreshNotebookList: () => void;
+  initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
+  getMyNotebooksContentRoot: () => NotebookContentItem;
 }
 
 export default class Explorer {
@@ -249,7 +251,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(private params?: ExplorerParams) {
+  constructor(public params?: ExplorerParams) {
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
@@ -1720,7 +1722,7 @@ export default class Explorer {
 
     const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent);
     promise
-      .then(() => this.resourceTree.triggerRender())
+      .then(() => this.params.onRefreshNotebookList())
       .catch((reason: any) => this.showOkModalDialog("Unable to upload file", reason));
     return promise;
   }
@@ -1728,7 +1730,7 @@ export default class Explorer {
   public async importAndOpen(path: string): Promise<boolean> {
     const name = NotebookUtil.getName(path);
     const item = NotebookUtil.createNotebookContentItem(name, path, "file");
-    const parent = this.resourceTree.myNotebooksContentRoot;
+    const parent = this.params.getMyNotebooksContentRoot();
 
     if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
       const existingItem = _.find(parent.children, (node) => node.name === name);
@@ -1745,7 +1747,8 @@ export default class Explorer {
   }
 
   public async importAndOpenContent(name: string, content: string): Promise<boolean> {
-    const parent = this.resourceTree.myNotebooksContentRoot;
+    // const parent = this.params.getMyNotebooksContentRoot();
+    const parent = this.params.getMyNotebooksContentRoot();
 
     if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
       if (this.notebookToImport && this.notebookToImport.name === name && this.notebookToImport.content === content) {
@@ -1930,7 +1933,6 @@ export default class Explorer {
 
         return newNotebookFile;
       });
-    result.then(() => this.resourceTree.triggerRender());
     return result;
   }
 
@@ -1951,7 +1953,6 @@ export default class Explorer {
       defaultInput: "",
       onSubmit: (input: string) => this.notebookManager?.notebookContentClient.createDirectory(parent, input),
     });
-    result.then(() => this.resourceTree.triggerRender());
     return result;
   }
 
@@ -2113,8 +2114,6 @@ export default class Explorer {
       return;
     }
 
-    console.log("=======> refreshNotebookList");
-    // await this.resourceTree.initialize();
     this.params?.onRefreshNotebookList();
 
     this.notebookManager?.refreshPinnedRepos();
@@ -2179,7 +2178,7 @@ export default class Explorer {
       throw new Error(error);
     }
 
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    parent = parent || this.params.getMyNotebooksContentRoot();
 
     const notificationProgressId = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
@@ -2203,7 +2202,7 @@ export default class Explorer {
         );
         return this.openNotebook(newFile);
       })
-      .then(() => this.resourceTree.triggerRender())
+      .then(() => this.params.onRefreshNotebookList())
       .catch((error: any) => {
         const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
         NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
@@ -2221,7 +2220,7 @@ export default class Explorer {
   }
 
   public onUploadToNotebookServerClicked(parent?: NotebookContentItem): void {
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    parent = parent || this.params.getMyNotebooksContentRoot();
 
     this.uploadFilePane.openWithOptions({
       paneTitle: "Upload file to notebook server",

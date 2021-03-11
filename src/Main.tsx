@@ -55,7 +55,7 @@ import "./Libs/is-integer-polyfill";
 import "url-polyfill/url-polyfill.min";
 
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { ExplorerParams } from "./Explorer/Explorer";
+import Explorer, { ExplorerParams } from "./Explorer/Explorer";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
@@ -92,7 +92,18 @@ const App: React.FunctionComponent = () => {
   };
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
-  const {lastRefreshTime, refreshList} = useNotebooks();
+
+  // TODO Figure out a better pattern: this is because we don't have container, yet
+  const context: { container: Explorer } = { container: undefined };
+  const {
+    lastRefreshTime,
+    galleryContentRoot,
+    myNotebooksContentRoot,
+    gitHubNotebooksContentRoot,
+    refreshList,
+    initializeGitHubRepos,
+    getMyNotebooksContentRoot,
+  } = useNotebooks(context);
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -102,19 +113,23 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
     openDialog,
     closeDialog,
-    onRefreshNotebookList: refreshList
+    onRefreshNotebookList: refreshList,
+    initializeGitHubRepos,
+    getMyNotebooksContentRoot,
   };
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
-//   const [databases, setDatabases] = useState();
-// useEffect(() => {
-// fetchDatabases().then((dbs) => {
-// setDatabases(dbs)
-// explorer.databases(dbs)
-// });
-// const databases = useDatabases(explorer)
+  // TODO fix this
+  context.container = explorer;
 
+  //   const [databases, setDatabases] = useState();
+  // useEffect(() => {
+  // fetchDatabases().then((dbs) => {
+  // setDatabases(dbs)
+  // explorer.databases(dbs)
+  // });
+  // const databases = useDatabases(explorer)
 
   return (
     <div className="flexContainer">
@@ -181,7 +196,13 @@ const App: React.FunctionComponent = () => {
                     data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
                   />
                   <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken()">
-                    <ResourceTree explorer={explorer} lastRefreshedTime={lastRefreshTime} />
+                    <ResourceTree
+                      explorer={explorer}
+                      lastRefreshedTime={lastRefreshTime}
+                      galleryContentRoot={galleryContentRoot}
+                      myNotebooksContentRoot={myNotebooksContentRoot}
+                      gitHubNotebooksContentRoot={gitHubNotebooksContentRoot}
+                    />
                   </div>
                 </div>
                 {/*  Collections Window - End */}
