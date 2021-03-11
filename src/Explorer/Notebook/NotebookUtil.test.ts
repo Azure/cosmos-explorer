@@ -1,4 +1,4 @@
-import { NotebookUtil } from "./NotebookUtil";
+import * as NotebookUtil from "./NotebookUtil";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import {
   ImmutableNotebook,

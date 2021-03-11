@@ -49,7 +49,7 @@ import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import * as Logger from "../Common/Logger";
 import { sendMessage, sendCachedDataMessage } from "../Common/MessageHandler";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
-import { NotebookUtil } from "./Notebook/NotebookUtil";
+import * as NotebookUtil from "./Notebook/NotebookUtil";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { QueriesClient } from "../Common/QueriesClient";

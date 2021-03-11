@@ -2,7 +2,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import * as StringUtils from "../../Utils/StringUtils";
 import { FileSystemUtil } from "./FileSystemUtil";
-import { NotebookUtil } from "./NotebookUtil";
+import * as NotebookUtil from "./NotebookUtil";
 
 import { ServerConfig, IContent, IContentProvider, FileType, IEmptyContent } from "@nteract/core";
 import { AjaxResponse } from "rxjs/ajax";

@@ -5,7 +5,7 @@ import { AjaxResponse } from "rxjs/ajax";
 import * as Base64Utils from "../Utils/Base64Utils";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
-import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
+import * as NotebookUtil from "../Explorer/Notebook/NotebookUtil";
 import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
 import * as GitHubUtils from "../Utils/GitHubUtils";
 import UrlUtility from "../Common/UrlUtility";

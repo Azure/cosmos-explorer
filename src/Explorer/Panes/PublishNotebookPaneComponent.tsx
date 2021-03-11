@@ -5,7 +5,7 @@ import { FileSystemUtil } from "../Notebook/FileSystemUtil";
 import "./PublishNotebookPaneComponent.less";
 import Html2Canvas from "html2canvas";
 import { ImmutableNotebook } from "@nteract/commutable/src";
-import { NotebookUtil } from "../Notebook/NotebookUtil";
+import * as NotebookUtil from "../Notebook/NotebookUtil";
 
 export interface PublishNotebookPaneProps {
   notebookName: string;

@@ -2,7 +2,7 @@ import * as React from "react";
 
 import { NotebookComponent } from "./NotebookComponent";
 import { NotebookClientV2 } from "../NotebookClientV2";
-import { NotebookUtil } from "../NotebookUtil";
+import * as NotebookUtil from "../NotebookUtil";
 
 // Vendor modules
 import {
