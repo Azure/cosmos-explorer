@@ -11,7 +11,7 @@ import editable from "../../Common/EditableUtility";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import TabsBase from "./TabsBase";
 import { DocumentsGridMetrics } from "../../Common/Constants";
-import * as  QueryUtils  from "../../Utils/QueryUtils";
+import * as QueryUtils from "../../Utils/QueryUtils";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
