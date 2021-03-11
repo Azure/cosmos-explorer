@@ -9,7 +9,6 @@ const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
-const TerserPlugin = require("terser-webpack-plugin");
 const isCI = require("is-ci");
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 
@@ -57,23 +56,9 @@ const htmlRule = {
   ],
 };
 
-const typescriptRule = {
-  test: /\.tsx?$/,
-  use: [
-    {
-      loader: "esbuild-loader",
-      options: {
-        loader: "tsx",
-        target: "es2017",
-      },
-    },
-  ],
-  exclude: /node_modules/,
-};
-
 module.exports = function (env = {}, argv = {}) {
   const mode = argv.mode || "development";
-  const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
+  const target = mode === "development" ? "es2018" : "es2017";
   const envVars = {
     GIT_SHA: gitSha,
     PORT: process.env.PORT || "1234",
@@ -85,8 +70,23 @@ module.exports = function (env = {}, argv = {}) {
 
   if (mode === "development") {
     envVars.NODE_ENV = "development";
-    typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
   }
+
+  const typescriptRule = {
+    test: /\.tsx?$/,
+    use: [
+      {
+        loader: "esbuild-loader",
+        options: {
+          loader: "tsx",
+          target,
+        },
+      },
+    ],
+    exclude: /node_modules/,
+  };
+
+  const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
 
   const plugins = [
     new ESBuildPlugin(),
@@ -197,7 +197,7 @@ module.exports = function (env = {}, argv = {}) {
       minimize: mode === "production" ? true : false,
       minimizer: [
         new ESBuildMinifyPlugin({
-          target: "es2017", // Syntax to compile to (see options below for possible values)
+          target,
         }),
       ],
     },
