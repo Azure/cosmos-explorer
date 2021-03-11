@@ -239,7 +239,7 @@ function configurePortal() {
         explorer.configure(inputs);
         applyExplorerBindings(explorer);
         if (openAction) {
-          handleOpenAction(openAction, explorer.nonSystemDatabases(), explorer);
+          handleOpenAction(openAction, explorer.databases(), explorer);
         }
       }
     },

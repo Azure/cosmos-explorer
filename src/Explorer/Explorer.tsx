@@ -181,7 +181,6 @@ export default class Explorer {
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
-  public nonSystemDatabases: ko.Computed<ViewModels.Database[]>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
@@ -264,7 +263,6 @@ export default class Explorer {
   public closeDialog: ExplorerParams["closeDialog"];
 
   private _panes: ContextualPaneBase[] = [];
-  private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -557,16 +555,6 @@ export default class Explorer {
     this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
       this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
     );
-    this.defaultExperience.subscribe((defaultExperience: string) => {
-      if (
-        defaultExperience &&
-        defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase()
-      ) {
-        this._isSystemDatabasePredicate = (database: ViewModels.Database): boolean => {
-          return database.id() === "system";
-        };
-      }
-    });
 
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
@@ -587,10 +575,6 @@ export default class Explorer {
         default:
           return "";
       }
-    });
-
-    this.nonSystemDatabases = ko.computed(() => {
-      return this.databases().filter((database: ViewModels.Database) => !this._isSystemDatabasePredicate(database));
     });
 
     this.addDatabasePane = new AddDatabasePane({
