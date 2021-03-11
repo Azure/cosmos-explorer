@@ -11,6 +11,7 @@ const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
 const isCI = require("is-ci");
+const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
 
@@ -56,14 +57,14 @@ const htmlRule = {
   ],
 };
 
-// We compile our own code with ts-loader
 const typescriptRule = {
   test: /\.tsx?$/,
   use: [
     {
-      loader: "ts-loader",
+      loader: "esbuild-loader",
       options: {
-        transpileOnly: true,
+        loader: "tsx",
+        target: "es2017",
       },
     },
   ],
@@ -88,6 +89,7 @@ module.exports = function (env = {}, argv = {}) {
   }
 
   const plugins = [
+    new ESBuildPlugin(),
     new CleanWebpackPlugin(["dist"]),
     new CreateFileWebpack({
       path: "./dist",
@@ -194,13 +196,8 @@ module.exports = function (env = {}, argv = {}) {
     optimization: {
       minimize: mode === "production" ? true : false,
       minimizer: [
-        new TerserPlugin({
-          cache: ".cache/terser",
-          terserOptions: {
-            // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
-            compress: false,
-            mangle: true,
-          },
+        new ESBuildMinifyPlugin({
+          target: "es2017", // Syntax to compile to (see options below for possible values)
         }),
       ],
     },
