@@ -49,6 +49,19 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
   return currentValues;
 };
 
+const onNumberOfInstancesChange = (
+  newValue: InputType,
+  currentValues: Map<string, SmartUiInput>
+): Map<string, SmartUiInput> => {
+  currentValues.set("instances", { value: newValue });
+  currentValues.set("warningBanner", {
+    value: { textTKey: "WarningBannerOnUpdate" } as Description,
+    hidden: false,
+  });
+
+  return currentValues;
+};
+
 const onEnableDedicatedGatewayChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
@@ -269,6 +282,7 @@ export default class SqlX extends SelfServeBaseClass {
   })
   skuDetails: string;
 
+  @OnChange(onNumberOfInstancesChange)
   @Values({
     labelTKey: "NumberOfInstances",
     min: getInstancesMin,
