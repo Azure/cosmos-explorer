@@ -11,13 +11,12 @@ import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
-import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { sendCachedDataMessage, sendMessage } from "../Common/MessageHandler";
 import { QueriesClient } from "../Common/QueriesClient";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
-import { configContext, Platform, updateConfigContext } from "../ConfigContext";
+import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
@@ -26,9 +25,6 @@ import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
-import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
-import { SelfServeType } from "../SelfServe/SelfServeUtils";
 import { appInsights } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -117,20 +113,55 @@ export default class Explorer {
   public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
+  /**
+   * @deprecated
+   * Use userContext.databaseAccount instead
+   * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
+  /**
+   * @deprecated
+   * Use userContext.subscriptionType instead
+   * */
   public subscriptionType: ko.Observable<SubscriptionType>;
+  /**
+   * @deprecated
+   * Use userContext.apiType instead
+   * */
   public defaultExperience: ko.Observable<string>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "SQL"
+   * */
   public isPreferredApiDocumentDB: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
+   * */
   public isPreferredApiCassandra: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
+   * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
+   * */
   public isPreferredApiGraph: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
+   * */
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
+   * */
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
-  public selfServeType: ko.Observable<SelfServeType>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
   public serverId: ko.Observable<string>;
@@ -156,9 +187,12 @@ export default class Explorer {
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
+  /**
+   * @deprecated
+   * Use a local loading state and spinner instead. Using a global isRefreshing state causes problems.
+   * */
   public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
-  private selfServeComponentAdapter: SelfServeComponentAdapter;
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
@@ -242,7 +276,6 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private selfServeLoadingComponentAdapter: SelfServeLoadingComponentAdapter;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -286,7 +319,6 @@ export default class Explorer {
       }
     });
     this.isAccountReady = ko.observable<boolean>(false);
-    this.selfServeType = ko.observable<SelfServeType>(undefined);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
     this.arcadiaToken.subscribe((token: string) => {
@@ -438,6 +470,7 @@ export default class Explorer {
         databaseAccount
       );
       this.defaultExperience(defaultExperience);
+      // TODO. Remove this entirely
       updateUserContext({
         defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
       });
@@ -661,7 +694,6 @@ export default class Explorer {
     });
 
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-    this.selfServeComponentAdapter = new SelfServeComponentAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
@@ -836,7 +868,6 @@ export default class Explorer {
     });
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
-    this.selfServeLoadingComponentAdapter = new SelfServeLoadingComponentAdapter();
 
     this._initSettings();
 
@@ -1406,20 +1437,6 @@ export default class Explorer {
     return false;
   }
 
-  public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
-    const selfServeFeature = inputs.features[Constants.Features.selfServeType];
-    if (selfServeFeature) {
-      // self serve type received from query string
-      const selfServeType = SelfServeType[selfServeFeature?.toLowerCase() as keyof typeof SelfServeType];
-      this.selfServeType(selfServeType ? selfServeType : SelfServeType.invalid);
-    } else if (inputs.selfServeType) {
-      // self serve type received from portal
-      this.selfServeType(inputs.selfServeType);
-    } else {
-      this.selfServeType(SelfServeType.none);
-    }
-  }
-
   public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
     if (inputs != null) {
       // In development mode, save the iframe message from the portal in session storage.
@@ -1428,8 +1445,6 @@ export default class Explorer {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
 
-      const authorizationToken = inputs.authorizationToken || "";
-      const masterKey = inputs.masterKey || "";
       const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
@@ -1445,22 +1460,6 @@ export default class Explorer {
       this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
       this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      this.setSelfServeType(inputs);
-
-      updateConfigContext({
-        BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
-        ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
-      });
-
-      updateUserContext({
-        authorizationToken,
-        masterKey,
-        databaseAccount,
-        resourceGroup: inputs.resourceGroup,
-        subscriptionId: inputs.subscriptionId,
-        subscriptionType: inputs.subscriptionType,
-        quotaId: inputs.quotaId,
-      });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {

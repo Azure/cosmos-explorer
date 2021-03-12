@@ -94,7 +94,7 @@ jobs:
           path: dist/
   endtoendemulator:
     name: "End To End Emulator Tests"
-    needs: [lint, format, compile, unittest]
+    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
