@@ -350,8 +350,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               !this.isAuthWithResourceToken() &&
-              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                this.isFeatureEnabled(Constants.Features.enableNotebooks))
+                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -373,7 +373,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-              this.isFeatureEnabled(Constants.Features.enableSpark)
+                this.isFeatureEnabled(Constants.Features.enableSpark)
             );
             if (this.isSparkEnabled()) {
               appInsights.trackEvent(
@@ -1415,7 +1415,12 @@ export default class Explorer {
   }
 
   public isLastNonEmptyDatabase(): boolean {
-    if (this.isLastDatabase() && this.databases()[0].collections && this.databases()[0].collections().length > 0) {
+    if (
+      this.isLastDatabase() &&
+      this.databases()[0] &&
+      this.databases()[0].collections &&
+      this.databases()[0].collections().length > 0
+    ) {
       return true;
     }
     return false;
@@ -2541,13 +2546,13 @@ export default class Explorer {
     this.isFeatureEnabled(Constants.Features.enableKOPanel)
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
-        "Delete Collection",
-        <DeleteCollectionConfirmationPanel
-          explorer={this}
-          closePanel={() => this.closeSidePanel()}
-          openNotificationConsole={() => this.expandConsole()}
-        />
-      );
+          "Delete Collection",
+          <DeleteCollectionConfirmationPanel
+            explorer={this}
+            closePanel={() => this.closeSidePanel()}
+            openNotificationConsole={() => this.expandConsole()}
+          />
+        );
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
@@ -2555,12 +2560,12 @@ export default class Explorer {
     this.isFeatureEnabled(Constants.Features.enableKOPanel)
       ? this.deleteDatabaseConfirmationPane.open()
       : this.openSidePanel(
-        "Delete Database React",
-        <DeleteDatabaseConfirmationPanel
-          explorer={this}
-          openNotificationConsole={() => this.expandConsole()}
-          closePanel={() => this.closeSidePanel()}
-        />
-      );
+          "Delete Database",
+          <DeleteDatabaseConfirmationPanel
+            explorer={this}
+            openNotificationConsole={() => this.expandConsole()}
+            closePanel={() => this.closeSidePanel()}
+          />
+        );
   }
 }

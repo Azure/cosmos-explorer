@@ -1,7 +1,7 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { Text, TextField } from "office-ui-fabric-react";
 import Q from "q";
-import React, { FunctionComponent, useState } from 'react';
+import React, { FunctionComponent, useState } from "react";
 import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
 import * as Constants from "../../Common/Constants";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
@@ -17,21 +17,21 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import { PanelErrorComponent } from "./PanelErrorComponent";
 import { PanelFooterComponent } from "./PanelFooterComponent";
 
-
 interface DeleteDatabaseConfirmationPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   openNotificationConsole: () => void;
 }
 
-export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = (props: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
+export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = (
+  props: DeleteDatabaseConfirmationPanelProps
+): JSX.Element => {
   // For showing/hiding panel
   const [isHidden, { setTrue: setHiddenTrue, setFalse: setHiddenFalse }] = useBoolean(true);
 
   const [formError, setFormError] = useState<string>("");
   const [databaseInput, setDatabaseInput] = useState<string>("");
-  const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("")
-
+  const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("");
 
   const getPanelErrorProps = () => {
     if (formError) {
@@ -49,8 +49,9 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       message:
         "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
     };
-  }
+  };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const submit = (): Q.Promise<any> => {
     // Get selected db
     const selectedDatabase = props.explorer.findSelectedDatabase();
@@ -130,14 +131,14 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         }
       )
     );
-  }
+  };
 
   const shouldRecordFeedback = (): boolean => {
     return (
       props.explorer.isLastNonEmptyDatabase() ||
       (props.explorer.isLastDatabase() && props.explorer.isSelectedDatabaseShared())
     );
-  }
+  };
 
   const isValid = (): boolean => {
     const selectedDatabase = props.explorer.findSelectedDatabase();
@@ -145,7 +146,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       return false;
     }
     return databaseInput === selectedDatabase.id();
-  }
+  };
 
   return (
     <div className="panelContentContainer">
@@ -159,18 +160,18 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
             autoFocus
             styles={{ fieldGroup: { width: 300 } }}
             onChange={(event, newInput?: string) => {
-              setDatabaseInput(newInput)
+              setDatabaseInput(newInput);
             }}
           />
         </div>
         {shouldRecordFeedback() && (
-          <div className="deleteCollectionFeedback">
+          <div className="deleteDatabaseFeedback">
             <Text variant="small" block>
               Help us improve Azure Cosmos DB!
-              </Text>
+            </Text>
             <Text variant="small" block>
               What is the reason why you are deleting this database?
-              </Text>
+            </Text>
             <TextField
               id="deleteDatabaseFeedbackInput"
               styles={{ fieldGroup: { width: 300 } }}
@@ -188,6 +189,5 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         <img className="dataExplorerLoader" src={LoadingIndicator_3Squares} />
       </div>
     </div>
-  )
-}
-
+  );
+};
