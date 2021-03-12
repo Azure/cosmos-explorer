@@ -34,7 +34,7 @@ export const useNotebooks = (context: { container: Explorer }): NotebookHooks =>
   };
 
   // TODO For now, we need to rely on this, as setMyNotebooksContentRoot() is not synchronous
-  let _myNotebooksContentRoot: NotebookContentItem = undefined;
+  let _myNotebooksContentRoot: NotebookContentItem;
   const _setMyNotebooksContentRoot = (newValue: NotebookContentItem) => {
     _myNotebooksContentRoot = newValue;
     setMyNotebooksContentRoot(newValue);
@@ -94,7 +94,7 @@ export const useNotebooks = (context: { container: Explorer }): NotebookHooks =>
   };
 
   const initializeGitHubNotebooksContentRoot = (): NotebookContentItem => {
-    let root: NotebookContentItem = undefined;
+    let root: NotebookContentItem;
 
     if (context.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       root = {

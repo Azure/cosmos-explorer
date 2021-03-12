@@ -351,8 +351,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               !this.isAuthWithResourceToken() &&
-              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                this.isFeatureEnabled(Constants.Features.enableNotebooks))
+                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -374,7 +374,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-              this.isFeatureEnabled(Constants.Features.enableSpark)
+                this.isFeatureEnabled(Constants.Features.enableSpark)
             );
             if (this.isSparkEnabled()) {
               appInsights.trackEvent(
@@ -2541,12 +2541,12 @@ export default class Explorer {
     this.isFeatureEnabled(Constants.Features.enableKOPanel)
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
-        "Delete Collection",
-        <DeleteCollectionConfirmationPanel
-          explorer={this}
-          closePanel={() => this.closeSidePanel()}
-          openNotificationConsole={() => this.expandConsole()}
-        />
-      );
+          "Delete Collection",
+          <DeleteCollectionConfirmationPanel
+            explorer={this}
+            closePanel={() => this.closeSidePanel()}
+            openNotificationConsole={() => this.expandConsole()}
+          />
+        );
   }
 }
