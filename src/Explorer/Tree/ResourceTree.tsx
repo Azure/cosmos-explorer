@@ -179,7 +179,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps> {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
+        MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
           type: MostRecentActivity.Type.OpenCollection,
           title: collection.id(),
           description: "Data",
@@ -544,7 +544,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps> {
   }
 
   private pushItemToMostRecent(item: NotebookContentItem) {
-    this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
+    MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
       type: MostRecentActivity.Type.OpenNotebook,
       title: item.name,
       description: "Notebook",

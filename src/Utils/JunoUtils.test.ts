@@ -1,6 +1,6 @@
 import { RepoListItem } from "../Explorer/Controls/GitHub/GitHubReposComponent";
 import { IPinnedRepo } from "../Juno/JunoClient";
-import { JunoUtils } from "./JunoUtils";
+import * as JunoUtils from "./JunoUtils";
 import { IGitHubRepo } from "../GitHub/GitHubClient";
 
 const gitHubRepo: IGitHubRepo = {

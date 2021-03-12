@@ -962,13 +962,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "memoryUsageInfo": [Function],
-                "mostRecentActivity": MostRecentActivity {
-                  "container": [Circular],
-                  "storedData": Object {
-                    "itemsMap": Object {},
-                    "schemaVersion": "1",
-                  },
-                },
                 "newVertexPane": NewVertexPane {
                   "buildString": [Function],
                   "container": [Circular],
@@ -1048,14 +1041,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
-                "selfServeComponentAdapter": SelfServeComponentAdapter {
-                  "container": [Circular],
-                  "parameters": [Function],
-                },
-                "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
-                  "parameters": [Function],
-                },
-                "selfServeType": [Function],
                 "serverId": [Function],
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
@@ -2159,13 +2144,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "memoryUsageInfo": [Function],
-              "mostRecentActivity": MostRecentActivity {
-                "container": [Circular],
-                "storedData": Object {
-                  "itemsMap": Object {},
-                  "schemaVersion": "1",
-                },
-              },
               "newVertexPane": NewVertexPane {
                 "buildString": [Function],
                 "container": [Circular],
@@ -2245,14 +2223,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
-              "selfServeComponentAdapter": SelfServeComponentAdapter {
-                "container": [Circular],
-                "parameters": [Function],
-              },
-              "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
-                "parameters": [Function],
-              },
-              "selfServeType": [Function],
               "serverId": [Function],
               "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,
@@ -3369,13 +3339,6 @@ exports[`SettingsComponent renders 1`] = `
                   "visible": [Function],
                 },
                 "memoryUsageInfo": [Function],
-                "mostRecentActivity": MostRecentActivity {
-                  "container": [Circular],
-                  "storedData": Object {
-                    "itemsMap": Object {},
-                    "schemaVersion": "1",
-                  },
-                },
                 "newVertexPane": NewVertexPane {
                   "buildString": [Function],
                   "container": [Circular],
@@ -3455,14 +3418,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
-                "selfServeComponentAdapter": SelfServeComponentAdapter {
-                  "container": [Circular],
-                  "parameters": [Function],
-                },
-                "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
-                  "parameters": [Function],
-                },
-                "selfServeType": [Function],
                 "serverId": [Function],
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
@@ -4566,13 +4521,6 @@ exports[`SettingsComponent renders 1`] = `
                 "visible": [Function],
               },
               "memoryUsageInfo": [Function],
-              "mostRecentActivity": MostRecentActivity {
-                "container": [Circular],
-                "storedData": Object {
-                  "itemsMap": Object {},
-                  "schemaVersion": "1",
-                },
-              },
               "newVertexPane": NewVertexPane {
                 "buildString": [Function],
                 "container": [Circular],
@@ -4652,14 +4600,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
-              "selfServeComponentAdapter": SelfServeComponentAdapter {
-                "container": [Circular],
-                "parameters": [Function],
-              },
-              "selfServeLoadingComponentAdapter": SelfServeLoadingComponentAdapter {
-                "parameters": [Function],
-              },
-              "selfServeType": [Function],
               "serverId": [Function],
               "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,

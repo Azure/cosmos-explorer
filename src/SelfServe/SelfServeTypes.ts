@@ -3,7 +3,11 @@ interface BaseInput {
   errorMessage?: string;
   type: InputTypeValue;
   labelTKey?: (() => Promise<string>) | string;
-  onChange?: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>;
+  onChange?: (
+    newValue: InputType,
+    currentState: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>;
   placeholderTKey?: (() => Promise<string>) | string;
 }
 
@@ -44,16 +48,23 @@ export interface Node {
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
-  onSave?: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  onSave?: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<OnSaveResult>;
   inputNames?: string[];
   onRefresh?: () => Promise<RefreshResult>;
+  refreshParams?: RefreshParams;
 }
 
 export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
 
 export abstract class SelfServeBaseClass {
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
-  public abstract onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+  public abstract onSave: (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<OnSaveResult>;
   public abstract onRefresh: () => Promise<RefreshResult>;
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
@@ -70,7 +81,7 @@ export abstract class SelfServeBaseClass {
       throw new Error(`onRefresh() was not declared for the class '${className}'`);
     }
     if (!selfServeDescriptor?.root) {
-      throw new Error(`@SmartUi decorator was not declared for the class '${className}'`);
+      throw new Error(`@IsDisplayable decorator was not declared for the class '${className}'`);
     }
 
     selfServeDescriptor.initialize = this.initialize;
@@ -89,7 +100,7 @@ export enum NumberUiType {
 
 export type ChoiceItem = { label: string; key: string };
 
-export type InputType = number | string | boolean | ChoiceItem;
+export type InputType = number | string | boolean | ChoiceItem | Description;
 
 export interface Info {
   messageTKey: string;
@@ -99,8 +110,15 @@ export interface Info {
   };
 }
 
+export enum DescriptionType {
+  Text,
+  InfoMessageBar,
+  WarningMessageBar,
+}
+
 export interface Description {
   textTKey: string;
+  type: DescriptionType;
   link?: {
     href: string;
     textTKey: string;
@@ -113,18 +131,29 @@ export interface SmartUiInput {
   disabled?: boolean;
 }
 
-export enum SelfServeNotificationType {
-  info = "info",
-  warning = "warning",
-  error = "error",
-}
-
-export interface SelfServeNotification {
-  message: string;
-  type: SelfServeNotificationType;
+export interface OnSaveResult {
+  operationStatusUrl: string;
+  portalNotification?: {
+    initialize: {
+      titleTKey: string;
+      messageTKey: string;
+    };
+    success: {
+      titleTKey: string;
+      messageTKey: string;
+    };
+    failure: {
+      titleTKey: string;
+      messageTKey: string;
+    };
+  };
 }
 
 export interface RefreshResult {
   isUpdateInProgress: boolean;
-  notificationMessage: string;
+  updateInProgressMessageTKey: string;
+}
+
+export interface RefreshParams {
+  retryIntervalInMs: number;
 }

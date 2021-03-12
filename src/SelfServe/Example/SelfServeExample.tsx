@@ -1,13 +1,14 @@
-import { PropertyInfo, OnChange, Values, IsDisplayable, ClassInfo } from "../Decorators";
+import { PropertyInfo, OnChange, Values, IsDisplayable, RefreshOptions } from "../Decorators";
 import {
   ChoiceItem,
+  Description,
+  DescriptionType,
   Info,
   InputType,
   NumberUiType,
+  OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SelfServeNotification,
-  SelfServeNotificationType,
   SmartUiInput,
 } from "../SelfServeTypes";
 import {
@@ -27,16 +28,19 @@ const regionDropdownItems: ChoiceItem[] = [
   { label: "East US 2", key: Regions.EastUS2 },
 ];
 
-const selfServeExampleInfo: Info = {
-  messageTKey: "ClassInfo",
-};
-
 const regionDropdownInfo: Info = {
   messageTKey: "RegionDropdownInfo",
 };
 
-const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: InputType): Map<string, SmartUiInput> => {
+const onRegionsChange = (newValue: InputType, currentState: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
   currentState.set("regions", { value: newValue });
+
+  const currentRegionText = `current region selected is ${newValue}`;
+  currentState.set("currentRegionText", {
+    value: { textTKey: currentRegionText, type: DescriptionType.Text } as Description,
+    hidden: false,
+  });
+
   const currentEnableLogging = currentState.get("enableLogging");
   if (newValue === Regions.NorthCentralUS) {
     currentState.set("enableLogging", { value: false, disabled: true });
@@ -47,8 +51,8 @@ const onRegionsChange = (currentState: Map<string, SmartUiInput>, newValue: Inpu
 };
 
 const onEnableDbLevelThroughputChange = (
-  currentState: Map<string, SmartUiInput>,
-  newValue: InputType
+  newValue: InputType,
+  currentState: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentState.set("enableDbLevelThroughput", { value: newValue });
   const currentDbThroughput = currentState.get("dbThroughput");
@@ -57,9 +61,15 @@ const onEnableDbLevelThroughputChange = (
   return currentState;
 };
 
-const validate = (currentvalues: Map<string, SmartUiInput>): void => {
+const validate = (
+  currentvalues: Map<string, SmartUiInput>,
+  baselineValues: ReadonlyMap<string, SmartUiInput>
+): void => {
+  if (currentvalues.get("dbThroughput") === baselineValues.get("dbThroughput")) {
+    throw new Error("DbThroughputValidationError");
+  }
   if (!currentvalues.get("regions").value || !currentvalues.get("accountName").value) {
-    throw new Error("ValidationError");
+    throw new Error("RegionsAndAccountNameValidationError");
   }
 };
 
@@ -86,12 +96,12 @@ const validate = (currentvalues: Map<string, SmartUiInput>): void => {
 */
 @IsDisplayable()
 /*
-  @ClassInfo()
-    - optional
-    - input: Info | () => Promise<Info>
-    - role: Display an Info bar as the first element of the UI.
+  @RefreshOptions()
+    - role: Passes the refresh options to be used by the self serve model.
+    - inputs: 
+        retryIntervalInMs - The time interval between refresh attempts when an update in ongoing.
 */
-@ClassInfo(selfServeExampleInfo)
+@RefreshOptions({ retryIntervalInMs: 2000 })
 export default class SelfServeExample extends SelfServeBaseClass {
   /*
   onRefresh()
@@ -109,18 +119,21 @@ export default class SelfServeExample extends SelfServeBaseClass {
 
   /*
   onSave()
-    - input: (currentValues: Map<string, InputType>) => Promise<void>
+    - input: (currentValues: Map<string, InputType>, baselineValues: ReadonlyMap<string, SmartUiInput>) => Promise<string>
     - role: Callback that is triggerred when the submit button is clicked. You should perform your rest API
             calls here using the data from the different inputs passed as a Map to this callback function.
 
             In this example, the onSave callback simply sets the value for keys corresponding to the field name
-            in the SessionStorage.
-    - returns: SelfServeNotification -
-                message: The message to be displayed in the message bar after the onSave is completed
-                type: The type of message bar to be used (info, warning, error)
+            in the SessionStorage. It uses the currentValues and baselineValues maps to perform custom validations
+            as well.
+
+    - returns: The initialize, success and failure messages to be displayed in the Portal Notification blade after the operation is completed.
   */
-  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<SelfServeNotification> => {
-    validate(currentValues);
+  public onSave = async (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ): Promise<OnSaveResult> => {
+    validate(currentValues, baselineValues);
     const regions = Regions[currentValues.get("regions")?.value as keyof typeof Regions];
     const enableLogging = currentValues.get("enableLogging")?.value as boolean;
     const accountName = currentValues.get("accountName")?.value as string;
@@ -128,8 +141,48 @@ export default class SelfServeExample extends SelfServeBaseClass {
     const enableDbLevelThroughput = currentValues.get("enableDbLevelThroughput")?.value as boolean;
     let dbThroughput = currentValues.get("dbThroughput")?.value as number;
     dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
-    await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
-    return { message: "SubmissionMessage", type: SelfServeNotificationType.info };
+    try {
+      await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
+      if (currentValues.get("regions") === baselineValues.get("regions")) {
+        return {
+          operationStatusUrl: undefined,
+          portalNotification: {
+            initialize: {
+              titleTKey: "SubmissionMessageSuccessTitle",
+              messageTKey: "SubmissionMessageForSameRegionText",
+            },
+            success: {
+              titleTKey: "UpdateCompletedMessageTitle",
+              messageTKey: "UpdateCompletedMessageText",
+            },
+            failure: {
+              titleTKey: "SubmissionMessageErrorTitle",
+              messageTKey: "SubmissionMessageErrorText",
+            },
+          },
+        };
+      } else {
+        return {
+          operationStatusUrl: undefined,
+          portalNotification: {
+            initialize: {
+              titleTKey: "SubmissionMessageSuccessTitle",
+              messageTKey: "SubmissionMessageForNewRegionText",
+            },
+            success: {
+              titleTKey: "UpdateCompletedMessageTitle",
+              messageTKey: "UpdateCompletedMessageText",
+            },
+            failure: {
+              titleTKey: "SubmissionMessageErrorTitle",
+              messageTKey: "SubmissionMessageErrorText",
+            },
+          },
+        };
+      }
+    } catch (error) {
+      throw new Error("OnSaveFailureMessage");
+    }
   };
 
   /*
@@ -150,6 +203,11 @@ export default class SelfServeExample extends SelfServeBaseClass {
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
     const initializeResponse = await initialize();
     const defaults = new Map<string, SmartUiInput>();
+    const currentRegionText = `current region selected is ${initializeResponse.regions}`;
+    defaults.set("currentRegionText", {
+      value: { textTKey: currentRegionText, type: DescriptionType.Text } as Description,
+      hidden: false,
+    });
     defaults.set("regions", { value: initializeResponse.regions });
     defaults.set("enableLogging", { value: initializeResponse.enableLogging });
     const accountName = initializeResponse.accountName;
@@ -172,15 +230,24 @@ export default class SelfServeExample extends SelfServeBaseClass {
             e) Text (with optional hyperlink) for descriptions
   */
   @Values({
+    labelTKey: "DescriptionLabel",
     description: {
       textTKey: "DescriptionText",
+      type: DescriptionType.Text,
       link: {
-        href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+        href: "https://aka.ms/cosmos-create-account-portal",
         textTKey: "DecriptionLinkText",
       },
     },
   })
   description: string;
+
+  @Values({
+    labelTKey: "Current Region",
+    isDynamicDescription: true,
+  })
+  currentRegionText: string;
+
   /*
   @PropertyInfo()
     - optional
@@ -192,8 +259,8 @@ export default class SelfServeExample extends SelfServeBaseClass {
   /*
   @OnChange()
     - optional
-    - input: (currentValues: Map<string, InputType>, newValue: InputType) => Map<string, InputType>
-    - role: Takes a Map of current values and the newValue for this property as inputs. This is called when a property,
+    - input: (currentValues: Map<string, InputType>, newValue: InputType, baselineValues: ReadonlyMap<string, SmartUiInput>) => Map<string, InputType>
+    - role: Takes a Map of current values, the newValue for this property and a ReadonlyMap of baselineValues as inputs. This is called when a property,
             say prop1, changes its value in the UI. This can be used to 
             a) Change the value (and reflect it in the UI) for prop2 based on prop1.
             b) Change the visibility for prop2 in the UI, based on prop1

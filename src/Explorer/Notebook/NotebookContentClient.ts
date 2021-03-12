@@ -1,6 +1,6 @@
 import * as DataModels from "../../Contracts/DataModels";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import { StringUtils } from "../../Utils/StringUtils";
+import * as StringUtils from "../../Utils/StringUtils";
 import { FileSystemUtil } from "./FileSystemUtil";
 import { NotebookUtil } from "./NotebookUtil";
 

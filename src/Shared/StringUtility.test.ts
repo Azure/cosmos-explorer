@@ -1,4 +1,4 @@
-import { StringUtility } from "./StringUtility";
+import * as StringUtility from "./StringUtility";
 
 describe("String utility", () => {
   it("Convert to integer from string", () => {
