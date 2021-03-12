@@ -24,12 +24,13 @@ interface DeleteDatabaseConfirmationPanelProps {
   openNotificationConsole: () => void;
 }
 
-export const DeleteDatabaseConfirmationPaneReact: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = (props: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
+export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = (props: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
   // For showing/hiding panel
   const [isHidden, { setTrue: setHiddenTrue, setFalse: setHiddenFalse }] = useBoolean(true);
 
   const [formError, setFormError] = useState<string>("");
   const [databaseInput, setDatabaseInput] = useState<string>("");
+  const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("")
 
 
   const getPanelErrorProps = () => {
@@ -51,9 +52,8 @@ export const DeleteDatabaseConfirmationPaneReact: FunctionComponent<DeleteDataba
   }
 
   const submit = (): Q.Promise<any> => {
-    setFormError("Input database name does not match the selected database")
+    // Get selected db
     const selectedDatabase = props.explorer.findSelectedDatabase();
-
     if (!isValid()) {
       setFormError("Input database name does not match the selected database");
       NotificationConsoleUtils.logConsoleMessage(
@@ -103,21 +103,19 @@ export const DeleteDatabaseConfirmationPaneReact: FunctionComponent<DeleteDataba
               props.explorer.databaseAccount().id,
               props.explorer.databaseAccount().name,
               DefaultExperienceUtility.getApiKindFromDefaultExperience(props.explorer.defaultExperience()),
-              "Delete feedback"
+              databaseFeedbackInput
             );
 
             TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
               message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
             });
-
-            // databaseDeleteFeedback("");
+            setDatabaseFeedbackInput("");
           }
         },
-        (error: any) => {
+        (error: Error) => {
           setHiddenTrue();
           const errorMessage = getErrorMessage(error);
           setFormError(errorMessage);
-          // this.formErrorsDetails(errorMessage);
           TelemetryProcessor.traceFailure(
             Action.DeleteDatabase,
             {
@@ -140,7 +138,6 @@ export const DeleteDatabaseConfirmationPaneReact: FunctionComponent<DeleteDataba
       (props.explorer.isLastDatabase() && props.explorer.isSelectedDatabaseShared())
     );
   }
-
 
   const isValid = (): boolean => {
     const selectedDatabase = props.explorer.findSelectedDatabase();
@@ -166,6 +163,25 @@ export const DeleteDatabaseConfirmationPaneReact: FunctionComponent<DeleteDataba
             }}
           />
         </div>
+        {shouldRecordFeedback() && (
+          <div className="deleteCollectionFeedback">
+            <Text variant="small" block>
+              Help us improve Azure Cosmos DB!
+              </Text>
+            <Text variant="small" block>
+              What is the reason why you are deleting this database?
+              </Text>
+            <TextField
+              id="deleteDatabaseFeedbackInput"
+              styles={{ fieldGroup: { width: 300 } }}
+              multiline
+              rows={3}
+              onChange={(event, newInput?: string) => {
+                setDatabaseFeedbackInput(newInput);
+              }}
+            />
+          </div>
+        )}
       </div>
       <PanelFooterComponent buttonLabel="OK" onOKButtonClicked={() => submit()} />
       <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={isHidden}>
