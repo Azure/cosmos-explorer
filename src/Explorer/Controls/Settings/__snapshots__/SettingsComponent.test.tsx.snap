@@ -993,6 +993,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onSwitchToConnectionString": [Function],
                 "openDialog": undefined,
                 "openSidePanel": undefined,
+                "params": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -1025,26 +1026,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
                 "resourceTokenPartitionKey": [Function],
-                "resourceTree": ResourceTreeAdapter {
-                  "container": [Circular],
-                  "copyNotebook": [Function],
-                  "databaseCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsDatabaseIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "parameters": [Function],
-                },
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
                   "container": [Circular],
                   "parameters": [Function],
@@ -2209,6 +2190,7 @@ exports[`SettingsComponent renders 1`] = `
               "onSwitchToConnectionString": [Function],
               "openDialog": undefined,
               "openSidePanel": undefined,
+              "params": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -2241,26 +2223,6 @@ exports[`SettingsComponent renders 1`] = `
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],
               "resourceTokenPartitionKey": [Function],
-              "resourceTree": ResourceTreeAdapter {
-                "container": [Circular],
-                "copyNotebook": [Function],
-                "databaseCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsDatabaseIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "parameters": [Function],
-              },
               "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
                 "container": [Circular],
                 "parameters": [Function],
@@ -3438,6 +3400,7 @@ exports[`SettingsComponent renders 1`] = `
                 "onSwitchToConnectionString": [Function],
                 "openDialog": undefined,
                 "openSidePanel": undefined,
+                "params": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -3470,26 +3433,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
                 "resourceTokenPartitionKey": [Function],
-                "resourceTree": ResourceTreeAdapter {
-                  "container": [Circular],
-                  "copyNotebook": [Function],
-                  "databaseCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsDatabaseIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "parameters": [Function],
-                },
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
                   "container": [Circular],
                   "parameters": [Function],
@@ -4654,6 +4597,7 @@ exports[`SettingsComponent renders 1`] = `
               "onSwitchToConnectionString": [Function],
               "openDialog": undefined,
               "openSidePanel": undefined,
+              "params": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -4686,26 +4630,6 @@ exports[`SettingsComponent renders 1`] = `
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],
               "resourceTokenPartitionKey": [Function],
-              "resourceTree": ResourceTreeAdapter {
-                "container": [Circular],
-                "copyNotebook": [Function],
-                "databaseCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsDatabaseIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "parameters": [Function],
-              },
               "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
                 "container": [Circular],
                 "parameters": [Function],

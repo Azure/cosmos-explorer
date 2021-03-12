@@ -2,7 +2,7 @@ import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import React from "react";
-import { ResourceTreeAdapter } from "./ResourceTree";
+import { ResourceTree } from "./ResourceTree";
 import { shallow } from "enzyme";
 import { TreeComponent, TreeNode, TreeComponentProps } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
@@ -237,7 +237,13 @@ const createMockCollection = (): ViewModels.Collection => {
 
 describe("Resource tree for schema", () => {
   const mockContainer: Explorer = createMockContainer();
-  const resourceTree = new ResourceTreeAdapter(mockContainer);
+  const resourceTree = new ResourceTree({
+    explorer: mockContainer,
+    lastRefreshedTime: 0,
+    galleryContentRoot: undefined,
+    myNotebooksContentRoot: undefined,
+    gitHubNotebooksContentRoot: undefined,
+  });
 
   it("should render", () => {
     const rootNode: TreeNode = resourceTree.buildSchemaNode(createMockCollection());
