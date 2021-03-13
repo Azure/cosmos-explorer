@@ -103,7 +103,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
             </Card.Item>
 
             <Card.Section styles={{ root: { padding: GalleryCardComponent.cardItemGapBig } }}>
-              <Text variant="small" nowrap>
+              <Text variant="small" nowrap styles={{ root: { height: 18 } }}>
                 {this.props.data.tags ? (
                   this.props.data.tags.map((tag, index, array) => (
                     <span key={tag}>
