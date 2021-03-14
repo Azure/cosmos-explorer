@@ -271,18 +271,20 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       );
     } else if (input.uiType === NumberUiType.Slider) {
       return (
-        <Stack id={`${input.dataFieldName}-slider-input`}>
+        <Stack>
           {labelElement}
-          <Slider
-            {...props}
-            value={value}
-            disabled={disabled}
-            onChange={(newValue) => this.props.onInputChange(input, newValue)}
-            styles={{
-              root: { width: 400 },
-              valueLabel: SmartUiComponent.labelStyle,
-            }}
-          />
+          <div id={`${input.dataFieldName}-slider-input`}>
+            <Slider
+              {...props}
+              value={value}
+              disabled={disabled}
+              onChange={(newValue) => this.props.onInputChange(input, newValue)}
+              styles={{
+                root: { width: 400 },
+                valueLabel: SmartUiComponent.labelStyle,
+              }}
+            />
+          </div>
         </Stack>
       );
     } else {
