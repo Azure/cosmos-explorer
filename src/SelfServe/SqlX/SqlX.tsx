@@ -1,21 +1,21 @@
-import { IsDisplayable, OnChange, Values, RefreshOptions } from "../Decorators";
+import { IsDisplayable, OnChange, RefreshOptions, Values } from "../Decorators";
 import {
   ChoiceItem,
+  Description,
   DescriptionType,
   InputType,
   NumberUiType,
+  OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
   SmartUiInput,
-  Description,
-  OnSaveResult,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
-  refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
+  refreshDedicatedGatewayProvisioning,
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -68,10 +68,7 @@ const onEnableDedicatedGatewayChange = (
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
-  currentValues.set("warningBanner", {
-    value: undefined, //{ textTKey: "NoValue" } as Description,
-    hidden: true,
-  });
+  currentValues.set("warningBanner", undefined);
   if (dedicatedGatewayOriginallyEnabled === false && newValue === true) {
     currentValues.set("warningBanner", {
       value: { textTKey: "WarningBannerOnUpdate" } as Description,
@@ -142,10 +139,7 @@ export default class SqlX extends SelfServeBaseClass {
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
 
-    currentValues.set("warningBanner", {
-      value: { textTKey: "NoValue" } as Description,
-      hidden: true,
-    });
+    currentValues.set("warningBanner", undefined);
 
     //TODO : Ad try catch for each RP call and return relevant notifications
     if (dedicatedGatewayOriginallyEnabled) {
@@ -220,8 +214,8 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("enableDedicatedGateway", { value: false });
     defaults.set("sku", { value: "Cosmos.D4s", hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
-    defaults.set("skuDetails", { value: "NoValue", hidden: true });
-    defaults.set("costPerHour", { value: "NoValue", hidden: true });
+    defaults.set("skuDetails", undefined);
+    defaults.set("costPerHour", undefined);
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
@@ -235,15 +229,11 @@ export default class SqlX extends SelfServeBaseClass {
       });
     }
 
-    defaults.set("warningBanner", {
-      value: { textTKey: "NoValue" } as Description,
-      hidden: true,
-    });
+    defaults.set("warningBanner", undefined);
     return defaults;
   };
 
   @Values({
-    labelTKey: "NoValue",
     isDynamicDescription: true,
   })
   warningBanner: string;
