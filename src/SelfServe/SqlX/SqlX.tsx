@@ -77,7 +77,7 @@ const onEnableDedicatedGatewayChange = (
       value: { textTKey: "WarningBannerOnUpdate" } as Description,
       hidden: false,
     });
-  } else if (dedicatedGatewayOriginallyEnabled === true && newValue == false) {
+  } else if (dedicatedGatewayOriginallyEnabled === true && newValue === false) {
     currentValues.set("warningBanner", {
       value: { textTKey: "WarningBannerOnDelete" } as Description,
       hidden: false,
