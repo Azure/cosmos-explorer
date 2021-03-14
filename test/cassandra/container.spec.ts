@@ -1,6 +1,6 @@
 import "expect-puppeteer";
 import { Frame } from "puppeteer";
-import { generateUniqueName } from "../utils/shared";
+import { generateUniqueName, login } from "../utils/shared";
 
 jest.setTimeout(300000);
 const RENDER_DELAY = 800;
@@ -13,9 +13,7 @@ describe("Collection Add and Delete Cassandra spec", () => {
     try {
       const keyspaceId = generateUniqueName("key");
       const tableId = generateUniqueName("tab");
-      await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-cassandra-runner");
-      const handle = await page.waitForSelector("iframe");
-      const frame = await handle.contentFrame();
+      const frame = await login(process.env.CASSANDRA_CONNECTION_STRING);
 
       // create new table
       await frame.waitFor('button[data-test="New Table"]', { visible: true });

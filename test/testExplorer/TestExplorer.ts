@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { ClientSecretCredential } from "@azure/identity";
 import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
