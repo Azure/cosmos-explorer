@@ -18,7 +18,7 @@ import {
   getCurrentProvisioningState,
 } from "./SqlX.rp";
 
-const costPerHourValue = {
+const costPerHourValue: Description = {
   textTKey: "CostPerHourText",
   type: DescriptionType.Text,
   link: {
@@ -45,7 +45,7 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
   currentValues.set("skuDetails", {
     value: { textTKey: getSKUDetails(`${newValue.toString()}`), type: DescriptionType.Text } as Description,
   });
-  currentValues.set("costPerHour", { value: costPerHourValue as Description });
+  currentValues.set("costPerHour", { value: costPerHourValue });
   return currentValues;
 };
 
@@ -69,7 +69,7 @@ const onEnableDedicatedGatewayChange = (
 ): Map<string, SmartUiInput> => {
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
   currentValues.set("warningBanner", {
-    value: { textTKey: "NoValue" } as Description,
+    value: undefined, //{ textTKey: "NoValue" } as Description,
     hidden: true,
   });
   if (dedicatedGatewayOriginallyEnabled === false && newValue === true) {
@@ -104,7 +104,7 @@ const onEnableDedicatedGatewayChange = (
     disabled: dedicatedGatewayOriginallyEnabled,
   });
 
-  currentValues.set("costPerHour", { value: costPerHourValue as Description, hidden: hideAttributes });
+  currentValues.set("costPerHour", { value: costPerHourValue, hidden: hideAttributes });
 
   return currentValues;
 };
@@ -155,16 +155,16 @@ export default class SqlX extends SelfServeBaseClass {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
             initialize: {
-              titleTKey: "Deleting resource",
-              messageTKey: "DedicatedGateway resource will be deleted.",
+              titleTKey: "CreateInitializeTitle",
+              messageTKey: "CreateInitializeTitle",
             },
             success: {
-              titleTKey: "Resource Deleted",
-              messageTKey: "DedicatedGateway resource deleted.",
+              titleTKey: "CreateSuccessTitle",
+              messageTKey: "CreateSuccesseMessage",
             },
             failure: {
-              titleTKey: "Failed to delete resource.",
-              messageTKey: "DedicatedGateway resource deletion failed.",
+              titleTKey: "CreateFailureTitle",
+              messageTKey: "CreateFailureMessage",
             },
           },
         };
@@ -174,16 +174,16 @@ export default class SqlX extends SelfServeBaseClass {
           operationStatusUrl: undefined,
           portalNotification: {
             initialize: {
-              titleTKey: "Updating resource",
-              messageTKey: "DedicatedGateway resource will be updated.",
+              titleTKey: "DeleteInitializeTitle",
+              messageTKey: "DeleteInitializeMessage",
             },
             success: {
-              titleTKey: "Resource Updated",
-              messageTKey: "DedicatedGateway resource updated.",
+              titleTKey: "DeleteSuccessTitle",
+              messageTKey: "DeleteSuccesseMessage",
             },
             failure: {
-              titleTKey: "Resource Updation failed.",
-              messageTKey: "DedicatedGateway resource updation failed.",
+              titleTKey: "DeleteFailureTitle",
+              messageTKey: "DeleteFailureMessage",
             },
           },
         };
@@ -228,7 +228,7 @@ export default class SqlX extends SelfServeBaseClass {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: true });
-      defaults.set("costPerHour", { value: costPerHourValue as Description });
+      defaults.set("costPerHour", { value: costPerHourValue });
       defaults.set("skuDetails", {
         value: { textTKey: getSKUDetails(`${defaults.get("sku").value}`), type: DescriptionType.Text } as Description,
         hidden: false,
@@ -272,7 +272,7 @@ export default class SqlX extends SelfServeBaseClass {
   @Values({
     labelTKey: "SKUs",
     choices: getSkus,
-    placeholderTKey: "Select SKUs",
+    placeholderTKey: "SKUsPlaceHolder",
   })
   sku: ChoiceItem;
 
