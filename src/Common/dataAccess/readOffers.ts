@@ -1,7 +1,7 @@
 import { SDKOfferDefinition } from "../../Contracts/DataModels";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
-import { handleError, getErrorMessage } from "../ErrorHandlingUtils";
+import { getErrorMessage, handleError } from "../ErrorHandlingUtils";
 
 export const readOffers = async (): Promise<SDKOfferDefinition[]> => {
   const clearMessage = logConsoleProgress(`Querying offers`);

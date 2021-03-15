@@ -1,6 +1,6 @@
-import * as DataModels from "../Contracts/DataModels";
 import * as Q from "q";
 import * as sinon from "sinon";
+import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { QueryUtils } from "./QueryUtils";
 

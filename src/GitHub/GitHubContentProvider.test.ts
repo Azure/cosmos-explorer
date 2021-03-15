@@ -1,9 +1,9 @@
 import { IContent } from "@nteract/core";
 import { fixture } from "@nteract/fixtures";
 import { HttpStatusCodes } from "../Common/Constants";
+import * as GitHubUtils from "../Utils/GitHubUtils";
 import { GitHubClient, IGitHubCommit, IGitHubFile } from "./GitHubClient";
 import { GitHubContentProvider } from "./GitHubContentProvider";
-import * as GitHubUtils from "../Utils/GitHubUtils";
 
 const gitHubClient = new GitHubClient(() => {});
 const gitHubContentProvider = new GitHubContentProvider({

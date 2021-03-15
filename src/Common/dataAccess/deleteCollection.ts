@@ -1,14 +1,14 @@
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { deleteSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { deleteTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
+import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { deleteSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { deleteTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteCollection(databaseId: string, collectionId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting container ${collectionId}`);

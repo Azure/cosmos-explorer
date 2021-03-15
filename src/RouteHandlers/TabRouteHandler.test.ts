@@ -1,6 +1,5 @@
 import crossroads from "crossroads";
 import hasher from "hasher";
-
 import * as Constants from "../Common/Constants";
 import Explorer from "../Explorer/Explorer";
 import { TabRouteHandler } from "./TabRouteHandler";

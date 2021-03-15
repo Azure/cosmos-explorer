@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { client } from "../CosmosClient";
-import { deleteSqlUserDefinedFunction } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
+import { deleteSqlUserDefinedFunction } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteUserDefinedFunction(databaseId: string, collectionId: string, id: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting user defined function ${id}`);

@@ -2,30 +2,30 @@
  * Contains all notebook related stuff meant to be dynamically loaded by explorer
  */
 
-import { JunoClient } from "../../Juno/JunoClient";
-import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
-import { GitHubClient } from "../../GitHub/GitHubClient";
-import * as Logger from "../../Common/Logger";
-import { HttpStatusCodes, Areas } from "../../Common/Constants";
-import { GitHubReposPane } from "../Panes/GitHubReposPane";
-import ko from "knockout";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { IContentProvider } from "@nteract/core";
-import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
-import { GitHubContentProvider } from "../../GitHub/GitHubContentProvider";
-import { contents } from "rx-jupyter";
-import { NotebookContainerClient } from "./NotebookContainerClient";
-import { MemoryUsageInfo } from "../../Contracts/DataModels";
-import { NotebookContentClient } from "./NotebookContentClient";
-import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
-import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
-import { getFullName } from "../../Utils/UserUtils";
 import { ImmutableNotebook } from "@nteract/commutable";
+import { IContentProvider } from "@nteract/core";
+import ko from "knockout";
+import { contents } from "rx-jupyter";
+import { Areas, HttpStatusCodes } from "../../Common/Constants";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import { MemoryUsageInfo } from "../../Contracts/DataModels";
+import { GitHubClient } from "../../GitHub/GitHubClient";
+import { GitHubContentProvider } from "../../GitHub/GitHubContentProvider";
+import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
+import { JunoClient } from "../../Juno/JunoClient";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { GitHubReposPane } from "../Panes/GitHubReposPane";
+import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
+import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
+import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
+import { NotebookContainerClient } from "./NotebookContainerClient";
+import { NotebookContentClient } from "./NotebookContentClient";
 
 export interface NotebookManagerOptions {
   container: Explorer;

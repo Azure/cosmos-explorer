@@ -1,8 +1,8 @@
 import * as Constants from "../../Common/Constants";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
 import Explorer from "../Explorer";
 import AddDatabasePane from "./AddDatabasePane";
-import { DatabaseAccount } from "../../Contracts/DataModels";
 
 describe("Add Database Pane", () => {
   describe("getSharedThroughputDefault()", () => {

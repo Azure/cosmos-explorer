@@ -1,11 +1,10 @@
 import ko from "knockout";
-
-import * as DataTableOperations from "./DataTableOperations";
 import * as Constants from "../Constants";
+import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
+import * as DataTableOperations from "./DataTableOperations";
 import TableCommands from "./TableCommands";
 import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
 
 /*
  * Base class for data table row selection.

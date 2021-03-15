@@ -1,6 +1,6 @@
+import * as monaco from "monaco-editor";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import template from "./diff-editor-component.html";
-import * as monaco from "monaco-editor";
 
 /**
  * Helper class for ko component registration

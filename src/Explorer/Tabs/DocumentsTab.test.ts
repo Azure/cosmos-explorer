@@ -1,10 +1,10 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
-import DocumentsTab from "./DocumentsTab";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import DocumentsTab from "./DocumentsTab";
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {

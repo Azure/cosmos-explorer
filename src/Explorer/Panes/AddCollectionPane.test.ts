@@ -1,7 +1,7 @@
 import * as Constants from "../../Common/Constants";
-import AddCollectionPane from "./AddCollectionPane";
-import Explorer from "../Explorer";
 import { DatabaseAccount } from "../../Contracts/DataModels";
+import Explorer from "../Explorer";
+import AddCollectionPane from "./AddCollectionPane";
 
 describe("Add Collection Pane", () => {
   describe("isValid()", () => {

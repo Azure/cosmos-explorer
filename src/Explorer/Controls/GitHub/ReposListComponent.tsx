@@ -24,11 +24,11 @@ import { RepoListItem } from "./GitHubReposComponent";
 import {
   BranchesDropdownCheckboxStyles,
   BranchesDropdownOptionContainerStyle,
+  BranchesDropdownStyles,
+  BranchesDropdownWidth,
+  ReposListBranchesColumnWidth,
   ReposListCheckboxStyles,
   ReposListRepoColumnMinWidth,
-  ReposListBranchesColumnWidth,
-  BranchesDropdownWidth,
-  BranchesDropdownStyles,
 } from "./GitHubStyleConstants";
 
 export interface ReposListComponentProps {

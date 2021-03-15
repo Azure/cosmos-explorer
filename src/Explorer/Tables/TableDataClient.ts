@@ -1,25 +1,24 @@
+import { FeedOptions } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
-
-import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AuthType } from "../../AuthType";
-import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { FeedOptions } from "@azure/cosmos";
 import * as Constants from "../../Common/Constants";
-import * as Entities from "./Entities";
-import * as HeadersUtility from "../../Common/HeadersUtility";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TableConstants from "./Constants";
-import * as TableEntityProcessor from "./TableEntityProcessor";
-import * as ViewModels from "../../Contracts/ViewModels";
-import Explorer from "../Explorer";
-import { configContext } from "../../ConfigContext";
-import { handleError } from "../../Common/ErrorHandlingUtils";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import { handleError } from "../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../Common/HeadersUtility";
+import { configContext } from "../../ConfigContext";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { userContext } from "../../UserContext";
+import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import * as TableConstants from "./Constants";
+import * as Entities from "./Entities";
+import * as TableEntityProcessor from "./TableEntityProcessor";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];

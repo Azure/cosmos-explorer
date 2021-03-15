@@ -1,7 +1,7 @@
+import { mount, shallow } from "enzyme";
 import React from "react";
-import { shallow, mount } from "enzyme";
-import { DirectoryListComponent, DirectoryListProps } from "./DirectoryListComponent";
 import { Tenant } from "../../../Contracts/DataModels";
+import { DirectoryListComponent, DirectoryListProps } from "./DirectoryListComponent";
 
 const createBlankProps = (): DirectoryListProps => {
   return {

@@ -1,10 +1,9 @@
 import "bootstrap/dist/css/bootstrap.css";
-import "./GalleryViewer.less";
+import { Link, Text } from "office-ui-fabric-react";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { Text, Link } from "office-ui-fabric-react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { configContext, initializeConfiguration } from "../ConfigContext";
+import { initializeConfiguration } from "../ConfigContext";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import {
   GalleryAndNotebookViewerComponent,
@@ -13,6 +12,7 @@ import {
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import { JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
+import "./GalleryViewer.less";
 
 const enableNotebooksUrl = "https://aka.ms/cosmos-enable-notebooks";
 const createAccountUrl = "https://aka.ms/cosmos-create-account-portal";

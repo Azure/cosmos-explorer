@@ -1,5 +1,5 @@
-import * as _ from "underscore";
 import * as ko from "knockout";
+import * as _ from "underscore";
 
 enum ScrollPosition {
   Top,

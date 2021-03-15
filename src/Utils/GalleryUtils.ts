@@ -1,20 +1,20 @@
-import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import * as NotificationConsoleUtils from "./NotificationConsoleUtils";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import {
-  GalleryTab,
-  SortBy,
-  GalleryViewerComponent,
-} from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
-import Explorer from "../Explorer/Explorer";
-import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
-import { TextFieldProps } from "../Explorer/Controls/Dialog";
-import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
-import { HttpStatusCodes } from "../Common/Constants";
-import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { Notebook } from "@nteract/commutable";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
+import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
+import { HttpStatusCodes } from "../Common/Constants";
+import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
+import { TextFieldProps } from "../Explorer/Controls/Dialog";
+import {
+  GalleryTab,
+  GalleryViewerComponent,
+  SortBy,
+} from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
+import Explorer from "../Explorer/Explorer";
+import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
+import * as NotificationConsoleUtils from "./NotificationConsoleUtils";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [

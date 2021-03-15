@@ -2,8 +2,8 @@ import ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import {
-  GalleryAndNotebookViewerComponentProps,
   GalleryAndNotebookViewerComponent,
+  GalleryAndNotebookViewerComponentProps,
 } from "./GalleryAndNotebookViewerComponent";
 
 export class GalleryAndNotebookViewerComponentAdapter implements ReactAdapter {

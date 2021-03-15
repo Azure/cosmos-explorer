@@ -1,7 +1,7 @@
-import * as GraphUtil from "./GraphUtil";
-import { GraphData, GremlinVertex, GremlinEdge } from "./GraphData";
 import * as sinon from "sinon";
+import { GraphData, GremlinEdge, GremlinVertex } from "./GraphData";
 import { GraphExplorer } from "./GraphExplorer";
+import * as GraphUtil from "./GraphUtil";
 window.$ = window.jQuery = require("jquery");
 
 const OUT_E_MATCHER = "g\\.V\\(.*\\).outE\\(\\).*\\.as\\('e'\\).inV\\(\\)\\.as\\('v'\\)\\.select\\('e', *'v'\\)";

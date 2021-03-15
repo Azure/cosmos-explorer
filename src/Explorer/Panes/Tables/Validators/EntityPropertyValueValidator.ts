@@ -1,5 +1,5 @@
-import * as Utilities from "../../../Tables/Utilities";
 import * as StorageExplorerConstants from "../../../Tables/Constants";
+import * as Utilities from "../../../Tables/Utilities";
 import * as EntityPropertyValidationCommon from "./EntityPropertyValidationCommon";
 
 interface IValidationResult {

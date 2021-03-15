@@ -1,11 +1,11 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { KeyCodes } from "../../Common/Constants";
-import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
+import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 
 // TODO: Use specific actions for logging telemetry data
 export abstract class ContextualPaneBase extends WaitsForTemplateViewModel {

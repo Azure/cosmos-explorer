@@ -1,6 +1,6 @@
 import * as ViewModels from "../../Contracts/ViewModels";
-import * as Entities from "./Entities";
 import * as Constants from "./Constants";
+import * as Entities from "./Entities";
 import * as DateTimeUtilities from "./QueryBuilder/DateTimeUtilities";
 
 // For use exclusively with Tables API.

@@ -2,8 +2,8 @@ import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { ContextualPaneBase } from "./ContextualPaneBase";
 import StoredProcedure from "../Tree/StoredProcedure";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export interface ExecuteSprocParam {
   type: ko.Observable<string>;

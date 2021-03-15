@@ -1,13 +1,13 @@
+import { Account } from "msal";
 import {
-  FocusZone,
   DefaultButton,
   DirectionalHint,
+  FocusZone,
   Persona,
   PersonaInitialsColor,
   PersonaSize,
 } from "office-ui-fabric-react";
 import * as React from "react";
-import { Account } from "msal";
 import { useGraphPhoto } from "../../../hooks/useGraphPhoto";
 
 interface Props {

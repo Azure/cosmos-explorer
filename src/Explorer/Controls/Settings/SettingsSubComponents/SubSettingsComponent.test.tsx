@@ -1,10 +1,10 @@
 import { shallow } from "enzyme";
-import React from "react";
-import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
-import { container, collection } from "../TestUtils";
-import { TtlType, GeospatialConfigType, ChangeFeedPolicyState, TtlOnNoDefault, TtlOn, TtlOff } from "../SettingsUtils";
 import ko from "knockout";
+import React from "react";
 import Explorer from "../../../Explorer";
+import { ChangeFeedPolicyState, GeospatialConfigType, TtlOff, TtlOn, TtlOnNoDefault, TtlType } from "../SettingsUtils";
+import { collection, container } from "../TestUtils";
+import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
 
 describe("SubSettingsComponent", () => {
   container.isPreferredApiDocumentDB = ko.computed(() => true);

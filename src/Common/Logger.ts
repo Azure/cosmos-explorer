@@ -1,7 +1,7 @@
-import { sendMessage } from "./MessageHandler";
+import { SeverityLevel } from "@microsoft/applicationinsights-web";
 import { Diagnostics, MessageTypes } from "../Contracts/ExplorerContracts";
 import { appInsights } from "../Shared/appInsights";
-import { SeverityLevel } from "@microsoft/applicationinsights-web";
+import { sendMessage } from "./MessageHandler";
 
 // TODO: Move to a separate Diagnostics folder
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

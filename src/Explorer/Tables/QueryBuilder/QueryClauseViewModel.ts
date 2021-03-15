@@ -1,9 +1,9 @@
 import * as ko from "knockout";
 import _ from "underscore";
 import * as QueryBuilderConstants from "../Constants";
-import QueryBuilderViewModel from "./QueryBuilderViewModel";
-import ClauseGroup from "./ClauseGroup";
 import * as Utilities from "../Utilities";
+import ClauseGroup from "./ClauseGroup";
+import QueryBuilderViewModel from "./QueryBuilderViewModel";
 
 export default class QueryClauseViewModel {
   public checkedForGrouping: ko.Observable<boolean>;

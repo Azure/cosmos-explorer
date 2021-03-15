@@ -1,4 +1,4 @@
-import React from "react";
+import { TFunction } from "i18next";
 import {
   CommandBar,
   ICommandBarItemProps,
@@ -9,26 +9,26 @@ import {
   SpinnerSize,
   Stack,
 } from "office-ui-fabric-react";
+import promiseRetry, { AbortError } from "p-retry";
+import React from "react";
+import { Translation } from "react-i18next";
+import { sendMessage } from "../Common/MessageHandler";
+import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
+import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import "../i18n";
 import {
   AnyDisplay,
-  Node,
+  BooleanInput,
+  ChoiceInput,
+  DescriptionDisplay,
   InputType,
+  Node,
+  NumberInput,
   RefreshResult,
   SelfServeDescriptor,
   SmartUiInput,
-  DescriptionDisplay,
   StringInput,
-  NumberInput,
-  BooleanInput,
-  ChoiceInput,
 } from "./SelfServeTypes";
-import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { Translation } from "react-i18next";
-import { TFunction } from "i18next";
-import "../i18n";
-import { sendMessage } from "../Common/MessageHandler";
-import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
-import promiseRetry, { AbortError } from "p-retry";
 
 interface SelfServeNotification {
   message: string;

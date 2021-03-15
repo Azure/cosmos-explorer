@@ -1,8 +1,8 @@
+import { ImmutableCodeCell, ImmutableNotebook } from "@nteract/commutable";
 import path from "path";
-import { ImmutableNotebook, ImmutableCodeCell } from "@nteract/commutable";
-import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import * as StringUtils from "../../Utils/StringUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
+import * as StringUtils from "../../Utils/StringUtils";
+import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";

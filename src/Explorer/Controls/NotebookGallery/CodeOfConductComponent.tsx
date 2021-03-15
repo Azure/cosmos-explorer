@@ -1,10 +1,10 @@
+import { Checkbox, Link, PrimaryButton, Stack, Text } from "office-ui-fabric-react";
 import * as React from "react";
-import { JunoClient } from "../../../Juno/JunoClient";
-import { HttpStatusCodes, CodeOfConductEndpoints } from "../../../Common/Constants";
-import { Stack, Text, Checkbox, PrimaryButton, Link } from "office-ui-fabric-react";
+import { CodeOfConductEndpoints, HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
-import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { JunoClient } from "../../../Juno/JunoClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 
 export interface CodeOfConductComponentProps {
   junoClient: JunoClient;

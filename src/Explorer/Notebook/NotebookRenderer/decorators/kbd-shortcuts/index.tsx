@@ -1,10 +1,9 @@
+import { CellId } from "@nteract/commutable";
+import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import Immutable from "immutable";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { CellId } from "@nteract/commutable";
-import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 
 interface ComponentProps {
   contentRef: ContentRef;

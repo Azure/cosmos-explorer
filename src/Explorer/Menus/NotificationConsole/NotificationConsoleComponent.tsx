@@ -2,19 +2,19 @@
  * React component for control bar
  */
 
-import * as React from "react";
-import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
-import AnimateHeight from "react-animate-height";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
-import LoadingIcon from "../../../../images/loading.svg";
+import * as React from "react";
+import AnimateHeight from "react-animate-height";
+import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
+import ClearIcon from "../../../../images/Clear.svg";
 import ErrorBlackIcon from "../../../../images/error_black.svg";
+import ErrorRedIcon from "../../../../images/error_red.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
 import InfoIcon from "../../../../images/info_color.svg";
-import ErrorRedIcon from "../../../../images/error_red.svg";
-import ClearIcon from "../../../../images/Clear.svg";
-import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
-import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
+import LoadingIcon from "../../../../images/loading.svg";
 import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
+import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
+import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
 
 /**
  * Log levels

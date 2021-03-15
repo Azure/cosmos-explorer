@@ -7,7 +7,6 @@ import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
-import { number } from "prop-types";
 
 export interface IJunoResponse<T> {
   status: number;

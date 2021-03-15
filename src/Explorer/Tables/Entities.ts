@@ -1,4 +1,4 @@
-import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 
 export interface ITableEntity {
   [property: string]: ITableEntityAttribute;

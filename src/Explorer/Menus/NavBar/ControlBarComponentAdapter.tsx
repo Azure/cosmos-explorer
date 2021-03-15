@@ -7,8 +7,8 @@
 import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
-import { ControlBarComponent } from "./ControlBarComponent";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { ControlBarComponent } from "./ControlBarComponent";
 
 export class ControlBarComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;

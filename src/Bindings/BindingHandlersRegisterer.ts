@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import * as ReactBindingHandler from "./ReactBindingHandler";
 import "../Explorer/Tables/DataTable/DataTableBindingManager";
+import * as ReactBindingHandler from "./ReactBindingHandler";
 
 export class BindingHandlersRegisterer {
   public static registerBindingHandlers() {

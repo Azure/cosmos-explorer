@@ -1,7 +1,7 @@
 import * as sinon from "sinon";
-import { GremlinClient, GremlinClientParameters } from "./GremlinClient";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import * as Logger from "../../../Common/Logger";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
+import { GremlinClient, GremlinClientParameters } from "./GremlinClient";
 
 describe("Gremlin Client", () => {
   const emptyParams: GremlinClientParameters = {

@@ -1,8 +1,7 @@
+import { ContentRef } from "@nteract/core";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { ContentRef } from "@nteract/core";
 import * as actions from "../../NotebookComponent/actions";
 
 interface ComponentProps {

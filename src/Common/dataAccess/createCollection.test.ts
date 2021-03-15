@@ -3,10 +3,10 @@ jest.mock("../CosmosClient");
 import { AuthType } from "../../AuthType";
 import { CreateCollectionParams, DatabaseAccount } from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { updateUserContext } from "../../UserContext";
 import { armRequest } from "../../Utils/arm/request";
 import { client } from "../CosmosClient";
-import { createCollection, constructRpOptions } from "./createCollection";
-import { updateUserContext } from "../../UserContext";
+import { constructRpOptions, createCollection } from "./createCollection";
 
 describe("createCollection", () => {
   const createCollectionParams: CreateCollectionParams = {

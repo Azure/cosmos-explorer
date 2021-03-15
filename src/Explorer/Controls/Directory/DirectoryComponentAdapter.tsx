@@ -1,8 +1,8 @@
 import * as ko from "knockout";
 import * as React from "react";
-import { DirectoryListComponent, DirectoryListProps } from "./DirectoryListComponent";
-import { DefaultDirectoryDropdownComponent, DefaultDirectoryDropdownProps } from "./DefaultDirectoryDropdownComponent";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
+import { DefaultDirectoryDropdownComponent, DefaultDirectoryDropdownProps } from "./DefaultDirectoryDropdownComponent";
+import { DirectoryListComponent, DirectoryListProps } from "./DirectoryListComponent";
 
 export class DirectoryComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;

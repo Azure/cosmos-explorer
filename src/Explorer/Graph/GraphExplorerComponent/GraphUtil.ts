@@ -1,6 +1,6 @@
-import { NeighborVertexBasicInfo } from "./GraphExplorer";
-import * as GraphData from "./GraphData";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import * as GraphData from "./GraphData";
+import { NeighborVertexBasicInfo } from "./GraphExplorer";
 
 interface JoinArrayMaxCharOutput {
   result: string; // string output

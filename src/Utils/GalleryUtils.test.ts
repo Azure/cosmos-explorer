@@ -1,8 +1,8 @@
-import * as GalleryUtils from "./GalleryUtils";
-import { JunoClient, IGalleryItem } from "../Juno/JunoClient";
 import { HttpStatusCodes } from "../Common/Constants";
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
+import * as GalleryUtils from "./GalleryUtils";
 
 const galleryItem: IGalleryItem = {
   id: "id",

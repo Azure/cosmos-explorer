@@ -1,14 +1,14 @@
-import * as React from "react";
 import {
+  Dropdown,
+  IconButton,
+  IDropdownOption,
+  ITextField,
   MessageBar,
   MessageBarType,
   Stack,
-  IconButton,
   TextField,
-  Dropdown,
-  IDropdownOption,
-  ITextField,
 } from "office-ui-fabric-react";
+import * as React from "react";
 import {
   addMongoIndexSubElementsTokens,
   mongoErrorMessageStyles,

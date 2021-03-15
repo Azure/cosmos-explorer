@@ -1,15 +1,15 @@
 import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import {
   NotebookViewerComponent,
   NotebookViewerComponentProps,
 } from "../Controls/NotebookViewer/NotebookViewerComponent";
-import TabsBase from "./TabsBase";
 import Explorer from "../Explorer";
-import { DatabaseAccount } from "../../Contracts/DataModels";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import TabsBase from "./TabsBase";
 
 interface NotebookViewerTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;

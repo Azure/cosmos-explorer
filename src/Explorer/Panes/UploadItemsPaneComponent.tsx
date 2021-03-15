@@ -1,8 +1,8 @@
-import * as Constants from "../../Common/Constants";
-import * as React from "react";
 import { IconButton } from "office-ui-fabric-react/lib/Button";
-import { UploadDetailsRecord } from "../../workers/upload/definitions";
+import * as React from "react";
 import InfoBubbleIcon from "../../../images/info-bubble.svg";
+import * as Constants from "../../Common/Constants";
+import { UploadDetailsRecord } from "../../workers/upload/definitions";
 
 export interface UploadItemsPaneProps {
   selectedFilesTitle: string;

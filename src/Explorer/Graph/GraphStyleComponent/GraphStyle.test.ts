@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import { GraphStyleComponent, GraphStyleParams } from "./GraphStyleComponent";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { GraphStyleComponent, GraphStyleParams } from "./GraphStyleComponent";
 
 function buildComponent(buttonOptions: any) {
   document.body.innerHTML = GraphStyleComponent.template as any;

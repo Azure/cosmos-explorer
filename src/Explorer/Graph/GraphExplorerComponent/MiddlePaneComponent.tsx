@@ -1,8 +1,8 @@
 import * as React from "react";
-import { GraphVizComponent, GraphVizComponentProps } from "./GraphVizComponent";
 import CollapseArrowIcon from "../../../../images/Collapse_arrow_14x14.svg";
 import ExpandIcon from "../../../../images/Expand_14x14.svg";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
+import { GraphVizComponent, GraphVizComponentProps } from "./GraphVizComponent";
 
 interface MiddlePaneComponentProps {
   isTabsContentExpanded: boolean;

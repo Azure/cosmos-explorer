@@ -1,16 +1,14 @@
+import { makeNotebookRecord } from "@nteract/commutable";
+import { actions, state } from "@nteract/core";
 import * as Immutable from "immutable";
 import { StateObservable } from "redux-observable";
-import { Subject, of } from "rxjs";
-import { toArray } from "rxjs/operators";
-import { makeNotebookRecord } from "@nteract/commutable";
-import { actions, state, epics } from "@nteract/core";
-import * as sinon from "sinon";
-
-import { CdbAppState, makeCdbRecord } from "./types";
-import { launchWebSocketKernelEpic } from "./epics";
-import { NotebookUtil } from "../NotebookUtil";
-
 import { sessions } from "rx-jupyter";
+import { of, Subject } from "rxjs";
+import { toArray } from "rxjs/operators";
+import * as sinon from "sinon";
+import { NotebookUtil } from "../NotebookUtil";
+import { launchWebSocketKernelEpic } from "./epics";
+import { CdbAppState, makeCdbRecord } from "./types";
 
 describe("Extract kernel from notebook", () => {
   it("Reads metadata kernelspec first", () => {

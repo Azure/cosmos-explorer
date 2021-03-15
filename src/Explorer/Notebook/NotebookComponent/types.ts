@@ -1,8 +1,7 @@
-import * as Immutable from "immutable";
-import { AppState, ContentRef } from "@nteract/core";
-
-import { Notebook } from "../../../Common/Constants";
 import { CellId } from "@nteract/commutable";
+import { AppState, ContentRef } from "@nteract/core";
+import * as Immutable from "immutable";
+import { Notebook } from "../../../Common/Constants";
 
 export interface CdbRecordProps {
   databaseAccountName: string | undefined;

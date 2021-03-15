@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./IndexingPolicyComponent";
 import * as DataModels from "../../../../Contracts/DataModels";
+import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./IndexingPolicyComponent";
 
 describe("IndexingPolicyComponent", () => {
   const initialIndexingPolicyContent: DataModels.IndexingPolicy = {

@@ -1,6 +1,6 @@
-import * as OfferUtility from "./OfferUtility";
-import { SDKOfferDefinition, Offer } from "../Contracts/DataModels";
 import { OfferResponse } from "@azure/cosmos";
+import { Offer, SDKOfferDefinition } from "../Contracts/DataModels";
+import * as OfferUtility from "./OfferUtility";
 
 describe("parseSDKOfferResponse", () => {
   it("manual throughput", () => {

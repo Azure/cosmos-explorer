@@ -1,11 +1,11 @@
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
 

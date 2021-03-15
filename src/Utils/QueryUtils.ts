@@ -1,4 +1,3 @@
-import Q from "q";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 

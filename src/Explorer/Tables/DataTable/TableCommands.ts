@@ -1,12 +1,11 @@
-import _ from "underscore";
 import Q from "q";
-import * as DataTableUtilities from "./DataTableUtilities";
-import * as DataTableOperations from "./DataTableOperations";
-import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Entities from "../Entities";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import * as TableColumnOptionsPane from "../../Panes/Tables/TableColumnOptionsPane";
+import _ from "underscore";
 import Explorer from "../../Explorer";
+import * as TableColumnOptionsPane from "../../Panes/Tables/TableColumnOptionsPane";
+import * as Entities from "../Entities";
+import * as DataTableOperations from "./DataTableOperations";
+import * as DataTableUtilities from "./DataTableUtilities";
+import TableEntityListViewModel from "./TableEntityListViewModel";
 
 export default class TableCommands {
   // Command Ids

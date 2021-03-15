@@ -1,5 +1,5 @@
 import { CollectionBase } from "../../Contracts/ViewModels";
-import { StorageKey, LocalStorageUtility } from "../../Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 
 export enum Type {

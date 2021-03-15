@@ -1,5 +1,5 @@
+import { SimulationLinkDatum, SimulationNodeDatum } from "d3";
 import _ from "underscore";
-import { SimulationNodeDatum, SimulationLinkDatum } from "d3";
 
 export interface PaginationInfo {
   total: number;

@@ -1,5 +1,5 @@
+import { DirectionalHint, Icon, IIconStyles, Stack, Text, TooltipHost } from "office-ui-fabric-react";
 import * as React from "react";
-import { Stack, Text, IIconStyles, Icon, TooltipHost, DirectionalHint } from "office-ui-fabric-react";
 import { toolTipLabelStackTokens } from "../SettingsRenderUtils";
 
 export interface ToolTipLabelComponentProps {

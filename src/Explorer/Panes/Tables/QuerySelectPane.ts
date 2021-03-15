@@ -1,8 +1,8 @@
 import * as ko from "knockout";
 import _ from "underscore";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import * as Constants from "../../Tables/Constants";
 import QueryViewModel from "../../Tables/QueryBuilder/QueryViewModel";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { ContextualPaneBase } from "../ContextualPaneBase";
 
 export interface ISelectColumn {

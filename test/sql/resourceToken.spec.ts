@@ -1,10 +1,10 @@
 /* eslint-disable jest/expect-expect */
+import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
+import { CosmosClient, PermissionMode } from "@azure/cosmos";
+import * as msRestNodeAuth from "@azure/ms-rest-nodeauth";
 import "expect-puppeteer";
 import { Frame } from "puppeteer";
 import { generateDatabaseName, generateUniqueName } from "../utils/shared";
-import { CosmosClient, PermissionMode } from "@azure/cosmos";
-import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import * as msRestNodeAuth from "@azure/ms-rest-nodeauth";
 
 const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
 const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];

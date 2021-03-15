@@ -1,5 +1,5 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import { TreeComponent, TreeNode, TreeNodeComponent } from "./TreeComponent";
 
 const buildChildren = (): TreeNode[] => {

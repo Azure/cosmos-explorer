@@ -1,18 +1,18 @@
 import ko from "knockout";
+import { IDropdownOption } from "office-ui-fabric-react";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { JunoClient, IPinnedRepo } from "../../Juno/JunoClient";
+import { HttpStatusCodes } from "../../Common/Constants";
+import { getErrorMessage, handleError } from "../../Common/ErrorHandlingUtils";
+import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
+import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
-import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
-import { IDropdownOption } from "office-ui-fabric-react";
-import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
-import { HttpStatusCodes } from "../../Common/Constants";
-import * as GitHubUtils from "../../Utils/GitHubUtils";
-import { NotebookContentItemType, NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
-import { handleError, getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
+import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";

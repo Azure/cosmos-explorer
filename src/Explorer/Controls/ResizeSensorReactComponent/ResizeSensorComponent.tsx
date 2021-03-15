@@ -3,8 +3,8 @@
  * It updates its state and re-renders if dimensions change.
  */
 
-import * as React from "react";
 import * as ResizeSensor from "css-element-queries/src/ResizeSensor";
+import * as React from "react";
 
 export abstract class ResizeSensorComponent<P, S> extends React.Component<P, S> {
   private isSensing: boolean = false;

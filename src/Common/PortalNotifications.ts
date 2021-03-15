@@ -1,8 +1,8 @@
+import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { userContext } from "../UserContext";
-import { configContext, Platform } from "../ConfigContext";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 const notificationsPath = () => {
   switch (configContext.platform) {

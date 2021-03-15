@@ -1,23 +1,23 @@
-import { collection } from "./TestUtils";
+import ko from "knockout";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import {
   getMongoIndexType,
+  getMongoIndexTypeText,
   getMongoNotification,
   getSanitizedInputValue,
   hasDatabaseSharedThroughput,
   isDirty,
+  isIndexTransforming,
   MongoIndexTypes,
   MongoNotificationType,
+  MongoWildcardPlaceHolder,
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
-  MongoWildcardPlaceHolder,
-  getMongoIndexTypeText,
   SingleFieldText,
   WildcardText,
-  isIndexTransforming,
 } from "./SettingsUtils";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import ko from "knockout";
+import { collection } from "./TestUtils";
 
 describe("SettingsUtils", () => {
   it("hasDatabaseSharedThroughput", () => {

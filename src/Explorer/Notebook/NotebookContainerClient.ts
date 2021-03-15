@@ -1,12 +1,12 @@
 /**
  * Notebook container related stuff
  */
-import * as DataModels from "../../Contracts/DataModels";
 import * as Constants from "../../Common/Constants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as Logger from "../../Common/Logger";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import * as DataModels from "../../Contracts/DataModels";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 
 export class NotebookContainerClient {
   private reconnectingNotificationId: string;

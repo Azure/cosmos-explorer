@@ -1,13 +1,13 @@
+import { ServerConnection } from "@jupyterlab/services";
+import "@jupyterlab/terminal/style/index.css";
 import "babel-polyfill";
 import "promise-polyfill/src/polyfill"; // polyfill Promise on IE
-import "@jupyterlab/terminal/style/index.css";
-import "./index.css";
-import { ServerConnection } from "@jupyterlab/services";
-import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
+import { HttpHeaders, TerminalQueryParams } from "../Common/Constants";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../UserContext";
-import { HttpHeaders, TerminalQueryParams } from "../Common/Constants";
+import "./index.css";
+import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 
 const getUrlVars = (): { [key: string]: string } => {
   const vars: { [key: string]: string } = {};

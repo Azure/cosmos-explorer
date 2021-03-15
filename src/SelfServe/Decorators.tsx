@@ -1,5 +1,5 @@
-import { ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput, RefreshParams } from "./SelfServeTypes";
-import { addPropertyToMap, DecoratorProperties, buildSmartUiDescriptor } from "./SelfServeUtils";
+import { ChoiceItem, Description, Info, InputType, NumberUiType, RefreshParams, SmartUiInput } from "./SelfServeTypes";
+import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
 interface Decorator {

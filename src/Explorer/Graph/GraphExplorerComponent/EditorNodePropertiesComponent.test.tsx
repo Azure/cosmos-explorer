@@ -1,8 +1,7 @@
-import React from "react";
 import { shallow } from "enzyme";
-import { GraphHighlightedNodeData, EditedProperties } from "./GraphExplorer";
-
+import React from "react";
 import { EditorNodePropertiesComponent, EditorNodePropertiesComponentProps } from "./EditorNodePropertiesComponent";
+import { EditedProperties } from "./GraphExplorer";
 
 describe("<EditorNodePropertiesComponent />", () => {
   // Tests that: single value prop is rendered with a textbox and a delete button

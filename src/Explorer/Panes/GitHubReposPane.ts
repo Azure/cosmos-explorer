@@ -1,5 +1,6 @@
 import _ from "underscore";
 import { Areas, HttpStatusCodes } from "../../Common/Constants";
+import { handleError } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { GitHubClient, IGitHubPageInfo, IGitHubRepo } from "../../GitHub/GitHubClient";
 import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
@@ -12,7 +13,6 @@ import { GitHubReposComponent, GitHubReposComponentProps, RepoListItem } from ".
 import { GitHubReposComponentAdapter } from "../Controls/GitHub/GitHubReposComponentAdapter";
 import { BranchesProps, PinnedReposProps, UnpinnedReposProps } from "../Controls/GitHub/ReposListComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { handleError } from "../../Common/ErrorHandlingUtils";
 
 interface GitHubReposPaneOptions extends ViewModels.PaneOptions {
   gitHubClient: GitHubClient;

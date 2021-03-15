@@ -1,11 +1,11 @@
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { IGalleryItem, JunoClient } from "../../Juno/JunoClient";
 import { GalleryAndNotebookViewerComponentProps } from "../Controls/NotebookGallery/GalleryAndNotebookViewerComponent";
 import { GalleryAndNotebookViewerComponentAdapter } from "../Controls/NotebookGallery/GalleryAndNotebookViewerComponentAdapter";
 import { GalleryTab as GalleryViewerTab, SortBy } from "../Controls/NotebookGallery/GalleryViewerComponent";
-import TabsBase from "./TabsBase";
 import Explorer from "../Explorer";
-import { DatabaseAccount } from "../../Contracts/DataModels";
-import { JunoClient, IGalleryItem } from "../../Juno/JunoClient";
+import TabsBase from "./TabsBase";
 
 interface GalleryTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;

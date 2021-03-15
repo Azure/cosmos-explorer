@@ -1,9 +1,9 @@
 import {
   ChoiceGroup,
   IButtonProps,
+  IChoiceGroupOption,
   IChoiceGroupProps,
   PrimaryButton,
-  IChoiceGroupOption,
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { ChildrenMargin } from "./GitHubStyleConstants";

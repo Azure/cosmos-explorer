@@ -1,14 +1,14 @@
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import QueryTab from "../Tabs/QueryTab";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export class SaveQueryPane extends ContextualPaneBase {
   public queryName: ko.Observable<string>;

@@ -1,14 +1,14 @@
 import * as ko from "knockout";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as React from "react";
+import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
+import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
-import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { UploadDetailsRecord, UploadDetails } from "../../workers/upload/definitions";
 import { UploadItemsPaneComponent, UploadItemsPaneProps } from "./UploadItemsPaneComponent";
-import Explorer from "../Explorer";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
 

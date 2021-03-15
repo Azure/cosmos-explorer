@@ -1,17 +1,15 @@
-import * as React from "react";
-import "./base.css";
-import "./default.css";
-
-import { CodeCell, RawCell, Cells, MarkdownCell } from "@nteract/stateful-components";
-import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
-import { AzureTheme } from "./AzureTheme";
-
-import { connect } from "react-redux";
-import { Dispatch } from "redux";
 import { actions, ContentRef } from "@nteract/core";
-import loadTransform from "../NotebookComponent/loadTransform";
+import { Cells, CodeCell, MarkdownCell, RawCell } from "@nteract/stateful-components";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
+import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import loadTransform from "../NotebookComponent/loadTransform";
+import { AzureTheme } from "./AzureTheme";
+import "./base.css";
+import "./default.css";
 import "./NotebookReadOnlyRenderer.less";
 
 export interface NotebookRendererProps {

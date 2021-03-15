@@ -1,12 +1,12 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
+import Explorer from "../Explorer/Explorer";
+import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import NotebookManager from "../Explorer/Notebook/NotebookManager";
 import { JunoClient } from "../Juno/JunoClient";
 import { GitHubConnector, IGitHubConnectorParams } from "./GitHubConnector";
 import { GitHubOAuthService } from "./GitHubOAuthService";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import NotebookManager from "../Explorer/Notebook/NotebookManager";
-import Explorer from "../Explorer/Explorer";
 
 const sampleDatabaseAccount: DataModels.DatabaseAccount = {
   id: "id",

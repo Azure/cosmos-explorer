@@ -1,4 +1,4 @@
-import { PropertyInfo, OnChange, Values, IsDisplayable, RefreshOptions } from "../Decorators";
+import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import {
   ChoiceItem,
   Description,
@@ -12,14 +12,14 @@ import {
   SmartUiInput,
 } from "../SelfServeTypes";
 import {
+  getMaxCollectionThroughput,
+  getMaxDatabaseThroughput,
+  getMinCollectionThroughput,
+  getMinDatabaseThroughput,
+  initialize,
   onRefreshSelfServeExample,
   Regions,
   update,
-  initialize,
-  getMinDatabaseThroughput,
-  getMaxDatabaseThroughput,
-  getMinCollectionThroughput,
-  getMaxCollectionThroughput,
 } from "./SelfServeExample.rp";
 
 const regionDropdownItems: ChoiceItem[] = [
@@ -86,7 +86,7 @@ const validate = (
   You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
   and plumb in similar feature flags for your own self serve class.
 
-  All string to be used should be present in the "src/Localization" folder, in the language specific json files. The 
+  All string to be used should be present in the "src/Localization" folder, in the language specific json files. The
   corresponding key should be given as the value for the fields like "label", the error message etc.
 */
 
@@ -98,7 +98,7 @@ const validate = (
 /*
   @RefreshOptions()
     - role: Passes the refresh options to be used by the self serve model.
-    - inputs: 
+    - inputs:
         retryIntervalInMs - The time interval between refresh attempts when an update in ongoing.
 */
 @RefreshOptions({ retryIntervalInMs: 2000 })
@@ -107,7 +107,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   onRefresh()
     - role : Callback that is triggerrd when the refresh button is clicked. You should perform the your rest API
              call to check if the update action is completed.
-    - returns: 
+    - returns:
             RefreshResult -
                 isComponentUpdating: Indicated if the state is still being updated
                 notificationMessage: Notification message to be shown in case the component is still being updated
@@ -190,7 +190,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
     - role: Set default values for the properties of this class.
 
             The properties of this class (namely regions, enableLogging, accountName, dbThroughput, collectionThroughput),
-            having the @Values decorator, will each correspond to an UI element. Their values can be of 'InputType'. Their 
+            having the @Values decorator, will each correspond to an UI element. Their values can be of 'InputType'. Their
             defaults can be set by setting values in a Map corresponding to the field's name.
 
             Typically, you can make rest calls in the async initialize function, to fetch the initial values for
@@ -222,7 +222,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   /*
   @Values() :
     - input: NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions | DescriptionDisplay
-    - role: Specifies the required options to display the property as 
+    - role: Specifies the required options to display the property as
             a) TextBox for text input
             b) Spinner/Slider for number input
             c) Radio buton/Toggle for boolean input
@@ -261,14 +261,14 @@ export default class SelfServeExample extends SelfServeBaseClass {
     - optional
     - input: (currentValues: Map<string, InputType>, newValue: InputType, baselineValues: ReadonlyMap<string, SmartUiInput>) => Map<string, InputType>
     - role: Takes a Map of current values, the newValue for this property and a ReadonlyMap of baselineValues as inputs. This is called when a property,
-            say prop1, changes its value in the UI. This can be used to 
+            say prop1, changes its value in the UI. This can be used to
             a) Change the value (and reflect it in the UI) for prop2 based on prop1.
             b) Change the visibility for prop2 in the UI, based on prop1
 
             The new Map of propertyName -> value is returned.
 
             In this example, the onRegionsChange function sets the enableLogging property to false (and disables
-            the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for 
+            the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for
             any other value of "regions"
   */
   @OnChange(onRegionsChange)

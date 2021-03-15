@@ -1,7 +1,6 @@
+import * as ko from "knockout";
 import "../less/index.less";
 import "./Libs/jquery";
-
-import * as ko from "knockout";
 
 class Index {
   public navigationSelection: ko.Observable<string>;

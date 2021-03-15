@@ -1,7 +1,7 @@
 ﻿import * as sinon from "sinon";
-import { D3ForceGraph, LoadMoreDataAction, D3GraphNodeData } from "./D3ForceGraph";
-import { D3Node, D3Link, GraphData } from "../GraphExplorerComponent/GraphData";
 import GraphTab from "../../Tabs/GraphTab";
+import { D3Link, D3Node, GraphData } from "../GraphExplorerComponent/GraphData";
+import { D3ForceGraph, D3GraphNodeData, LoadMoreDataAction } from "./D3ForceGraph";
 
 describe("D3ForceGraph", () => {
   const v1Id = "v1";

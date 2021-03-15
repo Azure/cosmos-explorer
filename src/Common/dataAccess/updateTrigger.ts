@@ -1,15 +1,15 @@
+import { TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { userContext } from "../../UserContext";
+import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   SqlTriggerCreateUpdateParameters,
   SqlTriggerResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { TriggerDefinition } from "@azure/cosmos";
-import { client } from "../CosmosClient";
-import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateTrigger(
   databaseId: string,

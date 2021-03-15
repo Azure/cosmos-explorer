@@ -1,8 +1,8 @@
+import copyToClipboard from "clipboard-copy";
 import { Spinner, Stack, Text, TextField } from "office-ui-fabric-react";
 import { DefaultButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import * as React from "react";
 import { useFullScreenURLs } from "../hooks/useFullScreenURLs";
-import copyToClipboard from "clipboard-copy";
 
 export const OpenFullScreen: React.FunctionComponent = () => {
   const result = useFullScreenURLs();

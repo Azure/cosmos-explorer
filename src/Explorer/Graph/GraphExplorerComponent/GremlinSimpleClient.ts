@@ -7,7 +7,7 @@
  * - Relies on text-encoding polyfill (github.com/inexorabletash/text-encoding) for TextEncoder/TextDecoder on IE, Edge.
  */
 
-import { TextEncoder, TextDecoder } from "text-encoding";
+import { TextDecoder, TextEncoder } from "text-encoding";
 
 export interface GremlinSimpleClientParameters {
   endpoint: string; // The websocket endpoint

@@ -1,15 +1,15 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
+import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
+import DeleteFeedback from "../../Common/DeleteFeedback";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;

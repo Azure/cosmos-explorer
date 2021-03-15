@@ -1,19 +1,16 @@
 import * as ko from "knockout";
 import Q from "q";
 import * as Constants from "../../Common/Constants";
+import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
+import DeleteFeedback from "../../Common/DeleteFeedback";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
-import { ARMError } from "../../Utils/arm/request";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class DeleteDatabaseConfirmationPane extends ContextualPaneBase {
   public databaseIdConfirmationText: ko.Observable<string>;

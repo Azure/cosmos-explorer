@@ -1,17 +1,19 @@
 import { shallow } from "enzyme";
-import React from "react";
-import { SettingsComponentProps, SettingsComponent, SettingsComponentState } from "./SettingsComponent";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
-import { collection } from "./TestUtils";
-import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
-import { TtlType, isDirty } from "./SettingsUtils";
+import React from "react";
+import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 import Explorer from "../../Explorer";
+import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
+import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
+import { isDirty, TtlType } from "./SettingsUtils";
+import { collection } from "./TestUtils";
 jest.mock("../../../Common/dataAccess/getIndexTransformationProgress", () => ({
   getIndexTransformationProgress: jest.fn().mockReturnValue(undefined),
 }));
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
   updateCollection: jest.fn().mockReturnValue({
     id: undefined,
@@ -29,8 +31,6 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     analyticalStorageTtl: undefined,
   } as MongoDBCollectionResource),
 }));
-import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
 }));

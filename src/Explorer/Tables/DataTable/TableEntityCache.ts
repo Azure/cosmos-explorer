@@ -1,5 +1,5 @@
-import * as Utilities from "../Utilities";
 import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
 import CacheBase from "./CacheBase";
 
 export default class TableEntityCache extends CacheBase<Entities.ITableEntity> {

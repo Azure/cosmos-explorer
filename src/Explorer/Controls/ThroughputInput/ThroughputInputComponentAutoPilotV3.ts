@@ -1,13 +1,12 @@
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as ko from "knockout";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import ThroughputInputComponentAutoscaleV3 from "./ThroughputInputComponentAutoscaleV3.html";
 import { KeyCodes } from "../../../Common/Constants";
-import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
-
-import { userContext } from "../../../UserContext";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
+import ThroughputInputComponentAutoscaleV3 from "./ThroughputInputComponentAutoscaleV3.html";
+
 /**
  * Throughput Input:
  *

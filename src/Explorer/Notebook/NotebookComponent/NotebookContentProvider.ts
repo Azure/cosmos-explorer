@@ -1,4 +1,4 @@
-import { ServerConfig, IContentProvider, FileType, IContent, IGetParams } from "@nteract/core";
+import { FileType, IContent, IContentProvider, IGetParams, ServerConfig } from "@nteract/core";
 import { Observable } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
 import { GitHubContentProvider } from "../../../GitHub/GitHubContentProvider";

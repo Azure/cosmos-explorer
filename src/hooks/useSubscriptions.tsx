@@ -1,5 +1,5 @@
-import { Subscription } from "../Contracts/DataModels";
 import useSWR from "swr";
+import { Subscription } from "../Contracts/DataModels";
 
 interface SubscriptionListResult {
   nextLink: string;

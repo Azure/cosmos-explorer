@@ -1,5 +1,5 @@
-import { DatabaseAccount } from "../../Contracts/DataModels";
 import { Platform } from "../../ConfigContext";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 
 export interface StartUploadMessageParams {
   files: FileList;

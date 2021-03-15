@@ -1,15 +1,14 @@
 import * as ko from "knockout";
-import * as Q from "q";
-import * as ViewModels from "../../Contracts/ViewModels";
-import TabsBase from "./TabsBase";
-import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
-import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
 import NewVertexIcon from "../../../images/NewVertex.svg";
 import StyleIcon from "../../../images/Style.svg";
+import { DatabaseAccount } from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
+import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
 import GraphStylingPane from "../Panes/GraphStylingPane";
 import NewVertexPane from "../Panes/NewVertexPane";
-import { DatabaseAccount } from "../../Contracts/DataModels";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import TabsBase from "./TabsBase";
 
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };

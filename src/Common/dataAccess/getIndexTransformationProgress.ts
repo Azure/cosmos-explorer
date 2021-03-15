@@ -1,9 +1,9 @@
-import { client } from "../CosmosClient";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import * as Constants from "../Constants";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import * as Constants from "../Constants";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function getIndexTransformationProgress(databaseId: string, collectionId: string): Promise<number> {
   if (userContext.authType !== AuthType.AAD) {

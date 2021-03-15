@@ -1,8 +1,8 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import TabsManagerTemplate from "./TabsManager.html";
 import Explorer from "../Explorer";
 import TabsBase from "./TabsBase";
+import TabsManagerTemplate from "./TabsManager.html";
 
 export class TabsManager {
   public openedTabs: ko.ObservableArray<TabsBase>;

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
-import { GraphConfig } from "../../Tabs/GraphTab";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { GraphExplorer, GraphAccessor } from "./GraphExplorer";
+import { GraphConfig } from "../../Tabs/GraphTab";
+import { GraphAccessor, GraphExplorer } from "./GraphExplorer";
 
 interface Parameter {
   onIsNewVertexDisabledChange: (isEnabled: boolean) => void;

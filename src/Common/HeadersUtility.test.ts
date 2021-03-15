@@ -1,6 +1,6 @@
-import * as HeadersUtility from "./HeadersUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { LocalStorageUtility, StorageKey } from "../Shared/StorageUtility";
+import * as HeadersUtility from "./HeadersUtility";
 
 describe("Headers Utility", () => {
   describe("shouldEnableCrossPartitionKeyForResourceWithPartitionKey()", () => {

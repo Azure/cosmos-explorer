@@ -1,5 +1,6 @@
 import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
+import { handleError } from "../Common/ErrorHandlingUtils";
 import { configContext } from "../ConfigContext";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
@@ -7,7 +8,6 @@ import { JunoClient } from "../Juno/JunoClient";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { GitHubConnectorMsgType, IGitHubConnectorParams } from "./GitHubConnector";
-import { handleError } from "../Common/ErrorHandlingUtils";
 
 window.addEventListener("message", (event: MessageEvent) => {
   if (isInvalidParentFrameOrigin(event)) {

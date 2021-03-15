@@ -1,6 +1,6 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { GalleryViewerComponent, GalleryViewerComponentProps, GalleryTab, SortBy } from "./GalleryViewerComponent";
+import { GalleryTab, GalleryViewerComponent, GalleryViewerComponentProps, SortBy } from "./GalleryViewerComponent";
 
 describe("GalleryViewerComponent", () => {
   it("renders", () => {

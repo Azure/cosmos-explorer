@@ -1,5 +1,5 @@
-import { decryptJWTToken } from "./AuthorizationUtils";
 import { userContext } from "../UserContext";
+import { decryptJWTToken } from "./AuthorizationUtils";
 
 export function getFullName(): string {
   const authToken = userContext.authorizationToken;

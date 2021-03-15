@@ -1,9 +1,9 @@
-import * as React from "react";
 import { Observable, Subscription } from "knockout";
-import { MemoryUsageInfo } from "../../../Contracts/DataModels";
 import { ProgressIndicator } from "office-ui-fabric-react/lib/ProgressIndicator";
 import { Spinner, SpinnerSize } from "office-ui-fabric-react/lib/Spinner";
 import { Stack } from "office-ui-fabric-react/lib/Stack";
+import * as React from "react";
+import { MemoryUsageInfo } from "../../../Contracts/DataModels";
 
 interface MemoryTrackerProps {
   memoryUsageInfo: Observable<MemoryUsageInfo>;

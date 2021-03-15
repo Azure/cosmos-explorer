@@ -1,5 +1,5 @@
-import * as React from "react";
 import * as monaco from "monaco-editor";
+import * as React from "react";
 
 export interface EditorReactProps {
   language: string;

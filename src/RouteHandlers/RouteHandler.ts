@@ -1,5 +1,5 @@
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { sendMessage } from "../Common/MessageHandler";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { TabRouteHandler } from "./TabRouteHandler";
 
 export class RouteHandler {

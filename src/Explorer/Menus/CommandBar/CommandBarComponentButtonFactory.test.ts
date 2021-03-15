@@ -1,8 +1,8 @@
 import * as ko from "knockout";
-import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
-import NotebookManager from "../../Notebook/NotebookManager";
 import Explorer from "../../Explorer";
+import NotebookManager from "../../Notebook/NotebookManager";
+import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 
 describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;

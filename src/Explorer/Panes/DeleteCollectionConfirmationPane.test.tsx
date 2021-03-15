@@ -1,19 +1,18 @@
 jest.mock("../../Common/dataAccess/deleteCollection");
 jest.mock("../../Shared/Telemetry/TelemetryProcessor");
-import * as ko from "knockout";
-import { ApiKind, DatabaseAccount } from "../../Contracts/DataModels";
-import { Collection, Database } from "../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import { mount, ReactWrapper, shallow } from "enzyme";
+import * as ko from "knockout";
 import React from "react";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-import Explorer from "../Explorer";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { TreeNode } from "../../Contracts/ViewModels";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
-import { DeleteCollectionConfirmationPanel } from "./DeleteCollectionConfirmationPanel";
+import DeleteFeedback from "../../Common/DeleteFeedback";
+import { ApiKind, DatabaseAccount } from "../../Contracts/DataModels";
+import { Collection, Database, TreeNode } from "../../Contracts/ViewModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../UserContext";
+import Explorer from "../Explorer";
+import { DeleteCollectionConfirmationPanel } from "./DeleteCollectionConfirmationPanel";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {

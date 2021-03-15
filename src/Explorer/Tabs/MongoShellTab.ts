@@ -1,18 +1,16 @@
-import * as Constants from "../../Common/Constants";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
-import AuthHeadersUtil from "../../Platform/Hosted/Authorization";
-import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
-import Q from "q";
-import TabsBase from "./TabsBase";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import * as Constants from "../../Common/Constants";
 import { HashMap } from "../../Common/HashMap";
+import { configContext, Platform } from "../../ConfigContext";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { userContext } from "../../UserContext";
-import { configContext, Platform } from "../../ConfigContext";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import TabsBase from "./TabsBase";
 
 export default class MongoShellTab extends TabsBase {
   public url: ko.Computed<string>;

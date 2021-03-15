@@ -1,7 +1,7 @@
+import { ErrorMarkProvider, SqlCompletionItemProvider } from "@azure/cosmos-language-service";
+import * as monaco from "monaco-editor";
 import { JsonEditorParams, JsonEditorViewModel } from "../JsonEditor/JsonEditorComponent";
 import template from "./editor-component.html";
-import * as monaco from "monaco-editor";
-import { SqlCompletionItemProvider, ErrorMarkProvider } from "@azure/cosmos-language-service";
 
 /**
  * Helper class for ko component registration

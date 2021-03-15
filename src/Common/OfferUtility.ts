@@ -1,5 +1,5 @@
-import { Offer, SDKOfferDefinition } from "../Contracts/DataModels";
 import { OfferResponse } from "@azure/cosmos";
+import { Offer, SDKOfferDefinition } from "../Contracts/DataModels";
 import { HttpHeaders } from "./Constants";
 
 export const parseSDKOfferResponse = (offerResponse: OfferResponse): Offer | undefined => {

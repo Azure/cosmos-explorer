@@ -1,52 +1,50 @@
-import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
-import { webSocket } from "rxjs/webSocket";
-import { StateObservable } from "redux-observable";
-import { ofType } from "redux-observable";
 import {
-  mergeMap,
-  tap,
-  retryWhen,
-  delayWhen,
-  map,
-  switchMap,
-  take,
-  filter,
-  catchError,
-  first,
-  concatMap,
-  timeout,
-} from "rxjs/operators";
-import {
-  AppState,
-  ServerConfig as JupyterServerConfig,
-  JupyterHostRecordProps,
-  RemoteKernelProps,
-  castToSessionId,
-  createKernelRef,
-  KernelRef,
-  ContentRef,
-  KernelInfo,
   actions,
+  AppState,
+  castToSessionId,
+  ContentRef,
+  createKernelRef,
+  JupyterHostRecordProps,
+  KernelInfo,
+  KernelRef,
+  RemoteKernelProps,
   selectors,
+  ServerConfig as JupyterServerConfig,
 } from "@nteract/core";
-import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
-import { sessions, kernels } from "rx-jupyter";
+import { Channels, childOf, createMessage, JupyterMessage, message, ofMessageType } from "@nteract/messaging";
 import { RecordOf } from "immutable";
 import { AnyAction } from "redux";
-
+import { ofType, StateObservable } from "redux-observable";
+import { kernels, sessions } from "rx-jupyter";
+import { concat, EMPTY, merge, Observable, Observer, of, Subject, Subscriber, timer } from "rxjs";
+import {
+  catchError,
+  concatMap,
+  delayWhen,
+  filter,
+  first,
+  map,
+  mergeMap,
+  retryWhen,
+  switchMap,
+  take,
+  tap,
+  timeout,
+} from "rxjs/operators";
+import { webSocket } from "rxjs/webSocket";
 import * as Constants from "../../../Common/Constants";
+import { Areas } from "../../../Common/Constants";
+import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as CdbActions from "./actions";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { CdbAppState } from "./types";
-import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
-import * as TextFile from "./contents/file/text-file";
-import { NotebookUtil } from "../NotebookUtil";
 import { FileSystemUtil } from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
-import { Areas } from "../../../Common/Constants";
+import { NotebookUtil } from "../NotebookUtil";
+import * as CdbActions from "./actions";
+import * as TextFile from "./contents/file/text-file";
+import { CdbAppState } from "./types";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;

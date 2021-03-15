@@ -1,8 +1,8 @@
-import React from "react";
 import { mount, ReactWrapper } from "enzyme";
 import * as Q from "q";
-import { NodePropertiesComponent, NodePropertiesComponentProps, Mode } from "./NodePropertiesComponent";
-import { GraphHighlightedNodeData, EditedProperties, EditedEdges, PossibleVertex } from "./GraphExplorer";
+import React from "react";
+import { EditedEdges, EditedProperties, GraphHighlightedNodeData, PossibleVertex } from "./GraphExplorer";
+import { Mode, NodePropertiesComponent, NodePropertiesComponentProps } from "./NodePropertiesComponent";
 
 describe("Property pane", () => {
   const title = "My Title";

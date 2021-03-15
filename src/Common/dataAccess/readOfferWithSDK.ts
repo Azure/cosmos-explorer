@@ -1,6 +1,6 @@
-import { HttpHeaders } from "../Constants";
-import { Offer } from "../../Contracts/DataModels";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
+import { Offer } from "../../Contracts/DataModels";
+import { HttpHeaders } from "../Constants";
 import { client } from "../CosmosClient";
 import { parseSDKOfferResponse } from "../OfferUtility";
 import { readOffers } from "./readOffers";

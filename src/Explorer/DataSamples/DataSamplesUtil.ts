@@ -1,8 +1,8 @@
 import * as ViewModels from "../../Contracts/ViewModels";
-import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import Explorer from "../Explorer";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 export class DataSamplesUtil {
   private static readonly DialogTitle = "Create Sample Container";

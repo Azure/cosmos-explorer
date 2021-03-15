@@ -1,9 +1,9 @@
 import * as React from "react";
-import { JunoClient, IGalleryItem } from "../../../Juno/JunoClient";
-import { GalleryTab, SortBy, GalleryViewerComponentProps, GalleryViewerComponent } from "./GalleryViewerComponent";
-import { NotebookViewerComponentProps, NotebookViewerComponent } from "../NotebookViewer/NotebookViewerComponent";
+import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import Explorer from "../../Explorer";
+import { NotebookViewerComponent, NotebookViewerComponentProps } from "../NotebookViewer/NotebookViewerComponent";
+import { GalleryTab, GalleryViewerComponent, GalleryViewerComponentProps, SortBy } from "./GalleryViewerComponent";
 
 export interface GalleryAndNotebookViewerComponentProps {
   container?: Explorer;

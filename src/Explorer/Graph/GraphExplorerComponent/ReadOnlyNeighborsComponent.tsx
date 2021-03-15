@@ -4,9 +4,9 @@
  */
 
 import * as React from "react";
+import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
 import { GraphHighlightedNodeData, NeighborVertexBasicInfo } from "./GraphExplorer";
 import * as GraphUtil from "./GraphUtil";
-import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
 
 export interface ReadOnlyNeighborsComponentProps {
   node: GraphHighlightedNodeData;

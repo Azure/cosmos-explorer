@@ -1,13 +1,13 @@
 import { ArmApiVersions } from "../Common/Constants";
-import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import {
   NotebookWorkspace,
   NotebookWorkspaceConnectionInfo,
   NotebookWorkspaceFeedResponse,
 } from "../Contracts/DataModels";
+import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export class NotebookWorkspaceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;

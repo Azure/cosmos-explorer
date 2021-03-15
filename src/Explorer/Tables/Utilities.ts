@@ -1,8 +1,8 @@
-import * as _ from "underscore";
 import Q from "q";
+import * as _ from "underscore";
+import * as Constants from "./Constants";
 import * as Entities from "./Entities";
 import { CassandraTableKey } from "./TableDataClient";
-import * as Constants from "./Constants";
 
 /**
  * Generates a pseudo-random GUID.

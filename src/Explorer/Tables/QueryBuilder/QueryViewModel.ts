@@ -1,13 +1,12 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
-
+import { KeyCodes } from "../../../Common/Constants";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
+import * as DataTableUtilities from "../DataTable/DataTableUtilities";
+import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
 import QueryBuilderViewModel from "./QueryBuilderViewModel";
 import QueryClauseViewModel from "./QueryClauseViewModel";
-import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import * as DataTableUtilities from "../DataTable/DataTableUtilities";
-import { KeyCodes } from "../../../Common/Constants";
-import { getQuotedCqlIdentifier } from "../CqlUtilities";
 
 export default class QueryViewModel {
   public topValueLimitMessage: string = "Please input a number between 0 and 1000.";

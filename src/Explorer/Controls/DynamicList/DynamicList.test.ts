@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { DynamicListComponent, DynamicListParams, DynamicListItem } from "./DynamicListComponent";
+import { DynamicListComponent, DynamicListItem, DynamicListParams } from "./DynamicListComponent";
 
 const $ = (selector: string) => document.querySelector(selector) as HTMLElement;
 

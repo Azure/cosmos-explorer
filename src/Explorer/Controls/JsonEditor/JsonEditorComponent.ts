@@ -1,5 +1,5 @@
-import Q from "q";
 import * as monaco from "monaco-editor";
+import Q from "q";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
 import template from "./json-editor-component.html";

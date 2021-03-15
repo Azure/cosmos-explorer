@@ -1,7 +1,23 @@
+import { ContainerDefinition } from "@azure/cosmos";
+import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
-import { ContainerDefinition } from "@azure/cosmos";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { userContext } from "../../UserContext";
+import {
+  createUpdateCassandraTable,
+  getCassandraTable,
+} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+import {
+  createUpdateGremlinGraph,
+  getGremlinGraph,
+} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import {
+  createUpdateMongoDBCollection,
+  getMongoDBCollection,
+} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import {
   CreateUpdateOptions,
   ExtendedResourceProperties,
@@ -10,25 +26,9 @@ import {
   SqlContainerCreateUpdateParameters,
   SqlContainerResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import { client } from "../CosmosClient";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import {
-  createUpdateCassandraTable,
-  getCassandraTable,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import {
-  createUpdateMongoDBCollection,
-  getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import {
-  createUpdateGremlinGraph,
-  getGremlinGraph,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateCollection(
   databaseId: string,

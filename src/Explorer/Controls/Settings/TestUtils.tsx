@@ -1,7 +1,7 @@
+import ko from "knockout";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
-import ko from "knockout";
 
 export const container = new Explorer();
 

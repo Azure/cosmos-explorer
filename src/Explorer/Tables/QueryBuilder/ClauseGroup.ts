@@ -1,5 +1,5 @@
-import QueryClauseViewModel from "./QueryClauseViewModel";
 import * as Utilities from "../Utilities";
+import QueryClauseViewModel from "./QueryClauseViewModel";
 
 export default class ClauseGroup {
   public isRootGroup: boolean;

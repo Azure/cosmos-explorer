@@ -1,14 +1,14 @@
 import { DefaultButton, IButtonProps, ITextFieldProps, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import * as Constants from "../../../Common/Constants";
+import UrlUtility from "../../../Common/UrlUtility";
+import { IGitHubRepo } from "../../../GitHub/GitHubClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as GitHubUtils from "../../../Utils/GitHubUtils";
+import Explorer from "../../Explorer";
 import { RepoListItem } from "./GitHubReposComponent";
 import { ChildrenMargin } from "./GitHubStyleConstants";
-import * as GitHubUtils from "../../../Utils/GitHubUtils";
-import { IGitHubRepo } from "../../../GitHub/GitHubClient";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import UrlUtility from "../../../Common/UrlUtility";
-import Explorer from "../../Explorer";
 
 export interface AddRepoComponentProps {
   container: Explorer;

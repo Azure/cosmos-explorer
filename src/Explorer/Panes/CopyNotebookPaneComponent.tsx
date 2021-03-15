@@ -1,18 +1,18 @@
-import * as GitHubUtils from "../../Utils/GitHubUtils";
-import * as React from "react";
-import { IPinnedRepo } from "../../Juno/JunoClient";
-import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import {
-  Stack,
-  Label,
-  Text,
   Dropdown,
-  IDropdownProps,
   IDropdownOption,
-  SelectableOptionMenuItemType,
+  IDropdownProps,
   IRenderFunction,
   ISelectableOption,
+  Label,
+  SelectableOptionMenuItemType,
+  Stack,
+  Text,
 } from "office-ui-fabric-react";
+import * as React from "react";
+import { IPinnedRepo } from "../../Juno/JunoClient";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
+import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";

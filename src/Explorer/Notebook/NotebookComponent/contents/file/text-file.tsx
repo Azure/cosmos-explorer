@@ -1,10 +1,10 @@
-import * as StringUtils from "../../../../../Utils/StringUtils";
 import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import { IMonacoProps as MonacoEditorProps } from "@nteract/monaco-editor";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import styled from "styled-components";
+import * as StringUtils from "../../../../../Utils/StringUtils";
 
 const EditorContainer = styled.div`
   position: absolute;

@@ -2,16 +2,16 @@ jest.mock("../../Common/dataAccess/deleteDatabase");
 jest.mock("../../Shared/Telemetry/TelemetryProcessor");
 import * as ko from "knockout";
 import Q from "q";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
+import DeleteFeedback from "../../Common/DeleteFeedback";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-import Explorer from "../Explorer";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { TreeNode } from "../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import Explorer from "../Explorer";
 import { TabsManager } from "../Tabs/TabsManager";
-import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
+import DeleteDatabaseConfirmationPane from "./DeleteDatabaseConfirmationPane";
 
 describe("Delete Database Confirmation Pane", () => {
   describe("Explorer.isLastDatabase() and Explorer.isLastNonEmptyDatabase()", () => {

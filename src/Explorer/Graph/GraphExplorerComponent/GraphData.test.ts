@@ -1,4 +1,4 @@
-import { GraphData, GremlinVertex, GremlinEdge } from "./GraphData";
+import { GraphData, GremlinEdge, GremlinVertex } from "./GraphData";
 
 describe("Graph Data", () => {
   it("should set only one node as root", () => {

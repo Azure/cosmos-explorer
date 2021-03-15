@@ -1,15 +1,15 @@
 import * as ko from "knockout";
 import Q from "q";
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { RouteHandler } from "../../RouteHandlers/RouteHandler";
-import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as ThemeUtility from "../../Common/ThemeUtility";
-import Explorer from "../Explorer";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { RouteHandler } from "../../RouteHandlers/RouteHandler";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../Explorer";
+import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {

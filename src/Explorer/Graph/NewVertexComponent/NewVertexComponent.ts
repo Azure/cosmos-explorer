@@ -1,8 +1,8 @@
 import * as ko from "knockout";
-import { EditorNodePropertiesComponent } from "../GraphExplorerComponent/EditorNodePropertiesComponent";
-import { NewVertexData, InputProperty } from "../../../Contracts/ViewModels";
-import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
 import * as Constants from "../../../Common/Constants";
+import { InputProperty, NewVertexData } from "../../../Contracts/ViewModels";
+import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
+import { EditorNodePropertiesComponent } from "../GraphExplorerComponent/EditorNodePropertiesComponent";
 import template from "./NewVertexComponent.html";
 
 /**

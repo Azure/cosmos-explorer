@@ -1,8 +1,7 @@
-import _ from "underscore";
 import Q from "q";
-
-import * as Entities from "../Entities";
+import _ from "underscore";
 import * as QueryBuilderConstants from "../Constants";
+import * as Entities from "../Entities";
 import * as Utilities from "../Utilities";
 
 export function getRowSelector(selectorSchema: Entities.IProperty[]): string {

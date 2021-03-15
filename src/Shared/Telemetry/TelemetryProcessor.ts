@@ -1,9 +1,9 @@
-﻿import { Action, ActionModifiers } from "./TelemetryConstants";
-import { sendMessage } from "../../Common/MessageHandler";
-import { MessageTypes } from "../../Contracts/ExplorerContracts";
-import { appInsights } from "../appInsights";
+﻿import { sendMessage } from "../../Common/MessageHandler";
 import { configContext } from "../../ConfigContext";
+import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { userContext } from "../../UserContext";
+import { appInsights } from "../appInsights";
+import { Action, ActionModifiers } from "./TelemetryConstants";
 
 // TODO: Remove this. It is perfectly find to pass any data to telemtry methods.
 // This was added only to maintain stability while removing dependencies on explorer.databaseAccount and explorer.defaultExperience

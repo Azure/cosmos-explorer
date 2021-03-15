@@ -1,5 +1,5 @@
 import { ObjectCache } from "../../../Common/ObjectCache";
-import { GremlinVertex, GraphData } from "./GraphData";
+import { GraphData, GremlinVertex } from "./GraphData";
 
 /**
  * Remember vertex edge information

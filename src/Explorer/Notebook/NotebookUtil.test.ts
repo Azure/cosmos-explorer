@@ -1,15 +1,15 @@
-import { NotebookUtil } from "./NotebookUtil";
-import * as GitHubUtils from "../../Utils/GitHubUtils";
 import {
-  ImmutableNotebook,
-  MediaBundle,
   CodeCellParams,
-  MarkdownCellParams,
+  ImmutableNotebook,
   makeCodeCell,
   makeMarkdownCell,
   makeNotebookRecord,
+  MarkdownCellParams,
+  MediaBundle,
 } from "@nteract/commutable";
 import { List, Map } from "immutable";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
+import { NotebookUtil } from "./NotebookUtil";
 
 const fileName = "file";
 const notebookName = "file.ipynb";

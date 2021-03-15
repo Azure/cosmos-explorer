@@ -1,6 +1,6 @@
 import "reflect-metadata";
+import { userContext } from "../UserContext";
 import {
-  Node,
   AnyDisplay,
   BooleanInput,
   ChoiceInput,
@@ -10,13 +10,13 @@ import {
   Info,
   InputType,
   InputTypeValue,
+  Node,
   NumberInput,
+  RefreshParams,
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
-  RefreshParams,
 } from "./SelfServeTypes";
-import { userContext } from "../UserContext";
 
 export enum SelfServeType {
   // No self serve type passed, launch explorer

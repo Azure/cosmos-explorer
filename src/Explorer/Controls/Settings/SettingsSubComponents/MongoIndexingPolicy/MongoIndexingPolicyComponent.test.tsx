@@ -1,8 +1,8 @@
 import { shallow } from "enzyme";
 import React from "react";
+import { renderToString } from "react-dom/server";
 import { MongoIndexTypes, MongoNotificationMessage, MongoNotificationType } from "../../SettingsUtils";
 import { MongoIndexingPolicyComponent, MongoIndexingPolicyComponentProps } from "./MongoIndexingPolicyComponent";
-import { renderToString } from "react-dom/server";
 
 describe("MongoIndexingPolicyComponent", () => {
   const baseProps: MongoIndexingPolicyComponentProps = {

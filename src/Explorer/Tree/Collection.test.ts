@@ -1,8 +1,7 @@
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
-import Collection from "./Collection";
+import * as DataModels from "../../Contracts/DataModels";
 import Explorer from "../Explorer";
+import Collection from "./Collection";
 jest.mock("monaco-editor");
 
 describe("Collection", () => {

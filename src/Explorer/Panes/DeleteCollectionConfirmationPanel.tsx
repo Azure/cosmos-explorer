@@ -1,19 +1,19 @@
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as React from "react";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { PanelFooterComponent } from "./PanelFooterComponent";
-import { Collection } from "../../Contracts/ViewModels";
 import { Text, TextField } from "office-ui-fabric-react";
-import { userContext } from "../../UserContext";
+import * as React from "react";
+import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
 import { Areas } from "../../Common/Constants";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import { PanelErrorComponent, PanelErrorProps } from "./PanelErrorComponent";
 import DeleteFeedback from "../../Common/DeleteFeedback";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { Collection } from "../../Contracts/ViewModels";
+import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
+import { PanelErrorComponent, PanelErrorProps } from "./PanelErrorComponent";
+import { PanelFooterComponent } from "./PanelFooterComponent";
 
 export interface DeleteCollectionConfirmationPanelProps {
   explorer: Explorer;

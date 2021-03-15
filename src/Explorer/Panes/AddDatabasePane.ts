@@ -1,19 +1,19 @@
-import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as PricingUtils from "../../Utils/PricingUtils";
-import * as SharedConstants from "../../Shared/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import editable from "../../Common/EditableUtility";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { ContextualPaneBase } from "./ContextualPaneBase";
+import * as Constants from "../../Common/Constants";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
-import { configContext, Platform } from "../../ConfigContext";
+import editable from "../../Common/EditableUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { configContext, Platform } from "../../ConfigContext";
+import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as SharedConstants from "../../Shared/Constants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../Utils/PricingUtils";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;

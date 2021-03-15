@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import * as ViewModels from "../Contracts/ViewModels";
 import * as Constants from "../Common/Constants";
+import * as ViewModels from "../Contracts/ViewModels";
 
 export abstract class WaitsForTemplateViewModel implements ViewModels.WaitsForTemplate {
   public isTemplateReady: ko.Observable<boolean>;

@@ -1,10 +1,10 @@
 import ko from "knockout";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
-import { IPinnedRepo, JunoClient, IPublishNotebookRequest } from "./JunoClient";
 import { configContext } from "../ConfigContext";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { updateUserContext, userContext } from "../UserContext";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { IPinnedRepo, IPublishNotebookRequest, JunoClient } from "./JunoClient";
 
 const sampleSubscriptionId = "subscriptionId";
 

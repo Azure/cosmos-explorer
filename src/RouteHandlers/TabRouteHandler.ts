@@ -1,9 +1,8 @@
+import crossroads from "crossroads";
+import hasher from "hasher";
 import * as _ from "underscore";
 import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
-
-import crossroads from "crossroads";
-import hasher from "hasher";
 import ScriptTabBase from "../Explorer/Tabs/ScriptTabBase";
 import TabsBase from "../Explorer/Tabs/TabsBase";
 

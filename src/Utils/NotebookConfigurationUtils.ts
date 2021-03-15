@@ -1,6 +1,6 @@
-import * as DataModels from "../Contracts/DataModels";
-import * as Logger from "../Common/Logger";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import * as Logger from "../Common/Logger";
+import * as DataModels from "../Contracts/DataModels";
 
 interface KernelConnectionMetadata {
   name: string;

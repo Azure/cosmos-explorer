@@ -1,46 +1,46 @@
-import * as React from "react";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
-import { Urls, StyleConstants } from "../../../Common/Constants";
 import {
-  getPriceCurrency,
-  getCurrencySign,
-  getAutoscalePricePerRu,
-  getMultimasterMultiplier,
-  computeRUUsagePriceHourly,
-  getPricePerRu,
-  estimatedCostDisclaimer,
-} from "../../../Utils/PricingUtils";
-import {
-  ITextFieldStyles,
+  DetailsList,
+  DetailsListLayoutMode,
+  DetailsRow,
   ICheckboxStyles,
-  IStackProps,
-  IStackTokens,
   IChoiceGroupStyles,
-  Link,
-  Text,
-  IMessageBarStyles,
-  ITextStyles,
-  IDetailsRowStyles,
-  IStackStyles,
-  IIconStyles,
+  IColumn,
+  IDetailsColumnStyles,
   IDetailsListStyles,
+  IDetailsRowProps,
+  IDetailsRowStyles,
   IDropdownStyles,
+  IIconStyles,
+  IMessageBarStyles,
   ISeparatorStyles,
+  IStackProps,
+  IStackStyles,
+  IStackTokens,
+  ITextFieldStyles,
+  ITextStyles,
+  Link,
   MessageBar,
   MessageBarType,
-  Stack,
+  SelectionMode,
   Spinner,
   SpinnerSize,
-  DetailsList,
-  IColumn,
-  SelectionMode,
-  DetailsListLayoutMode,
-  IDetailsRowProps,
-  DetailsRow,
-  IDetailsColumnStyles,
+  Stack,
+  Text,
 } from "office-ui-fabric-react";
-import { isDirtyTypes, isDirty } from "./SettingsUtils";
+import * as React from "react";
+import { StyleConstants, Urls } from "../../../Common/Constants";
+import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import {
+  computeRUUsagePriceHourly,
+  estimatedCostDisclaimer,
+  getAutoscalePricePerRu,
+  getCurrencySign,
+  getMultimasterMultiplier,
+  getPriceCurrency,
+  getPricePerRu,
+} from "../../../Utils/PricingUtils";
+import { isDirty, isDirtyTypes } from "./SettingsUtils";
 
 export interface EstimatedSpendingDisplayProps {
   costType: JSX.Element;

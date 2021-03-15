@@ -1,12 +1,10 @@
-import Q from "q";
+import { extractPartitionKey } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
-import DocumentId from "./DocumentId";
-import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { extractPartitionKey } from "@azure/cosmos";
-import ConflictsTab from "../Tabs/ConflictsTab";
 import { readDocument } from "../../Common/dataAccess/readDocument";
+import * as DataModels from "../../Contracts/DataModels";
+import ConflictsTab from "../Tabs/ConflictsTab";
+import DocumentId from "./DocumentId";
 
 export default class ConflictId {
   public container: ConflictsTab;

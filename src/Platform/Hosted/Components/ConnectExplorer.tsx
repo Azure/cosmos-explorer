@@ -1,9 +1,9 @@
-import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
-import { HttpHeaders } from "../../../Common/Constants";
-import { GenerateTokenResponse } from "../../../Contracts/DataModels";
-import { configContext } from "../../../ConfigContext";
+import * as React from "react";
 import { AuthType } from "../../../AuthType";
+import { HttpHeaders } from "../../../Common/Constants";
+import { configContext } from "../../../ConfigContext";
+import { GenerateTokenResponse } from "../../../Contracts/DataModels";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 
 interface Props {

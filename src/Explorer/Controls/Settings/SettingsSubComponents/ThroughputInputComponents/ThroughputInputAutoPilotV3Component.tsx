@@ -1,49 +1,48 @@
-import React from "react";
-import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
 import {
-  getTextFieldStyles,
-  getToolTipContainer,
-  noLeftPaddingCheckBoxStyle,
-  titleAndInputStackProps,
-  checkBoxAndInputStackProps,
-  getChoiceGroupStyles,
-  messageBarStyles,
-  getEstimatedSpendingElement,
-  getAutoPilotV3SpendElement,
-  manualToAutoscaleDisclaimerElement,
-  saveThroughputWarningMessage,
-  ManualEstimatedSpendingDisplayProps,
-  AutoscaleEstimatedSpendingDisplayProps,
-  PriceBreakdown,
-  getRuPriceBreakdown,
-  transparentDetailsHeaderStyle,
-} from "../../SettingsRenderUtils";
-import {
-  Text,
-  TextField,
-  ChoiceGroup,
-  IChoiceGroupOption,
   Checkbox,
-  Stack,
+  ChoiceGroup,
+  FontIcon,
+  IChoiceGroupOption,
+  IColumn,
   Label,
   Link,
   MessageBar,
-  FontIcon,
-  IColumn,
+  Stack,
+  Text,
+  TextField,
 } from "office-ui-fabric-react";
-import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
-import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
-import * as SharedConstants from "../../../../../Shared/Constants";
-import * as DataModels from "../../../../../Contracts/DataModels";
-import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import { userContext } from "../../../../../UserContext";
-import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
-import { usageInGB, calculateEstimateNumber } from "../../../../../Utils/PricingUtils";
+import React from "react";
 import { Features } from "../../../../../Common/Constants";
-import { minAutoPilotThroughput } from "../../../../../Utils/AutoPilotUtils";
-
-import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
+import * as DataModels from "../../../../../Contracts/DataModels";
+import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
+import * as SharedConstants from "../../../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../../../UserContext";
+import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
+import { minAutoPilotThroughput } from "../../../../../Utils/AutoPilotUtils";
+import { calculateEstimateNumber, usageInGB } from "../../../../../Utils/PricingUtils";
+import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
+import {
+  AutoscaleEstimatedSpendingDisplayProps,
+  checkBoxAndInputStackProps,
+  getAutoPilotV3SpendElement,
+  getChoiceGroupStyles,
+  getEstimatedSpendingElement,
+  getRuPriceBreakdown,
+  getTextFieldStyles,
+  getToolTipContainer,
+  ManualEstimatedSpendingDisplayProps,
+  manualToAutoscaleDisclaimerElement,
+  messageBarStyles,
+  noLeftPaddingCheckBoxStyle,
+  PriceBreakdown,
+  saveThroughputWarningMessage,
+  titleAndInputStackProps,
+  transparentDetailsHeaderStyle,
+} from "../../SettingsRenderUtils";
+import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
+import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
   databaseAccount: DataModels.DatabaseAccount;

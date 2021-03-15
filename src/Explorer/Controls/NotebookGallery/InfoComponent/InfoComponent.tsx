@@ -1,5 +1,5 @@
+import { HoverCard, HoverCardType, Icon, Label, Link, Stack } from "office-ui-fabric-react";
 import * as React from "react";
-import { Icon, Label, Stack, HoverCard, HoverCardType, Link } from "office-ui-fabric-react";
 import { CodeOfConductEndpoints } from "../../../../Common/Constants";
 import "./InfoComponent.less";
 

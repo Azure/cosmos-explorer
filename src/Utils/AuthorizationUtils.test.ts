@@ -1,7 +1,7 @@
-import * as Constants from "../Common/Constants";
-import * as AuthorizationUtils from "./AuthorizationUtils";
 import { AuthType } from "../AuthType";
+import * as Constants from "../Common/Constants";
 import { updateUserContext } from "../UserContext";
+import * as AuthorizationUtils from "./AuthorizationUtils";
 jest.mock("../Explorer/Explorer");
 
 describe("AuthorizationUtils", () => {

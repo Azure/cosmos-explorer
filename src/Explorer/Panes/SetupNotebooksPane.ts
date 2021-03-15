@@ -1,12 +1,12 @@
+import * as ko from "knockout";
+import { Areas, KeyCodes } from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { Areas, KeyCodes } from "../../Common/Constants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as ko from "knockout";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export class SetupNotebooksPane extends ContextualPaneBase {
   private description: ko.Observable<string>;

@@ -3,11 +3,11 @@
  */
 
 import * as Q from "q";
-import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
+import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
+import { HashMap } from "../../../Common/HashMap";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { HashMap } from "../../../Common/HashMap";
-import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
+import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
 
 export interface GremlinClientParameters {
   endpoint: string;

@@ -1,9 +1,8 @@
+import { AppState, ContentRef, DocumentRecordProps, selectors } from "@nteract/core";
+import { RecordOf } from "immutable";
 import React from "react";
 import { connect } from "react-redux";
 import "./CellLabeler.less";
-
-import { AppState, ContentRef, selectors, DocumentRecordProps } from "@nteract/core";
-import { RecordOf } from "immutable";
 
 interface ComponentProps {
   id: string;

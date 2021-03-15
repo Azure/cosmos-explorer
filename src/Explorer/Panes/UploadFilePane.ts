@@ -1,9 +1,9 @@
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export interface UploadFilePaneOpenOptions {
   paneTitle: string;

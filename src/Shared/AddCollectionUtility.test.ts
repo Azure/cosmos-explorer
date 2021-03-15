@@ -1,7 +1,7 @@
 import * as ko from "knockout";
 import { Collection, Database } from "../Contracts/ViewModels";
-import { getMaxThroughput } from "./AddCollectionUtility";
 import Explorer from "../Explorer/Explorer";
+import { getMaxThroughput } from "./AddCollectionUtility";
 
 describe("getMaxThroughput", () => {
   it("default unlimited throughput setting", () => {

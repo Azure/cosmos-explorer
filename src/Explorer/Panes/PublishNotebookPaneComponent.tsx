@@ -1,11 +1,11 @@
-import { ITextFieldProps, Stack, Text, TextField, Dropdown, IDropdownProps } from "office-ui-fabric-react";
+import { ImmutableNotebook } from "@nteract/commutable/src";
+import Html2Canvas from "html2canvas";
+import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import { FileSystemUtil } from "../Notebook/FileSystemUtil";
-import "./PublishNotebookPaneComponent.less";
-import Html2Canvas from "html2canvas";
-import { ImmutableNotebook } from "@nteract/commutable/src";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
+import "./PublishNotebookPaneComponent.less";
 
 export interface PublishNotebookPaneProps {
   notebookName: string;

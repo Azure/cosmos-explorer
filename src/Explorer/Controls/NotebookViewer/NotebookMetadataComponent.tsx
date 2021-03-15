@@ -13,11 +13,11 @@ import {
   Text,
 } from "office-ui-fabric-react";
 import * as React from "react";
+import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
 import { IGalleryItem } from "../../../Juno/JunoClient";
 import { FileSystemUtil } from "../../Notebook/FileSystemUtil";
-import "./NotebookViewerComponent.less";
-import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
 import { InfoComponent } from "../NotebookGallery/InfoComponent/InfoComponent";
+import "./NotebookViewerComponent.less";
 
 export interface NotebookMetadataComponentProps {
   data: IGalleryItem;

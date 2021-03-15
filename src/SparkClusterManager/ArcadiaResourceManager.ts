@@ -1,14 +1,14 @@
+import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import * as Logger from "../Common/Logger";
 import {
   ArcadiaWorkspace,
   ArcadiaWorkspaceFeedResponse,
   SparkPool,
   SparkPoolFeedResponse,
 } from "../Contracts/DataModels";
-import { ArmApiVersions, ArmResourceTypes } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderClientFactory } from "../ResourceProvider/IResourceProviderClient";
-import * as Logger from "../Common/Logger";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export class ArcadiaResourceManager {
   private resourceProviderClientFactory: IResourceProviderClientFactory<any>;

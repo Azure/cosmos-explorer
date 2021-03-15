@@ -2,22 +2,21 @@
 import { CellType, ImmutableNotebook } from "@nteract/commutable";
 import { HeaderDataProps } from "@nteract/connected-components/lib/header-editor";
 import {
+  actions,
   AppState,
   ContentRef,
-  HostRecord,
-  selectors,
-  actions,
   DirectoryContentRecordProps,
   DummyContentRecordProps,
   FileContentRecordProps,
+  HostRecord,
   NotebookContentRecordProps,
+  selectors,
 } from "@nteract/core";
 import { RecordOf } from "immutable";
 import * as React from "react";
 import { HotKeys, KeyMap } from "react-hotkeys";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
 // Local modules
 import { default as File } from "./file";
 

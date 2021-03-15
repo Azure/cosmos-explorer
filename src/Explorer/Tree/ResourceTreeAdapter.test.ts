@@ -1,8 +1,8 @@
-import Explorer from "../Explorer";
 import * as ko from "knockout";
-import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 import * as ViewModels from "../../Contracts/ViewModels";
+import Explorer from "../Explorer";
 import TabsBase from "../Tabs/TabsBase";
+import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 
 describe("ResourceTreeAdapter", () => {
   const mockContainer = (): Explorer =>

@@ -1,15 +1,15 @@
-import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
+import * as DataModels from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { client } from "../CosmosClient";
-import { handleError } from "../ErrorHandlingUtils";
-import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { userContext } from "../../UserContext";
 import { listCassandraTables } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { listMongoDBCollections } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { listGremlinGraphs } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import { listMongoDBCollections } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { listTables } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);

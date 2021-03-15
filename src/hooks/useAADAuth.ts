@@ -1,6 +1,6 @@
-import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
-import { UserAgentApplication, Account, Configuration } from "msal";
+import { Account, Configuration, UserAgentApplication } from "msal";
+import * as React from "react";
 
 const config: Configuration = {
   cache: {

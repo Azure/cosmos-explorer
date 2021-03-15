@@ -1,4 +1,3 @@
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";

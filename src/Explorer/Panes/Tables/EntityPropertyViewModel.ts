@@ -1,11 +1,10 @@
 import * as ko from "knockout";
-
-import * as DateTimeUtilities from "../../Tables/QueryBuilder/DateTimeUtilities";
-import * as EntityPropertyNameValidator from "./Validators/EntityPropertyNameValidator";
-import EntityPropertyValueValidator from "./Validators/EntityPropertyValueValidator";
 import * as Constants from "../../Tables/Constants";
+import * as DateTimeUtilities from "../../Tables/QueryBuilder/DateTimeUtilities";
 import * as Utilities from "../../Tables/Utilities";
 import TableEntityPane from "./TableEntityPane";
+import * as EntityPropertyNameValidator from "./Validators/EntityPropertyNameValidator";
+import EntityPropertyValueValidator from "./Validators/EntityPropertyValueValidator";
 
 export interface IValidationResult {
   isInvalid: boolean;

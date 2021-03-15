@@ -1,5 +1,5 @@
-import { IResourceProviderClient } from "../ResourceProvider/IResourceProviderClient";
 import { NotebookWorkspace } from "../Contracts/DataModels";
+import { IResourceProviderClient } from "../ResourceProvider/IResourceProviderClient";
 
 export class NotebookWorkspaceSettingsProviderClient implements IResourceProviderClient<string> {
   public async deleteAsync(url: string, apiVersion: string): Promise<void> {

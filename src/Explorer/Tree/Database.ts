@@ -1,23 +1,23 @@
-import * as _ from "underscore";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
+import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
+import { readCollections } from "../../Common/dataAccess/readCollections";
+import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import DatabaseSettingsTab from "../Tabs/DatabaseSettingsTab";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import Collection from "./Collection";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as Logger from "../../Common/Logger";
-import Explorer from "../Explorer";
-import { readCollections } from "../../Common/dataAccess/readCollections";
-import { JunoClient, IJunoResponse } from "../../Juno/JunoClient";
-import { userContext } from "../../UserContext";
-import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;

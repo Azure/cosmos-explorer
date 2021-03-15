@@ -1,8 +1,8 @@
 import * as ko from "knockout";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
-import { SplashScreen } from "./SplashScreen";
-import { TabsManager } from "../Tabs/TabsManager";
 import Explorer from "../Explorer";
+import { TabsManager } from "../Tabs/TabsManager";
+import { SplashScreen } from "./SplashScreen";
 jest.mock("../Explorer");
 
 const createExplorer = () => {

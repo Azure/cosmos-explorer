@@ -1,15 +1,15 @@
-import { Notebook, stringifyNotebook, makeNotebookRecord, toJS } from "@nteract/commutable";
+import { makeNotebookRecord, Notebook, stringifyNotebook, toJS } from "@nteract/commutable";
 import { FileType, IContent, IContentProvider, IEmptyContent, IGetParams, ServerConfig } from "@nteract/core";
 import { from, Observable, of } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
-import * as Base64Utils from "../Utils/Base64Utils";
 import { HttpStatusCodes } from "../Common/Constants";
-import * as Logger from "../Common/Logger";
-import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
-import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
-import * as GitHubUtils from "../Utils/GitHubUtils";
-import UrlUtility from "../Common/UrlUtility";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import * as Logger from "../Common/Logger";
+import UrlUtility from "../Common/UrlUtility";
+import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
+import * as Base64Utils from "../Utils/Base64Utils";
+import * as GitHubUtils from "../Utils/GitHubUtils";
+import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
 
 export interface GitHubContentProviderParams {
   gitHubClient: GitHubClient;

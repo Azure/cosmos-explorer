@@ -1,5 +1,5 @@
 import { ResourceType } from "@azure/cosmos/dist-esm/common/constants";
-import { configContext, Platform, updateConfigContext, resetConfigContext } from "../ConfigContext";
+import { Platform, resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { updateUserContext } from "../UserContext";
 import { endpoint, getTokenFromAuthService, requestPlugin, tokenProvider } from "./CosmosClient";
 

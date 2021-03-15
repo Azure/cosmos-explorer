@@ -1,20 +1,15 @@
-import * as _ from "underscore";
-import * as React from "react";
-import * as Constants from "../../../Common/Constants";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { IButtonProps, IconButton } from "office-ui-fabric-react/lib/Button";
+import { ContextualMenu, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
 import {
   DetailsList,
   DetailsListLayoutMode,
+  DetailsRow,
+  IColumn,
   IDetailsListProps,
   IDetailsRowProps,
-  DetailsRow,
 } from "office-ui-fabric-react/lib/DetailsList";
 import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
-import { IconButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
-import { IColumn } from "office-ui-fabric-react/lib/DetailsList";
-import { IContextualMenuProps, ContextualMenu } from "office-ui-fabric-react/lib/ContextualMenu";
+import { ITextField, ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
 import {
   IObjectWithKey,
   ISelectionZoneProps,
@@ -22,13 +17,16 @@ import {
   SelectionMode,
   SelectionZone,
 } from "office-ui-fabric-react/lib/utilities/selection/index";
-import { StyleConstants } from "../../../Common/Constants";
-import { TextField, ITextFieldProps, ITextField } from "office-ui-fabric-react/lib/TextField";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-
+import * as React from "react";
+import * as _ from "underscore";
 import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
-import { QueriesClient } from "../../../Common/QueriesClient";
+import * as Constants from "../../../Common/Constants";
+import { StyleConstants } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import { QueriesClient } from "../../../Common/QueriesClient";
+import * as DataModels from "../../../Contracts/DataModels";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 export interface QueriesGridComponentProps {
   queriesClient: QueriesClient;

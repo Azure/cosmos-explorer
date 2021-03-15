@@ -1,5 +1,5 @@
-import { getCoreEpics } from "./store";
 import { epics } from "@nteract/core";
+import { getCoreEpics } from "./store";
 
 describe("configure redux store", () => {
   it("configures store with correct epic if based on autoStartKernelOnNotebookOpen", () => {

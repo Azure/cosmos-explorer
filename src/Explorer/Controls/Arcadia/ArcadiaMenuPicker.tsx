@@ -1,9 +1,9 @@
-import * as React from "react";
-import { ArcadiaWorkspace, SparkPool } from "../../../Contracts/DataModels";
 import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuItem, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
-import * as Logger from "../../../Common/Logger";
+import * as React from "react";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
+import * as Logger from "../../../Common/Logger";
+import { ArcadiaWorkspace, SparkPool } from "../../../Contracts/DataModels";
 
 export interface ArcadiaMenuPickerProps {
   selectText?: string;

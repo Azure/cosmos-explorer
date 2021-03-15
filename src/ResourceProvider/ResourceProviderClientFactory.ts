@@ -1,5 +1,5 @@
 import { configContext } from "../ConfigContext";
-import { IResourceProviderClientFactory, IResourceProviderClient } from "./IResourceProviderClient";
+import { IResourceProviderClient, IResourceProviderClientFactory } from "./IResourceProviderClient";
 import { ResourceProviderClient } from "./ResourceProviderClient";
 
 export class ResourceProviderClientFactory implements IResourceProviderClientFactory<any> {

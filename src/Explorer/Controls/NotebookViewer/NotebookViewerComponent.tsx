@@ -6,20 +6,20 @@ import { createContentRef } from "@nteract/core";
 import { IChoiceGroupProps, Icon, IProgressIndicatorProps, Link, ProgressIndicator } from "office-ui-fabric-react";
 import * as React from "react";
 import { contents } from "rx-jupyter";
+import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
 import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
+import { SessionStorageUtility } from "../../../Shared/StorageUtility";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
+import { DialogHost } from "../../../Utils/GalleryUtils";
+import Explorer from "../../Explorer";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
 import { Dialog, DialogProps, TextFieldProps } from "../Dialog";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
-import Explorer from "../../Explorer";
-import { SessionStorageUtility } from "../../../Shared/StorageUtility";
-import { DialogHost } from "../../../Utils/GalleryUtils";
-import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
-import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;

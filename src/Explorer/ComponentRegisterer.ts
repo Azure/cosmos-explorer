@@ -1,16 +1,16 @@
 import * as ko from "knockout";
-import * as PaneComponents from "./Panes/PaneComponents";
-import * as TabComponents from "./Tabs/TabComponents";
 import { DiffEditorComponent } from "./Controls/DiffEditor/DiffEditorComponent";
 import { DynamicListComponent } from "./Controls/DynamicList/DynamicListComponent";
 import { EditorComponent } from "./Controls/Editor/EditorComponent";
 import { ErrorDisplayComponent } from "./Controls/ErrorDisplayComponent/ErrorDisplayComponent";
-import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleComponent";
 import { InputTypeaheadComponent } from "./Controls/InputTypeahead/InputTypeahead";
 import { JsonEditorComponent } from "./Controls/JsonEditor/JsonEditorComponent";
-import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
-import { TabsManagerKOComponent } from "./Tabs/TabsManager";
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
+import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleComponent";
+import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
+import * as PaneComponents from "./Panes/PaneComponents";
+import * as TabComponents from "./Tabs/TabComponents";
+import { TabsManagerKOComponent } from "./Tabs/TabsManager";
 
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);

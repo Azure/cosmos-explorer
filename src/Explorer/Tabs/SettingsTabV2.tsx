@@ -1,14 +1,14 @@
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import TabsBase from "./TabsBase";
-import { SettingsComponentAdapter } from "../Controls/Settings/SettingsComponentAdapter";
-import { SettingsComponentProps } from "../Controls/Settings/SettingsComponent";
-import { traceFailure } from "../../Shared/Telemetry/TelemetryProcessor";
 import ko from "knockout";
 import * as Constants from "../../Common/Constants";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure } from "../../Shared/Telemetry/TelemetryProcessor";
+import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import { SettingsComponentProps } from "../Controls/Settings/SettingsComponent";
+import { SettingsComponentAdapter } from "../Controls/Settings/SettingsComponentAdapter";
+import TabsBase from "./TabsBase";
 
 export class SettingsTabV2 extends TabsBase {
   public settingsComponentAdapter: SettingsComponentAdapter;

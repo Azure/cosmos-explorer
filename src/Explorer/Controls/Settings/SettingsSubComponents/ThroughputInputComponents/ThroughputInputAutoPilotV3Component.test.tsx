@@ -1,10 +1,10 @@
 import { shallow } from "enzyme";
 import React from "react";
+import * as DataModels from "../../../../../Contracts/DataModels";
 import {
   ThroughputInputAutoPilotV3Component,
   ThroughputInputAutoPilotV3Props,
 } from "./ThroughputInputAutoPilotV3Component";
-import * as DataModels from "../../../../../Contracts/DataModels";
 
 describe("ThroughputInputAutoPilotV3Component", () => {
   const baseProps: ThroughputInputAutoPilotV3Props = {

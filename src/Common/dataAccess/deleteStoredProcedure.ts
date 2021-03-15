@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { client } from "../CosmosClient";
-import { deleteSqlStoredProcedure } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
+import { deleteSqlStoredProcedure } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteStoredProcedure(
   databaseId: string,

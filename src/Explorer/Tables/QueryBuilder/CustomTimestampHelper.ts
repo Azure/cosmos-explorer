@@ -1,6 +1,6 @@
+import * as DateTimeUtilities from "./DateTimeUtilities";
 import QueryBuilderViewModel from "./QueryBuilderViewModel";
 import QueryClauseViewModel from "./QueryClauseViewModel";
-import * as DateTimeUtilities from "./DateTimeUtilities";
 
 /**
  * Constants

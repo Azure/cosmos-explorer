@@ -1,8 +1,8 @@
 import { AuthType } from "../../AuthType";
-import { armRequest } from "../../Utils/arm/request";
 import { configContext } from "../../ConfigContext";
-import { handleError } from "../ErrorHandlingUtils";
 import { userContext } from "../../UserContext";
+import { armRequest } from "../../Utils/arm/request";
+import { handleError } from "../ErrorHandlingUtils";
 
 interface TimeSeriesData {
   data: {

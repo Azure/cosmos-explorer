@@ -1,5 +1,4 @@
 import * as ko from "knockout";
-
 import { SplitterMetrics } from "./Constants";
 
 export enum SplitterDirection {

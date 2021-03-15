@@ -1,14 +1,12 @@
-import * as React from "react";
-
-import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
-import { NotebookClientV2 } from "../NotebookClientV2";
-
 // Vendor modules
 import { actions, createContentRef, createKernelRef, selectors } from "@nteract/core";
-import VirtualCommandBarComponent from "./VirtualCommandBarComponent";
+import * as React from "react";
+import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
+import { NotebookClientV2 } from "../NotebookClientV2";
 import { NotebookContentItem } from "../NotebookContentItem";
 import { NotebookComponentBootstrapper } from "./NotebookComponentBootstrapper";
 import { CdbAppState } from "./types";
+import VirtualCommandBarComponent from "./VirtualCommandBarComponent";
 
 export interface NotebookComponentAdapterOptions {
   contentItem: NotebookContentItem;

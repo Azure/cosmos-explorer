@@ -1,7 +1,7 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
+import { DescriptionType, NumberUiType, SmartUiInput } from "../../../SelfServe/SelfServeTypes";
 import { SmartUiComponent, SmartUiDescriptor } from "./SmartUiComponent";
-import { NumberUiType, SmartUiInput, DescriptionType } from "../../../SelfServe/SelfServeTypes";
 
 describe("SmartUiComponent", () => {
   const exampleData: SmartUiDescriptor = {

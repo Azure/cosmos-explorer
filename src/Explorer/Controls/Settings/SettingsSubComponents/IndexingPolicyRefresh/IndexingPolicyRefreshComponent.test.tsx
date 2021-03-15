@@ -1,6 +1,6 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { IndexingPolicyRefreshComponentProps, IndexingPolicyRefreshComponent } from "./IndexingPolicyRefreshComponent";
+import { IndexingPolicyRefreshComponent, IndexingPolicyRefreshComponentProps } from "./IndexingPolicyRefreshComponent";
 
 describe("IndexingPolicyRefreshComponent", () => {
   it("renders", () => {

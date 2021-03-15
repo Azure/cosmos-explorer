@@ -1,9 +1,9 @@
 import * as ko from "knockout";
+import _ from "underscore";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import * as DataTableOperations from "../../Tables/DataTable/DataTableOperations";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import { ContextualPaneBase } from "../ContextualPaneBase";
-import _ from "underscore";
 
 /**
  * Represents an item shown in the available columns.

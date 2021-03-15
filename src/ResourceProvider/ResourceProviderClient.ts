@@ -1,9 +1,9 @@
-import * as ViewModels from "../Contracts/ViewModels";
 import { HttpStatusCodes } from "../Common/Constants";
-import { IResourceProviderClient, IResourceProviderRequestOptions } from "./IResourceProviderClient";
-import { OperationStatus } from "../Contracts/DataModels";
-import { TokenProviderFactory } from "../TokenProviders/TokenProviderFactory";
 import UrlUtility from "../Common/UrlUtility";
+import { OperationStatus } from "../Contracts/DataModels";
+import * as ViewModels from "../Contracts/ViewModels";
+import { TokenProviderFactory } from "../TokenProviders/TokenProviderFactory";
+import { IResourceProviderClient, IResourceProviderRequestOptions } from "./IResourceProviderClient";
 
 export class ResourceProviderClient<T> implements IResourceProviderClient<T> {
   private httpClient: HttpClient;

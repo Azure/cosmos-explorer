@@ -1,15 +1,15 @@
 import * as ko from "knockout";
 import _ from "underscore";
-import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
-import * as Entities from "../../Tables/Entities";
-import EntityPropertyViewModel from "./EntityPropertyViewModel";
+import { KeyCodes } from "../../../Common/Constants";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import * as TableConstants from "../../Tables/Constants";
+import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
+import * as Entities from "../../Tables/Entities";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import * as Utilities from "../../Tables/Utilities";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { KeyCodes } from "../../../Common/Constants";
 import { ContextualPaneBase } from "../ContextualPaneBase";
+import EntityPropertyViewModel from "./EntityPropertyViewModel";
 
 // Class with variables and functions that are common to both adding and editing entities
 export default abstract class TableEntityPane extends ContextualPaneBase {

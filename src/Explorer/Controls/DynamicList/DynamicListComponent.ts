@@ -10,8 +10,8 @@
  */
 
 import * as ko from "knockout";
-import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
 import { KeyCodes } from "../../../Common/Constants";
+import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
 import template from "./dynamic-list.html";
 
 /**

@@ -3,13 +3,13 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { deleteStoredProcedure } from "../../Common/dataAccess/deleteStoredProcedure";
 import { executeStoredProcedure } from "../../Common/dataAccess/executeStoredProcedure";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TabsBase from "../Tabs/TabsBase";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {

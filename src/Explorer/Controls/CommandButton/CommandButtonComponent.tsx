@@ -1,14 +1,12 @@
-import * as StringUtils from "../../../Utils/StringUtils";
-import { KeyCodes } from "../../../Common/Constants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import CollapseChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
-
 /**
  * React component for Command button component.
  */
-
 import * as React from "react";
+import CollapseChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
+import { KeyCodes } from "../../../Common/Constants";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as StringUtils from "../../../Utils/StringUtils";
 import { ArcadiaMenuPickerProps } from "../Arcadia/ArcadiaMenuPicker";
 
 /**

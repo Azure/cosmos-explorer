@@ -1,9 +1,9 @@
-import * as React from "react";
-import { Stack } from "office-ui-fabric-react/lib/Stack";
-import { Dropdown, IDropdownOption, IDropdownStyles } from "office-ui-fabric-react/lib/Dropdown";
-import { Checkbox } from "office-ui-fabric-react/lib/Checkbox";
-import { TextField, ITextFieldStyles } from "office-ui-fabric-react/lib/TextField";
 import { DefaultButton } from "office-ui-fabric-react";
+import { Checkbox } from "office-ui-fabric-react/lib/Checkbox";
+import { Dropdown, IDropdownOption, IDropdownStyles } from "office-ui-fabric-react/lib/Dropdown";
+import { Stack } from "office-ui-fabric-react/lib/Stack";
+import { ITextFieldStyles, TextField } from "office-ui-fabric-react/lib/TextField";
+import * as React from "react";
 import "./FeaturePanelComponent.less";
 
 export const FeaturePanelComponent: React.FunctionComponent = () => {

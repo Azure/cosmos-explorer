@@ -2,9 +2,9 @@
  * React component for Switch Directory
  */
 
-import _ from "underscore";
-import * as React from "react";
 import { Dropdown, IDropdownOption, IDropdownProps } from "office-ui-fabric-react/lib/Dropdown";
+import * as React from "react";
+import _ from "underscore";
 import { Tenant } from "../../../Contracts/DataModels";
 
 export interface DefaultDirectoryDropdownProps {

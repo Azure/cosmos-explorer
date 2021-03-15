@@ -1,9 +1,9 @@
 import { Collection } from "../../Contracts/ViewModels";
+import StoredProcedure from "../../Explorer/Tree/StoredProcedure";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { ClientDefaults, HttpHeaders } from "../Constants";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import StoredProcedure from "../../Explorer/Tree/StoredProcedure";
 
 export interface ExecuteSprocResult {
   result: StoredProcedure;

@@ -1,22 +1,21 @@
 import * as ko from "knockout";
-import * as _ from "underscore";
 import Q from "q";
-
+import * as _ from "underscore";
+import { Areas } from "../../../Common/Constants";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import { CassandraTableKey, CassandraAPIDataClient } from "../TableDataClient";
-import DataTableViewModel from "./DataTableViewModel";
-import * as DataTableUtilities from "./DataTableUtilities";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
+import * as Entities from "../Entities";
+import { CassandraAPIDataClient, CassandraTableKey } from "../TableDataClient";
+import * as TableEntityProcessor from "../TableEntityProcessor";
+import * as Utilities from "../Utilities";
+import * as DataTableUtilities from "./DataTableUtilities";
+import DataTableViewModel from "./DataTableViewModel";
 import TableCommands from "./TableCommands";
 import TableEntityCache from "./TableEntityCache";
-import * as Constants from "../Constants";
-import { Areas } from "../../../Common/Constants";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import * as TableEntityProcessor from "../TableEntityProcessor";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as ViewModels from "../../../Contracts/ViewModels";
 
 interface IListTableEntitiesSegmentedResult extends Entities.IListTableEntitiesResult {
   ExceedMaximumRetries?: boolean;
@@ -56,7 +55,7 @@ function _parse(err: any): ErrorDataModel[] {
 
 function _getInnerErrors(message: string): any[] {
   /*
-            The backend error message has an inner-message which is a stringified object. 
+            The backend error message has an inner-message which is a stringified object.
             For SQL errors, the "errors" property is an array of SqlErrorDataModel.
             Example:
                 "Message: {"Errors":["Resource with specified id or name already exists"]}\r\nActivityId: 80005000008d40b6a, Request URI: /apps/19000c000c0a0005/services/mctestdocdbprod-MasterService-0-00066ab9937/partitions/900005f9000e676fb8/replicas/13000000000955p"

@@ -1,5 +1,5 @@
-import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";
 import * as ko from "knockout";
+import { BindingHandlersRegisterer } from "./Bindings/BindingHandlersRegisterer";
 import Explorer from "./Explorer/Explorer";
 
 export const applyExplorerBindings = (explorer: Explorer) => {

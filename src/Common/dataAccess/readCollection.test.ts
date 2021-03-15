@@ -2,9 +2,9 @@ jest.mock("../CosmosClient");
 import { AuthType } from "../../AuthType";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { updateUserContext } from "../../UserContext";
 import { client } from "../CosmosClient";
 import { readCollection } from "./readCollection";
-import { updateUserContext } from "../../UserContext";
 
 describe("readCollection", () => {
   beforeAll(() => {

@@ -1,11 +1,10 @@
 /* eslint jsx-a11y/no-static-element-interactions: 0 */
 /* eslint jsx-a11y/click-events-have-key-events: 0 */
 
+import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { actions, selectors, ContentRef, AppState } from "@nteract/core";
 
 interface ComponentProps {
   id: string;

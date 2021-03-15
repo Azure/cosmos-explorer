@@ -1,5 +1,5 @@
-import { ElementHandle, Frame } from "puppeteer";
 import * as path from "path";
+import { ElementHandle, Frame } from "puppeteer";
 
 export const NOTEBOOK_OPERATION_DELAY = 5000;
 export const RENDER_DELAY = 2500;

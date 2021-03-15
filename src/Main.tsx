@@ -2,6 +2,7 @@
 import "abort-controller/polyfill";
 import "babel-polyfill";
 import "bootstrap/dist/css/bootstrap.css";
+import "bootstrap/dist/js/npm";
 import "es6-object-assign/auto";
 import "es6-symbol/implement";
 import "object.entries/auto";

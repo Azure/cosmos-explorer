@@ -1,23 +1,22 @@
-import * as ko from "knockout";
-import * as ViewModels from "../Contracts/ViewModels";
-import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import AddCollectionIcon from "../../images/AddCollection.svg";
 import AddSqlQueryIcon from "../../images/AddSqlQuery_16x16.svg";
-import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
 import AddStoredProcedureIcon from "../../images/AddStoredProcedure.svg";
+import AddTriggerIcon from "../../images/AddTrigger.svg";
+import AddUdfIcon from "../../images/AddUdf.svg";
 import DeleteCollectionIcon from "../../images/DeleteCollection.svg";
 import DeleteDatabaseIcon from "../../images/DeleteDatabase.svg";
-import AddUdfIcon from "../../images/AddUdf.svg";
-import AddTriggerIcon from "../../images/AddTrigger.svg";
+import DeleteSprocIcon from "../../images/DeleteSproc.svg";
 import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
-import DeleteSprocIcon from "../../images/DeleteSproc.svg";
+import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
+import * as ViewModels from "../Contracts/ViewModels";
+import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
+import { userContext } from "../UserContext";
+import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
-import UserDefinedFunction from "./Tree/UserDefinedFunction";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
-import { userContext } from "../UserContext";
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;

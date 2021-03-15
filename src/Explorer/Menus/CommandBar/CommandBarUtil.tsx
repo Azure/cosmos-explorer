@@ -1,18 +1,18 @@
-import _ from "underscore";
-import * as React from "react";
 import { Observable } from "knockout";
+import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
+import { Dropdown, IDropdownOption, IDropdownStyles } from "office-ui-fabric-react/lib/Dropdown";
 import { IconType } from "office-ui-fabric-react/lib/Icon";
 import { IComponentAsProps } from "office-ui-fabric-react/lib/Utilities";
-import { StyleConstants } from "../../../Common/Constants";
-import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
-import { Dropdown, IDropdownStyles, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
-import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import * as React from "react";
+import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
-import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
-import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
+import { StyleConstants } from "../../../Common/Constants";
 import { MemoryUsageInfo } from "../../../Contracts/DataModels";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
+import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
 
 /**
  * Convert our NavbarButtonConfig to UI Fabric buttons

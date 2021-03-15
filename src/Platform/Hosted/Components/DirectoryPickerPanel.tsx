@@ -1,4 +1,4 @@
-import { Panel, PanelType, ChoiceGroup } from "office-ui-fabric-react";
+import { ChoiceGroup, Panel, PanelType } from "office-ui-fabric-react";
 import * as React from "react";
 import { useDirectories } from "../../../hooks/useDirectories";
 

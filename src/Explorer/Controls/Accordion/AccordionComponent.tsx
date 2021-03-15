@@ -3,11 +3,10 @@
  */
 
 import * as React from "react";
-import * as Constants from "../../../Common/Constants";
 import AnimateHeight from "react-animate-height";
-
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
+import * as Constants from "../../../Common/Constants";
 
 export interface AccordionComponentProps {}
 

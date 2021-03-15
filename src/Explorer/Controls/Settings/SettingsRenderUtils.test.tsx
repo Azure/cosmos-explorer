@@ -1,28 +1,28 @@
 import { shallow } from "enzyme";
-import React from "react";
 import { IColumn, Text } from "office-ui-fabric-react";
+import React from "react";
 import {
+  changeFeedPolicyToolTip,
+  conflictResolutionCustomToolTip,
+  conflictResolutionLwwTooltip,
   getAutoPilotV3SpendElement,
   getEstimatedSpendingElement,
-  manualToAutoscaleDisclaimerElement,
-  ttlWarning,
+  getRuPriceBreakdown,
+  getThroughputApplyDelayedMessage,
+  getThroughputApplyLongDelayMessage,
+  getThroughputApplyShortDelayMessage,
+  getToolTipContainer,
   indexingPolicynUnsavedWarningMessage,
+  ManualEstimatedSpendingDisplayProps,
+  manualToAutoscaleDisclaimerElement,
+  mongoIndexingPolicyAADError,
+  mongoIndexingPolicyDisclaimer,
+  mongoIndexTransformationRefreshingMessage,
+  PriceBreakdown,
+  renderMongoIndexTransformationRefreshMessage,
+  ttlWarning,
   updateThroughputBeyondLimitWarningMessage,
   updateThroughputDelayedApplyWarningMessage,
-  getThroughputApplyDelayedMessage,
-  getThroughputApplyShortDelayMessage,
-  getThroughputApplyLongDelayMessage,
-  getToolTipContainer,
-  conflictResolutionCustomToolTip,
-  changeFeedPolicyToolTip,
-  conflictResolutionLwwTooltip,
-  mongoIndexingPolicyDisclaimer,
-  mongoIndexingPolicyAADError,
-  mongoIndexTransformationRefreshingMessage,
-  renderMongoIndexTransformationRefreshMessage,
-  ManualEstimatedSpendingDisplayProps,
-  PriceBreakdown,
-  getRuPriceBreakdown,
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {

@@ -1,6 +1,6 @@
-import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
-import { userContext } from "../../UserContext";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
+import { userContext } from "../../UserContext";
+import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { RefreshResult } from "../SelfServeTypes";
 export enum Regions {
   NorthCentralUS = "NorthCentralUS",

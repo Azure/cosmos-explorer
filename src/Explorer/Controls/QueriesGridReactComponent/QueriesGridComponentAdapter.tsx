@@ -5,10 +5,9 @@
  */
 import * as ko from "knockout";
 import * as React from "react";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { QueriesGridComponent, QueriesGridComponentProps } from "./QueriesGridComponent";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import Explorer from "../../Explorer";
+import { QueriesGridComponent, QueriesGridComponentProps } from "./QueriesGridComponent";
 
 export class QueriesGridComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;

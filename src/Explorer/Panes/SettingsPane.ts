@@ -1,12 +1,12 @@
-import * as Constants from "../../Common/Constants";
 import * as ko from "knockout";
+import * as Constants from "../../Common/Constants";
+import { configContext } from "../../ConfigContext";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import * as StringUtility from "../../Shared/StringUtility";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as StringUtility from "../../Shared/StringUtility";
-import { configContext } from "../../ConfigContext";
 
 export class SettingsPane extends ContextualPaneBase {
   public pageOption: ko.Observable<string>;

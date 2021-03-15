@@ -1,15 +1,16 @@
 // Manages all the redux logic for the notebook nteract code
 // TODO: Merge with NotebookClient?
-import { NotebookWorkspaceConnectionInfo } from "../../Contracts/DataModels";
-import * as Constants from "../../Common/Constants";
-import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
-
 // Vendor modules
 import {
   actions,
   AppState,
+  ContentRecord,
   createHostRef,
   createKernelspecsRef,
+  HostRecord,
+  HostRef,
+  IContentProvider,
+  KernelspecsRef,
   makeAppRecord,
   makeCommsRecord,
   makeContentsRecord,
@@ -19,23 +20,19 @@ import {
   makeJupyterHostRecord,
   makeStateRecord,
   makeTransformsRecord,
-  ContentRecord,
-  HostRecord,
-  HostRef,
-  KernelspecsRef,
-  IContentProvider,
 } from "@nteract/core";
+import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
 import { Media } from "@nteract/outputs";
 import TransformVDOM from "@nteract/transform-vdom";
 import * as Immutable from "immutable";
-import { Store, AnyAction, MiddlewareAPI, Middleware, Dispatch } from "redux";
-
-import configureStore from "./NotebookComponent/store";
-
 import { Notification } from "react-notification-system";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { AnyAction, Dispatch, Middleware, MiddlewareAPI, Store } from "redux";
+import * as Constants from "../../Common/Constants";
+import { NotebookWorkspaceConnectionInfo } from "../../Contracts/DataModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import configureStore from "./NotebookComponent/store";
+import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
 
 export type KernelSpecsDisplay = { name: string; displayName: string };
 

@@ -7,9 +7,9 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { userContext } from "../UserContext";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
-import { userContext } from "../UserContext";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
 

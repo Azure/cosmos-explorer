@@ -1,7 +1,7 @@
 import * as DataModels from "../../Contracts/DataModels";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export async function readCollection(databaseId: string, collectionId: string): Promise<DataModels.Collection> {
   let collection: DataModels.Collection;

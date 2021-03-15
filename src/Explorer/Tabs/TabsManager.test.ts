@@ -1,11 +1,11 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as DataModels from "../../Contracts/DataModels";
-import { TabsManager } from "./TabsManager";
-import DocumentsTab from "./DocumentsTab";
+import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
-import QueryTab from "./QueryTab";
 import DocumentId from "../Tree/DocumentId";
+import DocumentsTab from "./DocumentsTab";
+import QueryTab from "./QueryTab";
+import { TabsManager } from "./TabsManager";
 
 describe("Tabs manager tests", () => {
   let tabsManager: TabsManager;

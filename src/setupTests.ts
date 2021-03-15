@@ -1,5 +1,5 @@
-import Adapter from "enzyme-adapter-react-16";
 import { configure } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
 import "jest-canvas-mock";
 import { initializeIcons } from "office-ui-fabric-react";
 configure({ adapter: new Adapter() });

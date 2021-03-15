@@ -1,8 +1,8 @@
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import Q from "q";
 import * as _ from "underscore";
-import * as Constants from "./Constants";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { getDataExplorerWindow } from "../Utils/WindowUtils";
+import * as Constants from "./Constants";
 
 export interface CachedDataPromise<T> {
   deferred: Q.Deferred<T>;

@@ -7,8 +7,8 @@
  *
  */
 import * as React from "react";
-import "./InputTypeahead.less";
 import { KeyCodes } from "../../../Common/Constants";
+import "./InputTypeahead.less";
 
 export interface Item {
   caption: string;

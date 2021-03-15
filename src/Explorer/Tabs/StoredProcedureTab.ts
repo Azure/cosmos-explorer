@@ -7,13 +7,13 @@ import * as Constants from "../../Common/Constants";
 import { createStoredProcedure } from "../../Common/dataAccess/createStoredProcedure";
 import { updateStoredProcedure } from "../../Common/dataAccess/updateStoredProcedure";
 import editable from "../../Common/EditableUtility";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import StoredProcedure from "../Tree/StoredProcedure";
 import ScriptTabBase from "./ScriptTabBase";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 enum ToggleState {
   Result = "result",

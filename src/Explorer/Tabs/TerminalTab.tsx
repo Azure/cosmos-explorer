@@ -1,12 +1,12 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import TabsBase from "./TabsBase";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import TabsBase from "./TabsBase";
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;

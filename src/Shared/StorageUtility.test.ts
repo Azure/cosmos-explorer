@@ -1,4 +1,4 @@
-import { StorageKey, LocalStorageUtility, SessionStorageUtility } from "./StorageUtility";
+import { LocalStorageUtility, SessionStorageUtility, StorageKey } from "./StorageUtility";
 
 describe("Storage Utility", () => {
   beforeAll(() => {

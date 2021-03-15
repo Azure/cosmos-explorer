@@ -1,10 +1,10 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { CassandraTableKey, CassandraAPIDataClient } from "../../Tables/TableDataClient";
+import * as TableConstants from "../../Tables/Constants";
 import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import * as Entities from "../../Tables/Entities";
-import * as TableConstants from "../../Tables/Constants";
+import { CassandraAPIDataClient, CassandraTableKey } from "../../Tables/TableDataClient";
 import * as Utilities from "../../Tables/Utilities";
 import EntityPropertyViewModel from "./EntityPropertyViewModel";
 import TableEntityPane from "./TableEntityPane";

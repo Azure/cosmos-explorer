@@ -1,5 +1,5 @@
-import React from "react";
 import { PrimaryButton } from "office-ui-fabric-react";
+import React from "react";
 
 export interface PanelFooterProps {
   buttonLabel: string;
