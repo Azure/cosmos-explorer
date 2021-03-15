@@ -680,8 +680,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.formWarnings("");
     this.databaseCreateNewShared(this.getSharedThroughputDefault());
     this.shouldCreateMongoWildcardIndex(this.container.isMongoIndexingEnabled());
-    this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
-    this.isSharedAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    if (!this.container.isServerlessEnabled()) {
+      this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+      this.isSharedAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    }
     if (this.isPreferredApiTable() && !databaseId) {
       databaseId = SharedConstants.CollectionCreation.TablesAPIDefaultDatabase;
     }
@@ -691,8 +693,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseId(databaseId);
 
     const addCollectionPaneOpenMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       collection: ko.toJS({
         id: this.collectionId(),
         storage: this.storage(),
@@ -749,12 +749,16 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return undefined;
     }
 
-    if (this.isAutoPilotSelected()) {
-      return undefined;
-    }
-
-    if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected()) {
-      return undefined;
+    // return undefined if autopilot is selected for the new database/collection
+    if (this.databaseCreateNew()) {
+      // database is shared and autopilot is sleected for the database
+      if (this.databaseCreateNewShared() && this.isSharedAutoPilotSelected()) {
+        return undefined;
+      }
+      // database is not shared and autopilot is selected for the collection
+      if (!this.databaseCreateNewShared() && this.isAutoPilotSelected()) {
+        return undefined;
+      }
     }
 
     return this._getThroughput();
@@ -786,8 +790,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
 
     const addCollectionPaneStartMessage = {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       database: ko.toJS({
         id: this.databaseId(),
         new: this.databaseCreateNew(),
@@ -861,8 +863,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.close();
         this.container.refreshAllDatabases();
         const addCollectionPaneSuccessMessage = {
-          databaseAccountName: this.container.databaseAccount().name,
-          defaultExperience: this.container.defaultExperience(),
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),
@@ -895,8 +895,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.formErrors(errorMessage);
         this.formErrorsDetails(errorMessage);
         const addCollectionPaneFailedMessage = {
-          databaseAccountName: this.container.databaseAccount().name,
-          defaultExperience: this.container.defaultExperience(),
           database: ko.toJS({
             id: this.databaseId(),
             new: this.databaseCreateNew(),

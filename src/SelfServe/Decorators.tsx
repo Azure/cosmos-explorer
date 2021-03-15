@@ -1,4 +1,4 @@
-import { ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput } from "./SelfServeTypes";
+import { ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput, RefreshParams } from "./SelfServeTypes";
 import { addPropertyToMap, DecoratorProperties, buildSmartUiDescriptor } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
@@ -33,7 +33,9 @@ export interface ChoiceInputOptions extends InputOptionsBase {
 }
 
 export interface DescriptionDisplayOptions {
+  labelTKey?: string;
   description?: (() => Promise<Description>) | Description;
+  isDynamicDescription?: boolean;
 }
 
 type InputOptions =
@@ -56,7 +58,7 @@ const isChoiceInputOptions = (inputOptions: InputOptions): inputOptions is Choic
 };
 
 const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions is DescriptionDisplayOptions => {
-  return "description" in inputOptions;
+  return "description" in inputOptions || "isDynamicDescription" in inputOptions;
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
@@ -80,7 +82,11 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
 };
 
 export const OnChange = (
-  onChange: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>
+  onChange: (
+    newValue: InputType,
+    currentState: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>
 ): PropertyDecorator => {
   return addToMap({ name: "onChange", value: onChange });
 };
@@ -111,7 +117,11 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
       { name: "choices", value: inputOptions.choices }
     );
   } else if (isDescriptionDisplayOptions(inputOptions)) {
-    return addToMap({ name: "description", value: inputOptions.description });
+    return addToMap(
+      { name: "labelTKey", value: inputOptions.labelTKey },
+      { name: "description", value: inputOptions.description },
+      { name: "isDynamicDescription", value: inputOptions.isDynamicDescription }
+    );
   } else {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
@@ -126,8 +136,8 @@ export const IsDisplayable = (): ClassDecorator => {
   };
 };
 
-export const ClassInfo = (info: (() => Promise<Info>) | Info): ClassDecorator => {
+export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
   return (target) => {
-    addPropertyToMap(target.prototype, "root", target.name, "info", info);
+    addPropertyToMap(target.prototype, "root", target.name, "refreshParams", refreshParams);
   };
 };

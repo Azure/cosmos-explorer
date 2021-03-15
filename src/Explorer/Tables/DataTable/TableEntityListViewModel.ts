@@ -463,10 +463,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           TelemetryProcessor.traceFailure(
             Action.Tab,
             {
-              databaseAccountName: this.queryTablesTab.collection.container.databaseAccount().name,
               databaseName: this.queryTablesTab.collection.databaseId,
               collectionName: this.queryTablesTab.collection.id(),
-              defaultExperience: this.queryTablesTab.collection.container.defaultExperience(),
               dataExplorerArea: Areas.Tab,
               tabTitle: this.queryTablesTab.tabTitle(),
               error: error,

@@ -54,8 +54,6 @@ interface NotebookServiceConfig extends JupyterServerConfig {
 
 const logFailureToTelemetry = (state: CdbAppState, title: string, error?: string) => {
   TelemetryProcessor.traceFailure(TelemetryAction.NotebookErrorNotification, {
-    databaseAccountName: state.cdb.databaseAccountName,
-    defaultExperience: state.cdb.defaultExperience,
     dataExplorerArea: Constants.Areas.Notebook,
     title,
     error,

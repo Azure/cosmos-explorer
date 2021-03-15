@@ -1,11 +1,7 @@
 import "expect-puppeteer";
-import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
-import { createDatabase, onClickSaveButton } from "../utils/shared";
-import { generateUniqueName } from "../utils/shared";
-import { ApiKind } from "../../src/Contracts/DataModels";
+import { createDatabase, generateUniqueName, onClickSaveButton } from "../utils/shared";
 
-const LOADING_STATE_DELAY = 3000;
-const CREATE_DELAY = 5000;
+const LOADING_STATE_DELAY = 5000;
 jest.setTimeout(300000);
 
 describe("MongoDB Index policy tests", () => {
@@ -13,7 +9,9 @@ describe("MongoDB Index policy tests", () => {
     try {
       const singleFieldId = generateUniqueName("key");
       const wildCardId = generateUniqueName("key") + "$**";
-      const frame = await getTestExplorerFrame(ApiKind.MongoDB);
+      await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner");
+      const handle = await page.waitForSelector("iframe");
+      const frame = await handle.contentFrame();
       const dropDown = "Index Type ";
       let index = 0;
 
@@ -21,32 +19,18 @@ describe("MongoDB Index policy tests", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      let databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
-      if (databases.length === 0) {
-        await createDatabase(frame);
-        databases = await frame.$$(`div[class="databaseHeader main1 nodeItem "] > div[class="treeNodeHeader "]`);
-      }
-
-      const selectedDbId = await frame.evaluate((element) => {
-        return element.attributes["data-test"].textContent;
-      }, databases[0]);
-
+      const { databaseId, collectionId } = await createDatabase(frame);
+      await frame.waitFor(25000);
       // click on database
-      await frame.waitFor(`div[data-test="${selectedDbId}"]`);
+      await frame.waitForSelector(`div[data-test="${databaseId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.click(`div[data-test="${selectedDbId}"]`);
+      await frame.click(`div[data-test="${databaseId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
 
       // click on scale & setting
-      const containers = await frame.$$(
-        `div[class="nodeChildren"] > div[class="collectionHeader main2 nodeItem "]> div[class="treeNodeHeader "]`
-      );
-      const selectedContainer = await frame.evaluate((element) => {
-        return element.attributes["data-test"].textContent;
-      }, containers[0]);
-      await frame.waitFor(`div[data-test="${selectedContainer}"]`), { visible: true };
+      await frame.waitFor(`div[data-test="${collectionId}"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.click(`div[data-test="${selectedContainer}"]`);
+      await frame.click(`div[data-test="${collectionId}"]`);
 
       await frame.waitFor(`div[data-test="Scale & Settings"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
@@ -83,6 +67,7 @@ describe("MongoDB Index policy tests", () => {
       let singleFieldIndexInserted = false,
         wildCardIndexInserted = false;
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
+      await frame.waitFor(20000);
 
       const elements = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
       for (let i = 0; i < elements.length; i++) {
@@ -94,7 +79,7 @@ describe("MongoDB Index policy tests", () => {
           singleFieldIndexInserted = true;
         }
       }
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(20000);
       expect(wildCardIndexInserted).toBe(true);
       expect(singleFieldIndexInserted).toBe(true);
 
@@ -107,14 +92,14 @@ describe("MongoDB Index policy tests", () => {
       await onClickSaveButton(frame);
 
       //check for cleaning
-      await frame.waitFor(CREATE_DELAY);
+      await frame.waitFor(20000);
       await frame.waitFor("div[data-automationid='DetailsRowCell'] > span"), { visible: true };
       const isDeletionComplete = await frame.$$("div[data-automationid='DetailsRowCell'] > span");
       expect(isDeletionComplete).toHaveLength(2);
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const testName = (expect as any).getState().currentTestName;
-      await page.screenshot({ path: `Test Failed ${testName}.jpg` });
+      await page.screenshot({ path: `failed-${testName}.jpg` });
       throw error;
     }
   });

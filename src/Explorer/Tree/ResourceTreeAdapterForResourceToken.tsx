@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import * as React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
@@ -44,15 +44,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       onClick: () => {
         collection.onDocumentDBDocumentsClick();
         // push to most recent
-        this.container.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
-          type: MostRecentActivity.Type.OpenCollection,
-          title: collection.id(),
-          description: "Data",
-          data: {
-            databaseId: collection.databaseId,
-            collectionId: collection.id(),
-          },
-        });
+        mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
       },
       isSelected: () =>
         this.isDataNodeSelected(collection.databaseId, collection.id(), ViewModels.CollectionTabKind.Documents),

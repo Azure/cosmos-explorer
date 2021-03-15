@@ -18,6 +18,8 @@ import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
+import CollectionIcon from "../../../images/tree-collection.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -39,21 +41,34 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private static readonly failoverUrl = "https://docs.microsoft.com/azure/cosmos-db/high-availability";
 
   private readonly container: Explorer;
+  private subscriptions: Array<{ dispose: () => void }>;
 
   constructor(props: SplashScreenProps) {
     super(props);
     this.container = props.explorer;
-    this.container.tabsManager.openedTabs.subscribe(() => this.setState({}));
-    this.container.selectedNode.subscribe(() => this.setState({}));
-    this.container.isNotebookEnabled.subscribe(() => this.setState({}));
+    this.subscriptions = [];
   }
 
   public shouldComponentUpdate() {
     return this.container.tabsManager.openedTabs.length === 0;
   }
 
+  public componentWillUnmount() {
+    while (this.subscriptions.length) {
+      this.subscriptions.pop().dispose();
+    }
+  }
+
+  public componentDidMount() {
+    this.subscriptions.push(
+      this.container.tabsManager.openedTabs.subscribe(() => this.setState({})),
+      this.container.selectedNode.subscribe(() => this.setState({})),
+      this.container.isNotebookEnabled.subscribe(() => this.setState({}))
+    );
+  }
+
   private clearMostRecent = (): void => {
-    this.container.mostRecentActivity.clear(userContext.databaseAccount?.id);
+    MostRecentActivity.mostRecentActivity.clear(userContext.databaseAccount?.id);
     this.setState({});
   };
 
@@ -282,23 +297,45 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     return items;
   }
 
-  private static getInfo(item: MostRecentActivity.Item): string {
-    if (item.type === MostRecentActivity.Type.OpenNotebook) {
-      const data = item.data as MostRecentActivity.OpenNotebookItem;
-      return data.path;
-    } else {
-      return undefined;
-    }
+  private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
+    return {
+      iconSrc: NotebookIcon,
+      title: collectionId,
+      description: "Data",
+      onClick: () => {
+        const collection = this.container.findCollection(databaseId, collectionId);
+        collection && collection.openTab();
+      },
+    };
+  }
+
+  private decorateOpenNotebookActivity({ name, path }: MostRecentActivity.OpenNotebookItem) {
+    return {
+      info: path,
+      iconSrc: CollectionIcon,
+      title: name,
+      description: "Notebook",
+      onClick: () => {
+        const notebookItem = this.container.createNotebookContentItemFile(name, path);
+        notebookItem && this.container.openNotebook(notebookItem);
+      },
+    };
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return this.container.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((item) => ({
-      iconSrc: MostRecentActivity.MostRecentActivity.getItemIcon(item),
-      title: item.title,
-      description: item.description,
-      info: SplashScreen.getInfo(item),
-      onClick: () => this.container.mostRecentActivity.onItemClicked(item),
-    }));
+    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((activity) => {
+      switch (activity.type) {
+        default: {
+          const unknownActivity: never = activity;
+          throw new Error(`Unknown activity: ${unknownActivity}`);
+        }
+        case MostRecentActivity.Type.OpenNotebook:
+          return this.decorateOpenNotebookActivity(activity);
+
+        case MostRecentActivity.Type.OpenCollection:
+          return this.decorateOpenCollectionActivity(activity);
+      }
+    });
   }
 
   private createTipsItems(): SplashScreenItem[] {

@@ -1,9 +1,6 @@
-import * as ViewModels from "../../Contracts/ViewModels";
+import { CollectionBase } from "../../Contracts/ViewModels";
 import { StorageKey, LocalStorageUtility } from "../../Shared/StorageUtility";
-
-import CollectionIcon from "../../../images/tree-collection.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
-import Explorer from "../Explorer";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 
 export enum Type {
   OpenCollection,
@@ -11,21 +8,18 @@ export enum Type {
 }
 
 export interface OpenNotebookItem {
+  type: Type.OpenNotebook;
   name: string;
   path: string;
 }
 
 export interface OpenCollectionItem {
+  type: Type.OpenCollection;
   databaseId: string;
   collectionId: string;
 }
 
-export interface Item {
-  type: Type;
-  title: string;
-  description: string;
-  data: OpenNotebookItem | OpenCollectionItem;
-}
+type Item = OpenNotebookItem | OpenCollectionItem;
 
 // Update schemaVersion if you are going to change this interface
 interface StoredData {
@@ -36,11 +30,11 @@ interface StoredData {
 /**
  * Stores most recent activity
  */
-export class MostRecentActivity {
-  private static readonly schemaVersion: string = "1";
+class MostRecentActivity {
+  private static readonly schemaVersion: string = "2";
   private static itemsMaxNumber: number = 5;
   private storedData: StoredData;
-  constructor(private container: Explorer) {
+  constructor() {
     // Retrieve from local storage
     if (LocalStorageUtility.hasItem(StorageKey.MostRecentActivity)) {
       const rawData = LocalStorageUtility.getEntryString(StorageKey.MostRecentActivity);
@@ -97,7 +91,7 @@ export class MostRecentActivity {
     LocalStorageUtility.setEntryString(StorageKey.MostRecentActivity, JSON.stringify(this.storedData));
   }
 
-  public addItem(accountId: string, newItem: Item): void {
+  private addItem(accountId: string, newItem: Item): void {
     // When debugging, accountId is "undefined": most recent activity cannot be saved by account. Uncomment to disable.
     // if (!accountId) {
     //   return;
@@ -116,45 +110,26 @@ export class MostRecentActivity {
     return this.storedData.itemsMap[accountId] || [];
   }
 
+  public collectionWasOpened(accountId: string, { id, databaseId }: Pick<CollectionBase, "id" | "databaseId">) {
+    const collectionId = id();
+    this.addItem(accountId, {
+      type: Type.OpenCollection,
+      databaseId,
+      collectionId,
+    });
+  }
+
+  public notebookWasItemOpened(accountId: string, { name, path }: Pick<NotebookContentItem, "name" | "path">) {
+    this.addItem(accountId, {
+      type: Type.OpenNotebook,
+      name,
+      path,
+    });
+  }
+
   public clear(accountId: string): void {
     delete this.storedData.itemsMap[accountId];
     this.saveToLocalStorage();
-  }
-
-  public onItemClicked(item: Item) {
-    switch (item.type) {
-      case Type.OpenCollection: {
-        const openCollectionitem = item.data as OpenCollectionItem;
-        const collection = this.container.findCollection(
-          openCollectionitem.databaseId,
-          openCollectionitem.collectionId
-        );
-        if (collection) {
-          collection.openTab();
-        }
-        break;
-      }
-      case Type.OpenNotebook: {
-        const openNotebookItem = item.data as OpenNotebookItem;
-        const notebookItem = this.container.createNotebookContentItemFile(openNotebookItem.name, openNotebookItem.path);
-        notebookItem && this.container.openNotebook(notebookItem);
-        break;
-      }
-      default:
-        console.error("Unknown item type", item);
-        break;
-    }
-  }
-
-  public static getItemIcon(item: Item): string {
-    switch (item.type) {
-      case Type.OpenCollection:
-        return CollectionIcon;
-      case Type.OpenNotebook:
-        return NotebookIcon;
-      default:
-        return null;
-    }
   }
 
   /**
@@ -169,11 +144,7 @@ export class MostRecentActivity {
     let index = -1;
     for (let i = 0; i < itemsArray.length; i++) {
       const currentItem = itemsArray[i];
-      if (
-        currentItem.title === item.title &&
-        currentItem.description === item.description &&
-        JSON.stringify(currentItem.data) === JSON.stringify(item.data)
-      ) {
+      if (JSON.stringify(currentItem) === JSON.stringify(item)) {
         index = i;
         break;
       }
@@ -203,3 +174,5 @@ export class MostRecentActivity {
     }
   }
 }
+
+export const mostRecentActivity = new MostRecentActivity();

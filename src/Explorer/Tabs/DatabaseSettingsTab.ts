@@ -1,23 +1,23 @@
-import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as PricingUtils from "../../Utils/PricingUtils";
-import * as SharedConstants from "../../Shared/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import DiscardIcon from "../../../images/discard.svg";
-import editable from "../../Common/EditableUtility";
 import Q from "q";
+import DiscardIcon from "../../../images/discard.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
-import TabsBase from "./TabsBase";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import Explorer from "../Explorer";
+import * as Constants from "../../Common/Constants";
 import { updateOffer } from "../../Common/dataAccess/updateOffer";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { configContext, Platform } from "../../ConfigContext";
+import editable from "../../Common/EditableUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { configContext, Platform } from "../../ConfigContext";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as SharedConstants from "../../Shared/Constants";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../Utils/PricingUtils";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../Explorer";
+import TabsBase from "./TabsBase";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
 You are about to request an increase in throughput beyond the pre-allocated capacity. 
@@ -73,7 +73,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
   public shouldShowStatusBar: ko.Computed<boolean>;
   public throughputTitle: ko.PureComputed<string>;
   public throughputAriaLabel: ko.PureComputed<string>;
-  public userCanChangeProvisioningTypes: ko.Observable<boolean>;
   public autoPilotUsageCost: ko.PureComputed<string>;
   public warningMessage: ko.Computed<string>;
   public canExceedMaximumValue: ko.PureComputed<boolean>;
@@ -106,7 +105,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this._wasAutopilotOriginallySet = ko.observable(false);
     this.isAutoPilotSelected = editable.observable(false);
     this.autoPilotThroughput = editable.observable<number>();
-    this.userCanChangeProvisioningTypes = ko.observable(true);
 
     const autoscaleMaxThroughput = this.database?.offer()?.autoscaleMaxThroughput;
     if (autoscaleMaxThroughput) {
@@ -118,9 +116,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     }
 
     this._hasProvisioningTypeChanged = ko.pureComputed<boolean>(() => {
-      if (!this.userCanChangeProvisioningTypes()) {
-        return false;
-      }
       if (this._wasAutopilotOriginallySet() !== this.isAutoPilotSelected()) {
         return true;
       }
@@ -136,7 +131,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     });
 
     this.requestUnitsUsageCost = ko.pureComputed(() => {
-      const account = this.container.databaseAccount();
+      const account = userContext.databaseAccount;
       if (!account) {
         return "";
       }
@@ -362,7 +357,7 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.isTemplateReady = ko.observable<boolean>(false);
 
     this.isFreeTierAccount = ko.computed<boolean>(() => {
-      const databaseAccount = this.container?.databaseAccount();
+      const databaseAccount = userContext.databaseAccount;
       return databaseAccount?.properties?.enableFreeTier;
     });
 
@@ -381,8 +376,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.isExecuting(true);
 
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateSettings, {
-      databaseAccountName: this.container.databaseAccount().name,
-      defaultExperience: this.container.defaultExperience(),
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
@@ -417,9 +410,8 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       TelemetryProcessor.traceFailure(
         Action.UpdateSettings,
         {
-          databaseAccountName: this.container.databaseAccount().name,
           databaseName: this.database && this.database.id(),
-          defaultExperience: this.container.defaultExperience(),
+
           dataExplorerArea: Constants.Areas.Tab,
           tabTitle: this.tabTitle(),
           error: errorMessage,
@@ -451,7 +443,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
     this.isAutoPilotSelected.setBaseline(AutoPilotUtils.isValidAutoPilotThroughput(offer.autoscaleMaxThroughput));
     this.autoPilotThroughput.setBaseline(offer.autoscaleMaxThroughput);
     this.throughput.setBaseline(offer.manualThroughput);
-    this.userCanChangeProvisioningTypes(true);
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
