@@ -217,42 +217,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     return heroes;
   }
 
-  private getItemIcon(item: MostRecentActivity.Item): string {
-    switch (item.type) {
-      case MostRecentActivity.Type.OpenCollection:
-        return CollectionIcon;
-      case MostRecentActivity.Type.OpenNotebook:
-        return NotebookIcon;
-      default:
-        return null;
-    }
-  }
-
-  private onItemClicked(item: MostRecentActivity.Item) {
-    switch (item.type) {
-      case MostRecentActivity.Type.OpenCollection: {
-        const openCollectionitem = item.data as MostRecentActivity.OpenCollectionItem;
-        const collection = this.container.findCollection(
-          openCollectionitem.databaseId,
-          openCollectionitem.collectionId
-        );
-        if (collection) {
-          collection.openTab();
-        }
-        break;
-      }
-      case MostRecentActivity.Type.OpenNotebook: {
-        const openNotebookItem = item.data as MostRecentActivity.OpenNotebookItem;
-        const notebookItem = this.container.createNotebookContentItemFile(openNotebookItem.name, openNotebookItem.path);
-        notebookItem && this.container.openNotebook(notebookItem);
-        break;
-      }
-      default:
-        console.error("Unknown item type", item);
-        break;
-    }
-  }
-
   private createCommonTaskItems(): SplashScreenItem[] {
     const items: SplashScreenItem[] = [];
 
@@ -333,23 +297,45 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     return items;
   }
 
-  private static getInfo(item: MostRecentActivity.Item): string {
-    if (item.type === MostRecentActivity.Type.OpenNotebook) {
-      const data = item.data as MostRecentActivity.OpenNotebookItem;
-      return data.path;
-    } else {
-      return undefined;
-    }
+  private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
+    return {
+      iconSrc: NotebookIcon,
+      title: collectionId,
+      description: "Data",
+      onClick: () => {
+        const collection = this.container.findCollection(databaseId, collectionId);
+        collection && collection.openTab();
+      },
+    };
+  }
+
+  private decorateOpenNotebookActivity({ name, path }: MostRecentActivity.OpenNotebookItem) {
+    return {
+      info: path,
+      iconSrc: CollectionIcon,
+      title: name,
+      description: "Notebook",
+      onClick: () => {
+        const notebookItem = this.container.createNotebookContentItemFile(name, path);
+        notebookItem && this.container.openNotebook(notebookItem);
+      },
+    };
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((item) => ({
-      iconSrc: this.getItemIcon(item),
-      title: item.title,
-      description: item.description,
-      info: SplashScreen.getInfo(item),
-      onClick: () => this.onItemClicked(item),
-    }));
+    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((activity) => {
+      switch (activity.type) {
+        default: {
+          const unknownActivity: never = activity;
+          throw new Error(`Unknown activity: ${unknownActivity}`);
+        }
+        case MostRecentActivity.Type.OpenNotebook:
+          return this.decorateOpenNotebookActivity(activity);
+
+        case MostRecentActivity.Type.OpenCollection:
+          return this.decorateOpenCollectionActivity(activity);
+      }
+    });
   }
 
   private createTipsItems(): SplashScreenItem[] {
