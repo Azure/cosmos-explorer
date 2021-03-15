@@ -1,4 +1,6 @@
+import { CollectionBase } from "../../Contracts/ViewModels";
 import { StorageKey, LocalStorageUtility } from "../../Shared/StorageUtility";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 
 export enum Type {
   OpenCollection,
@@ -6,21 +8,18 @@ export enum Type {
 }
 
 export interface OpenNotebookItem {
+  type: Type.OpenNotebook;
   name: string;
   path: string;
 }
 
 export interface OpenCollectionItem {
+  type: Type.OpenCollection;
   databaseId: string;
   collectionId: string;
 }
 
-export interface Item {
-  type: Type;
-  title: string;
-  description: string;
-  data: OpenNotebookItem | OpenCollectionItem;
-}
+type Item = OpenNotebookItem | OpenCollectionItem;
 
 // Update schemaVersion if you are going to change this interface
 interface StoredData {
@@ -32,7 +31,7 @@ interface StoredData {
  * Stores most recent activity
  */
 class MostRecentActivity {
-  private static readonly schemaVersion: string = "1";
+  private static readonly schemaVersion: string = "2";
   private static itemsMaxNumber: number = 5;
   private storedData: StoredData;
   constructor() {
@@ -92,7 +91,7 @@ class MostRecentActivity {
     LocalStorageUtility.setEntryString(StorageKey.MostRecentActivity, JSON.stringify(this.storedData));
   }
 
-  public addItem(accountId: string, newItem: Item): void {
+  private addItem(accountId: string, newItem: Item): void {
     // When debugging, accountId is "undefined": most recent activity cannot be saved by account. Uncomment to disable.
     // if (!accountId) {
     //   return;
@@ -109,6 +108,23 @@ class MostRecentActivity {
 
   public getItems(accountId: string): Item[] {
     return this.storedData.itemsMap[accountId] || [];
+  }
+
+  public collectionWasOpened(accountId: string, { id, databaseId }: Pick<CollectionBase, "id" | "databaseId">) {
+    const collectionId = id();
+    this.addItem(accountId, {
+      type: Type.OpenCollection,
+      databaseId,
+      collectionId,
+    });
+  }
+
+  public notebookWasItemOpened(accountId: string, { name, path }: Pick<NotebookContentItem, "name" | "path">) {
+    this.addItem(accountId, {
+      type: Type.OpenNotebook,
+      name,
+      path,
+    });
   }
 
   public clear(accountId: string): void {
@@ -128,11 +144,7 @@ class MostRecentActivity {
     let index = -1;
     for (let i = 0; i < itemsArray.length; i++) {
       const currentItem = itemsArray[i];
-      if (
-        currentItem.title === item.title &&
-        currentItem.description === item.description &&
-        JSON.stringify(currentItem.data) === JSON.stringify(item.data)
-      ) {
+      if (JSON.stringify(currentItem) === JSON.stringify(item)) {
         index = i;
         break;
       }
