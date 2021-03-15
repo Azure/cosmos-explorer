@@ -1,82 +1,50 @@
+/* eslint-disable no-console */
+import { ClientSecretCredential } from "@azure/identity";
 import "../../less/hostedexplorer.less";
-import { TestExplorerParams } from "./TestExplorerParams";
-import { CosmosDBManagementClient } from "@azure/arm-cosmosdb";
-import * as msRest from "@azure/ms-rest-js";
-import * as ViewModels from "../../src/Contracts/ViewModels";
-import { Capability, DatabaseAccount } from "../../src/Contracts/DataModels";
+import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
+import { updateUserContext } from "../../src/UserContext";
+import { get, listKeys } from "../../src/Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 
-class CustomSigner implements msRest.ServiceClientCredentials {
-  private token: string;
-  constructor(token: string) {
-    this.token = token;
-  }
+const resourceGroup = process.env.RESOURCE_GROUP || "";
+const subscriptionId = process.env.SUBSCRIPTION_ID || "";
+const urlSearchParams = new URLSearchParams(window.location.search);
+const accountName = urlSearchParams.get("accountName") || "portal-sql-runner";
+const selfServeType = urlSearchParams.get("selfServeType") || "example";
+const iframeSrc = urlSearchParams.get("iframeSrc") || "explorer.html?platform=Portal&disablePortalInitCache";
 
-  async signRequest(webResource: msRest.WebResourceLike): Promise<msRest.WebResourceLike> {
-    webResource.headers.set("authorization", `bearer ${this.token}`);
-    return webResource;
-  }
+if (!process.env.AZURE_CLIENT_SECRET) {
+  throw new Error(
+    "process.env.AZURE_CLIENT_SECRET was not set! Set it in your .env file and restart webpack dev server"
+  );
 }
 
-const getDatabaseAccount = async (
-  token: string,
-  notebooksAccountSubscriptonId: string,
-  notebooksAccountResourceGroup: string,
-  notebooksAccountName: string
-): Promise<DatabaseAccount> => {
-  const client = new CosmosDBManagementClient(new CustomSigner(token), notebooksAccountSubscriptonId);
-  const databaseAccountGetResponse = await client.databaseAccounts.get(
-    notebooksAccountResourceGroup,
-    notebooksAccountName
-  );
+// Azure SDK clients accept the credential as a parameter
+const credentials = new ClientSecretCredential(
+  process.env.AZURE_TENANT_ID,
+  process.env.AZURE_CLIENT_ID,
+  process.env.AZURE_CLIENT_SECRET,
+  {
+    authorityHost: "https://localhost:1234",
+  }
+);
 
-  const databaseAccount: DatabaseAccount = {
-    id: databaseAccountGetResponse.id,
-    name: databaseAccountGetResponse.name,
-    location: databaseAccountGetResponse.location,
-    type: databaseAccountGetResponse.type,
-    kind: databaseAccountGetResponse.kind,
-    tags: databaseAccountGetResponse.tags,
-    properties: {
-      documentEndpoint: databaseAccountGetResponse.documentEndpoint,
-      tableEndpoint: undefined,
-      gremlinEndpoint: undefined,
-      cassandraEndpoint: undefined,
-      capabilities: databaseAccountGetResponse.capabilities.map((capability) => {
-        return { name: capability.name } as Capability;
-      }),
-    },
-  };
-
-  return databaseAccount;
-};
+console.log("Resource Group:", resourceGroup);
+console.log("Subcription: ", subscriptionId);
+console.log("Account Name: ", accountName);
 
 const initTestExplorer = async (): Promise<void> => {
-  const urlSearchParams = new URLSearchParams(window.location.search);
-  const portalRunnerDatabaseAccount = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccount)
-  );
-  const portalRunnerDatabaseAccountKey = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.portalRunnerDatabaseAccountKey)
-  );
-  const portalRunnerSubscripton = decodeURIComponent(urlSearchParams.get(TestExplorerParams.portalRunnerSubscripton));
-  const portalRunnerResourceGroup = decodeURIComponent(
-    urlSearchParams.get(TestExplorerParams.portalRunnerResourceGroup)
-  );
-  const selfServeType = urlSearchParams.get(TestExplorerParams.selfServeType);
-
-  const token = decodeURIComponent(urlSearchParams.get(TestExplorerParams.token));
-  const databaseAccount = await getDatabaseAccount(
-    token,
-    portalRunnerSubscripton,
-    portalRunnerResourceGroup,
-    portalRunnerDatabaseAccount
-  );
+  const { token } = await credentials.getToken("https://management.core.windows.net/.default");
+  updateUserContext({
+    authorizationToken: `bearer ${token}`,
+  });
+  const databaseAccount = await get(subscriptionId, resourceGroup, accountName);
+  const keys = await listKeys(subscriptionId, resourceGroup, accountName);
 
   const initTestExplorerContent = {
     inputs: {
       databaseAccount: databaseAccount,
-      subscriptionId: portalRunnerSubscripton,
-      resourceGroup: portalRunnerResourceGroup,
+      subscriptionId,
+      resourceGroup,
       authorizationToken: `Bearer ${token}`,
       features: {},
       hasWriteAccess: true,
@@ -88,7 +56,7 @@ const initTestExplorer = async (): Promise<void> => {
       quotaId: "Internal_2014-09-01",
       addCollectionDefaultFlight: "2",
       isTryCosmosDBSubscription: false,
-      masterKey: portalRunnerDatabaseAccountKey,
+      masterKey: keys.primaryMasterKey,
       loadDatabaseAccountTimestamp: 1604663109836,
       dataExplorerVersion: "1.0.1",
       sharedThroughputMinimum: 400,
@@ -101,7 +69,7 @@ const initTestExplorer = async (): Promise<void> => {
       // add UI test only when feature is not dependent on flights anymore
       flights: [],
       selfServeType,
-    } as ViewModels.DataExplorerInputsFrame,
+    } as DataExplorerInputsFrame,
   };
 
   const iframe = document.createElement("iframe");
@@ -127,16 +95,8 @@ const initTestExplorer = async (): Promise<void> => {
   iframe.name = "explorer";
   iframe.classList.add("iframe");
   iframe.title = "explorer";
-  iframe.src = getIframeSrc(selfServeType);
+  iframe.src = iframeSrc;
   document.body.appendChild(iframe);
-};
-
-const getIframeSrc = (selfServeType: string): string => {
-  let iframeSrc = "explorer.html?platform=Portal&disablePortalInitCache";
-  if (selfServeType) {
-    iframeSrc = `selfServe.html?selfServeType=${selfServeType}`;
-  }
-  return iframeSrc;
 };
 
 initTestExplorer();
