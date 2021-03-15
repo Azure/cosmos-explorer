@@ -100,21 +100,7 @@ const App: React.FunctionComponent = () => {
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
   if (!explorer) {
-    return (
-      <div className="splashLoaderContainer">
-        <div className="splashLoaderContentContainer">
-          <p className="connectExplorerContent">
-            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-          </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-            Welcome to Azure Cosmos DB
-          </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-            Connecting...
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingExplorer />;
   }
 
   return (
@@ -293,3 +279,21 @@ const App: React.FunctionComponent = () => {
 };
 
 ReactDOM.render(<App />, document.body);
+
+function LoadingExplorer(): JSX.Element {
+  return (
+    <div className="splashLoaderContainer">
+      <div className="splashLoaderContentContainer">
+        <p className="connectExplorerContent">
+          <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+        </p>
+        <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+          Welcome to Azure Cosmos DB
+        </p>
+        <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+          Connecting...
+        </p>
+      </div>
+    </div>
+  );
+}
