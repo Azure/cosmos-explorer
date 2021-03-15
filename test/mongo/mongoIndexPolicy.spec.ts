@@ -34,8 +34,9 @@ describe("MongoDB Index policy tests", () => {
       const selectedContainer = (await frame.evaluate((element) => element.innerText, containers[0]))
         .replace(/[\u{0080}-\u{FFFF}]/gu, "")
         .trim();
+      console.log(selectedContainer);
       await frame.waitFor(`div[data-test="${selectedContainer}"]`), { visible: true };
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(10000);
       await frame.click(`div[data-test="${selectedContainer}"]`);
 
       await frame.waitFor(`div[data-test="Scale & Settings"]`), { visible: true };
