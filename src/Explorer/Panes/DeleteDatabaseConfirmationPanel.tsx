@@ -1,6 +1,5 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { Text, TextField } from "office-ui-fabric-react";
-import Q from "q";
 import React, { FunctionComponent, useState } from "react";
 import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
 import * as Constants from "../../Common/Constants";
@@ -21,13 +20,16 @@ interface DeleteDatabaseConfirmationPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   openNotificationConsole: () => void;
+  selectedDatabase: {
+    id: () => string;
+    collections: () => Array<ViewModels.Collection>;
+  };
 }
 
 export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = (
   props: DeleteDatabaseConfirmationPanelProps
 ): JSX.Element => {
-  // For showing/hiding panel
-  const [isHidden, { setTrue: setHiddenTrue, setFalse: setHiddenFalse }] = useBoolean(true);
+  const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
 
   const [formError, setFormError] = useState<string>("");
   const [databaseInput, setDatabaseInput] = useState<string>("");
@@ -51,20 +53,18 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     };
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const submit = (): Q.Promise<any> => {
-    // Get selected db
-    const selectedDatabase = props.explorer.findSelectedDatabase();
+  const submit = async (): Promise<void> => {
+    const { selectedDatabase, explorer } = props;
     if (!isValid()) {
       setFormError("Input database name does not match the selected database");
       NotificationConsoleUtils.logConsoleMessage(
         ConsoleDataType.Error,
         `Error while deleting collection ${selectedDatabase && selectedDatabase.id()}`
       );
-      return Q.resolve();
+      return;
     }
     setFormError("");
-    setHiddenFalse();
+    setLoadingTrue();
 
     const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDatabase, {
       databaseId: selectedDatabase.id(),
@@ -72,76 +72,70 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       paneTitle: "Delete Database",
     });
 
-    return Q(
-      deleteDatabase(selectedDatabase.id()).then(
-        () => {
-          setHiddenFalse();
-          props.closePanel();
-          props.explorer.refreshAllDatabases();
-          props.explorer.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
-          props.explorer.selectedNode(undefined);
-          selectedDatabase
-            .collections()
-            .forEach((collection: ViewModels.Collection) =>
-              props.explorer.tabsManager.closeTabsByComparator(
-                (tab) =>
-                  tab.node?.id() === collection.id() &&
-                  (tab.node as ViewModels.Collection).databaseId === collection.databaseId
-              )
-            );
-          TelemetryProcessor.traceSuccess(
-            Action.DeleteDatabase,
-            {
-              databaseId: selectedDatabase.id(),
-              dataExplorerArea: Constants.Areas.ContextualPane,
-              paneTitle: "Delete Database",
-            },
-            startKey
-          );
-
-          if (shouldRecordFeedback()) {
-            const deleteFeedback = new DeleteFeedback(
-              props.explorer.databaseAccount().id,
-              props.explorer.databaseAccount().name,
-              DefaultExperienceUtility.getApiKindFromDefaultExperience(props.explorer.defaultExperience()),
-              databaseFeedbackInput
-            );
-
-            TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
-              message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
-            });
-            setDatabaseFeedbackInput("");
-          }
+    try {
+      await deleteDatabase(selectedDatabase.id());
+      setLoadingFalse();
+      props.closePanel();
+      explorer.refreshAllDatabases();
+      explorer.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
+      explorer.selectedNode(undefined);
+      selectedDatabase
+        .collections()
+        .forEach((collection: ViewModels.Collection) =>
+          explorer.tabsManager.closeTabsByComparator(
+            (tab) =>
+              tab.node?.id() === collection.id() &&
+              (tab.node as ViewModels.Collection).databaseId === collection.databaseId
+          )
+        );
+      TelemetryProcessor.traceSuccess(
+        Action.DeleteDatabase,
+        {
+          databaseId: selectedDatabase.id(),
+          dataExplorerArea: Constants.Areas.ContextualPane,
+          paneTitle: "Delete Database",
         },
-        (error: Error) => {
-          setHiddenTrue();
-          const errorMessage = getErrorMessage(error);
-          setFormError(errorMessage);
-          TelemetryProcessor.traceFailure(
-            Action.DeleteDatabase,
-            {
-              databaseId: selectedDatabase.id(),
-              dataExplorerArea: Constants.Areas.ContextualPane,
-              paneTitle: "Delete Database",
-              error: errorMessage,
-              errorStack: getErrorStack(error),
-            },
-            startKey
-          );
-        }
-      )
-    );
+        startKey
+      );
+
+      if (shouldRecordFeedback()) {
+        const deleteFeedback = new DeleteFeedback(
+          explorer.databaseAccount().id,
+          explorer.databaseAccount().name,
+          DefaultExperienceUtility.getApiKindFromDefaultExperience(explorer.defaultExperience()),
+          databaseFeedbackInput
+        );
+
+        TelemetryProcessor.trace(Action.DeleteDatabase, ActionModifiers.Mark, {
+          message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
+        });
+        setDatabaseFeedbackInput("");
+      }
+    } catch (error) {
+      setLoadingFalse();
+      setFormError(error);
+      const errorMessage = getErrorMessage(error);
+      TelemetryProcessor.traceFailure(
+        Action.DeleteDatabase,
+        {
+          databaseId: selectedDatabase.id(),
+          dataExplorerArea: Constants.Areas.ContextualPane,
+          paneTitle: "Delete Database",
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+    }
   };
 
   const shouldRecordFeedback = (): boolean => {
-    return (
-      props.explorer.isLastNonEmptyDatabase() ||
-      (props.explorer.isLastDatabase() && props.explorer.isSelectedDatabaseShared())
-    );
+    const { explorer } = props;
+    return explorer.isLastNonEmptyDatabase() || (explorer.isLastDatabase() && explorer.isSelectedDatabaseShared());
   };
 
   const isValid = (): boolean => {
-    const selectedDatabase = props.explorer.findSelectedDatabase();
+    const { selectedDatabase } = props;
     if (!selectedDatabase.id()) {
       return false;
     }
@@ -156,7 +150,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           <span className="mandatoryStar">* </span>
           <Text variant="small">Confirm by typing the database id</Text>
           <TextField
-            id="confirmCollectionId"
+            id="confirmDatabaseId"
             autoFocus
             styles={{ fieldGroup: { width: 300 } }}
             onChange={(event, newInput?: string) => {
@@ -185,7 +179,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         )}
       </div>
       <PanelFooterComponent buttonLabel="OK" onOKButtonClicked={() => submit()} />
-      <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={isHidden}>
+      <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!isLoading}>
         <img className="dataExplorerLoader" src={LoadingIndicator_3Squares} />
       </div>
     </div>

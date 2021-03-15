@@ -2548,16 +2548,14 @@ export default class Explorer {
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
-    // enableKoPanel which allows the users to switch back to using the old knockout panels.
-    this.isFeatureEnabled(Constants.Features.enableKOPanel)
-      ? this.deleteDatabaseConfirmationPane.open()
-      : this.openSidePanel(
-          "Delete Database",
-          <DeleteDatabaseConfirmationPanel
-            explorer={this}
-            openNotificationConsole={() => this.expandConsole()}
-            closePanel={() => this.closeSidePanel()}
-          />
-        );
+    this.openSidePanel(
+      "Delete Database",
+      <DeleteDatabaseConfirmationPanel
+        explorer={this}
+        openNotificationConsole={this.expandConsole}
+        closePanel={this.closeSidePanel}
+        selectedDatabase={this.findSelectedDatabase()}
+      />
+    );
   }
 }
