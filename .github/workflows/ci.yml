@@ -163,6 +163,7 @@ jobs:
       TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
       DATA_EXPLORER_ENDPOINT: "https://localhost:1234/hostedExplorer.html"
     strategy:
+      fail-fast: false
       matrix:
         test-file:
           - ./test/cassandra/container.spec.ts
