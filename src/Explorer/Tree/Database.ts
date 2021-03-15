@@ -144,10 +144,6 @@ export default class Database implements ViewModels.Database {
     );
   }
 
-  public onDeleteDatabaseContextMenuClick(source: ViewModels.Database, event: MouseEvent | KeyboardEvent) {
-    this.container.deleteDatabaseConfirmationPane.open();
-  }
-
   public selectDatabase() {
     this.container.selectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
