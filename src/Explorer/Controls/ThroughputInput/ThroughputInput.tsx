@@ -1,10 +1,10 @@
+import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "office-ui-fabric-react";
 import React from "react";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as Constants from "../../../Common/Constants";
 import * as SharedConstants from "../../../Shared/Constants";
-import * as PricingUtils from "../../../Utils/PricingUtils";
-import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "office-ui-fabric-react";
 import { userContext } from "../../../UserContext";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../../Utils/PricingUtils";
 
 export interface ThroughputInputProps {
   showAutoscale: boolean;
@@ -154,7 +154,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
           </Stack>
         )}
 
-        {this.getCostEstimateText()}
+        <CostEstimateText requestUnits={this.state.throughput} isAutoscale={this.state.isAutoscaleSelected} />
 
         {this.state.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && (
           <Stack horizontal verticalAlign="start">
@@ -205,61 +205,6 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
     RU/s will be automatically upgraded based on the new storage value.`;
   }
 
-  private getCostEstimateText(): JSX.Element {
-    const databaseAccount = userContext.databaseAccount;
-    if (!databaseAccount || !databaseAccount.properties) {
-      return <></>;
-    }
-
-    const serverId: string = userContext.serverId;
-    const numberOfRegions: number = databaseAccount.properties.readLocations?.length || 1;
-    const multimasterEnabled: boolean = databaseAccount.properties.enableMultipleWriteLocations;
-    const hourlyPrice: number = PricingUtils.computeRUUsagePriceHourly({
-      serverId,
-      requestUnits: this.state.throughput,
-      numberOfRegions,
-      multimasterEnabled,
-      isAutoscale: this.state.isAutoscaleSelected,
-    });
-    const dailyPrice: number = hourlyPrice * 24;
-    const monthlyPrice: number = hourlyPrice * SharedConstants.hoursInAMonth;
-    const currency: string = PricingUtils.getPriceCurrency(serverId);
-    const currencySign: string = PricingUtils.getCurrencySign(serverId);
-    const multiplier = PricingUtils.getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
-    const pricePerRu = this.state.isAutoscaleSelected
-      ? PricingUtils.getAutoscalePricePerRu(serverId, multiplier) * multiplier
-      : PricingUtils.getPricePerRu(serverId) * multiplier;
-
-    if (this.state.isAutoscaleSelected) {
-      return (
-        <Text variant="small">
-          Estimated monthly cost ({currency}):{" "}
-          <b>
-            {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice / 10)} -{" "}
-            {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)}{" "}
-          </b>
-          ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {this.state.throughput / 10} -{" "}
-          {this.state.throughput} RU/s, {currencySign + pricePerRu}/RU)
-        </Text>
-      );
-    }
-
-    return (
-      <Text variant="small">
-        Cost ({currency}):{" "}
-        <b>
-          {currencySign + PricingUtils.calculateEstimateNumber(hourlyPrice)} hourly /{" "}
-          {currencySign + PricingUtils.calculateEstimateNumber(dailyPrice)} daily /{" "}
-          {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)} monthly{" "}
-        </b>
-        ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {this.state.throughput}RU/s,{" "}
-        {currencySign + pricePerRu}/RU)
-        <br />
-        <em>{PricingUtils.estimatedCostDisclaimer}</em>
-      </Text>
-    );
-  }
-
   private getCostAcknowledgeText(): string {
     const databaseAccount = userContext.databaseAccount;
     if (!databaseAccount || !databaseAccount.properties) {
@@ -297,3 +242,64 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
     }
   }
 }
+
+interface CostEstimateTextProps {
+  requestUnits: number;
+  isAutoscale: boolean;
+}
+
+const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props: CostEstimateTextProps) => {
+  const { requestUnits, isAutoscale } = props;
+  const databaseAccount = userContext.databaseAccount;
+  if (!databaseAccount || !databaseAccount.properties) {
+    return <></>;
+  }
+
+  const serverId: string = userContext.serverId;
+  const numberOfRegions: number = databaseAccount.properties.readLocations?.length || 1;
+  const multimasterEnabled: boolean = databaseAccount.properties.enableMultipleWriteLocations;
+  const hourlyPrice: number = PricingUtils.computeRUUsagePriceHourly({
+    serverId,
+    requestUnits,
+    numberOfRegions,
+    multimasterEnabled,
+    isAutoscale,
+  });
+  const dailyPrice: number = hourlyPrice * 24;
+  const monthlyPrice: number = hourlyPrice * SharedConstants.hoursInAMonth;
+  const currency: string = PricingUtils.getPriceCurrency(serverId);
+  const currencySign: string = PricingUtils.getCurrencySign(serverId);
+  const multiplier = PricingUtils.getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
+  const pricePerRu = isAutoscale
+    ? PricingUtils.getAutoscalePricePerRu(serverId, multiplier) * multiplier
+    : PricingUtils.getPricePerRu(serverId) * multiplier;
+
+  if (isAutoscale) {
+    return (
+      <Text variant="small">
+        Estimated monthly cost ({currency}):{" "}
+        <b>
+          {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice / 10)} -{" "}
+          {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)}{" "}
+        </b>
+        ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits / 10} - {requestUnits}{" "}
+        RU/s, {currencySign + pricePerRu}/RU)
+      </Text>
+    );
+  }
+
+  return (
+    <Text variant="small">
+      Cost ({currency}):{" "}
+      <b>
+        {currencySign + PricingUtils.calculateEstimateNumber(hourlyPrice)} hourly /{" "}
+        {currencySign + PricingUtils.calculateEstimateNumber(dailyPrice)} daily /{" "}
+        {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)} monthly{" "}
+      </b>
+      ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits}RU/s,{" "}
+      {currencySign + pricePerRu}/RU)
+      <br />
+      <em>{PricingUtils.estimatedCostDisclaimer}</em>
+    </Text>
+  );
+};

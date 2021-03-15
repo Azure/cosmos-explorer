@@ -257,6 +257,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
             subscriptionId: inputs.subscriptionId,
             subscriptionType: inputs.subscriptionType,
             quotaId: inputs.quotaId,
+            serverId: inputs.serverId,
           });
 
           const explorer = new Explorer(explorerParams);
