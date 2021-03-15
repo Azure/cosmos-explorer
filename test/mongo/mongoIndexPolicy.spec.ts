@@ -19,25 +19,18 @@ describe("MongoDB Index policy tests", () => {
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      const dbId = await createDatabase(frame);
+      const { databaseId, collectionId } = await createDatabase(frame);
       await frame.waitFor(25000);
       // click on database
-      await frame.waitForSelector(`div[data-test="${dbId}"]`);
+      await frame.waitForSelector(`div[data-test="${databaseId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
-      await frame.click(`div[data-test="${dbId}"]`);
+      await frame.click(`div[data-test="${databaseId}"]`);
       await frame.waitFor(LOADING_STATE_DELAY);
 
       // click on scale & setting
-      const containers = await frame.$$(
-        `div[class="nodeChildren"] > div[class="collectionHeader main2 nodeItem "]> div[class="treeNodeHeader "]`
-      );
-      const selectedContainer = (await frame.evaluate((element) => element.innerText, containers[0]))
-        .replace(/[\u{0080}-\u{FFFF}]/gu, "")
-        .trim();
-      console.log(selectedContainer);
-      await frame.waitFor(`div[data-test="${selectedContainer}"]`), { visible: true };
-      await frame.waitFor(10000);
-      await frame.click(`div[data-test="${selectedContainer}"]`);
+      await frame.waitFor(`div[data-test="${collectionId}"]`), { visible: true };
+      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.click(`div[data-test="${collectionId}"]`);
 
       await frame.waitFor(`div[data-test="Scale & Settings"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
