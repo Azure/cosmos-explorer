@@ -120,16 +120,7 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
-  // TODO fix this
   context.container = explorer;
-
-  //   const [databases, setDatabases] = useState();
-  // useEffect(() => {
-  // fetchDatabases().then((dbs) => {
-  // setDatabases(dbs)
-  // explorer.databases(dbs)
-  // });
-  // const databases = useDatabases(explorer)
 
   return (
     <div className="flexContainer">
