@@ -61,7 +61,6 @@ import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
-import { SettingsPaneR } from "./Panes/SettingsPaneR";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
@@ -221,7 +220,6 @@ export default class Explorer {
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public settingsPane: SettingsPane;
   public executeSprocParamsPane: ExecuteSprocParamsPane;
   public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
@@ -672,13 +670,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.settingsPane = new SettingsPane({
-      id: "settingspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.executeSprocParamsPane = new ExecuteSprocParamsPane({
       id: "executesprocparamspane",
       visible: ko.observable<boolean>(false),
@@ -751,7 +742,6 @@ export default class Explorer {
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.settingsPane,
       this.executeSprocParamsPane,
       this.uploadItemsPane,
       this.loadQueryPane,
@@ -2543,6 +2533,9 @@ export default class Explorer {
   }
 
   public openSettingPane(): void {
-    this.openSidePanel("Settings", <SettingsPaneR explorer={this} closePanel={() => this.closeSidePanel()} />);
+    this.openSidePanel(
+      "Settings",
+      <SettingsPane closePanel={this.closeSidePanel} openNotificationConsole={this.expandConsole} />
+    );
   }
 }

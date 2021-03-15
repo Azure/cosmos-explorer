@@ -134,8 +134,6 @@ src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
 src/Explorer/Panes/SaveQueryPane.ts
-src/Explorer/Panes/SettingsPane.test.ts
-src/Explorer/Panes/SettingsPane.ts
 src/Explorer/Panes/SetupNotebooksPane.ts
 src/Explorer/Panes/StringInputPane.ts
 src/Explorer/Panes/SwitchDirectoryPane.ts

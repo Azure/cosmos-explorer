@@ -4,15 +4,19 @@ import * as Constants from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import * as StringUtility from "../../../Shared/StringUtility";
+import { userContext } from "../../../UserContext";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
+import { Tooltip } from "./Tooltip";
 
 export interface SettingsPaneProps {
-  explorer: Explorer;
   closePanel: () => void;
+  openNotificationConsole: () => void;
 }
 
-export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, closePanel }: SettingsPaneProps) => {
+export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
+  closePanel,
+  openNotificationConsole,
+}: SettingsPaneProps) => {
   const [formErrors, setFormErrors] = useState("");
   const [formErrorsDetails, setFormErrorsDetails] = useState();
   const [isExecuting, setIsExecuting] = useState(false);
@@ -34,11 +38,10 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
       : Constants.Queries.DefaultMaxDegreeOfParallelism
   );
   const explorerVersion = configContext.gitSha;
-  const shouldShowQueryPageOptions = explorer?.isPreferredApiDocumentDB();
-  const shouldShowGraphAutoVizOption = explorer?.isPreferredApiGraph();
-
-  const shouldShowCrossPartitionOption = !explorer?.isPreferredApiGraph();
-  const shouldShowParallelismOption = !explorer?.isPreferredApiGraph();
+  const shouldShowQueryPageOptions = userContext.apiType === "SQL";
+  const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
+  const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
+  const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
 
   const pageOptionsRef = useRef<HTMLLabelElement>();
   const displayQueryRef = useRef<HTMLLabelElement>();
@@ -49,9 +52,9 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
   }, []);
 
   useLayoutEffect(() => {
-    if (explorer?.isPreferredApiGraph()) {
+    if (userContext.apiType === "Gremlin") {
       displayQueryRef?.current?.focus();
-    } else if (explorer?.isPreferredApiTable()) {
+    } else if (userContext.apiType === "Tables") {
       maxDegreeRef?.current?.focus();
     }
     pageOptionsRef?.current?.focus();
@@ -158,13 +161,11 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
   };
 
   return (
-    <div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
-      <div className="contextual-pane-out" data-bind="click: cancel, clickBubble: false" />
+    <div>
+      <div className="contextual-pane-out" />
       <div className="contextual-pane" id="settingspane">
-        {/* Settings Confirmation form - Start */}
         <div className="contextual-pane-in">
           <form className="paneContentContainer" onSubmit={submit}>
-            {/* Settings Confirmation header - Start */}
             <div className="firstdivbg headerline">
               <span role="heading" aria-level={2}>
                 Settings
@@ -173,8 +174,6 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                 <img src="../../../images/close-black.svg" title="Close" alt="Close" />
               </div>
             </div>
-            {/* Settings Confirmation header - End */}
-            {/* Settings Confirmation errors - Start */}
             {formErrors !== "" && (
               <div className="warningErrorContainer" aria-live="assertive">
                 <div className="warningErrorContent">
@@ -182,11 +181,11 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                     <img className="paneErrorIcon" src="../../images/error_red.svg" alt="Error" />
                   </span>
                   <span className="warningErrorDetailsLinkContainer">
-                    <span className="formErrors" data-bind="attr: { title: formErrors }">
+                    <span className="formErrors" title={formErrors}>
                       {formErrors}
                     </span>
                     {formErrorsDetails === "" && (
-                      <a className="errorLink" role="link" data-bind="click: showErrorDetails">
+                      <a className="errorLink" role="link" onClick={openNotificationConsole}>
                         More details
                       </a>
                     )}
@@ -194,8 +193,6 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                 </div>
               </div>
             )}
-            {/* Settings Confirmation errors - End */}
-            {/* Settings Confirmation inputs - Start */}
             <div className="paneMainContent">
               <div>
                 {shouldShowQueryPageOptions && (
@@ -203,39 +200,34 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                     <div className="settingsSectionPart pageOptionsPart">
                       <div className="settingsSectionLabel">
                         Page options
-                        <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                          <img className="infoImg" src="./../../images/info-bubble.svg" alt="More information" />
-                          <span className="tooltiptext pageOptionTooltipWidth">
-                            Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to
-                            show as many query results per page.
-                          </span>
-                        </span>
+                        <Tooltip>
+                          Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show
+                          as many query results per page.
+                        </Tooltip>
                       </div>
                       <div className="tabs" role="radiogroup" aria-label="Page options">
-                        {/* Fixed option button - Start */}
                         <div className="tab">
                           <input
                             type="radio"
                             id="customItemPerPage"
                             name="pageOption"
                             defaultValue="custom"
+                            autoFocus
                             checked={isCustomPageOptionSelected()}
+                            onChange={() => setPageOption(Constants.Queries.CustomPageOption)}
                           />
                           <label
                             htmlFor="customItemPerPage"
                             id="custom-selection"
                             tabIndex={0}
-                            ref={pageOptionsRef}
                             role="radio"
+                            ref={pageOptionsRef}
                             aria-checked={isCustomPageOptionSelected()}
                             onKeyPress={onCustomPageOptionsKeyDown}
-                            onClick={() => setPageOption(Constants.Queries.CustomPageOption)}
                           >
                             Custom
                           </label>
                         </div>
-                        {/* Fixed option button - End */}
-                        {/* Unlimited option button - Start */}
                         <div className="tab">
                           <input
                             type="radio"
@@ -243,6 +235,7 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                             name="pageOption"
                             defaultValue="unlimited"
                             checked={isUnlimitedPageOptionSelected()}
+                            onChange={() => setPageOption(Constants.Queries.UnlimitedPageOption)}
                           />
                           <label
                             htmlFor="unlimitedItemPerPage"
@@ -251,12 +244,10 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                             role="radio"
                             aria-checked={isUnlimitedPageOptionSelected()}
                             onKeyPress={onUnlimitedPageOptionKeyDown}
-                            onClick={() => setPageOption(Constants.Queries.UnlimitedPageOption)}
                           >
                             Unlimited
                           </label>
                         </div>
-                        {/* Unlimited option button - End */}
                       </div>
                     </div>
                     <div className="tabs settingsSectionPart">
@@ -264,18 +255,13 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                         <div className="tabcontent">
                           <div className="settingsSectionLabel">
                             Query results per page
-                            <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                              <img className="infoImg" src="./../../images/info-bubble.svg" alt="More information" />
-                              <span className="tooltiptext pageOptionTooltipWidth">
-                                Enter the number of query results that should be shown per page.
-                              </span>
-                            </span>
+                            <Tooltip>Enter the number of query results that should be shown per page.</Tooltip>
                           </div>
                           <input
                             type="number"
                             required
                             value={customItemPerPage}
-                            onChange={(e) => setCustomItemPerPage(parseInt(e.target.value))}
+                            onChange={(e) => setCustomItemPerPage(parseInt(e.target.value) || customItemPerPage)}
                             min={1}
                             step={1}
                             className="textfontclr collid"
@@ -291,19 +277,16 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                     <div className="settingsSectionPart">
                       <div className="settingsSectionLabel">
                         Enable cross-partition query
-                        <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                          <img className="infoImg" src="./../../images/info-bubble.svg" alt="More information" />
-                          <span className="tooltiptext pageOptionTooltipWidth">
-                            Send more than one request while executing a query. More than one request is necessary if
-                            the query is not scoped to single partition key value.
-                          </span>
-                        </span>
+                        <Tooltip>
+                          Send more than one request while executing a query. More than one request is necessary if the
+                          query is not scoped to single partition key value.
+                        </Tooltip>
                       </div>
                       <input
                         type="checkbox"
                         tabIndex={0}
                         aria-label="Enable cross partition query"
-                        defaultChecked={crossPartitionQueryEnabled}
+                        checked={crossPartitionQueryEnabled}
                         onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
                       />
                     </div>
@@ -314,15 +297,12 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                     <div className="settingsSectionPart">
                       <div className="settingsSectionLabel">
                         Max degree of parallelism
-                        <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                          <img className="infoImg" src="./../../images/info-bubble.svg" alt="More information" />
-                          <span className="tooltiptext pageOptionTooltipWidth">
-                            Gets or sets the number of concurrent operations run client side during parallel query
-                            execution. A positive property value limits the number of concurrent operations to the set
-                            value. If it is set to less than 0, the system automatically decides the number of
-                            concurrent operations to run.
-                          </span>
-                        </span>
+                        <Tooltip>
+                          Gets or sets the number of concurrent operations run client side during parallel query
+                          execution. A positive property value limits the number of concurrent operations to the set
+                          value. If it is set to less than 0, the system automatically decides the number of concurrent
+                          operations to run.
+                        </Tooltip>
                       </div>
 
                       <input
@@ -336,7 +316,7 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                         id="max-degree"
                         ref={maxDegreeRef}
                         value={maxDegreeOfParallelism}
-                        onChange={(e) => setMaxDegreeOfParallelism(parseInt(e.target.value))}
+                        onChange={(e) => setMaxDegreeOfParallelism(parseInt(e.target.value) || maxDegreeOfParallelism)}
                         aria-label="Max degree of parallelism"
                         autoFocus
                       />
@@ -348,16 +328,12 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                     <div className="settingsSectionPart">
                       <div className="settingsSectionLabel">
                         Display Gremlin query results as:&nbsp;
-                        <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                          <img className="infoImg" src="./../../images/info-bubble.svg" alt="More information" />
-                          <span className="tooltiptext pageOptionTooltipWidth">
-                            Select Graph to automatically visualize the query results as a Graph or JSON to display the
-                            results as JSON.
-                          </span>
-                        </span>
+                        <Tooltip>
+                          Select Graph to automatically visualize the query results as a Graph or JSON to display the
+                          results as JSON.
+                        </Tooltip>
                       </div>
                       <div className="tabs" role="radiogroup" aria-label="Graph Auto-visualization">
-                        {/* Fixed option button - Start */}
                         <div className="tab">
                           <input
                             type="radio"
@@ -365,6 +341,9 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                             name="graphAutoVizOption"
                             defaultValue="false"
                             checked={Boolean(graphAutoVizDisabled)}
+                            onChange={() =>
+                              setGraphAutoVizDisabled(graphAutoVizDisabled === "false" ? "true" : "false")
+                            }
                           />
                           <label
                             htmlFor="graphAutoVizOn"
@@ -372,14 +351,12 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                             tabIndex={0}
                             ref={displayQueryRef}
                             role="radio"
-                            aria-checked={graphAutoVizDisabled === "false" ? "true" : "false"}
+                            aria-checked={graphAutoVizDisabled === "false"}
                             onKeyPress={onGraphDisplayResultsKeyDown}
                           >
                             Graph
                           </label>
                         </div>
-                        {/* Fixed option button - End */}
-                        {/* Unlimited option button - Start */}
                         <div className="tab">
                           <input
                             type="radio"
@@ -387,18 +364,20 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                             name="graphAutoVizOption"
                             defaultValue="true"
                             checked={Boolean(graphAutoVizDisabled)}
+                            onChange={() =>
+                              setGraphAutoVizDisabled(graphAutoVizDisabled === "false" ? "true" : "false")
+                            }
                           />
                           <label
                             htmlFor="graphAutoVizOff"
                             tabIndex={0}
                             role="radio"
-                            aria-checked={graphAutoVizDisabled === "true" ? "true" : "false"}
+                            aria-checked={graphAutoVizDisabled === "true"}
                             onKeyPress={onJsonDisplayResultsKeyDown}
                           >
                             JSON
                           </label>
                         </div>
-                        {/* Unlimited option button - End */}
                       </div>
                     </div>
                   </div>
@@ -416,17 +395,13 @@ export const SettingsPaneR: FunctionComponent<SettingsPaneProps> = ({ explorer, 
                 <PrimaryButton type="submit">Apply</PrimaryButton>
               </div>
             </div>
-            {/* Settings Confirmation inputs - End */}
           </form>
         </div>
-        {/* Settings Confirmation form  - Start */}
-        {/* Loader - Start */}
         {isExecuting && (
           <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer">
             <img className="dataExplorerLoader" src="/LoadingIndicator_3Squares.gif" />
           </div>
         )}
-        {/* Loader - End */}
       </div>
     </div>
   );
