@@ -2,7 +2,6 @@
 import "abort-controller/polyfill";
 import "babel-polyfill";
 import "bootstrap/dist/css/bootstrap.css";
-import "bootstrap/dist/js/npm";
 import "es6-object-assign/auto";
 import "es6-symbol/implement";
 import "object.entries/auto";
@@ -99,6 +98,10 @@ const App: React.FunctionComponent = () => {
   };
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
+
+  if (!explorer) {
+    return <LoadingExplorer />;
+  }
 
   return (
     <div className="flexContainer">
@@ -230,21 +233,6 @@ const App: React.FunctionComponent = () => {
           />
         </div>
       </div>
-      {/* Global loader - Start */}
-      <div className="splashLoaderContainer" data-bind="visible: false">
-        <div className="splashLoaderContentContainer">
-          <p className="connectExplorerContent">
-            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-          </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-            Welcome to Azure Cosmos DB
-          </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-            Connecting...
-          </p>
-        </div>
-      </div>
-      {/* Global loader - End */}
       <PanelContainerComponent
         isOpen={isPanelOpen}
         panelContent={panelContent}
@@ -288,3 +276,21 @@ const App: React.FunctionComponent = () => {
 };
 
 ReactDOM.render(<App />, document.body);
+
+function LoadingExplorer(): JSX.Element {
+  return (
+    <div className="splashLoaderContainer">
+      <div className="splashLoaderContentContainer">
+        <p className="connectExplorerContent">
+          <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+        </p>
+        <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+          Welcome to Azure Cosmos DB
+        </p>
+        <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+          Connecting...
+        </p>
+      </div>
+    </div>
+  );
+}
