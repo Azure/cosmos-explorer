@@ -3,7 +3,7 @@ import { ClientSecretCredential } from "@azure/identity";
 import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
-import { get } from "../../src/Utils/arm/generatedClients/2020-04-01/databaseAccounts";
+import { get, listKeys } from "../../src/Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 
 const resourceGroup = process.env.RESOURCE_GROUP || "";
 const subscriptionId = process.env.SUBSCRIPTION_ID || "";
@@ -38,6 +38,7 @@ const initTestExplorer = async (): Promise<void> => {
     authorizationToken: `bearer ${token}`,
   });
   const databaseAccount = await get(subscriptionId, resourceGroup, accountName);
+  const keys = await listKeys(subscriptionId, resourceGroup, accountName);
 
   const initTestExplorerContent = {
     inputs: {
@@ -55,7 +56,7 @@ const initTestExplorer = async (): Promise<void> => {
       quotaId: "Internal_2014-09-01",
       addCollectionDefaultFlight: "2",
       isTryCosmosDBSubscription: false,
-      masterKey: "",
+      masterKey: keys.primaryMasterKey,
       loadDatabaseAccountTimestamp: 1604663109836,
       dataExplorerVersion: "1.0.1",
       sharedThroughputMinimum: 400,
