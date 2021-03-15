@@ -153,9 +153,9 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
-  // if (configContext.platform === Platform.Hosted) {
-  //   return buttons;
-  // }
+  if (configContext.platform === Platform.Hosted) {
+    return buttons;
+  }
 
   if (!container.isPreferredApiCassandra()) {
     const label = "Settings";
