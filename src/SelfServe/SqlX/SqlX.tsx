@@ -8,13 +8,14 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
+import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -23,6 +24,15 @@ const costPerHourValue: Description = {
   link: {
     href: "https://azure.microsoft.com/en-us/pricing/details/virtual-machines/windows/",
     textTKey: "SkuCostInfo",
+  },
+};
+
+const connectionStringValue: Description = {
+  textTKey: "ConnectionStringText",
+  type: DescriptionType.Text,
+  link: {
+    href: generateBladeLink(BladeType.SqlKeys),
+    textTKey: "KeysBlade",
   },
 };
 
@@ -74,16 +84,17 @@ const onEnableDedicatedGatewayChange = (
     currentValues.set("skuDetails", baselineValues.get("skuDetails"));
     currentValues.set("costPerHour", baselineValues.get("costPerHour"));
     currentValues.set("warningBanner", baselineValues.get("warningBanner"));
+    currentValues.set("connectionString", baselineValues.get("connectionString"));
     return currentValues;
   }
 
   currentValues.set("warningBanner", undefined);
-  if (dedicatedGatewayOriginallyEnabled === false && newValue === true) {
+  if (newValue === true) {
     currentValues.set("warningBanner", {
       value: { textTKey: "WarningBannerOnUpdate" } as Description,
       hidden: false,
     });
-  } else if (dedicatedGatewayOriginallyEnabled === true && newValue === false) {
+  } else {
     currentValues.set("warningBanner", {
       value: { textTKey: "WarningBannerOnDelete" } as Description,
       hidden: false,
@@ -110,6 +121,10 @@ const onEnableDedicatedGatewayChange = (
   });
 
   currentValues.set("costPerHour", { value: costPerHourValue, hidden: hideAttributes });
+  currentValues.set("connectionString", {
+    value: connectionStringValue,
+    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+  });
 
   return currentValues;
 };
@@ -222,6 +237,7 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
     defaults.set("skuDetails", undefined);
     defaults.set("costPerHour", undefined);
+    defaults.set("connectionString", undefined);
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
@@ -231,6 +247,10 @@ export default class SqlX extends SelfServeBaseClass {
       defaults.set("costPerHour", { value: costPerHourValue });
       defaults.set("skuDetails", {
         value: { textTKey: getSKUDetails(`${defaults.get("sku").value}`), type: DescriptionType.Text } as Description,
+        hidden: false,
+      });
+      defaults.set("connectionString", {
+        value: connectionStringValue,
         hidden: false,
       });
     }
@@ -293,4 +313,10 @@ export default class SqlX extends SelfServeBaseClass {
     isDynamicDescription: true,
   })
   costPerHour: string;
+
+  @Values({
+    labelTKey: "ConnectionString",
+    isDynamicDescription: true,
+  })
+  connectionString: string;
 }
