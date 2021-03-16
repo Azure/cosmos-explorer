@@ -1,0 +1,292 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings Pane should render Default properly 1`] = `
+<div>
+  <div
+    className="contextual-pane-out"
+  />
+  <div
+    className="contextual-pane"
+    id="settingspane"
+  >
+    <div
+      className="contextual-pane-in"
+    >
+      <form
+        className="paneContentContainer"
+      >
+        <div
+          className="firstdivbg headerline"
+        >
+          <span
+            aria-level={2}
+            role="heading"
+          >
+            Settings
+          </span>
+          <div
+            aria-label="Close pane"
+            className="closeImg"
+            onClick={[Function]}
+            role="button"
+            tabIndex={0}
+          >
+            <img
+              alt="Close"
+              src=""
+              title="Close"
+            />
+          </div>
+        </div>
+        <div
+          className="paneMainContent"
+        >
+          <div>
+            <div
+              className="settingsSection"
+            >
+              <div
+                className="settingsSectionPart"
+              >
+                <div
+                  className="settingsSectionLabel"
+                >
+                  Enable cross-partition query
+                  <Tooltip>
+                    Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
+                  </Tooltip>
+                </div>
+                <StyledCheckboxBase
+                  ariaLabel="Enable cross partition query"
+                  checked={true}
+                  className="padding"
+                  onChange={[Function]}
+                  style={
+                    Object {
+                      "padding": "0",
+                    }
+                  }
+                  tabIndex={0}
+                />
+              </div>
+            </div>
+            <div
+              className="settingsSection"
+            >
+              <div
+                className="settingsSectionPart"
+              >
+                <div
+                  className="settingsSectionLabel"
+                >
+                  Max degree of parallelism
+                  <Tooltip>
+                    Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
+                  </Tooltip>
+                </div>
+                <CustomizedSpinButton
+                  ariaLabel="Max degree of parallelism"
+                  className="textfontclr"
+                  decrementButtonIcon={
+                    Object {
+                      "iconName": "ChevronDownSmall",
+                    }
+                  }
+                  disabled={false}
+                  id="max-degree"
+                  incrementButtonIcon={
+                    Object {
+                      "iconName": "ChevronUpSmall",
+                    }
+                  }
+                  label=""
+                  labelPosition={2}
+                  max={100}
+                  min={-1}
+                  onChange={[Function]}
+                  role="textbox"
+                  step={1}
+                  tabIndex={0}
+                  value="6"
+                />
+              </div>
+            </div>
+            <div
+              className="settingsSection"
+            >
+              <div
+                className="settingsSectionPart"
+              >
+                <div
+                  className="settingsSectionLabel"
+                >
+                  Explorer Version
+                </div>
+                <div />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="paneFooter"
+        >
+          <div
+            className="leftpanel-okbut"
+          >
+            <CustomizedPrimaryButton
+              onClick={[Function]}
+              type="submit"
+            >
+              Apply
+            </CustomizedPrimaryButton>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Settings Pane should render Gremlin properly 1`] = `
+<div>
+  <div
+    className="contextual-pane-out"
+  />
+  <div
+    className="contextual-pane"
+    id="settingspane"
+  >
+    <div
+      className="contextual-pane-in"
+    >
+      <form
+        className="paneContentContainer"
+      >
+        <div
+          className="firstdivbg headerline"
+        >
+          <span
+            aria-level={2}
+            role="heading"
+          >
+            Settings
+          </span>
+          <div
+            aria-label="Close pane"
+            className="closeImg"
+            onClick={[Function]}
+            role="button"
+            tabIndex={0}
+          >
+            <img
+              alt="Close"
+              src=""
+              title="Close"
+            />
+          </div>
+        </div>
+        <div
+          className="paneMainContent"
+        >
+          <div>
+            <div
+              className="settingsSection"
+            >
+              <div
+                className="settingsSectionPart"
+              >
+                <div
+                  className="settingsSectionLabel"
+                >
+                  Display Gremlin query results as: 
+                  <Tooltip>
+                    Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
+                  </Tooltip>
+                </div>
+                <div
+                  aria-label="Graph Auto-visualization"
+                  className="tabs"
+                  role="radiogroup"
+                >
+                  <div
+                    className="tab"
+                  >
+                    <input
+                      autoFocus={true}
+                      checked={true}
+                      defaultValue="false"
+                      id="graphAutoVizOn"
+                      name="graphAutoVizOption"
+                      onChange={[Function]}
+                      type="radio"
+                    />
+                    <label
+                      aria-checked={true}
+                      htmlFor="graphAutoVizOn"
+                      id="graph-display"
+                      onKeyPress={[Function]}
+                      role="radio"
+                      tabIndex={0}
+                    >
+                      Graph
+                    </label>
+                  </div>
+                  <div
+                    className="tab"
+                  >
+                    <input
+                      checked={true}
+                      defaultValue="true"
+                      id="graphAutoVizOff"
+                      name="graphAutoVizOption"
+                      onChange={[Function]}
+                      type="radio"
+                    />
+                    <label
+                      aria-checked={false}
+                      htmlFor="graphAutoVizOff"
+                      onKeyPress={[Function]}
+                      role="radio"
+                      tabIndex={0}
+                    >
+                      JSON
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="settingsSection"
+            >
+              <div
+                className="settingsSectionPart"
+              >
+                <div
+                  className="settingsSectionLabel"
+                >
+                  Explorer Version
+                </div>
+                <div />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          className="paneFooter"
+        >
+          <div
+            className="leftpanel-okbut"
+          >
+            <CustomizedPrimaryButton
+              onClick={[Function]}
+              type="submit"
+            >
+              Apply
+            </CustomizedPrimaryButton>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+`;

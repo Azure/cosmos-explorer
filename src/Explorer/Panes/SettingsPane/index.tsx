@@ -1,11 +1,13 @@
-import { PrimaryButton } from "office-ui-fabric-react";
-import React, { FunctionComponent, KeyboardEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Checkbox, PrimaryButton, SpinButton } from "office-ui-fabric-react";
+import React, { FunctionComponent, KeyboardEvent, MouseEvent, useEffect, useState } from "react";
+import closeBlack from "../../../../images/close-black.svg";
+import errorRed from "../../../../images/error_red.svg";
 import * as Constants from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
+import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import { Tooltip } from "./Tooltip";
 
 export interface SettingsPaneProps {
@@ -17,22 +19,22 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   closePanel,
   openNotificationConsole,
 }: SettingsPaneProps) => {
-  const [formErrors, setFormErrors] = useState("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState();
-  const [isExecuting, setIsExecuting] = useState(false);
-  const [pageOption, setPageOption] = useState("");
-  const [customItemPerPage, setCustomItemPerPage] = useState(0);
-  const [crossPartitionQueryEnabled, setCrossPartitionQueryEnabled] = useState(
+  const [formErrors, setFormErrors] = useState<string>("");
+  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [pageOption, setPageOption] = useState<string>("");
+  const [customItemPerPage, setCustomItemPerPage] = useState<number>(0);
+  const [crossPartitionQueryEnabled, setCrossPartitionQueryEnabled] = useState<boolean>(
     LocalStorageUtility.hasItem(StorageKey.IsCrossPartitionQueryEnabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
       : true
   );
-  const [graphAutoVizDisabled, setGraphAutoVizDisabled] = useState(
+  const [graphAutoVizDisabled, setGraphAutoVizDisabled] = useState<string>(
     LocalStorageUtility.hasItem(StorageKey.IsGraphAutoVizDisabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsGraphAutoVizDisabled)
       : "false"
   );
-  const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState(
+  const [maxDegreeOfParallelism, setMaxDegreeOfParallelism] = useState<number>(
     LocalStorageUtility.hasItem(StorageKey.MaxDegreeOfParellism)
       ? LocalStorageUtility.getEntryNumber(StorageKey.MaxDegreeOfParellism)
       : Constants.Queries.DefaultMaxDegreeOfParallelism
@@ -43,24 +45,11 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
 
-  const pageOptionsRef = useRef<HTMLLabelElement>();
-  const displayQueryRef = useRef<HTMLLabelElement>();
-  const maxDegreeRef = useRef<HTMLInputElement>();
-
   useEffect(() => {
     _loadSettings();
   }, []);
 
-  useLayoutEffect(() => {
-    if (userContext.apiType === "Gremlin") {
-      displayQueryRef?.current?.focus();
-    } else if (userContext.apiType === "Tables") {
-      maxDegreeRef?.current?.focus();
-    }
-    pageOptionsRef?.current?.focus();
-  }, []);
-
-  const submit = () => {
+  const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     setFormErrors("");
     setIsExecuting(true);
 
@@ -80,31 +69,31 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     }
 
     setIsExecuting(false);
-    NotificationConsoleUtils.logConsoleInfo(
+    logConsoleInfo(
       `Updated items per page setting to ${LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage)}`
     );
-    NotificationConsoleUtils.logConsoleInfo(
-      `${crossPartitionQueryEnabled ? "Enabled" : "Disabled"} cross-partition query feed option`
-    );
-    NotificationConsoleUtils.logConsoleInfo(
+    logConsoleInfo(`${crossPartitionQueryEnabled ? "Enabled" : "Disabled"} cross-partition query feed option`);
+    logConsoleInfo(
       `Updated the max degree of parallelism query feed option to ${LocalStorageUtility.getEntryNumber(
         StorageKey.MaxDegreeOfParellism
       )}`
     );
 
     if (shouldShowGraphAutoVizOption) {
-      NotificationConsoleUtils.logConsoleInfo(
+      logConsoleInfo(
         `Graph result will be displayed as ${
           LocalStorageUtility.getEntryBoolean(StorageKey.IsGraphAutoVizDisabled) ? "JSON" : "Graph"
         }`
       );
     }
 
-    NotificationConsoleUtils.logConsoleInfo(
+    logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`
     );
 
-    close();
+    closePanel();
+
+    e.preventDefault();
   };
 
   const isCustomPageOptionSelected = () => {
@@ -165,20 +154,20 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
       <div className="contextual-pane-out" />
       <div className="contextual-pane" id="settingspane">
         <div className="contextual-pane-in">
-          <form className="paneContentContainer" onSubmit={submit}>
+          <form className="paneContentContainer">
             <div className="firstdivbg headerline">
               <span role="heading" aria-level={2}>
                 Settings
               </span>
               <div className="closeImg" role="button" aria-label="Close pane" tabIndex={0} onClick={closePanel}>
-                <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+                <img src={closeBlack} title="Close" alt="Close" />
               </div>
             </div>
             {formErrors !== "" && (
               <div className="warningErrorContainer" aria-live="assertive">
                 <div className="warningErrorContent">
                   <span>
-                    <img className="paneErrorIcon" src="../../images/error_red.svg" alt="Error" />
+                    <img className="paneErrorIcon" src={errorRed} alt="Error" />
                   </span>
                   <span className="warningErrorDetailsLinkContainer">
                     <span className="formErrors" title={formErrors}>
@@ -221,7 +210,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                             id="custom-selection"
                             tabIndex={0}
                             role="radio"
-                            ref={pageOptionsRef}
                             aria-checked={isCustomPageOptionSelected()}
                             onKeyPress={onCustomPageOptionsKeyDown}
                           >
@@ -257,15 +245,15 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                             Query results per page
                             <Tooltip>Enter the number of query results that should be shown per page.</Tooltip>
                           </div>
-                          <input
-                            type="number"
-                            required
-                            value={customItemPerPage}
-                            onChange={(e) => setCustomItemPerPage(parseInt(e.target.value) || customItemPerPage)}
+
+                          <SpinButton
+                            ariaLabel="Custom query items per page"
+                            value={"" + customItemPerPage}
+                            onIncrement={(newValue) => setCustomItemPerPage(parseInt(newValue) || customItemPerPage)}
+                            onDecrement={(newValue) => setCustomItemPerPage(parseInt(newValue) || customItemPerPage)}
                             min={1}
                             step={1}
-                            className="textfontclr collid"
-                            aria-label="Custom query items per page"
+                            className="textfontclr"
                           />
                         </div>
                       )}
@@ -282,10 +270,12 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                           query is not scoped to single partition key value.
                         </Tooltip>
                       </div>
-                      <input
-                        type="checkbox"
+
+                      <Checkbox
+                        style={{ padding: "0" }}
+                        className="padding"
                         tabIndex={0}
-                        aria-label="Enable cross partition query"
+                        ariaLabel="Enable cross partition query"
                         checked={crossPartitionQueryEnabled}
                         onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
                       />
@@ -305,20 +295,21 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                         </Tooltip>
                       </div>
 
-                      <input
-                        type="number"
-                        required
+                      <SpinButton
                         min={-1}
                         step={1}
-                        className="textfontclr collid"
+                        className="textfontclr"
                         role="textbox"
                         tabIndex={0}
                         id="max-degree"
-                        ref={maxDegreeRef}
-                        value={maxDegreeOfParallelism}
-                        onChange={(e) => setMaxDegreeOfParallelism(parseInt(e.target.value) || maxDegreeOfParallelism)}
-                        aria-label="Max degree of parallelism"
-                        autoFocus
+                        value={"" + maxDegreeOfParallelism}
+                        onIncrement={(newValue) =>
+                          setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)
+                        }
+                        onDecrement={(newValue) =>
+                          setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)
+                        }
+                        ariaLabel="Max degree of parallelism"
                       />
                     </div>
                   </div>
@@ -341,6 +332,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                             name="graphAutoVizOption"
                             defaultValue="false"
                             checked={Boolean(graphAutoVizDisabled)}
+                            autoFocus={userContext.apiType === "Gremlin"}
                             onChange={() =>
                               setGraphAutoVizDisabled(graphAutoVizDisabled === "false" ? "true" : "false")
                             }
@@ -349,7 +341,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                             htmlFor="graphAutoVizOn"
                             id="graph-display"
                             tabIndex={0}
-                            ref={displayQueryRef}
                             role="radio"
                             aria-checked={graphAutoVizDisabled === "false"}
                             onKeyPress={onGraphDisplayResultsKeyDown}
@@ -392,7 +383,9 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
             </div>
             <div className="paneFooter">
               <div className="leftpanel-okbut">
-                <PrimaryButton type="submit">Apply</PrimaryButton>
+                <PrimaryButton type="submit" onClick={handlerOnSubmit}>
+                  Apply
+                </PrimaryButton>
               </div>
             </div>
           </form>
