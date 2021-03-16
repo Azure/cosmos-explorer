@@ -1,4 +1,4 @@
-import React from "react";
+import { TFunction } from "i18next";
 import {
   CommandBar,
   ICommandBarItemProps,
@@ -9,26 +9,26 @@ import {
   SpinnerSize,
   Stack,
 } from "office-ui-fabric-react";
+import promiseRetry, { AbortError } from "p-retry";
+import React from "react";
+import { Translation } from "react-i18next";
+import { sendMessage } from "../Common/MessageHandler";
+import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
+import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import "../i18n";
 import {
   AnyDisplay,
-  Node,
+  BooleanInput,
+  ChoiceInput,
+  DescriptionDisplay,
   InputType,
+  Node,
+  NumberInput,
   RefreshResult,
   SelfServeDescriptor,
   SmartUiInput,
-  DescriptionDisplay,
   StringInput,
-  NumberInput,
-  BooleanInput,
-  ChoiceInput,
 } from "./SelfServeTypes";
-import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { Translation } from "react-i18next";
-import { TFunction } from "i18next";
-import "../i18n";
-import { sendMessage } from "../Common/MessageHandler";
-import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
-import promiseRetry, { AbortError } from "p-retry";
 
 interface SelfServeNotification {
   message: string;
@@ -311,34 +311,29 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.performSave();
   };
 
-  public isDiscardButtonDisabled = (): boolean => {
-    if (this.state.isSaving) {
-      return true;
-    }
+  public isInputModified = (): boolean => {
     for (const key of this.state.currentValues.keys()) {
       const currentValue = JSON.stringify(this.state.currentValues.get(key));
       const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
 
       if (currentValue !== baselineValue) {
-        return false;
+        return true;
       }
     }
-    return true;
+    return false;
+  };
+
+  public isDiscardButtonDisabled = (): boolean => {
+    return (
+      this.state.isSaving ||
+      this.state.isInitializing ||
+      this.state.refreshResult?.isUpdateInProgress ||
+      !this.isInputModified()
+    );
   };
 
   public isSaveButtonDisabled = (): boolean => {
-    if (this.state.hasErrors || this.state.isSaving) {
-      return true;
-    }
-    for (const key of this.state.currentValues.keys()) {
-      const currentValue = JSON.stringify(this.state.currentValues.get(key));
-      const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
-
-      if (currentValue !== baselineValue) {
-        return false;
-      }
-    }
-    return true;
+    return this.state.hasErrors || this.isDiscardButtonDisabled();
   };
 
   private performRefresh = async (): Promise<void> => {
