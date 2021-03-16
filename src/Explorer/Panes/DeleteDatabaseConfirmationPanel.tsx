@@ -136,10 +136,10 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
 
   const isValid = (): boolean => {
     const { selectedDatabase } = props;
-    if (!selectedDatabase.id()) {
+    if (!(selectedDatabase && selectedDatabase.id())) {
       return false;
     }
-    return databaseInput === selectedDatabase.id();
+    return databaseInput === (selectedDatabase && selectedDatabase.id());
   };
 
   return (
