@@ -82,7 +82,7 @@
             "CostPerHourText": "Hourly cost of the dedicated gateway resource depends on the SKU selection and the number of instances used.",
             "SkuCostInfo": "Click here for more details on SKU pricing",
             "ConnectionString": "Connection String",
-            "ConnectionStringText": "Once provisioning is complete, to use dedicated gateway use the connection string shown in",
+            "ConnectionStringText": "To use dedicated gateway use the connection string shown in ",
             "KeysBlade": "the keys blade",
             "WarningBannerOnUpdate": "Your bill will be affected as you update your dedicated gateway settings. Please review the settings before saving your changes.",
             "WarningBannerOnDelete": "Deprovisioning dedicated gateway may impact performance and the connection string may need to be updated. Please review the settings before saving your changes"
