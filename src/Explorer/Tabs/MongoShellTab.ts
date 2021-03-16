@@ -13,8 +13,10 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import Explorer from "../Explorer";
 import { userContext } from "../../UserContext";
 import { configContext, Platform } from "../../ConfigContext";
+import template from "./MongoShellTab.html";
 
 export default class MongoShellTab extends TabsBase {
+  public static readonly component = { name: "mongo-shell-tab", template };
   public url: ko.Computed<string>;
   private _container: Explorer;
   private _runtimeEndpoint: string;

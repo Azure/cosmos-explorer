@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import TabsManagerTemplate from "./TabsManager.html";
 import Explorer from "../Explorer";
 import TabsBase from "./TabsBase";
 
@@ -81,15 +80,4 @@ export class TabsManager {
   public isTabActive(tabKind: ViewModels.CollectionTabKind): boolean {
     return this.activeTab() && this.activeTab().tabKind === tabKind;
   }
-}
-
-function TabsManagerWrapperViewModel(params: { data: TabsManager }) {
-  return params.data;
-}
-
-export function TabsManagerKOComponent(): unknown {
-  return {
-    viewModel: TabsManagerWrapperViewModel,
-    template: TabsManagerTemplate,
-  };
 }

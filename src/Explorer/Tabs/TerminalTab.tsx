@@ -7,6 +7,7 @@ import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import template from "./TerminalTab.html";
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
@@ -38,6 +39,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
 }
 
 export default class TerminalTab extends TabsBase {
+  public static readonly component = { name: "terminal-tab", template };
   private container: Explorer;
   private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
 

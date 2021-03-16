@@ -216,10 +216,7 @@ const App: React.FunctionComponent = () => {
               <SplashScreen explorer={explorer} />
             </form>
           </div>
-          <div
-            className="tabsManagerContainer"
-            data-bind='component: { name: "tabs-manager", params: {data: tabsManager} }'
-          />
+          <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div

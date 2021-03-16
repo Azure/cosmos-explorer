@@ -8,8 +8,10 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import UserDefinedFunction from "../Tree/UserDefinedFunction";
 import ScriptTabBase from "./ScriptTabBase";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import template from "./UserDefinedFunctionTab.html";
 
 export default class UserDefinedFunctionTab extends ScriptTabBase {
+  public static readonly component = { name: "user-defined-function-tab", template };
   public collection: ViewModels.Collection;
   public node: UserDefinedFunction;
   constructor(options: ViewModels.ScriptTabOption) {

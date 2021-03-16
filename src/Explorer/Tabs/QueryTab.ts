@@ -17,6 +17,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../Common/dataAccess/queryDocumentsPage";
+import template from "./QueryTab.html";
 
 enum ToggleState {
   Result,
@@ -24,6 +25,7 @@ enum ToggleState {
 }
 
 export default class QueryTab extends TabsBase implements ViewModels.WaitsForTemplate {
+  public static readonly component = { name: "query-tab", template };
   public queryEditorId: string;
   public executeQueryButton: ViewModels.Button;
   public fetchNextPageButton: ViewModels.Button;

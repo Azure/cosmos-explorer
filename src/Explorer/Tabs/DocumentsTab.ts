@@ -37,8 +37,10 @@ import { readDocument } from "../../Common/dataAccess/readDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
 import { createDocument } from "../../Common/dataAccess/createDocument";
+import template from "./DocumentsTab.html";
 
 export default class DocumentsTab extends TabsBase {
+  public static readonly component = { name: "documents-tab", template };
   public selectedDocumentId: ko.Observable<DocumentId>;
   public selectedDocumentContent: ViewModels.Editable<string>;
   public initialDocumentContent: ko.Observable<string>;

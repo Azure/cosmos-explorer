@@ -9,8 +9,10 @@ import * as Constants from "../../Common/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import template from "./SettingsTabV2.html";
 
 export class SettingsTabV2 extends TabsBase {
+  public static readonly component = { name: "collection-settings-tab-v2", template };
   public settingsComponentAdapter: SettingsComponentAdapter;
 
   constructor(options: ViewModels.TabOptions) {
@@ -87,6 +89,7 @@ export class CollectionSettingsTabV2 extends SettingsTabV2 {
 }
 
 export class DatabaseSettingsTabV2 extends SettingsTabV2 {
+  public static readonly component = { name: "database-settings-tab-v2", template };
   private notificationRead: ko.Observable<boolean>;
   private notification: DataModels.Notification;
 
