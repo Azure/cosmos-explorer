@@ -8,14 +8,13 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
-import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -67,7 +66,17 @@ const onEnableDedicatedGatewayChange = (
   currentValues: Map<string, SmartUiInput>,
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
+  currentValues.set("enableDedicatedGateway", { value: newValue });
   const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+  if (dedicatedGatewayOriginallyEnabled === newValue) {
+    currentValues.set("sku", baselineValues.get("sku"));
+    currentValues.set("instances", baselineValues.get("instances"));
+    currentValues.set("skuDetails", baselineValues.get("skuDetails"));
+    currentValues.set("costPerHour", baselineValues.get("costPerHour"));
+    currentValues.set("warningBanner", baselineValues.get("warningBanner"));
+    return currentValues;
+  }
+
   currentValues.set("warningBanner", undefined);
   if (dedicatedGatewayOriginallyEnabled === false && newValue === true) {
     currentValues.set("warningBanner", {
@@ -83,7 +92,6 @@ const onEnableDedicatedGatewayChange = (
   const sku = currentValues.get("sku");
   const instances = currentValues.get("instances");
   const hideAttributes = newValue === undefined || !(newValue as boolean);
-  currentValues.set("enableDedicatedGateway", { value: newValue });
   currentValues.set("sku", {
     value: sku.value,
     hidden: hideAttributes,
@@ -141,31 +149,12 @@ export default class SqlX extends SelfServeBaseClass {
 
     currentValues.set("warningBanner", undefined);
 
-    //TODO : Ad try catch for each RP call and return relevant notifications
+    //TODO : Add try catch for each RP call and return relevant notifications
     if (dedicatedGatewayOriginallyEnabled) {
       if (!dedicatedGatewayCurrentlyEnabled) {
         const operationStatusUrl = await deleteDedicatedGatewayResource();
         return {
           operationStatusUrl: operationStatusUrl,
-          portalNotification: {
-            initialize: {
-              titleTKey: "CreateInitializeTitle",
-              messageTKey: "CreateInitializeTitle",
-            },
-            success: {
-              titleTKey: "CreateSuccessTitle",
-              messageTKey: "CreateSuccesseMessage",
-            },
-            failure: {
-              titleTKey: "CreateFailureTitle",
-              messageTKey: "CreateFailureMessage",
-            },
-          },
-        };
-      } else {
-        // Check for scaling up/down/in/out
-        return {
-          operationStatusUrl: undefined,
           portalNotification: {
             initialize: {
               titleTKey: "DeleteInitializeTitle",
@@ -181,6 +170,25 @@ export default class SqlX extends SelfServeBaseClass {
             },
           },
         };
+      } else {
+        // Check for scaling up/down/in/out
+        return {
+          operationStatusUrl: undefined,
+          portalNotification: {
+            initialize: {
+              titleTKey: "UpdateInitializeTitle",
+              messageTKey: "UpdateInitializeMessage",
+            },
+            success: {
+              titleTKey: "UpdateSuccessTitle",
+              messageTKey: "UpdateSuccesseMessage",
+            },
+            failure: {
+              titleTKey: "UpdateFailureTitle",
+              messageTKey: "UpdateFailureMessage",
+            },
+          },
+        };
       }
     } else {
       const sku = currentValues.get("sku")?.value as string;
@@ -190,18 +198,16 @@ export default class SqlX extends SelfServeBaseClass {
         operationStatusUrl: operationStatusUrl,
         portalNotification: {
           initialize: {
-            titleTKey: "Provisioning resource",
-            messageTKey: "Dedicated Gateway resource will be provisioned.",
+            titleTKey: "CreateInitializeTitle",
+            messageTKey: "CreateInitializeTitle",
           },
           success: {
-            titleTKey: "Resource provisioned",
-            messageTKey: `Dedicated Gateway resource provisioned. Please go to <a href='${generateBladeLink(
-              BladeType.SqlKeys
-            )}'>keys blade</a> to use the keys.`,
+            titleTKey: "CreateSuccessTitle",
+            messageTKey: "CreateSuccesseMessage",
           },
           failure: {
-            titleTKey: "Provisioning resource failed.",
-            messageTKey: "Dedicated Gateway resource provisioning failed.",
+            titleTKey: "CreateFailureTitle",
+            messageTKey: "CreateFailureMessage",
           },
         },
       };

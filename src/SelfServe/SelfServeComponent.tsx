@@ -12,6 +12,7 @@ import {
 import promiseRetry, { AbortError } from "p-retry";
 import React from "react";
 import { Translation } from "react-i18next";
+import * as _ from "underscore";
 import { sendMessage } from "../Common/MessageHandler";
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
@@ -127,7 +128,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.props.descriptor.inputNames.map((inputName) => {
       let initialValue = initialValues.get(inputName);
       if (!initialValue) {
-        initialValue = { value: undefined, hidden: false };
+        initialValue = { value: undefined, hidden: false, disabled: false };
       }
       currentValues = currentValues.set(inputName, initialValue);
       baselineValues = baselineValues.set(inputName, initialValue);
@@ -313,10 +314,23 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
   public isInputModified = (): boolean => {
     for (const key of this.state.currentValues.keys()) {
-      const currentValue = JSON.stringify(this.state.currentValues.get(key));
-      const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
+      const currentValue = this.state.currentValues.get(key);
+      if (currentValue && currentValue.hidden === undefined) {
+        currentValue.hidden = false;
+      }
+      if (currentValue && currentValue.disabled === undefined) {
+        currentValue.disabled = false;
+      }
 
-      if (currentValue !== baselineValue) {
+      const baselineValue = this.state.baselineValues.get(key);
+      if (baselineValue && baselineValue.hidden === undefined) {
+        baselineValue.hidden = false;
+      }
+      if (baselineValue && baselineValue.disabled === undefined) {
+        baselineValue.disabled = false;
+      }
+
+      if (!_.isEqual(currentValue, baselineValue)) {
         return true;
       }
     }
