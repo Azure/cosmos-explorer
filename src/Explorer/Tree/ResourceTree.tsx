@@ -5,7 +5,7 @@ import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeCompo
 import * as ViewModels from "../../Contracts/ViewModels";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
-import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
@@ -179,15 +179,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps> {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
-          type: MostRecentActivity.Type.OpenCollection,
-          title: collection.id(),
-          description: "Data",
-          data: {
-            databaseId: collection.databaseId,
-            collectionId: collection.id(),
-          },
-        });
+        mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
       },
       isSelected: () =>
         this.isDataNodeSelected(collection.databaseId, collection.id(), [
@@ -492,7 +484,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps> {
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
-            this.pushItemToMostRecent(item);
+            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
           }
         });
       },
@@ -513,7 +505,7 @@ export class ResourceTree extends React.Component<ResourceTreeProps> {
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
-            this.pushItemToMostRecent(item);
+            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
           }
         });
       },
@@ -541,18 +533,6 @@ export class ResourceTree extends React.Component<ResourceTreeProps> {
     gitHubNotebooksTree.isAlphaSorted = true;
 
     return gitHubNotebooksTree;
-  }
-
-  private pushItemToMostRecent(item: NotebookContentItem) {
-    MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
-      type: MostRecentActivity.Type.OpenNotebook,
-      title: item.name,
-      description: "Notebook",
-      data: {
-        name: item.name,
-        path: item.path,
-      },
-    });
   }
 
   private buildChildNodes(

@@ -777,96 +777,88 @@ export default class Explorer {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });
 
-    // TODO move this to API customization class
-    this.defaultExperience.subscribe((defaultExperience) => {
-      const defaultExperienceNormalizedString = (
-        defaultExperience || Constants.DefaultAccountExperience.Default
-      ).toLowerCase();
-
-      switch (defaultExperienceNormalizedString) {
-        case Constants.DefaultAccountExperience.DocumentDB.toLowerCase():
-          this.addCollectionText("New Container");
-          this.addDatabaseText("New Database");
-          this.collectionTitle("SQL API");
-          this.collectionTreeNodeAltText("Container");
-          this.deleteCollectionText("Delete Container");
-          this.deleteDatabaseText("Delete Database");
-          this.addCollectionPane.title("Add Container");
-          this.addCollectionPane.collectionIdTitle("Container id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle(
-            "Provision dedicated throughput for this container"
-          );
-          this.deleteCollectionConfirmationPane.title("Delete Container");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
-          this.refreshTreeTitle("Refresh containers");
-          break;
-        case Constants.DefaultAccountExperience.MongoDB.toLowerCase():
-        case Constants.DefaultAccountExperience.ApiForMongoDB.toLowerCase():
-          this.addCollectionText("New Collection");
-          this.addDatabaseText("New Database");
-          this.collectionTitle("Collections");
-          this.collectionTreeNodeAltText("Collection");
-          this.deleteCollectionText("Delete Collection");
-          this.deleteDatabaseText("Delete Database");
-          this.addCollectionPane.title("Add Collection");
-          this.addCollectionPane.collectionIdTitle("Collection id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle(
-            "Provision dedicated throughput for this collection"
-          );
-          this.refreshTreeTitle("Refresh collections");
-          break;
-        case Constants.DefaultAccountExperience.Graph.toLowerCase():
-          this.addCollectionText("New Graph");
-          this.addDatabaseText("New Database");
-          this.deleteCollectionText("Delete Graph");
-          this.deleteDatabaseText("Delete Database");
-          this.collectionTitle("Gremlin API");
-          this.collectionTreeNodeAltText("Graph");
-          this.addCollectionPane.title("Add Graph");
-          this.addCollectionPane.collectionIdTitle("Graph id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-          this.deleteCollectionConfirmationPane.title("Delete Graph");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
-          this.refreshTreeTitle("Refresh graphs");
-          break;
-        case Constants.DefaultAccountExperience.Table.toLowerCase():
-          this.addCollectionText("New Table");
-          this.addDatabaseText("New Database");
-          this.deleteCollectionText("Delete Table");
-          this.deleteDatabaseText("Delete Database");
-          this.collectionTitle("Azure Table API");
-          this.collectionTreeNodeAltText("Table");
-          this.addCollectionPane.title("Add Table");
-          this.addCollectionPane.collectionIdTitle("Table id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
-          this.refreshTreeTitle("Refresh tables");
-          this.addTableEntityPane.title("Add Table Entity");
-          this.editTableEntityPane.title("Edit Table Entity");
-          this.deleteCollectionConfirmationPane.title("Delete Table");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.tableDataClient = new TablesAPIDataClient();
-          break;
-        case Constants.DefaultAccountExperience.Cassandra.toLowerCase():
-          this.addCollectionText("New Table");
-          this.addDatabaseText("New Keyspace");
-          this.deleteCollectionText("Delete Table");
-          this.deleteDatabaseText("Delete Keyspace");
-          this.collectionTitle("Cassandra API");
-          this.collectionTreeNodeAltText("Table");
-          this.addCollectionPane.title("Add Table");
-          this.addCollectionPane.collectionIdTitle("Table id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
-          this.refreshTreeTitle("Refresh tables");
-          this.addTableEntityPane.title("Add Table Row");
-          this.editTableEntityPane.title("Edit Table Row");
-          this.deleteCollectionConfirmationPane.title("Delete Table");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
-          this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
-          this.tableDataClient = new CassandraAPIDataClient();
-          break;
-      }
-    });
+    switch (userContext.apiType) {
+      case "SQL":
+        this.addCollectionText("New Container");
+        this.addDatabaseText("New Database");
+        this.collectionTitle("SQL API");
+        this.collectionTreeNodeAltText("Container");
+        this.deleteCollectionText("Delete Container");
+        this.deleteDatabaseText("Delete Database");
+        this.addCollectionPane.title("Add Container");
+        this.addCollectionPane.collectionIdTitle("Container id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle(
+          "Provision dedicated throughput for this container"
+        );
+        this.deleteCollectionConfirmationPane.title("Delete Container");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
+        this.refreshTreeTitle("Refresh containers");
+        break;
+      case "Mongo":
+        this.addCollectionText("New Collection");
+        this.addDatabaseText("New Database");
+        this.collectionTitle("Collections");
+        this.collectionTreeNodeAltText("Collection");
+        this.deleteCollectionText("Delete Collection");
+        this.deleteDatabaseText("Delete Database");
+        this.addCollectionPane.title("Add Collection");
+        this.addCollectionPane.collectionIdTitle("Collection id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle(
+          "Provision dedicated throughput for this collection"
+        );
+        this.refreshTreeTitle("Refresh collections");
+        break;
+      case "Gremlin":
+        this.addCollectionText("New Graph");
+        this.addDatabaseText("New Database");
+        this.deleteCollectionText("Delete Graph");
+        this.deleteDatabaseText("Delete Database");
+        this.collectionTitle("Gremlin API");
+        this.collectionTreeNodeAltText("Graph");
+        this.addCollectionPane.title("Add Graph");
+        this.addCollectionPane.collectionIdTitle("Graph id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
+        this.deleteCollectionConfirmationPane.title("Delete Graph");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
+        this.refreshTreeTitle("Refresh graphs");
+        break;
+      case "Tables":
+        this.addCollectionText("New Table");
+        this.addDatabaseText("New Database");
+        this.deleteCollectionText("Delete Table");
+        this.deleteDatabaseText("Delete Database");
+        this.collectionTitle("Azure Table API");
+        this.collectionTreeNodeAltText("Table");
+        this.addCollectionPane.title("Add Table");
+        this.addCollectionPane.collectionIdTitle("Table id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
+        this.refreshTreeTitle("Refresh tables");
+        this.addTableEntityPane.title("Add Table Entity");
+        this.editTableEntityPane.title("Edit Table Entity");
+        this.deleteCollectionConfirmationPane.title("Delete Table");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
+        this.tableDataClient = new TablesAPIDataClient();
+        break;
+      case "Cassandra":
+        this.addCollectionText("New Table");
+        this.addDatabaseText("New Keyspace");
+        this.deleteCollectionText("Delete Table");
+        this.deleteDatabaseText("Delete Keyspace");
+        this.collectionTitle("Cassandra API");
+        this.collectionTreeNodeAltText("Table");
+        this.addCollectionPane.title("Add Table");
+        this.addCollectionPane.collectionIdTitle("Table id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
+        this.refreshTreeTitle("Refresh tables");
+        this.addTableEntityPane.title("Add Table Row");
+        this.editTableEntityPane.title("Edit Table Row");
+        this.deleteCollectionConfirmationPane.title("Delete Table");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
+        this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
+        this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
+        this.tableDataClient = new CassandraAPIDataClient();
+        break;
+    }
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
 

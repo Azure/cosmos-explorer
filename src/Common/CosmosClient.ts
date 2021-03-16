@@ -1,10 +1,10 @@
 import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
 import { configContext, Platform } from "../ConfigContext";
-import { getErrorMessage } from "./ErrorHandlingUtils";
+import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
-import { userContext } from "../UserContext";
+import { getErrorMessage } from "./ErrorHandlingUtils";
 
 const _global = typeof self === "undefined" ? window : self;
 
