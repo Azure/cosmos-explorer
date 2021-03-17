@@ -5,6 +5,7 @@ import { configContext, Platform } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as SharedConstants from "../../../../Shared/Constants";
+import { userContext } from "../../../../UserContext";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
 import Explorer from "../../../Explorer";
 import {
@@ -79,7 +80,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getMaxRUs = (): number => {
-    if (this.props.container?.isTryCosmosDBSubscription()) {
+    if (userContext.isTryCosmosDBSubscription) {
       return Constants.TryCosmosExperience.maxRU;
     }
 
@@ -91,7 +92,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getMinRUs = (): number => {
-    if (this.props.container?.isTryCosmosDBSubscription()) {
+    if (userContext.isTryCosmosDBSubscription) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     }
 

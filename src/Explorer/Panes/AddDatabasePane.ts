@@ -169,7 +169,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.canRequestSupport = ko.pureComputed(() => {
       if (
         configContext.platform !== Platform.Emulator &&
-        !this.container.isTryCosmosDBSubscription() &&
+        !userContext.isTryCosmosDBSubscription &&
         configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this.throughput();

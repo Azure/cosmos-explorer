@@ -223,7 +223,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     });
 
     this.canRequestSupport = ko.pureComputed(() => {
-      if (configContext.platform !== Platform.Emulator && !this.container.isTryCosmosDBSubscription()) {
+      if (configContext.platform !== Platform.Emulator && !userContext.isTryCosmosDBSubscription) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;
       }
