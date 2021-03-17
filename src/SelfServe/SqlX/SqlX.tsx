@@ -19,11 +19,11 @@ import {
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
-  textTKey: "CostPerHourText",
+  textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
     href: "https://azure.microsoft.com/en-us/pricing/details/virtual-machines/windows/",
-    textTKey: "SkuCostInfo",
+    textTKey: "DedicatedGatewayPricing",
   },
 };
 
@@ -91,12 +91,24 @@ const onEnableDedicatedGatewayChange = (
   currentValues.set("warningBanner", undefined);
   if (newValue === true) {
     currentValues.set("warningBanner", {
-      value: { textTKey: "WarningBannerOnUpdate" } as Description,
+      value: {
+        textTKey: "WarningBannerOnUpdate",
+        link: {
+          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+          textTKey: "DedicatedGatewayPricing",
+        },
+      } as Description,
       hidden: false,
     });
   } else {
     currentValues.set("warningBanner", {
-      value: { textTKey: "WarningBannerOnDelete" } as Description,
+      value: {
+        textTKey: "WarningBannerOnDelete",
+        link: {
+          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+          textTKey: "DeprovisioningDetailsText",
+        },
+      } as Description,
       hidden: false,
     });
   }
@@ -309,7 +321,7 @@ export default class SqlX extends SelfServeBaseClass {
   instances: number;
 
   @Values({
-    labelTKey: "CostPerHour",
+    labelTKey: "Cost",
     isDynamicDescription: true,
   })
   costPerHour: string;

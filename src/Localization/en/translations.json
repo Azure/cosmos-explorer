@@ -37,11 +37,13 @@
             "OnSaveFailureMessage": "Data save operation not currently permitted."
         },
         "SqlX": {
-            "DedicatedGatewayDescription": "Provision dedicated gateways for Azure CosmosDB accounts. Dedicated gateways may improve performance in certain scenarios. For details, ",
+            "DedicatedGatewayDescription": "Provision a dedicated gateway cluster for your Azure Cosmos DB account. A dedicated gateway is compute that is a front-end to data in your Azure Cosmos DB account. Your dedicated gateway automatically includes the integrated cache, which can improve read performance. ",
             "DedicatedGateway": "Dedicated Gateway",
             "Enable": "Enable",
             "Disable": "Disable",
-            "LearnAboutDedicatedGateway": "read more about dedicated gateway.",
+            "LearnAboutDedicatedGateway": "Learn more about dedicated gateway.",
+            "DeprovisioningDetailsText": "Learn more about deprovisioning the dedicated gateway.",
+            "DedicatedGatewayPricing": "Learn more about dedicated gateway pricing",
             "SKUs": "SKUs",
             "SKUsPlaceHolder": "Select SKUs",
             "NumberOfInstances": "Number of instances",
@@ -78,14 +80,13 @@
             "CosmosD8Details": "General Purpose Cosmos Compute with 8 vCPUs, 32 GB Memory",
             "CosmosD16Details": "General Purpose Cosmos Compute with 16 vCPUs, 64 GB Memory",
             "CosmosD32Details": "General Purpose Cosmos Compute with 32 vCPUs, 128 GB Memory",
-            "CostPerHour": "Cost / hour",
-            "CostPerHourText": "Hourly cost of the dedicated gateway resource depends on the SKU selection and the number of instances used.",
-            "SkuCostInfo": "Click here for more details on SKU pricing",
+            "Cost": "Cost",
+            "CostText": "Hourly cost of the dedicated gateway resource depends on the SKU selection and number of instances used.",
             "ConnectionString": "Connection String",
             "ConnectionStringText": "To use the dedicated gateway, use the connection string shown in ",
             "KeysBlade": "the keys blade",
-            "WarningBannerOnUpdate": "Your bill will be affected as you update your dedicated gateway settings. Please review the settings before saving your changes.",
-            "WarningBannerOnDelete": "Deprovisioning dedicated gateway may impact performance and the connection string may need to be updated. Please review the settings before saving your changes"
+            "WarningBannerOnUpdate": "Adding or modifying dedicated gateway nodes may affect your bill.",
+            "WarningBannerOnDelete": "After deprovisioning the dedicated gateway, you must update any applications using the old dedicated gateway connection string."
         }
     }
 }
