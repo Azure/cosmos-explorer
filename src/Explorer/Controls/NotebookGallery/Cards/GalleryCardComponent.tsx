@@ -47,6 +47,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
   private static readonly cardItemGapBig = 10;
   private static readonly cardItemGapSmall = 8;
   private static readonly cardDeleteSpinnerHeight = 360;
+  private static readonly smallTextLineHeight = 18;
 
   constructor(props: GalleryCardComponentProps) {
     super(props);
@@ -103,7 +104,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
             </Card.Item>
 
             <Card.Section styles={{ root: { padding: GalleryCardComponent.cardItemGapBig } }}>
-              <Text variant="small" nowrap styles={{ root: { height: 18 } }}>
+              <Text variant="small" nowrap styles={{ root: { height: GalleryCardComponent.smallTextLineHeight } }}>
                 {this.props.data.tags ? (
                   this.props.data.tags.map((tag, index, array) => (
                     <span key={tag}>
@@ -129,7 +130,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
                 {cardTitle}
               </Text>
 
-              <Text variant="small" styles={{ root: { height: 36 } }}>
+              <Text variant="small" styles={{ root: { height: GalleryCardComponent.smallTextLineHeight * 2 } }}>
                 {this.renderTruncatedDescription()}
               </Text>
 
