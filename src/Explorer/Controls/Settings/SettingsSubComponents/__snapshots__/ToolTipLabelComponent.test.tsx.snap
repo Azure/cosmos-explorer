@@ -41,7 +41,7 @@ exports[`ToolTipLabelComponent renders 1`] = `
         }
       }
     >
-      <StyledIconBase
+      <Icon
         ariaLabel="Info"
         iconName="Info"
         styles={

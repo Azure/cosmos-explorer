@@ -285,6 +285,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
             <StyledWithResponsiveMode
               aria-labelledby="database-label"
               disabled={true}
+              dropdownWidth="auto"
               id="database-dropdown-input"
               onChange={[Function]}
               options={
@@ -606,6 +607,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
             </StyledLabelBase>
             <StyledWithResponsiveMode
               aria-labelledby="database-label"
+              dropdownWidth="auto"
               id="database-dropdown-input"
               onChange={[Function]}
               options={
