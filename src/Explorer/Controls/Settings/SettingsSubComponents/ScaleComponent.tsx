@@ -1,23 +1,24 @@
+import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
-import * as ViewModels from "../../../../Contracts/ViewModels";
+import { configContext, Platform } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
+import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as SharedConstants from "../../../../Shared/Constants";
+import { userContext } from "../../../../UserContext";
+import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
 import Explorer from "../../../Explorer";
 import {
   getTextFieldStyles,
-  subComponentStackProps,
-  titleAndInputStackProps,
-  throughputUnit,
   getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
+  subComponentStackProps,
+  throughputUnit,
+  titleAndInputStackProps,
   updateThroughputBeyondLimitWarningMessage,
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
-import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Link, Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
-import { configContext, Platform } from "../../../../ConfigContext";
+import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
@@ -79,7 +80,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getMaxRUs = (): number => {
-    if (this.props.container?.isTryCosmosDBSubscription()) {
+    if (userContext.isTryCosmosDBSubscription) {
       return Constants.TryCosmosExperience.maxRU;
     }
 
@@ -91,7 +92,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getMinRUs = (): number => {
-    if (this.props.container?.isTryCosmosDBSubscription()) {
+    if (userContext.isTryCosmosDBSubscription) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     }
 

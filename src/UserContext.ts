@@ -20,11 +20,12 @@ interface UserContext {
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
   apiType?: ApiType;
+  isTryCosmosDBSubscription?: boolean;
 }
 
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 
-const userContext: UserContext = {};
+const userContext: UserContext = { isTryCosmosDBSubscription: false };
 
 function updateUserContext(newContext: UserContext): void {
   Object.assign(userContext, newContext);

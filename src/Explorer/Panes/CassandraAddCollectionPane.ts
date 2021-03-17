@@ -1,21 +1,21 @@
-import * as _ from "underscore";
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
-import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as PricingUtils from "../../Utils/PricingUtils";
-import * as SharedConstants from "../../Shared/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
-import { ContextualPaneBase } from "./ContextualPaneBase";
+import * as _ from "underscore";
+import * as Constants from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
+import * as SharedConstants from "../../Shared/Constants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../Utils/PricingUtils";
+import { CassandraAPIDataClient } from "../Tables/TableDataClient";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -215,7 +215,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     });
 
     this.canRequestSupport = ko.pureComputed(() => {
-      if (configContext.platform !== Platform.Emulator && !this.container.isTryCosmosDBSubscription()) {
+      if (configContext.platform !== Platform.Emulator && !userContext.isTryCosmosDBSubscription) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;
       }

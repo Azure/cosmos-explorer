@@ -1,22 +1,22 @@
-import * as _ from "underscore";
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
-import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as PricingUtils from "../../Utils/PricingUtils";
-import * as SharedConstants from "../../Shared/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { SubscriptionType } from "../../Contracts/SubscriptionType";
-import editable from "../../Common/EditableUtility";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { configContext, Platform } from "../../ConfigContext";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
+import * as _ from "underscore";
+import * as Constants from "../../Common/Constants";
 import { createCollection } from "../../Common/dataAccess/createCollection";
+import editable from "../../Common/EditableUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { configContext, Platform } from "../../ConfigContext";
+import * as DataModels from "../../Contracts/DataModels";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
+import * as SharedConstants from "../../Shared/Constants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../Utils/PricingUtils";
+import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export interface AddCollectionPaneOptions extends ViewModels.PaneOptions {
   isPreferredApiTable: ko.Computed<boolean>;
@@ -49,7 +49,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public throughputDatabase: ViewModels.Editable<number>;
   public isPreferredApiTable: ko.Computed<boolean>;
   public partitionKeyPlaceholder: ko.Computed<string>;
-  public isTryCosmosDBSubscription: ko.Computed<boolean>;
+  public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public maxThroughputRU: ko.Observable<number>;
   public minThroughputRU: ko.Observable<number>;
   public throughputRangeText: ko.Computed<string>;
@@ -285,9 +285,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return estimatedSpend;
     });
 
-    this.isTryCosmosDBSubscription = ko.pureComputed<boolean>(() => {
-      return (this.container && this.container.isTryCosmosDBSubscription()) || false;
-    });
+    this.isTryCosmosDBSubscription = ko.observable<boolean>(userContext.isTryCosmosDBSubscription || false);
 
     this.isTryCosmosDBSubscription.subscribe((isTryCosmosDB: boolean) => {
       if (!!isTryCosmosDB) {
@@ -298,7 +296,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.canRequestSupport = ko.pureComputed(() => {
       if (
         configContext.platform !== Platform.Emulator &&
-        !this.container.isTryCosmosDBSubscription() &&
+        !userContext.isTryCosmosDBSubscription &&
         configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this._getThroughput();

@@ -945,7 +945,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isSparkEnabledForAccount": [Function],
                 "isSynapseLinkUpdating": [Function],
                 "isTabsContentExpanded": [Function],
-                "isTryCosmosDBSubscription": [Function],
                 "loadQueryPane": LoadQueryPane {
                   "container": [Circular],
                   "files": [Function],
@@ -2145,7 +2144,6 @@ exports[`SettingsComponent renders 1`] = `
               "isSparkEnabledForAccount": [Function],
               "isSynapseLinkUpdating": [Function],
               "isTabsContentExpanded": [Function],
-              "isTryCosmosDBSubscription": [Function],
               "loadQueryPane": LoadQueryPane {
                 "container": [Circular],
                 "files": [Function],
@@ -3358,7 +3356,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isSparkEnabledForAccount": [Function],
                 "isSynapseLinkUpdating": [Function],
                 "isTabsContentExpanded": [Function],
-                "isTryCosmosDBSubscription": [Function],
                 "loadQueryPane": LoadQueryPane {
                   "container": [Circular],
                   "files": [Function],
@@ -4558,7 +4555,6 @@ exports[`SettingsComponent renders 1`] = `
               "isSparkEnabledForAccount": [Function],
               "isSynapseLinkUpdating": [Function],
               "isTabsContentExpanded": [Function],
-              "isTryCosmosDBSubscription": [Function],
               "loadQueryPane": LoadQueryPane {
                 "container": [Circular],
                 "files": [Function],
