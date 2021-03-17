@@ -349,8 +349,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               !this.isAuthWithResourceToken() &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
+              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                this.isFeatureEnabled(Constants.Features.enableNotebooks))
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -372,7 +372,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                this.isFeatureEnabled(Constants.Features.enableSpark)
+              this.isFeatureEnabled(Constants.Features.enableSpark)
             );
             if (this.isSparkEnabled()) {
               appInsights.trackEvent(
@@ -2006,7 +2006,11 @@ export default class Explorer {
     }
 
     const databaseAccount = this.databaseAccount();
-    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
+    const databaseAccountLocations = databaseAccount && [
+      databaseAccount?.location.toLowerCase(),
+      ...databaseAccount?.properties?.readLocations?.map(location => location?.locationName?.toLowerCase()),
+      ...databaseAccount?.properties?.writeLocations?.map(location => location?.locationName?.toLowerCase())
+    ];
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
@@ -2031,9 +2035,15 @@ export default class Explorer {
         this.isNotebooksEnabledForAccount(true);
         return;
       }
-      const isAccountInAllowedLocation = !disallowedLocations.some(
-        (disallowedLocation) => disallowedLocation === databaseAccountLocation
-      );
+      const isAccountInAllowedLocation = databaseAccountLocations?.some(
+        (accountLocation) => {
+          if (!accountLocation) {
+            return false;
+          }
+
+          return !disallowedLocations.some(disallowedLocation => disallowedLocation === accountLocation); // not a disallowed location
+        }
+      ) || false;
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
@@ -2532,12 +2542,12 @@ export default class Explorer {
     this.isFeatureEnabled(Constants.Features.enableKOPanel)
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
-          "Delete Collection",
-          <DeleteCollectionConfirmationPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+        "Delete Collection",
+        <DeleteCollectionConfirmationPanel
+          explorer={this}
+          closePanel={() => this.closeSidePanel()}
+          openNotificationConsole={() => this.expandConsole()}
+        />
+      );
   }
 }
