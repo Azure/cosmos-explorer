@@ -157,12 +157,9 @@ const App: React.FunctionComponent = () => {
                     </div>
                   </div>
                   {userContext.authType === AuthType.ResourceToken ? (
-                    <div
-                      style={{ overflowY: "auto" }}
-                      data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
-                    />
+                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
                   ) : (
-                    <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
+                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
                   )}
                 </div>
                 {/*  Collections Window - End */}
