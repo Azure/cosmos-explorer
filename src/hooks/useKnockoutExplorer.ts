@@ -159,7 +159,6 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
   explorer.configure({
     databaseAccount,
     features: extractFeatures(),
-    isAuthWithresourceToken: true,
   });
   explorer.isRefreshingExplorer(false);
   return explorer;

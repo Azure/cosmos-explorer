@@ -37,6 +37,7 @@ import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
+import { AuthType } from "./AuthType";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
@@ -65,6 +66,7 @@ import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/is-integer-polyfill";
 import "./Libs/jquery";
 import "./Shared/appInsights";
+import { userContext } from "./UserContext";
 
 initializeIcons();
 
@@ -154,11 +156,14 @@ const App: React.FunctionComponent = () => {
                       </div>
                     </div>
                   </div>
-                  <div
-                    style={{ overflowY: "auto" }}
-                    data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
-                  />
-                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
+                  {userContext.authType === AuthType.ResourceToken ? (
+                    <div
+                      style={{ overflowY: "auto" }}
+                      data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
+                    />
+                  ) : (
+                    <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
+                  )}
                 </div>
                 {/*  Collections Window - End */}
               </div>
