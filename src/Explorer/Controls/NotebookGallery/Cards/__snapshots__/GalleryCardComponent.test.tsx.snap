@@ -50,6 +50,13 @@ exports[`GalleryCardComponent renders 1`] = `
   >
     <Text
       nowrap={true}
+      styles={
+        Object {
+          "root": Object {
+            "height": 18,
+          },
+        }
+      }
       variant="small"
     >
       <span
