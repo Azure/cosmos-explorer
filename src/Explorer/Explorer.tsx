@@ -56,6 +56,7 @@ import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmati
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
@@ -2534,6 +2535,19 @@ export default class Explorer {
       : this.openSidePanel(
           "Delete Collection",
           <DeleteCollectionConfirmationPanel
+            explorer={this}
+            closePanel={() => this.closeSidePanel()}
+            openNotificationConsole={() => this.expandConsole()}
+          />
+        );
+  }
+
+  public openExecuteSprocParamsPanel(): void {
+    false
+      ? this.executeSprocParamsPane.open()
+      : this.openSidePanel(
+          "Input parameters",
+          <ExecuteSprocParamsPanel
             explorer={this}
             closePanel={() => this.closeSidePanel()}
             openNotificationConsole={() => this.expandConsole()}
