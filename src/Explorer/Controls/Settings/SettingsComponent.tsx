@@ -874,6 +874,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
+  public getMongoIndexTabContent = (
+    mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps
+  ): JSX.Element => {
+    if (userContext.authType === AuthType.AAD) {
+      if (this.container.isEnableMongoCapabilityPresent()) {
+        return <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />;
+      }
+      return undefined;
+    }
+    return mongoIndexingPolicyAADError;
+  };
+
   public render(): JSX.Element {
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
@@ -991,15 +1003,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />,
       });
     } else if (this.container.isPreferredApiMongoDB()) {
-      if (this.container.isEnableMongoCapabilityPresent()) {
+      const mongoIndexTabContext = this.getMongoIndexTabContent(mongoIndexingPolicyComponentProps);
+      if (mongoIndexTabContext) {
         tabs.push({
           tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />,
-        });
-      } else {
-        tabs.push({
-          tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: mongoIndexingPolicyAADError,
+          content: mongoIndexTabContext,
         });
       }
     }
