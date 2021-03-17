@@ -45,7 +45,7 @@ import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
-import { ExplorerParams } from "./Explorer/Explorer";
+import Explorer, { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Graph/NewVertexComponent/newVertexComponent.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
@@ -60,6 +60,7 @@ import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Tabs/QueryTab.less";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
+import { useNotebooks } from "./hooks/useNotebooks";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/is-integer-polyfill";
@@ -87,6 +88,18 @@ const App: React.FunctionComponent = () => {
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
 
+  // TODO Figure out a better pattern: this is because we don't have container, yet
+  const context: { container: Explorer } = { container: undefined };
+  const {
+    lastRefreshTime,
+    galleryContentRoot,
+    myNotebooksContentRoot,
+    gitHubNotebooksContentRoot,
+    refreshList,
+    initializeGitHubRepos,
+    getMyNotebooksContentRoot,
+  } = useNotebooks(context);
+
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
     setNotificationConsoleData,
@@ -95,10 +108,14 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
     openDialog,
     closeDialog,
+    onRefreshNotebookList: refreshList,
+    initializeGitHubRepos,
+    getMyNotebooksContentRoot,
   };
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
+  context.container = explorer;
   if (!explorer) {
     return <LoadingExplorer />;
   }
@@ -158,7 +175,15 @@ const App: React.FunctionComponent = () => {
                     style={{ overflowY: "auto" }}
                     data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
                   />
-                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
+                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken()">
+                    <ResourceTree
+                      explorer={explorer}
+                      lastRefreshedTime={lastRefreshTime}
+                      galleryContentRoot={galleryContentRoot}
+                      myNotebooksContentRoot={myNotebooksContentRoot}
+                      gitHubNotebooksContentRoot={gitHubNotebooksContentRoot}
+                    />
+                  </div>
                 </div>
                 {/*  Collections Window - End */}
               </div>

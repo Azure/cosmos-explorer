@@ -18,11 +18,13 @@ export class NotebookContentClient {
   /**
    * This updates the item and points all the children's parent to this item
    * @param item
+   * @return updated item
    */
-  public updateItemChildren(item: NotebookContentItem): Promise<void> {
+  public updateItemChildren(item: NotebookContentItem): Promise<NotebookContentItem> {
     return this.fetchNotebookFiles(item.path).then((subItems) => {
       item.children = subItems;
       subItems.forEach((subItem) => (subItem.parent = item));
+      return item;
     });
   }
 
