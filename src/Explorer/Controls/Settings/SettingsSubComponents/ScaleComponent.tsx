@@ -173,7 +173,6 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       databaseAccount={this.props.container.databaseAccount()}
       databaseName={this.databaseId}
       collectionName={this.collectionId}
-      serverId={this.props.container.serverId()}
       throughput={this.props.throughput}
       throughputBaseline={this.props.throughputBaseline}
       onThroughputChange={this.props.onThroughputChange}

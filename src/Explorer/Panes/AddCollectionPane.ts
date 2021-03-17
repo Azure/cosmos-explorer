@@ -186,7 +186,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId: string = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -200,23 +199,28 @@ export default class AddCollectionPane extends ContextualPaneBase {
       if (!this.isSharedAutoPilotSelected()) {
         throughputSpendAckText = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isSharedAutoPilotSelected()
         );
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+          offerThroughput,
+          userContext.portalEnv,
+          regions,
+          multimaster
+        );
       } else {
         throughputSpendAckText = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.sharedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isSharedAutoPilotSelected()
         );
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.sharedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
@@ -240,7 +244,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId: string = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -254,28 +257,28 @@ export default class AddCollectionPane extends ContextualPaneBase {
       if (!this.isAutoPilotSelected()) {
         throughputSpendAckText = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.throughputMultiPartition(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
         );
         estimatedSpend = PricingUtils.getEstimatedSpendHtml(
           this.throughputMultiPartition(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
       } else {
         throughputSpendAckText = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.autoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
         );
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.autoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
@@ -487,7 +490,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     this.upsellMessage = ko.pureComputed<string>(() => {
       return PricingUtils.getUpsellMessage(
-        this.container.serverId(),
+        userContext.portalEnv,
         this.isFreeTierAccount(),
         this.container.isFirstResourceCreated(),
         this.container.defaultExperience(),

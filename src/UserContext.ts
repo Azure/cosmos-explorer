@@ -21,11 +21,13 @@ interface UserContext {
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
   apiType?: ApiType;
   isTryCosmosDBSubscription?: boolean;
+  portalEnv?: PortalEnv;
 }
 
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
+export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
-const userContext: UserContext = { isTryCosmosDBSubscription: false };
+const userContext: UserContext = { isTryCosmosDBSubscription: false, portalEnv: "prod" };
 
 function updateUserContext(newContext: UserContext): void {
   Object.assign(userContext, newContext);

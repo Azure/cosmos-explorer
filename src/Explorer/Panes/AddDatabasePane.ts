@@ -122,7 +122,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -134,10 +133,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
       let estimatedSpendAcknowledge: string;
       let estimatedSpend: string;
       if (!this.isAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+          offerThroughput,
+          userContext.portalEnv,
+          regions,
+          multimaster
+        );
         estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -145,13 +149,13 @@ export default class AddDatabasePane extends ContextualPaneBase {
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.maxAutoPilotThroughputSet(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
         estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.maxAutoPilotThroughputSet(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -239,7 +243,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
 
     this.upsellMessage = ko.pureComputed<string>(() => {
       return PricingUtils.getUpsellMessage(
-        this.container.serverId(),
+        userContext.portalEnv,
         this.isFreeTierAccount(),
         this.container.isFirstResourceCreated(),
         this.container.defaultExperience(),

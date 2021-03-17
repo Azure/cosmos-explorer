@@ -127,7 +127,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -139,10 +138,15 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       let estimatedSpend: string;
       let estimatedDedicatedSpendAcknowledge: string;
       if (!this.isAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+          offerThroughput,
+          userContext.portalEnv,
+          regions,
+          multimaster
+        );
         estimatedDedicatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -150,13 +154,13 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.selectedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
         estimatedDedicatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.selectedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -172,7 +176,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -183,10 +186,15 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       let estimatedSpend: string;
       let estimatedSharedSpendAcknowledge: string;
       if (!this.isSharedAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(this.keyspaceThroughput(), serverId, regions, multimaster);
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+          this.keyspaceThroughput(),
+          userContext.portalEnv,
+          regions,
+          multimaster
+        );
         estimatedSharedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.keyspaceThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isSharedAutoPilotSelected()
@@ -194,13 +202,13 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.sharedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
         estimatedSharedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.sharedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isSharedAutoPilotSelected()
