@@ -1192,7 +1192,12 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
     }
   }
   openNotificationConsole={[Function]}
-  selectedDatabase={null}
+  selectedDatabase={
+    Object {
+      "collections": [Function],
+      "id": [Function],
+    }
+  }
 >
   <div
     className="panelContentContainer"

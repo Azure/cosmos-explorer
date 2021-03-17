@@ -1,10 +1,14 @@
 jest.mock("../../Common/dataAccess/deleteDatabase");
 jest.mock("../../Shared/Telemetry/TelemetryProcessor");
 import { mount, ReactWrapper, shallow } from "enzyme";
+import * as ko from "knockout";
 import React from "react";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
-import { DatabaseAccount } from "../../Contracts/DataModels";
+import DeleteFeedback from "../../Common/DeleteFeedback";
+import { ApiKind, DatabaseAccount } from "../../Contracts/DataModels";
+import { Collection, Database } from "../../Contracts/ViewModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
@@ -18,11 +22,15 @@ describe("Delete Database Confirmation Pane", () => {
       fakeExplorer.isLastCollection = () => true;
       fakeExplorer.isSelectedDatabaseShared = () => false;
 
+      const database = {} as Database;
+      database.collections = ko.observableArray<Collection>([{} as Collection]);
+      database.id = ko.observable<string>("testDatabse");
+
       const props = {
         explorer: fakeExplorer,
         closePanel: (): void => undefined,
         openNotificationConsole: (): void => undefined,
-        selectedDatabase: fakeExplorer.findSelectedDatabase(),
+        selectedDatabase: database,
       };
 
       const wrapper = shallow(<DeleteDatabaseConfirmationPanel {...props} />);
@@ -67,12 +75,17 @@ describe("Delete Database Confirmation Pane", () => {
     });
 
     beforeEach(() => {
+      const database = {} as Database;
+      database.collections = ko.observableArray<Collection>([{} as Collection]);
+      database.id = ko.observable<string>(selectedDatabaseId);
+
       const props = {
         explorer: fakeExplorer,
         closePanel: (): void => undefined,
         openNotificationConsole: (): void => undefined,
-        selectedDatabase: fakeExplorer.findSelectedDatabase(),
+        selectedDatabase: database,
       };
+
       wrapper = mount(<DeleteDatabaseConfirmationPanel {...props} />);
       props.explorer.isLastNonEmptyDatabase = () => true;
       wrapper.setProps(props);
@@ -81,17 +94,24 @@ describe("Delete Database Confirmation Pane", () => {
     it("Should call delete database", () => {
       expect(wrapper).toMatchSnapshot();
       expect(wrapper.exists("#confirmDatabaseId")).toBe(true);
-      expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("click");
+
       wrapper
         .find("#confirmDatabaseId")
         .hostNodes()
         .simulate("change", { target: { value: selectedDatabaseId } });
+      expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
+      wrapper.find("#sidePanelOkButton").hostNodes().simulate("click");
+      expect(deleteDatabase).toHaveBeenCalledWith(selectedDatabaseId);
       wrapper.unmount();
     });
 
     it("should record feedback", async () => {
       expect(wrapper.exists("#confirmDatabaseId")).toBe(true);
+      wrapper
+        .find("#confirmDatabaseId")
+        .hostNodes()
+        .simulate("change", { target: { value: selectedDatabaseId } });
+
       expect(wrapper.exists("#deleteDatabaseFeedbackInput")).toBe(true);
       const feedbackText = "Test delete Database feedback text";
       wrapper
@@ -101,6 +121,18 @@ describe("Delete Database Confirmation Pane", () => {
 
       expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
       wrapper.find("#sidePanelOkButton").hostNodes().simulate("click");
+      expect(deleteDatabase).toHaveBeenCalledWith(selectedDatabaseId);
+
+      const deleteFeedback = new DeleteFeedback(
+        "testDatabaseAccountId",
+        "testDatabaseAccountName",
+        ApiKind.SQL,
+        feedbackText
+      );
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      expect(TelemetryProcessor.trace).toHaveBeenCalledWith(Action.DeleteDatabase, ActionModifiers.Mark, {
+        message: JSON.stringify(deleteFeedback, Object.getOwnPropertyNames(deleteFeedback)),
+      });
       wrapper.unmount();
     });
   });
