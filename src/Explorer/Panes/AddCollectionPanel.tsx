@@ -945,8 +945,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       : IndexingPolicies.SharedDatabaseDefault;
 
     const telemetryData = {
-      databaseAccountName: userContext.databaseAccount?.name,
-      defaultExperience: userContext.defaultExperience,
       database: {
         id: databaseId,
         new: this.state.createNewDatabase,
@@ -962,7 +960,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         uniqueKeyPolicy,
         collectionWithDedicatedThroughput: this.state.enableDedicatedThroughput,
       },
-      subscriptionType: SubscriptionType[userContext.subscriptionType],
       subscriptionQuotaId: userContext.quotaId,
       dataExplorerArea: Constants.Areas.ContextualPane,
       useIndexingForSharedThroughput: this.state.enableIndexing,
