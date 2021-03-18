@@ -1,21 +1,21 @@
-import * as _ from "underscore";
-import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
-import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as PricingUtils from "../../Utils/PricingUtils";
-import * as SharedConstants from "../../Shared/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { CassandraAPIDataClient } from "../Tables/TableDataClient";
-import { ContextualPaneBase } from "./ContextualPaneBase";
+import * as _ from "underscore";
+import * as Constants from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
+import * as SharedConstants from "../../Shared/Constants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../Utils/PricingUtils";
+import { CassandraAPIDataClient } from "../Tables/TableDataClient";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public createTableQuery: ko.Observable<string>;
@@ -127,7 +127,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -139,10 +138,15 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       let estimatedSpend: string;
       let estimatedDedicatedSpendAcknowledge: string;
       if (!this.isAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+          offerThroughput,
+          userContext.portalEnv,
+          regions,
+          multimaster
+        );
         estimatedDedicatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -150,13 +154,13 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.selectedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
         estimatedDedicatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.selectedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -172,7 +176,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -183,10 +186,15 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       let estimatedSpend: string;
       let estimatedSharedSpendAcknowledge: string;
       if (!this.isSharedAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(this.keyspaceThroughput(), serverId, regions, multimaster);
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+          this.keyspaceThroughput(),
+          userContext.portalEnv,
+          regions,
+          multimaster
+        );
         estimatedSharedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.keyspaceThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isSharedAutoPilotSelected()
@@ -194,13 +202,13 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.sharedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
         estimatedSharedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.sharedAutoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isSharedAutoPilotSelected()
@@ -215,7 +223,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     });
 
     this.canRequestSupport = ko.pureComputed(() => {
-      if (configContext.platform !== Platform.Emulator && !this.container.isTryCosmosDBSubscription()) {
+      if (configContext.platform !== Platform.Emulator && !userContext.isTryCosmosDBSubscription) {
         const offerThroughput: number = this.throughput();
         return offerThroughput <= 100000;
       }
