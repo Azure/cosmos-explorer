@@ -22,7 +22,7 @@ const costPerHourValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
-    href: "https://azure.microsoft.com/en-us/pricing/details/virtual-machines/windows/",
+    href: "https://azure.microsoft.com/en-us/pricing/details/cosmos-db/",
     textTKey: "DedicatedGatewayPricing",
   },
 };
@@ -36,14 +36,19 @@ const connectionStringValue: Description = {
   },
 };
 
+const CosmosD4s = "Cosmos.D4s";
+const CosmosD8s = "Cosmos.D8s";
+const CosmosD16s = "Cosmos.D16s";
+const CosmosD32s = "Cosmos.D32s";
+
 const getSKUDetails = (sku: string): string => {
-  if (sku === "Cosmos.D4s") {
+  if (sku === CosmosD4s) {
     return "CosmosD4Details";
-  } else if (sku === "Cosmos.D8s") {
+  } else if (sku === CosmosD8s) {
     return "CosmosD8Details";
-  } else if (sku === "Cosmos.D16s") {
+  } else if (sku === CosmosD16s) {
     return "CosmosD16Details";
-  } else if (sku === "Cosmos.D32s") {
+  } else if (sku === CosmosD32s) {
     return "CosmosD32Details";
   }
   return "Not Supported Yet";
@@ -142,10 +147,10 @@ const onEnableDedicatedGatewayChange = (
 };
 
 const skuDropDownItems: ChoiceItem[] = [
-  { label: "CosmosD4s", key: "Cosmos.D4s" },
-  { label: "CosmosD8s", key: "Cosmos.D8s" },
-  { label: "CosmosD16s", key: "Cosmos.D16s" },
-  { label: "CosmosD32s", key: "Cosmos.D32s" },
+  { label: "CosmosD4s", key: CosmosD4s },
+  { label: "CosmosD8s", key: CosmosD8s },
+  { label: "CosmosD16s", key: CosmosD16s },
+  { label: "CosmosD32s", key: CosmosD32s },
 ];
 
 const getSkus = async (): Promise<ChoiceItem[]> => {
@@ -245,7 +250,7 @@ export default class SqlX extends SelfServeBaseClass {
     // Based on the RP call enableDedicatedGateway will be true if it has not yet been enabled and false if it has.
     const defaults = new Map<string, SmartUiInput>();
     defaults.set("enableDedicatedGateway", { value: false });
-    defaults.set("sku", { value: "Cosmos.D4s", hidden: true });
+    defaults.set("sku", { value: CosmosD4s, hidden: true });
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
     defaults.set("skuDetails", undefined);
     defaults.set("costPerHour", undefined);
@@ -291,8 +296,8 @@ export default class SqlX extends SelfServeBaseClass {
   @OnChange(onEnableDedicatedGatewayChange)
   @Values({
     labelTKey: "DedicatedGateway",
-    trueLabelTKey: "Enable",
-    falseLabelTKey: "Disable",
+    trueLabelTKey: "Provisioned",
+    falseLabelTKey: "Deprovisioned",
   })
   enableDedicatedGateway: boolean;
 
