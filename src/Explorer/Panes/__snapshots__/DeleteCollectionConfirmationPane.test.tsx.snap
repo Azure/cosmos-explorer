@@ -314,6 +314,12 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   },
                 }
               }
+            }
+          >
+            <i
+              aria-hidden={true}
+              className="panelWarningIcon root-141"
+              data-icon-name="WarningSolid"
             >
               <i
                 aria-hidden={true}
@@ -328,9 +334,8 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             className="panelWarningErrorDetailsLinkContainer"
             key=".0:$.1"
           >
-            <Text
-              className="panelWarningErrorMessage"
-              variant="small"
+            <span
+              className="panelWarningErrorMessage css-142"
             >
               <span
                 className="panelWarningErrorMessage css-111"
@@ -358,7 +363,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
           variant="small"
         >
           <span
-            className="css-111"
+            className="css-142"
           >
             Confirm by typing the collection id
           </span>
@@ -377,6 +382,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
         >
           <TextFieldBase
             autoFocus={true}
+            canRevealPassword={false}
             deferredValidationTime={200}
             id="confirmCollectionId"
             onChange={[Function]}
@@ -658,18 +664,18 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField root-113"
+              className="ms-TextField root-144"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-114"
+                  className="ms-TextField-fieldGroup fieldGroup-145"
                 >
                   <input
                     aria-invalid={false}
                     autoFocus={true}
-                    className="ms-TextField-field field-115"
+                    className="ms-TextField-field field-146"
                     id="confirmCollectionId"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -692,7 +698,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
           variant="small"
         >
           <span
-            className="css-121"
+            className="css-155"
           >
             Help us improve Azure Cosmos DB!
           </span>
@@ -702,7 +708,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
           variant="small"
         >
           <span
-            className="css-121"
+            className="css-155"
           >
             What is the reason why you are deleting this container?
           </span>
@@ -721,6 +727,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
           }
         >
           <TextFieldBase
+            canRevealPassword={false}
             deferredValidationTime={200}
             id="deleteCollectionFeedbackInput"
             multiline={true}
@@ -1004,17 +1011,17 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField ms-TextField--multiline root-113"
+              className="ms-TextField ms-TextField--multiline root-144"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-122"
+                  className="ms-TextField-fieldGroup fieldGroup-156"
                 >
                   <textarea
                     aria-invalid={false}
-                    className="ms-TextField-field field-123"
+                    className="ms-TextField-field field-157"
                     id="deleteCollectionFeedbackInput"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -1908,7 +1915,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       "iconDisabled": Object {
                         "color": "#a19f9d",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "color": "GrayText",
                           },
                         },
@@ -1934,7 +1941,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       "menuIconDisabled": Object {
                         "color": "#a19f9d",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "color": "GrayText",
                           },
                         },
@@ -1953,7 +1960,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                               "position": "absolute",
                               "right": 2,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "bottom": -2,
                                   "left": -2,
                                   "outlineColor": "ButtonText",
@@ -2011,11 +2018,12 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                                 },
                               },
                             },
-                            "@media screen and (-ms-high-contrast: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                               "MsHighContrastAdjust": "none",
                               "backgroundColor": "WindowText",
                               "borderColor": "WindowText",
                               "color": "Window",
+                              "forcedColorAdjust": "none",
                             },
                           },
                         },
@@ -2042,7 +2050,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                               "position": "absolute",
                               "right": 2,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "bottom": -2,
                                   "left": -2,
                                   "outlineColor": "ButtonText",
@@ -2074,8 +2082,10 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                           },
                         },
                         Object {
+                          "backgroundColor": "#f3f2f1",
+                          "color": "#d2d0ce",
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                               "backgroundColor": "Window",
                               "borderColor": "GrayText",
                               "color": "GrayText",
@@ -2092,7 +2102,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         "border": "1px solid #106ebe",
                         "color": "#ffffff",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "backgroundColor": "Highlight",
                             "borderColor": "Highlight",
                             "color": "Window",
@@ -2104,11 +2114,12 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         "border": "1px solid #005a9e",
                         "color": "#ffffff",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "MsHighContrastAdjust": "none",
                             "backgroundColor": "WindowText",
                             "borderColor": "WindowText",
                             "color": "Window",
+                            "forcedColorAdjust": "none",
                           },
                         },
                       },
@@ -2124,7 +2135,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       "splitButtonContainer": Array [
                         Object {
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                               "border": "none",
                             },
                           },
@@ -2142,7 +2153,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                               "position": "absolute",
                               "right": 3,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "border": "none",
                                   "bottom": -2,
                                   "left": -2,
@@ -2171,19 +2182,20 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                               "borderBottomRightRadius": "0",
                               "borderTopRightRadius": "0",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "Window",
                                   "border": "1px solid WindowText",
                                   "borderRightWidth": "0",
                                   "color": "WindowText",
+                                  "forcedColorAdjust": "none",
                                 },
                               },
                             },
                             ".ms-Button--primary + .ms-Button": Object {
                               "border": "none",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "border": "1px solid WindowText",
                                   "borderLeftWidth": "0",
                                 },
@@ -2196,10 +2208,11 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         "selectors": Object {
                           ".ms-Button--primary": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "color": "Window",
+                                "forcedColorAdjust": "none",
                               },
                             },
                           },
@@ -2209,10 +2222,11 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         "selectors": Object {
                           ".ms-Button--primary": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "color": "Window",
+                                "forcedColorAdjust": "none",
                               },
                             },
                           },
@@ -2222,12 +2236,11 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         "border": "none",
                         "outline": "none",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "MsHighContrastAdjust": "none",
                             "backgroundColor": "Window",
                             "borderColor": "GrayText",
                             "color": "GrayText",
-                          },
-                          "@media screen and (forced-colors: active)": Object {
                             "forcedColorAdjust": "none",
                           },
                         },
@@ -2239,7 +2252,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         "selectors": Object {
                           ".ms-Button--primary": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "backgroundColor": "Highlight",
                                 "color": "Window",
                               },
@@ -2248,7 +2261,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                           ".ms-Button.is-disabled": Object {
                             "color": "#a19f9d",
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -2264,7 +2277,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                           "position": "absolute",
                           "right": 31,
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                               "backgroundColor": "Window",
                             },
                           },
@@ -2276,7 +2289,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                           "position": "absolute",
                           "right": 31,
                           "selectors": Object {
-                            "@media screen and (-ms-high-contrast: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                               "backgroundColor": "WindowText",
                             },
                           },
@@ -2289,7 +2302,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         "position": "absolute",
                         "right": 31,
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "backgroundColor": "GrayText",
                           },
                         },
@@ -2311,17 +2324,22 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                             ":hover": Object {
                               "backgroundColor": "#106ebe",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "color": "Highlight",
                                 },
                               },
                             },
-                            "@media screen and (-ms-high-contrast: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                               "backgroundColor": "WindowText",
                             },
                           },
                         },
                         Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            ".ms-Button-menuIcon": Object {
+                              "color": "WindowText",
+                            },
+                          },
                           "border": "1px solid #8a8886",
                           "borderBottomRightRadius": "2px",
                           "borderLeft": "none",
@@ -2367,7 +2385,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                           "selectors": Object {
                             ".ms-Button--primary": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
@@ -2376,7 +2394,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                             },
                             ".ms-Button-menuIcon": Object {
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "color": "GrayText",
                                 },
                               },
@@ -2384,7 +2402,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                             ":hover": Object {
                               "cursor": "default",
                             },
-                            "@media screen and (-ms-high-contrast: active)": Object {
+                            "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                               "backgroundColor": "Window",
                               "border": "1px solid GrayText",
                               "color": "GrayText",
@@ -2406,7 +2424,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       "splitButtonMenuIconDisabled": Object {
                         "color": "#a19f9d",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "color": "GrayText",
                           },
                         },
@@ -2695,7 +2713,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   variantClassName="ms-Button--primary"
                 >
                   <button
-                    className="ms-Button ms-Button--primary root-125"
+                    className="ms-Button ms-Button--primary root-159"
                     data-is-focusable={true}
                     id="sidePanelOkButton"
                     onClick={[Function]}
@@ -2707,14 +2725,14 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                     type="submit"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-126"
+                      className="ms-Button-flexContainer flexContainer-160"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-127"
+                        className="ms-Button-textContainer textContainer-161"
                       >
                         <span
-                          className="ms-Button-label label-129"
+                          className="ms-Button-label label-163"
                           id="id__6"
                           key="id__6"
                         >

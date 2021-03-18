@@ -80,7 +80,7 @@
     "ms": "2.1.3",
     "msal": "1.4.4",
     "object.entries": "1.1.0",
-    "office-ui-fabric-react": "7.134.1",
+    "office-ui-fabric-react": "7.164.2",
     "p-retry": "4.2.0",
     "plotly.js-cartesian-dist-min": "1.52.3",
     "promise-polyfill": "8.1.0",

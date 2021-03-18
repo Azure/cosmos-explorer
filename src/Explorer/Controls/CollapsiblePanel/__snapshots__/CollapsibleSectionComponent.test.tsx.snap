@@ -13,7 +13,7 @@ exports[`CollapsibleSectionComponent renders 1`] = `
     }
     verticalAlign="center"
   >
-    <StyledIconBase
+    <Icon
       iconName="ChevronDown"
     />
     <StyledLabelBase>
