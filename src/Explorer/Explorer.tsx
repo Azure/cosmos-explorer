@@ -69,8 +69,6 @@ import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
-import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
-import { UploadItemsPaneF } from "./Panes/UploadItemsPaneF";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -220,8 +218,6 @@ export default class Explorer {
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public settingsPane: SettingsPane;
   public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public uploadItemsPane: UploadItemsPane;
-  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
@@ -682,15 +678,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.uploadItemsPane = new UploadItemsPane({
-      id: "uploaditemspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
@@ -749,7 +736,6 @@ export default class Explorer {
       this.cassandraAddCollectionPane,
       this.settingsPane,
       this.executeSprocParamsPane,
-      this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
       this.browseQueriesPane,
@@ -2538,6 +2524,6 @@ export default class Explorer {
   }
 
   public openUploadItemsPanePane(): void {
-    this.openSidePanel("Upload", <UploadItemsPaneF explorer={this} closePanel={this.closeSidePanel} />);
+    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
   }
 }

@@ -1,4 +1,5 @@
-import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FunctionComponent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import FolderIcon from "../../../../images/folder_16x16.svg";
 import * as Constants from "../../../Common/Constants";
 import { userContext } from "../../../UserContext";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
@@ -6,6 +7,7 @@ import { UploadDetails, UploadDetailsRecord } from "../../../workers/upload/defi
 import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import { Tooltip } from "./Tooltip";
 
 const UPLOAD_FILE_SIZE_LIMIT = 2097152;
 
@@ -14,7 +16,7 @@ export interface UploadItemsPaneProps {
   closePanel: () => void;
 }
 
-export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
+export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
   explorer,
   closePanel,
 }: UploadItemsPaneProps) => {
@@ -27,6 +29,7 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [title, setTitle] = useState<string>("");
 
+  const fileRef = useRef<HTMLInputElement>();
   useEffect(() => {
     setUploadFileDataVisible(!!uploadFileData && uploadFileData.length > 0);
   }, [uploadFileData]);
@@ -34,11 +37,9 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
   useEffect(() => {
     _initTitle();
     resetData();
-
-    // files.subscribe((newFiles: FileList) => _updateSelectedFilesTitle(newFiles));
   }, []);
 
-  const submit = () => {
+  const onSubmit = () => {
     setFormError("");
     if (!files || files.length === 0) {
       setFormError("No files specified");
@@ -55,44 +56,55 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
     const selectedCollection = explorer.findSelectedCollection();
 
     setIsExecuting(true);
-    selectedCollection &&
-      selectedCollection
-        .uploadFiles(files)
-        .then(
-          (uploadDetails: UploadDetails) => {
-            setUploadFileData(uploadDetails.data);
-            setFiles(undefined);
-            _resetFileInput();
-          },
-          (error: any) => {
-            const errorMessage = getErrorMessage(error);
-            setFormError(errorMessage);
-            setFormErrorDetail(errorMessage);
-          }
-        )
-        .finally(() => {
-          setIsExecuting(false);
-        });
+
+    selectedCollection
+      ?.uploadFiles(files)
+      .then(
+        (uploadDetails: UploadDetails) => {
+          setUploadFileData(uploadDetails.data);
+          setSelectedFilesTitle("");
+          setFiles(undefined);
+        },
+        (error: Error) => {
+          const errorMessage = getErrorMessage(error);
+          setFormError(errorMessage);
+          setFormErrorDetail(errorMessage);
+        }
+      )
+      .finally(() => {
+        setIsExecuting(false);
+      });
   };
 
-  const updateSelectedFiles = (event: any): void => {
-    setFiles(event.target.files);
+  const updateSelectedFiles = (event: ChangeEvent<HTMLInputElement>): void => {
+    const { files: newFiles } = event.target;
+
+    let newFileList = "";
+
+    if (!newFiles || newFiles.length === 0) {
+      return;
+    }
+
+    for (let i = 0; i < newFiles?.length; i++) {
+      newFileList += `"${newFiles.item(i).name}"`;
+    }
+    setFiles(newFiles);
+    setSelectedFilesTitle(newFileList);
   };
 
   const resetData = () => {
-    setFormError(null);
-    setFormErrorDetail(null);
+    setFormError("");
+    setFormErrorDetail("");
   };
-  const close = () => {
+  const onClose = () => {
     resetData();
     setFiles(undefined);
     setUploadFileData([]);
-    _resetFileInput();
     closePanel();
   };
 
   const onImportLinkClick = (): void => {
-    document.getElementById("importDocsInput").click();
+    fileRef?.current?.click();
   };
 
   const onImportLinkKeyPress = (event: KeyboardEvent<HTMLAnchorElement>): void => {
@@ -102,7 +114,7 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
   };
 
   const _totalFileSizeForFileList = (fileList: FileList): number => {
-    let totalFileSize: number = 0;
+    let totalFileSize = 0;
     if (!fileList) {
       return totalFileSize;
     }
@@ -111,19 +123,6 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
     }
 
     return totalFileSize;
-  };
-
-  const _updateSelectedFilesTitle = (fileList: FileList) => {
-    setSelectedFilesTitle("");
-
-    if (!fileList || fileList.length === 0) {
-      return;
-    }
-
-    for (let i = 0; i < fileList.length; i++) {
-      const originalTitle = selectedFilesTitle;
-      setSelectedFilesTitle(originalTitle + `"${fileList.item(i).name}"`);
-    }
   };
 
   const _initTitle = (): void => {
@@ -136,21 +135,16 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
     }
   };
 
-  const _resetFileInput = (): void => {
-    const inputElement = $("#importDocsInput");
-    inputElement.wrap("<form>").closest("form").get(0).reset();
-    inputElement.unwrap();
-  };
   const genericPaneProps: GenericRightPaneProps = {
     container: explorer,
     formError,
     formErrorDetail,
     id: "uploaditemspane",
     isExecuting: isExecuting,
-    title: "",
+    title,
     submitButtonText: "Upload",
-    onClose: () => close(),
-    onSubmit: () => submit(),
+    onClose,
+    onSubmit,
   };
 
   return (
@@ -159,14 +153,11 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
         <div>
           <div className="renewUploadItemsHeader">
             <span> Select JSON Files </span>
-            <span className="infoTooltip" role="tooltip" tabIndex={0}>
-              <img className="infoImg" src="/info-bubble.svg" alt="More information" />
-              <span className="tooltiptext infoTooltipWidth">
-                Select one or more JSON files to upload. Each file can contain a single JSON document or an array of
-                JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB.
-                You can perform multiple upload operations for larger data sets.
-              </span>
-            </span>
+            <Tooltip>
+              Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON
+              documents. The combined size of all files in an individual upload operation must be less than 2 MB. You
+              can perform multiple upload operations for larger data sets.
+            </Tooltip>
           </div>
           <input
             className="importFilesTitle"
@@ -182,6 +173,7 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
             multiple
             accept="application/json"
             role="button"
+            ref={fileRef}
             tabIndex={0}
             style={{ display: "none" }}
             onChange={updateSelectedFiles}
@@ -189,7 +181,7 @@ export const UploadItemsPaneF: FunctionComponent<UploadItemsPaneProps> = ({
           <a href="#" id="fileImportLink" onClick={onImportLinkClick} onKeyPress={onImportLinkKeyPress}>
             <img
               className="fileImportImg"
-              src="/folder_16x16.svg"
+              src={FolderIcon}
               alt="Select JSON files to upload"
               title="Select JSON files to upload"
             />
