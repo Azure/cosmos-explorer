@@ -2,6 +2,7 @@ import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
+import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
 
 interface UserContext {
   authType?: AuthType;
@@ -22,14 +23,19 @@ interface UserContext {
   apiType?: ApiType;
   isTryCosmosDBSubscription?: boolean;
   portalEnv?: PortalEnv;
+  features: Features;
 }
 
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
-const userContext: UserContext = { isTryCosmosDBSubscription: false, portalEnv: "prod" };
+const userContext: UserContext = {
+  isTryCosmosDBSubscription: false,
+  portalEnv: "prod",
+  features: extractFeatures(),
+};
 
-function updateUserContext(newContext: UserContext): void {
+function updateUserContext(newContext: Partial<UserContext>): void {
   Object.assign(userContext, newContext);
   Object.assign(userContext, { apiType: apiType(userContext.databaseAccount) });
 }

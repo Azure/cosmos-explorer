@@ -895,7 +895,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
                   "container": [Circular],
@@ -2092,7 +2091,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
                 "container": [Circular],
@@ -3302,7 +3300,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
                   "container": [Circular],
@@ -4499,7 +4496,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
                 "container": [Circular],

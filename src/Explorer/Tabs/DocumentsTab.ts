@@ -882,8 +882,6 @@ export default class DocumentsTab extends TabsBase {
       buttons.push(DocumentsTab._createUploadButton(this.collection.container));
     }
 
-    const features = this.collection.container.features() || {};
-
     return buttons;
   }
 
