@@ -1,9 +1,3 @@
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import Explorer from "../Explorer";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import React from "react";
 import {
   ActionButton,
   Checkbox,
@@ -18,18 +12,24 @@ import {
   Text,
   TooltipHost,
 } from "office-ui-fabric-react";
-import { userContext } from "../../UserContext";
-import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
-import { PanelFooterComponent } from "./PanelFooterComponent";
-import { CollectionCreation, IndexingPolicies } from "../../Shared/Constants";
-import { configContext, Platform } from "../../ConfigContext";
-import { SubscriptionType } from "../../Contracts/SubscriptionType";
-import { PanelInfoErrorComponent } from "./PanelInfoErrorComponent";
+import React from "react";
+import * as Constants from "../../Common/Constants";
 import { createCollection } from "../../Common/dataAccess/createCollection";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { configContext, Platform } from "../../ConfigContext";
+import * as DataModels from "../../Contracts/DataModels";
+import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { CollectionCreation, IndexingPolicies } from "../../Shared/Constants";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import { getUpsellMessage } from "../../Utils/PricingUtils";
+import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
+import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
+import Explorer from "../Explorer";
+import { PanelFooterComponent } from "./PanelFooterComponent";
+import { PanelInfoErrorComponent } from "./PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "./PanelLoadingScreen";
 
 export interface AddCollectionPanelProps {
@@ -105,7 +105,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         {!this.state.errorMessage && this.isFreeTierAccount() && (
           <PanelInfoErrorComponent
             message={getUpsellMessage(
-              userContext.serverId,
+              userContext.portalEnv,
               true,
               this.props.explorer.isFirstResourceCreated(),
               userContext.defaultExperience,
@@ -214,12 +214,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
                 {!this.isServerlessAccount() && this.state.isSharedThroughputChecked && (
                   <ThroughputInput
-                    showAutoscale={!this.isFreeTierAccount()}
                     showFreeTierExceedThroughputTooltip={
                       this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
                     }
                     isDatabase={true}
-                    isTryCosmosDBSubscription={this.props.explorer.isTryCosmosDBSubscription()}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
                     onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
@@ -437,12 +435,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           {this.shouldShowCollectionThroughputInput() && (
             <ThroughputInput
-              showAutoscale={!this.isFreeTierAccount()}
               showFreeTierExceedThroughputTooltip={
                 this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
               }
               isDatabase={false}
-              isTryCosmosDBSubscription={this.props.explorer.isTryCosmosDBSubscription()}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {

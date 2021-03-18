@@ -7,9 +7,7 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 
 export interface ThroughputInputProps {
-  showAutoscale: boolean;
   isDatabase: boolean;
-  isTryCosmosDBSubscription: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
@@ -145,7 +143,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
                 onChange={(event, newInput?: string) => this.onThroughputValueChange(newInput)}
                 step={100}
                 min={SharedConstants.CollectionCreation.DefaultCollectionRUs400}
-                max={this.props.isTryCosmosDBSubscription ? Constants.TryCosmosExperience.maxRU : Infinity}
+                max={userContext.isTryCosmosDBSubscription ? Constants.TryCosmosExperience.maxRU : Infinity}
                 value={this.state.throughput.toString()}
                 aria-label="Max request units per second"
                 required={true}
@@ -184,7 +182,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
     }
 
     const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
-    const maxRU: string = this.props.isTryCosmosDBSubscription
+    const maxRU: string = userContext.isTryCosmosDBSubscription
       ? Constants.TryCosmosExperience.maxRU.toLocaleString()
       : "unlimited";
     return this.state.isAutoscaleSelected
@@ -211,13 +209,12 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
       return "";
     }
 
-    const serverId: string = userContext.serverId;
     const numberOfRegions: number = databaseAccount.properties.readLocations?.length || 1;
     const multimasterEnabled: boolean = databaseAccount.properties.enableMultipleWriteLocations;
 
     return PricingUtils.getEstimatedSpendAcknowledgeString(
       this.state.throughput,
-      serverId,
+      userContext.portalEnv,
       numberOfRegions,
       multimasterEnabled,
       this.state.isAutoscaleSelected
@@ -255,7 +252,7 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
     return <></>;
   }
 
-  const serverId: string = userContext.serverId;
+  const serverId: string = userContext.portalEnv;
   const numberOfRegions: number = databaseAccount.properties.readLocations?.length || 1;
   const multimasterEnabled: boolean = databaseAccount.properties.enableMultipleWriteLocations;
   const hourlyPrice: number = PricingUtils.computeRUUsagePriceHourly({

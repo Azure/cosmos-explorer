@@ -17,7 +17,6 @@ interface UserContext {
   useSDKOperations?: boolean;
   subscriptionType?: SubscriptionType;
   quotaId?: string;
-  serverId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
   apiType?: ApiType;
