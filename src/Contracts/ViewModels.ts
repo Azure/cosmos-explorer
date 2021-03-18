@@ -390,7 +390,6 @@ export interface DataExplorerInputsFrame {
   sharedThroughputMaximum?: number;
   sharedThroughputDefault?: number;
   dataExplorerVersion?: string;
-  isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
 }

@@ -164,8 +164,6 @@ export default class Explorer {
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
-  public serverId: ko.Observable<string>;
-  public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -199,9 +197,8 @@ export default class Explorer {
   public resourceTokenCollectionId: ko.Observable<string>;
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
   public resourceTokenPartitionKey: ko.Observable<string>;
-  public isAuthWithResourceToken: ko.Observable<boolean>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
-  private resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
+  public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -338,7 +335,9 @@ export default class Explorer {
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
+        userContext.authType === AuthType.ResourceToken
+          ? this.refreshDatabaseForResourceToken()
+          : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         this.arcadiaWorkspaces = ko.observableArray();
@@ -349,7 +348,7 @@ export default class Explorer {
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
             this.isNotebookEnabled(
-              !this.isAuthWithResourceToken() &&
+              userContext.authType !== AuthType.ResourceToken &&
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
                   this.isFeatureEnabled(Constants.Features.enableNotebooks))
             );
@@ -398,15 +397,12 @@ export default class Explorer {
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
     this.features = ko.observable();
-    this.serverId = ko.observable<string>();
     this.queriesClient = new QueriesClient(this);
-    this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isAuthWithResourceToken = ko.observable<boolean>(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -1193,7 +1189,9 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.isRefreshingExplorer(true);
-    this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
+    userContext.authType === AuthType.ResourceToken
+      ? this.refreshDatabaseForResourceToken()
+      : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
@@ -1442,15 +1440,12 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.features(inputs.features);
-      this.serverId(inputs.serverId ?? Constants.ServerIds.productionPortal);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
       if (inputs.addCollectionDefaultFlight) {
         this.flight(inputs.addCollectionDefaultFlight);
       }
-      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
-      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -1531,9 +1526,9 @@ export default class Explorer {
 
   public isRunningOnNationalCloud(): boolean {
     return (
-      this.serverId() === Constants.ServerIds.blackforest ||
-      this.serverId() === Constants.ServerIds.fairfax ||
-      this.serverId() === Constants.ServerIds.mooncake
+      userContext.portalEnv === "blackforest" ||
+      userContext.portalEnv === "fairfax" ||
+      userContext.portalEnv === "mooncake"
     );
   }
 

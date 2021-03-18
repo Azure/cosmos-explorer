@@ -1,8 +1,10 @@
 import * as ko from "knockout";
-import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
+import { AuthType } from "../../../AuthType";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
-import NotebookManager from "../../Notebook/NotebookManager";
+import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+import NotebookManager from "../../Notebook/NotebookManager";
+import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 
 describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;
@@ -13,7 +15,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
@@ -53,7 +54,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
@@ -118,7 +118,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
@@ -199,7 +198,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
@@ -281,7 +279,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isAuthWithResourceToken = ko.observable(false);
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
@@ -340,12 +337,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isAuthWithResourceToken = ko.observable(true);
       mockExplorer.isPreferredApiDocumentDB = ko.computed(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+      updateUserContext({
+        authType: AuthType.ResourceToken,
+      });
     });
 
     it("should only show New SQL Query and Open Query buttons", () => {
