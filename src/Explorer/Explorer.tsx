@@ -68,6 +68,7 @@ import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
+import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { UploadItemsPaneF } from "./Panes/UploadItemsPaneF";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
