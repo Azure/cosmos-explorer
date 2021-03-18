@@ -897,7 +897,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "hasStorageAnalyticsAfecFeature": [Function],
       "hasWriteAccess": [Function],
       "isAccountReady": [Function],
-      "isAuthWithResourceToken": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isCopyNotebookPaneEnabled": [Function],
       "isEnableMongoCapabilityPresent": [Function],
@@ -926,7 +925,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isSparkEnabledForAccount": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
-      "isTryCosmosDBSubscription": [Function],
       "loadQueryPane": LoadQueryPane {
         "container": [Circular],
         "files": [Function],
@@ -1041,7 +1039,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       },
       "selectedDatabaseId": [Function],
       "selectedNode": [Function],
-      "serverId": [Function],
       "setInProgressConsoleDataIdToBeDeleted": undefined,
       "setIsNotificationConsoleExpanded": undefined,
       "setNotificationConsoleData": undefined,
