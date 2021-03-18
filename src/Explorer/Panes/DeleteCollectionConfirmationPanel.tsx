@@ -1,19 +1,19 @@
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as React from "react";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { PanelFooterComponent } from "./PanelFooterComponent";
-import { Collection } from "../../Contracts/ViewModels";
 import { Text, TextField } from "office-ui-fabric-react";
-import { userContext } from "../../UserContext";
+import * as React from "react";
 import { Areas } from "../../Common/Constants";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
+import DeleteFeedback from "../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { Collection } from "../../Contracts/ViewModels";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import { PanelFooterComponent } from "./PanelFooterComponent";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "./PanelLoadingScreen";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-import Explorer from "../Explorer";
 export interface DeleteCollectionConfirmationPanelProps {
   explorer: Explorer;
   closePanel: () => void;
@@ -106,9 +106,10 @@ export class DeleteCollectionConfirmationPanel extends React.Component<
     return this.props.explorer.isLastCollection() && !this.props.explorer.isSelectedDatabaseShared();
   }
 
-  public async submit(): Promise<void> {
-    const collection = this.props.explorer.findSelectedCollection();
+  public async submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {
+    event.preventDefault();
 
+    const collection = this.props.explorer.findSelectedCollection();
     if (!collection || this.inputCollectionName !== collection.id()) {
       const errorMessage = "Input collection name does not match the selected collection";
       this.setState({ formError: errorMessage });
