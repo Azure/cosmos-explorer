@@ -52,7 +52,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
 
   const submit = async (): Promise<void> => {
     const { selectedDatabase, explorer } = props;
-    if (!isValid()) {
+    if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
       setFormError("Input database name does not match the selected database");
       logConsoleError(`Error while deleting collection ${selectedDatabase && selectedDatabase.id()}`);
       return;
@@ -122,11 +122,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const shouldRecordFeedback = (): boolean => {
     const { explorer } = props;
     return explorer.isLastNonEmptyDatabase() || (explorer.isLastDatabase() && explorer.isSelectedDatabaseShared());
-  };
-
-  const isValid = (): boolean => {
-    const { selectedDatabase } = props;
-    return selectedDatabase?.id() && databaseInput === selectedDatabase.id();
   };
 
   return (
