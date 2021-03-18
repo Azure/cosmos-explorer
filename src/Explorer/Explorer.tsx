@@ -2533,9 +2533,6 @@ export default class Explorer {
   }
 
   public openSettingPane(): void {
-    this.openSidePanel(
-      "Settings",
-      <SettingsPane closePanel={this.closeSidePanel} openNotificationConsole={this.expandConsole} />
-    );
+    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
   }
 }

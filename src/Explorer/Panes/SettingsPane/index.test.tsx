@@ -3,9 +3,10 @@ import React from "react";
 import { SettingsPane } from ".";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { updateUserContext } from "../../../UserContext";
+import Explorer from "../../Explorer";
 const props = {
+  explorer: new Explorer(),
   closePanel: (): void => undefined,
-  openNotificationConsole: (): void => undefined,
 };
 describe("Settings Pane", () => {
   it("should render Default properly", () => {
@@ -23,10 +24,5 @@ describe("Settings Pane", () => {
     });
     const wrapper = shallow(<SettingsPane {...props} />);
     expect(wrapper).toMatchSnapshot();
-  });
-
-  it("should render an setting as heading ", () => {
-    const wrapper = shallow(<SettingsPane {...props} />);
-    expect(wrapper.find('span[role="heading"]').text()).toEqual("Settings");
   });
 });

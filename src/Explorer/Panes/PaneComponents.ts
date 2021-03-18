@@ -124,7 +124,6 @@ export class CassandraAddCollectionPaneComponent {
   }
 }
 
-
 export class ExecuteSprocParamsComponent {
   constructor() {
     return {

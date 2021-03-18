@@ -1,15 +1,22 @@
-import React, { FunctionComponent } from "react";
+import { useId } from "@uifabric/react-hooks";
+import { ITooltipHostStyles, TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
+import * as React from "react";
 import InfoBubble from "../../../../../images/info-bubble.svg";
 
-export interface TooltipProps {
-  children: React.ReactNode;
-}
+const calloutProps = { gapSpace: 0 };
+const hostStyles: Partial<ITooltipHostStyles> = { root: { display: "inline-block" } };
 
-export const Tooltip: FunctionComponent<TooltipProps> = ({ children }: TooltipProps) => {
+export interface TooltipProps {
+  children: string;
+}
+export const Tooltip: React.FunctionComponent = ({ children }: TooltipProps) => {
+  const tooltipId = useId("tooltip");
+
   return (
-    <span className="infoTooltip" role="tooltip" tabIndex={0}>
-      <img className="infoImg" src={InfoBubble} alt="More information" />
-      <span className="tooltiptext pageOptionTooltipWidth">{children}</span>
+    <span>
+      <TooltipHost content={children} id={tooltipId} calloutProps={calloutProps} styles={hostStyles}>
+        <img className="infoImg" src={InfoBubble} alt="More information" />
+      </TooltipHost>
     </span>
   );
 };
