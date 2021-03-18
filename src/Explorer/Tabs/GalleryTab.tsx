@@ -38,7 +38,7 @@ export default class GalleryTab extends TabsBase {
       galleryItem: options.galleryItem,
       isFavorite: options.isFavorite,
       selectedTab: options.selectedTab,
-      sortBy: SortBy.MostViewed,
+      sortBy: SortBy.MostRecent,
       searchText: undefined,
     };
     this.galleryAndNotebookViewerComponentAdapter = new GalleryAndNotebookViewerComponentAdapter(
