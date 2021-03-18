@@ -1,34 +1,36 @@
-import React from "react";
+import { TFunction } from "i18next";
 import {
   CommandBar,
   ICommandBarItemProps,
-  IStackTokens,
   MessageBar,
   MessageBarType,
+  Separator,
   Spinner,
   SpinnerSize,
   Stack,
 } from "office-ui-fabric-react";
+import promiseRetry, { AbortError } from "p-retry";
+import React from "react";
+import { Translation } from "react-i18next";
+import * as _ from "underscore";
+import { sendMessage } from "../Common/MessageHandler";
+import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
+import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import "../i18n";
+import { commandBarItemStyles, commandBarStyles, containerStackTokens, separatorStyles } from "./SelfServeStyles";
 import {
   AnyDisplay,
-  Node,
+  BooleanInput,
+  ChoiceInput,
+  DescriptionDisplay,
   InputType,
+  Node,
+  NumberInput,
   RefreshResult,
   SelfServeDescriptor,
   SmartUiInput,
-  DescriptionDisplay,
   StringInput,
-  NumberInput,
-  BooleanInput,
-  ChoiceInput,
 } from "./SelfServeTypes";
-import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import { Translation } from "react-i18next";
-import { TFunction } from "i18next";
-import "../i18n";
-import { sendMessage } from "../Common/MessageHandler";
-import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
-import promiseRetry, { AbortError } from "p-retry";
 
 interface SelfServeNotification {
   message: string;
@@ -127,7 +129,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.props.descriptor.inputNames.map((inputName) => {
       let initialValue = initialValues.get(inputName);
       if (!initialValue) {
-        initialValue = { value: undefined, hidden: false };
+        initialValue = { value: undefined, hidden: false, disabled: false };
       }
       currentValues = currentValues.set(inputName, initialValue);
       baselineValues = baselineValues.set(inputName, initialValue);
@@ -311,34 +313,42 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     this.performSave();
   };
 
-  public isDiscardButtonDisabled = (): boolean => {
-    if (this.state.isSaving) {
-      return true;
-    }
+  public isInputModified = (): boolean => {
     for (const key of this.state.currentValues.keys()) {
-      const currentValue = JSON.stringify(this.state.currentValues.get(key));
-      const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
+      const currentValue = this.state.currentValues.get(key);
+      if (currentValue && currentValue.hidden === undefined) {
+        currentValue.hidden = false;
+      }
+      if (currentValue && currentValue.disabled === undefined) {
+        currentValue.disabled = false;
+      }
 
-      if (currentValue !== baselineValue) {
-        return false;
+      const baselineValue = this.state.baselineValues.get(key);
+      if (baselineValue && baselineValue.hidden === undefined) {
+        baselineValue.hidden = false;
+      }
+      if (baselineValue && baselineValue.disabled === undefined) {
+        baselineValue.disabled = false;
+      }
+
+      if (!_.isEqual(currentValue, baselineValue)) {
+        return true;
       }
     }
-    return true;
+    return false;
+  };
+
+  public isDiscardButtonDisabled = (): boolean => {
+    return (
+      this.state.isSaving ||
+      this.state.isInitializing ||
+      this.state.refreshResult?.isUpdateInProgress ||
+      !this.isInputModified()
+    );
   };
 
   public isSaveButtonDisabled = (): boolean => {
-    if (this.state.hasErrors || this.state.isSaving) {
-      return true;
-    }
-    for (const key of this.state.currentValues.keys()) {
-      const currentValue = JSON.stringify(this.state.currentValues.get(key));
-      const baselineValue = JSON.stringify(this.state.baselineValues.get(key));
-
-      if (currentValue !== baselineValue) {
-        return false;
-      }
-    }
-    return true;
+    return this.state.hasErrors || this.isDiscardButtonDisabled();
   };
 
   private performRefresh = async (): Promise<void> => {
@@ -397,7 +407,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         key: "save",
         text: this.getCommonTranslation("Save"),
         iconProps: { iconName: "Save" },
-        split: true,
         disabled: this.isSaveButtonDisabled(),
         onClick: () => this.onSaveButtonClick(),
       },
@@ -405,21 +414,21 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         key: "discard",
         text: this.getCommonTranslation("Discard"),
         iconProps: { iconName: "Undo" },
-        split: true,
         disabled: this.isDiscardButtonDisabled(),
         onClick: () => {
           this.discard();
         },
+        buttonStyles: commandBarItemStyles,
       },
       {
         key: "refresh",
         text: this.getCommonTranslation("Refresh"),
         disabled: this.state.isInitializing,
         iconProps: { iconName: "Refresh" },
-        split: true,
         onClick: () => {
           this.onRefreshClicked();
         },
+        buttonStyles: commandBarItemStyles,
       },
     ];
   };
@@ -432,7 +441,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public render(): JSX.Element {
-    const containerStackTokens: IStackTokens = { childrenGap: 5 };
     if (this.state.compileErrorMessage) {
       return <MessageBar messageBarType={MessageBarType.error}>{this.state.compileErrorMessage}</MessageBar>;
     }
@@ -445,13 +453,13 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
           return (
             <div style={{ overflowX: "auto" }}>
-              <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
-                <CommandBar styles={{ root: { paddingLeft: 0 } }} items={this.getCommandBarItems()} />
+              <Stack tokens={containerStackTokens}>
+                <Stack.Item>
+                  <CommandBar styles={commandBarStyles} items={this.getCommandBarItems()} />
+                  <Separator styles={separatorStyles} />
+                </Stack.Item>
                 {this.state.isInitializing ? (
-                  <Spinner
-                    size={SpinnerSize.large}
-                    styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
-                  />
+                  <Spinner size={SpinnerSize.large} />
                 ) : (
                   <>
                     {this.state.notification && (
