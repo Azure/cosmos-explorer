@@ -1,12 +1,4 @@
-import {
-  extractPartitionKey,
-
-
-  ItemDefinition, PartitionKeyDefinition,
-  QueryIterator,
-
-  Resource
-} from "@azure/cosmos";
+import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
 import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";

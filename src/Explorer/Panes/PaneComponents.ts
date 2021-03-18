@@ -142,7 +142,6 @@ export class ExecuteSprocParamsComponent {
   }
 }
 
-
 export class LoadQueryPaneComponent {
   constructor() {
     return {
