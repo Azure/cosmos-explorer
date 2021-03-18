@@ -338,17 +338,16 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return false;
   };
 
+  public isRefreshing = (): boolean => {
+    return this.state.isSaving || this.state.isInitializing || this.state.refreshResult?.isUpdateInProgress;
+  };
+
   public isDiscardButtonDisabled = (): boolean => {
-    return (
-      this.state.isSaving ||
-      this.state.isInitializing ||
-      this.state.refreshResult?.isUpdateInProgress ||
-      !this.isInputModified()
-    );
+    return this.isRefreshing() || !this.isInputModified();
   };
 
   public isSaveButtonDisabled = (): boolean => {
-    return this.state.hasErrors || this.isDiscardButtonDisabled();
+    return this.state.hasErrors || this.isRefreshing() || !this.isInputModified();
   };
 
   private performRefresh = async (): Promise<void> => {

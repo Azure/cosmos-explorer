@@ -167,6 +167,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       if (!input.isDynamicDescription) {
         return this.renderError("Description is not provided.");
       }
+      // If input is a dynamic description and description is not available, empty element is rendered
       return <></>;
     }
     const descriptionElement = (
@@ -348,7 +349,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     return <MessageBar messageBarType={MessageBarType.error}>Error: {errorMessage}</MessageBar>;
   }
 
-  private renderDisplayWithInfoBubble(input: AnyDisplay, info: Info): JSX.Element {
+  private renderElement(input: AnyDisplay, info: Info): JSX.Element {
     if (input.errorMessage) {
       return this.renderError(input.errorMessage);
     }
@@ -366,10 +367,10 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
       </Label>
     );
 
-    return <Stack>{this.renderDisplay(input, labelId, labelElement)}</Stack>;
+    return <Stack>{this.renderControl(input, labelId, labelElement)}</Stack>;
   }
 
-  private renderDisplay(input: AnyDisplay, labelId: string, labelElement: JSX.Element): JSX.Element {
+  private renderControl(input: AnyDisplay, labelId: string, labelElement: JSX.Element): JSX.Element {
     switch (input.type) {
       case "string":
         if ("description" in input || "isDynamicDescription" in input) {
@@ -392,7 +393,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
     return (
       <Stack tokens={containerStackTokens} className="widgetRendererContainer">
-        <Stack.Item>{node.input && this.renderDisplayWithInfoBubble(node.input, node.info as Info)}</Stack.Item>
+        <Stack.Item>{node.input && this.renderElement(node.input, node.info as Info)}</Stack.Item>
         {node.children && node.children.map((child) => <div key={child.id}>{this.renderNode(child)}</div>)}
       </Stack>
     );
