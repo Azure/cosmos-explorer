@@ -27,8 +27,8 @@
             "Enable DB level throughput": "Enable Database Level Throughput",
             "Database Throughput": "Database Throughput",
             "UpdateInProgressMessage": "Data is being updated",
-            "UpdateCompletedMessageTitle":"Update succeeded",
-            "UpdateCompletedMessageText":  "Data updation completed.",
+            "UpdateCompletedMessageTitle": "Update succeeded",
+            "UpdateCompletedMessageText": "Data update completed.",
             "SubmissionMessageSuccessTitle": "Update started",
             "SubmissionMessageForNewRegionText": "Data update started. Region changed.",
             "SubmissionMessageForSameRegionText": "Data update started. Region not changed.",
@@ -36,7 +36,6 @@
             "SubmissionMessageErrorText": "Data update failed because of errors.",
             "OnSaveFailureMessage": "Data save operation not currently permitted."
         },
-        "SqlX": {
-        }
+        "SqlX": {}
     }
 }
