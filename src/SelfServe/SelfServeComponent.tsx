@@ -2,9 +2,9 @@ import { TFunction } from "i18next";
 import {
   CommandBar,
   ICommandBarItemProps,
-  IStackTokens,
   MessageBar,
   MessageBarType,
+  Separator,
   Spinner,
   SpinnerSize,
   Stack,
@@ -17,6 +17,7 @@ import { sendMessage } from "../Common/MessageHandler";
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
 import "../i18n";
+import { commandBarItemStyles, commandBarStyles, containerStackTokens, separatorStyles } from "./SelfServeStyles";
 import {
   AnyDisplay,
   BooleanInput,
@@ -406,7 +407,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         key: "save",
         text: this.getCommonTranslation("Save"),
         iconProps: { iconName: "Save" },
-        split: true,
         disabled: this.isSaveButtonDisabled(),
         onClick: () => this.onSaveButtonClick(),
       },
@@ -414,21 +414,21 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
         key: "discard",
         text: this.getCommonTranslation("Discard"),
         iconProps: { iconName: "Undo" },
-        split: true,
         disabled: this.isDiscardButtonDisabled(),
         onClick: () => {
           this.discard();
         },
+        buttonStyles: commandBarItemStyles,
       },
       {
         key: "refresh",
         text: this.getCommonTranslation("Refresh"),
         disabled: this.state.isInitializing,
         iconProps: { iconName: "Refresh" },
-        split: true,
         onClick: () => {
           this.onRefreshClicked();
         },
+        buttonStyles: commandBarItemStyles,
       },
     ];
   };
@@ -441,7 +441,6 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public render(): JSX.Element {
-    const containerStackTokens: IStackTokens = { childrenGap: 5 };
     if (this.state.compileErrorMessage) {
       return <MessageBar messageBarType={MessageBarType.error}>{this.state.compileErrorMessage}</MessageBar>;
     }
@@ -454,13 +453,13 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
           return (
             <div style={{ overflowX: "auto" }}>
-              <Stack tokens={containerStackTokens} styles={{ root: { padding: 10 } }}>
-                <CommandBar styles={{ root: { paddingLeft: 0 } }} items={this.getCommandBarItems()} />
+              <Stack tokens={containerStackTokens}>
+                <Stack.Item>
+                  <CommandBar styles={commandBarStyles} items={this.getCommandBarItems()} />
+                  <Separator styles={separatorStyles} />
+                </Stack.Item>
                 {this.state.isInitializing ? (
-                  <Spinner
-                    size={SpinnerSize.large}
-                    styles={{ root: { textAlign: "center", justifyContent: "center", width: "100%", height: "100%" } }}
-                  />
+                  <Spinner size={SpinnerSize.large} />
                 ) : (
                   <>
                     {this.state.notification && (
