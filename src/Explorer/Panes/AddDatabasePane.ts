@@ -1,19 +1,19 @@
-import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
-import * as Constants from "../../Common/Constants";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as PricingUtils from "../../Utils/PricingUtils";
-import * as SharedConstants from "../../Shared/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import editable from "../../Common/EditableUtility";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { ContextualPaneBase } from "./ContextualPaneBase";
+import * as Constants from "../../Common/Constants";
 import { createDatabase } from "../../Common/dataAccess/createDatabase";
-import { configContext, Platform } from "../../ConfigContext";
+import editable from "../../Common/EditableUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { configContext, Platform } from "../../ConfigContext";
+import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import * as ViewModels from "../../Contracts/ViewModels";
+import * as SharedConstants from "../../Shared/Constants";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import * as PricingUtils from "../../Utils/PricingUtils";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export default class AddDatabasePane extends ContextualPaneBase {
   public defaultExperience: ko.Computed<string>;
@@ -122,7 +122,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -134,10 +133,15 @@ export default class AddDatabasePane extends ContextualPaneBase {
       let estimatedSpendAcknowledge: string;
       let estimatedSpend: string;
       if (!this.isAutoPilotSelected()) {
-        estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, serverId, regions, multimaster);
+        estimatedSpend = PricingUtils.getEstimatedSpendHtml(
+          offerThroughput,
+          userContext.portalEnv,
+          regions,
+          multimaster
+        );
         estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           offerThroughput,
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -145,13 +149,13 @@ export default class AddDatabasePane extends ContextualPaneBase {
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.maxAutoPilotThroughputSet(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
         estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
           this.maxAutoPilotThroughputSet(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster,
           this.isAutoPilotSelected()
@@ -165,7 +169,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.canRequestSupport = ko.pureComputed(() => {
       if (
         configContext.platform !== Platform.Emulator &&
-        !this.container.isTryCosmosDBSubscription() &&
+        !userContext.isTryCosmosDBSubscription &&
         configContext.platform !== Platform.Portal
       ) {
         const offerThroughput: number = this.throughput();
@@ -239,7 +243,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
 
     this.upsellMessage = ko.pureComputed<string>(() => {
       return PricingUtils.getUpsellMessage(
-        this.container.serverId(),
+        userContext.portalEnv,
         this.isFreeTierAccount(),
         this.container.isFirstResourceCreated(),
         this.container.defaultExperience(),

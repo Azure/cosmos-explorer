@@ -25,7 +25,7 @@ import {
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { updateUserContext } from "../UserContext";
+import { PortalEnv, updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
@@ -78,18 +78,22 @@ async function configureHosted(explorerParams: ExplorerParams): Promise<Explorer
 }
 
 async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParams): Promise<Explorer> {
+  // TODO: Refactor. updateUserContext needs to be called twice because listKeys below depends on userContext.authorizationToken
+  updateUserContext({
+    authType: AuthType.AAD,
+    authorizationToken: `Bearer ${config.authorizationToken}`,
+  });
   const account = config.databaseAccount;
   const accountResourceId = account.id;
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
+  const keys = await listKeys(subscriptionId, resourceGroup, account.name);
   updateUserContext({
     subscriptionId,
     resourceGroup,
-    authType: AuthType.AAD,
-    authorizationToken: `Bearer ${config.authorizationToken}`,
     databaseAccount: config.databaseAccount,
+    masterKey: keys.primaryMasterKey,
   });
-  const keys = await listKeys(subscriptionId, resourceGroup, account.name);
   const explorer = new Explorer(explorerParams);
   explorer.configure({
     databaseAccount: account,
@@ -155,7 +159,6 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
   explorer.configure({
     databaseAccount,
     features: extractFeatures(),
-    isAuthWithresourceToken: true,
   });
   explorer.isRefreshingExplorer(false);
   return explorer;
@@ -257,6 +260,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
             subscriptionId: inputs.subscriptionId,
             subscriptionType: inputs.subscriptionType,
             quotaId: inputs.quotaId,
+            portalEnv: inputs.serverId as PortalEnv,
           });
 
           const explorer = new Explorer(explorerParams);
