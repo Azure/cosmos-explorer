@@ -9,8 +9,6 @@ import { userContext } from "../../UserContext";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { userContext } from "../../UserContext";
-import { configContext, Platform } from "../../ConfigContext";
 import template from "./MongoShellTab.html";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import TabsBase from "./TabsBase";
