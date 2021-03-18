@@ -15,7 +15,7 @@ describe("Self Serve", () => {
 
       const regions = await frame.waitForSelector("#regions-dropdown-input");
 
-      let currentRegionsDescription = await frame.$$("#currentRegionText-text-display");
+      const currentRegionsDescription = await frame.$$("#currentRegionText-text-display");
       expect(currentRegionsDescription).toHaveLength(0);
       let disabledLoggingToggle = await frame.$$("#enableLogging-toggle-input[disabled]");
       expect(disabledLoggingToggle).toHaveLength(0);
