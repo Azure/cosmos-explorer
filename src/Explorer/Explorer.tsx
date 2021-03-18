@@ -163,8 +163,6 @@ export default class Explorer {
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
-  public serverId: ko.Observable<string>;
-  public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -197,9 +195,8 @@ export default class Explorer {
   public resourceTokenCollectionId: ko.Observable<string>;
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
   public resourceTokenPartitionKey: ko.Observable<string>;
-  public isAuthWithResourceToken: ko.Observable<boolean>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
-  private resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
+  public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -335,7 +332,9 @@ export default class Explorer {
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
+        userContext.authType === AuthType.ResourceToken
+          ? this.refreshDatabaseForResourceToken()
+          : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         this.arcadiaWorkspaces = ko.observableArray();
@@ -346,7 +345,7 @@ export default class Explorer {
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
             this.isNotebookEnabled(
-              !this.isAuthWithResourceToken() &&
+              userContext.authType !== AuthType.ResourceToken &&
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
                   this.isFeatureEnabled(Constants.Features.enableNotebooks))
             );
@@ -395,15 +394,12 @@ export default class Explorer {
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
     this.features = ko.observable();
-    this.serverId = ko.observable<string>();
     this.queriesClient = new QueriesClient(this);
-    this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isAuthWithResourceToken = ko.observable<boolean>(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -759,96 +755,88 @@ export default class Explorer {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });
 
-    // TODO move this to API customization class
-    this.defaultExperience.subscribe((defaultExperience) => {
-      const defaultExperienceNormalizedString = (
-        defaultExperience || Constants.DefaultAccountExperience.Default
-      ).toLowerCase();
-
-      switch (defaultExperienceNormalizedString) {
-        case Constants.DefaultAccountExperience.DocumentDB.toLowerCase():
-          this.addCollectionText("New Container");
-          this.addDatabaseText("New Database");
-          this.collectionTitle("SQL API");
-          this.collectionTreeNodeAltText("Container");
-          this.deleteCollectionText("Delete Container");
-          this.deleteDatabaseText("Delete Database");
-          this.addCollectionPane.title("Add Container");
-          this.addCollectionPane.collectionIdTitle("Container id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle(
-            "Provision dedicated throughput for this container"
-          );
-          this.deleteCollectionConfirmationPane.title("Delete Container");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
-          this.refreshTreeTitle("Refresh containers");
-          break;
-        case Constants.DefaultAccountExperience.MongoDB.toLowerCase():
-        case Constants.DefaultAccountExperience.ApiForMongoDB.toLowerCase():
-          this.addCollectionText("New Collection");
-          this.addDatabaseText("New Database");
-          this.collectionTitle("Collections");
-          this.collectionTreeNodeAltText("Collection");
-          this.deleteCollectionText("Delete Collection");
-          this.deleteDatabaseText("Delete Database");
-          this.addCollectionPane.title("Add Collection");
-          this.addCollectionPane.collectionIdTitle("Collection id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle(
-            "Provision dedicated throughput for this collection"
-          );
-          this.refreshTreeTitle("Refresh collections");
-          break;
-        case Constants.DefaultAccountExperience.Graph.toLowerCase():
-          this.addCollectionText("New Graph");
-          this.addDatabaseText("New Database");
-          this.deleteCollectionText("Delete Graph");
-          this.deleteDatabaseText("Delete Database");
-          this.collectionTitle("Gremlin API");
-          this.collectionTreeNodeAltText("Graph");
-          this.addCollectionPane.title("Add Graph");
-          this.addCollectionPane.collectionIdTitle("Graph id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-          this.deleteCollectionConfirmationPane.title("Delete Graph");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
-          this.refreshTreeTitle("Refresh graphs");
-          break;
-        case Constants.DefaultAccountExperience.Table.toLowerCase():
-          this.addCollectionText("New Table");
-          this.addDatabaseText("New Database");
-          this.deleteCollectionText("Delete Table");
-          this.deleteDatabaseText("Delete Database");
-          this.collectionTitle("Azure Table API");
-          this.collectionTreeNodeAltText("Table");
-          this.addCollectionPane.title("Add Table");
-          this.addCollectionPane.collectionIdTitle("Table id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
-          this.refreshTreeTitle("Refresh tables");
-          this.addTableEntityPane.title("Add Table Entity");
-          this.editTableEntityPane.title("Edit Table Entity");
-          this.deleteCollectionConfirmationPane.title("Delete Table");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.tableDataClient = new TablesAPIDataClient();
-          break;
-        case Constants.DefaultAccountExperience.Cassandra.toLowerCase():
-          this.addCollectionText("New Table");
-          this.addDatabaseText("New Keyspace");
-          this.deleteCollectionText("Delete Table");
-          this.deleteDatabaseText("Delete Keyspace");
-          this.collectionTitle("Cassandra API");
-          this.collectionTreeNodeAltText("Table");
-          this.addCollectionPane.title("Add Table");
-          this.addCollectionPane.collectionIdTitle("Table id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
-          this.refreshTreeTitle("Refresh tables");
-          this.addTableEntityPane.title("Add Table Row");
-          this.editTableEntityPane.title("Edit Table Row");
-          this.deleteCollectionConfirmationPane.title("Delete Table");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
-          this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
-          this.tableDataClient = new CassandraAPIDataClient();
-          break;
-      }
-    });
+    switch (userContext.apiType) {
+      case "SQL":
+        this.addCollectionText("New Container");
+        this.addDatabaseText("New Database");
+        this.collectionTitle("SQL API");
+        this.collectionTreeNodeAltText("Container");
+        this.deleteCollectionText("Delete Container");
+        this.deleteDatabaseText("Delete Database");
+        this.addCollectionPane.title("Add Container");
+        this.addCollectionPane.collectionIdTitle("Container id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle(
+          "Provision dedicated throughput for this container"
+        );
+        this.deleteCollectionConfirmationPane.title("Delete Container");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
+        this.refreshTreeTitle("Refresh containers");
+        break;
+      case "Mongo":
+        this.addCollectionText("New Collection");
+        this.addDatabaseText("New Database");
+        this.collectionTitle("Collections");
+        this.collectionTreeNodeAltText("Collection");
+        this.deleteCollectionText("Delete Collection");
+        this.deleteDatabaseText("Delete Database");
+        this.addCollectionPane.title("Add Collection");
+        this.addCollectionPane.collectionIdTitle("Collection id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle(
+          "Provision dedicated throughput for this collection"
+        );
+        this.refreshTreeTitle("Refresh collections");
+        break;
+      case "Gremlin":
+        this.addCollectionText("New Graph");
+        this.addDatabaseText("New Database");
+        this.deleteCollectionText("Delete Graph");
+        this.deleteDatabaseText("Delete Database");
+        this.collectionTitle("Gremlin API");
+        this.collectionTreeNodeAltText("Graph");
+        this.addCollectionPane.title("Add Graph");
+        this.addCollectionPane.collectionIdTitle("Graph id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
+        this.deleteCollectionConfirmationPane.title("Delete Graph");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
+        this.refreshTreeTitle("Refresh graphs");
+        break;
+      case "Tables":
+        this.addCollectionText("New Table");
+        this.addDatabaseText("New Database");
+        this.deleteCollectionText("Delete Table");
+        this.deleteDatabaseText("Delete Database");
+        this.collectionTitle("Azure Table API");
+        this.collectionTreeNodeAltText("Table");
+        this.addCollectionPane.title("Add Table");
+        this.addCollectionPane.collectionIdTitle("Table id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
+        this.refreshTreeTitle("Refresh tables");
+        this.addTableEntityPane.title("Add Table Entity");
+        this.editTableEntityPane.title("Edit Table Entity");
+        this.deleteCollectionConfirmationPane.title("Delete Table");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
+        this.tableDataClient = new TablesAPIDataClient();
+        break;
+      case "Cassandra":
+        this.addCollectionText("New Table");
+        this.addDatabaseText("New Keyspace");
+        this.deleteCollectionText("Delete Table");
+        this.deleteDatabaseText("Delete Keyspace");
+        this.collectionTitle("Cassandra API");
+        this.collectionTreeNodeAltText("Table");
+        this.addCollectionPane.title("Add Table");
+        this.addCollectionPane.collectionIdTitle("Table id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
+        this.refreshTreeTitle("Refresh tables");
+        this.addTableEntityPane.title("Add Table Row");
+        this.editTableEntityPane.title("Edit Table Row");
+        this.deleteCollectionConfirmationPane.title("Delete Table");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
+        this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
+        this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
+        this.tableDataClient = new CassandraAPIDataClient();
+        break;
+    }
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
 
@@ -1184,7 +1172,9 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.isRefreshingExplorer(true);
-    this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
+    userContext.authType === AuthType.ResourceToken
+      ? this.refreshDatabaseForResourceToken()
+      : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
@@ -1433,15 +1423,12 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.features(inputs.features);
-      this.serverId(inputs.serverId ?? Constants.ServerIds.productionPortal);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
       if (inputs.addCollectionDefaultFlight) {
         this.flight(inputs.addCollectionDefaultFlight);
       }
-      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
-      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -1522,9 +1509,9 @@ export default class Explorer {
 
   public isRunningOnNationalCloud(): boolean {
     return (
-      this.serverId() === Constants.ServerIds.blackforest ||
-      this.serverId() === Constants.ServerIds.fairfax ||
-      this.serverId() === Constants.ServerIds.mooncake
+      userContext.portalEnv === "blackforest" ||
+      userContext.portalEnv === "fairfax" ||
+      userContext.portalEnv === "mooncake"
     );
   }
 
