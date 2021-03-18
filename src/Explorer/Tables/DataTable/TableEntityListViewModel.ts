@@ -1,22 +1,21 @@
 import * as ko from "knockout";
-import * as _ from "underscore";
 import Q from "q";
-
+import * as _ from "underscore";
+import { Areas } from "../../../Common/Constants";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import { CassandraTableKey, CassandraAPIDataClient } from "../TableDataClient";
-import DataTableViewModel from "./DataTableViewModel";
-import * as DataTableUtilities from "./DataTableUtilities";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
+import * as Entities from "../Entities";
+import { CassandraAPIDataClient, CassandraTableKey } from "../TableDataClient";
+import * as TableEntityProcessor from "../TableEntityProcessor";
+import * as Utilities from "../Utilities";
+import * as DataTableUtilities from "./DataTableUtilities";
+import DataTableViewModel from "./DataTableViewModel";
 import TableCommands from "./TableCommands";
 import TableEntityCache from "./TableEntityCache";
-import * as Constants from "../Constants";
-import { Areas } from "../../../Common/Constants";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import * as TableEntityProcessor from "../TableEntityProcessor";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as ViewModels from "../../../Contracts/ViewModels";
 
 interface IListTableEntitiesSegmentedResult extends Entities.IListTableEntitiesResult {
   ExceedMaximumRetries?: boolean;
@@ -354,8 +353,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           itemB = new Date(<string>(<any>rowB[col])._);
           break;
         default:
-          itemA = <string>(<any>rowA[col])._.toLowerCase();
-          itemB = <string>(<any>rowB[col])._.toLowerCase();
+          itemA = <string>(<any>rowA[col])._?.toLowerCase();
+          itemB = <string>(<any>rowB[col])._?.toLowerCase();
       }
       var compareResult: number = itemA < itemB ? -1 : itemA > itemB ? 1 : 0;
       if (compareResult !== 0) {
