@@ -4,18 +4,24 @@ import * as _ from "underscore";
 import UploadWorker from "worker-loader!../../workers/upload";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { createDocument } from "../../Common/dataAccess/createDocument";
+import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
+import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
 import { readStoredProcedures } from "../../Common/dataAccess/readStoredProcedures";
 import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
-import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
-import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
+import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
+import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
@@ -32,12 +38,6 @@ import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
-import { configContext, Platform } from "../../ConfigContext";
-import Explorer from "../Explorer";
-import { userContext } from "../../UserContext";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { createDocument } from "../../Common/dataAccess/createDocument";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -130,16 +130,12 @@ export default class Collection implements ViewModels.Collection {
         this.partitionKey.paths[0]) ||
       null;
 
-    if (!!container.isPreferredApiMongoDB() && this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
+    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
       this.partitionKeyProperty = this.partitionKeyProperty.replace(/["]+/g, "");
     }
 
     // TODO #10738269 : Add this logic in a derived class for Mongo
-    if (
-      !!container.isPreferredApiMongoDB() &&
-      this.partitionKeyProperty &&
-      this.partitionKeyProperty.indexOf("$v") > -1
-    ) {
+    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && this.partitionKeyProperty.indexOf("$v") > -1) {
       // From $v.shard.$v.key.$v > shard.key
       this.partitionKeyProperty = this.partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
       this.partitionKeyPropertyHeader = "/" + this.partitionKeyProperty;
@@ -1169,7 +1165,7 @@ export default class Collection implements ViewModels.Collection {
     } else if (this.container.isPreferredApiGraph()) {
       this.onGraphDocumentsClick();
       return;
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       this.onMongoDBDocumentsClick();
       return;
     }
@@ -1187,7 +1183,7 @@ export default class Collection implements ViewModels.Collection {
       return "Rows";
     } else if (this.container.isPreferredApiGraph()) {
       return "Graph";
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       return "Documents";
     }
 

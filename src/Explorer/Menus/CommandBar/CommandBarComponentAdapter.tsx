@@ -4,15 +4,15 @@
  * and update any knockout observables passed from the parent.
  */
 import * as ko from "knockout";
+import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
-import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import { StyleConstants } from "../../../Common/Constants";
-import * as CommandBarUtil from "./CommandBarUtil";
-import Explorer from "../../Explorer";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../../Explorer";
+import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
+import * as CommandBarUtil from "./CommandBarUtil";
 
 export class CommandBarComponentAdapter implements ReactAdapter {
   public parameters: ko.Observable<number>;
@@ -30,7 +30,6 @@ export class CommandBarComponentAdapter implements ReactAdapter {
     // These are the parameters watched by the react binding that will trigger a renderComponent() if one of the ko mutates
     const toWatch = [
       container.isPreferredApiTable,
-      container.isPreferredApiMongoDB,
       container.isPreferredApiDocumentDB,
       container.isPreferredApiCassandra,
       container.isPreferredApiGraph,

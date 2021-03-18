@@ -1,28 +1,29 @@
+import { ChoiceGroup, IChoiceGroupOption, Label, MessageBar, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import {
-  GeospatialConfigType,
-  TtlType,
-  ChangeFeedPolicyState,
-  isDirty,
-  IsComponentDirtyResult,
-  TtlOn,
-  TtlOff,
-  TtlOnNoDefault,
-  getSanitizedInputValue,
-} from "../SettingsUtils";
+import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import { Label, Text, TextField, Stack, IChoiceGroupOption, ChoiceGroup, MessageBar } from "office-ui-fabric-react";
 import {
-  getTextFieldStyles,
   changeFeedPolicyToolTip,
+  getChoiceGroupStyles,
+  getTextFieldStyles,
+  messageBarStyles,
   subComponentStackProps,
   titleAndInputStackProps,
-  getChoiceGroupStyles,
   ttlWarning,
-  messageBarStyles,
 } from "../SettingsRenderUtils";
+import {
+  ChangeFeedPolicyState,
+  GeospatialConfigType,
+  getSanitizedInputValue,
+  IsComponentDirtyResult,
+  isDirty,
+  TtlOff,
+  TtlOn,
+  TtlOnNoDefault,
+  TtlType,
+} from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface SubSettingsComponentProps {
@@ -70,7 +71,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.ttlVisible = (this.props.container && !this.props.container.isPreferredApiCassandra()) || false;
     this.geospatialVisible = this.props.container.isPreferredApiDocumentDB();
     this.partitionKeyValue = "/" + this.props.collection.partitionKeyProperty;
-    this.partitionKeyName = this.props.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
+    this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
   }
 
   componentDidMount(): void {
@@ -303,7 +304,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
       this.props.container.isPreferredApiCassandra() ||
       this.props.container.isPreferredApiTable() ||
       !this.props.collection.partitionKeyProperty ||
-      (this.props.container.isPreferredApiMongoDB() && this.props.collection.partitionKey.systemKey)
+      (userContext.apiType === "Mongo" && this.props.collection.partitionKey.systemKey)
     ) {
       return false;
     }

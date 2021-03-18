@@ -1,12 +1,13 @@
 import * as ko from "knockout";
 import * as Q from "q";
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as Logger from "../../Common/Logger";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import QueryTab from "../Tabs/QueryTab";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export class LoadQueryPane extends ContextualPaneBase {
   public selectedFilesTitle: ko.Observable<string>;
@@ -103,7 +104,7 @@ export class LoadQueryPane extends ContextualPaneBase {
       // should never get into this state
       Logger.logError("No collection was selected", "LoadQueryPane.loadQueryFromFile");
       return Q.reject("No collection was selected");
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       selectedCollection.onNewMongoQueryClick(selectedCollection, null);
     } else {
       selectedCollection.onNewQueryClick(selectedCollection, null);

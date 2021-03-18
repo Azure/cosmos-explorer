@@ -1,13 +1,14 @@
+import { Areas } from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { Areas } from "../../Common/Constants";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import * as Logger from "../../Common/Logger";
-import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import { QueriesGridComponentAdapter } from "../Controls/QueriesGridReactComponent/QueriesGridComponentAdapter";
 import QueryTab from "../Tabs/QueryTab";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export class BrowseQueriesPane extends ContextualPaneBase {
   public queriesGridComponentAdapter: QueriesGridComponentAdapter;
@@ -80,7 +81,7 @@ export class BrowseQueriesPane extends ContextualPaneBase {
       // should never get into this state because this pane is only accessible through the query tab
       Logger.logError("No collection was selected", "BrowseQueriesPane.loadSavedQuery");
       return;
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       selectedCollection.onNewMongoQueryClick(selectedCollection, null);
     } else {
       selectedCollection.onNewQueryClick(selectedCollection, null);

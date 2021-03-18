@@ -137,7 +137,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
       this.shouldShowIndexingPolicyEditor =
-        this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
+        this.container && !this.container.isPreferredApiCassandra() && userContext.apiType !== "Mongo";
 
       this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
         Constants.Features.enableChangeFeedPolicy
@@ -145,8 +145,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
-        this.container.isPreferredApiMongoDB() &&
-        (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
+        userContext.apiType === "Mongo" && (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
     } else {
       this.database = this.props.settingsTab.database;
       this.container = this.database?.container;
@@ -238,7 +237,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public loadMongoIndexes = async (): Promise<void> => {
     if (
-      this.container.isPreferredApiMongoDB() &&
+      userContext.apiType === "Mongo" &&
       this.container.isEnableMongoCapabilityPresent() &&
       this.container.databaseAccount()
     ) {
@@ -1007,7 +1006,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />,
       });
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       const mongoIndexTabContext = this.getMongoIndexTabContent(mongoIndexingPolicyComponentProps);
       if (mongoIndexTabContext) {
         tabs.push({

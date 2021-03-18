@@ -123,7 +123,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.isPreferredApiTable = options.isPreferredApiTable;
     this.partitionKey = ko.observable<string>();
     this.partitionKey.subscribe((newPartitionKey: string) => {
-      if (this.container.isPreferredApiMongoDB() || !newPartitionKey || newPartitionKey[0] === "/") {
+      if (userContext.apiType === "Mongo" || !newPartitionKey || newPartitionKey[0] === "/") {
         return;
       }
 
@@ -358,7 +358,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     // TODO: Create derived classes for Tables and Mongo to replace the If statements below
     this.partitionKeyName = ko.computed<string>(() => {
-      if (this.container && !!this.container.isPreferredApiMongoDB()) {
+      if (userContext.apiType === "Mongo") {
         return "Shard key";
       }
 
@@ -368,7 +368,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.lowerCasePartitionKeyName = ko.computed<string>(() => this.partitionKeyName().toLowerCase());
 
     this.partitionKeyPlaceholder = ko.computed<string>(() => {
-      if (this.container && !!this.container.isPreferredApiMongoDB()) {
+      if (userContext.apiType === "Mongo") {
         return "e.g., address.zipCode";
       }
 
@@ -380,7 +380,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.uniqueKeysPlaceholder = ko.pureComputed<string>(() => {
-      if (this.container && !!this.container.isPreferredApiMongoDB()) {
+      if (userContext.apiType === "Mongo") {
         return "Comma separated paths e.g. firstName,address.zipCode";
       }
 
@@ -390,7 +390,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.uniqueKeysVisible = ko.pureComputed<boolean>(() => {
       if (
         this.container == null ||
-        !!this.container.isPreferredApiMongoDB() ||
+        userContext.apiType === "Mongo" ||
         !!this.container.isPreferredApiTable() ||
         !!this.container.isPreferredApiCassandra() ||
         !!this.container.isPreferredApiGraph()
@@ -406,11 +406,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return false;
       }
 
-      if (
-        this.container.isPreferredApiMongoDB() &&
-        !this.isUnlimitedStorageSelected() &&
-        this.databaseHasSharedOffer()
-      ) {
+      if (userContext.apiType === "Mongo" && !this.isUnlimitedStorageSelected() && this.databaseHasSharedOffer()) {
         return false;
       }
 
@@ -602,7 +598,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiMongoDB()) {
+      if (userContext.apiType === "Mongo") {
         return true;
       }
 
@@ -823,7 +819,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let indexingPolicy: DataModels.IndexingPolicy;
     let createMongoWildcardIndex: boolean;
     // todo - remove mongo indexing policy ticket # 616274
-    if (this.container.isPreferredApiMongoDB() && this.container.isEnableMongoCapabilityPresent()) {
+    if (userContext.apiType === "Mongo" && this.container.isEnableMongoCapabilityPresent()) {
       createMongoWildcardIndex = this.shouldCreateMongoWildcardIndex();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {
@@ -1156,7 +1152,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let transform = (value: string) => {
       return value;
     };
-    if (this.container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       transform = (value: string) => {
         return this._convertShardKeyToPartitionKey(value);
       };

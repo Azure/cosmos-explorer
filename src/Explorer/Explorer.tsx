@@ -140,11 +140,6 @@ export default class Explorer {
   public isPreferredApiCassandra: ko.Computed<boolean>;
   /**
    * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
-   * */
-  public isPreferredApiMongoDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
    * */
   public isPreferredApiGraph: ko.Computed<boolean>;
@@ -509,27 +504,6 @@ export default class Explorer {
           (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
-
-    this.isPreferredApiMongoDB = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.MongoDB.toLowerCase()) {
-        return true;
-      }
-
-      if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.ApiForMongoDB.toLowerCase()) {
-        return true;
-      }
-
-      if (
-        this.databaseAccount &&
-        this.databaseAccount() &&
-        this.databaseAccount().kind.toLowerCase() === Constants.AccountKind.MongoDB
-      ) {
-        return true;
-      }
-
-      return false;
-    });
 
     this.isEnableMongoCapabilityPresent = ko.computed(() => {
       const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;

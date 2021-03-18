@@ -70,7 +70,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createEnableNotebooksButton(container));
     }
 
-    if (container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
@@ -97,7 +97,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     }
 
     const isSupportedOpenQueryApi =
-      container.isPreferredApiDocumentDB() || container.isPreferredApiMongoDB() || container.isPreferredApiGraph();
+      container.isPreferredApiDocumentDB() || userContext.apiType === "Mongo" || container.isPreferredApiGraph();
     const isSupportedOpenQueryFromDiskApi = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
     if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
@@ -133,7 +133,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
 export function createContextCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  if (!container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()) {
+  if (!container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
     const label = "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
@@ -145,7 +145,7 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB(),
+      disabled: container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
     };
     buttons.push(newMongoShellBtn);
   }
@@ -310,7 +310,7 @@ function createNewSQLQueryButton(container: Explorer): CommandButtonComponentPro
       hasPopup: true,
       disabled: container.isDatabaseNodeOrNoneSelected(),
     };
-  } else if (container.isPreferredApiMongoDB()) {
+  } else if (userContext.apiType === "Mongo") {
     const label = "New Query";
     return {
       iconSrc: AddSqlQueryIcon,

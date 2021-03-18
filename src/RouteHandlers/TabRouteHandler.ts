@@ -1,11 +1,11 @@
+import crossroads from "crossroads";
+import hasher from "hasher";
 import * as _ from "underscore";
 import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
-
-import crossroads from "crossroads";
-import hasher from "hasher";
 import ScriptTabBase from "../Explorer/Tabs/ScriptTabBase";
 import TabsBase from "../Explorer/Tabs/TabsBase";
+import { userContext } from "../UserContext";
 
 export class TabRouteHandler {
   private _tabRouter: any;
@@ -174,10 +174,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiMongoDB() &&
-        collection.onMongoDBDocumentsClick();
+      userContext.apiType === "Mongo" && collection.onMongoDBDocumentsClick();
     });
   }
 
@@ -214,10 +211,7 @@ export class TabRouteHandler {
       if (!!matchingTab) {
         matchingTab.onTabClick();
       } else {
-        collection &&
-          collection.container &&
-          collection.container.isPreferredApiMongoDB() &&
-          collection.onNewMongoQueryClick(collection, null);
+        userContext.apiType === "Mongo" && collection.onNewMongoQueryClick(collection, null);
       }
     });
   }
@@ -236,10 +230,7 @@ export class TabRouteHandler {
       if (!!matchingTab) {
         matchingTab.onTabClick();
       } else {
-        collection &&
-          collection.container &&
-          collection.container.isPreferredApiMongoDB() &&
-          collection.onNewMongoShellClick();
+        userContext.apiType === "Mongo" && collection.onNewMongoShellClick();
       }
     });
   }

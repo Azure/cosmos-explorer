@@ -30,8 +30,10 @@ export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "
 const userContext: UserContext = { isTryCosmosDBSubscription: false, portalEnv: "prod" };
 
 function updateUserContext(newContext: UserContext): void {
+  if (newContext.databaseAccount) {
+    newContext.apiType = apiType(userContext.databaseAccount);
+  }
   Object.assign(userContext, newContext);
-  Object.assign(userContext, { apiType: apiType(userContext.databaseAccount) });
 }
 
 function apiType(account: DatabaseAccount | undefined): ApiType {
