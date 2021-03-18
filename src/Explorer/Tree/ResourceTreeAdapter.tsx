@@ -26,7 +26,7 @@ import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactor
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
-import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import TabsBase from "../Tabs/TabsBase";
@@ -263,15 +263,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         collection.openTab();
         // push to most recent
-        MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
-          type: MostRecentActivity.Type.OpenCollection,
-          title: collection.id(),
-          description: "Data",
-          data: {
-            databaseId: collection.databaseId,
-            collectionId: collection.id(),
-          },
-        });
+        mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
       },
       isSelected: () =>
         this.isDataNodeSelected(collection.databaseId, collection.id(), [
@@ -572,7 +564,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
-            this.pushItemToMostRecent(item);
+            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
           }
         });
       },
@@ -593,7 +585,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       (item: NotebookContentItem) => {
         this.container.openNotebook(item).then((hasOpened) => {
           if (hasOpened) {
-            this.pushItemToMostRecent(item);
+            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
           }
         });
       },
@@ -621,18 +613,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.isAlphaSorted = true;
 
     return gitHubNotebooksTree;
-  }
-
-  private pushItemToMostRecent(item: NotebookContentItem) {
-    MostRecentActivity.mostRecentActivity.addItem(userContext.databaseAccount?.id, {
-      type: MostRecentActivity.Type.OpenNotebook,
-      title: item.name,
-      description: "Notebook",
-      data: {
-        name: item.name,
-        path: item.path,
-      },
-    });
   }
 
   private buildChildNodes(

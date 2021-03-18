@@ -136,7 +136,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -150,14 +149,14 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         estimatedSpend = PricingUtils.getEstimatedSpendHtml(
           // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
           this.overrideWithAutoPilotSettings() ? this.autoPilotThroughput() : this.throughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.autoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );

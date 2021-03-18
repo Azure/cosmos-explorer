@@ -12,7 +12,7 @@ exports[`CollapsibleSectionComponent renders 1`] = `
       }
     }
   >
-    <StyledIconBase
+    <Icon
       iconName="ChevronDown"
       styles={
         Object {
