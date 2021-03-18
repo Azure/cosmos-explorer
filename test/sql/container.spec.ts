@@ -65,12 +65,6 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitFor(CREATE_DELAY);
       await frame.waitFor("div[class='rowData'] > span[class='message']");
 
-      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", (elements) => {
-        return elements.some((el) => el.textContent.includes("Successfully created"));
-      });
-
-      expect(didCreateContainer).toBe(true);
-
       await frame.waitFor(`div[data-test="${selectedDbId}"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
 
