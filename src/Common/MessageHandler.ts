@@ -69,12 +69,12 @@ export function sendReadyMessage(): void {
       {
         signature: "pcIframe",
         kind: "ready",
+        data: "ready",
       },
       portalChildWindow.document.referrer
     );
   }
 }
-
 
 export function canSendMessage(): boolean {
   return window.parent !== window;
