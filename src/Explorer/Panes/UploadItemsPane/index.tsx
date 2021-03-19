@@ -1,3 +1,4 @@
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "office-ui-fabric-react";
 import React, { ChangeEvent, FunctionComponent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import FolderIcon from "../../../../images/folder_16x16.svg";
 import * as Constants from "../../../Common/Constants";
@@ -16,6 +17,22 @@ export interface UploadItemsPaneProps {
   closePanel: () => void;
 }
 
+interface IUploadFileData {
+  numSucceeded: number;
+  numFailed: number;
+  fileName: string;
+}
+
+const getTitle = (): string => {
+  if (userContext.apiType === "Cassandra" || userContext.apiType === "Tables") {
+    return "Upload Tables";
+  } else if (userContext.apiType === "Gremlin") {
+    return "Upload Graph";
+  } else {
+    return "Upload Items";
+  }
+};
+
 export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
   explorer,
   closePanel,
@@ -27,17 +44,11 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
   const [formError, setFormError] = useState<string>("");
   const [formErrorDetail, setFormErrorDetail] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>();
-  const [title, setTitle] = useState<string>("");
 
   const fileRef = useRef<HTMLInputElement>();
   useEffect(() => {
-    setUploadFileDataVisible(!!uploadFileData && uploadFileData.length > 0);
+    setUploadFileDataVisible(uploadFileData?.length > 0);
   }, [uploadFileData]);
-
-  useEffect(() => {
-    _initTitle();
-    resetData();
-  }, []);
 
   const onSubmit = () => {
     setFormError("");
@@ -45,12 +56,10 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
       setFormError("No files specified");
       setFormErrorDetail("No files were specified. Please input at least one file.");
       logConsoleError("Could not upload items -- No files were specified. Please input at least one file.");
-      return;
     } else if (_totalFileSizeForFileList(files) > UPLOAD_FILE_SIZE_LIMIT) {
       setFormError("Upload file size limit exceeded");
       setFormErrorDetail("Total file upload size exceeds the 2 MB file size limit.");
       logConsoleError("Could not upload items -- Total file upload size exceeds the 2 MB file size limit.");
-      return;
     }
 
     const selectedCollection = explorer.findSelectedCollection();
@@ -92,17 +101,6 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     setSelectedFilesTitle(newFileList);
   };
 
-  const resetData = () => {
-    setFormError("");
-    setFormErrorDetail("");
-  };
-  const onClose = () => {
-    resetData();
-    setFiles(undefined);
-    setUploadFileData([]);
-    closePanel();
-  };
-
   const onImportLinkClick = (): void => {
     fileRef?.current?.click();
   };
@@ -115,24 +113,10 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
 
   const _totalFileSizeForFileList = (fileList: FileList): number => {
     let totalFileSize = 0;
-    if (!fileList) {
-      return totalFileSize;
+    for (let i = 0; i < fileList?.length; i++) {
+      totalFileSize += fileList.item(i).size;
     }
-    for (let i = 0; i < fileList.length; i++) {
-      totalFileSize = totalFileSize + fileList.item(i).size;
-    }
-
     return totalFileSize;
-  };
-
-  const _initTitle = (): void => {
-    if (userContext.apiType === "Cassandra" || userContext.apiType === "Tables") {
-      setTitle("Upload Tables");
-    } else if (userContext.apiType === "Gremlin") {
-      setTitle("Upload Graph");
-    } else {
-      setTitle("Upload Items");
-    }
   };
 
   const genericPaneProps: GenericRightPaneProps = {
@@ -141,10 +125,40 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     formErrorDetail,
     id: "uploaditemspane",
     isExecuting: isExecuting,
-    title,
+    title: getTitle(),
     submitButtonText: "Upload",
-    onClose,
+    isSubmitButtonHidden: selectedFilesTitle === "",
+    onClose: closePanel,
     onSubmit,
+  };
+  const columns: IColumn[] = [
+    {
+      key: "fileName",
+      name: "FILE NAME",
+      fieldName: "fileName",
+      minWidth: 140,
+      maxWidth: 140,
+    },
+    {
+      key: "status",
+      name: "STATUS",
+      fieldName: "numSucceeded",
+      minWidth: 140,
+      maxWidth: 140,
+      isRowHeader: true,
+      isResizable: true,
+      data: "string",
+      isPadded: true,
+    },
+  ];
+
+  const _renderItemColumn = (item: IUploadFileData, index: number, column: IColumn) => {
+    switch (column.key) {
+      case "status":
+        return <span>{item?.numSucceeded + " items created, " + item?.numFailed + " errors"}</span>;
+      default:
+        return <span>{item?.fileName}</span>;
+    }
   };
 
   return (
@@ -190,22 +204,14 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
         {uploadFileDataVisible && (
           <div className="fileUploadSummaryContainer">
             <b>File upload status</b>
-            <table className="fileUploadSummary">
-              <thead>
-                <tr className="fileUploadSummaryHeader fileUploadSummaryTuple">
-                  <th>FILE NAME</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                {uploadFileData?.map((data, index) => (
-                  <tr className="fileUploadSummaryTuple" key={index}>
-                    <td>{data.fileName}</td>
-                    <td>{`${data.numSucceeded} items created, ${data.numFailed} errors`}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <DetailsList
+              items={uploadFileData}
+              columns={columns}
+              onRenderItemColumn={_renderItemColumn}
+              selectionMode={SelectionMode.none}
+              layoutMode={DetailsListLayoutMode.justified}
+              isHeaderVisible={true}
+            />
           </div>
         )}
       </div>
