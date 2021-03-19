@@ -1,7 +1,6 @@
-import { IsDisplayable, OnChange, RefreshOptions, Values } from "../Decorators";
+import { IsDisplayable, OnChange, Values } from "../Decorators";
 import {
   ChoiceItem,
-  Description,
   DescriptionType,
   InputType,
   NumberUiType,
@@ -10,284 +9,65 @@ import {
   SelfServeBaseClass,
   SmartUiInput,
 } from "../SelfServeTypes";
-import { BladeType, generateBladeLink } from "../SelfServeUtils";
-import {
-  deleteDedicatedGatewayResource,
-  getCurrentProvisioningState,
-  refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
-} from "./SqlX.rp";
-
-const costPerHourValue: Description = {
-  textTKey: "CostText",
-  type: DescriptionType.Text,
-  link: {
-    href: "https://azure.microsoft.com/en-us/pricing/details/cosmos-db/",
-    textTKey: "DedicatedGatewayPricing",
-  },
-};
-
-const connectionStringValue: Description = {
-  textTKey: "ConnectionStringText",
-  type: DescriptionType.Text,
-  link: {
-    href: generateBladeLink(BladeType.SqlKeys),
-    textTKey: "KeysBlade",
-  },
-};
-
-const CosmosD4s = "Cosmos.D4s";
-const CosmosD8s = "Cosmos.D8s";
-const CosmosD16s = "Cosmos.D16s";
-const CosmosD32s = "Cosmos.D32s";
-
-const getSKUDetails = (sku: string): string => {
-  if (sku === CosmosD4s) {
-    return "CosmosD4Details";
-  } else if (sku === CosmosD8s) {
-    return "CosmosD8Details";
-  } else if (sku === CosmosD16s) {
-    return "CosmosD16Details";
-  } else if (sku === CosmosD32s) {
-    return "CosmosD32Details";
-  }
-  return "Not Supported Yet";
-};
-
-const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
-  currentValues.set("sku", { value: newValue });
-  currentValues.set("skuDetails", {
-    value: { textTKey: getSKUDetails(`${newValue.toString()}`), type: DescriptionType.Text } as Description,
-  });
-  currentValues.set("costPerHour", { value: costPerHourValue });
-  return currentValues;
-};
-
-const onNumberOfInstancesChange = (
-  newValue: InputType,
-  currentValues: Map<string, SmartUiInput>
-): Map<string, SmartUiInput> => {
-  currentValues.set("instances", { value: newValue });
-  currentValues.set("warningBanner", {
-    value: { textTKey: "WarningBannerOnUpdate" } as Description,
-    hidden: false,
-  });
-
-  return currentValues;
-};
+import { refreshDedicatedGatewayProvisioning } from "./SqlX.rp";
 
 const onEnableDedicatedGatewayChange = (
   newValue: InputType,
-  currentValues: Map<string, SmartUiInput>,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
+  currentState: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
-  currentValues.set("enableDedicatedGateway", { value: newValue });
-  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
-  if (dedicatedGatewayOriginallyEnabled === newValue) {
-    currentValues.set("sku", baselineValues.get("sku"));
-    currentValues.set("instances", baselineValues.get("instances"));
-    currentValues.set("skuDetails", baselineValues.get("skuDetails"));
-    currentValues.set("costPerHour", baselineValues.get("costPerHour"));
-    currentValues.set("warningBanner", baselineValues.get("warningBanner"));
-    currentValues.set("connectionString", baselineValues.get("connectionString"));
-    return currentValues;
-  }
-
-  currentValues.set("warningBanner", undefined);
-  if (newValue === true) {
-    currentValues.set("warningBanner", {
-      value: {
-        textTKey: "WarningBannerOnUpdate",
-        link: {
-          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-          textTKey: "DedicatedGatewayPricing",
-        },
-      } as Description,
-      hidden: false,
-    });
-  } else {
-    currentValues.set("warningBanner", {
-      value: {
-        textTKey: "WarningBannerOnDelete",
-        link: {
-          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-          textTKey: "DeprovisioningDetailsText",
-        },
-      } as Description,
-      hidden: false,
-    });
-  }
-  const sku = currentValues.get("sku");
-  const instances = currentValues.get("instances");
-  const hideAttributes = newValue === undefined || !(newValue as boolean);
-  currentValues.set("sku", {
-    value: sku.value,
-    hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
-  });
-  currentValues.set("instances", {
-    value: instances.value,
-    hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
-  });
-
-  currentValues.set("skuDetails", {
-    value: { textTKey: getSKUDetails(`${currentValues.get("sku").value}`), type: DescriptionType.Text } as Description,
-    hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
-  });
-
-  currentValues.set("costPerHour", { value: costPerHourValue, hidden: hideAttributes });
-  currentValues.set("connectionString", {
-    value: connectionStringValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
-  });
-
-  return currentValues;
+  const sku = currentState.get("sku");
+  const instances = currentState.get("instances");
+  const isSkuHidden = newValue === undefined || !(newValue as boolean);
+  currentState.set("enableDedicatedGateway", { value: newValue });
+  currentState.set("sku", { value: sku.value, hidden: isSkuHidden });
+  currentState.set("instances", { value: instances.value, hidden: isSkuHidden });
+  return currentState;
 };
 
-const skuDropDownItems: ChoiceItem[] = [
-  { label: "CosmosD4s", key: CosmosD4s },
-  { label: "CosmosD8s", key: CosmosD8s },
-  { label: "CosmosD16s", key: CosmosD16s },
-  { label: "CosmosD32s", key: CosmosD32s },
-];
-
 const getSkus = async (): Promise<ChoiceItem[]> => {
-  return skuDropDownItems;
+  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
+  throw new Error("getSkus not implemented.");
 };
 
 const getInstancesMin = async (): Promise<number> => {
-  return 1;
+  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
+  throw new Error("getInstancesMin not implemented.");
 };
 
 const getInstancesMax = async (): Promise<number> => {
-  return 5;
+  // TODO: get SKUs from getRegionSpecificSkus() RP call and return array of {label:..., key:...}.
+  throw new Error("getInstancesMax not implemented.");
+};
+
+const validate = (currentValues: Map<string, SmartUiInput>): void => {
+  // TODO: add cusom validation logic to be called before Saving the data.
+  throw new Error(`validate not implemented. No. of properties to validate: ${currentValues.size}`);
 };
 
 @IsDisplayable()
-@RefreshOptions({ retryIntervalInMs: 20000 })
 export default class SqlX extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
-    return await refreshDedicatedGatewayProvisioning();
+    return refreshDedicatedGatewayProvisioning();
   };
 
-  public onSave = async (
-    currentValues: Map<string, SmartUiInput>,
-    baselineValues: Map<string, SmartUiInput>
-  ): Promise<OnSaveResult> => {
-    const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
-    const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
-
-    currentValues.set("warningBanner", undefined);
-
-    //TODO : Add try catch for each RP call and return relevant notifications
-    if (dedicatedGatewayOriginallyEnabled) {
-      if (!dedicatedGatewayCurrentlyEnabled) {
-        const operationStatusUrl = await deleteDedicatedGatewayResource();
-        return {
-          operationStatusUrl: operationStatusUrl,
-          portalNotification: {
-            initialize: {
-              titleTKey: "DeleteInitializeTitle",
-              messageTKey: "DeleteInitializeMessage",
-            },
-            success: {
-              titleTKey: "DeleteSuccessTitle",
-              messageTKey: "DeleteSuccesseMessage",
-            },
-            failure: {
-              titleTKey: "DeleteFailureTitle",
-              messageTKey: "DeleteFailureMessage",
-            },
-          },
-        };
-      } else {
-        // Check for scaling up/down/in/out
-        return {
-          operationStatusUrl: undefined,
-          portalNotification: {
-            initialize: {
-              titleTKey: "UpdateInitializeTitle",
-              messageTKey: "UpdateInitializeMessage",
-            },
-            success: {
-              titleTKey: "UpdateSuccessTitle",
-              messageTKey: "UpdateSuccesseMessage",
-            },
-            failure: {
-              titleTKey: "UpdateFailureTitle",
-              messageTKey: "UpdateFailureMessage",
-            },
-          },
-        };
-      }
-    } else {
-      const sku = currentValues.get("sku")?.value as string;
-      const instances = currentValues.get("instances").value as number;
-      const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
-      return {
-        operationStatusUrl: operationStatusUrl,
-        portalNotification: {
-          initialize: {
-            titleTKey: "CreateInitializeTitle",
-            messageTKey: "CreateInitializeTitle",
-          },
-          success: {
-            titleTKey: "CreateSuccessTitle",
-            messageTKey: "CreateSuccesseMessage",
-          },
-          failure: {
-            titleTKey: "CreateFailureTitle",
-            messageTKey: "CreateFailureMessage",
-          },
-        },
-      };
-    }
+  public onSave = async (currentValues: Map<string, SmartUiInput>): Promise<OnSaveResult> => {
+    validate(currentValues);
+    // TODO: add pre processing logic before calling the updateDedicatedGatewayProvisioning() RP call.
+    throw new Error(`onSave not implemented. No. of properties to save: ${currentValues.size}`);
   };
 
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-    // Based on the RP call enableDedicatedGateway will be true if it has not yet been enabled and false if it has.
-    const defaults = new Map<string, SmartUiInput>();
-    defaults.set("enableDedicatedGateway", { value: false });
-    defaults.set("sku", { value: CosmosD4s, hidden: true });
-    defaults.set("instances", { value: await getInstancesMin(), hidden: true });
-    defaults.set("skuDetails", undefined);
-    defaults.set("costPerHour", undefined);
-    defaults.set("connectionString", undefined);
-
-    const response = await getCurrentProvisioningState();
-    if (response.status && response.status !== "Deleting") {
-      defaults.set("enableDedicatedGateway", { value: true });
-      defaults.set("sku", { value: response.sku, disabled: true });
-      defaults.set("instances", { value: response.instances, disabled: true });
-      defaults.set("costPerHour", { value: costPerHourValue });
-      defaults.set("skuDetails", {
-        value: { textTKey: getSKUDetails(`${defaults.get("sku").value}`), type: DescriptionType.Text } as Description,
-        hidden: false,
-      });
-      defaults.set("connectionString", {
-        value: connectionStringValue,
-        hidden: false,
-      });
-    }
-
-    defaults.set("warningBanner", undefined);
-    return defaults;
+    // TODO: get initialization data from initializeDedicatedGatewayProvisioning() RP call.
+    throw new Error("onSave not implemented");
   };
 
   @Values({
-    isDynamicDescription: true,
-  })
-  warningBanner: string;
-
-  @Values({
     description: {
-      textTKey: "DedicatedGatewayDescription",
+      textTKey: "Provisioning dedicated gateways for SqlX accounts.",
       type: DescriptionType.Text,
       link: {
         href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
-        textTKey: "LearnAboutDedicatedGateway",
+        textTKey: "Learn more about dedicated gateway.",
       },
     },
   })
@@ -295,45 +75,25 @@ export default class SqlX extends SelfServeBaseClass {
 
   @OnChange(onEnableDedicatedGatewayChange)
   @Values({
-    labelTKey: "DedicatedGateway",
-    trueLabelTKey: "Provisioned",
-    falseLabelTKey: "Deprovisioned",
+    labelTKey: "Dedicated Gateway",
+    trueLabelTKey: "Enable",
+    falseLabelTKey: "Disable",
   })
   enableDedicatedGateway: boolean;
 
-  @OnChange(onSKUChange)
   @Values({
     labelTKey: "SKUs",
     choices: getSkus,
-    placeholderTKey: "SKUsPlaceHolder",
+    placeholderTKey: "Select SKUs",
   })
   sku: ChoiceItem;
 
   @Values({
-    labelTKey: "SKUDetails",
-    isDynamicDescription: true,
-  })
-  skuDetails: string;
-
-  @OnChange(onNumberOfInstancesChange)
-  @Values({
-    labelTKey: "NumberOfInstances",
+    labelTKey: "Number of instances",
     min: getInstancesMin,
     max: getInstancesMax,
     step: 1,
     uiType: NumberUiType.Spinner,
   })
   instances: number;
-
-  @Values({
-    labelTKey: "Cost",
-    isDynamicDescription: true,
-  })
-  costPerHour: string;
-
-  @Values({
-    labelTKey: "ConnectionString",
-    isDynamicDescription: true,
-  })
-  connectionString: string;
 }
