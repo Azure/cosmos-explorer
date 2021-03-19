@@ -83,10 +83,10 @@ export default class MongoShellTab extends TabsBase {
   }
 
   private handleReadyMessage(event: MessageEvent, shellIframe: HTMLIFrameElement) {
-    if (typeof event.data["data"] !== "string") {
+    if (typeof event.data["kind"] !== "string") {
       return;
     }
-    if (event.data.data !== "ready") {
+    if (event.data.kind !== "ready") {
       return;
     }
 
@@ -100,7 +100,7 @@ export default class MongoShellTab extends TabsBase {
       documentEndpoint.substr(
         Constants.MongoDBAccounts.protocol.length + 3,
         documentEndpoint.length -
-          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
+        (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.collection.databaseId;
     const collectionId = this.collection.id();
