@@ -1213,6 +1213,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             min={-1}
             onDecrement={[Function]}
             onIncrement={[Function]}
+            onValidate={[Function]}
             role="textbox"
             step={1}
             tabIndex={0}
@@ -2403,22 +2404,23 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
               Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
             </Tooltip>
           </div>
-          <StyledPivotBase
+          <StyledChoiceGroupBase
             aria-label="Graph Auto-visualization"
-            linkFormat={1}
-            linkSize={0}
-            onLinkClick={[Function]}
+            onChange={[Function]}
+            options={
+              Array [
+                Object {
+                  "key": "false",
+                  "text": "Graph",
+                },
+                Object {
+                  "key": "true",
+                  "text": "JSON",
+                },
+              ]
+            }
             selectedKey="false"
-          >
-            <PivotItem
-              headerText="Graph"
-              itemKey="false"
-            />
-            <PivotItem
-              headerText="JSON"
-              itemKey="true"
-            />
-          </StyledPivotBase>
+          />
         </div>
       </div>
       <div

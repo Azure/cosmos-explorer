@@ -1,5 +1,5 @@
-import { Checkbox, Pivot, PivotItem, PivotLinkFormat, PivotLinkSize, SpinButton } from "office-ui-fabric-react";
-import React, { FunctionComponent, MouseEvent, useEffect, useState } from "react";
+import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "office-ui-fabric-react";
+import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { configContext } from "../../../ConfigContext";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
@@ -22,8 +22,14 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   const [formErrors, setFormErrors] = useState<string>("");
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  const [pageOption, setPageOption] = useState<string>("");
-  const [customItemPerPage, setCustomItemPerPage] = useState<number>(0);
+  const [pageOption, setPageOption] = useState<string>(
+    LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
+      ? Constants.Queries.UnlimitedPageOption
+      : Constants.Queries.CustomPageOption
+  );
+  const [customItemPerPage, setCustomItemPerPage] = useState<number>(
+    LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage) || 0
+  );
   const [crossPartitionQueryEnabled, setCrossPartitionQueryEnabled] = useState<boolean>(
     LocalStorageUtility.hasItem(StorageKey.IsCrossPartitionQueryEnabled)
       ? LocalStorageUtility.getEntryString(StorageKey.IsCrossPartitionQueryEnabled) === "true"
@@ -44,10 +50,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   const shouldShowGraphAutoVizOption = userContext.apiType === "Gremlin";
   const shouldShowCrossPartitionOption = userContext.apiType !== "Gremlin";
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
-
-  useEffect(() => {
-    _loadSettings();
-  }, []);
 
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
     setFormErrors("");
@@ -90,9 +92,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`
     );
-
     closePanel();
-
     e.preventDefault();
   };
 
@@ -100,34 +100,10 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     return pageOption === Constants.Queries.CustomPageOption;
   };
 
-  const _loadSettings = () => {
-    setIsExecuting(true);
-    try {
-      setPageOption(
-        LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
-          ? Constants.Queries.UnlimitedPageOption
-          : Constants.Queries.CustomPageOption
-      );
-      setPageOption(
-        LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
-          ? Constants.Queries.UnlimitedPageOption
-          : Constants.Queries.CustomPageOption
-      );
-      setCustomItemPerPage(LocalStorageUtility.getEntryNumber(StorageKey.CustomItemPerPage));
-    } catch (exception) {
-      setFormErrors("Unable to load your settings");
-      setFormErrorsDetails(exception);
-    } finally {
-      setIsExecuting(false);
-    }
+  const handleOnGremlinChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
+    setGraphAutoVizDisabled(option.key);
   };
 
-  const onPivotChange = (item: PivotItem): void => {
-    setPageOption(item.props.itemKey);
-  };
-  const onGremlinPivotChange = (item: PivotItem): void => {
-    setGraphAutoVizDisabled(item.props.itemKey);
-  };
   const genericPaneProps: GenericRightPaneProps = {
     container,
     formError: formErrors,
@@ -139,7 +115,19 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     onClose: () => closePanel(),
     onSubmit: () => handlerOnSubmit(undefined),
   };
+  const pageOptionList: IChoiceGroupOption[] = [
+    { key: Constants.Queries.CustomPageOption, text: "Custom" },
+    { key: Constants.Queries.UnlimitedPageOption, text: "Unlimited" },
+  ];
 
+  const graphAutoOptionList: IChoiceGroupOption[] = [
+    { key: "false", text: "Graph" },
+    { key: "true", text: "JSON" },
+  ];
+
+  const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
+    setPageOption(option.key);
+  };
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
       <div className="paneMainContent">
@@ -154,17 +142,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                     many query results per page.
                   </Tooltip>
                 </div>
-
-                <Pivot
-                  aria-label="Page options"
-                  linkSize={PivotLinkSize.normal}
-                  linkFormat={PivotLinkFormat.tabs}
-                  onLinkClick={onPivotChange}
-                  selectedKey={pageOption}
-                >
-                  <PivotItem headerText="Custom" itemKey={Constants.Queries.CustomPageOption}></PivotItem>
-                  <PivotItem headerText="Unlimited" itemKey={Constants.Queries.UnlimitedPageOption}></PivotItem>
-                </Pivot>
+                <ChoiceGroup selectedKey={pageOption} options={pageOptionList} onChange={handleOnPageOptionChange} />
               </div>
               <div className="tabs settingsSectionPart">
                 {isCustomPageOptionSelected() && (
@@ -181,6 +159,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                         setCustomItemPerPage(parseInt(newValue) + 1 || customItemPerPage);
                       }}
                       onDecrement={(newValue) => setCustomItemPerPage(parseInt(newValue) - 1 || customItemPerPage)}
+                      onValidate={(newValue) => setCustomItemPerPage(parseInt(newValue) || customItemPerPage)}
                       min={1}
                       step={1}
                       className="textfontclr"
@@ -240,6 +219,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                   onDecrement={(newValue) =>
                     setMaxDegreeOfParallelism(parseInt(newValue) - 1 || maxDegreeOfParallelism)
                   }
+                  onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
                   ariaLabel="Max degree of parallelism"
                 />
               </div>
@@ -256,16 +236,12 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                   </Tooltip>
                 </div>
 
-                <Pivot
-                  aria-label="Graph Auto-visualization"
-                  linkSize={PivotLinkSize.normal}
-                  linkFormat={PivotLinkFormat.tabs}
-                  onLinkClick={onGremlinPivotChange}
+                <ChoiceGroup
                   selectedKey={graphAutoVizDisabled}
-                >
-                  <PivotItem headerText="Graph" itemKey="false"></PivotItem>
-                  <PivotItem headerText="JSON" itemKey="true"></PivotItem>
-                </Pivot>
+                  options={graphAutoOptionList}
+                  onChange={handleOnGremlinChange}
+                  aria-label="Graph Auto-visualization"
+                />
               </div>
             </div>
           )}
