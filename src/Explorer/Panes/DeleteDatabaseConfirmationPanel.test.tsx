@@ -100,7 +100,7 @@ describe("Delete Database Confirmation Pane", () => {
         .hostNodes()
         .simulate("change", { target: { value: selectedDatabaseId } });
       expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("click");
+      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
       expect(deleteDatabase).toHaveBeenCalledWith(selectedDatabaseId);
       wrapper.unmount();
     });
@@ -120,7 +120,7 @@ describe("Delete Database Confirmation Pane", () => {
         .simulate("change", { target: { value: feedbackText } });
 
       expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("click");
+      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
       expect(deleteDatabase).toHaveBeenCalledWith(selectedDatabaseId);
 
       const deleteFeedback = new DeleteFeedback(

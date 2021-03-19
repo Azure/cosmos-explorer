@@ -1,7 +1,6 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { Text, TextField } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
-import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
 import { Areas } from "../../Common/Constants";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 import DeleteFeedback from "../../Common/DeleteFeedback";
@@ -13,8 +12,9 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { PanelErrorComponent } from "./PanelErrorComponent";
 import { PanelFooterComponent } from "./PanelFooterComponent";
+import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
+import { PanelLoadingScreen } from "./PanelLoadingScreen";
 
 interface DeleteDatabaseConfirmationPanelProps {
   explorer: Explorer;
@@ -32,10 +32,10 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("");
 
-  const getPanelErrorProps = () => {
+  const getPanelErrorProps = (): PanelInfoErrorProps => {
     if (formError) {
       return {
-        isWarning: false,
+        messageType: "error",
         message: formError,
         showErrorDetails: true,
         openNotificationConsole: props.openNotificationConsole,
@@ -43,15 +43,16 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     }
 
     return {
-      isWarning: true,
+      messageType: "warning",
       showErrorDetails: false,
       message:
         "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
     };
   };
 
-  const submit = async (): Promise<void> => {
+  const submit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
     const { selectedDatabase, explorer } = props;
+    event.preventDefault();
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
       setFormError("Input database name does not match the selected database");
       logConsoleError(`Error while deleting collection ${selectedDatabase && selectedDatabase.id()}`);
@@ -125,8 +126,8 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   };
 
   return (
-    <div className="panelContentContainer">
-      <PanelErrorComponent {...getPanelErrorProps()} />
+    <form className="panelFormWrapper" onSubmit={submit}>
+      <PanelInfoErrorComponent {...getPanelErrorProps()} />
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
           <span className="mandatoryStar">* </span>
@@ -160,10 +161,8 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           </div>
         )}
       </div>
-      <PanelFooterComponent buttonLabel="OK" onOKButtonClicked={() => submit()} />
-      <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!isLoading}>
-        <img className="dataExplorerLoader" src={LoadingIndicator_3Squares} />
-      </div>
-    </div>
+      <PanelFooterComponent buttonLabel="OK" />
+      {isLoading && <PanelLoadingScreen />}
+    </form>
   );
 };

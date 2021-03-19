@@ -48,6 +48,7 @@ import { FileSystemUtil } from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
@@ -2398,10 +2399,12 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (this.isPreferredApiCassandra()) {
       this.cassandraAddCollectionPane.open();
+    } else if (this.isFeatureEnabled(Constants.Features.enableReactPane)) {
+      this.openAddCollectionPanel();
     } else {
       this.addCollectionPane.open(this.selectedDatabaseId());
+      document.getElementById("linkAddCollection").focus();
     }
-    document.getElementById("linkAddCollection").focus();
   }
 
   private refreshCommandBarButtons(): void {
@@ -2550,6 +2553,18 @@ export default class Explorer {
         openNotificationConsole={this.expandConsole}
         closePanel={this.closeSidePanel}
         selectedDatabase={this.findSelectedDatabase()}
+      />
+    );
+  }
+
+  public async openAddCollectionPanel(): Promise<void> {
+    await this.loadDatabaseOffers();
+    this.openSidePanel(
+      "New Collection",
+      <AddCollectionPanel
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        openNotificationConsole={() => this.expandConsole()}
       />
     );
   }
