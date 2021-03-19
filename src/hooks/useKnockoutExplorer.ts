@@ -3,7 +3,7 @@ import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, DefaultAccountExperience } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import { sendMessage } from "../Common/MessageHandler";
+import { sendReadyMessage } from "../Common/MessageHandler";
 import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -274,7 +274,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
       false
     );
 
-    sendMessage("ready");
+    sendReadyMessage();
   });
 }
 
