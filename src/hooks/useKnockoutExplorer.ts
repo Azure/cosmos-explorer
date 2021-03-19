@@ -25,7 +25,7 @@ import {
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { updateUserContext } from "../UserContext";
+import { PortalEnv, updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
@@ -259,6 +259,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
             subscriptionId: inputs.subscriptionId,
             subscriptionType: inputs.subscriptionType,
             quotaId: inputs.quotaId,
+            portalEnv: inputs.serverId as PortalEnv,
           });
 
           const explorer = new Explorer(explorerParams);

@@ -944,7 +944,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isSparkEnabledForAccount": [Function],
                 "isSynapseLinkUpdating": [Function],
                 "isTabsContentExpanded": [Function],
-                "isTryCosmosDBSubscription": [Function],
                 "loadQueryPane": LoadQueryPane {
                   "container": [Circular],
                   "files": [Function],
@@ -1058,7 +1057,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
-                "serverId": [Function],
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
@@ -2143,7 +2141,6 @@ exports[`SettingsComponent renders 1`] = `
               "isSparkEnabledForAccount": [Function],
               "isSynapseLinkUpdating": [Function],
               "isTabsContentExpanded": [Function],
-              "isTryCosmosDBSubscription": [Function],
               "loadQueryPane": LoadQueryPane {
                 "container": [Circular],
                 "files": [Function],
@@ -2257,7 +2254,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
-              "serverId": [Function],
               "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,
@@ -3355,7 +3351,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isSparkEnabledForAccount": [Function],
                 "isSynapseLinkUpdating": [Function],
                 "isTabsContentExpanded": [Function],
-                "isTryCosmosDBSubscription": [Function],
                 "loadQueryPane": LoadQueryPane {
                   "container": [Circular],
                   "files": [Function],
@@ -3469,7 +3464,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
-                "serverId": [Function],
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
@@ -4554,7 +4548,6 @@ exports[`SettingsComponent renders 1`] = `
               "isSparkEnabledForAccount": [Function],
               "isSynapseLinkUpdating": [Function],
               "isTabsContentExpanded": [Function],
-              "isTryCosmosDBSubscription": [Function],
               "loadQueryPane": LoadQueryPane {
                 "container": [Circular],
                 "files": [Function],
@@ -4668,7 +4661,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
-              "serverId": [Function],
               "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,

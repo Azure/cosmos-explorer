@@ -48,6 +48,7 @@ import { FileSystemUtil } from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
@@ -163,8 +164,6 @@ export default class Explorer {
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
-  public serverId: ko.Observable<string>;
-  public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -377,9 +376,7 @@ export default class Explorer {
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
     this.features = ko.observable();
-    this.serverId = ko.observable<string>();
     this.queriesClient = new QueriesClient(this);
-    this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
     this.resourceTokenCollectionId = ko.observable<string>();
@@ -1417,14 +1414,12 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.features(inputs.features);
-      this.serverId(inputs.serverId ?? Constants.ServerIds.productionPortal);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
       if (inputs.addCollectionDefaultFlight) {
         this.flight(inputs.addCollectionDefaultFlight);
       }
-      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -1505,9 +1500,9 @@ export default class Explorer {
 
   public isRunningOnNationalCloud(): boolean {
     return (
-      this.serverId() === Constants.ServerIds.blackforest ||
-      this.serverId() === Constants.ServerIds.fairfax ||
-      this.serverId() === Constants.ServerIds.mooncake
+      userContext.portalEnv === "blackforest" ||
+      userContext.portalEnv === "fairfax" ||
+      userContext.portalEnv === "mooncake"
     );
   }
 
@@ -2372,10 +2367,12 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (this.isPreferredApiCassandra()) {
       this.cassandraAddCollectionPane.open();
+    } else if (this.isFeatureEnabled(Constants.Features.enableReactPane)) {
+      this.openAddCollectionPanel();
     } else {
       this.addCollectionPane.open(this.selectedDatabaseId());
+      document.getElementById("linkAddCollection").focus();
     }
-    document.getElementById("linkAddCollection").focus();
   }
 
   private refreshCommandBarButtons(): void {
@@ -2514,5 +2511,17 @@ export default class Explorer {
             openNotificationConsole={() => this.expandConsole()}
           />
         );
+  }
+
+  public async openAddCollectionPanel(): Promise<void> {
+    await this.loadDatabaseOffers();
+    this.openSidePanel(
+      "New Collection",
+      <AddCollectionPanel
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        openNotificationConsole={() => this.expandConsole()}
+      />
+    );
   }
 }

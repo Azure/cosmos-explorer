@@ -45,6 +45,7 @@ import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
+import "./Explorer/Controls/ThroughputInput/ThroughputInput.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
