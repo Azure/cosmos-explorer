@@ -1,12 +1,58 @@
 @import "../../../less/Common/Constants";
 
-.panelContentContainer {
+.panelFormWrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
 
   .panelMainContent {
     flex-grow: 1;
+    padding: 0 34px;
+    margin: 20px 0;
+    overflow: auto;
+
+    & > * {
+      margin-bottom: @DefaultSpace;
+
+      & > * {
+        margin-bottom: @SmallSpace;
+      }
+    }
+
+    .panelInfoIcon {
+      font-size: @mediumFontSize;
+      width: @mediumFontSize;
+      margin: auto 0 auto @SmallSpace;
+      color: @InfoIconColor;
+      cursor: default;
+      vertical-align: middle;
+    }
+
+    .panelTextBold {
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .panelTextField {
+      font-size: @mediumFontSize;
+      border: 1px solid #605e5c;
+      color: #000;
+      padding: 4px 10px;
+      width: @newCollectionPaneInputWidth;
+    }
+
+    .panelRadioBtn {
+      margin: 0;
+    }
+
+    .panelRadioBtnLabel {
+      font-size: @mediumFontSize;
+      padding: 0 @LargeSpace 0 @SmallSpace;
+    }
+
+    .collapsibleSection {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -16,24 +62,28 @@
   font-weight: 400;
 }
 
-.panelWarningErrorContainer {
+.panelInfoErrorContainer {
   background-color: @BaseLow;
   padding: @DefaultSpace;
   display: inline-flex;
-  margin-bottom: 24px;
+  margin: 20px 34px 0 34px;
 
-  .panelWarningIcon {
+  i {
     font-size: @WarningErrorIconSize;
     width: @WarningErrorIconSize;
-    margin: auto 0 auto @SmallSpace;
+    margin-left: @SmallSpace;
+  }
+
+  .panelWarningIcon {
     color: @WarningIconColor;
   }
 
   .panelErrorIcon {
-    font-size: @WarningErrorIconSize;
-    width: @WarningErrorIconSize;
-    margin: auto 0 auto @SmallSpace;
     color: @ErrorIconColor;
+  }
+
+  .panelLargeInfoIcon {
+    color: @InfoIconColor;
   }
 
   .panelWarningErrorDetailsLinkContainer {
@@ -48,8 +98,13 @@
   }
 }
 
-.panelFooter button {
-  height: 30px;
+.panelFooter {
+  padding: 20px 34px;
+  border-top: solid 1px #bbbbbb;
+
+  & button {
+    height: 30px;
+  }
 }
 
 .deleteCollectionFeedback {
@@ -66,4 +121,8 @@
   margin-top: 5px;
   margin-left: 5px !important;
   cursor: pointer;
+}
+
+.panelGroupSpacing > * {
+  margin-bottom: @SmallSpace;
 }

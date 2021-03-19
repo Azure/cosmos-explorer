@@ -23,19 +23,21 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     >
       <StackItem>
         <Stack>
-          <Text
-            aria-labelledby="description-label"
-            id="description-text-display"
-          >
-            this is an example description text.
-             
-            <StyledLinkBase
-              href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
-              target="_blank"
+          <Stack>
+            <Text
+              aria-labelledby="description-label"
+              id="description-text-display"
             >
-              Click here for more information.
-            </StyledLinkBase>
-          </Text>
+              this is an example description text.
+               
+              <StyledLinkBase
+                href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
+                target="_blank"
+              >
+                Click here for more information.
+              </StyledLinkBase>
+            </Text>
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -53,51 +55,53 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="throughput-label"
-          >
-            <ToolTipLabelComponent
-              label="Throughput (input)"
-            />
-          </StyledLabelBase>
-          <Stack
-            styles={
-              Object {
-                "root": Object {
-                  "width": 400,
-                },
-              }
-            }
-            tokens={
-              Object {
-                "childrenGap": 2,
-              }
-            }
-          >
-            <CustomizedSpinButton
-              aria-labelledby="throughput-label"
-              ariaLabel="Throughput (input)"
-              decrementButtonIcon={
+          <Stack>
+            <StyledLabelBase
+              id="throughput-label"
+            >
+              <ToolTipLabelComponent
+                label="Throughput (input)"
+              />
+            </StyledLabelBase>
+            <Stack
+              styles={
                 Object {
-                  "iconName": "ChevronDownSmall",
+                  "root": Object {
+                    "width": 400,
+                  },
                 }
               }
-              disabled={true}
-              id="throughput-spinner-input"
-              incrementButtonIcon={
+              tokens={
                 Object {
-                  "iconName": "ChevronUpSmall",
+                  "childrenGap": 2,
                 }
               }
-              label=""
-              labelPosition={0}
-              max={500}
-              min={400}
-              onDecrement={[Function]}
-              onIncrement={[Function]}
-              onValidate={[Function]}
-              step={10}
-            />
+            >
+              <CustomizedSpinButton
+                aria-labelledby="throughput-label"
+                ariaLabel="Throughput (input)"
+                decrementButtonIcon={
+                  Object {
+                    "iconName": "ChevronDownSmall",
+                  }
+                }
+                disabled={true}
+                id="throughput-spinner-input"
+                incrementButtonIcon={
+                  Object {
+                    "iconName": "ChevronUpSmall",
+                  }
+                }
+                label=""
+                labelPosition={0}
+                max={500}
+                min={400}
+                onDecrement={[Function]}
+                onIncrement={[Function]}
+                onValidate={[Function]}
+                step={10}
+              />
+            </Stack>
           </Stack>
         </Stack>
       </StackItem>
@@ -116,37 +120,39 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="throughput2-label"
-          >
-            <ToolTipLabelComponent
-              label="Throughput (Slider)"
-            />
-          </StyledLabelBase>
-          <div
-            id="throughput2-slider-input"
-          >
-            <StyledSliderBase
-              ariaLabel="Throughput (Slider)"
-              disabled={true}
-              max={500}
-              min={400}
-              onChange={[Function]}
-              step={10}
-              styles={
-                Object {
-                  "root": Object {
-                    "width": 400,
-                  },
-                  "valueLabel": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                  },
+          <Stack>
+            <StyledLabelBase
+              id="throughput2-label"
+            >
+              <ToolTipLabelComponent
+                label="Throughput (Slider)"
+              />
+            </StyledLabelBase>
+            <div
+              id="throughput2-slider-input"
+            >
+              <StyledSliderBase
+                ariaLabel="Throughput (Slider)"
+                disabled={true}
+                max={500}
+                min={400}
+                onChange={[Function]}
+                step={10}
+                styles={
+                  Object {
+                    "root": Object {
+                      "width": 400,
+                    },
+                    "valueLabel": Object {
+                      "color": "#393939",
+                      "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                      "fontSize": 12,
+                    },
+                  }
                 }
-              }
-            />
-          </div>
+              />
+            </div>
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -185,16 +191,14 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="containerId-label"
-          >
-            <ToolTipLabelComponent
-              label="Container id"
-            />
-          </StyledLabelBase>
-          <div
-            className="stringInputContainer"
-          >
+          <Stack>
+            <StyledLabelBase
+              id="containerId-label"
+            >
+              <ToolTipLabelComponent
+                label="Container id"
+              />
+            </StyledLabelBase>
             <StyledTextFieldBase
               aria-labelledby="containerId-label"
               disabled={true}
@@ -210,7 +214,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
               type="text"
               value=""
             />
-          </div>
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -228,29 +232,31 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="analyticalStore-label"
-          >
-            <ToolTipLabelComponent
-              label="Analytical Store"
-            />
-          </StyledLabelBase>
-          <StyledToggleBase
-            aria-labelledby="analyticalStore-label"
-            checked={false}
-            disabled={true}
-            id="analyticalStore-toggle-input"
-            offText="Disabled"
-            onChange={[Function]}
-            onText="Enabled"
-            styles={
-              Object {
-                "root": Object {
-                  "width": 400,
-                },
+          <Stack>
+            <StyledLabelBase
+              id="analyticalStore-label"
+            >
+              <ToolTipLabelComponent
+                label="Analytical Store"
+              />
+            </StyledLabelBase>
+            <StyledToggleBase
+              aria-labelledby="analyticalStore-label"
+              checked={false}
+              disabled={true}
+              id="analyticalStore-toggle-input"
+              offText="Disabled"
+              onChange={[Function]}
+              onText="Enabled"
+              styles={
+                Object {
+                  "root": Object {
+                    "width": 400,
+                  },
+                }
               }
-            }
-          />
+            />
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -268,48 +274,51 @@ exports[`SmartUiComponent disable all inputs 1`] = `
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="database-label"
-          >
-            <ToolTipLabelComponent
-              label="Database"
-            />
-          </StyledLabelBase>
-          <StyledWithResponsiveMode
-            aria-labelledby="database-label"
-            disabled={true}
-            id="database-dropdown-input"
-            onChange={[Function]}
-            options={
-              Array [
-                Object {
-                  "key": "db1",
-                  "text": "Database 1",
-                },
-                Object {
-                  "key": "db2",
-                  "text": "Database 2",
-                },
-                Object {
-                  "key": "db3",
-                  "text": "Database 3",
-                },
-              ]
-            }
-            selectedKey="db2"
-            styles={
-              Object {
-                "dropdown": Object {
-                  "color": "#393939",
-                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                  "fontSize": 12,
-                },
-                "root": Object {
-                  "width": 400,
-                },
+          <Stack>
+            <StyledLabelBase
+              id="database-label"
+            >
+              <ToolTipLabelComponent
+                label="Database"
+              />
+            </StyledLabelBase>
+            <StyledWithResponsiveMode
+              aria-labelledby="database-label"
+              disabled={true}
+              dropdownWidth="auto"
+              id="database-dropdown-input"
+              onChange={[Function]}
+              options={
+                Array [
+                  Object {
+                    "key": "db1",
+                    "text": "Database 1",
+                  },
+                  Object {
+                    "key": "db2",
+                    "text": "Database 2",
+                  },
+                  Object {
+                    "key": "db3",
+                    "text": "Database 3",
+                  },
+                ]
               }
-            }
-          />
+              selectedKey="db2"
+              styles={
+                Object {
+                  "dropdown": Object {
+                    "color": "#393939",
+                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                    "fontSize": 12,
+                  },
+                  "root": Object {
+                    "width": 400,
+                  },
+                }
+              }
+            />
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -340,19 +349,21 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     >
       <StackItem>
         <Stack>
-          <Text
-            aria-labelledby="description-label"
-            id="description-text-display"
-          >
-            this is an example description text.
-             
-            <StyledLinkBase
-              href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
-              target="_blank"
+          <Stack>
+            <Text
+              aria-labelledby="description-label"
+              id="description-text-display"
             >
-              Click here for more information.
-            </StyledLinkBase>
-          </Text>
+              this is an example description text.
+               
+              <StyledLinkBase
+                href="https://docs.microsoft.com/en-us/azure/cosmos-db/introduction"
+                target="_blank"
+              >
+                Click here for more information.
+              </StyledLinkBase>
+            </Text>
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -370,51 +381,53 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="throughput-label"
-          >
-            <ToolTipLabelComponent
-              label="Throughput (input)"
-            />
-          </StyledLabelBase>
-          <Stack
-            styles={
-              Object {
-                "root": Object {
-                  "width": 400,
-                },
-              }
-            }
-            tokens={
-              Object {
-                "childrenGap": 2,
-              }
-            }
-          >
-            <CustomizedSpinButton
-              aria-labelledby="throughput-label"
-              ariaLabel="Throughput (input)"
-              decrementButtonIcon={
+          <Stack>
+            <StyledLabelBase
+              id="throughput-label"
+            >
+              <ToolTipLabelComponent
+                label="Throughput (input)"
+              />
+            </StyledLabelBase>
+            <Stack
+              styles={
                 Object {
-                  "iconName": "ChevronDownSmall",
+                  "root": Object {
+                    "width": 400,
+                  },
                 }
               }
-              disabled={false}
-              id="throughput-spinner-input"
-              incrementButtonIcon={
+              tokens={
                 Object {
-                  "iconName": "ChevronUpSmall",
+                  "childrenGap": 2,
                 }
               }
-              label=""
-              labelPosition={0}
-              max={500}
-              min={400}
-              onDecrement={[Function]}
-              onIncrement={[Function]}
-              onValidate={[Function]}
-              step={10}
-            />
+            >
+              <CustomizedSpinButton
+                aria-labelledby="throughput-label"
+                ariaLabel="Throughput (input)"
+                decrementButtonIcon={
+                  Object {
+                    "iconName": "ChevronDownSmall",
+                  }
+                }
+                disabled={false}
+                id="throughput-spinner-input"
+                incrementButtonIcon={
+                  Object {
+                    "iconName": "ChevronUpSmall",
+                  }
+                }
+                label=""
+                labelPosition={0}
+                max={500}
+                min={400}
+                onDecrement={[Function]}
+                onIncrement={[Function]}
+                onValidate={[Function]}
+                step={10}
+              />
+            </Stack>
           </Stack>
         </Stack>
       </StackItem>
@@ -433,36 +446,38 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="throughput2-label"
-          >
-            <ToolTipLabelComponent
-              label="Throughput (Slider)"
-            />
-          </StyledLabelBase>
-          <div
-            id="throughput2-slider-input"
-          >
-            <StyledSliderBase
-              ariaLabel="Throughput (Slider)"
-              max={500}
-              min={400}
-              onChange={[Function]}
-              step={10}
-              styles={
-                Object {
-                  "root": Object {
-                    "width": 400,
-                  },
-                  "valueLabel": Object {
-                    "color": "#393939",
-                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                    "fontSize": 12,
-                  },
+          <Stack>
+            <StyledLabelBase
+              id="throughput2-label"
+            >
+              <ToolTipLabelComponent
+                label="Throughput (Slider)"
+              />
+            </StyledLabelBase>
+            <div
+              id="throughput2-slider-input"
+            >
+              <StyledSliderBase
+                ariaLabel="Throughput (Slider)"
+                max={500}
+                min={400}
+                onChange={[Function]}
+                step={10}
+                styles={
+                  Object {
+                    "root": Object {
+                      "width": 400,
+                    },
+                    "valueLabel": Object {
+                      "color": "#393939",
+                      "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                      "fontSize": 12,
+                    },
+                  }
                 }
-              }
-            />
-          </div>
+              />
+            </div>
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -501,16 +516,14 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="containerId-label"
-          >
-            <ToolTipLabelComponent
-              label="Container id"
-            />
-          </StyledLabelBase>
-          <div
-            className="stringInputContainer"
-          >
+          <Stack>
+            <StyledLabelBase
+              id="containerId-label"
+            >
+              <ToolTipLabelComponent
+                label="Container id"
+              />
+            </StyledLabelBase>
             <StyledTextFieldBase
               aria-labelledby="containerId-label"
               id="containerId-textField-input"
@@ -525,7 +538,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
               type="text"
               value=""
             />
-          </div>
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -543,28 +556,30 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="analyticalStore-label"
-          >
-            <ToolTipLabelComponent
-              label="Analytical Store"
-            />
-          </StyledLabelBase>
-          <StyledToggleBase
-            aria-labelledby="analyticalStore-label"
-            checked={false}
-            id="analyticalStore-toggle-input"
-            offText="Disabled"
-            onChange={[Function]}
-            onText="Enabled"
-            styles={
-              Object {
-                "root": Object {
-                  "width": 400,
-                },
+          <Stack>
+            <StyledLabelBase
+              id="analyticalStore-label"
+            >
+              <ToolTipLabelComponent
+                label="Analytical Store"
+              />
+            </StyledLabelBase>
+            <StyledToggleBase
+              aria-labelledby="analyticalStore-label"
+              checked={false}
+              id="analyticalStore-toggle-input"
+              offText="Disabled"
+              onChange={[Function]}
+              onText="Enabled"
+              styles={
+                Object {
+                  "root": Object {
+                    "width": 400,
+                  },
+                }
               }
-            }
-          />
+            />
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>
@@ -582,47 +597,50 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
     >
       <StackItem>
         <Stack>
-          <StyledLabelBase
-            id="database-label"
-          >
-            <ToolTipLabelComponent
-              label="Database"
-            />
-          </StyledLabelBase>
-          <StyledWithResponsiveMode
-            aria-labelledby="database-label"
-            id="database-dropdown-input"
-            onChange={[Function]}
-            options={
-              Array [
-                Object {
-                  "key": "db1",
-                  "text": "Database 1",
-                },
-                Object {
-                  "key": "db2",
-                  "text": "Database 2",
-                },
-                Object {
-                  "key": "db3",
-                  "text": "Database 3",
-                },
-              ]
-            }
-            selectedKey="db2"
-            styles={
-              Object {
-                "dropdown": Object {
-                  "color": "#393939",
-                  "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
-                  "fontSize": 12,
-                },
-                "root": Object {
-                  "width": 400,
-                },
+          <Stack>
+            <StyledLabelBase
+              id="database-label"
+            >
+              <ToolTipLabelComponent
+                label="Database"
+              />
+            </StyledLabelBase>
+            <StyledWithResponsiveMode
+              aria-labelledby="database-label"
+              dropdownWidth="auto"
+              id="database-dropdown-input"
+              onChange={[Function]}
+              options={
+                Array [
+                  Object {
+                    "key": "db1",
+                    "text": "Database 1",
+                  },
+                  Object {
+                    "key": "db2",
+                    "text": "Database 2",
+                  },
+                  Object {
+                    "key": "db3",
+                    "text": "Database 3",
+                  },
+                ]
               }
-            }
-          />
+              selectedKey="db2"
+              styles={
+                Object {
+                  "dropdown": Object {
+                    "color": "#393939",
+                    "fontFamily": "wf_segoe-ui_normal, 'Segoe UI', 'Segoe WP', Tahoma, Arial, sans-serif",
+                    "fontSize": 12,
+                  },
+                  "root": Object {
+                    "width": 400,
+                  },
+                }
+              }
+            />
+          </Stack>
         </Stack>
       </StackItem>
     </Stack>

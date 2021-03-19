@@ -83,10 +83,10 @@ export default class MongoShellTab extends TabsBase {
   }
 
   private handleReadyMessage(event: MessageEvent, shellIframe: HTMLIFrameElement) {
-    if (typeof event.data["data"] !== "string") {
+    if (typeof event.data["kind"] !== "string") {
       return;
     }
-    if (event.data.data !== "ready") {
+    if (event.data.kind !== "ready") {
       return;
     }
 
