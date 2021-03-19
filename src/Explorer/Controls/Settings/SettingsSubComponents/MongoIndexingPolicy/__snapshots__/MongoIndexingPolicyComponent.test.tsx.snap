@@ -42,6 +42,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
     }
   >
     <CollapsibleSectionComponent
+      isExpandedByDefault={true}
       title="Current index(es)"
     >
       <StyledWithViewportComponent
@@ -139,6 +140,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
     }
   >
     <CollapsibleSectionComponent
+      isExpandedByDefault={true}
       title="Index(es) to be dropped"
     />
   </Stack>
