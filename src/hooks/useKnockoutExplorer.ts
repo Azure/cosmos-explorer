@@ -15,14 +15,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken
+  ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata
+  getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext } from "../UserContext";

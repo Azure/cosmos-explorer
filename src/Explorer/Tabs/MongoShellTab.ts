@@ -100,7 +100,7 @@ export default class MongoShellTab extends TabsBase {
       documentEndpoint.substr(
         Constants.MongoDBAccounts.protocol.length + 3,
         documentEndpoint.length -
-        (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
+          (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
       ) + Constants.MongoDBAccounts.defaultPort.toString();
     const databaseId = this.collection.databaseId;
     const collectionId = this.collection.id();

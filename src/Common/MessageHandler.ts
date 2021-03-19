@@ -75,7 +75,6 @@ export function sendReadyMessage(): void {
   }
 }
 
-
 export function canSendMessage(): boolean {
   return window.parent !== window;
 }
