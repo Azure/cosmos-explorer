@@ -3,7 +3,7 @@ import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import { sendMessage } from "../Common/MessageHandler";
+import { sendReadyMessage } from "../Common/MessageHandler";
 import { configContext, updateConfigContext } from "../ConfigContext";
 import { SelfServeFrameInputs } from "../Contracts/ViewModels";
 import { updateUserContext } from "../UserContext";
@@ -89,4 +89,4 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
 
 ReactDOM.render(renderSpinner(), document.getElementById("selfServeContent"));
 window.addEventListener("message", handleMessage, false);
-sendMessage("ready");
+sendReadyMessage();
