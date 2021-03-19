@@ -11,16 +11,10 @@ exports[`CollapsibleSectionComponent renders 1`] = `
         "childrenGap": 10,
       }
     }
+    verticalAlign="center"
   >
-    <StyledIconBase
+    <Icon
       iconName="ChevronDown"
-      styles={
-        Object {
-          "root": Object {
-            "paddingTop": 7,
-          },
-        }
-      }
     />
     <StyledLabelBase>
       Sample title
