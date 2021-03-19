@@ -1,25 +1,26 @@
 /**
  * Accordion top class
  */
-import * as React from "react";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as Constants from "../../Common/Constants";
 import { Link } from "office-ui-fabric-react/lib/Link";
+import * as React from "react";
+import AddDatabaseIcon from "../../../images/AddDatabase.svg";
+import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
+import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
+import OpenQueryIcon from "../../../images/BrowseQuery.svg";
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
-import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
-import OpenQueryIcon from "../../../images/BrowseQuery.svg";
-import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
-import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
-import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
-import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
-import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
-import Explorer from "../Explorer";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
+import CollectionIcon from "../../../images/tree-collection.svg";
+import { AuthType } from "../../AuthType";
+import * as Constants from "../../Common/Constants";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
-import CollectionIcon from "../../../images/tree-collection.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
+import Explorer from "../Explorer";
+import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -217,46 +218,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     return heroes;
   }
 
-  private getItemIcon(item: MostRecentActivity.Item): string {
-    switch (item.type) {
-      case MostRecentActivity.Type.OpenCollection:
-        return CollectionIcon;
-      case MostRecentActivity.Type.OpenNotebook:
-        return NotebookIcon;
-      default:
-        return null;
-    }
-  }
-
-  private onItemClicked(item: MostRecentActivity.Item) {
-    switch (item.type) {
-      case MostRecentActivity.Type.OpenCollection: {
-        const openCollectionitem = item.data as MostRecentActivity.OpenCollectionItem;
-        const collection = this.container.findCollection(
-          openCollectionitem.databaseId,
-          openCollectionitem.collectionId
-        );
-        if (collection) {
-          collection.openTab();
-        }
-        break;
-      }
-      case MostRecentActivity.Type.OpenNotebook: {
-        const openNotebookItem = item.data as MostRecentActivity.OpenNotebookItem;
-        const notebookItem = this.container.createNotebookContentItemFile(openNotebookItem.name, openNotebookItem.path);
-        notebookItem && this.container.openNotebook(notebookItem);
-        break;
-      }
-      default:
-        console.error("Unknown item type", item);
-        break;
-    }
-  }
-
   private createCommonTaskItems(): SplashScreenItem[] {
     const items: SplashScreenItem[] = [];
 
-    if (this.container.isAuthWithResourceToken()) {
+    if (userContext.authType === AuthType.ResourceToken) {
       return items;
     }
 
@@ -333,23 +298,45 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     return items;
   }
 
-  private static getInfo(item: MostRecentActivity.Item): string {
-    if (item.type === MostRecentActivity.Type.OpenNotebook) {
-      const data = item.data as MostRecentActivity.OpenNotebookItem;
-      return data.path;
-    } else {
-      return undefined;
-    }
+  private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
+    return {
+      iconSrc: NotebookIcon,
+      title: collectionId,
+      description: "Data",
+      onClick: () => {
+        const collection = this.container.findCollection(databaseId, collectionId);
+        collection && collection.openTab();
+      },
+    };
+  }
+
+  private decorateOpenNotebookActivity({ name, path }: MostRecentActivity.OpenNotebookItem) {
+    return {
+      info: path,
+      iconSrc: CollectionIcon,
+      title: name,
+      description: "Notebook",
+      onClick: () => {
+        const notebookItem = this.container.createNotebookContentItemFile(name, path);
+        notebookItem && this.container.openNotebook(notebookItem);
+      },
+    };
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((item) => ({
-      iconSrc: this.getItemIcon(item),
-      title: item.title,
-      description: item.description,
-      info: SplashScreen.getInfo(item),
-      onClick: () => this.onItemClicked(item),
-    }));
+    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((activity) => {
+      switch (activity.type) {
+        default: {
+          const unknownActivity: never = activity;
+          throw new Error(`Unknown activity: ${unknownActivity}`);
+        }
+        case MostRecentActivity.Type.OpenNotebook:
+          return this.decorateOpenNotebookActivity(activity);
+
+        case MostRecentActivity.Type.OpenCollection:
+          return this.decorateOpenCollectionActivity(activity);
+      }
+    });
   }
 
   private createTipsItems(): SplashScreenItem[] {

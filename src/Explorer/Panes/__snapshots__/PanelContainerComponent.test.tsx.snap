@@ -16,9 +16,15 @@ exports[`PaneContainerComponent test should be resize if notification console is
   }
   styles={
     Object {
+      "commands": Object {
+        "marginTop": 8,
+      },
       "content": Object {
         "height": "100%",
-        "padding": "24px 34px 20px 34px",
+        "padding": 0,
+      },
+      "header": Object {
+        "padding": "0 0 8px 34px",
       },
       "navigation": Object {
         "borderBottom": "1px solid #cccccc",
@@ -52,9 +58,15 @@ exports[`PaneContainerComponent test should render with panel content and header
   }
   styles={
     Object {
+      "commands": Object {
+        "marginTop": 8,
+      },
       "content": Object {
         "height": "100%",
-        "padding": "24px 34px 20px 34px",
+        "padding": 0,
+      },
+      "header": Object {
+        "padding": "0 0 8px 34px",
       },
       "navigation": Object {
         "borderBottom": "1px solid #cccccc",
