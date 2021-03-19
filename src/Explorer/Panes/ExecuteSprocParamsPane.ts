@@ -2,8 +2,8 @@ import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { ContextualPaneBase } from "./ContextualPaneBase";
 import StoredProcedure from "../Tree/StoredProcedure";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export interface ExecuteSprocParam {
   type: ko.Observable<string>;
@@ -61,6 +61,7 @@ export class ExecuteSprocParamsPane extends ContextualPaneBase {
       const type: string = this.partitionKeyType();
       let value: string = this.partitionKeyValue();
 
+      console.log("type value", type, value);
       if (type === "custom") {
         if (value === "undefined" || value === undefined) {
           return undefined;
@@ -80,26 +81,27 @@ export class ExecuteSprocParamsPane extends ContextualPaneBase {
 
       return value;
     })();
-    const unwrappedParams: UnwrappedExecuteSprocParam[] = ko.toJS(this.params());
+
+     const unwrappedParams: UnwrappedExecuteSprocParam[] = ko.toJS(this.params());
     const wrappedSprocParams: UnwrappedExecuteSprocParam[] = !this.params()
       ? undefined
       : _.map(unwrappedParams, (unwrappedParam: UnwrappedExecuteSprocParam) => {
-          let paramValue: string = unwrappedParam.value;
+        let paramValue: string = unwrappedParam.value;
 
-          if (unwrappedParam.type === "custom" && (paramValue === "undefined" || paramValue === "")) {
-            paramValue = undefined;
-          } else if (unwrappedParam.type === "custom") {
-            try {
-              paramValue = JSON.parse(paramValue);
-            } catch (e) {
-              this.formErrors(`Invalid param specified: ${paramValue}`);
-              this.formErrorsDetails(`Invalid param specified: ${paramValue} is not a valid literal value`);
-            }
+        if (unwrappedParam.type === "custom" && (paramValue === "undefined" || paramValue === "")) {
+          paramValue = undefined;
+        } else if (unwrappedParam.type === "custom") {
+          try {
+            paramValue = JSON.parse(paramValue);
+          } catch (e) {
+            this.formErrors(`Invalid param specified: ${paramValue}`);
+            this.formErrorsDetails(`Invalid param specified: ${paramValue} is not a valid literal value`);
           }
+        }
 
-          unwrappedParam.value = paramValue;
-          return unwrappedParam;
-        });
+        unwrappedParam.value = paramValue;
+        return unwrappedParam;
+      });
 
     if (this.formErrors()) {
       return;

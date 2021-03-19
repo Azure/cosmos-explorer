@@ -6,7 +6,7 @@ import {
   Image,
   Label,
   Stack,
-  TextField,
+  TextField
 } from "office-ui-fabric-react/lib";
 import React, { FunctionComponent } from "react";
 import Add_property from "../../../../images/Add-property.svg";
@@ -18,11 +18,17 @@ const options = [
   { key: "custom", text: "Custom" },
 ];
 
-interface InputParameterProps {
+export interface InputParameterProps {
   dropdownLabel?: string;
   InputParameterTitle?: string;
   inputLabel?: string;
   isAddRemoveVisible: boolean;
+  onDeleteParamKeyPress?: () => void;
+  onAddNewParamKeyPress?: () => void;
+  onParamValueChange: (event: any, newInput?: string) => void,
+  onParamKeyChange: (event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption) => void,
+  paramValue: string,
+  selectedKey: string | number
 }
 
 export const InputParameter: FunctionComponent<InputParameterProps> = ({
@@ -30,18 +36,20 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
   InputParameterTitle,
   inputLabel,
   isAddRemoveVisible,
+  onDeleteParamKeyPress,
+  onAddNewParamKeyPress,
+  onParamValueChange,
+  onParamKeyChange,
+  paramValue,
+  selectedKey
 }: InputParameterProps): JSX.Element => {
-  const [selectedItem, setSelectedItem] = React.useState<IDropdownOption>(options[0]);
-
-  const onChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
-    setSelectedItem(item);
-  };
-
   const imageProps: IImageProps = {
     width: 20,
     height: 30,
     className: dropdownLabel ? "add-remove-icon-label" : "add-remove-icon",
   };
+
+  console.log("selectedKey", selectedKey, typeof selectedKey)
 
   return (
     <>
@@ -49,16 +57,22 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
       <Stack horizontal>
         <Dropdown
           label={dropdownLabel && dropdownLabel}
-          selectedKey={selectedItem ? selectedItem.key : undefined}
-          onChange={onChange}
+          selectedKey={selectedKey}
+          onChange={onParamKeyChange}
           options={options}
           styles={dropdownStyles}
         />
-        <TextField label={inputLabel && inputLabel} />
+        <TextField
+          label={inputLabel && inputLabel}
+          id="confirmCollectionId"
+          autoFocus
+          value={paramValue}
+          onChange={onParamValueChange}
+        />
         {isAddRemoveVisible && (
           <>
-            <Image {...imageProps} src={Entity_cancel} alt="Delete param" />
-            <Image {...imageProps} src={Add_property} alt="Add param" />
+            <Image {...imageProps} src={Entity_cancel} alt="Delete param" onClick={onDeleteParamKeyPress} />
+            <Image {...imageProps} src={Add_property} alt="Add param" onClick={onAddNewParamKeyPress} />
           </>
         )}
       </Stack>
