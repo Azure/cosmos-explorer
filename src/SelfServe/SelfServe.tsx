@@ -1,17 +1,17 @@
+import { Spinner, SpinnerSize } from "office-ui-fabric-react";
+import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import * as React from "react";
 import ReactDOM from "react-dom";
-import { sendMessage } from "../Common/MessageHandler";
+import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
+import { sendReadyMessage } from "../Common/MessageHandler";
+import { configContext, updateConfigContext } from "../ConfigContext";
+import { SelfServeFrameInputs } from "../Contracts/ViewModels";
+import { updateUserContext } from "../UserContext";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
+import "./SelfServe.less";
 import { SelfServeComponent } from "./SelfServeComponent";
 import { SelfServeDescriptor } from "./SelfServeTypes";
 import { SelfServeType } from "./SelfServeUtils";
-import { SelfServeFrameInputs } from "../Contracts/ViewModels";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { configContext, updateConfigContext } from "../ConfigContext";
-import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import { updateUserContext } from "../UserContext";
-import "./SelfServe.less";
-import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 initializeIcons();
 
 const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDescriptor> => {
@@ -89,4 +89,4 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
 
 ReactDOM.render(renderSpinner(), document.getElementById("selfServeContent"));
 window.addEventListener("message", handleMessage, false);
-sendMessage("ready");
+sendReadyMessage();

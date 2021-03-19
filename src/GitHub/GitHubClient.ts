@@ -1,7 +1,7 @@
 import { Octokit } from "@octokit/rest";
 import { HttpStatusCodes } from "../Common/Constants";
 import * as Logger from "../Common/Logger";
-import UrlUtility from "../Common/UrlUtility";
+import * as UrlUtility from "../Common/UrlUtility";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
