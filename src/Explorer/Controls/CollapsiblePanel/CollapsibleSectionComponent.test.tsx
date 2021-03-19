@@ -6,6 +6,7 @@ describe("CollapsibleSectionComponent", () => {
   it("renders", () => {
     const props: CollapsibleSectionProps = {
       title: "Sample title",
+      isExpandedByDefault: true,
     };
 
     const wrapper = shallow(<CollapsibleSectionComponent {...props} />);
