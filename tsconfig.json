@@ -2,7 +2,9 @@
   "compilerOptions": {
     "allowJs": true,
     "sourceMap": false,
-    "noImplicitAny": true,
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,

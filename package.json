@@ -195,7 +195,7 @@
     "watch": "npm run start",
     "wait-for-server": "wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/",
     "build:ase": "gulp build:ase",
-    "compile": "tsc",
+    "compile": "tsc -p ./tsconfig.build.json",
     "compile:contracts": "tsc -p ./tsconfig.contracts.json",
     "compile:strict": "tsc -p ./tsconfig.strict.json",
     "format": "prettier --write \"{src,test}/**/*.{ts,tsx,html}\" \"*.{js,html}\"",
@@ -204,7 +204,7 @@
     "build:contracts": "npm run compile:contracts",
     "strict:find": "node ./strict-null-checks/find.js",
     "strict:add": "node ./strict-null-checks/auto-add.js",
-    "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks",
+    "compile:fullStrict": "tsc",
     "generateARMClients": "ts-node --compiler-options '{\"module\":\"commonjs\"}' utils/armClientGenerator/generator.ts"
   },
   "repository": {
