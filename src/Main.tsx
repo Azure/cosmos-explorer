@@ -258,7 +258,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "settings-pane", params: { data: settingsPane} }' />
       <div data-bind='component: { name: "upload-items-pane", params: { data: uploadItemsPane} }' />
       <div data-bind='component: { name: "load-query-pane", params: { data: loadQueryPane} }' />
-      <div data-bind='component: { name: "execute-sproc-params-pane", params: { data: executeSprocParamsPane} }' />
       <div data-bind='component: { name: "save-query-pane", params: { data: saveQueryPane} }' />
       <div data-bind='component: { name: "browse-queries-pane", params: { data: browseQueriesPane} }' />
       <div data-bind='component: { name: "upload-file-pane", params: { data: uploadFilePane} }' />

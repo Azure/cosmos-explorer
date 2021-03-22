@@ -126,7 +126,6 @@ src/Explorer/Panes/DeleteCollectionConfirmationPane.test.ts
 src/Explorer/Panes/DeleteCollectionConfirmationPane.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.test.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.ts
-src/Explorer/Panes/ExecuteSprocParamsPane.ts
 src/Explorer/Panes/GraphStylingPane.ts
 src/Explorer/Panes/LoadQueryPane.ts
 src/Explorer/Panes/NewVertexPane.ts

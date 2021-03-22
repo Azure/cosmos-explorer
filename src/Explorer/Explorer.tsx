@@ -56,7 +56,6 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
@@ -215,7 +214,6 @@ export default class Explorer {
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public settingsPane: SettingsPane;
-  public executeSprocParamsPane: ExecuteSprocParamsPane;
   public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
@@ -655,13 +653,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      id: "executesprocparamspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.uploadItemsPane = new UploadItemsPane({
       id: "uploaditemspane",
       visible: ko.observable<boolean>(false),
@@ -728,7 +719,6 @@ export default class Explorer {
       this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.settingsPane,
-      this.executeSprocParamsPane,
       this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
