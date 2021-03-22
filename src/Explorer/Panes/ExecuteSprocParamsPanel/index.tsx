@@ -1,10 +1,12 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabric-react/lib";
-import React, { FunctionComponent, useCallback, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
+import * as _ from "underscore";
 import Add_property from "../../../../images/Add-property.svg";
 import Explorer from "../../Explorer";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 import { InputParameter } from "./InputParameter";
+
 interface ExecuteSprocParamsPaneProps {
   explorer: Explorer;
   closePanel: () => void;
@@ -16,16 +18,22 @@ const imageProps: IImageProps = {
   height: 30,
 };
 
+interface UnwrappedExecuteSprocParam {
+  key: string,
+  text: string,
+}
+
 export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
   explorer,
   closePanel,
   openNotificationConsole,
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
-  const [paramKeyValues, setParamKeyValues] = useState([{ key: "String", value: "" }]);
-  const [peritionValue, setPeritionValue] = useState<string>("");
-
-  const [selectedKey, setSelectedKey] = React.useState<IDropdownOption>({ key: "string", text: "String" });
+  const [paramKeyValues, setParamKeyValues] = useState<UnwrappedExecuteSprocParam[]>([{ key: "string", text: "" }]);
+  const [partitionValue, setPartitionValue] = useState<string>("");
+  const [selectedKey, setSelectedKey] = React.useState<IDropdownOption>({ key: "string", text: "" });
+  const [formError, setFormError] = useState<string>("");
+  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
 
   const onPeritionKeyChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
     setSelectedKey(item);
@@ -33,8 +41,8 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
 
   const genericPaneProps: GenericRightPaneProps = {
     container: explorer,
-    formError: "",
-    formErrorDetail: "formErrorDetail",
+    formError: formError,
+    formErrorDetail: formErrorsDetails,
     id: "executesprocparamspane",
     isExecuting: isLoading,
     title: "Input parameters",
@@ -43,11 +51,40 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
     onSubmit: () => submit(),
   };
 
+  const validateUnwrappedParams = (): boolean => {
+    const unwrappedParams: UnwrappedExecuteSprocParam[] = paramKeyValues;
+    for (let i = 0; i < unwrappedParams.length; i++) {
+      const { key: paramType, text: paramValue } = unwrappedParams[i];
+      if (paramType === "custom" && (paramValue === "" || paramValue === undefined)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const setInvalidParamError = (InvalidParam: string): void => {
+    setFormError(`Invalid param specified: ${InvalidParam}`);
+    setFormErrorsDetails(`Invalid param specified: ${InvalidParam} is not a valid literal value`);
+  }
+
   const submit = (): void => {
+    const wrappedSprocParams: UnwrappedExecuteSprocParam[] = paramKeyValues;
+    const { key: partitionKey, } = selectedKey;
+    if (partitionKey === "custom" && (partitionValue === "" || partitionValue === undefined)) {
+      setInvalidParamError(partitionValue)
+      return;
+    }
+    if (!validateUnwrappedParams()) {
+      setInvalidParamError("")
+      return;
+    }
     setLoadingTrue();
-    setTimeout(() => {
-      setLoadingFalse();
-    }, 2000);
+    const sprocParams = wrappedSprocParams && _.pluck(wrappedSprocParams, "text");
+    const currentSelectedSproc = explorer.findSelectedStoredProcedure();
+    currentSelectedSproc.execute(sprocParams, partitionValue);
+    setLoadingFalse();
+    closePanel();
+    openNotificationConsole();
   };
 
   const deleteParamAtIndex = (indexToRemove: number): void => {
@@ -58,18 +95,17 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
 
   const addNewParamAtIndex = (indexToAdd: number): void => {
     const cloneParamKeyValue = [...paramKeyValues];
-    cloneParamKeyValue.splice(indexToAdd, 0, { key: "", value: "" });
+    cloneParamKeyValue.splice(indexToAdd, 0, { key: "string", text: "" });
     setParamKeyValues(cloneParamKeyValue);
   }
 
-  const paramValueChange = useCallback((value: string, indexOfInput: number): void => {
+  const paramValueChange = (value: string, indexOfInput: number): void => {
     const cloneParamKeyValue = [...paramKeyValues];
-    cloneParamKeyValue[indexOfInput].value = value;
+    cloneParamKeyValue[indexOfInput].text = value;
     setParamKeyValues(cloneParamKeyValue);
-  }, []
-  )
+  }
 
-  const paramKeyChange = (_event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption, indexOfParam: number) => {
+  const paramKeyChange = (_event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption, indexOfParam: number): void => {
     const cloneParamKeyValue = [...paramKeyValues];
     cloneParamKeyValue[indexOfParam].key = selectedParam.key.toString();
     setParamKeyValues(cloneParamKeyValue);
@@ -77,13 +113,14 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
 
   const addNewParamAtLastIndex = (): void => {
     const cloneParamKeyValue = [...paramKeyValues];
-    cloneParamKeyValue.splice(cloneParamKeyValue.length, 0, { key: "", value: "" });
+    cloneParamKeyValue.splice(cloneParamKeyValue.length, 0, { key: "string", text: "" });
     setParamKeyValues(cloneParamKeyValue);
   }
 
+
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
-      <div className="panelContentContainer">
+      <div className="panelFormWrapper">
         <div className="panelMainContent">
           <InputParameter
             dropdownLabel="Key"
@@ -91,16 +128,16 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
             inputLabel="Value"
             isAddRemoveVisible={false}
             onParamValueChange={(_event, newInput?: string) => {
-              setPeritionValue(newInput);
+              setPartitionValue(newInput);
             }}
             onParamKeyChange={onPeritionKeyChange}
-            paramValue={peritionValue}
+            paramValue={partitionValue}
             selectedKey={selectedKey.key}
           />
           {paramKeyValues.map((paramKeyValue, index) => {
             return (
               <InputParameter
-                key={paramKeyValue.value}
+                key={paramKeyValue && paramKeyValue.text + index}
                 dropdownLabel={!index && "Key"}
                 InputParameterTitle={!index && "Enter input parameters (if any)"}
                 inputLabel={!index && "Param"}
@@ -113,14 +150,14 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
                 onParamKeyChange={(event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption) => {
                   paramKeyChange(event, selectedParam, index);
                 }}
-                paramValue={paramKeyValue.value}
-                selectedKey={paramKeyValue.key}
+                paramValue={paramKeyValue && paramKeyValue.text}
+                selectedKey={paramKeyValue && paramKeyValue.key}
               />)
           })
           }
           <Stack horizontal onClick={addNewParamAtLastIndex}>
             <Image {...imageProps} src={Add_property} alt="Add param" />
-            <Text className="add-new-param-style">Add New Param</Text>
+            <Text className="addNewParamStyle">Add New Param</Text>
           </Stack>
         </div>
       </div>

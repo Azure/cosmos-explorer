@@ -25,8 +25,8 @@ export interface InputParameterProps {
   isAddRemoveVisible: boolean;
   onDeleteParamKeyPress?: () => void;
   onAddNewParamKeyPress?: () => void;
-  onParamValueChange: (event: any, newInput?: string) => void,
-  onParamKeyChange: (event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption) => void,
+  onParamValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void,
+  onParamKeyChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void,
   paramValue: string,
   selectedKey: string | number
 }
@@ -36,20 +36,19 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
   InputParameterTitle,
   inputLabel,
   isAddRemoveVisible,
+  paramValue,
+  selectedKey,
   onDeleteParamKeyPress,
   onAddNewParamKeyPress,
   onParamValueChange,
   onParamKeyChange,
-  paramValue,
-  selectedKey
 }: InputParameterProps): JSX.Element => {
+
   const imageProps: IImageProps = {
     width: 20,
     height: 30,
-    className: dropdownLabel ? "add-remove-icon-label" : "add-remove-icon",
+    className: dropdownLabel ? "addRemoveIconLabel" : "addRemoveIcon",
   };
-
-  console.log("selectedKey", selectedKey, typeof selectedKey)
 
   return (
     <>
