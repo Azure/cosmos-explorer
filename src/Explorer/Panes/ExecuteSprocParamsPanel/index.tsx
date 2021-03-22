@@ -19,8 +19,8 @@ const imageProps: IImageProps = {
 };
 
 interface UnwrappedExecuteSprocParam {
-  key: string,
-  text: string,
+  key: string;
+  text: string;
 }
 
 export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
@@ -60,22 +60,22 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
       }
     }
     return true;
-  }
+  };
 
   const setInvalidParamError = (InvalidParam: string): void => {
     setFormError(`Invalid param specified: ${InvalidParam}`);
     setFormErrorsDetails(`Invalid param specified: ${InvalidParam} is not a valid literal value`);
-  }
+  };
 
   const submit = (): void => {
     const wrappedSprocParams: UnwrappedExecuteSprocParam[] = paramKeyValues;
-    const { key: partitionKey, } = selectedKey;
+    const { key: partitionKey } = selectedKey;
     if (partitionKey === "custom" && (partitionValue === "" || partitionValue === undefined)) {
-      setInvalidParamError(partitionValue)
+      setInvalidParamError(partitionValue);
       return;
     }
     if (!validateUnwrappedParams()) {
-      setInvalidParamError("")
+      setInvalidParamError("");
       return;
     }
     setLoadingTrue();
@@ -91,32 +91,35 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
     const cloneParamKeyValue = [...paramKeyValues];
     cloneParamKeyValue.splice(indexToRemove, 1);
     setParamKeyValues(cloneParamKeyValue);
-  }
+  };
 
   const addNewParamAtIndex = (indexToAdd: number): void => {
     const cloneParamKeyValue = [...paramKeyValues];
     cloneParamKeyValue.splice(indexToAdd, 0, { key: "string", text: "" });
     setParamKeyValues(cloneParamKeyValue);
-  }
+  };
 
   const paramValueChange = (value: string, indexOfInput: number): void => {
     const cloneParamKeyValue = [...paramKeyValues];
     cloneParamKeyValue[indexOfInput].text = value;
     setParamKeyValues(cloneParamKeyValue);
-  }
+  };
 
-  const paramKeyChange = (_event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption, indexOfParam: number): void => {
+  const paramKeyChange = (
+    _event: React.FormEvent<HTMLDivElement>,
+    selectedParam: IDropdownOption,
+    indexOfParam: number
+  ): void => {
     const cloneParamKeyValue = [...paramKeyValues];
     cloneParamKeyValue[indexOfParam].key = selectedParam.key.toString();
     setParamKeyValues(cloneParamKeyValue);
-  }
+  };
 
   const addNewParamAtLastIndex = (): void => {
     const cloneParamKeyValue = [...paramKeyValues];
     cloneParamKeyValue.splice(cloneParamKeyValue.length, 0, { key: "string", text: "" });
     setParamKeyValues(cloneParamKeyValue);
-  }
-
+  };
 
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
@@ -152,9 +155,9 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
                 }}
                 paramValue={paramKeyValue && paramKeyValue.text}
                 selectedKey={paramKeyValue && paramKeyValue.key}
-              />)
-          })
-          }
+              />
+            );
+          })}
           <Stack horizontal onClick={addNewParamAtLastIndex}>
             <Image {...imageProps} src={Add_property} alt="Add param" />
             <Text className="addNewParamStyle">Add New Param</Text>

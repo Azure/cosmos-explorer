@@ -82,26 +82,26 @@ export class ExecuteSprocParamsPane extends ContextualPaneBase {
       return value;
     })();
 
-     const unwrappedParams: UnwrappedExecuteSprocParam[] = ko.toJS(this.params());
+    const unwrappedParams: UnwrappedExecuteSprocParam[] = ko.toJS(this.params());
     const wrappedSprocParams: UnwrappedExecuteSprocParam[] = !this.params()
       ? undefined
       : _.map(unwrappedParams, (unwrappedParam: UnwrappedExecuteSprocParam) => {
-        let paramValue: string = unwrappedParam.value;
+          let paramValue: string = unwrappedParam.value;
 
-        if (unwrappedParam.type === "custom" && (paramValue === "undefined" || paramValue === "")) {
-          paramValue = undefined;
-        } else if (unwrappedParam.type === "custom") {
-          try {
-            paramValue = JSON.parse(paramValue);
-          } catch (e) {
-            this.formErrors(`Invalid param specified: ${paramValue}`);
-            this.formErrorsDetails(`Invalid param specified: ${paramValue} is not a valid literal value`);
+          if (unwrappedParam.type === "custom" && (paramValue === "undefined" || paramValue === "")) {
+            paramValue = undefined;
+          } else if (unwrappedParam.type === "custom") {
+            try {
+              paramValue = JSON.parse(paramValue);
+            } catch (e) {
+              this.formErrors(`Invalid param specified: ${paramValue}`);
+              this.formErrorsDetails(`Invalid param specified: ${paramValue} is not a valid literal value`);
+            }
           }
-        }
 
-        unwrappedParam.value = paramValue;
-        return unwrappedParam;
-      });
+          unwrappedParam.value = paramValue;
+          return unwrappedParam;
+        });
 
     if (this.formErrors()) {
       return;

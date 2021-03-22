@@ -16,7 +16,7 @@ import {
   InputType,
   InputTypeValue,
   NumberUiType,
-  SmartUiInput,
+  SmartUiInput
 } from "../../../SelfServe/SelfServeTypes";
 import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
 import * as InputUtils from "./InputUtils";
@@ -331,7 +331,6 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           onChange={(_, item: IDropdownOption) => this.props.onInputChange(input, item.key.toString())}
           placeholder={this.props.getTranslation(placeholderTKey)}
           disabled={disabled}
-          dropdownWidth="auto"
           options={choices.map((c) => ({
             key: c.key,
             text: this.props.getTranslation(c.label),

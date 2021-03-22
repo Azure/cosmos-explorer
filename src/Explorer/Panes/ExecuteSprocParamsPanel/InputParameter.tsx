@@ -6,7 +6,7 @@ import {
   Image,
   Label,
   Stack,
-  TextField
+  TextField,
 } from "office-ui-fabric-react/lib";
 import React, { FunctionComponent } from "react";
 import Add_property from "../../../../images/Add-property.svg";
@@ -25,10 +25,10 @@ export interface InputParameterProps {
   isAddRemoveVisible: boolean;
   onDeleteParamKeyPress?: () => void;
   onAddNewParamKeyPress?: () => void;
-  onParamValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void,
-  onParamKeyChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void,
-  paramValue: string,
-  selectedKey: string | number
+  onParamValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
+  onParamKeyChange: (event: React.FormEvent<HTMLElement>, selectedParam: IDropdownOption) => void;
+  paramValue: string;
+  selectedKey: string | number;
 }
 
 export const InputParameter: FunctionComponent<InputParameterProps> = ({
@@ -43,7 +43,6 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
   onParamValueChange,
   onParamKeyChange,
 }: InputParameterProps): JSX.Element => {
-
   const imageProps: IImageProps = {
     width: 20,
     height: 30,
