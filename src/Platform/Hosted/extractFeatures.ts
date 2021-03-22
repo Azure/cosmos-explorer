@@ -1,21 +1,21 @@
 export type Features = {
-  notebookServerUrl?: string;
-  notebookServerToken?: string;
-  notebookBasePath?: string;
-  livyEndpoint?: string;
-  enableChangeFeedPolicy: boolean;
-  enableNotebooks: boolean;
-  enableSpark: boolean;
-  canExceedMaximumValue: boolean;
-  enableFixedCollectionWithSharedThroughput: boolean;
-  ttl90Days: boolean;
-  enableRightPanelV2: boolean;
-  enableSchema: boolean;
-  enableSDKoperations: boolean;
-  showMinRUSurvey: boolean;
-  enableDatabaseSettingsTabV1: boolean;
-  enableKOPanel: boolean;
-  enableReactPane: boolean;
+  readonly notebookServerUrl?: string;
+  readonly notebookServerToken?: string;
+  readonly notebookBasePath?: string;
+  readonly livyEndpoint?: string;
+  readonly enableChangeFeedPolicy: boolean;
+  readonly enableNotebooks: boolean;
+  readonly enableSpark: boolean;
+  readonly canExceedMaximumValue: boolean;
+  readonly enableFixedCollectionWithSharedThroughput: boolean;
+  readonly ttl90Days: boolean;
+  readonly enableRightPanelV2: boolean;
+  readonly enableSchema: boolean;
+  readonly enableSDKoperations: boolean;
+  readonly showMinRUSurvey: boolean;
+  readonly enableDatabaseSettingsTabV1: boolean;
+  readonly enableKOPanel: boolean;
+  readonly enableReactPane: boolean;
 };
 
 export function extractFeatures(params?: URLSearchParams): Features {

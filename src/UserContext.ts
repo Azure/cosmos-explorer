@@ -5,25 +5,25 @@ import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
 
 interface UserContext {
-  authType?: AuthType;
-  masterKey?: string;
-  subscriptionId?: string;
-  resourceGroup?: string;
-  databaseAccount?: DatabaseAccount;
-  endpoint?: string;
-  accessToken?: string;
-  authorizationToken?: string;
-  resourceToken?: string;
-  defaultExperience?: DefaultAccountExperienceType;
-  useSDKOperations?: boolean;
-  subscriptionType?: SubscriptionType;
-  quotaId?: string;
+  readonly authType?: AuthType;
+  readonly masterKey?: string;
+  readonly subscriptionId?: string;
+  readonly resourceGroup?: string;
+  readonly databaseAccount?: DatabaseAccount;
+  readonly endpoint?: string;
+  readonly accessToken?: string;
+  readonly authorizationToken?: string;
+  readonly resourceToken?: string;
+  readonly useSDKOperations: boolean;
+  readonly defaultExperience?: DefaultAccountExperienceType;
+  readonly subscriptionType?: SubscriptionType;
+  readonly quotaId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
-  apiType?: ApiType;
-  isTryCosmosDBSubscription?: boolean;
-  portalEnv?: PortalEnv;
-  features: Features;
+  readonly apiType?: ApiType;
+  readonly isTryCosmosDBSubscription?: boolean;
+  readonly portalEnv?: PortalEnv;
+  readonly features: Features;
 }
 
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
