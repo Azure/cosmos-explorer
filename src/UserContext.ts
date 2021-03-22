@@ -29,10 +29,14 @@ interface UserContext {
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
+const features = extractFeatures();
+const { enableSDKoperations: useSDKOperations } = features;
+
 const userContext: UserContext = {
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
-  features: extractFeatures(),
+  features,
+  useSDKOperations,
 };
 
 function updateUserContext(newContext: Partial<UserContext>): void {

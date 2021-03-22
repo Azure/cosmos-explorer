@@ -901,10 +901,6 @@ export default class Explorer {
         ],
       });
     }
-
-    if (userContext.features.enableSDKoperations) {
-      updateUserContext({ useSDKOperations: true });
-    }
   }
 
   public openEnableSynapseLinkDialog(): void {
