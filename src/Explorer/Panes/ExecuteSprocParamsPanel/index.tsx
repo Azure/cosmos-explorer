@@ -10,7 +10,6 @@ import { InputParameter } from "./InputParameter";
 interface ExecuteSprocParamsPaneProps {
   explorer: Explorer;
   closePanel: () => void;
-  openNotificationConsole: () => void;
 }
 
 const imageProps: IImageProps = {
@@ -26,7 +25,6 @@ interface UnwrappedExecuteSprocParam {
 export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
   explorer,
   closePanel,
-  openNotificationConsole,
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [paramKeyValues, setParamKeyValues] = useState<UnwrappedExecuteSprocParam[]>([{ key: "string", text: "" }]);
@@ -84,7 +82,6 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
     currentSelectedSproc.execute(sprocParams, partitionValue);
     setLoadingFalse();
     closePanel();
-    openNotificationConsole();
   };
 
   const deleteParamAtIndex = (indexToRemove: number): void => {
