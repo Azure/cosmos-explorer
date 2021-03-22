@@ -139,9 +139,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowIndexingPolicyEditor =
         this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
-      this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
-        Constants.Features.enableChangeFeedPolicy
-      );
+      this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
