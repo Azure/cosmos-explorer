@@ -22,7 +22,7 @@ export function extractFeatures(params?: URLSearchParams): Features {
   params = params || new URLSearchParams(window.parent.location.search);
   const downcased = new URLSearchParams();
   params.forEach((value, key) => downcased.append(key.toLocaleLowerCase(), value));
-  const get = (key: string) => [...downcased.getAll("feature." + key.toLocaleLowerCase())].pop();
+  const get = (key: string) => downcased.get("feature." + key.toLocaleLowerCase());
 
   return {
     notebookServerUrl: get("notebookServerUrl"),
