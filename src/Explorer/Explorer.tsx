@@ -2517,11 +2517,7 @@ export default class Explorer {
   public openExecuteSprocParamsPanel(): void {
     this.openSidePanel(
       "Input parameters",
-      <ExecuteSprocParamsPanel
-        explorer={this}
-        closePanel={() => this.closeSidePanel()}
-        openNotificationConsole={() => this.expandConsole()}
-      />
+      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
     );
   }
 
