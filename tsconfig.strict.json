@@ -66,7 +66,6 @@
     "./src/Explorer/Tables/QueryBuilder/DateTimeUtilities.ts",
     "./src/Explorer/Tables/DataTable/CacheBase.ts",
     "./src/Explorer/Tables/Entities.ts",
-    "./src/Explorer/Tabs/TabComponents.ts",
     "./src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts",
     "./src/Explorer/Notebook/NotebookContentClient.ts",
     "./src/GitHub/GitHubConnector.ts",
