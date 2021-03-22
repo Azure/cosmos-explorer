@@ -186,11 +186,6 @@ export default class Explorer {
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
-  /**
-   * @deprecated
-   * Use a local loading state and spinner instead. Using a global isRefreshing state causes problems.
-   * */
-  public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
@@ -300,22 +295,6 @@ export default class Explorer {
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
-    let firstInitialization = true;
-    this.isRefreshingExplorer = ko.observable<boolean>(true);
-    this.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
-      if (!isRefreshing && firstInitialization) {
-        // set focus on first element
-        firstInitialization = false;
-        try {
-          document.getElementById("createNewContainerCommandButton").parentElement.parentElement.focus();
-        } catch (e) {
-          Logger.logWarning(
-            "getElementById('createNewContainerCommandButton') failed to find element",
-            "Explorer/this.isRefreshingExplorer.subscribe"
-          );
-        }
-      }
-    });
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -1084,7 +1063,6 @@ export default class Explorer {
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
-    this.isRefreshingExplorer(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -1114,22 +1092,19 @@ export default class Explorer {
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
         this.selectedNode(currentlySelectedNode);
         this._setLoadingStatusText("Fetching containers...");
-        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-          .then(
-            () => {
-              this._setLoadingStatusText("Successfully fetched containers.");
-              deferred.resolve();
-            },
-            (reason) => {
-              this._setLoadingStatusText("Failed to fetch containers.");
-              deferred.reject(reason);
-            }
-          )
-          .finally(() => this.isRefreshingExplorer(false));
+        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
+          () => {
+            this._setLoadingStatusText("Successfully fetched containers.");
+            deferred.resolve();
+          },
+          (reason) => {
+            this._setLoadingStatusText("Failed to fetch containers.");
+            deferred.reject(reason);
+          }
+        );
       },
       (error) => {
         this._setLoadingStatusText("Failed to fetch databases.");
-        this.isRefreshingExplorer(false);
         deferred.reject(error);
         const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
@@ -1189,7 +1164,6 @@ export default class Explorer {
       description: "Refresh button clicked",
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    this.isRefreshingExplorer(true);
     userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();

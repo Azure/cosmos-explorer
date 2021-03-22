@@ -69,6 +69,7 @@ export function sendReadyMessage(): void {
       {
         signature: "pcIframe",
         kind: "ready",
+        data: "ready",
       },
       portalChildWindow.document.referrer
     );

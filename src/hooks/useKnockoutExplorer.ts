@@ -122,6 +122,7 @@ function configureHostedWithConnectionString(config: ConnectionString, explorerP
     authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
     databaseAccount,
+    masterKey: config.masterKey,
   });
   const explorer = new Explorer(explorerParams);
   explorer.configure({
@@ -160,7 +161,6 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
     databaseAccount,
     features: extractFeatures(),
   });
-  explorer.isRefreshingExplorer(false);
   return explorer;
 }
 

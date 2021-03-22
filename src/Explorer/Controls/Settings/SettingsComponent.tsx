@@ -327,7 +327,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         ? this.saveCollectionSettings(startKey)
         : this.saveDatabaseSettings(startKey));
     } catch (error) {
-      this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
       console.error(error);
       traceFailure(
@@ -701,7 +700,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(
@@ -864,7 +862,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         });
       }
     }
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(

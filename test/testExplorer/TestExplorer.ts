@@ -33,7 +33,7 @@ console.log("Subcription: ", subscriptionId);
 console.log("Account Name: ", accountName);
 
 const initTestExplorer = async (): Promise<void> => {
-  const { token } = await credentials.getToken("https://management.core.windows.net/.default");
+  const { token } = await credentials.getToken("https://management.azure.com//.default");
   updateUserContext({
     authorizationToken: `bearer ${token}`,
   });
