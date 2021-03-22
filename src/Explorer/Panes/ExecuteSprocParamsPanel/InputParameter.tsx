@@ -7,7 +7,7 @@ import {
   Label,
   Stack,
   TextField,
-} from "office-ui-fabric-react/lib";
+} from "office-ui-fabric-react";
 import React, { FunctionComponent } from "react";
 import Add_property from "../../../../images/Add-property.svg";
 import Entity_cancel from "../../../../images/Entity_cancel.svg";

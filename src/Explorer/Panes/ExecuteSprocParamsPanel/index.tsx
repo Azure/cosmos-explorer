@@ -1,5 +1,5 @@
 import { useBoolean } from "@uifabric/react-hooks";
-import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabric-react/lib";
+import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
 import * as _ from "underscore";
 import Add_property from "../../../../images/Add-property.svg";

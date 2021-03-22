@@ -16,7 +16,7 @@ import {
   InputType,
   InputTypeValue,
   NumberUiType,
-  SmartUiInput
+  SmartUiInput,
 } from "../../../SelfServe/SelfServeTypes";
 import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
 import * as InputUtils from "./InputUtils";

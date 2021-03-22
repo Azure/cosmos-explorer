@@ -2541,16 +2541,14 @@ export default class Explorer {
   }
 
   public openExecuteSprocParamsPanel(): void {
-    false
-      ? this.executeSprocParamsPane.open()
-      : this.openSidePanel(
-          "Input parameters",
-          <ExecuteSprocParamsPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+    this.openSidePanel(
+      "Input parameters",
+      <ExecuteSprocParamsPanel
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        openNotificationConsole={() => this.expandConsole()}
+      />
+    );
   }
 
   public async openAddCollectionPanel(): Promise<void> {
