@@ -132,7 +132,6 @@ src/Explorer/Panes/LoadQueryPane.ts
 src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
-src/Explorer/Panes/SaveQueryPane.ts
 src/Explorer/Panes/SettingsPane.test.ts
 src/Explorer/Panes/SettingsPane.ts
 src/Explorer/Panes/SetupNotebooksPane.ts

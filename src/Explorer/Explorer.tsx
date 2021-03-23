@@ -60,7 +60,6 @@ import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
-import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
@@ -219,7 +218,6 @@ export default class Explorer {
   public uploadItemsPane: UploadItemsPane;
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
-  public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
@@ -673,13 +671,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.saveQueryPane = new SaveQueryPane({
-      id: "savequerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.browseQueriesPane = new BrowseQueriesPane({
       id: "browsequeriespane",
       visible: ko.observable<boolean>(false),
@@ -726,7 +717,6 @@ export default class Explorer {
       this.executeSprocParamsPane,
       this.uploadItemsPane,
       this.loadQueryPane,
-      this.saveQueryPane,
       this.browseQueriesPane,
       this.uploadFilePane,
       this.stringInputPane,

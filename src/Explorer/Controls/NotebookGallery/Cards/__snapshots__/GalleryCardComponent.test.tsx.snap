@@ -107,7 +107,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <Icon
+        <StyledIconBase
           iconName="RedEye"
           styles={
             Object {
@@ -131,7 +131,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <Icon
+        <StyledIconBase
           iconName="Download"
           styles={
             Object {
@@ -155,7 +155,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <Icon
+        <StyledIconBase
           iconName="Heart"
           styles={
             Object {
@@ -180,7 +180,7 @@ exports[`GalleryCardComponent renders 1`] = `
       }
     }
   >
-    <Separator
+    <Styled
       styles={
         Object {
           "root": Object {
