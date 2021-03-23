@@ -61,6 +61,7 @@ import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
+import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
@@ -2490,5 +2491,9 @@ export default class Explorer {
         openNotificationConsole={() => this.expandConsole()}
       />
     );
+  }
+
+  public openSaveQueryPanel(): void {
+    this.openSidePanel("Save Query", <SaveQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
   }
 }
