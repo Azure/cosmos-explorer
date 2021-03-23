@@ -1,4 +1,6 @@
 import "reflect-metadata";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import { trace, traceCancel, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import {
   AnyDisplay,
@@ -15,7 +17,7 @@ import {
   RefreshParams,
   SelfServeDescriptor,
   SmartUiInput,
-  StringInput,
+  StringInput
 } from "./SelfServeTypes";
 
 export enum SelfServeType {
@@ -197,3 +199,32 @@ export const generateBladeLink = (blade: BladeType): string => {
   const databaseAccountName = userContext.databaseAccount.name;
   return `https://portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };
+
+export enum TelemetryMessageType {
+  Trace = "trace",
+  Start = "start",
+  Success = "success",
+  Failed = "failed",
+  Cancel = "cancel"
+}
+
+export const sendTelemetryMessage = (messageType: TelemetryMessageType, data: any = {}): void => {
+  const action = Action.SelfServe
+  switch (messageType) {
+    case TelemetryMessageType.Trace:
+      trace(action, ActionModifiers.Mark, data)
+      break;
+    case TelemetryMessageType.Start:
+      traceStart(action, data)
+      break;
+    case TelemetryMessageType.Success:
+      traceSuccess(action, data)
+      break;
+    case TelemetryMessageType.Failed:
+      traceFailure(action, data)
+      break;
+    case TelemetryMessageType.Cancel:
+      traceCancel(action, data)
+      break;
+  }
+}
