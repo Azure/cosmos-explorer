@@ -18,7 +18,6 @@ import {
   ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
-import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
@@ -101,7 +100,6 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
     resourceGroup,
     masterKey: keys.primaryMasterKey,
     authorizationToken: `Bearer ${config.authorizationToken}`,
-    features: extractFeatures(),
   });
   return explorer;
 }
@@ -128,7 +126,6 @@ function configureHostedWithConnectionString(config: ConnectionString, explorerP
   explorer.configure({
     databaseAccount,
     masterKey: config.masterKey,
-    features: extractFeatures(),
   });
   return explorer;
 }
@@ -157,10 +154,7 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
   if (parsedResourceToken.partitionKey) {
     explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
   }
-  explorer.configure({
-    databaseAccount,
-    features: extractFeatures(),
-  });
+  explorer.configure({ databaseAccount });
   return explorer;
 }
 
@@ -181,7 +175,6 @@ function configureHostedWithEncryptedToken(config: EncryptedToken, explorerParam
       properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
       tags: {},
     },
-    features: extractFeatures(),
   });
   return explorer;
 }

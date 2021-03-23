@@ -328,7 +328,7 @@ export default class Explorer {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
+                  userContext.features.enableNotebooks)
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -350,7 +350,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                this.isFeatureEnabled(Constants.Features.enableSpark)
+                userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               appInsights.trackEvent(
@@ -374,7 +374,6 @@ export default class Explorer {
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
-    this.features = ko.observable();
     this.queriesClient = new QueriesClient(this);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
@@ -386,11 +385,9 @@ export default class Explorer {
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
-    this.canExceedMaximumValue = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
-    );
+    this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
 
-    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
+    this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
@@ -470,7 +467,7 @@ export default class Explorer {
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
-      if (this.isFeatureEnabled(Constants.Features.enableFixedCollectionWithSharedThroughput)) {
+      if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
       }
 
@@ -529,9 +526,7 @@ export default class Explorer {
       () =>
         configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
-    );
+    this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.defaultExperience.subscribe((defaultExperience: string) => {
       if (
         defaultExperience &&
@@ -874,42 +869,29 @@ export default class Explorer {
     });
 
     // Override notebook server parameters from URL parameters
-    const featureSubcription = this.features.subscribe((features) => {
-      const serverInfo = this.notebookServerInfo();
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        serverInfo.notebookServerEndpoint = features[Constants.Features.notebookServerUrl];
-      }
+    if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
+      this.notebookServerInfo({
+        notebookServerEndpoint: userContext.features.notebookServerUrl,
+        authToken: userContext.features.notebookServerToken,
+      });
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        serverInfo.authToken = features[Constants.Features.notebookServerToken];
-      }
-      this.notebookServerInfo(serverInfo);
-      this.notebookServerInfo.valueHasMutated();
+    if (userContext.features.notebookBasePath) {
+      this.notebookBasePath(userContext.features.notebookBasePath);
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookBasePath)) {
-        this.notebookBasePath(features[Constants.Features.notebookBasePath]);
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.livyEndpoint)) {
-        this.sparkClusterConnectionInfo({
-          userName: undefined,
-          password: undefined,
-          endpoints: [
-            {
-              endpoint: features[Constants.Features.livyEndpoint],
-              kind: DataModels.SparkClusterEndpointKind.Livy,
-            },
-          ],
-        });
-        this.sparkClusterConnectionInfo.valueHasMutated();
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
-        updateUserContext({ useSDKOperations: true });
-      }
-
-      featureSubcription.dispose();
-    });
+    if (userContext.features.livyEndpoint) {
+      this.sparkClusterConnectionInfo({
+        userName: undefined,
+        password: undefined,
+        endpoints: [
+          {
+            endpoint: userContext.features.livyEndpoint,
+            kind: DataModels.SparkClusterEndpointKind.Livy,
+          },
+        ],
+      });
+    }
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -991,20 +973,6 @@ export default class Explorer {
 
   public isNoneSelected(): boolean {
     return this.selectedNode() == null;
-  }
-
-  public isFeatureEnabled(feature: string): boolean {
-    const features = this.features();
-
-    if (!features) {
-      return false;
-    }
-
-    if (feature in features && features[feature]) {
-      return true;
-    }
-
-    return false;
   }
 
   public logConsoleData(consoleData: ConsoleData): void {
@@ -1249,12 +1217,12 @@ export default class Explorer {
       throw error;
     } finally {
       // Overwrite with feature flags
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        connectionInfo.notebookServerEndpoint = this.features()[Constants.Features.notebookServerUrl];
+      if (userContext.features.notebookServerUrl) {
+        connectionInfo.notebookServerEndpoint = userContext.features.notebookServerUrl;
       }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        connectionInfo.authToken = this.features()[Constants.Features.notebookServerToken];
+      if (userContext.features.notebookServerToken) {
+        connectionInfo.authToken = userContext.features.notebookServerToken;
       }
 
       this.notebookServerInfo(connectionInfo);
@@ -1404,7 +1372,6 @@ export default class Explorer {
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.features(inputs.features);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
@@ -2358,7 +2325,7 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (this.isPreferredApiCassandra()) {
       this.cassandraAddCollectionPane.open();
-    } else if (this.isFeatureEnabled(Constants.Features.enableReactPane)) {
+    } else if (userContext.features.enableReactPane) {
       this.openAddCollectionPanel();
     } else {
       this.addCollectionPane.open(this.selectedDatabaseId());
@@ -2492,7 +2459,7 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    this.isFeatureEnabled(Constants.Features.enableKOPanel)
+    userContext.features.enableKOPanel
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
           "Delete Collection",

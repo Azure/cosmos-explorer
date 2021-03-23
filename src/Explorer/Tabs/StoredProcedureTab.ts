@@ -14,6 +14,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import StoredProcedure from "../Tree/StoredProcedure";
 import ScriptTabBase from "./ScriptTabBase";
+import template from "./StoredProcedureTab.html";
 
 enum ToggleState {
   Result = "result",
@@ -21,6 +22,7 @@ enum ToggleState {
 }
 
 export default class StoredProcedureTab extends ScriptTabBase {
+  public static readonly component = { name: "stored-procedure-tab", template };
   public collection: ViewModels.Collection;
   public node: StoredProcedure;
   public executeResultsEditorId: string;
