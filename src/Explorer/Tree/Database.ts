@@ -58,9 +58,7 @@ export default class Database implements ViewModels.Database {
     });
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
-    const useDatabaseSettingsTabV1: boolean = this.container.isFeatureEnabled(
-      Constants.Features.enableDatabaseSettingsTabV1
-    );
+    const useDatabaseSettingsTabV1 = userContext.features.enableDatabaseSettingsTabV1;
     const tabKind: ViewModels.CollectionTabKind = useDatabaseSettingsTabV1
       ? ViewModels.CollectionTabKind.DatabaseSettings
       : ViewModels.CollectionTabKind.DatabaseSettingsV2;

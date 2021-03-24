@@ -7,7 +7,7 @@ import { ChildrenMargin } from "./GitHubStyleConstants";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { IGitHubRepo } from "../../../GitHub/GitHubClient";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import UrlUtility from "../../../Common/UrlUtility";
+import * as UrlUtility from "../../../Common/UrlUtility";
 import Explorer from "../../Explorer";
 
 export interface AddRepoComponentProps {

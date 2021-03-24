@@ -24,7 +24,6 @@ src/Common/ObjectCache.test.ts
 src/Common/ObjectCache.ts
 src/Common/QueriesClient.ts
 src/Common/Splitter.ts
-src/Common/UrlUtility.ts
 src/Config.ts
 src/Contracts/ActionContracts.ts
 src/Contracts/DataModels.ts
@@ -258,7 +257,6 @@ src/TokenProviders/PortalTokenProvider.ts
 src/TokenProviders/TokenProviderFactory.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
-src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
 src/Utils/QueryUtils.test.ts
 src/applyExplorerBindings.ts

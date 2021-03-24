@@ -9,10 +9,10 @@ export interface DatabaseAccount {
 }
 
 export interface DatabaseAccountExtendedProperties {
-  documentEndpoint: string;
-  tableEndpoint: string;
-  gremlinEndpoint: string;
-  cassandraEndpoint: string;
+  documentEndpoint?: string;
+  tableEndpoint?: string;
+  gremlinEndpoint?: string;
+  cassandraEndpoint?: string;
   configurationOverrides?: ConfigurationOverrides;
   capabilities?: Capability[];
   enableMultipleWriteLocations?: boolean;

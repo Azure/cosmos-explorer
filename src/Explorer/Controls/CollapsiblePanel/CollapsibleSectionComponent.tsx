@@ -1,9 +1,10 @@
 import { Icon, Label, Stack } from "office-ui-fabric-react";
 import * as React from "react";
-import { accordionIconStyles, accordionStackTokens } from "../Settings/SettingsRenderUtils";
+import { accordionStackTokens } from "../Settings/SettingsRenderUtils";
 
 export interface CollapsibleSectionProps {
   title: string;
+  isExpandedByDefault: boolean;
 }
 
 export interface CollapsibleSectionState {
@@ -14,7 +15,7 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
   constructor(props: CollapsibleSectionProps) {
     super(props);
     this.state = {
-      isExpanded: true,
+      isExpanded: this.props.isExpandedByDefault,
     };
   }
 
@@ -25,8 +26,14 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
   public render(): JSX.Element {
     return (
       <>
-        <Stack className="collapsibleSection" horizontal tokens={accordionStackTokens} onClick={this.toggleCollapsed}>
-          <Icon iconName={this.state.isExpanded ? "ChevronDown" : "ChevronRight"} styles={accordionIconStyles} />
+        <Stack
+          className="collapsibleSection"
+          horizontal
+          verticalAlign="center"
+          tokens={accordionStackTokens}
+          onClick={this.toggleCollapsed}
+        >
+          <Icon iconName={this.state.isExpanded ? "ChevronDown" : "ChevronRight"} />
           <Label>{this.props.title}</Label>
         </Stack>
         {this.state.isExpanded && this.props.children}

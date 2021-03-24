@@ -24,7 +24,7 @@ import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBa
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
-import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
+import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { configContext } from "../../ConfigContext";
 import Explorer from "../Explorer";
@@ -33,6 +33,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { toJS, stringifyNotebook } from "@nteract/commutable";
 import { appInsights } from "../../Shared/appInsights";
 import { userContext } from "../../UserContext";
+import template from "./NotebookV2Tab.html";
 
 export interface NotebookTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
@@ -42,6 +43,7 @@ export interface NotebookTabOptions extends ViewModels.TabOptions {
 }
 
 export default class NotebookTabV2 extends TabsBase {
+  public static readonly component = { name: "notebookv2-tab", template };
   private static clientManager: NotebookClientV2;
   private container: Explorer;
   public notebookPath: ko.Observable<string>;
