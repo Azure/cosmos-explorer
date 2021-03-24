@@ -59,6 +59,7 @@ import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPa
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
 import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
@@ -2490,5 +2491,9 @@ export default class Explorer {
         openNotificationConsole={() => this.expandConsole()}
       />
     );
+  }
+
+  public openLoadQueryPanel(): void {
+    this.openSidePanel("Load Query", <LoadQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
   }
 }
