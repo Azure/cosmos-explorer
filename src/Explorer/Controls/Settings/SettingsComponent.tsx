@@ -1,49 +1,51 @@
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "office-ui-fabric-react";
 import * as React from "react";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import * as Constants from "../../../Common/Constants";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
-import { traceStart, traceFailure, traceSuccess, trace } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import Explorer from "../../Explorer";
-import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import { AuthType } from "../../../AuthType";
+import * as Constants from "../../../Common/Constants";
+import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
+import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
 import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../UserContext";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../../Explorer";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
+import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
-import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
-import {
-  MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps,
-} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
-import {
-  hasDatabaseSharedThroughput,
-  GeospatialConfigType,
-  TtlType,
-  ChangeFeedPolicyState,
-  SettingsV2TabTypes,
-  getTabTitle,
-  isDirty,
-  AddMongoIndexProps,
-  MongoIndexTypes,
-  parseConflictResolutionMode,
-  parseConflictResolutionProcedure,
-  getMongoNotification,
-} from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
-import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
-import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
-import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import {
+  MongoIndexingPolicyComponent,
+  MongoIndexingPolicyComponentProps,
+} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
+import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
+import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
+import {
+  AddMongoIndexProps,
+  ChangeFeedPolicyState,
+  GeospatialConfigType,
+  getMongoNotification,
+  getTabTitle,
+  hasDatabaseSharedThroughput,
+  isDirty,
+  MongoIndexTypes,
+  parseConflictResolutionMode,
+  parseConflictResolutionProcedure,
+  SettingsV2TabTypes,
+  TtlType,
+} from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -137,9 +139,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.shouldShowIndexingPolicyEditor =
         this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
 
-      this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
-        Constants.Features.enableChangeFeedPolicy
-      );
+      this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -325,7 +325,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         ? this.saveCollectionSettings(startKey)
         : this.saveDatabaseSettings(startKey));
     } catch (error) {
-      this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
       console.error(error);
       traceFailure(
@@ -699,7 +698,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(
@@ -862,7 +860,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         });
       }
     }
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(
@@ -875,6 +872,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       },
       startKey
     );
+  };
+
+  public getMongoIndexTabContent = (
+    mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps
+  ): JSX.Element => {
+    if (userContext.authType === AuthType.AAD) {
+      if (this.container.isEnableMongoCapabilityPresent()) {
+        return <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />;
+      }
+      return undefined;
+    }
+    return mongoIndexingPolicyAADError;
   };
 
   public render(): JSX.Element {
@@ -994,15 +1003,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />,
       });
     } else if (this.container.isPreferredApiMongoDB()) {
-      if (this.container.isEnableMongoCapabilityPresent()) {
+      const mongoIndexTabContext = this.getMongoIndexTabContent(mongoIndexingPolicyComponentProps);
+      if (mongoIndexTabContext) {
         tabs.push({
           tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />,
-        });
-      } else {
-        tabs.push({
-          tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: mongoIndexingPolicyAADError,
+          content: mongoIndexTabContext,
         });
       }
     }

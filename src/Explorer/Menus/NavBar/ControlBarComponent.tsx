@@ -17,7 +17,7 @@ export class ControlBarComponent extends React.Component<ControlBarComponentProp
     return commandButtonOptions.map(
       (btn: CommandButtonComponentProps, index: number): JSX.Element => {
         // Remove label
-        btn.commandButtonLabel = null;
+        btn.commandButtonLabel = undefined;
         return CommandButtonComponent.renderButton(btn, `${index}`);
       }
     );

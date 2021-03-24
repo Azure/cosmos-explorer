@@ -10,6 +10,7 @@ import TabsBase from "./TabsBase";
 import Explorer from "../Explorer";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import template from "./NotebookViewerTab.html";
 
 interface NotebookViewerTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
@@ -38,6 +39,7 @@ class NotebookViewerComponentAdapter implements ReactAdapter {
 }
 
 export default class NotebookViewerTab extends TabsBase {
+  public static readonly component = { name: "notebook-viewer-tab", template };
   private container: Explorer;
   public notebookUrl: string;
 

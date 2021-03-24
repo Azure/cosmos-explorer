@@ -7,5 +7,6 @@ module.exports = {
     defaultViewport: null,
     ignoreHTTPSErrors: true,
     args: ["--disable-web-security"],
+    exitOnPageError: false,
   },
 };

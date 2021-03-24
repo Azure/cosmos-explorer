@@ -14,8 +14,6 @@ src/Common/DataAccessUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/HashMap.test.ts
 src/Common/HashMap.ts
-src/Common/IteratorUtilities.test.ts
-src/Common/IteratorUtilities.ts
 src/Common/Logger.test.ts
 src/Common/MessageHandler.test.ts
 src/Common/MessageHandler.ts
@@ -26,7 +24,6 @@ src/Common/ObjectCache.test.ts
 src/Common/ObjectCache.ts
 src/Common/QueriesClient.ts
 src/Common/Splitter.ts
-src/Common/UrlUtility.ts
 src/Config.ts
 src/Contracts/ActionContracts.ts
 src/Contracts/DataModels.ts
@@ -101,7 +98,6 @@ src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.ts
 src/Explorer/Menus/ContextMenu.ts
 src/Explorer/MostRecentActivity/MostRecentActivity.ts
 src/Explorer/Notebook/FileSystemUtil.ts
-src/Explorer/Notebook/NTeractUtil.ts
 src/Explorer/Notebook/NotebookClientV2.ts
 src/Explorer/Notebook/NotebookComponent/NotebookContentProvider.ts
 src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts
@@ -251,8 +247,6 @@ src/Shared/ExplorerSettings.ts
 src/Shared/PriceEstimateCalculator.ts
 src/Shared/StorageUtility.test.ts
 src/Shared/StorageUtility.ts
-src/Shared/StringUtility.test.ts
-src/Shared/StringUtility.ts
 src/Shared/appInsights.ts
 src/SparkClusterManager/ArcadiaResourceManager.ts
 src/SparkClusterManager/SparkClusterManager.ts
@@ -263,7 +257,6 @@ src/TokenProviders/PortalTokenProvider.ts
 src/TokenProviders/TokenProviderFactory.ts
 src/Utils/DatabaseAccountUtils.test.ts
 src/Utils/DatabaseAccountUtils.ts
-src/Utils/NotebookConfigurationUtils.ts
 src/Utils/PricingUtils.test.ts
 src/Utils/QueryUtils.test.ts
 src/Utils/QueryUtils.ts
@@ -316,15 +309,8 @@ src/Explorer/Graph/GraphExplorerComponent/QueryContainerComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNeighborsComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
-src/Explorer/Menus/CommandBar/CommandBarComponentAdapter.tsx
-src/Explorer/Menus/CommandBar/CommandBarUtil.test.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
-src/Explorer/Menus/CommandBar/MemoryTrackerComponent.tsx
-src/Explorer/Menus/NavBar/ControlBarComponent.tsx
-src/Explorer/Menus/NavBar/ControlBarComponentAdapter.tsx
-src/Explorer/Menus/NavBar/MeControlComponent.test.tsx
-src/Explorer/Menus/NavBar/MeControlComponent.tsx
-src/Explorer/Menus/NavBar/MeControlComponentAdapter.tsx
+src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponent.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx

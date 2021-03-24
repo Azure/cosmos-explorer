@@ -5,7 +5,7 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import { ContextualPaneBase } from "./ContextualPaneBase";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { StringUtility } from "../../Shared/StringUtility";
+import * as StringUtility from "../../Shared/StringUtility";
 import { configContext } from "../../ConfigContext";
 
 export class SettingsPane extends ContextualPaneBase {

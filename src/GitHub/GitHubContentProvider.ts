@@ -8,7 +8,7 @@ import * as Logger from "../Common/Logger";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
 import * as GitHubUtils from "../Utils/GitHubUtils";
-import UrlUtility from "../Common/UrlUtility";
+import * as UrlUtility from "../Common/UrlUtility";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export interface GitHubContentProviderParams {

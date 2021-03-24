@@ -3,7 +3,7 @@ import { HttpStatusCodes } from "../Common/Constants";
 import { IResourceProviderClient, IResourceProviderRequestOptions } from "./IResourceProviderClient";
 import { OperationStatus } from "../Contracts/DataModels";
 import { TokenProviderFactory } from "../TokenProviders/TokenProviderFactory";
-import UrlUtility from "../Common/UrlUtility";
+import * as UrlUtility from "../Common/UrlUtility";
 
 export class ResourceProviderClient<T> implements IResourceProviderClient<T> {
   private httpClient: HttpClient;
