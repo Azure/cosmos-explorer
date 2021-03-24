@@ -5,8 +5,10 @@ import QueryTab from "./QueryTab";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { queryIterator } from "../../Common/MongoProxyClient";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
+import template from "./MongoQueryTab.html";
 
 export default class MongoQueryTab extends QueryTab {
+  public static readonly component = { name: "mongo-query-tab", template };
   public collection: ViewModels.Collection;
 
   constructor(options: ViewModels.QueryTabOptions) {

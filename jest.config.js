@@ -67,7 +67,8 @@ module.exports = {
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^.*[.](svg|png|gif|less)$": "<rootDir>/mockModule",
+    "^.*[.](svg|png|gif|less|css)$": "<rootDir>/mockModule",
+    "@nteract/stateful-components/(.*)$": "<rootDir>/mockModule",
     "worker-loader": "<rootDir>/mockModule",
     "office-ui-fabric-react/lib/(.*)$": "office-ui-fabric-react/lib-commonjs/$1", // https://github.com/OfficeDev/office-ui-fabric-react/wiki/Fabric-6-Release-Notes
     "^dnd-core$": "dnd-core/dist/cjs",

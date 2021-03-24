@@ -211,18 +211,12 @@ const App: React.FunctionComponent = () => {
             {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
-          <div
-            className="connectExplorerContainer"
-            data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
-          >
+          <div className="connectExplorerContainer" data-bind="visible: tabsManager.openedTabs().length === 0">
             <form className="connectExplorerFormContainer">
               <SplashScreen explorer={explorer} />
             </form>
           </div>
-          <div
-            className="tabsManagerContainer"
-            data-bind='component: { name: "tabs-manager", params: {data: tabsManager} }'
-          />
+          <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div

@@ -994,7 +994,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.container.openEnableSynapseLinkDialog();
   }
 
-  public ttl90DaysEnabled: () => boolean = () => this.container.isFeatureEnabled(Constants.Features.ttl90Days);
+  public ttl90DaysEnabled: () => boolean = () => userContext.features.ttl90Days;
 
   public isValid(): boolean {
     // TODO add feature flag that disables validation for customers with custom accounts
@@ -1202,7 +1202,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     if (this.isAnalyticalStorageOn()) {
       // TODO: always default to 90 days once the backend hotfix is deployed
-      return this.container.isFeatureEnabled(Constants.Features.ttl90Days)
+      return userContext.features.ttl90Days
         ? Constants.AnalyticalStorageTtl.Days90
         : Constants.AnalyticalStorageTtl.Infinite;
     }

@@ -20,7 +20,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   closePanel,
 }: SettingsPaneProps) => {
   const [formErrors, setFormErrors] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
@@ -107,7 +106,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   const genericPaneProps: GenericRightPaneProps = {
     container,
     formError: formErrors,
-    formErrorDetail: formErrorsDetails,
+    formErrorDetail: "",
     id: "settingspane",
     isExecuting,
     title: "Setting",
