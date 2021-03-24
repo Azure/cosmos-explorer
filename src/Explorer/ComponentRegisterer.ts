@@ -27,7 +27,6 @@ import TerminalTab from "./Tabs/TerminalTab";
 import TriggerTab from "./Tabs/TriggerTab";
 import UserDefinedFunctionTab from "./Tabs/UserDefinedFunctionTab";
 
-
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);
 ko.components.register("error-display", new ErrorDisplayComponent());
