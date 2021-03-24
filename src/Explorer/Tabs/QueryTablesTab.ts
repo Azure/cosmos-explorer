@@ -15,9 +15,11 @@ import EditEntityIcon from "../../../images/Edit-entity.svg";
 import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
 import Explorer from "../Explorer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import template from "./QueryTablesTab.html";
 
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
+  public static readonly component = { name: "tables-query-tab", template };
   public collection: ViewModels.Collection;
   public tableEntityListViewModel = ko.observable<TableEntityListViewModel>();
   public queryViewModel = ko.observable<QueryViewModel>();

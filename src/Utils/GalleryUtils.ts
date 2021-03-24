@@ -474,10 +474,10 @@ export function getNotebookViewerProps(search: string): NotebookViewerProps {
 
 export function getTabTitle(tab: GalleryTab): string {
   switch (tab) {
-    case GalleryTab.OfficialSamples:
-      return GalleryViewerComponent.OfficialSamplesTitle;
     case GalleryTab.PublicGallery:
       return GalleryViewerComponent.PublicGalleryTitle;
+    case GalleryTab.OfficialSamples:
+      return GalleryViewerComponent.OfficialSamplesTitle;
     case GalleryTab.Favorites:
       return GalleryViewerComponent.FavoritesTitle;
     case GalleryTab.Published:

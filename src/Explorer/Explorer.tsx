@@ -1,93 +1,88 @@
-import React from "react";
-import * as ComponentRegisterer from "./ComponentRegisterer";
-import * as Constants from "../Common/Constants";
-import * as DataModels from "../Contracts/DataModels";
 import * as ko from "knockout";
+import { IChoiceGroupProps } from "office-ui-fabric-react";
 import * as path from "path";
-import * as SharedConstants from "../Shared/Constants";
-import * as ViewModels from "../Contracts/ViewModels";
-import _ from "underscore";
-import AddCollectionPane from "./Panes/AddCollectionPane";
-import AddDatabasePane from "./Panes/AddDatabasePane";
-import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
-import AuthHeadersUtil from "../Platform/Hosted/Authorization";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
-import Database from "./Tree/Database";
-import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
-import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { readCollection } from "../Common/dataAccess/readCollection";
-import { readDatabases } from "../Common/dataAccess/readDatabases";
-import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
-import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import GraphStylingPane from "./Panes/GraphStylingPane";
-import NewVertexPane from "./Panes/NewVertexPane";
-import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import Q from "q";
-import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
-import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import TerminalTab from "./Tabs/TerminalTab";
-import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
+import React from "react";
+import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
-import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
-import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { configContext, Platform, updateConfigContext } from "../ConfigContext";
-import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
-import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { DialogProps, TextFieldProps } from "./Controls/Dialog";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { ReactAdapter } from "../Bindings/ReactBindingHandler";
+import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
-import { ExplorerSettings } from "../Shared/ExplorerSettings";
-import * as FileSystemUtil from "./Notebook/FileSystemUtil";
-import { IGalleryItem } from "../Juno/JunoClient";
-import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import { readCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
+import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { sendMessage, sendCachedDataMessage } from "../Common/MessageHandler";
+import { sendCachedDataMessage, sendMessage } from "../Common/MessageHandler";
+import { QueriesClient } from "../Common/QueriesClient";
+import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
+import { configContext, Platform } from "../ConfigContext";
+import * as DataModels from "../Contracts/DataModels";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
+import { SubscriptionType } from "../Contracts/SubscriptionType";
+import * as ViewModels from "../Contracts/ViewModels";
+import { IGalleryItem } from "../Juno/JunoClient";
+import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
+import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
+import { RouteHandler } from "../RouteHandlers/RouteHandler";
+import { appInsights } from "../Shared/appInsights";
+import * as SharedConstants from "../Shared/Constants";
+import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
+import { ExplorerSettings } from "../Shared/ExplorerSettings";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
+import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
+import { updateUserContext, userContext } from "../UserContext";
+import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { stringToBlob } from "../Utils/BlobUtils";
+import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
+import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import * as ComponentRegisterer from "./ComponentRegisterer";
+import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
+import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
+import { DialogProps, TextFieldProps } from "./Controls/Dialog";
+import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
+import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
+import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
+import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
-import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
-import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { QueriesClient } from "../Common/QueriesClient";
-import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
-import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
-import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
-import { RouteHandler } from "../RouteHandlers/RouteHandler";
+import AddCollectionPane from "./Panes/AddCollectionPane";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
+import AddDatabasePane from "./Panes/AddDatabasePane";
+import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
+import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
+import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
+import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
+import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
+import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import GraphStylingPane from "./Panes/GraphStylingPane";
+import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { SplashScreen } from "./SplashScreen/SplashScreen";
-import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { StringInputPane } from "./Panes/StringInputPane";
+import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
+import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
+import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
-import { TabsManager } from "./Tabs/TabsManager";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
-import { ReactAdapter } from "../Bindings/ReactBindingHandler";
-import { toRawContentUri, fromContentUri } from "../Utils/GitHubUtils";
-import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
+import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
+import TabsBase from "./Tabs/TabsBase";
+import { TabsManager } from "./Tabs/TabsManager";
+import TerminalTab from "./Tabs/TerminalTab";
+import Database from "./Tree/Database";
+import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
+import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
+import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
-import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import TabsBase from "./Tabs/TabsBase";
-import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
-import { updateUserContext, userContext } from "../UserContext";
-import { stringToBlob } from "../Utils/BlobUtils";
-import { IChoiceGroupProps } from "office-ui-fabric-react";
-import { getErrorMessage, handleError, getErrorStack } from "../Common/ErrorHandlingUtils";
-import { SubscriptionType } from "../Contracts/SubscriptionType";
-import { appInsights } from "../Shared/appInsights";
-import { SelfServeLoadingComponentAdapter } from "../SelfServe/SelfServeLoadingComponentAdapter";
-import { SelfServeType } from "../SelfServe/SelfServeUtils";
-import { SelfServeComponentAdapter } from "../SelfServe/SelfServeComponentAdapter";
-import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
-import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
+import UserDefinedFunction from "./Tree/UserDefinedFunction";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -118,24 +113,57 @@ export default class Explorer {
   public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
+  /**
+   * @deprecated
+   * Use userContext.databaseAccount instead
+   * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
+  /**
+   * @deprecated
+   * Use userContext.subscriptionType instead
+   * */
   public subscriptionType: ko.Observable<SubscriptionType>;
+  /**
+   * @deprecated
+   * Use userContext.apiType instead
+   * */
   public defaultExperience: ko.Observable<string>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "SQL"
+   * */
   public isPreferredApiDocumentDB: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
+   * */
   public isPreferredApiCassandra: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
+   * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
+   * */
   public isPreferredApiGraph: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
+   * */
   public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
+  /**
+   * @deprecated
+   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
+   * */
   public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
-  public selfServeType: ko.Observable<SelfServeType>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
-  public serverId: ko.Observable<string>;
-  public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -157,18 +185,15 @@ export default class Explorer {
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
-  public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
-  private selfServeComponentAdapter: SelfServeComponentAdapter;
 
   // Resource Token
   public resourceTokenDatabaseId: ko.Observable<string>;
   public resourceTokenCollectionId: ko.Observable<string>;
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
   public resourceTokenPartitionKey: ko.Observable<string>;
-  public isAuthWithResourceToken: ko.Observable<boolean>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
-  private resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
+  public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -243,7 +268,6 @@ export default class Explorer {
 
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
-  private selfServeLoadingComponentAdapter: SelfServeLoadingComponentAdapter;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -270,24 +294,7 @@ export default class Explorer {
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
-    let firstInitialization = true;
-    this.isRefreshingExplorer = ko.observable<boolean>(true);
-    this.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
-      if (!isRefreshing && firstInitialization) {
-        // set focus on first element
-        firstInitialization = false;
-        try {
-          document.getElementById("createNewContainerCommandButton").parentElement.parentElement.focus();
-        } catch (e) {
-          Logger.logWarning(
-            "getElementById('createNewContainerCommandButton') failed to find element",
-            "Explorer/this.isRefreshingExplorer.subscribe"
-          );
-        }
-      }
-    });
     this.isAccountReady = ko.observable<boolean>(false);
-    this.selfServeType = ko.observable<SelfServeType>(undefined);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
     this.arcadiaToken.subscribe((token: string) => {
@@ -307,7 +314,9 @@ export default class Explorer {
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
+        userContext.authType === AuthType.ResourceToken
+          ? this.refreshDatabaseForResourceToken()
+          : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         this.arcadiaWorkspaces = ko.observableArray();
@@ -318,9 +327,9 @@ export default class Explorer {
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
             this.isNotebookEnabled(
-              !this.isAuthWithResourceToken() &&
+              userContext.authType !== AuthType.ResourceToken &&
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
+                  userContext.features.enableNotebooks)
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -342,7 +351,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                this.isFeatureEnabled(Constants.Features.enableSpark)
+                userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               appInsights.trackEvent(
@@ -366,26 +375,20 @@ export default class Explorer {
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
-    this.features = ko.observable();
-    this.serverId = ko.observable<string>();
     this.queriesClient = new QueriesClient(this);
-    this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isAuthWithResourceToken = ko.observable<boolean>(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
-    this.canExceedMaximumValue = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
-    );
+    this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
 
-    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
+    this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
@@ -439,6 +442,7 @@ export default class Explorer {
         databaseAccount
       );
       this.defaultExperience(defaultExperience);
+      // TODO. Remove this entirely
       updateUserContext({
         defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
       });
@@ -464,7 +468,7 @@ export default class Explorer {
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
-      if (this.isFeatureEnabled(Constants.Features.enableFixedCollectionWithSharedThroughput)) {
+      if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
       }
 
@@ -523,9 +527,7 @@ export default class Explorer {
       () =>
         configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
-    );
+    this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.defaultExperience.subscribe((defaultExperience: string) => {
       if (
         defaultExperience &&
@@ -662,7 +664,6 @@ export default class Explorer {
     });
 
     this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-    this.selfServeComponentAdapter = new SelfServeComponentAdapter(this);
 
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
@@ -745,99 +746,90 @@ export default class Explorer {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });
 
-    // TODO move this to API customization class
-    this.defaultExperience.subscribe((defaultExperience) => {
-      const defaultExperienceNormalizedString = (
-        defaultExperience || Constants.DefaultAccountExperience.Default
-      ).toLowerCase();
-
-      switch (defaultExperienceNormalizedString) {
-        case Constants.DefaultAccountExperience.DocumentDB.toLowerCase():
-          this.addCollectionText("New Container");
-          this.addDatabaseText("New Database");
-          this.collectionTitle("SQL API");
-          this.collectionTreeNodeAltText("Container");
-          this.deleteCollectionText("Delete Container");
-          this.deleteDatabaseText("Delete Database");
-          this.addCollectionPane.title("Add Container");
-          this.addCollectionPane.collectionIdTitle("Container id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle(
-            "Provision dedicated throughput for this container"
-          );
-          this.deleteCollectionConfirmationPane.title("Delete Container");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
-          this.refreshTreeTitle("Refresh containers");
-          break;
-        case Constants.DefaultAccountExperience.MongoDB.toLowerCase():
-        case Constants.DefaultAccountExperience.ApiForMongoDB.toLowerCase():
-          this.addCollectionText("New Collection");
-          this.addDatabaseText("New Database");
-          this.collectionTitle("Collections");
-          this.collectionTreeNodeAltText("Collection");
-          this.deleteCollectionText("Delete Collection");
-          this.deleteDatabaseText("Delete Database");
-          this.addCollectionPane.title("Add Collection");
-          this.addCollectionPane.collectionIdTitle("Collection id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle(
-            "Provision dedicated throughput for this collection"
-          );
-          this.refreshTreeTitle("Refresh collections");
-          break;
-        case Constants.DefaultAccountExperience.Graph.toLowerCase():
-          this.addCollectionText("New Graph");
-          this.addDatabaseText("New Database");
-          this.deleteCollectionText("Delete Graph");
-          this.deleteDatabaseText("Delete Database");
-          this.collectionTitle("Gremlin API");
-          this.collectionTreeNodeAltText("Graph");
-          this.addCollectionPane.title("Add Graph");
-          this.addCollectionPane.collectionIdTitle("Graph id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-          this.deleteCollectionConfirmationPane.title("Delete Graph");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
-          this.refreshTreeTitle("Refresh graphs");
-          break;
-        case Constants.DefaultAccountExperience.Table.toLowerCase():
-          this.addCollectionText("New Table");
-          this.addDatabaseText("New Database");
-          this.deleteCollectionText("Delete Table");
-          this.deleteDatabaseText("Delete Database");
-          this.collectionTitle("Azure Table API");
-          this.collectionTreeNodeAltText("Table");
-          this.addCollectionPane.title("Add Table");
-          this.addCollectionPane.collectionIdTitle("Table id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
-          this.refreshTreeTitle("Refresh tables");
-          this.addTableEntityPane.title("Add Table Entity");
-          this.editTableEntityPane.title("Edit Table Entity");
-          this.deleteCollectionConfirmationPane.title("Delete Table");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.tableDataClient = new TablesAPIDataClient();
-          break;
-        case Constants.DefaultAccountExperience.Cassandra.toLowerCase():
-          this.addCollectionText("New Table");
-          this.addDatabaseText("New Keyspace");
-          this.deleteCollectionText("Delete Table");
-          this.deleteDatabaseText("Delete Keyspace");
-          this.collectionTitle("Cassandra API");
-          this.collectionTreeNodeAltText("Table");
-          this.addCollectionPane.title("Add Table");
-          this.addCollectionPane.collectionIdTitle("Table id");
-          this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
-          this.refreshTreeTitle("Refresh tables");
-          this.addTableEntityPane.title("Add Table Row");
-          this.editTableEntityPane.title("Edit Table Row");
-          this.deleteCollectionConfirmationPane.title("Delete Table");
-          this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-          this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
-          this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
-          this.tableDataClient = new CassandraAPIDataClient();
-          break;
-      }
-    });
+    switch (userContext.apiType) {
+      case "SQL":
+        this.addCollectionText("New Container");
+        this.addDatabaseText("New Database");
+        this.collectionTitle("SQL API");
+        this.collectionTreeNodeAltText("Container");
+        this.deleteCollectionText("Delete Container");
+        this.deleteDatabaseText("Delete Database");
+        this.addCollectionPane.title("Add Container");
+        this.addCollectionPane.collectionIdTitle("Container id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle(
+          "Provision dedicated throughput for this container"
+        );
+        this.deleteCollectionConfirmationPane.title("Delete Container");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
+        this.refreshTreeTitle("Refresh containers");
+        break;
+      case "Mongo":
+        this.addCollectionText("New Collection");
+        this.addDatabaseText("New Database");
+        this.collectionTitle("Collections");
+        this.collectionTreeNodeAltText("Collection");
+        this.deleteCollectionText("Delete Collection");
+        this.deleteDatabaseText("Delete Database");
+        this.addCollectionPane.title("Add Collection");
+        this.addCollectionPane.collectionIdTitle("Collection id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle(
+          "Provision dedicated throughput for this collection"
+        );
+        this.refreshTreeTitle("Refresh collections");
+        break;
+      case "Gremlin":
+        this.addCollectionText("New Graph");
+        this.addDatabaseText("New Database");
+        this.deleteCollectionText("Delete Graph");
+        this.deleteDatabaseText("Delete Database");
+        this.collectionTitle("Gremlin API");
+        this.collectionTreeNodeAltText("Graph");
+        this.addCollectionPane.title("Add Graph");
+        this.addCollectionPane.collectionIdTitle("Graph id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
+        this.deleteCollectionConfirmationPane.title("Delete Graph");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
+        this.refreshTreeTitle("Refresh graphs");
+        break;
+      case "Tables":
+        this.addCollectionText("New Table");
+        this.addDatabaseText("New Database");
+        this.deleteCollectionText("Delete Table");
+        this.deleteDatabaseText("Delete Database");
+        this.collectionTitle("Azure Table API");
+        this.collectionTreeNodeAltText("Table");
+        this.addCollectionPane.title("Add Table");
+        this.addCollectionPane.collectionIdTitle("Table id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
+        this.refreshTreeTitle("Refresh tables");
+        this.addTableEntityPane.title("Add Table Entity");
+        this.editTableEntityPane.title("Edit Table Entity");
+        this.deleteCollectionConfirmationPane.title("Delete Table");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
+        this.tableDataClient = new TablesAPIDataClient();
+        break;
+      case "Cassandra":
+        this.addCollectionText("New Table");
+        this.addDatabaseText("New Keyspace");
+        this.deleteCollectionText("Delete Table");
+        this.deleteDatabaseText("Delete Keyspace");
+        this.collectionTitle("Cassandra API");
+        this.collectionTreeNodeAltText("Table");
+        this.addCollectionPane.title("Add Table");
+        this.addCollectionPane.collectionIdTitle("Table id");
+        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
+        this.refreshTreeTitle("Refresh tables");
+        this.addTableEntityPane.title("Add Table Row");
+        this.editTableEntityPane.title("Edit Table Row");
+        this.deleteCollectionConfirmationPane.title("Delete Table");
+        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
+        this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
+        this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
+        this.tableDataClient = new CassandraAPIDataClient();
+        break;
+    }
 
     this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
-    this.selfServeLoadingComponentAdapter = new SelfServeLoadingComponentAdapter();
 
     this._initSettings();
 
@@ -886,42 +878,29 @@ export default class Explorer {
     });
 
     // Override notebook server parameters from URL parameters
-    const featureSubcription = this.features.subscribe((features) => {
-      const serverInfo = this.notebookServerInfo();
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        serverInfo.notebookServerEndpoint = features[Constants.Features.notebookServerUrl];
-      }
+    if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
+      this.notebookServerInfo({
+        notebookServerEndpoint: userContext.features.notebookServerUrl,
+        authToken: userContext.features.notebookServerToken,
+      });
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        serverInfo.authToken = features[Constants.Features.notebookServerToken];
-      }
-      this.notebookServerInfo(serverInfo);
-      this.notebookServerInfo.valueHasMutated();
+    if (userContext.features.notebookBasePath) {
+      this.notebookBasePath(userContext.features.notebookBasePath);
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookBasePath)) {
-        this.notebookBasePath(features[Constants.Features.notebookBasePath]);
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.livyEndpoint)) {
-        this.sparkClusterConnectionInfo({
-          userName: undefined,
-          password: undefined,
-          endpoints: [
-            {
-              endpoint: features[Constants.Features.livyEndpoint],
-              kind: DataModels.SparkClusterEndpointKind.Livy,
-            },
-          ],
-        });
-        this.sparkClusterConnectionInfo.valueHasMutated();
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
-        updateUserContext({ useSDKOperations: true });
-      }
-
-      featureSubcription.dispose();
-    });
+    if (userContext.features.livyEndpoint) {
+      this.sparkClusterConnectionInfo({
+        userName: undefined,
+        password: undefined,
+        endpoints: [
+          {
+            endpoint: userContext.features.livyEndpoint,
+            kind: DataModels.SparkClusterEndpointKind.Livy,
+          },
+        ],
+      });
+    }
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -1005,20 +984,6 @@ export default class Explorer {
     return this.selectedNode() == null;
   }
 
-  public isFeatureEnabled(feature: string): boolean {
-    const features = this.features();
-
-    if (!features) {
-      return false;
-    }
-
-    if (feature in features && features[feature]) {
-      return true;
-    }
-
-    return false;
-  }
-
   public logConsoleData(consoleData: ConsoleData): void {
     this.setNotificationConsoleData(consoleData);
   }
@@ -1065,7 +1030,6 @@ export default class Explorer {
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
-    this.isRefreshingExplorer(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -1095,22 +1059,19 @@ export default class Explorer {
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
         this.selectedNode(currentlySelectedNode);
         this._setLoadingStatusText("Fetching containers...");
-        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-          .then(
-            () => {
-              this._setLoadingStatusText("Successfully fetched containers.");
-              deferred.resolve();
-            },
-            (reason) => {
-              this._setLoadingStatusText("Failed to fetch containers.");
-              deferred.reject(reason);
-            }
-          )
-          .finally(() => this.isRefreshingExplorer(false));
+        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
+          () => {
+            this._setLoadingStatusText("Successfully fetched containers.");
+            deferred.resolve();
+          },
+          (reason) => {
+            this._setLoadingStatusText("Failed to fetch containers.");
+            deferred.reject(reason);
+          }
+        );
       },
       (error) => {
         this._setLoadingStatusText("Failed to fetch databases.");
-        this.isRefreshingExplorer(false);
         deferred.reject(error);
         const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
@@ -1170,8 +1131,9 @@ export default class Explorer {
       description: "Refresh button clicked",
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    this.isRefreshingExplorer(true);
-    this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
+    userContext.authType === AuthType.ResourceToken
+      ? this.refreshDatabaseForResourceToken()
+      : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
@@ -1264,12 +1226,12 @@ export default class Explorer {
       throw error;
     } finally {
       // Overwrite with feature flags
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        connectionInfo.notebookServerEndpoint = this.features()[Constants.Features.notebookServerUrl];
+      if (userContext.features.notebookServerUrl) {
+        connectionInfo.notebookServerEndpoint = userContext.features.notebookServerUrl;
       }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        connectionInfo.authToken = this.features()[Constants.Features.notebookServerToken];
+      if (userContext.features.notebookServerToken) {
+        connectionInfo.authToken = userContext.features.notebookServerToken;
       }
 
       this.notebookServerInfo(connectionInfo);
@@ -1407,20 +1369,6 @@ export default class Explorer {
     return false;
   }
 
-  public setSelfServeType(inputs: ViewModels.DataExplorerInputsFrame): void {
-    const selfServeFeature = inputs.features[Constants.Features.selfServeType];
-    if (selfServeFeature) {
-      // self serve type received from query string
-      const selfServeType = SelfServeType[selfServeFeature?.toLowerCase() as keyof typeof SelfServeType];
-      this.selfServeType(selfServeType ? selfServeType : SelfServeType.invalid);
-    } else if (inputs.selfServeType) {
-      // self serve type received from portal
-      this.selfServeType(inputs.selfServeType);
-    } else {
-      this.selfServeType(SelfServeType.none);
-    }
-  }
-
   public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
     if (inputs != null) {
       // In development mode, save the iframe message from the portal in session storage.
@@ -1429,39 +1377,17 @@ export default class Explorer {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
 
-      const authorizationToken = inputs.authorizationToken || "";
-      const masterKey = inputs.masterKey || "";
       const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.features(inputs.features);
-      this.serverId(inputs.serverId ?? Constants.ServerIds.productionPortal);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
       if (inputs.addCollectionDefaultFlight) {
         this.flight(inputs.addCollectionDefaultFlight);
       }
-      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
-      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      this.setSelfServeType(inputs);
-
-      updateConfigContext({
-        BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
-        ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
-      });
-
-      updateUserContext({
-        authorizationToken,
-        masterKey,
-        databaseAccount,
-        resourceGroup: inputs.resourceGroup,
-        subscriptionId: inputs.subscriptionId,
-        subscriptionType: inputs.subscriptionType,
-        quotaId: inputs.quotaId,
-      });
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
         {
@@ -1541,9 +1467,9 @@ export default class Explorer {
 
   public isRunningOnNationalCloud(): boolean {
     return (
-      this.serverId() === Constants.ServerIds.blackforest ||
-      this.serverId() === Constants.ServerIds.fairfax ||
-      this.serverId() === Constants.ServerIds.mooncake
+      userContext.portalEnv === "blackforest" ||
+      userContext.portalEnv === "fairfax" ||
+      userContext.portalEnv === "mooncake"
     );
   }
 
@@ -2327,7 +2253,7 @@ export default class Explorer {
       account: userContext.databaseAccount,
       container: this,
       junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTab.OfficialSamples,
+      selectedTab: selectedTab || GalleryTab.PublicGallery,
       notebookUrl,
       galleryItem,
       isFavorite,
@@ -2408,10 +2334,12 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (this.isPreferredApiCassandra()) {
       this.cassandraAddCollectionPane.open();
+    } else if (userContext.features.enableReactPane) {
+      this.openAddCollectionPanel();
     } else {
       this.addCollectionPane.open(this.selectedDatabaseId());
+      document.getElementById("linkAddCollection").focus();
     }
-    document.getElementById("linkAddCollection").focus();
   }
 
   private refreshCommandBarButtons(): void {
@@ -2540,7 +2468,7 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    this.isFeatureEnabled(Constants.Features.enableKOPanel)
+    userContext.features.enableKOPanel
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
           "Delete Collection",
@@ -2550,5 +2478,17 @@ export default class Explorer {
             openNotificationConsole={() => this.expandConsole()}
           />
         );
+  }
+
+  public async openAddCollectionPanel(): Promise<void> {
+    await this.loadDatabaseOffers();
+    this.openSidePanel(
+      "New Collection",
+      <AddCollectionPanel
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        openNotificationConsole={() => this.expandConsole()}
+      />
+    );
   }
 }

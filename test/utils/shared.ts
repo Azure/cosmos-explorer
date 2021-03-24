@@ -30,8 +30,8 @@ export function generateDatabaseName(baseName = "db", length = 1): string {
   return `${baseName}${crypto.randomBytes(length).toString("hex")}-${Date.now()}`;
 }
 
-export async function createDatabase(frame: Frame) {
-  const dbId = generateDatabaseName();
+export async function createDatabase(frame: Frame): Promise<{ databaseId: string; collectionId: string }> {
+  const databaseId = generateDatabaseName();
   const collectionId = generateUniqueName("col");
   const shardKey = "partitionKey";
   // create new collection
@@ -50,7 +50,7 @@ export async function createDatabase(frame: Frame) {
   await frame.waitFor('input[data-test="addCollection-newDatabaseId"]');
   const dbInput = await frame.$('input[data-test="addCollection-newDatabaseId"]');
   await dbInput.press("Backspace");
-  await dbInput.type(dbId);
+  await dbInput.type(databaseId);
 
   // type collection id
   await frame.waitFor('input[data-test="addCollection-collectionId"]');
@@ -67,10 +67,10 @@ export async function createDatabase(frame: Frame) {
   // click submit
   await frame.waitFor("#submitBtnAddCollection");
   await frame.click("#submitBtnAddCollection");
-  return dbId;
+  return { databaseId, collectionId };
 }
 
-export async function onClickSaveButton(frame: Frame) {
+export async function onClickSaveButton(frame: Frame): Promise<void> {
   await frame.waitFor(`button[data-test="Save"]`), { visible: true };
   await frame.waitFor(LOADING_STATE_DELAY);
   await frame.click(`button[data-test="Save"]`);

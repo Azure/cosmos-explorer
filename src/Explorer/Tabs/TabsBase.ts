@@ -7,12 +7,13 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import { RouteHandler } from "../../RouteHandlers/RouteHandler";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import ThemeUtility from "../../Common/ThemeUtility";
+import * as ThemeUtility from "../../Common/ThemeUtility";
 import Explorer from "../Explorer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
+  public static readonly component = { name: "tab", template: "" };
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;

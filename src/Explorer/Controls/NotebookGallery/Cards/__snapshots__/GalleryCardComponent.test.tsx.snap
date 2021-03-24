@@ -50,6 +50,13 @@ exports[`GalleryCardComponent renders 1`] = `
   >
     <Text
       nowrap={true}
+      styles={
+        Object {
+          "root": Object {
+            "height": 18,
+          },
+        }
+      }
       variant="small"
     >
       <span
@@ -100,7 +107,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <StyledIconBase
+        <Icon
           iconName="RedEye"
           styles={
             Object {
@@ -124,7 +131,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <StyledIconBase
+        <Icon
           iconName="Download"
           styles={
             Object {
@@ -148,7 +155,7 @@ exports[`GalleryCardComponent renders 1`] = `
         }
         variant="tiny"
       >
-        <StyledIconBase
+        <Icon
           iconName="Heart"
           styles={
             Object {
@@ -173,7 +180,7 @@ exports[`GalleryCardComponent renders 1`] = `
       }
     }
   >
-    <Styled
+    <Separator
       styles={
         Object {
           "root": Object {

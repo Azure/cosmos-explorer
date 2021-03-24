@@ -1,7 +1,6 @@
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
-import { configContext, Platform } from "../ConfigContext";
 import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 

@@ -1,19 +1,17 @@
 import { uploadNotebookIfNotExist } from "./notebookTestUtils";
-import { ElementHandle, Frame } from "puppeteer";
-import { getTestExplorerFrame } from "../testExplorer/TestExplorerUtils";
 
 jest.setTimeout(300000);
 
 const notebookName = "GettingStarted.ipynb";
-let frame: Frame;
-let uploadedNotebookNode: ElementHandle<Element>;
 
 describe("Notebook UI tests", () => {
   it("Upload, Open and Delete Notebook", async () => {
     try {
-      frame = await getTestExplorerFrame();
+      await page.goto("https://localhost:1234/testExplorer.html");
+      const handle = await page.waitForSelector("iframe");
+      const frame = await handle.contentFrame();
       await frame.waitForSelector(".galleryHeader");
-      uploadedNotebookNode = await uploadNotebookIfNotExist(frame, notebookName);
+      const uploadedNotebookNode = await uploadNotebookIfNotExist(frame, notebookName);
       await uploadedNotebookNode.click();
       await frame.waitForSelector(".tabNavText");
       const tabTitle = await frame.$eval(".tabNavText", (element) => element.textContent);

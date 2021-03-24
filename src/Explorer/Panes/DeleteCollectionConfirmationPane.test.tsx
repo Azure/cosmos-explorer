@@ -133,7 +133,7 @@ describe("Delete Collection Confirmation Pane", () => {
         .simulate("change", { target: { value: selectedCollectionId } });
 
       expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("click");
+      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
       expect(deleteCollection).toHaveBeenCalledWith(databaseId, selectedCollectionId);
 
       wrapper.unmount();
@@ -154,7 +154,7 @@ describe("Delete Collection Confirmation Pane", () => {
         .simulate("change", { target: { value: feedbackText } });
 
       expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("click");
+      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
       expect(deleteCollection).toHaveBeenCalledWith(databaseId, selectedCollectionId);
 
       const deleteFeedback = new DeleteFeedback(
