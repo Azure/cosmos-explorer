@@ -12,7 +12,6 @@ import {
   TextField,
 } from "office-ui-fabric-react";
 import React from "react";
-import { Features } from "../../../../../Common/Constants";
 import * as DataModels from "../../../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
 import * as SharedConstants from "../../../../../Shared/Constants";
@@ -465,7 +464,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={"AzureSubscriptionId":"${userContext.subscriptionId}","CosmosDBAccountName":"${userContext.databaseAccount?.name}"}`;
     const oneTBinKB = 1000000000;
     const minRUperGB = 10;
-    const featureFlagEnabled = window.dataExplorer?.isFeatureEnabled(Features.showMinRUSurvey);
+    const featureFlagEnabled = userContext.features.showMinRUSurvey;
     const collectionIsEligible =
       userContext.subscriptionType !== SubscriptionType.Internal &&
       this.props.usageSizeInKB > oneTBinKB &&

@@ -98,31 +98,6 @@ export class CapabilityNames {
   public static readonly EnableServerless: string = "EnableServerless";
 }
 
-export class Features {
-  public static readonly cosmosdb = "cosmosdb";
-  public static readonly enableChangeFeedPolicy = "enablechangefeedpolicy";
-  public static readonly executeSproc = "dataexplorerexecutesproc";
-  public static readonly hostedDataExplorer = "hosteddataexplorerenabled";
-  public static readonly enableTtl = "enablettl";
-  public static readonly enableNotebooks = "enablenotebooks";
-  public static readonly enableSpark = "enablespark";
-  public static readonly livyEndpoint = "livyendpoint";
-  public static readonly notebookServerUrl = "notebookserverurl";
-  public static readonly notebookServerToken = "notebookservertoken";
-  public static readonly notebookBasePath = "notebookbasepath";
-  public static readonly canExceedMaximumValue = "canexceedmaximumvalue";
-  public static readonly enableFixedCollectionWithSharedThroughput = "enablefixedcollectionwithsharedthroughput";
-  public static readonly ttl90Days = "ttl90days";
-  public static readonly enableRightPanelV2 = "enablerightpanelv2";
-  public static readonly enableSchema = "enableschema";
-  public static readonly enableSDKoperations = "enablesdkoperations";
-  public static readonly showMinRUSurvey = "showminrusurvey";
-  public static readonly enableDatabaseSettingsTabV1 = "enabledbsettingsv1";
-  public static readonly selfServeType = "selfservetype";
-  public static readonly enableKOPanel = "enablekopanel";
-  public static readonly enableReactPane = "enablereactpane";
-}
-
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";

@@ -10,6 +10,7 @@ import GraphStylingPane from "../Panes/GraphStylingPane";
 import NewVertexPane from "../Panes/NewVertexPane";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import template from "./GraphTab.html";
 
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -36,6 +37,7 @@ interface GraphTabOptions extends ViewModels.TabOptions {
 }
 
 export default class GraphTab extends TabsBase {
+  public static readonly component = { name: "graph-tab", template };
   // Graph default configuration
   public static readonly DEFAULT_NODE_CAPTION = "id";
   private static readonly LINK_COLOR = "#aaa";

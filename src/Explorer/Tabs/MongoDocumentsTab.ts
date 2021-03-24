@@ -20,8 +20,10 @@ import { extractPartitionKey } from "@azure/cosmos";
 import * as Logger from "../../Common/Logger";
 import { PartitionKeyDefinition } from "@azure/cosmos";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import template from "./MongoDocumentsTab.html";
 
 export default class MongoDocumentsTab extends DocumentsTab {
+  public static readonly component = { name: "mongo-documents-tab", template };
   public collection: ViewModels.Collection;
   private continuationToken: string;
 

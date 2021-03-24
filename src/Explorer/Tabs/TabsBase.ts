@@ -13,6 +13,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
+  public static readonly component = { name: "tab", template: "" };
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;

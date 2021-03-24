@@ -905,7 +905,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     if (this.state.enableAnalyticalStore) {
       // TODO: always default to 90 days once the backend hotfix is deployed
-      return this.props.explorer.isFeatureEnabled(Constants.Features.ttl90Days)
+      return userContext.features.ttl90Days
         ? Constants.AnalyticalStorageTtl.Days90
         : Constants.AnalyticalStorageTtl.Infinite;
     }

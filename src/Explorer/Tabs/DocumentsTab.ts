@@ -28,9 +28,11 @@ import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import DocumentId from "../Tree/DocumentId";
+import template from "./DocumentsTab.html";
 import TabsBase from "./TabsBase";
 
 export default class DocumentsTab extends TabsBase {
+  public static readonly component = { name: "documents-tab", template };
   public selectedDocumentId: ko.Observable<DocumentId>;
   public selectedDocumentContent: ViewModels.Editable<string>;
   public initialDocumentContent: ko.Observable<string>;
@@ -871,8 +873,6 @@ export default class DocumentsTab extends TabsBase {
     if (!this.isPreferredApiMongoDB) {
       buttons.push(DocumentsTab._createUploadButton(this.collection.container));
     }
-
-    const features = this.collection.container.features() || {};
 
     return buttons;
   }
