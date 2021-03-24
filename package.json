@@ -52,6 +52,7 @@
     "clean-webpack-plugin": "0.1.19",
     "clipboard-copy": "4.0.1",
     "copy-webpack-plugin": "6.0.2",
+    "core-js": "3.5.0",
     "crossroads": "0.12.2",
     "css-element-queries": "1.1.1",
     "d3": "6.1.1",
