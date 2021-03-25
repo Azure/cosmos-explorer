@@ -26,13 +26,6 @@ describe("Save Query Pane", () => {
   });
 
   it("should render Default properly", () => {
-    const fakeExplorer = {} as Explorer;
-    fakeExplorer.canSaveQueries = ko.computed<boolean>(() => true);
-    const props = {
-      explorer: fakeExplorer,
-      closePanel: (): void => undefined,
-    };
-
     const wrapper = shallow(<SaveQueryPanel {...props} />);
     expect(wrapper).toMatchSnapshot();
   });

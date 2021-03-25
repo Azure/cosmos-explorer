@@ -13,7 +13,7 @@ exports[`Save Query Pane should render Default properly 1`] = `
   isExecuting={false}
   onClose={[Function]}
   onSubmit={[Function]}
-  submitButtonText="Save"
+  submitButtonText="Complete setup"
   title="Save Query"
 >
   <div
@@ -22,18 +22,11 @@ exports[`Save Query Pane should render Default properly 1`] = `
     <div
       className="panelMainContent"
     >
-      <StyledTextFieldBase
-        id="saveQueryInput"
-        label="Name"
-        onChange={[Function]}
-        styles={
-          Object {
-            "fieldGroup": Object {
-              "width": 300,
-            },
-          }
-        }
-      />
+      <Text
+        variant="small"
+      >
+        For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “___Cosmos”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.
+      </Text>
     </div>
   </div>
 </GenericRightPaneComponent>
