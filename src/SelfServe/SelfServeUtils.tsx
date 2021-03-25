@@ -18,6 +18,7 @@ import {
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
+  TelemetryMessageType,
 } from "./SelfServeTypes";
 
 export enum SelfServeType {
@@ -199,14 +200,6 @@ export const generateBladeLink = (blade: BladeType): string => {
   const databaseAccountName = userContext.databaseAccount.name;
   return `https://portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };
-
-export enum TelemetryMessageType {
-  Trace = "trace",
-  Start = "start",
-  Success = "success",
-  Failed = "failed",
-  Cancel = "cancel",
-}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sendTelemetryMessage = (messageType: TelemetryMessageType, data: any = {}): void => {

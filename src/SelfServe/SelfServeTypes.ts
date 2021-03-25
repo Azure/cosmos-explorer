@@ -157,3 +157,11 @@ export interface RefreshResult {
 export interface RefreshParams {
   retryIntervalInMs: number;
 }
+
+export enum TelemetryMessageType {
+  Trace = "trace",
+  Start = "start",
+  Success = "success",
+  Failed = "failed",
+  Cancel = "cancel",
+}

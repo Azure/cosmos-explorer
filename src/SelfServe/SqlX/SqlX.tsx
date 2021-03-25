@@ -9,8 +9,9 @@ import {
   RefreshResult,
   SelfServeBaseClass,
   SmartUiInput,
+  TelemetryMessageType,
 } from "../SelfServeTypes";
-import { BladeType, generateBladeLink, sendTelemetryMessage, TelemetryMessageType } from "../SelfServeUtils";
+import { BladeType, generateBladeLink, sendTelemetryMessage } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
