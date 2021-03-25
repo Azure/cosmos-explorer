@@ -1,9 +1,28 @@
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 
+export function buildDocumentsQuery(
+  filter: string,
+  partitionKeyProperty: string,
+  partitionKey: DataModels.PartitionKey
+): string {
+  let query = partitionKeyProperty
+    ? `select c.id, c._self, c._rid, c._ts, ${buildDocumentsQueryPartitionProjections(
+        "c",
+        partitionKey
+      )} as _partitionKeyValue from c`
+    : `select c.id, c._self, c._rid, c._ts from c`;
+
+  if (filter) {
+    query += " " + filter;
+  }
+
+  return query;
+}
+
 export function buildDocumentsQueryPartitionProjections(
   collectionAlias: string,
-  partitionKey: DataModels.PartitionKey
+  partitionKey?: DataModels.PartitionKey
 ): string {
   if (!partitionKey) {
     return "";
@@ -36,25 +55,6 @@ export function buildDocumentsQueryPartitionProjections(
   return projections.join(",");
 }
 
-export function buildDocumentsQuery(
-  filter: string,
-  partitionKeyProperty: string,
-  partitionKey: DataModels.PartitionKey
-): string {
-  let query: string = partitionKeyProperty
-    ? `select c.id, c._self, c._rid, c._ts, ${buildDocumentsQueryPartitionProjections(
-        "c",
-        partitionKey
-      )} as _partitionKeyValue from c`
-    : `select c.id, c._self, c._rid, c._ts from c`;
-
-  if (filter) {
-    query += " " + filter;
-  }
-
-  return query;
-}
-
 export const queryPagesUntilContentPresent = async (
   firstItemIndex: number,
   queryItems: (itemIndex: number) => Promise<ViewModels.QueryResults>
@@ -62,12 +62,12 @@ export const queryPagesUntilContentPresent = async (
   let roundTrips = 0;
   let netRequestCharge = 0;
   const doRequest = async (itemIndex: number): Promise<ViewModels.QueryResults> => {
-    const results: ViewModels.QueryResults = await queryItems(itemIndex);
+    const results = await queryItems(itemIndex);
     roundTrips = roundTrips + 1;
     results.roundTrips = roundTrips;
     results.requestCharge = Number(results.requestCharge) + netRequestCharge;
     netRequestCharge = Number(results.requestCharge);
-    const resultsMetadata: ViewModels.QueryResultsMetadata = {
+    const resultsMetadata = {
       hasMoreResults: results.hasMoreResults,
       itemCount: results.itemCount,
       firstItemIndex: results.firstItemIndex,
@@ -96,7 +96,7 @@ export const queryAllPages = async (
     roundTrips: 0,
   };
   const doRequest = async (itemIndex: number): Promise<ViewModels.QueryResults> => {
-    const results: ViewModels.QueryResults = await queryItems(itemIndex);
+    const results = await queryItems(itemIndex);
     const { requestCharge, hasMoreResults, itemCount, lastItemIndex, documents } = results;
     queryResults.roundTrips = queryResults.roundTrips + 1;
     queryResults.requestCharge = Number(queryResults.requestCharge) + Number(requestCharge);
