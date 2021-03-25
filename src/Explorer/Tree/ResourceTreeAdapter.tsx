@@ -1,39 +1,38 @@
 import * as ko from "knockout";
+import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "office-ui-fabric-react";
 import * as React from "react";
-import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
-import { TreeComponent, TreeNode, TreeNodeMenuItem, TreeNodeComponent } from "../Controls/TreeComponent/TreeComponent";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
-import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
-import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
-import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
-import CollectionIcon from "../../../images/tree-collection.svg";
 import DeleteIcon from "../../../images/delete.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
-import RefreshIcon from "../../../images/refresh-cosmos.svg";
-import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
-import FileIcon from "../../../images/notebook/file-cosmos.svg";
-import PublishIcon from "../../../images/notebook/publish_content.svg";
-import { ArrayHashMap } from "../../Common/ArrayHashMap";
-import { NotebookUtil } from "../Notebook/NotebookUtil";
-import _ from "underscore";
-import { IPinnedRepo } from "../../Juno/JunoClient";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
-import { Areas } from "../../Common/Constants";
-import * as GitHubUtils from "../../Utils/GitHubUtils";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
-import { Callout, Text, Link, DirectionalHint, Stack, ICalloutProps, ILinkProps } from "office-ui-fabric-react";
+import FileIcon from "../../../images/notebook/file-cosmos.svg";
+import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
+import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import PublishIcon from "../../../images/notebook/publish_content.svg";
+import RefreshIcon from "../../../images/refresh-cosmos.svg";
+import CollectionIcon from "../../../images/tree-collection.svg";
+import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import { ArrayHashMap } from "../../Common/ArrayHashMap";
+import { Areas } from "../../Common/Constants";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { IPinnedRepo } from "../../Juno/JunoClient";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
+import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
+import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
+import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
-import UserDefinedFunction from "./UserDefinedFunction";
+import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
+import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
+import TabsBase from "../Tabs/TabsBase";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
-import TabsBase from "../Tabs/TabsBase";
-import { userContext } from "../../UserContext";
-import * as DataModels from "../../Contracts/DataModels";
+import UserDefinedFunction from "./UserDefinedFunction";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   public static readonly MyNotebooksTitle = "My Notebooks";
@@ -766,7 +765,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       {
         label: "Upload File",
         iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onUploadToNotebookServerClicked(item),
+        onClick: () => this.container.openUploadFilePanel(item),
       },
     ];
 

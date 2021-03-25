@@ -407,7 +407,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
   return {
     iconSrc: NewNotebookIcon,
     iconAlt: label,
-    onCommandClick: () => container.onUploadToNotebookServerClicked(),
+    onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

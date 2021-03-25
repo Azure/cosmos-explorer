@@ -1,32 +1,32 @@
 import * as ko from "knockout";
-import * as PaneComponents from "./Panes/PaneComponents";
 import { DiffEditorComponent } from "./Controls/DiffEditor/DiffEditorComponent";
 import { DynamicListComponent } from "./Controls/DynamicList/DynamicListComponent";
 import { EditorComponent } from "./Controls/Editor/EditorComponent";
 import { ErrorDisplayComponent } from "./Controls/ErrorDisplayComponent/ErrorDisplayComponent";
-import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleComponent";
 import { InputTypeaheadComponent } from "./Controls/InputTypeahead/InputTypeahead";
 import { JsonEditorComponent } from "./Controls/JsonEditor/JsonEditorComponent";
-import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
-
+import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleComponent";
+import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
+import * as PaneComponents from "./Panes/PaneComponents";
+import ConflictsTab from "./Tabs/ConflictsTab";
+import DatabaseSettingsTab from "./Tabs/DatabaseSettingsTab";
 import DocumentsTab from "./Tabs/DocumentsTab";
+import GalleryTab from "./Tabs/GalleryTab";
+import GraphTab from "./Tabs/GraphTab";
 import MongoDocumentsTab from "./Tabs/MongoDocumentsTab";
-import StoredProcedureTab from "./Tabs/StoredProcedureTab";
-import TriggerTab from "./Tabs/TriggerTab";
-import UserDefinedFunctionTab from "./Tabs/UserDefinedFunctionTab";
-import { DatabaseSettingsTabV2, SettingsTabV2 } from "./Tabs/SettingsTabV2";
+import MongoShellTab from "./Tabs/MongoShellTab";
+import NotebookTabV2 from "./Tabs/NotebookV2Tab";
+import NotebookViewerTab from "./Tabs/NotebookViewerTab";
 import QueryTab from "./Tabs/QueryTab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
-import GraphTab from "./Tabs/GraphTab";
-import MongoShellTab from "./Tabs/MongoShellTab";
-import ConflictsTab from "./Tabs/ConflictsTab";
-import NotebookTabV2 from "./Tabs/NotebookV2Tab";
-import TerminalTab from "./Tabs/TerminalTab";
-import GalleryTab from "./Tabs/GalleryTab";
-import NotebookViewerTab from "./Tabs/NotebookViewerTab";
-import DatabaseSettingsTab from "./Tabs/DatabaseSettingsTab";
+import { DatabaseSettingsTabV2, SettingsTabV2 } from "./Tabs/SettingsTabV2";
+import StoredProcedureTab from "./Tabs/StoredProcedureTab";
 import TabsManagerTemplate from "./Tabs/TabsManager.html";
+import TerminalTab from "./Tabs/TerminalTab";
+import TriggerTab from "./Tabs/TriggerTab";
+import UserDefinedFunctionTab from "./Tabs/UserDefinedFunctionTab";
+
 
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);
@@ -84,7 +84,6 @@ ko.components.register("upload-items-pane", new PaneComponents.UploadItemsPaneCo
 ko.components.register("load-query-pane", new PaneComponents.LoadQueryPaneComponent());
 ko.components.register("save-query-pane", new PaneComponents.SaveQueryPaneComponent());
 ko.components.register("browse-queries-pane", new PaneComponents.BrowseQueriesPaneComponent());
-ko.components.register("upload-file-pane", new PaneComponents.UploadFilePaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
 ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());
