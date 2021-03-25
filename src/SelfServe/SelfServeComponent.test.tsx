@@ -1,5 +1,5 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import { SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
 import { NumberUiType, OnSaveResult, SelfServeDescriptor, SmartUiInput } from "./SelfServeTypes";
 
@@ -106,7 +106,7 @@ describe("SelfServeComponent", () => {
   };
 
   it("should render and honor save, discard, refresh actions", async () => {
-    const wrapper = shallow(<SelfServeComponent descriptor={exampleData} />);
+    const wrapper = shallow(<SelfServeComponent descriptor={exampleData} t={undefined} i18n={undefined} tReady={undefined} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
 
@@ -158,7 +158,7 @@ describe("SelfServeComponent", () => {
   });
 
   it("getResolvedValue", async () => {
-    const wrapper = shallow(<SelfServeComponent descriptor={exampleData} />);
+    const wrapper = shallow(<SelfServeComponent descriptor={exampleData} t={undefined} i18n={undefined} tReady={undefined} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     const selfServeComponent = wrapper.instance() as SelfServeComponent;
 
@@ -179,7 +179,7 @@ describe("SelfServeComponent", () => {
 
   it("message bar and spinner snapshots", async () => {
     const newDescriptor = { ...exampleData, onRefresh: onRefreshIsUpdatingMock };
-    let wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} />);
+    let wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} t={undefined} i18n={undefined} tReady={undefined} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     let selfServeComponent = wrapper.instance() as SelfServeComponent;
     selfServeComponent.onSaveButtonClick();
@@ -187,7 +187,7 @@ describe("SelfServeComponent", () => {
     expect(wrapper).toMatchSnapshot();
 
     newDescriptor.onRefresh = onRefreshMock;
-    wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} />);
+    wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} t={undefined} i18n={undefined} tReady={undefined} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
     selfServeComponent = wrapper.instance() as SelfServeComponent;
     selfServeComponent.onSaveButtonClick();

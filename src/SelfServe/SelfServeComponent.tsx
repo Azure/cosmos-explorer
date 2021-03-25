@@ -11,7 +11,7 @@ import {
 } from "office-ui-fabric-react";
 import promiseRetry, { AbortError } from "p-retry";
 import React from "react";
-import { WithTranslation } from "react-i18next/*";
+import { WithTranslation } from "react-i18next";
 import * as _ from "underscore";
 import { sendMessage } from "../Common/MessageHandler";
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
