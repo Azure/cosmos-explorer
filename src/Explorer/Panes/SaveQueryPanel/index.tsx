@@ -111,10 +111,6 @@ export const SaveQueryPanel: FunctionComponent<SaveQueryPanelProps> = ({
   };
 
   const setupQueries = async (): Promise<void> => {
-    if (!explorer) {
-      return;
-    }
-
     const startKey: number = traceStart(Action.SetupSavedQueries, {
       dataExplorerArea: Areas.ContextualPane,
       paneTitle: title,
