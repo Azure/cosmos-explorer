@@ -1,7 +1,7 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { IImageProps, Image, ImageFit, Stack, TextField } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
-import folder_16x16 from "../../../../images/folder_16x16.svg";
+import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
 import { userContext } from "../../../UserContext";
 import {
@@ -91,7 +91,7 @@ export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
   };
 
   const loadQueryFromFile = async (file: File): Promise<void> => {
-    const selectedCollection: Collection = explorer && explorer.findSelectedCollection();
+    const selectedCollection: Collection = explorer?.findSelectedCollection();
     if (!selectedCollection) {
       logError("No collection was selected", "LoadQueryPane.loadQueryFromFile");
     } else if (userContext.apiType === "Mongo") {
@@ -130,7 +130,7 @@ export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
               styles={{ fieldGroup: { width: 300 } }}
             />
             <label htmlFor="importQueryInputId" className="customFileUpload">
-              <Image {...imageProps} src={folder_16x16} alt="upload files" />
+              <Image {...imageProps} src={folderIcon} alt="upload files" />
               <input
                 className="fileUpload"
                 type="file"
