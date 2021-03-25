@@ -11,7 +11,6 @@ import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponen
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
 
 import DocumentsTab from "./Tabs/DocumentsTab";
-import MongoDocumentsTab from "./Tabs/MongoDocumentsTab";
 import StoredProcedureTab from "./Tabs/StoredProcedureTab";
 import TriggerTab from "./Tabs/TriggerTab";
 import UserDefinedFunctionTab from "./Tabs/UserDefinedFunctionTab";
@@ -42,7 +41,6 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
 // Collection Tabs
 [
   DocumentsTab,
-  MongoDocumentsTab,
   StoredProcedureTab,
   TriggerTab,
   UserDefinedFunctionTab,
