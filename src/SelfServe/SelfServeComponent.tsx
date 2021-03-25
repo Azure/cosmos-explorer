@@ -11,12 +11,11 @@ import {
 } from "office-ui-fabric-react";
 import promiseRetry, { AbortError } from "p-retry";
 import React from "react";
-import { Translation } from "react-i18next";
+import { WithTranslation } from "react-i18next/*";
 import * as _ from "underscore";
 import { sendMessage } from "../Common/MessageHandler";
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
-import "../i18n";
 import { commandBarItemStyles, commandBarStyles, containerStackTokens, separatorStyles } from "./SelfServeStyles";
 import {
   AnyDisplay,
@@ -57,7 +56,7 @@ interface PortalNotificationContent {
   };
 }
 
-export interface SelfServeComponentProps {
+export interface SelfServeComponentProps extends WithTranslation {
   descriptor: SelfServeDescriptor;
 }
 
@@ -108,6 +107,9 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       this.retryIntervalInMs = SelfServeComponent.defaultRetryIntervalInMs;
     }
     this.retryOptions = { forever: true, maxTimeout: this.retryIntervalInMs, minTimeout: this.retryIntervalInMs };
+
+    // translation function passed to SelfServeComponent
+    this.translationFunction = this.props.t;
   }
 
   private onError = (hasErrors: boolean): void => {
@@ -391,8 +393,8 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     return this.getTranslation(key, "Common");
   };
 
-  private getTranslation = (messageKey: string, prefix = `${this.smartUiGeneratorClassName}`): string => {
-    const translationKey = `${prefix}.${messageKey}`;
+  private getTranslation = (messageKey: string, namespace = `${this.smartUiGeneratorClassName}`): string => {
+    const translationKey = `${namespace}:${messageKey}`;
     const translation = this.translationFunction ? this.translationFunction(translationKey) : messageKey;
     if (translation === translationKey) {
       return messageKey;
@@ -444,50 +446,38 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       return <MessageBar messageBarType={MessageBarType.error}>{this.state.compileErrorMessage}</MessageBar>;
     }
     return (
-      <Translation>
-        {(translate) => {
-          if (!this.translationFunction) {
-            this.translationFunction = translate;
-          }
-
-          return (
-            <div style={{ overflowX: "auto" }}>
-              <Stack tokens={containerStackTokens}>
-                <Stack.Item>
-                  <CommandBar styles={commandBarStyles} items={this.getCommandBarItems()} />
-                  <Separator styles={separatorStyles} />
-                </Stack.Item>
-                {this.state.isInitializing ? (
-                  <Spinner size={SpinnerSize.large} />
-                ) : (
-                  <>
-                    {this.state.notification && (
-                      <MessageBar
-                        messageBarType={this.state.notification.type}
-                        onDismiss={
-                          this.state.notification.isCancellable
-                            ? () => this.setState({ notification: undefined })
-                            : undefined
-                        }
-                      >
-                        {this.state.notification.message}
-                      </MessageBar>
-                    )}
-                    <SmartUiComponent
-                      disabled={this.state.refreshResult?.isUpdateInProgress || this.state.isSaving}
-                      descriptor={this.state.root as SmartUiDescriptor}
-                      currentValues={this.state.currentValues}
-                      onInputChange={this.onInputChange}
-                      onError={this.onError}
-                      getTranslation={this.getTranslation}
-                    />
-                  </>
-                )}
-              </Stack>
-            </div>
-          );
-        }}
-      </Translation>
+      <div style={{ overflowX: "auto" }}>
+        <Stack tokens={containerStackTokens}>
+          <Stack.Item>
+            <CommandBar styles={commandBarStyles} items={this.getCommandBarItems()} />
+            <Separator styles={separatorStyles} />
+          </Stack.Item>
+          {this.state.isInitializing ? (
+            <Spinner size={SpinnerSize.large} />
+          ) : (
+            <>
+              {this.state.notification && (
+                <MessageBar
+                  messageBarType={this.state.notification.type}
+                  onDismiss={
+                    this.state.notification.isCancellable ? () => this.setState({ notification: undefined }) : undefined
+                  }
+                >
+                  {this.state.notification.message}
+                </MessageBar>
+              )}
+              <SmartUiComponent
+                disabled={this.state.refreshResult?.isUpdateInProgress || this.state.isSaving}
+                descriptor={this.state.root as SmartUiDescriptor}
+                currentValues={this.state.currentValues}
+                onInputChange={this.onInputChange}
+                onError={this.onError}
+                getTranslation={this.getTranslation}
+              />
+            </>
+          )}
+        </Stack>
+      </div>
     );
   }
 }

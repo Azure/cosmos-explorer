@@ -17,7 +17,7 @@ import {
   RefreshParams,
   SelfServeDescriptor,
   SmartUiInput,
-  StringInput
+  StringInput,
 } from "./SelfServeTypes";
 
 export enum SelfServeType {
@@ -205,26 +205,27 @@ export enum TelemetryMessageType {
   Start = "start",
   Success = "success",
   Failed = "failed",
-  Cancel = "cancel"
+  Cancel = "cancel",
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sendTelemetryMessage = (messageType: TelemetryMessageType, data: any = {}): void => {
-  const action = Action.SelfServe
+  const action = Action.SelfServe;
   switch (messageType) {
     case TelemetryMessageType.Trace:
-      trace(action, ActionModifiers.Mark, data)
+      trace(action, ActionModifiers.Mark, data);
       break;
     case TelemetryMessageType.Start:
-      traceStart(action, data)
+      traceStart(action, data);
       break;
     case TelemetryMessageType.Success:
-      traceSuccess(action, data)
+      traceSuccess(action, data);
       break;
     case TelemetryMessageType.Failed:
-      traceFailure(action, data)
+      traceFailure(action, data);
       break;
     case TelemetryMessageType.Cancel:
-      traceCancel(action, data)
+      traceCancel(action, data);
       break;
   }
-}
+};

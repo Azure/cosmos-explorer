@@ -114,7 +114,7 @@ export enum Action {
   NotebooksGalleryPublicGalleryCount,
   NotebooksGalleryFavoritesCount,
   NotebooksGalleryPublishedCount,
-  SelfServe
+  SelfServe,
 }
 
 export const ActionModifiers = {

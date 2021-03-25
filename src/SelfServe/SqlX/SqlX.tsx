@@ -8,14 +8,14 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink, sendTelemetryMessage, TelemetryMessageType } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -176,7 +176,7 @@ export default class SqlX extends SelfServeBaseClass {
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
-    sendTelemetryMessage(TelemetryMessageType.Start)
+    sendTelemetryMessage(TelemetryMessageType.Start);
 
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
