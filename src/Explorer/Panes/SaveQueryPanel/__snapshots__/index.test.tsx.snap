@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Save Query Pane should render Default properly 1`] = `
+<GenericRightPaneComponent
+  container={
+    Object {
+      "canSaveQueries": [Function],
+    }
+  }
+  formError=""
+  formErrorDetail=""
+  id="saveQueryPane"
+  isExecuting={false}
+  onClose={[Function]}
+  onSubmit={[Function]}
+  submitButtonText="Save"
+  title="Save Query"
+>
+  <div
+    className="panelFormWrapper"
+  >
+    <div
+      className="panelMainContent"
+    >
+      <StyledTextFieldBase
+        id="saveQueryInput"
+        label="Name"
+        onChange={[Function]}
+        styles={
+          Object {
+            "fieldGroup": Object {
+              "width": 300,
+            },
+          }
+        }
+      />
+    </div>
+  </div>
+</GenericRightPaneComponent>
+`;
