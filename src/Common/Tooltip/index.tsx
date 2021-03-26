@@ -12,11 +12,13 @@ export interface TooltipProps {
 export const Tooltip: React.FunctionComponent = ({ children }: TooltipProps) => {
   const tooltipId = useId("tooltip");
 
-  return (
+  return children ? (
     <span>
       <TooltipHost content={children} id={tooltipId} calloutProps={calloutProps} styles={hostStyles}>
         <img className="infoImg" src={InfoBubble} alt="More information" />
       </TooltipHost>
     </span>
+  ) : (
+    <></>
   );
 };

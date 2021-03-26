@@ -914,9 +914,7 @@ export default class DocumentsTab extends TabsBase {
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        const focusElement = document.getElementById("itemImportLink");
         selectedCollection && container.openUploadItemsPanePane();
-        focusElement && focusElement.focus();
       },
       commandButtonLabel: label,
       ariaLabel: label,
