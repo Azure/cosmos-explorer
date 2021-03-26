@@ -1,9 +1,9 @@
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
+import { Upload } from "../../../Common/Upload";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
-import { Upload } from "./Upload";
 
 export interface UploadFilePanelProps {
   explorer: Explorer;
@@ -104,7 +104,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
       <div className="paneMainContent">
-        <Upload label={selectFileInputLabel} extensions={extensions} onUpload={updateSelectedFiles} />
+        <Upload label={selectFileInputLabel} accept={extensions} onUpload={updateSelectedFiles} />
       </div>
     </GenericRightPaneComponent>
   );
