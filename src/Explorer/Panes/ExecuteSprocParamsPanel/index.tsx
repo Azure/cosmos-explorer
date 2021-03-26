@@ -1,8 +1,7 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
-import * as _ from "underscore";
-import Add_property from "../../../../images/Add-property.svg";
+import AddPropertyIcon from "../../../../images/Add-property.svg";
 import Explorer from "../../Explorer";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 import { InputParameter } from "./InputParameter";
@@ -33,7 +32,7 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
   const [formError, setFormError] = useState<string>("");
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
 
-  const onPeritionKeyChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
+  const onPartitionKeyChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
     setSelectedKey(item);
   };
 
@@ -60,9 +59,9 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
     return true;
   };
 
-  const setInvalidParamError = (InvalidParam: string): void => {
-    setFormError(`Invalid param specified: ${InvalidParam}`);
-    setFormErrorsDetails(`Invalid param specified: ${InvalidParam} is not a valid literal value`);
+  const setInvalidParamError = (invalidParam: string): void => {
+    setFormError(`Invalid param specified: ${invalidParam}`);
+    setFormErrorsDetails(`Invalid param specified: ${invalidParam} is not a valid literal value`);
   };
 
   const submit = (): void => {
@@ -77,7 +76,7 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
       return;
     }
     setLoadingTrue();
-    const sprocParams = wrappedSprocParams && _.pluck(wrappedSprocParams, "text");
+    const sprocParams = wrappedSprocParams && wrappedSprocParams.map((sprocParam) => sprocParam.text);
     const currentSelectedSproc = explorer.findSelectedStoredProcedure();
     currentSelectedSproc.execute(sprocParams, partitionValue);
     setLoadingFalse();
@@ -124,39 +123,37 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
         <div className="panelMainContent">
           <InputParameter
             dropdownLabel="Key"
-            InputParameterTitle="Partition key value"
+            inputParameterTitle="Partition key value"
             inputLabel="Value"
             isAddRemoveVisible={false}
             onParamValueChange={(_event, newInput?: string) => {
               setPartitionValue(newInput);
             }}
-            onParamKeyChange={onPeritionKeyChange}
+            onParamKeyChange={onPartitionKeyChange}
             paramValue={partitionValue}
             selectedKey={selectedKey.key}
           />
-          {paramKeyValues.map((paramKeyValue, index) => {
-            return (
-              <InputParameter
-                key={paramKeyValue && paramKeyValue.text + index}
-                dropdownLabel={!index && "Key"}
-                InputParameterTitle={!index && "Enter input parameters (if any)"}
-                inputLabel={!index && "Param"}
-                isAddRemoveVisible={true}
-                onDeleteParamKeyPress={() => deleteParamAtIndex(index)}
-                onAddNewParamKeyPress={() => addNewParamAtIndex(index + 1)}
-                onParamValueChange={(event, newInput?: string) => {
-                  paramValueChange(newInput, index);
-                }}
-                onParamKeyChange={(event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption) => {
-                  paramKeyChange(event, selectedParam, index);
-                }}
-                paramValue={paramKeyValue && paramKeyValue.text}
-                selectedKey={paramKeyValue && paramKeyValue.key}
-              />
-            );
-          })}
+          {paramKeyValues.map((paramKeyValue, index) => (
+            <InputParameter
+              key={paramKeyValue && paramKeyValue.text + index}
+              dropdownLabel={!index && "Key"}
+              inputParameterTitle={!index && "Enter input parameters (if any)"}
+              inputLabel={!index && "Param"}
+              isAddRemoveVisible={true}
+              onDeleteParamKeyPress={() => deleteParamAtIndex(index)}
+              onAddNewParamKeyPress={() => addNewParamAtIndex(index + 1)}
+              onParamValueChange={(event, newInput?: string) => {
+                paramValueChange(newInput, index);
+              }}
+              onParamKeyChange={(event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption) => {
+                paramKeyChange(event, selectedParam, index);
+              }}
+              paramValue={paramKeyValue && paramKeyValue.text}
+              selectedKey={paramKeyValue && paramKeyValue.key}
+            />
+          ))}
           <Stack horizontal onClick={addNewParamAtLastIndex}>
-            <Image {...imageProps} src={Add_property} alt="Add param" />
+            <Image {...imageProps} src={AddPropertyIcon} alt="Add param" />
             <Text className="addNewParamStyle">Add New Param</Text>
           </Stack>
         </div>

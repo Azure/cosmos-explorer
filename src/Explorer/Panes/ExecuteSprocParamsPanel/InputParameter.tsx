@@ -9,8 +9,8 @@ import {
   TextField,
 } from "office-ui-fabric-react";
 import React, { FunctionComponent } from "react";
-import Add_property from "../../../../images/Add-property.svg";
-import Entity_cancel from "../../../../images/Entity_cancel.svg";
+import AddPropertyIcon from "../../../../images/Add-property.svg";
+import EntityCancelIcon from "../../../../images/Entity_cancel.svg";
 
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 const options = [
@@ -20,7 +20,7 @@ const options = [
 
 export interface InputParameterProps {
   dropdownLabel?: string;
-  InputParameterTitle?: string;
+  inputParameterTitle?: string;
   inputLabel?: string;
   isAddRemoveVisible: boolean;
   onDeleteParamKeyPress?: () => void;
@@ -33,7 +33,7 @@ export interface InputParameterProps {
 
 export const InputParameter: FunctionComponent<InputParameterProps> = ({
   dropdownLabel,
-  InputParameterTitle,
+  inputParameterTitle,
   inputLabel,
   isAddRemoveVisible,
   paramValue,
@@ -51,7 +51,7 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
 
   return (
     <>
-      {InputParameterTitle && <Label>{InputParameterTitle}</Label>}
+      {inputParameterTitle && <Label>{inputParameterTitle}</Label>}
       <Stack horizontal>
         <Dropdown
           label={dropdownLabel && dropdownLabel}
@@ -71,12 +71,18 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
           <>
             <Image
               {...imageProps}
-              src={Entity_cancel}
+              src={EntityCancelIcon}
               alt="Delete param"
               id="deleteparam"
               onClick={onDeleteParamKeyPress}
             />
-            <Image {...imageProps} src={Add_property} alt="Add param" id="addparam" onClick={onAddNewParamKeyPress} />
+            <Image
+              {...imageProps}
+              src={AddPropertyIcon}
+              alt="Add param"
+              id="addparam"
+              onClick={onAddNewParamKeyPress}
+            />
           </>
         )}
       </Stack>
