@@ -38,7 +38,7 @@ export const Upload: FunctionComponent<UploadProps> = ({
   const onUpload = (event: ChangeEvent<HTMLInputElement>): void => {
     const { files } = event.target;
 
-    let newFileList = [];
+    const newFileList = [];
     for (let i = 0; i < files.length; i++) {
       newFileList.push(files.item(i).name);
     }
