@@ -1,6 +1,6 @@
 import * as ViewModels from "../../Contracts/ViewModels";
-import * as Entities from "./Entities";
 import * as Constants from "./Constants";
+import * as Entities from "./Entities";
 import * as DateTimeUtilities from "./QueryBuilder/DateTimeUtilities";
 
 // For use exclusively with Tables API.
@@ -36,7 +36,7 @@ export function convertDocumentsToEntities(documents: any[]): Entities.ITableEnt
   let results: Entities.ITableEntityForTablesAPI[] = [];
   documents &&
     documents.forEach((document) => {
-      if (!document.hasOwnProperty(keyProperties.PartitionKey) || !document.hasOwnProperty(keyProperties.Id2)) {
+      if (!document.hasOwnProperty(keyProperties.PartitionKey) || !document.hasOwnProperty(keyProperties.Id)) {
         //Document does not match the current required format for Tables, so we ignore it
         return; // The rest of the key properties should be guaranteed as DocumentDB properties
       }
