@@ -380,7 +380,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       "iconDisabled": Object {
                         "color": "#a19f9d",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "color": "GrayText",
                           },
                         },
@@ -401,7 +401,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       "menuIconDisabled": Object {
                         "color": "#a19f9d",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "color": "GrayText",
                           },
                         },
@@ -420,7 +420,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "position": "absolute",
                               "right": 2,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "bottom": -2,
                                   "left": -2,
                                   "outlineColor": "ButtonText",
@@ -492,7 +492,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "position": "absolute",
                               "right": 2,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "bottom": -2,
                                   "left": -2,
                                   "outlineColor": "ButtonText",
@@ -538,7 +538,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "backgroundColor": "#f3f2f1",
                         "color": "#106ebe",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "borderColor": "Highlight",
                             "color": "Highlight",
                           },
@@ -571,7 +571,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "position": "absolute",
                               "right": 3,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "border": "none",
                                   "bottom": -2,
                                   "left": -2,
@@ -600,19 +600,20 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "borderBottomRightRadius": "0",
                               "borderTopRightRadius": "0",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "Window",
                                   "border": "1px solid WindowText",
                                   "borderRightWidth": "0",
                                   "color": "WindowText",
+                                  "forcedColorAdjust": "none",
                                 },
                               },
                             },
                             ".ms-Button--primary + .ms-Button": Object {
                               "border": "none",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "border": "1px solid WindowText",
                                   "borderLeftWidth": "0",
                                 },
@@ -625,10 +626,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "selectors": Object {
                           ".ms-Button--primary": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "color": "Window",
+                                "forcedColorAdjust": "none",
                               },
                             },
                           },
@@ -638,10 +640,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "selectors": Object {
                           ".ms-Button--primary": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "MsHighContrastAdjust": "none",
                                 "backgroundColor": "WindowText",
                                 "color": "Window",
+                                "forcedColorAdjust": "none",
                               },
                             },
                           },
@@ -651,12 +654,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "border": "none",
                         "outline": "none",
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                            "MsHighContrastAdjust": "none",
                             "backgroundColor": "Window",
                             "borderColor": "GrayText",
                             "color": "GrayText",
-                          },
-                          "@media screen and (forced-colors: active)": Object {
                             "forcedColorAdjust": "none",
                           },
                         },
@@ -668,7 +670,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "selectors": Object {
                           ".ms-Button--primary": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "backgroundColor": "Highlight",
                                 "color": "Window",
                               },
@@ -677,7 +679,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           ".ms-Button.is-disabled": Object {
                             "color": "#a19f9d",
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -691,7 +693,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "position": "absolute",
                         "right": 31,
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "backgroundColor": "WindowText",
                           },
                         },
@@ -703,7 +705,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "position": "absolute",
                         "right": 31,
                         "selectors": Object {
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "backgroundColor": "GrayText",
                           },
                         },
@@ -718,6 +720,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "justifyContent": "center",
                       },
                       "splitButtonMenuButton": Object {
+                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                          ".ms-Button-menuIcon": Object {
+                            "color": "WindowText",
+                          },
+                        },
                         "border": "1px solid #8a8886",
                         "borderBottomRightRadius": "2px",
                         "borderLeft": "none",
@@ -745,7 +752,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         "selectors": Object {
                           ".ms-Button--primary": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "backgroundColor": "Window",
                                 "borderColor": "GrayText",
                                 "color": "GrayText",
@@ -754,7 +761,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           },
                           ".ms-Button-menuIcon": Object {
                             "selectors": Object {
-                              "@media screen and (-ms-high-contrast: active)": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                 "color": "GrayText",
                               },
                             },
@@ -762,7 +769,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           ":hover": Object {
                             "cursor": "default",
                           },
-                          "@media screen and (-ms-high-contrast: active)": Object {
+                          "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                             "backgroundColor": "Window",
                             "border": "1px solid GrayText",
                             "color": "GrayText",
@@ -2680,6 +2687,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     >
                       <TextFieldBase
                         autoFocus={true}
+                        canRevealPassword={false}
                         deferredValidationTime={200}
                         id="confirmCollectionId"
                         label="Value"
@@ -4833,6 +4841,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     >
                       <TextFieldBase
                         autoFocus={true}
+                        canRevealPassword={false}
                         deferredValidationTime={200}
                         id="confirmCollectionId"
                         label="Param"
@@ -5728,7 +5737,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         width={20}
                       >
                         <div
-                          className="ms-Image addRemoveIconLabel root-78"
+                          className="ms-Image addRemoveIconLabel root-81"
                           style={
                             Object {
                               "height": 30,
@@ -5738,7 +5747,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <img
                             alt="Delete param"
-                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-79"
+                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-82"
                             id="deleteparam"
                             key="fabricImage"
                             onClick={[Function]}
@@ -6043,7 +6052,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         width={20}
                       >
                         <div
-                          className="ms-Image addRemoveIconLabel root-78"
+                          className="ms-Image addRemoveIconLabel root-81"
                           style={
                             Object {
                               "height": 30,
@@ -6053,7 +6062,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <img
                             alt="Add param"
-                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-79"
+                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-82"
                             id="addparam"
                             key="fabricImage"
                             onClick={[Function]}
@@ -6364,7 +6373,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       width={20}
                     >
                       <div
-                        className="ms-Image root-78"
+                        className="ms-Image root-81"
                         style={
                           Object {
                             "height": 30,
@@ -6374,7 +6383,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       >
                         <img
                           alt="Add param"
-                          className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-79"
+                          className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-82"
                           key="fabricImage"
                           onError={[Function]}
                           onLoad={[Function]}
@@ -6388,7 +6397,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     key=".0:$.1"
                   >
                     <span
-                      className="addNewParamStyle css-80"
+                      className="addNewParamStyle css-83"
                     >
                       Add New Param
                     </span>
@@ -7314,7 +7323,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "iconDisabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "color": "GrayText",
                                 },
                               },
@@ -7340,7 +7349,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "menuIconDisabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "color": "GrayText",
                                 },
                               },
@@ -7359,7 +7368,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                     "position": "absolute",
                                     "right": 2,
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "bottom": -2,
                                         "left": -2,
                                         "outlineColor": "ButtonText",
@@ -7417,11 +7426,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                       },
                                     },
                                   },
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "MsHighContrastAdjust": "none",
                                     "backgroundColor": "WindowText",
                                     "borderColor": "WindowText",
                                     "color": "Window",
+                                    "forcedColorAdjust": "none",
                                   },
                                 },
                               },
@@ -7448,7 +7458,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                     "position": "absolute",
                                     "right": 2,
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "bottom": -2,
                                         "left": -2,
                                         "outlineColor": "ButtonText",
@@ -7480,8 +7490,10 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 },
                               },
                               Object {
+                                "backgroundColor": "#f3f2f1",
+                                "color": "#d2d0ce",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
@@ -7498,7 +7510,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "border": "1px solid #106ebe",
                               "color": "#ffffff",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "backgroundColor": "Highlight",
                                   "borderColor": "Highlight",
                                   "color": "Window",
@@ -7510,11 +7522,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "border": "1px solid #005a9e",
                               "color": "#ffffff",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "MsHighContrastAdjust": "none",
                                   "backgroundColor": "WindowText",
                                   "borderColor": "WindowText",
                                   "color": "Window",
+                                  "forcedColorAdjust": "none",
                                 },
                               },
                             },
@@ -7530,7 +7543,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "splitButtonContainer": Array [
                               Object {
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "border": "none",
                                   },
                                 },
@@ -7548,7 +7561,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                     "position": "absolute",
                                     "right": 3,
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "border": "none",
                                         "bottom": -2,
                                         "left": -2,
@@ -7577,19 +7590,20 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                     "borderBottomRightRadius": "0",
                                     "borderTopRightRadius": "0",
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "MsHighContrastAdjust": "none",
                                         "backgroundColor": "Window",
                                         "border": "1px solid WindowText",
                                         "borderRightWidth": "0",
                                         "color": "WindowText",
+                                        "forcedColorAdjust": "none",
                                       },
                                     },
                                   },
                                   ".ms-Button--primary + .ms-Button": Object {
                                     "border": "none",
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "border": "1px solid WindowText",
                                         "borderLeftWidth": "0",
                                       },
@@ -7602,10 +7616,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "selectors": Object {
                                 ".ms-Button--primary": Object {
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "MsHighContrastAdjust": "none",
                                       "backgroundColor": "WindowText",
                                       "color": "Window",
+                                      "forcedColorAdjust": "none",
                                     },
                                   },
                                 },
@@ -7615,10 +7630,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "selectors": Object {
                                 ".ms-Button--primary": Object {
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "MsHighContrastAdjust": "none",
                                       "backgroundColor": "WindowText",
                                       "color": "Window",
+                                      "forcedColorAdjust": "none",
                                     },
                                   },
                                 },
@@ -7628,12 +7644,11 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "border": "none",
                               "outline": "none",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  "MsHighContrastAdjust": "none",
                                   "backgroundColor": "Window",
                                   "borderColor": "GrayText",
                                   "color": "GrayText",
-                                },
-                                "@media screen and (forced-colors: active)": Object {
                                   "forcedColorAdjust": "none",
                                 },
                               },
@@ -7645,7 +7660,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "selectors": Object {
                                 ".ms-Button--primary": Object {
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "backgroundColor": "Highlight",
                                       "color": "Window",
                                     },
@@ -7654,7 +7669,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 ".ms-Button.is-disabled": Object {
                                   "color": "#a19f9d",
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "backgroundColor": "Window",
                                       "borderColor": "GrayText",
                                       "color": "GrayText",
@@ -7670,7 +7685,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 "position": "absolute",
                                 "right": 31,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                   },
                                 },
@@ -7682,7 +7697,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 "position": "absolute",
                                 "right": 31,
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "backgroundColor": "WindowText",
                                   },
                                 },
@@ -7695,7 +7710,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               "position": "absolute",
                               "right": 31,
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "backgroundColor": "GrayText",
                                 },
                               },
@@ -7717,17 +7732,22 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                   ":hover": Object {
                                     "backgroundColor": "#106ebe",
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "color": "Highlight",
                                       },
                                     },
                                   },
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "backgroundColor": "WindowText",
                                   },
                                 },
                               },
                               Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                  ".ms-Button-menuIcon": Object {
+                                    "color": "WindowText",
+                                  },
+                                },
                                 "border": "1px solid #8a8886",
                                 "borderBottomRightRadius": "2px",
                                 "borderLeft": "none",
@@ -7773,7 +7793,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 "selectors": Object {
                                   ".ms-Button--primary": Object {
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "backgroundColor": "Window",
                                         "borderColor": "GrayText",
                                         "color": "GrayText",
@@ -7782,7 +7802,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                   },
                                   ".ms-Button-menuIcon": Object {
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "color": "GrayText",
                                       },
                                     },
@@ -7790,7 +7810,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                   ":hover": Object {
                                     "cursor": "default",
                                   },
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "backgroundColor": "Window",
                                     "border": "1px solid GrayText",
                                     "color": "GrayText",
@@ -7812,7 +7832,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "splitButtonMenuIconDisabled": Object {
                               "color": "#a19f9d",
                               "selectors": Object {
-                                "@media screen and (-ms-high-contrast: active)": Object {
+                                "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                   "color": "GrayText",
                                 },
                               },
@@ -8103,7 +8123,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-81"
+                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-84"
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -8128,7 +8148,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               className="ms-Button-textContainer textContainer-42"
                             >
                               <span
-                                className="ms-Button-label label-82"
+                                className="ms-Button-label label-85"
                                 id="id__11"
                                 key="id__11"
                               >
