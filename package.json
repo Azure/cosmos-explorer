@@ -114,10 +114,6 @@
     "@babel/preset-env": "7.9.0",
     "@babel/preset-react": "7.9.4",
     "@babel/preset-typescript": "7.9.0",
-    "@storybook/addon-actions": "6.1.21",
-    "@storybook/addon-essentials": "6.1.21",
-    "@storybook/addon-links": "6.1.21",
-    "@storybook/react": "6.1.21",
     "@testing-library/react": "11.2.3",
     "@types/applicationinsights-js": "1.0.7",
     "@types/codemirror": "0.0.56",
@@ -151,7 +147,6 @@
     "babel-loader": "8.1.0",
     "buffer": "5.1.0",
     "case-sensitive-paths-webpack-plugin": "2.3.0",
-    "core-js": "3.9.1",
     "create-file-webpack": "1.0.2",
     "css-loader": "1.0.0",
     "enzyme": "3.11.0",
@@ -223,9 +218,7 @@
     "strictEligibleFiles": "node ./strict-migration-tools/index.js",
     "autoAddStrictEligibleFiles": "node ./strict-migration-tools/autoAdd.js",
     "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks",
-    "generateARMClients": "ts-node --compiler-options '{\"module\":\"commonjs\"}' utils/armClientGenerator/generator.ts",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "generateARMClients": "ts-node --compiler-options '{\"module\":\"commonjs\"}' utils/armClientGenerator/generator.ts"
   },
   "repository": {
     "type": "git",

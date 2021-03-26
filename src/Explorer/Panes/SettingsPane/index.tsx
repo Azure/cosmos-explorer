@@ -1,6 +1,7 @@
 import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "office-ui-fabric-react";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
+import { Tooltip } from "../../../Common/Tooltip";
 import { configContext } from "../../../ConfigContext";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import * as StringUtility from "../../../Shared/StringUtility";
@@ -8,7 +9,6 @@ import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
-import { Tooltip } from "./Tooltip";
 
 export interface SettingsPaneProps {
   explorer: Explorer;
@@ -130,125 +130,121 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
       <div className="paneMainContent">
-        <div>
-          {shouldShowQueryPageOptions && (
-            <div className="settingsSection">
-              <div className="settingsSectionPart pageOptionsPart">
-                <div className="settingsSectionLabel">
-                  Page options
-                  <Tooltip>
-                    Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as
-                    many query results per page.
-                  </Tooltip>
-                </div>
-                <ChoiceGroup selectedKey={pageOption} options={pageOptionList} onChange={handleOnPageOptionChange} />
+        {shouldShowQueryPageOptions && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart pageOptionsPart">
+              <div className="settingsSectionLabel">
+                Page options
+                <Tooltip>
+                  Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many
+                  query results per page.
+                </Tooltip>
               </div>
-              <div className="tabs settingsSectionPart">
-                {isCustomPageOptionSelected() && (
-                  <div className="tabcontent">
-                    <div className="settingsSectionLabel">
-                      Query results per page
-                      <Tooltip>Enter the number of query results that should be shown per page.</Tooltip>
-                    </div>
-
-                    <SpinButton
-                      ariaLabel="Custom query items per page"
-                      value={"" + customItemPerPage}
-                      onIncrement={(newValue) => {
-                        setCustomItemPerPage(parseInt(newValue) + 1 || customItemPerPage);
-                      }}
-                      onDecrement={(newValue) => setCustomItemPerPage(parseInt(newValue) - 1 || customItemPerPage)}
-                      onValidate={(newValue) => setCustomItemPerPage(parseInt(newValue) || customItemPerPage)}
-                      min={1}
-                      step={1}
-                      className="textfontclr"
-                      incrementButtonAriaLabel="Increase value by 1"
-                      decrementButtonAriaLabel="Decrease value by 1"
-                    />
+              <ChoiceGroup selectedKey={pageOption} options={pageOptionList} onChange={handleOnPageOptionChange} />
+            </div>
+            <div className="tabs settingsSectionPart">
+              {isCustomPageOptionSelected() && (
+                <div className="tabcontent">
+                  <div className="settingsSectionLabel">
+                    Query results per page
+                    <Tooltip>Enter the number of query results that should be shown per page.</Tooltip>
                   </div>
-                )}
-              </div>
-            </div>
-          )}
-          {shouldShowCrossPartitionOption && (
-            <div className="settingsSection">
-              <div className="settingsSectionPart">
-                <div className="settingsSectionLabel">
-                  Enable cross-partition query
-                  <Tooltip>
-                    Send more than one request while executing a query. More than one request is necessary if the query
-                    is not scoped to single partition key value.
-                  </Tooltip>
-                </div>
 
-                <Checkbox
-                  style={{ padding: "0" }}
-                  className="padding"
-                  tabIndex={0}
-                  ariaLabel="Enable cross partition query"
-                  checked={crossPartitionQueryEnabled}
-                  onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
-                />
-              </div>
-            </div>
-          )}
-          {shouldShowParallelismOption && (
-            <div className="settingsSection">
-              <div className="settingsSectionPart">
-                <div className="settingsSectionLabel">
-                  Max degree of parallelism
-                  <Tooltip>
-                    Gets or sets the number of concurrent operations run client side during parallel query execution. A
-                    positive property value limits the number of concurrent operations to the set value. If it is set to
-                    less than 0, the system automatically decides the number of concurrent operations to run.
-                  </Tooltip>
+                  <SpinButton
+                    ariaLabel="Custom query items per page"
+                    value={"" + customItemPerPage}
+                    onIncrement={(newValue) => {
+                      setCustomItemPerPage(parseInt(newValue) + 1 || customItemPerPage);
+                    }}
+                    onDecrement={(newValue) => setCustomItemPerPage(parseInt(newValue) - 1 || customItemPerPage)}
+                    onValidate={(newValue) => setCustomItemPerPage(parseInt(newValue) || customItemPerPage)}
+                    min={1}
+                    step={1}
+                    className="textfontclr"
+                    incrementButtonAriaLabel="Increase value by 1"
+                    decrementButtonAriaLabel="Decrease value by 1"
+                  />
                 </div>
-
-                <SpinButton
-                  min={-1}
-                  step={1}
-                  className="textfontclr"
-                  role="textbox"
-                  tabIndex={0}
-                  id="max-degree"
-                  value={"" + maxDegreeOfParallelism}
-                  onIncrement={(newValue) =>
-                    setMaxDegreeOfParallelism(parseInt(newValue) + 1 || maxDegreeOfParallelism)
-                  }
-                  onDecrement={(newValue) =>
-                    setMaxDegreeOfParallelism(parseInt(newValue) - 1 || maxDegreeOfParallelism)
-                  }
-                  onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
-                  ariaLabel="Max degree of parallelism"
-                />
-              </div>
+              )}
             </div>
-          )}
-          {shouldShowGraphAutoVizOption && (
-            <div className="settingsSection">
-              <div className="settingsSectionPart">
-                <div className="settingsSectionLabel">
-                  Display Gremlin query results as:&nbsp;
-                  <Tooltip>
-                    Select Graph to automatically visualize the query results as a Graph or JSON to display the results
-                    as JSON.
-                  </Tooltip>
-                </div>
-
-                <ChoiceGroup
-                  selectedKey={graphAutoVizDisabled}
-                  options={graphAutoOptionList}
-                  onChange={handleOnGremlinChange}
-                  aria-label="Graph Auto-visualization"
-                />
-              </div>
-            </div>
-          )}
+          </div>
+        )}
+        {shouldShowCrossPartitionOption && (
           <div className="settingsSection">
             <div className="settingsSectionPart">
-              <div className="settingsSectionLabel">Explorer Version</div>
-              <div>{explorerVersion}</div>
+              <div className="settingsSectionLabel">
+                Enable cross-partition query
+                <Tooltip>
+                  Send more than one request while executing a query. More than one request is necessary if the query is
+                  not scoped to single partition key value.
+                </Tooltip>
+              </div>
+
+              <Checkbox
+                styles={{
+                  label: { padding: 0 },
+                }}
+                className="padding"
+                tabIndex={0}
+                ariaLabel="Enable cross partition query"
+                checked={crossPartitionQueryEnabled}
+                onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
+              />
             </div>
+          </div>
+        )}
+        {shouldShowParallelismOption && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart">
+              <div className="settingsSectionLabel">
+                Max degree of parallelism
+                <Tooltip>
+                  Gets or sets the number of concurrent operations run client side during parallel query execution. A
+                  positive property value limits the number of concurrent operations to the set value. If it is set to
+                  less than 0, the system automatically decides the number of concurrent operations to run.
+                </Tooltip>
+              </div>
+
+              <SpinButton
+                min={-1}
+                step={1}
+                className="textfontclr"
+                role="textbox"
+                tabIndex={0}
+                id="max-degree"
+                value={"" + maxDegreeOfParallelism}
+                onIncrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) + 1 || maxDegreeOfParallelism)}
+                onDecrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) - 1 || maxDegreeOfParallelism)}
+                onValidate={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) || maxDegreeOfParallelism)}
+                ariaLabel="Max degree of parallelism"
+              />
+            </div>
+          </div>
+        )}
+        {shouldShowGraphAutoVizOption && (
+          <div className="settingsSection">
+            <div className="settingsSectionPart">
+              <div className="settingsSectionLabel">
+                Display Gremlin query results as:&nbsp;
+                <Tooltip>
+                  Select Graph to automatically visualize the query results as a Graph or JSON to display the results as
+                  JSON.
+                </Tooltip>
+              </div>
+
+              <ChoiceGroup
+                selectedKey={graphAutoVizDisabled}
+                options={graphAutoOptionList}
+                onChange={handleOnGremlinChange}
+                aria-label="Graph Auto-visualization"
+              />
+            </div>
+          </div>
+        )}
+        <div className="settingsSection">
+          <div className="settingsSectionPart">
+            <div className="settingsSectionLabel">Explorer Version</div>
+            <div>{explorerVersion}</div>
           </div>
         </div>
       </div>
