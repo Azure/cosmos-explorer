@@ -14,7 +14,6 @@ import DatabaseSettingsTab from "./Tabs/DatabaseSettingsTab";
 import DocumentsTab from "./Tabs/DocumentsTab";
 import GalleryTab from "./Tabs/GalleryTab";
 import GraphTab from "./Tabs/GraphTab";
-import MongoDocumentsTab from "./Tabs/MongoDocumentsTab";
 import MongoShellTab from "./Tabs/MongoShellTab";
 import NotebookTabV2 from "./Tabs/NotebookV2Tab";
 import NotebookViewerTab from "./Tabs/NotebookViewerTab";
@@ -42,7 +41,6 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
 // Collection Tabs
 [
   DocumentsTab,
-  MongoDocumentsTab,
   StoredProcedureTab,
   TriggerTab,
   UserDefinedFunctionTab,
