@@ -79,7 +79,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
-  const { tabsManager } = useTabs();
+  const { tabs, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -204,11 +204,7 @@ const App: React.FunctionComponent = () => {
             {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
-          <div className="connectExplorerContainer">
-            <form className="connectExplorerFormContainer">
-              {tabs.length === 0 && <SplashScreen explorer={explorer} />}
-            </form>
-          </div>
+          {tabs.length === 0 && <SplashScreen explorer={explorer} />}
           <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
         </div>
         {/* Collections Tree and Tabs - End */}

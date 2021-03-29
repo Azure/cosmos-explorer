@@ -75,7 +75,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
 
-    return (
+    const formContainer = (jsx: JSX.Element) => (
+      <div className="connectExplorerContainer">
+        <form className="connectExplorerFormContainer">{jsx}</form>
+      </div>
+    );
+
+    return formContainer(
       <div className="splashScreenContainer">
         <div className="splashScreen">
           <div className="title">
