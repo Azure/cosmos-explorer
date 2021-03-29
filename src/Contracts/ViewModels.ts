@@ -376,7 +376,6 @@ export interface DataExplorerInputsFrame {
   masterKey?: string;
   hasWriteAccess?: boolean;
   authorizationToken?: string;
-  features: { [key: string]: string };
   csmEndpoint?: string;
   dnsSuffix?: string;
   serverId?: string;
@@ -390,7 +389,6 @@ export interface DataExplorerInputsFrame {
   sharedThroughputMaximum?: number;
   sharedThroughputDefault?: number;
   dataExplorerVersion?: string;
-  isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
 }

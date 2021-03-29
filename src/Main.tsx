@@ -1,63 +1,62 @@
 // CSS Dependencies
 import "bootstrap/dist/css/bootstrap.css";
-import "../less/documentDB.less";
-import "../less/tree.less";
-import "../less/forms.less";
-import "../less/menus.less";
-import "../less/infobox.less";
-import "../less/messagebox.less";
-import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
-import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
-import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
-import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
-import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
-import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
-import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
-import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
-import "./Explorer/Panes/PanelComponent.less";
-import "../less/TableStyles/queryBuilder.less";
-import "../externals/jquery.dataTables.min.css";
-import "../less/TableStyles/fulldatatables.less";
-import "../less/TableStyles/EntityEditor.less";
-import "../less/TableStyles/CustomizeColumns.less";
-import "../less/resourceTree.less";
-import "../externals/jquery.typeahead.min.css";
+import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
+import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
+import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
 import "../externals/jquery-ui.theme.min.css";
-import "./Explorer/Graph/NewVertexComponent/newVertexComponent.less";
-import "./Explorer/Panes/GraphNewVertexPane.less";
-import "./Explorer/Tabs/QueryTab.less";
-import "./Explorer/Controls/TreeComponent/treeComponent.less";
-import "./Explorer/Controls/Accordion/AccordionComponent.less";
-import "./Explorer/SplashScreen/SplashScreen.less";
-import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
-
+import "../externals/jquery.dataTables.min.css";
+import "../externals/jquery.typeahead.min.css";
+import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import "../images/favicon.ico";
-
-import "./Shared/appInsights";
-import "./Libs/jquery";
-import "bootstrap/dist/js/npm";
-import "../externals/jquery.typeahead.min.js";
-import "../externals/jquery-ui.min.js";
-
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { ExplorerParams } from "./Explorer/Explorer";
-import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
-import refreshImg from "../images/refresh-cosmos.svg";
 import arrowLeftImg from "../images/imgarrowlefticon.svg";
-import { KOCommentEnd, KOCommentIfStart } from "./koComment";
+import refreshImg from "../images/refresh-cosmos.svg";
+import "../less/documentDB.less";
+import "../less/forms.less";
+import "../less/infobox.less";
+import "../less/menus.less";
+import "../less/messagebox.less";
+import "../less/resourceTree.less";
+import "../less/TableStyles/CustomizeColumns.less";
+import "../less/TableStyles/EntityEditor.less";
+import "../less/TableStyles/fulldatatables.less";
+import "../less/TableStyles/queryBuilder.less";
+import "../less/tree.less";
+import { AuthType } from "./AuthType";
+import "./Explorer/Controls/Accordion/AccordionComponent.less";
+import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
+import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
+import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
+import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
+import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
+import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
+import "./Explorer/Controls/ThroughputInput/ThroughputInput.less";
+import "./Explorer/Controls/TreeComponent/treeComponent.less";
+import { ExplorerParams } from "./Explorer/Explorer";
+import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
+import "./Explorer/Graph/NewVertexComponent/newVertexComponent.less";
+import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
+import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
+import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
+import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import "./Explorer/Panes/GraphNewVertexPane.less";
+import "./Explorer/Panes/PanelComponent.less";
+import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
+import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
+import "./Explorer/SplashScreen/SplashScreen.less";
+import "./Explorer/Tabs/QueryTab.less";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
-import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
-import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
-import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
+import { KOCommentEnd, KOCommentIfStart } from "./koComment";
+import "./Libs/jquery";
+import "./Shared/appInsights";
+import { userContext } from "./UserContext";
 
 initializeIcons();
 
@@ -91,6 +90,10 @@ const App: React.FunctionComponent = () => {
   };
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
+
+  if (!explorer) {
+    return <LoadingExplorer />;
+  }
 
   return (
     <div className="flexContainer">
@@ -143,11 +146,11 @@ const App: React.FunctionComponent = () => {
                       </div>
                     </div>
                   </div>
-                  <div
-                    style={{ overflowY: "auto" }}
-                    data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
-                  />
-                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
+                  {userContext.authType === AuthType.ResourceToken ? (
+                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
+                  ) : (
+                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
+                  )}
                 </div>
                 {/*  Collections Window - End */}
               </div>
@@ -197,18 +200,12 @@ const App: React.FunctionComponent = () => {
             {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
-          <div
-            className="connectExplorerContainer"
-            data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
-          >
+          <div className="connectExplorerContainer" data-bind="visible: tabsManager.openedTabs().length === 0">
             <form className="connectExplorerFormContainer">
               <SplashScreen explorer={explorer} />
             </form>
           </div>
-          <div
-            className="tabsManagerContainer"
-            data-bind='component: { name: "tabs-manager", params: {data: tabsManager} }'
-          />
+          <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div
@@ -225,21 +222,6 @@ const App: React.FunctionComponent = () => {
           />
         </div>
       </div>
-      {/* Global loader - Start */}
-      <div className="splashLoaderContainer" data-bind="visible: isRefreshingExplorer">
-        <div className="splashLoaderContentContainer">
-          <p className="connectExplorerContent">
-            <img src={hdeConnectImage} alt="Azure Cosmos DB" />
-          </p>
-          <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
-            Welcome to Azure Cosmos DB
-          </p>
-          <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
-            Connecting...
-          </p>
-        </div>
-      </div>
-      {/* Global loader - End */}
       <PanelContainerComponent
         isOpen={isPanelOpen}
         panelContent={panelContent}
@@ -283,3 +265,21 @@ const App: React.FunctionComponent = () => {
 };
 
 ReactDOM.render(<App />, document.body);
+
+function LoadingExplorer(): JSX.Element {
+  return (
+    <div className="splashLoaderContainer">
+      <div className="splashLoaderContentContainer">
+        <p className="connectExplorerContent">
+          <img src={hdeConnectImage} alt="Azure Cosmos DB" />
+        </p>
+        <p className="splashLoaderTitle" id="explorerLoadingStatusTitle">
+          Welcome to Azure Cosmos DB
+        </p>
+        <p className="splashLoaderText" id="explorerLoadingStatusText" role="alert">
+          Connecting...
+        </p>
+      </div>
+    </div>
+  );
+}

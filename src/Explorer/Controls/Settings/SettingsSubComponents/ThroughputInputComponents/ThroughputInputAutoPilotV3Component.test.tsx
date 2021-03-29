@@ -1,17 +1,16 @@
 import { shallow } from "enzyme";
 import React from "react";
+import * as DataModels from "../../../../../Contracts/DataModels";
 import {
   ThroughputInputAutoPilotV3Component,
   ThroughputInputAutoPilotV3Props,
 } from "./ThroughputInputAutoPilotV3Component";
-import * as DataModels from "../../../../../Contracts/DataModels";
 
 describe("ThroughputInputAutoPilotV3Component", () => {
   const baseProps: ThroughputInputAutoPilotV3Props = {
     databaseAccount: {} as DataModels.DatabaseAccount,
     databaseName: "test",
     collectionName: "test",
-    serverId: undefined,
     wasAutopilotOriginallySet: false,
     throughput: 100,
     throughputBaseline: 100,
