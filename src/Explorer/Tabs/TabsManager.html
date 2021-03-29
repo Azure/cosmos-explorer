@@ -76,10 +76,10 @@
 
   <!-- Tabs Panes -- Start -->
   <div class="tabPanesContainer">
-    <!-- ko if: activeTab && activeTab() -->
-    <div class="tabs-container" data-bind="visible: activeTab().isActive">
+    <!-- ko foreach: openedTabs -->
+    <div class="tabs-container" data-bind="visible: $data.isActive">
       <span
-        data-bind="class: activeTab().constructor.component.name, component: { name: activeTab().constructor.component.name, params: activeTab }"
+        data-bind="class: $data.constructor.component.name, component: { name: $data.constructor.component.name, params: $data }"
       ></span>
     </div>
     <!-- /ko -->
