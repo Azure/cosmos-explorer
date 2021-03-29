@@ -50,10 +50,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.subscriptions = [];
   }
 
-  public shouldComponentUpdate() {
-    return this.container.tabsManager.openedTabs.length === 0;
-  }
-
   public componentWillUnmount() {
     while (this.subscriptions.length) {
       this.subscriptions.pop().dispose();
@@ -62,7 +58,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      this.container.tabsManager.openedTabs.subscribe(() => this.setState({})),
       this.container.selectedNode.subscribe(() => this.setState({})),
       this.container.isNotebookEnabled.subscribe(() => this.setState({}))
     );

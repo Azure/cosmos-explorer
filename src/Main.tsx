@@ -204,9 +204,9 @@ const App: React.FunctionComponent = () => {
             {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
-          <div className="connectExplorerContainer" data-bind="visible: tabsManager.openedTabs().length === 0">
+          <div className="connectExplorerContainer">
             <form className="connectExplorerFormContainer">
-              <SplashScreen explorer={explorer} />
+              {tabs.length === 0 && <SplashScreen explorer={explorer} />}
             </form>
           </div>
           <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
