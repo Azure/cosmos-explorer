@@ -1,7 +1,5 @@
 {
-    "Common": {
-        "Save": "Save",
-        "Discard": "Discard",
-        "Refresh": "Refesh"
-    }
+    "Save": "Save",
+    "Discard": "Discard",
+    "Refresh": "Refesh"
 }

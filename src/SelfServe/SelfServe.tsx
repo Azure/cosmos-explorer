@@ -27,7 +27,7 @@ const loadTranslationFile = async (namespace: string): Promise<void> => {
   } catch (e) {
     translations = await import(`../Localization/en/${fileName}`);
   }
-  i18n.addResourceBundle(language, namespace, translations.default[namespace], true);
+  i18n.addResourceBundle(language, namespace, translations.default, true);
 };
 
 const loadTranslationsForClass = async (className: string): Promise<void> => {
