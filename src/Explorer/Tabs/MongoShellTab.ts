@@ -9,10 +9,12 @@ import { userContext } from "../../UserContext";
 import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
+import template from "./MongoShellTab.html";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import TabsBase from "./TabsBase";
 
 export default class MongoShellTab extends TabsBase {
+  public static readonly component = { name: "mongo-shell-tab", template };
   public url: ko.Computed<string>;
   private _container: Explorer;
   private _runtimeEndpoint: string;
@@ -83,10 +85,10 @@ export default class MongoShellTab extends TabsBase {
   }
 
   private handleReadyMessage(event: MessageEvent, shellIframe: HTMLIFrameElement) {
-    if (typeof event.data["data"] !== "string") {
+    if (typeof event.data["kind"] !== "string") {
       return;
     }
-    if (event.data.data !== "ready") {
+    if (event.data.kind !== "ready") {
       return;
     }
 

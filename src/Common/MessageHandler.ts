@@ -1,8 +1,8 @@
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import Q from "q";
 import * as _ from "underscore";
-import * as Constants from "./Constants";
+import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { getDataExplorerWindow } from "../Utils/WindowUtils";
+import * as Constants from "./Constants";
 
 export interface CachedDataPromise<T> {
   deferred: Q.Deferred<T>;
@@ -55,6 +55,21 @@ export function sendMessage(data: any): void {
       {
         signature: "pcIframe",
         data: data,
+      },
+      portalChildWindow.document.referrer
+    );
+  }
+}
+
+export function sendReadyMessage(): void {
+  if (canSendMessage()) {
+    // We try to find data explorer window first, then fallback to current window
+    const portalChildWindow = getDataExplorerWindow(window) || window;
+    portalChildWindow.parent.postMessage(
+      {
+        signature: "pcIframe",
+        kind: "ready",
+        data: "ready",
       },
       portalChildWindow.document.referrer
     );

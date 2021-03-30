@@ -9,8 +9,10 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Trigger from "../Tree/Trigger";
 import ScriptTabBase from "./ScriptTabBase";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import template from "./TriggerTab.html";
 
 export default class TriggerTab extends ScriptTabBase {
+  public static readonly component = { name: "trigger-tab", template };
   public collection: ViewModels.Collection;
   public node: Trigger;
   public triggerType: ViewModels.Editable<string>;
