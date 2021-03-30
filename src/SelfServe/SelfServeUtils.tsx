@@ -1,7 +1,5 @@
 import "reflect-metadata";
-import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import { userContext } from "../UserContext";
-import { trace, traceCancel, traceFailure, traceStart, traceSuccess } from "./SelfServeTelemetryProcessor";
 import {
   AnyDisplay,
   BooleanInput,
@@ -16,10 +14,8 @@ import {
   NumberInput,
   RefreshParams,
   SelfServeDescriptor,
-  SelfServeTelemetryMessage,
   SmartUiInput,
   StringInput,
-  TelemetryMessageType,
 } from "./SelfServeTypes";
 
 export enum SelfServeType {
@@ -200,25 +196,4 @@ export const generateBladeLink = (blade: BladeType): string => {
   const resourceGroupName = userContext.resourceGroup;
   const databaseAccountName = userContext.databaseAccount.name;
   return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
-};
-
-export const sendTelemetryMessage = (messageType: TelemetryMessageType, data: SelfServeTelemetryMessage): void => {
-  const action = Action.SelfServe;
-  switch (messageType) {
-    case TelemetryMessageType.Trace:
-      trace(action, data);
-      break;
-    case TelemetryMessageType.Start:
-      traceStart(action, data);
-      break;
-    case TelemetryMessageType.Success:
-      traceSuccess(action, data);
-      break;
-    case TelemetryMessageType.Failed:
-      traceFailure(action, data);
-      break;
-    case TelemetryMessageType.Cancel:
-      traceCancel(action, data);
-      break;
-  }
 };

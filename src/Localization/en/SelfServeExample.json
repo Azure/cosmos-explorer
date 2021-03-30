@@ -1,7 +1,7 @@
 {
-    "North Central US": "North Central US",
-    "West US": "West US",
-    "East US 2": "East US 2",
+    "NorthCentralUS": "North Central US",
+    "WestUS": "West US",
+    "EastUS2": "East US 2",
     "Current Region": "Current Region",
     "RegionDropdownInfo": "More regions can be added in the future.",
     "RegionsAndAccountNameValidationError": "Regions and account name should not be empty.",

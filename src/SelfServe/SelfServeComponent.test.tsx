@@ -87,9 +87,9 @@ describe("SelfServeComponent", () => {
             dataFieldName: "database",
             type: "object",
             choices: [
-              { label: "Database 1", key: "db1" },
-              { label: "Database 2", key: "db2" },
-              { label: "Database 3", key: "db3" },
+              { labelTKey: "Database 1", key: "db1" },
+              { labelTKey: "Database 2", key: "db2" },
+              { labelTKey: "Database 3", key: "db3" },
             ],
             defaultKey: "db2",
           },
