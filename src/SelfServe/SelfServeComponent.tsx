@@ -8,6 +8,7 @@ import {
   Spinner,
   SpinnerSize,
   Stack,
+  Text,
 } from "office-ui-fabric-react";
 import promiseRetry, { AbortError } from "p-retry";
 import React from "react";
@@ -443,7 +444,11 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
   public render(): JSX.Element {
     if (this.state.compileErrorMessage) {
-      return <MessageBar messageBarType={MessageBarType.error}>{this.state.compileErrorMessage}</MessageBar>;
+      return (
+        <MessageBar messageBarType={MessageBarType.error}>
+          <Text>{this.state.compileErrorMessage}</Text>
+        </MessageBar>
+      );
     }
     return (
       <div style={{ overflowX: "auto" }}>
@@ -463,7 +468,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
                     this.state.notification.isCancellable ? () => this.setState({ notification: undefined }) : undefined
                   }
                 >
-                  {this.state.notification.message}
+                  <Text>{this.state.notification.message}</Text>
                 </MessageBar>
               )}
               <SmartUiComponent

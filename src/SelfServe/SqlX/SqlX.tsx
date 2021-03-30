@@ -177,7 +177,7 @@ export default class SqlX extends SelfServeBaseClass {
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
-    sendTelemetryMessage(TelemetryMessageType.Start);
+    sendTelemetryMessage(TelemetryMessageType.Start, { selfServeClassName: "SqlX" });
 
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;

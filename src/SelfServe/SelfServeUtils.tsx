@@ -1,7 +1,7 @@
 import "reflect-metadata";
-import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
-import { trace, traceCancel, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
+import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import { userContext } from "../UserContext";
+import { trace, traceCancel, traceFailure, traceStart, traceSuccess } from "./SelfServeTelemetryProcessor";
 import {
   AnyDisplay,
   BooleanInput,
@@ -16,6 +16,7 @@ import {
   NumberInput,
   RefreshParams,
   SelfServeDescriptor,
+  SelfServeTelemetryMessage,
   SmartUiInput,
   StringInput,
   TelemetryMessageType,
@@ -198,15 +199,14 @@ export const generateBladeLink = (blade: BladeType): string => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroupName = userContext.resourceGroup;
   const databaseAccountName = userContext.databaseAccount.name;
-  return `https://portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
+  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const sendTelemetryMessage = (messageType: TelemetryMessageType, data: any = {}): void => {
+export const sendTelemetryMessage = (messageType: TelemetryMessageType, data: SelfServeTelemetryMessage): void => {
   const action = Action.SelfServe;
   switch (messageType) {
     case TelemetryMessageType.Trace:
-      trace(action, ActionModifiers.Mark, data);
+      trace(action, data);
       break;
     case TelemetryMessageType.Start:
       traceStart(action, data);

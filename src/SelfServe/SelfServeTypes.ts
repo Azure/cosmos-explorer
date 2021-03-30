@@ -165,3 +165,9 @@ export enum TelemetryMessageType {
   Failed = "failed",
   Cancel = "cancel",
 }
+
+export interface SelfServeTelemetryMessage {
+  selfServeClassName: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data?: any;
+}

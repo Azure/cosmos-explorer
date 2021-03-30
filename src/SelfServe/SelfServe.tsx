@@ -16,9 +16,9 @@ import { SelfServeDescriptor } from "./SelfServeTypes";
 import { SelfServeType } from "./SelfServeUtils";
 initializeIcons();
 
-const loadTranslationFile = async (namespace: string): Promise<void> => {
+const loadTranslationFile = async (className: string): Promise<void> => {
   const language = i18n.languages[0];
-  const fileName = `${namespace}.json`;
+  const fileName = `${className}.json`;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let translations: any;
@@ -27,10 +27,10 @@ const loadTranslationFile = async (namespace: string): Promise<void> => {
   } catch (e) {
     translations = await import(`../Localization/en/${fileName}`);
   }
-  i18n.addResourceBundle(language, namespace, translations.default, true);
+  i18n.addResourceBundle(language, className, translations.default, true);
 };
 
-const loadTranslationsForClass = async (className: string): Promise<void> => {
+const loadTranslations = async (className: string): Promise<void> => {
   await loadTranslationFile("Common");
   await loadTranslationFile(className);
 };
@@ -39,12 +39,12 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
   switch (selfServeType) {
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
-      await loadTranslationsForClass(SelfServeExample.default.name);
+      await loadTranslations(SelfServeExample.default.name);
       return new SelfServeExample.default().toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
-      await loadTranslationsForClass(SqlX.default.name);
+      await loadTranslations(SqlX.default.name);
       return new SqlX.default().toSelfServeDescriptor();
     }
     default:
