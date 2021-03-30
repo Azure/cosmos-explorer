@@ -86,7 +86,9 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
     <StyledMessageBarBase
       messageBarType={0}
     >
-      refresh performed successfully
+      <Text>
+        refresh performed successfully
+      </Text>
     </StyledMessageBarBase>
     <SmartUiComponent
       currentValues={
@@ -822,7 +824,9 @@ exports[`SelfServeComponent message bar and spinner snapshots 4`] = `
 <StyledMessageBarBase
   messageBarType={1}
 >
-  sample error message
+  <Text>
+    sample error message
+  </Text>
 </StyledMessageBarBase>
 `;
 
