@@ -195,5 +195,5 @@ export const generateBladeLink = (blade: BladeType): string => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroupName = userContext.resourceGroup;
   const databaseAccountName = userContext.databaseAccount.name;
-  return `https://portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
+  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };
