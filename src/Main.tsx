@@ -1,18 +1,8 @@
 // CSS Dependencies
-import "abort-controller/polyfill";
-import "babel-polyfill";
 import "bootstrap/dist/css/bootstrap.css";
-import "es6-object-assign/auto";
-import "es6-symbol/implement";
-import "object.entries/auto";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import "promise-polyfill/src/polyfill";
-import "promise.prototype.finally/auto";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import "url-polyfill/url-polyfill.min";
-import "webcrypto-liner/build/webcrypto-liner.shim.min";
-import "whatwg-fetch";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -64,7 +54,6 @@ import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
-import "./Libs/is-integer-polyfill";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 import { userContext } from "./UserContext";
