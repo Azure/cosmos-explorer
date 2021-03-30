@@ -115,7 +115,7 @@ exports[`MongoIndexingPolicyComponent renders 1`] = `
       </Stack>
     </CollapsibleSectionComponent>
   </Stack>
-  <Styled
+  <Separator
     styles={
       Object {
         "root": Array [
