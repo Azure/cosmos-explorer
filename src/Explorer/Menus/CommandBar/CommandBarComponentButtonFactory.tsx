@@ -286,7 +286,6 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
     onCommandClick: () => {
-      // container.addDatabasePane.open();
       container.openAddDatabasePane();
       document.getElementById("linkAddDatabase").focus();
     },

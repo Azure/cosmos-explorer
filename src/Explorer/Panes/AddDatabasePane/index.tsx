@@ -1,8 +1,9 @@
-import { Checkbox, TextField } from "office-ui-fabric-react";
+import { Checkbox, Text, TextField } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { createDatabase } from "../../../Common/dataAccess/createDatabase";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import { Tooltip } from "../../../Common/Tooltip";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as DataModels from "../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../Contracts/SubscriptionType";
@@ -16,7 +17,6 @@ import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput"
 import Explorer from "../../Explorer";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
-import { Tooltip } from "./Tooltip";
 
 export interface AddDatabasePaneProps {
   explorer: Explorer;
@@ -24,7 +24,7 @@ export interface AddDatabasePaneProps {
   openNotificationConsole: () => void;
 }
 
-export const AddDatabasePaneF: FunctionComponent<AddDatabasePaneProps> = ({
+export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
   explorer: container,
   closePanel,
   openNotificationConsole,
@@ -67,82 +67,11 @@ export const AddDatabasePaneF: FunctionComponent<AddDatabasePaneProps> = ({
   const [throughput, setThroughput] = useState<number>(throughputDefaults.shared);
 
   const [maxThroughputRU, setMaxThroughputRU] = useState<number>(throughputDefaults.unlimitedmax);
-  const [minThroughputRU, setMinThroughputRU] = useState<number>(throughputDefaults.unlimitedmin);
   const maxThroughputRUText: string = maxThroughputRU?.toLocaleString();
   const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(container.isAutoscaleDefaultEnabled());
-  const [throughputRangeText, setThroughputRangeText] = useState<string>(
-    isAutoPilotSelected
-      ? AutoPilotUtils.getAutoPilotHeaderText()
-      : `Throughput (${minThroughputRU?.toLocaleString()} - ${maxThroughputRU?.toLocaleString()} RU/s)`
-  );
-  const [throughputSpendAckText, setThroughputSpendAckText] = useState<string>();
+
   const [throughputSpendAck, setThroughputSpendAck] = useState<boolean>(false);
-  const canExceedMaximumValue: boolean = container.canExceedMaximumValue();
-  const [throughputSpendAckVisible, setThroughputSpendAckVisible] = useState<boolean>(() => {
-    if (isAutoPilotSelected) {
-      const autoscaleThroughput = maxAutoPilotThroughputSet * 1;
-      return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
-    }
 
-    const selectedThroughput: number = throughput;
-    const maxRU: number = maxThroughputRU && maxThroughputRU;
-
-    const isMaxRUGreaterThanDefault: boolean = maxRU > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
-    const isThroughputSetGreaterThanDefault: boolean =
-      selectedThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
-
-    if (canExceedMaximumValue) {
-      return isThroughputSetGreaterThanDefault;
-    }
-
-    return isThroughputSetGreaterThanDefault && isMaxRUGreaterThanDefault;
-  });
-  const [requestUnitsUsageCost, setRequestUnitsUsageCost] = useState<string>(() => {
-    const offerThroughput: number = throughput;
-    if (offerThroughput < minThroughputRU || (offerThroughput > maxThroughputRU && !canExceedMaximumValue)) {
-      return "";
-    }
-
-    const account = userContext.databaseAccount;
-    if (!account) {
-      return "";
-    }
-
-    const regions =
-      (account && account.properties && account.properties.readLocations && account.properties.readLocations.length) ||
-      1;
-    const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
-
-    let estimatedSpendAcknowledge: string;
-    let estimatedSpend: string;
-    if (!isAutoPilotSelected) {
-      estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, userContext.portalEnv, regions, multimaster);
-      estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
-        offerThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster,
-        isAutoPilotSelected
-      );
-    } else {
-      estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
-        maxAutoPilotThroughputSet,
-        userContext.portalEnv,
-        regions,
-        multimaster
-      );
-      estimatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
-        maxAutoPilotThroughputSet,
-        userContext.portalEnv,
-        regions,
-        multimaster,
-        isAutoPilotSelected
-      );
-    }
-    // TODO: change throughputSpendAckText to be a computed value, instead of having this side effect
-    setThroughputSpendAckText(estimatedSpendAcknowledge);
-    return estimatedSpend;
-  });
   const canRequestSupport = () => {
     if (
       configContext.platform !== Platform.Emulator &&
@@ -155,7 +84,6 @@ export const AddDatabasePaneF: FunctionComponent<AddDatabasePaneProps> = ({
 
     return false;
   };
-  const [costsVisible, setCostsVisible] = useState<boolean>(configContext.platform !== Platform.Emulator);
   const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
   const upsellMessage: string = PricingUtils.getUpsellMessage(
     userContext.portalEnv,
@@ -164,24 +92,13 @@ export const AddDatabasePaneF: FunctionComponent<AddDatabasePaneProps> = ({
     userContext.defaultExperience,
     false
   );
-  const upsellMessageAriaLabel: string = `${upsellMessage}. Click ${
-    isFreeTierAccount ? "to learn more" : "for more details"
-  }`;
+
   const upsellAnchorUrl: string = isFreeTierAccount ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
 
   const upsellAnchorText: string = isFreeTierAccount ? "Learn more" : "More details";
   const [maxAutoPilotThroughputSet, setMaxAutoPilotThroughputSet] = useState<number>(
     AutoPilotUtils.minAutoPilotThroughput
   );
-
-  const [autoPilotUsageCost, setAutoPilotUsageCost] = useState<string>(() => {
-    const autoPilot = _isAutoPilotSelectedAndWhatTier();
-    if (!autoPilot) {
-      return "";
-    }
-    return PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, true /* isDatabaseThroughput */);
-  });
-  const ruToolTipText: string = PricingUtils.getRuToolTipText();
 
   const canConfigureThroughput = !container.isServerlessEnabled();
   const showUpsellMessage = () => {
@@ -202,7 +119,6 @@ export const AddDatabasePaneF: FunctionComponent<AddDatabasePaneProps> = ({
     const throughputDefaults = container.collectionCreationDefaults.throughput;
     setThroughput(throughputDefaults.shared);
     setMaxThroughputRU(throughputDefaults.unlimitedmax);
-    setMinThroughputRU(throughputDefaults.unlimitedmin);
   };
   useEffect(() => {
     _updateThroughputLimitByDatabase();
@@ -412,7 +328,7 @@ export const AddDatabasePaneF: FunctionComponent<AddDatabasePaneProps> = ({
             <div>
               <p>
                 <span className="mandatoryStar">*</span>
-                <span>{databaseIdLabel}</span>
+                <Text variant="small">{databaseIdLabel}</Text>
                 <Tooltip>{databaseIdTooltipText}</Tooltip>
               </p>
 
@@ -439,16 +355,14 @@ export const AddDatabasePaneF: FunctionComponent<AddDatabasePaneProps> = ({
                 <Checkbox
                   title="Provision shared throughput"
                   styles={{
-                    text: { fontSize: 12 },
                     checkbox: { width: 12, height: 12 },
                     label: { padding: 0, alignItems: "center" },
                   }}
                   tabIndex={0}
                   label="Provision throughput"
-                  className="databaseProvisionText"
                   checked={databaseCreateNewShared}
                   onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
-                />
+                />{" "}
                 <Tooltip>{databaseLevelThroughputTooltipText}</Tooltip>
               </div>
               {databaseCreateNewShared && (

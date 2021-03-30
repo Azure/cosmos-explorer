@@ -49,8 +49,7 @@ import { NotebookContentItem, NotebookContentItemType } from "./Notebook/Noteboo
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
-import AddDatabasePane from "./Panes/AddDatabasePane";
-import { AddDatabasePaneF } from "./Panes/AddDatabasePaneF";
+import { AddDatabasePane } from "./Panes/AddDatabasePane";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
@@ -203,7 +202,6 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
   public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
   public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
@@ -565,13 +563,6 @@ export default class Explorer {
       return this.databases().filter((database: ViewModels.Database) => !this._isSystemDatabasePredicate(database));
     });
 
-    this.addDatabasePane = new AddDatabasePane({
-      id: "adddatabasepane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.addCollectionPane = new AddCollectionPane({
       isPreferredApiTable: ko.computed(() => this.isPreferredApiTable()),
       id: "addcollectionpane",
@@ -711,7 +702,6 @@ export default class Explorer {
     this.tabsManager = new TabsManager();
 
     this._panes = [
-      this.addDatabasePane,
       this.addCollectionPane,
       this.deleteCollectionConfirmationPane,
       this.deleteDatabaseConfirmationPane,
@@ -732,7 +722,7 @@ export default class Explorer {
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
-    this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
+    //this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 
     document.addEventListener(
@@ -2495,7 +2485,7 @@ export default class Explorer {
   public openAddDatabasePane(): void {
     this.openSidePanel(
       "Add Database",
-      <AddDatabasePaneF explorer={this} openNotificationConsole={this.expandConsole} closePanel={this.closeSidePanel} />
+      <AddDatabasePane explorer={this} openNotificationConsole={this.expandConsole} closePanel={this.closeSidePanel} />
     );
   }
 }

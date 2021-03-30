@@ -291,7 +291,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: AddDatabaseIcon,
         title: this.container.addDatabaseText(),
         description: null,
-        onClick: () => this.container.addDatabasePane.open(),
+        onClick: () => this.container.openAddDatabasePane(),
       });
     }
 
