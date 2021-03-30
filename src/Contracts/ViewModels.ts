@@ -376,7 +376,6 @@ export interface DataExplorerInputsFrame {
   masterKey?: string;
   hasWriteAccess?: boolean;
   authorizationToken?: string;
-  features: { [key: string]: string };
   csmEndpoint?: string;
   dnsSuffix?: string;
   serverId?: string;

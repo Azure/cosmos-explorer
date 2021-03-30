@@ -895,7 +895,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
                   "container": [Circular],
@@ -936,7 +935,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isPreferredApiMongoDB": [Function],
                 "isPreferredApiTable": [Function],
                 "isPublishNotebookPaneEnabled": [Function],
-                "isRefreshingExplorer": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
                 "isRightPanelV2Enabled": [Function],
                 "isSchemaEnabled": [Function],
@@ -2093,7 +2091,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
                 "container": [Circular],
@@ -2134,7 +2131,6 @@ exports[`SettingsComponent renders 1`] = `
               "isPreferredApiMongoDB": [Function],
               "isPreferredApiTable": [Function],
               "isPublishNotebookPaneEnabled": [Function],
-              "isRefreshingExplorer": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
               "isRightPanelV2Enabled": [Function],
               "isSchemaEnabled": [Function],
@@ -3304,7 +3300,6 @@ exports[`SettingsComponent renders 1`] = `
                   "validPartitionKeyValue": [Function],
                   "visible": [Function],
                 },
-                "features": [Function],
                 "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
                   "container": [Circular],
@@ -3345,7 +3340,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isPreferredApiMongoDB": [Function],
                 "isPreferredApiTable": [Function],
                 "isPublishNotebookPaneEnabled": [Function],
-                "isRefreshingExplorer": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
                 "isRightPanelV2Enabled": [Function],
                 "isSchemaEnabled": [Function],
@@ -4502,7 +4496,6 @@ exports[`SettingsComponent renders 1`] = `
                 "validPartitionKeyValue": [Function],
                 "visible": [Function],
               },
-              "features": [Function],
               "flight": [Function],
               "graphStylingPane": GraphStylingPane {
                 "container": [Circular],
@@ -4543,7 +4536,6 @@ exports[`SettingsComponent renders 1`] = `
               "isPreferredApiMongoDB": [Function],
               "isPreferredApiTable": [Function],
               "isPublishNotebookPaneEnabled": [Function],
-              "isRefreshingExplorer": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
               "isRightPanelV2Enabled": [Function],
               "isSchemaEnabled": [Function],

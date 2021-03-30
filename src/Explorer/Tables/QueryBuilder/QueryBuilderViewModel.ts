@@ -1,17 +1,17 @@
 import * as ko from "knockout";
-import * as CustomTimestampHelper from "./CustomTimestampHelper";
-import { getQuotedCqlIdentifier } from "../CqlUtilities";
-import QueryClauseViewModel from "./QueryClauseViewModel";
-import ClauseGroup from "./ClauseGroup";
-import ClauseGroupViewModel from "./ClauseGroupViewModel";
-import QueryViewModel from "./QueryViewModel";
+import { KeyCodes } from "../../../Common/Constants";
 import * as Constants from "../Constants";
-import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
-import * as DateTimeUtilities from "./DateTimeUtilities";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
+import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
 import * as TableEntityProcessor from "../TableEntityProcessor";
 import * as Utilities from "../Utilities";
-import { KeyCodes } from "../../../Common/Constants";
+import ClauseGroup from "./ClauseGroup";
+import ClauseGroupViewModel from "./ClauseGroupViewModel";
+import * as CustomTimestampHelper from "./CustomTimestampHelper";
+import * as DateTimeUtilities from "./DateTimeUtilities";
+import QueryClauseViewModel from "./QueryClauseViewModel";
+import QueryViewModel from "./QueryViewModel";
 
 export default class QueryBuilderViewModel {
   /* Labels */
@@ -182,7 +182,7 @@ export default class QueryBuilderViewModel {
             value = `["${TableEntityProcessor.keyProperties.PartitionKey}"]`;
             filterString = filterString.concat(filterString === "SELECT" ? " c" : ", c");
           } else if (value === Constants.EntityKeyNames.RowKey) {
-            value = `["${TableEntityProcessor.keyProperties.Id2}"]`;
+            value = `["${TableEntityProcessor.keyProperties.Id}"]`;
             filterString = filterString.concat(filterString === "SELECT" ? " c" : ", c");
           } else {
             if (value === Constants.EntityKeyNames.Timestamp) {

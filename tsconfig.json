@@ -11,7 +11,7 @@
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "module": "esnext",
-    "target": "es5",
+    "target": "es2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "lib": ["es5", "es6", "dom", "webworker.importscripts"],
