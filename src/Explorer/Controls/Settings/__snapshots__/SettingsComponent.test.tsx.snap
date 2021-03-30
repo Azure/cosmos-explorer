@@ -32,7 +32,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_closeSynapseLinkModalDialog": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
-                "_isSystemDatabasePredicate": [Function],
                 "_panes": Array [
                   AddDatabasePane {
                     "autoPilotUsageCost": [Function],
@@ -974,7 +973,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "nonSystemDatabases": [Function],
                 "notebookBasePath": [Function],
                 "notebookServerInfo": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -1228,7 +1226,6 @@ exports[`SettingsComponent renders 1`] = `
               "_closeSynapseLinkModalDialog": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
-              "_isSystemDatabasePredicate": [Function],
               "_panes": Array [
                 AddDatabasePane {
                   "autoPilotUsageCost": [Function],
@@ -2170,7 +2167,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "nonSystemDatabases": [Function],
               "notebookBasePath": [Function],
               "notebookServerInfo": [Function],
               "onRefreshDatabasesKeyPress": [Function],
@@ -2437,7 +2433,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_closeSynapseLinkModalDialog": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
-                "_isSystemDatabasePredicate": [Function],
                 "_panes": Array [
                   AddDatabasePane {
                     "autoPilotUsageCost": [Function],
@@ -3379,7 +3374,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "nonSystemDatabases": [Function],
                 "notebookBasePath": [Function],
                 "notebookServerInfo": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
@@ -3633,7 +3627,6 @@ exports[`SettingsComponent renders 1`] = `
               "_closeSynapseLinkModalDialog": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
-              "_isSystemDatabasePredicate": [Function],
               "_panes": Array [
                 AddDatabasePane {
                   "autoPilotUsageCost": [Function],
@@ -4575,7 +4568,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "nonSystemDatabases": [Function],
               "notebookBasePath": [Function],
               "notebookServerInfo": [Function],
               "onRefreshDatabasesKeyPress": [Function],
