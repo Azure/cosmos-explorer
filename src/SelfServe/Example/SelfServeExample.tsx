@@ -23,9 +23,9 @@ import {
 } from "./SelfServeExample.rp";
 
 const regionDropdownItems: ChoiceItem[] = [
-  { label: "North Central US", key: Regions.NorthCentralUS },
-  { label: "West US", key: Regions.WestUS },
-  { label: "East US 2", key: Regions.EastUS2 },
+  { labelTKey: "NorthCentralUS", key: Regions.NorthCentralUS },
+  { labelTKey: "WestUS", key: Regions.WestUS },
+  { labelTKey: "EastUS2", key: Regions.EastUS2 },
 ];
 
 const regionDropdownInfo: Info = {
