@@ -180,7 +180,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
     };
 
     if (isAutoPilotSelected) {
-      createDatabaseParams.autoPilotMaxThroughput = maxAutoPilotThroughputSet;
+      createDatabaseParams.autoPilotMaxThroughput = "" + maxAutoPilotThroughputSet;
     } else {
       createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
     }
@@ -375,7 +375,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
                     onCostAcknowledgeChange={(isAcknowledged: boolean) => setThroughputSpendAck(isAcknowledged)}
                   />
 
-                  {canRequestSupport && (
+                  {canRequestSupport() && (
                     <p>
                       <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">
                         Contact support{" "}
