@@ -112,7 +112,7 @@ describe("Collection Add and Delete Cassandra spec", () => {
       await frame.type('input[data-test="confirmDatabaseId"]', keyspaceId.trim());
 
       // click delete
-      await frame.click('input[data-test="deleteDatabase"]');
+      await frame.click('button[id="sidePanelOkButton"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });

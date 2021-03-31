@@ -125,7 +125,7 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.type('input[data-test="confirmDatabaseId"]', selectedDbId);
 
       // click delete
-      await frame.click('input[data-test="deleteDatabase"]');
+      await frame.click('input[data-test="sidePanelOkButton"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
