@@ -56,6 +56,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
+import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
@@ -1299,7 +1300,12 @@ export default class Explorer {
   }
 
   public isLastNonEmptyDatabase(): boolean {
-    if (this.isLastDatabase() && this.databases()[0].collections && this.databases()[0].collections().length > 0) {
+    if (
+      this.isLastDatabase() &&
+      this.databases()[0] &&
+      this.databases()[0].collections &&
+      this.databases()[0].collections().length > 0
+    ) {
       return true;
     }
     return false;
@@ -2430,6 +2436,18 @@ export default class Explorer {
             openNotificationConsole={() => this.expandConsole()}
           />
         );
+  }
+
+  public openDeleteDatabaseConfirmationPane(): void {
+    this.openSidePanel(
+      "Delete Database",
+      <DeleteDatabaseConfirmationPanel
+        explorer={this}
+        openNotificationConsole={this.expandConsole}
+        closePanel={this.closeSidePanel}
+        selectedDatabase={this.findSelectedDatabase()}
+      />
+    );
   }
 
   public openUploadItemsPanePane(): void {
