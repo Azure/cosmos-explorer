@@ -75,7 +75,6 @@ ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEnt
 ko.components.register("table-column-options-pane", new PaneComponents.TableColumnOptionsPaneComponent());
 ko.components.register("table-query-select-pane", new PaneComponents.TableQuerySelectPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
-ko.components.register("upload-items-pane", new PaneComponents.UploadItemsPaneComponent());
 ko.components.register("load-query-pane", new PaneComponents.LoadQueryPaneComponent());
 ko.components.register("save-query-pane", new PaneComponents.SaveQueryPaneComponent());
 ko.components.register("browse-queries-pane", new PaneComponents.BrowseQueriesPaneComponent());

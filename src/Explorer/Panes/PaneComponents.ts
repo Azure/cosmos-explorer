@@ -16,7 +16,6 @@ import TableColumnOptionsPaneTemplate from "./Tables/TableColumnOptionsPane.html
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 import TableQuerySelectPaneTemplate from "./Tables/TableQuerySelectPane.html";
 import UploadFilePaneTemplate from "./UploadFilePane.html";
-import UploadItemsPaneTemplate from "./UploadItemsPane.html";
 
 export class PaneComponent {
   constructor(data: any) {
@@ -119,15 +118,6 @@ export class CassandraAddCollectionPaneComponent {
     return {
       viewModel: PaneComponent,
       template: CassandraAddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class UploadItemsPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: UploadItemsPaneTemplate,
     };
   }
 }

@@ -145,7 +145,6 @@ src/Explorer/Panes/Tables/Validators/EntityPropertyNameValidator.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValueValidator.ts
 src/Explorer/Panes/UploadFilePane.ts
-src/Explorer/Panes/UploadItemsPane.ts
 src/Explorer/SplashScreen/SplashScreen.test.ts
 src/Explorer/Tables/Constants.ts
 src/Explorer/Tables/DataTable/CacheBase.ts

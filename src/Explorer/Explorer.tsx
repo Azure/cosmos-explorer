@@ -70,7 +70,6 @@ import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
-import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -212,8 +211,6 @@ export default class Explorer {
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public uploadItemsPane: UploadItemsPane;
-  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
@@ -623,15 +620,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.uploadItemsPane = new UploadItemsPane({
-      id: "uploaditemspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
@@ -688,7 +676,6 @@ export default class Explorer {
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
       this.browseQueriesPane,
@@ -2443,6 +2430,10 @@ export default class Explorer {
             openNotificationConsole={() => this.expandConsole()}
           />
         );
+  }
+
+  public openUploadItemsPanePane(): void {
+    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
   }
 
   public openSettingPane(): void {
