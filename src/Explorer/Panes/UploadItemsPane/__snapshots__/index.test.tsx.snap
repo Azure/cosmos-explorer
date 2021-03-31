@@ -8,7 +8,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
-      "_isSystemDatabasePredicate": [Function],
       "_panes": Array [
         AddDatabasePane {
           "autoPilotUsageCost": [Function],
@@ -361,54 +360,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
           "throughputSpendAckVisible": [Function],
           "title": [Function],
           "userTableQuery": [Function],
-          "visible": [Function],
-        },
-        SettingsPane {
-          "container": [Circular],
-          "crossPartitionQueryEnabled": [Function],
-          "customItemPerPage": [Function],
-          "explorerVersion": undefined,
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "graphAutoVizDisabled": [Function],
-          "id": "settingspane",
-          "isCustomPageOptionSelected": [Function],
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "isUnlimitedPageOptionSelected": [Function],
-          "maxDegreeOfParallelism": [Function],
-          "pageOption": [Function],
-          "shouldShowCrossPartitionOption": [Function],
-          "shouldShowGraphAutoVizOption": [Function],
-          "shouldShowParallelismOption": [Function],
-          "shouldShowQueryPageOptions": [Function],
-          "title": [Function],
-          "visible": [Function],
-        },
-        ExecuteSprocParamsPane {
-          "addNewParam": [Function],
-          "addNewParamAtIndex": [Function],
-          "addNewParamLabel": "Add New Param",
-          "collectionHasPartitionKey": [Function],
-          "container": [Circular],
-          "deleteParam": [Function],
-          "execute": [Function],
-          "executeButtonEnabled": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "executesprocparamspane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "onAddNewParamAtIndexKeyPress": [Function],
-          "onAddNewParamKeyPress": [Function],
-          "onDeleteParamKeyPress": [Function],
-          "params": [Function],
-          "partitionKeyType": [Function],
-          "partitionKeyValue": [Function],
-          "title": [Function],
-          "validPartitionKeyValue": [Function],
           "visible": [Function],
         },
         LoadQueryPane {
@@ -829,32 +780,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "executeSprocParamsPane": ExecuteSprocParamsPane {
-        "addNewParam": [Function],
-        "addNewParamAtIndex": [Function],
-        "addNewParamLabel": "Add New Param",
-        "collectionHasPartitionKey": [Function],
-        "container": [Circular],
-        "deleteParam": [Function],
-        "execute": [Function],
-        "executeButtonEnabled": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "executesprocparamspane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "onAddNewParamAtIndexKeyPress": [Function],
-        "onAddNewParamKeyPress": [Function],
-        "onDeleteParamKeyPress": [Function],
-        "params": [Function],
-        "partitionKeyType": [Function],
-        "partitionKeyValue": [Function],
-        "title": [Function],
-        "validPartitionKeyValue": [Function],
-        "visible": [Function],
-      },
-      "features": [Function],
       "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
@@ -895,7 +820,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
-      "isRefreshingExplorer": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isRightPanelV2Enabled": [Function],
       "isSchemaEnabled": [Function],
@@ -935,7 +859,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "nonSystemDatabases": [Function],
       "notebookBasePath": [Function],
       "notebookServerInfo": [Function],
       "onRefreshDatabasesKeyPress": [Function],
@@ -1020,29 +943,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       "setInProgressConsoleDataIdToBeDeleted": undefined,
       "setIsNotificationConsoleExpanded": undefined,
       "setNotificationConsoleData": undefined,
-      "settingsPane": SettingsPane {
-        "container": [Circular],
-        "crossPartitionQueryEnabled": [Function],
-        "customItemPerPage": [Function],
-        "explorerVersion": undefined,
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "graphAutoVizDisabled": [Function],
-        "id": "settingspane",
-        "isCustomPageOptionSelected": [Function],
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "isUnlimitedPageOptionSelected": [Function],
-        "maxDegreeOfParallelism": [Function],
-        "pageOption": [Function],
-        "shouldShowCrossPartitionOption": [Function],
-        "shouldShowGraphAutoVizOption": [Function],
-        "shouldShowParallelismOption": [Function],
-        "shouldShowQueryPageOptions": [Function],
-        "title": [Function],
-        "visible": [Function],
-      },
       "setupNotebooksPane": SetupNotebooksPane {
         "container": [Circular],
         "description": [Function],
@@ -1141,58 +1041,19 @@ exports[`Upload Items Pane should render Default properly 1`] = `
   onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Upload"
-  title=""
+  title="Upload Items"
 >
   <div
     className="paneMainContent"
   >
-    <div>
-      <div
-        className="renewUploadItemsHeader"
-      >
-        <span>
-           Select JSON Files 
-        </span>
-        <Tooltip>
-          Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets.
-        </Tooltip>
-      </div>
-      <input
-        aria-label="Select JSON Files"
-        className="importFilesTitle"
-        disabled={true}
-        type="text"
-        value=""
-      />
-      <input
-        accept="application/json"
-        id="importDocsInput"
-        multiple={true}
-        onChange={[Function]}
-        role="button"
-        style={
-          Object {
-            "display": "none",
-          }
-        }
-        tabIndex={0}
-        title="Upload Icon"
-        type="file"
-      />
-      <a
-        href="#"
-        id="fileImportLink"
-        onClick={[Function]}
-        onKeyPress={[Function]}
-      >
-        <img
-          alt="Select JSON files to upload"
-          className="fileImportImg"
-          src=""
-          title="Select JSON files to upload"
-        />
-      </a>
-    </div>
+    <Upload
+      accept="application/json"
+      label="Select JSON Files"
+      multiple={true}
+      onUpload={[Function]}
+      tabIndex={0}
+      tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets."
+    />
   </div>
 </GenericRightPaneComponent>
 `;
