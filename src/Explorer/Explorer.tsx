@@ -53,7 +53,6 @@ import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
@@ -203,7 +202,6 @@ export default class Explorer {
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
-  public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
   public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
@@ -562,13 +560,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      id: "deletecollectionconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
       id: "deletedatabaseconfirmationpane",
       visible: ko.observable<boolean>(false),
@@ -695,7 +686,6 @@ export default class Explorer {
     this._panes = [
       this.addDatabasePane,
       this.addCollectionPane,
-      this.deleteCollectionConfirmationPane,
       this.deleteDatabaseConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
@@ -742,8 +732,6 @@ export default class Explorer {
         this.addCollectionPane.collectionWithThroughputInSharedTitle(
           "Provision dedicated throughput for this container"
         );
-        this.deleteCollectionConfirmationPane.title("Delete Container");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
         this.refreshTreeTitle("Refresh containers");
         break;
       case "Mongo":
@@ -770,8 +758,6 @@ export default class Explorer {
         this.addCollectionPane.title("Add Graph");
         this.addCollectionPane.collectionIdTitle("Graph id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-        this.deleteCollectionConfirmationPane.title("Delete Graph");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
         this.refreshTreeTitle("Refresh graphs");
         break;
       case "Tables":
@@ -787,8 +773,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Entity");
         this.editTableEntityPane.title("Edit Table Entity");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -804,8 +788,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Row");
         this.editTableEntityPane.title("Edit Table Row");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
         this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
         this.tableDataClient = new CassandraAPIDataClient();
@@ -2451,16 +2433,14 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    userContext.features.enableKOPanel
-      ? this.deleteCollectionConfirmationPane.open()
-      : this.openSidePanel(
-          "Delete Collection",
-          <DeleteCollectionConfirmationPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+    this.openSidePanel(
+      "Delete Container",
+      <DeleteCollectionConfirmationPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        openNotificationConsole={this.expandConsole}
+      />
+    );
   }
 
   public async openAddCollectionPanel(): Promise<void> {

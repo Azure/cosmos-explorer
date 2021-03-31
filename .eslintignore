@@ -122,8 +122,6 @@ src/Explorer/Panes/AddDatabasePane.ts
 src/Explorer/Panes/BrowseQueriesPane.ts
 src/Explorer/Panes/CassandraAddCollectionPane.ts
 src/Explorer/Panes/ContextualPaneBase.ts
-src/Explorer/Panes/DeleteCollectionConfirmationPane.test.ts
-src/Explorer/Panes/DeleteCollectionConfirmationPane.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.test.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.ts
 src/Explorer/Panes/ExecuteSprocParamsPane.ts

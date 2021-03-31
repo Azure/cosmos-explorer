@@ -1,19 +1,18 @@
-jest.mock("../../Common/dataAccess/deleteCollection");
-jest.mock("../../Shared/Telemetry/TelemetryProcessor");
-import * as ko from "knockout";
-import { ApiKind, DatabaseAccount } from "../../Contracts/DataModels";
-import { Collection, Database } from "../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+jest.mock("../../../Common/dataAccess/deleteCollection");
+jest.mock("../../../Shared/Telemetry/TelemetryProcessor");
 import { mount, ReactWrapper, shallow } from "enzyme";
+import * as ko from "knockout";
 import React from "react";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-import Explorer from "../Explorer";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { TreeNode } from "../../Contracts/ViewModels";
-import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
-import { DeleteCollectionConfirmationPanel } from "./DeleteCollectionConfirmationPanel";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { updateUserContext } from "../../UserContext";
+import { DeleteCollectionConfirmationPanel } from ".";
+import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
+import DeleteFeedback from "../../../Common/DeleteFeedback";
+import { ApiKind, DatabaseAccount } from "../../../Contracts/DataModels";
+import { Collection, Database, TreeNode } from "../../../Contracts/ViewModels";
+import { DefaultAccountExperienceType } from "../../../DefaultAccountExperienceType";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { updateUserContext } from "../../../UserContext";
+import Explorer from "../../Explorer";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
@@ -64,6 +63,7 @@ describe("Delete Collection Confirmation Pane", () => {
       const props = {
         explorer: fakeExplorer,
         closePanel: (): void => undefined,
+        storageType: "Container",
         openNotificationConsole: (): void => undefined,
       };
       const wrapper = shallow(<DeleteCollectionConfirmationPanel {...props} />);
@@ -117,6 +117,7 @@ describe("Delete Collection Confirmation Pane", () => {
     beforeEach(() => {
       const props = {
         explorer: fakeExplorer,
+        storageType: "Container",
         closePanel: (): void => undefined,
         openNotificationConsole: (): void => undefined,
       };
