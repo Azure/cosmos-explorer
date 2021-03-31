@@ -334,7 +334,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
           // Removed dropdownWidth="auto" as dropdown accept only number
           options={choices.map((c) => ({
             key: c.key,
-            text: this.props.getTranslation(c.label),
+            text: this.props.getTranslation(c.labelTKey),
           }))}
           styles={{
             root: { width: 400 },

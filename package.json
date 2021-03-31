@@ -43,6 +43,7 @@
     "@types/mkdirp": "1.0.1",
     "@types/node-fetch": "2.5.7",
     "@uifabric/react-cards": "0.109.110",
+    "@uifabric/react-hooks": "7.14.0",
     "@uifabric/styling": "7.13.7",
     "applicationinsights": "1.8.0",
     "bootstrap": "3.4.1",

@@ -57,7 +57,7 @@ import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmati
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
@@ -71,7 +71,6 @@ import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
-import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -213,10 +212,6 @@ export default class Explorer {
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public settingsPane: SettingsPane;
-  public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public uploadItemsPane: UploadItemsPane;
-  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
@@ -626,29 +621,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.settingsPane = new SettingsPane({
-      id: "settingspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      id: "executesprocparamspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPane = new UploadItemsPane({
-      id: "uploaditemspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
@@ -705,9 +677,6 @@ export default class Explorer {
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.settingsPane,
-      this.executeSprocParamsPane,
-      this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
       this.browseQueriesPane,
@@ -2478,6 +2447,21 @@ export default class Explorer {
         closePanel={this.closeSidePanel}
         selectedDatabase={this.findSelectedDatabase()}
       />
+    );
+  }
+
+  public openUploadItemsPanePane(): void {
+    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openSettingPane(): void {
+    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openExecuteSprocParamsPanel(): void {
+    this.openSidePanel(
+      "Input parameters",
+      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
     );
   }
 

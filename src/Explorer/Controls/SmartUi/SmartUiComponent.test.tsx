@@ -1,7 +1,7 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
+import { DescriptionType, NumberUiType, SmartUiInput } from "../../../SelfServe/SelfServeTypes";
 import { SmartUiComponent, SmartUiDescriptor } from "./SmartUiComponent";
-import { NumberUiType, SmartUiInput, DescriptionType } from "../../../SelfServe/SelfServeTypes";
 
 describe("SmartUiComponent", () => {
   const exampleData: SmartUiDescriptor = {
@@ -97,9 +97,9 @@ describe("SmartUiComponent", () => {
             dataFieldName: "database",
             type: "object",
             choices: [
-              { label: "Database 1", key: "db1" },
-              { label: "Database 2", key: "db2" },
-              { label: "Database 3", key: "db3" },
+              { labelTKey: "Database 1", key: "db1" },
+              { labelTKey: "Database 2", key: "db2" },
+              { labelTKey: "Database 3", key: "db3" },
             ],
             defaultKey: "db2",
           },
