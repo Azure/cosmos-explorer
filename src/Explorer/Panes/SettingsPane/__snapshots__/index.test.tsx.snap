@@ -8,7 +8,6 @@ exports[`Settings Pane should render Default properly 1`] = `
       "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
-      "_isSystemDatabasePredicate": [Function],
       "_panes": Array [
         AddDatabasePane {
           "autoPilotUsageCost": [Function],
@@ -361,31 +360,6 @@ exports[`Settings Pane should render Default properly 1`] = `
           "throughputSpendAckVisible": [Function],
           "title": [Function],
           "userTableQuery": [Function],
-          "visible": [Function],
-        },
-        ExecuteSprocParamsPane {
-          "addNewParam": [Function],
-          "addNewParamAtIndex": [Function],
-          "addNewParamLabel": "Add New Param",
-          "collectionHasPartitionKey": [Function],
-          "container": [Circular],
-          "deleteParam": [Function],
-          "execute": [Function],
-          "executeButtonEnabled": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "executesprocparamspane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "onAddNewParamAtIndexKeyPress": [Function],
-          "onAddNewParamKeyPress": [Function],
-          "onDeleteParamKeyPress": [Function],
-          "params": [Function],
-          "partitionKeyType": [Function],
-          "partitionKeyValue": [Function],
-          "title": [Function],
-          "validPartitionKeyValue": [Function],
           "visible": [Function],
         },
         UploadItemsPane {
@@ -823,32 +797,6 @@ exports[`Settings Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "executeSprocParamsPane": ExecuteSprocParamsPane {
-        "addNewParam": [Function],
-        "addNewParamAtIndex": [Function],
-        "addNewParamLabel": "Add New Param",
-        "collectionHasPartitionKey": [Function],
-        "container": [Circular],
-        "deleteParam": [Function],
-        "execute": [Function],
-        "executeButtonEnabled": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "executesprocparamspane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "onAddNewParamAtIndexKeyPress": [Function],
-        "onAddNewParamKeyPress": [Function],
-        "onDeleteParamKeyPress": [Function],
-        "params": [Function],
-        "partitionKeyType": [Function],
-        "partitionKeyValue": [Function],
-        "title": [Function],
-        "validPartitionKeyValue": [Function],
-        "visible": [Function],
-      },
-      "features": [Function],
       "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
@@ -889,7 +837,6 @@ exports[`Settings Pane should render Default properly 1`] = `
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
-      "isRefreshingExplorer": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isRightPanelV2Enabled": [Function],
       "isSchemaEnabled": [Function],
@@ -929,7 +876,6 @@ exports[`Settings Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "nonSystemDatabases": [Function],
       "notebookBasePath": [Function],
       "notebookServerInfo": [Function],
       "onRefreshDatabasesKeyPress": [Function],
@@ -1149,91 +1095,91 @@ exports[`Settings Pane should render Default properly 1`] = `
   <div
     className="paneMainContent"
   >
-    <div>
+    <div
+      className="settingsSection"
+    >
       <div
-        className="settingsSection"
+        className="settingsSectionPart"
       >
         <div
-          className="settingsSectionPart"
+          className="settingsSectionLabel"
         >
-          <div
-            className="settingsSectionLabel"
-          >
-            Enable cross-partition query
-            <Tooltip>
-              Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
-            </Tooltip>
-          </div>
-          <StyledCheckboxBase
-            ariaLabel="Enable cross partition query"
-            checked={true}
-            className="padding"
-            onChange={[Function]}
-            style={
-              Object {
-                "padding": "0",
-              }
-            }
-            tabIndex={0}
-          />
+          Enable cross-partition query
+          <Tooltip>
+            Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
+          </Tooltip>
         </div>
+        <StyledCheckboxBase
+          ariaLabel="Enable cross partition query"
+          checked={true}
+          className="padding"
+          onChange={[Function]}
+          styles={
+            Object {
+              "label": Object {
+                "padding": 0,
+              },
+            }
+          }
+          tabIndex={0}
+        />
       </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
       <div
-        className="settingsSection"
+        className="settingsSectionPart"
       >
         <div
-          className="settingsSectionPart"
+          className="settingsSectionLabel"
         >
-          <div
-            className="settingsSectionLabel"
-          >
-            Max degree of parallelism
-            <Tooltip>
-              Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
-            </Tooltip>
-          </div>
-          <CustomizedSpinButton
-            ariaLabel="Max degree of parallelism"
-            className="textfontclr"
-            decrementButtonIcon={
-              Object {
-                "iconName": "ChevronDownSmall",
-              }
-            }
-            disabled={false}
-            id="max-degree"
-            incrementButtonIcon={
-              Object {
-                "iconName": "ChevronUpSmall",
-              }
-            }
-            label=""
-            labelPosition={2}
-            max={100}
-            min={-1}
-            onDecrement={[Function]}
-            onIncrement={[Function]}
-            onValidate={[Function]}
-            role="textbox"
-            step={1}
-            tabIndex={0}
-            value="6"
-          />
+          Max degree of parallelism
+          <Tooltip>
+            Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
+          </Tooltip>
         </div>
+        <CustomizedSpinButton
+          ariaLabel="Max degree of parallelism"
+          className="textfontclr"
+          decrementButtonIcon={
+            Object {
+              "iconName": "ChevronDownSmall",
+            }
+          }
+          disabled={false}
+          id="max-degree"
+          incrementButtonIcon={
+            Object {
+              "iconName": "ChevronUpSmall",
+            }
+          }
+          label=""
+          labelPosition={2}
+          max={100}
+          min={-1}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          role="textbox"
+          step={1}
+          tabIndex={0}
+          value="6"
+        />
       </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
       <div
-        className="settingsSection"
+        className="settingsSectionPart"
       >
         <div
-          className="settingsSectionPart"
+          className="settingsSectionLabel"
         >
-          <div
-            className="settingsSectionLabel"
-          >
-            Explorer Version
-          </div>
-          <div />
+          Explorer Version
         </div>
+        <div />
       </div>
     </div>
   </div>
@@ -1248,7 +1194,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
-      "_isSystemDatabasePredicate": [Function],
       "_panes": Array [
         AddDatabasePane {
           "autoPilotUsageCost": [Function],
@@ -1601,31 +1546,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           "throughputSpendAckVisible": [Function],
           "title": [Function],
           "userTableQuery": [Function],
-          "visible": [Function],
-        },
-        ExecuteSprocParamsPane {
-          "addNewParam": [Function],
-          "addNewParamAtIndex": [Function],
-          "addNewParamLabel": "Add New Param",
-          "collectionHasPartitionKey": [Function],
-          "container": [Circular],
-          "deleteParam": [Function],
-          "execute": [Function],
-          "executeButtonEnabled": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "executesprocparamspane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "onAddNewParamAtIndexKeyPress": [Function],
-          "onAddNewParamKeyPress": [Function],
-          "onDeleteParamKeyPress": [Function],
-          "params": [Function],
-          "partitionKeyType": [Function],
-          "partitionKeyValue": [Function],
-          "title": [Function],
-          "validPartitionKeyValue": [Function],
           "visible": [Function],
         },
         UploadItemsPane {
@@ -2063,32 +1983,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "executeSprocParamsPane": ExecuteSprocParamsPane {
-        "addNewParam": [Function],
-        "addNewParamAtIndex": [Function],
-        "addNewParamLabel": "Add New Param",
-        "collectionHasPartitionKey": [Function],
-        "container": [Circular],
-        "deleteParam": [Function],
-        "execute": [Function],
-        "executeButtonEnabled": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "executesprocparamspane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "onAddNewParamAtIndexKeyPress": [Function],
-        "onAddNewParamKeyPress": [Function],
-        "onDeleteParamKeyPress": [Function],
-        "params": [Function],
-        "partitionKeyType": [Function],
-        "partitionKeyValue": [Function],
-        "title": [Function],
-        "validPartitionKeyValue": [Function],
-        "visible": [Function],
-      },
-      "features": [Function],
       "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
@@ -2129,7 +2023,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
-      "isRefreshingExplorer": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isRightPanelV2Enabled": [Function],
       "isSchemaEnabled": [Function],
@@ -2169,7 +2062,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "nonSystemDatabases": [Function],
       "notebookBasePath": [Function],
       "notebookServerInfo": [Function],
       "onRefreshDatabasesKeyPress": [Function],
@@ -2389,53 +2281,51 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
   <div
     className="paneMainContent"
   >
-    <div>
+    <div
+      className="settingsSection"
+    >
       <div
-        className="settingsSection"
+        className="settingsSectionPart"
       >
         <div
-          className="settingsSectionPart"
+          className="settingsSectionLabel"
         >
-          <div
-            className="settingsSectionLabel"
-          >
-            Display Gremlin query results as: 
-            <Tooltip>
-              Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
-            </Tooltip>
-          </div>
-          <StyledChoiceGroupBase
-            aria-label="Graph Auto-visualization"
-            onChange={[Function]}
-            options={
-              Array [
-                Object {
-                  "key": "false",
-                  "text": "Graph",
-                },
-                Object {
-                  "key": "true",
-                  "text": "JSON",
-                },
-              ]
-            }
-            selectedKey="false"
-          />
+          Display Gremlin query results as: 
+          <Tooltip>
+            Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
+          </Tooltip>
         </div>
+        <StyledChoiceGroupBase
+          aria-label="Graph Auto-visualization"
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "false",
+                "text": "Graph",
+              },
+              Object {
+                "key": "true",
+                "text": "JSON",
+              },
+            ]
+          }
+          selectedKey="false"
+        />
       </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
       <div
-        className="settingsSection"
+        className="settingsSectionPart"
       >
         <div
-          className="settingsSectionPart"
+          className="settingsSectionLabel"
         >
-          <div
-            className="settingsSectionLabel"
-          >
-            Explorer Version
-          </div>
-          <div />
+          Explorer Version
         </div>
+        <div />
       </div>
     </div>
   </div>

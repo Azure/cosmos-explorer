@@ -4,7 +4,6 @@ import BrowseQueriesPaneTemplate from "./BrowseQueriesPane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import DeleteCollectionConfirmationPaneTemplate from "./DeleteCollectionConfirmationPane.html";
 import DeleteDatabaseConfirmationPaneTemplate from "./DeleteDatabaseConfirmationPane.html";
-import ExecuteSprocParamsPaneTemplate from "./ExecuteSprocParamsPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphNewVertexPaneTemplate from "./GraphNewVertexPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
@@ -120,15 +119,6 @@ export class CassandraAddCollectionPaneComponent {
     return {
       viewModel: PaneComponent,
       template: CassandraAddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class ExecuteSprocParamsComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: ExecuteSprocParamsPaneTemplate,
     };
   }
 }

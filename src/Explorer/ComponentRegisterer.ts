@@ -26,7 +26,6 @@ import TerminalTab from "./Tabs/TerminalTab";
 import TriggerTab from "./Tabs/TriggerTab";
 import UserDefinedFunctionTab from "./Tabs/UserDefinedFunctionTab";
 
-
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);
 ko.components.register("error-display", new ErrorDisplayComponent());
@@ -76,7 +75,6 @@ ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEnt
 ko.components.register("table-column-options-pane", new PaneComponents.TableColumnOptionsPaneComponent());
 ko.components.register("table-query-select-pane", new PaneComponents.TableQuerySelectPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
-ko.components.register("execute-sproc-params-pane", new PaneComponents.ExecuteSprocParamsComponent());
 ko.components.register("upload-items-pane", new PaneComponents.UploadItemsPaneComponent());
 ko.components.register("load-query-pane", new PaneComponents.LoadQueryPaneComponent());
 ko.components.register("save-query-pane", new PaneComponents.SaveQueryPaneComponent());
