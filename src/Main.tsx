@@ -241,7 +241,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "table-column-options-pane", params: { data: tableColumnOptionsPane} }' />
       <div data-bind='component: { name: "table-query-select-pane", params: { data: querySelectPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      <div data-bind='component: { name: "settings-pane", params: { data: settingsPane} }' />
       <div data-bind='component: { name: "upload-items-pane", params: { data: uploadItemsPane} }' />
       <div data-bind='component: { name: "load-query-pane", params: { data: loadQueryPane} }' />
       <div data-bind='component: { name: "save-query-pane", params: { data: saveQueryPane} }' />

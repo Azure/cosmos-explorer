@@ -164,7 +164,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     const settingsPaneButton: CommandButtonComponentProps = {
       iconSrc: SettingsIcon,
       iconAlt: label,
-      onCommandClick: () => container.settingsPane.open(),
+      onCommandClick: () => container.openSettingPane(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,

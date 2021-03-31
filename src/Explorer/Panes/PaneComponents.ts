@@ -9,7 +9,6 @@ import GraphNewVertexPaneTemplate from "./GraphNewVertexPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
 import LoadQueryPaneTemplate from "./LoadQueryPane.html";
 import SaveQueryPaneTemplate from "./SaveQueryPane.html";
-import SettingsPaneTemplate from "./SettingsPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
@@ -120,15 +119,6 @@ export class CassandraAddCollectionPaneComponent {
     return {
       viewModel: PaneComponent,
       template: CassandraAddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class SettingsPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: SettingsPaneTemplate,
     };
   }
 }
