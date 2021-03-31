@@ -25,7 +25,6 @@ export class PaneComponent {
   }
 }
 
-
 export class AddCollectionPaneComponent {
   constructor() {
     return {
