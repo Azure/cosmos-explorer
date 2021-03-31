@@ -56,7 +56,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
@@ -179,7 +179,6 @@ export default class Explorer {
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
-  public nonSystemDatabases: ko.Computed<ViewModels.Database[]>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
@@ -212,8 +211,6 @@ export default class Explorer {
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public settingsPane: SettingsPane;
-  public executeSprocParamsPane: ExecuteSprocParamsPane;
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
@@ -254,7 +251,6 @@ export default class Explorer {
   public closeDialog: ExplorerParams["closeDialog"];
 
   private _panes: ContextualPaneBase[] = [];
-  private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -525,17 +521,6 @@ export default class Explorer {
         configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
-    this.defaultExperience.subscribe((defaultExperience: string) => {
-      if (
-        defaultExperience &&
-        defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase()
-      ) {
-        this._isSystemDatabasePredicate = (database: ViewModels.Database): boolean => {
-          return database.id() === "system";
-        };
-      }
-    });
-
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -555,10 +540,6 @@ export default class Explorer {
         default:
           return "";
       }
-    });
-
-    this.nonSystemDatabases = ko.computed(() => {
-      return this.databases().filter((database: ViewModels.Database) => !this._isSystemDatabasePredicate(database));
     });
 
     this.addDatabasePane = new AddDatabasePane({
@@ -639,20 +620,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.settingsPane = new SettingsPane({
-      id: "settingspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      id: "executesprocparamspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
@@ -709,8 +676,6 @@ export default class Explorer {
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.settingsPane,
-      this.executeSprocParamsPane,
       this.loadQueryPane,
       this.saveQueryPane,
       this.browseQueriesPane,
@@ -2469,6 +2434,17 @@ export default class Explorer {
 
   public openUploadItemsPanePane(): void {
     this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openSettingPane(): void {
+    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openExecuteSprocParamsPanel(): void {
+    this.openSidePanel(
+      "Input parameters",
+      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
+    );
   }
 
   public async openAddCollectionPanel(): Promise<void> {
