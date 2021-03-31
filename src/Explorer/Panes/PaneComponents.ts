@@ -4,20 +4,17 @@ import BrowseQueriesPaneTemplate from "./BrowseQueriesPane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import DeleteCollectionConfirmationPaneTemplate from "./DeleteCollectionConfirmationPane.html";
 import DeleteDatabaseConfirmationPaneTemplate from "./DeleteDatabaseConfirmationPane.html";
-import ExecuteSprocParamsPaneTemplate from "./ExecuteSprocParamsPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphNewVertexPaneTemplate from "./GraphNewVertexPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
 import LoadQueryPaneTemplate from "./LoadQueryPane.html";
 import SaveQueryPaneTemplate from "./SaveQueryPane.html";
-import SettingsPaneTemplate from "./SettingsPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
 import TableColumnOptionsPaneTemplate from "./Tables/TableColumnOptionsPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 import TableQuerySelectPaneTemplate from "./Tables/TableQuerySelectPane.html";
-import UploadItemsPaneTemplate from "./UploadItemsPane.html";
 
 export class PaneComponent {
   constructor(data: any) {
@@ -120,33 +117,6 @@ export class CassandraAddCollectionPaneComponent {
     return {
       viewModel: PaneComponent,
       template: CassandraAddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class SettingsPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: SettingsPaneTemplate,
-    };
-  }
-}
-
-export class ExecuteSprocParamsComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: ExecuteSprocParamsPaneTemplate,
-    };
-  }
-}
-
-export class UploadItemsPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: UploadItemsPaneTemplate,
     };
   }
 }

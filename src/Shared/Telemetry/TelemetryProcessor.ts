@@ -1,58 +1,11 @@
-﻿import { Action, ActionModifiers } from "./TelemetryConstants";
-import { sendMessage } from "../../Common/MessageHandler";
-import { MessageTypes } from "../../Contracts/ExplorerContracts";
-import { appInsights } from "../appInsights";
+﻿import { sendMessage } from "../../Common/MessageHandler";
 import { configContext } from "../../ConfigContext";
+import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { userContext } from "../../UserContext";
+import { appInsights } from "../appInsights";
+import { Action, ActionModifiers } from "./TelemetryConstants";
 
-// TODO: Remove this. It is perfectly find to pass any data to telemtry methods.
-// This was added only to maintain stability while removing dependencies on explorer.databaseAccount and explorer.defaultExperience
-type allowedKeys =
-  | "notebookId"
-  | "collectionId"
-  | "collectionName"
-  | "error"
-  | "isSample"
-  | "downloadCount"
-  | "baseUrl"
-  | "source"
-  | "description"
-  | "dataExplorerArea"
-  | "databaseName"
-  | "downloadCount"
-  | "favoriteCount"
-  | "abuseCategory"
-  | "errorStack"
-  | "tabTitle"
-  | "tabId"
-  | "conflictResourceType"
-  | "conflictOperationType"
-  | "conflictResourceId"
-  | "message"
-  | "files"
-  | "notebooks"
-  | "directories"
-  | "tabName"
-  | "databaseId"
-  | "queryName"
-  | "isPublishPending"
-  | "label"
-  | "scopesSelected"
-  | "title"
-  | "level"
-  | "changedSelectedValueTo"
-  | "area"
-  | "area"
-  | "paneTitle"
-  | "notebookUrl"
-  | "isNotebookEnabled"
-  | "commandButtonClicked"
-  | "count"
-  | "publishedCount"
-  | "underReviewCount"
-  | "removedCount";
-
-type TelemetryData = { [key in allowedKeys]?: unknown };
+type TelemetryData = { [key: string]: unknown };
 
 export function trace(action: Action, actionModifier: string = ActionModifiers.Mark, data: TelemetryData = {}): void {
   sendMessage({

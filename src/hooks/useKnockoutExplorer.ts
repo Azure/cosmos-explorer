@@ -260,7 +260,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
           explorer.configure(inputs);
           resolve(explorer);
           if (openAction) {
-            handleOpenAction(openAction, explorer.nonSystemDatabases(), explorer);
+            handleOpenAction(openAction, explorer.databases(), explorer);
           }
         }
       },

@@ -63,7 +63,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.koSubsCollectionIdMap = new ArrayHashMap();
     this.databaseCollectionIdMap = new ArrayHashMap();
 
-    this.container.nonSystemDatabases.subscribe((databases: ViewModels.Database[]) => {
+    this.container.databases.subscribe((databases: ViewModels.Database[]) => {
       // Clean up old databases
       this.cleanupDatabasesKoSubs();
 
@@ -71,7 +71,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       this.triggerRender();
     });
 
-    this.container.nonSystemDatabases().forEach((database: ViewModels.Database) => this.watchDatabase(database));
+    this.container.databases().forEach((database: ViewModels.Database) => this.watchDatabase(database));
     this.triggerRender();
   }
 
@@ -189,7 +189,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private buildDataTree(): TreeNode {
-    const databaseTreeNodes: TreeNode[] = this.container.nonSystemDatabases().map((database: ViewModels.Database) => {
+    const databaseTreeNodes: TreeNode[] = this.container.databases().map((database: ViewModels.Database) => {
       const databaseNode: TreeNode = {
         label: database.id(),
         iconSrc: CosmosDBIcon,
