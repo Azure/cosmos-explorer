@@ -50,7 +50,6 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
@@ -220,7 +219,6 @@ export default class Explorer {
   public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
-  public browseQueriesPane: BrowseQueriesPane;
   public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
@@ -680,13 +678,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.browseQueriesPane = new BrowseQueriesPane({
-      id: "browsequeriespane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.uploadFilePane = new UploadFilePane({
       id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
@@ -727,7 +718,6 @@ export default class Explorer {
       this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
-      this.browseQueriesPane,
       this.uploadFilePane,
       this.stringInputPane,
       this.setupNotebooksPane,

@@ -28,6 +28,8 @@ import * as DataModels from "../../../Contracts/DataModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
+const title: string = "Open Saved Queries";
+
 export interface QueriesGridComponentProps {
   queriesClient: QueriesClient;
   onQuerySelect: (query: DataModels.Query) => void;
@@ -225,7 +227,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                       const container = window.dataExplorer;
                       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
                         dataExplorerArea: Constants.Areas.ContextualPane,
-                        paneTitle: container && container.browseQueriesPane.title(),
+                        paneTitle: title,
                       });
                       try {
                         await this.props.queriesClient.deleteQuery(query);
@@ -233,7 +235,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                           Action.DeleteSavedQuery,
                           {
                             dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: container && container.browseQueriesPane.title(),
+                            paneTitle: title,
                           },
                           startKey
                         );
@@ -242,7 +244,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                           Action.DeleteSavedQuery,
                           {
                             dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: container && container.browseQueriesPane.title(),
+                            paneTitle: title,
                             error: getErrorMessage(error),
                             errorStack: getErrorStack(error),
                           },
