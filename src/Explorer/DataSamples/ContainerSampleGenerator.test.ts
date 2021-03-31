@@ -2,17 +2,17 @@ jest.mock("../Graph/GraphExplorerComponent/GremlinClient");
 jest.mock("../../Common/dataAccess/createCollection");
 jest.mock("../../Common/dataAccess/createDocument");
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import Q from "q";
-import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import { createDocument } from "../../Common/dataAccess/createDocument";
-import Explorer from "../Explorer";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
+import Explorer from "../Explorer";
+import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 describe("ContainerSampleGenerator", () => {
   const createExplorerStub = (database: ViewModels.Database): Explorer => {
     const explorerStub = {} as Explorer;
-    explorerStub.nonSystemDatabases = ko.computed(() => [database]);
+    explorerStub.databases = ko.observableArray<ViewModels.Database>([database]);
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => false);
