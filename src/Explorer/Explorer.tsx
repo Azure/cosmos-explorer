@@ -51,6 +51,7 @@ import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
+import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
@@ -2490,5 +2491,9 @@ export default class Explorer {
         openNotificationConsole={() => this.expandConsole()}
       />
     );
+  }
+
+  public openBrowseQueriesPanel(): void {
+    this.openSidePanel("Open Saved Queries", <BrowseQueriesPanel explorer={this} closePanel={this.closeSidePanel} />);
   }
 }

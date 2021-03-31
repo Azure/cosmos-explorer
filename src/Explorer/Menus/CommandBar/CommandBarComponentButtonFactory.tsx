@@ -420,7 +420,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
-    onCommandClick: () => container.browseQueriesPane.open(),
+    onCommandClick: () => container.openBrowseQueriesPanel(),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
