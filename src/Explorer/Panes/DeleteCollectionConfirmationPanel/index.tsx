@@ -32,7 +32,6 @@ export const DeleteCollectionConfirmationPanel: FunctionComponent<DeleteCollecti
   const [isExecuting, setIsExecuting] = useState(false);
 
   const getCollectionName = (): string => {
-    console.log(userContext.subscriptionType + " ====== " + userContext.defaultExperience);
     switch (userContext.defaultExperience) {
       case DefaultAccountExperienceType.DocumentDB:
         return "Container";
