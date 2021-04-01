@@ -1,18 +1,8 @@
 // CSS Dependencies
-import "abort-controller/polyfill";
-import "babel-polyfill";
 import "bootstrap/dist/css/bootstrap.css";
-import "es6-object-assign/auto";
-import "es6-symbol/implement";
-import "object.entries/auto";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import "promise-polyfill/src/polyfill";
-import "promise.prototype.finally/auto";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import "url-polyfill/url-polyfill.min";
-import "webcrypto-liner/build/webcrypto-liner.shim.min";
-import "whatwg-fetch";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -64,7 +54,6 @@ import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
-import "./Libs/is-integer-polyfill";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 import { userContext } from "./UserContext";
@@ -240,11 +229,9 @@ const App: React.FunctionComponent = () => {
         closePanel={closeSidePanel}
         isConsoleExpanded={isNotificationConsoleExpanded}
       />
-      <div data-bind="react:uploadItemsPaneAdapter" />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "delete-collection-confirmation-pane", params: { data: deleteCollectionConfirmationPane} }' />
-      <div data-bind='component: { name: "delete-database-confirmation-pane", params: { data: deleteDatabaseConfirmationPane} }' />
       <div data-bind='component: { name: "graph-new-vertex-pane", params: { data: newVertexPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "table-add-entity-pane", params: { data: addTableEntityPane} }' />
@@ -252,13 +239,9 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "table-column-options-pane", params: { data: tableColumnOptionsPane} }' />
       <div data-bind='component: { name: "table-query-select-pane", params: { data: querySelectPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      <div data-bind='component: { name: "settings-pane", params: { data: settingsPane} }' />
-      <div data-bind='component: { name: "upload-items-pane", params: { data: uploadItemsPane} }' />
       <div data-bind='component: { name: "load-query-pane", params: { data: loadQueryPane} }' />
-      <div data-bind='component: { name: "execute-sproc-params-pane", params: { data: executeSprocParamsPane} }' />
       <div data-bind='component: { name: "save-query-pane", params: { data: saveQueryPane} }' />
       <div data-bind='component: { name: "browse-queries-pane", params: { data: browseQueriesPane} }' />
-      <div data-bind='component: { name: "upload-file-pane", params: { data: uploadFilePane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
       <KOCommentIfStart if="isGitHubPaneEnabled" />

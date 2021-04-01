@@ -164,7 +164,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     const settingsPaneButton: CommandButtonComponentProps = {
       iconSrc: SettingsIcon,
       iconAlt: label,
-      onCommandClick: () => container.settingsPane.open(),
+      onCommandClick: () => container.openSettingPane(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,
@@ -407,7 +407,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
   return {
     iconSrc: NewNotebookIcon,
     iconAlt: label,
-    onCommandClick: () => container.onUploadToNotebookServerClicked(),
+    onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

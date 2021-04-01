@@ -88,7 +88,6 @@ export interface Database extends TreeNode {
   loadCollections(): Promise<void>;
   findCollectionWithId(collectionId: string): Collection;
   openAddCollection(database: Database, event: MouseEvent): void;
-  onDeleteDatabaseContextMenuClick(source: Database, event: MouseEvent | KeyboardEvent): void;
   onSettingsClick: () => void;
   loadOffer(): Promise<void>;
   getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
