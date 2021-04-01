@@ -44,7 +44,7 @@ import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { FileSystemUtil } from "./Notebook/FileSystemUtil";
+import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
