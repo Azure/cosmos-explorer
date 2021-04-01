@@ -4,15 +4,8 @@ import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
 import { userContext } from "../../../UserContext";
-import {
-  clearInProgressMessageWithId,
-  logConsoleError,
-  logConsoleInfo,
-  logConsoleMessage,
-  logConsoleProgress,
-} from "../../../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import QueryTab from "../../Tabs/QueryTab";
 import { Collection } from "..//../../Contracts/ViewModels";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
@@ -58,7 +51,7 @@ export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
     setSelectedFileName(files && files[0] && `"${files[0].name}"`);
   };
 
-  const submit = (): void => {
+  const submit = async (): Promise<void> => {
     setFormError("");
     setFormErrorsDetails("");
     if (!selectedFiles || selectedFiles.length === 0) {
@@ -69,25 +62,19 @@ export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
     }
 
     const file: File = selectedFiles[0];
-    const id: string = logConsoleMessage(ConsoleDataType.InProgress, `Loading query from file ${file.name}`);
     logConsoleProgress(`Loading query from file ${file.name}`);
     setLoadingTrue();
-    loadQueryFromFile(file)
-      .then(
-        () => {
-          logConsoleInfo(`Successfully loaded query from file ${file.name}`);
-          closePanel();
-        },
-        (error: Error) => {
-          setFormError("Failed to load query");
-          setFormErrorsDetails(`Failed to load query: ${error}`);
-          logConsoleError(`Failed to load query from file ${file.name}: ${error}`);
-        }
-      )
-      .finally(() => {
-        setLoadingFalse();
-        clearInProgressMessageWithId(id);
-      });
+    try {
+      await loadQueryFromFile(file);
+      logConsoleInfo(`Successfully loaded query from file ${file.name}`);
+      closePanel();
+      setLoadingFalse();
+    } catch (error) {
+      setLoadingFalse();
+      setFormError("Failed to load query");
+      setFormErrorsDetails(`Failed to load query: ${error}`);
+      logConsoleError(`Failed to load query from file ${file.name}: ${error}`);
+    }
   };
 
   const loadQueryFromFile = async (file: File): Promise<void> => {
