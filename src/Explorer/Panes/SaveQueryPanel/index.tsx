@@ -42,7 +42,7 @@ export const SaveQueryPanel: FunctionComponent<SaveQueryPanelProps> = ({
     },
   };
 
-  const submit = (): void => {
+  const submit = async (): Promise<void> => {
     setFormError("");
     setFormErrorsDetails("");
     if (!canSaveQueries()) {
@@ -76,38 +76,36 @@ export const SaveQueryPanel: FunctionComponent<SaveQueryPanelProps> = ({
       paneTitle: title,
     });
     setLoadingTrue();
-    explorer.queriesClient.saveQuery(queryParam).then(
-      () => {
-        setLoadingFalse();
-        queryTab.tabTitle(queryParam.queryName);
-        queryTab.tabPath(`${queryTab.collection.databaseId}>${queryTab.collection.id()}>${queryParam.queryName}`);
-        traceSuccess(
-          Action.SaveQuery,
-          {
-            dataExplorerArea: Areas.ContextualPane,
-            paneTitle: title,
-          },
-          startKey
-        );
-        closePanel();
-      },
-      (error: Error) => {
-        setLoadingFalse();
-        const errorMessage = getErrorMessage(error);
-        setFormError("Failed to save query");
-        setFormErrorsDetails(`Failed to save query: ${errorMessage}`);
-        traceFailure(
-          Action.SaveQuery,
-          {
-            dataExplorerArea: Areas.ContextualPane,
-            paneTitle: title,
-            error: errorMessage,
-            errorStack: getErrorStack(error),
-          },
-          startKey
-        );
-      }
-    );
+    try {
+      await explorer.queriesClient.saveQuery(queryParam);
+      setLoadingFalse();
+      queryTab.tabTitle(queryParam.queryName);
+      queryTab.tabPath(`${queryTab.collection.databaseId}>${queryTab.collection.id()}>${queryParam.queryName}`);
+      traceSuccess(
+        Action.SaveQuery,
+        {
+          dataExplorerArea: Areas.ContextualPane,
+          paneTitle: title,
+        },
+        startKey
+      );
+      closePanel();
+    } catch (error) {
+      setLoadingFalse();
+      const errorMessage = getErrorMessage(error);
+      setFormError("Failed to save query");
+      setFormErrorsDetails(`Failed to save query: ${errorMessage}`);
+      traceFailure(
+        Action.SaveQuery,
+        {
+          dataExplorerArea: Areas.ContextualPane,
+          paneTitle: title,
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+    }
   };
 
   const setupQueries = async (): Promise<void> => {
