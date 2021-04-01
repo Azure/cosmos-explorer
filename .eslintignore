@@ -97,11 +97,6 @@ src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.test.ts
 src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.ts
 src/Explorer/Menus/ContextMenu.ts
 src/Explorer/MostRecentActivity/MostRecentActivity.ts
-<<<<<<< HEAD
-src/Explorer/Notebook/NTeractUtil.ts
-=======
-src/Explorer/Notebook/FileSystemUtil.ts
->>>>>>> ca7cd139ba7045ece255e0d012e5e7d22aebe69f
 src/Explorer/Notebook/NotebookClientV2.ts
 src/Explorer/Notebook/NotebookComponent/NotebookContentProvider.ts
 src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts
