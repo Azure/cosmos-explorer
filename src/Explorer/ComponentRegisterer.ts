@@ -78,7 +78,6 @@ ko.components.register("cassandra-add-collection-pane", new PaneComponents.Cassa
 ko.components.register("load-query-pane", new PaneComponents.LoadQueryPaneComponent());
 ko.components.register("save-query-pane", new PaneComponents.SaveQueryPaneComponent());
 ko.components.register("browse-queries-pane", new PaneComponents.BrowseQueriesPaneComponent());
-ko.components.register("upload-file-pane", new PaneComponents.UploadFilePaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
 ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());

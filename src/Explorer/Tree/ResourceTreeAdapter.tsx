@@ -765,7 +765,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       {
         label: "Upload File",
         iconSrc: NewNotebookIcon,
-        onClick: () => this.container.onUploadToNotebookServerClicked(item),
+        onClick: () => this.container.openUploadFilePanel(item),
       },
     ];
 

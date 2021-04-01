@@ -215,7 +215,6 @@ export default class Explorer {
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
-  public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -642,13 +641,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.uploadFilePane = new UploadFilePane({
-      id: "uploadfilepane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.stringInputPane = new StringInputPane({
       id: "stringinputpane",
       visible: ko.observable<boolean>(false),
@@ -680,7 +672,6 @@ export default class Explorer {
       this.loadQueryPane,
       this.saveQueryPane,
       this.browseQueriesPane,
-      this.uploadFilePane,
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
@@ -2098,38 +2089,6 @@ export default class Explorer {
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(notificationProgressId));
   }
 
-  public onUploadToNotebookServerClicked(parent?: NotebookContentItem): void {
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
-
-    this.uploadFilePane.openWithOptions({
-      paneTitle: "Upload file to notebook server",
-      selectFileInputLabel: "Select file to upload",
-      errorMessage: "Could not upload file",
-      inProgressMessage: "Uploading file to notebook server",
-      successMessage: "Successfully uploaded file to notebook server",
-      onSubmit: async (file: File): Promise<NotebookContentItem> => {
-        const readFileAsText = (inputFile: File): Promise<string> => {
-          const reader = new FileReader();
-          return new Promise((resolve, reject) => {
-            reader.onerror = () => {
-              reader.abort();
-              reject(`Problem parsing file: ${inputFile}`);
-            };
-            reader.onload = () => {
-              resolve(reader.result as string);
-            };
-            reader.readAsText(inputFile);
-          });
-        };
-
-        const fileContent = await readFileAsText(file);
-        return this.uploadFile(file.name, fileContent, parent);
-      },
-      extensions: undefined,
-      submitButtonLabel: "Upload",
-    });
-  }
-
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
@@ -2473,6 +2432,17 @@ export default class Explorer {
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+      />
+    );
+  }
+  public openUploadFilePanel(parent?: NotebookContentItem): void {
+    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    this.openSidePanel(
+      "Upload File",
+      <UploadFilePane
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
     );
   }

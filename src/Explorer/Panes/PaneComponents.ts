@@ -15,7 +15,6 @@ import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
 import TableColumnOptionsPaneTemplate from "./Tables/TableColumnOptionsPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 import TableQuerySelectPaneTemplate from "./Tables/TableQuerySelectPane.html";
-import UploadFilePaneTemplate from "./UploadFilePane.html";
 
 export class PaneComponent {
   constructor(data: any) {
@@ -145,15 +144,6 @@ export class BrowseQueriesPaneComponent {
     return {
       viewModel: PaneComponent,
       template: BrowseQueriesPaneTemplate,
-    };
-  }
-}
-
-export class UploadFilePaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: UploadFilePaneTemplate,
     };
   }
 }
