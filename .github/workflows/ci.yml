@@ -92,6 +92,8 @@ jobs:
         with:
           name: dist
           path: dist/
+      - run: |
+          az storage blob upload-batch -d '$web' -s 'dist' --account-name cosmosexplorerpreview --subscription cosmosdb-portalteam-generaldemo --destination-path "$GITHUB_SHA"
   endtoendemulator:
     name: "End To End Emulator Tests"
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
