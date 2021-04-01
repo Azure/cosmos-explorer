@@ -18,7 +18,7 @@ import {
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
-import { FileSystemUtil } from "../../../Notebook/FileSystemUtil";
+import * as FileSystemUtil from "../../../Notebook/FileSystemUtil";
 import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 
 export interface GalleryCardComponentProps {
