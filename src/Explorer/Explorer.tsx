@@ -54,8 +54,8 @@ import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
-import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
+import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
@@ -69,7 +69,6 @@ import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
-import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -202,7 +201,6 @@ export default class Explorer {
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
-  public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
@@ -210,14 +208,9 @@ export default class Explorer {
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public settingsPane: SettingsPane;
-  public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public uploadItemsPane: UploadItemsPane;
-  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
-  public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -560,13 +553,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
-      id: "deletedatabaseconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.graphStylingPane = new GraphStylingPane({
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
@@ -616,29 +602,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.settingsPane = new SettingsPane({
-      id: "settingspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      id: "executesprocparamspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPane = new UploadItemsPane({
-      id: "uploaditemspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
@@ -655,13 +618,6 @@ export default class Explorer {
 
     this.browseQueriesPane = new BrowseQueriesPane({
       id: "browsequeriespane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadFilePane = new UploadFilePane({
-      id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -686,7 +642,6 @@ export default class Explorer {
     this._panes = [
       this.addDatabasePane,
       this.addCollectionPane,
-      this.deleteDatabaseConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
@@ -694,13 +649,9 @@ export default class Explorer {
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.settingsPane,
-      this.executeSprocParamsPane,
-      this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
       this.browseQueriesPane,
-      this.uploadFilePane,
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
@@ -788,8 +739,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Row");
         this.editTableEntityPane.title("Edit Table Row");
-        this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
-        this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -1312,7 +1261,12 @@ export default class Explorer {
   }
 
   public isLastNonEmptyDatabase(): boolean {
-    if (this.isLastDatabase() && this.databases()[0].collections && this.databases()[0].collections().length > 0) {
+    if (
+      this.isLastDatabase() &&
+      this.databases()[0] &&
+      this.databases()[0].collections &&
+      this.databases()[0].collections().length > 0
+    ) {
       return true;
     }
     return false;
@@ -2105,38 +2059,6 @@ export default class Explorer {
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(notificationProgressId));
   }
 
-  public onUploadToNotebookServerClicked(parent?: NotebookContentItem): void {
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
-
-    this.uploadFilePane.openWithOptions({
-      paneTitle: "Upload file to notebook server",
-      selectFileInputLabel: "Select file to upload",
-      errorMessage: "Could not upload file",
-      inProgressMessage: "Uploading file to notebook server",
-      successMessage: "Successfully uploaded file to notebook server",
-      onSubmit: async (file: File): Promise<NotebookContentItem> => {
-        const readFileAsText = (inputFile: File): Promise<string> => {
-          const reader = new FileReader();
-          return new Promise((resolve, reject) => {
-            reader.onerror = () => {
-              reader.abort();
-              reject(`Problem parsing file: ${inputFile}`);
-            };
-            reader.onload = () => {
-              resolve(reader.result as string);
-            };
-            reader.readAsText(inputFile);
-          });
-        };
-
-        const fileContent = await readFileAsText(file);
-        return this.uploadFile(file.name, fileContent, parent);
-      },
-      extensions: undefined,
-      submitButtonLabel: "Upload",
-    });
-  }
-
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
@@ -2443,6 +2365,33 @@ export default class Explorer {
     );
   }
 
+  public openDeleteDatabaseConfirmationPane(): void {
+    this.openSidePanel(
+      "Delete Database",
+      <DeleteDatabaseConfirmationPanel
+        explorer={this}
+        openNotificationConsole={this.expandConsole}
+        closePanel={this.closeSidePanel}
+        selectedDatabase={this.findSelectedDatabase()}
+      />
+    );
+  }
+
+  public openUploadItemsPanePane(): void {
+    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openSettingPane(): void {
+    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openExecuteSprocParamsPanel(): void {
+    this.openSidePanel(
+      "Input parameters",
+      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
+    );
+  }
+
   public async openAddCollectionPanel(): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
@@ -2451,6 +2400,17 @@ export default class Explorer {
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+      />
+    );
+  }
+  public openUploadFilePanel(parent?: NotebookContentItem): void {
+    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    this.openSidePanel(
+      "Upload File",
+      <UploadFilePane
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
     );
   }

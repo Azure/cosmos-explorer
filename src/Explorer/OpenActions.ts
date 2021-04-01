@@ -1,7 +1,7 @@
 // TODO convert this file to an action registry in order to have actions and their handlers be more tightly coupled.
 
-import * as ViewModels from "../Contracts/ViewModels";
 import { ActionContracts } from "../Contracts/ExplorerContracts";
+import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "./Explorer";
 
 export function handleOpenAction(
@@ -145,7 +145,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.GlobalSettings]
   ) {
     explorer.closeAllPanes();
-    explorer.settingsPane.open();
+    explorer.openSettingPane();
   }
 }
 
