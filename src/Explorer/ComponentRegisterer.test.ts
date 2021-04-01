@@ -77,10 +77,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("delete-collection-confirmation-pane")).toBe(true);
   });
 
-  it("should register delete-database-confirmation-pane component", () => {
-    expect(ko.components.isRegistered("delete-database-confirmation-pane")).toBe(true);
-  });
-
   it("should register save-query-pane component", () => {
     expect(ko.components.isRegistered("save-query-pane")).toBe(true);
   });
