@@ -232,7 +232,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "delete-collection-confirmation-pane", params: { data: deleteCollectionConfirmationPane} }' />
-      <div data-bind='component: { name: "delete-database-confirmation-pane", params: { data: deleteDatabaseConfirmationPane} }' />
       <div data-bind='component: { name: "graph-new-vertex-pane", params: { data: newVertexPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "table-add-entity-pane", params: { data: addTableEntityPane} }' />

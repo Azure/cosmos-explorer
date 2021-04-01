@@ -64,10 +64,7 @@ ko.components.register(
   "delete-collection-confirmation-pane",
   new PaneComponents.DeleteCollectionConfirmationPaneComponent()
 );
-ko.components.register(
-  "delete-database-confirmation-pane",
-  new PaneComponents.DeleteDatabaseConfirmationPaneComponent()
-);
+
 ko.components.register("graph-new-vertex-pane", new PaneComponents.GraphNewVertexPaneComponent());
 ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPaneComponent());
 ko.components.register("table-add-entity-pane", new PaneComponents.TableAddEntityPaneComponent());

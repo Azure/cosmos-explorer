@@ -55,7 +55,6 @@ import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
-import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
@@ -204,7 +203,6 @@ export default class Explorer {
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
   public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
-  public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
@@ -564,13 +562,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
-      id: "deletedatabaseconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.graphStylingPane = new GraphStylingPane({
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
@@ -661,7 +652,6 @@ export default class Explorer {
       this.addDatabasePane,
       this.addCollectionPane,
       this.deleteCollectionConfirmationPane,
-      this.deleteDatabaseConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
@@ -767,8 +757,6 @@ export default class Explorer {
         this.editTableEntityPane.title("Edit Table Row");
         this.deleteCollectionConfirmationPane.title("Delete Table");
         this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-        this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
-        this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }

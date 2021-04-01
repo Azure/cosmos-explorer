@@ -3,7 +3,6 @@ import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import BrowseQueriesPaneTemplate from "./BrowseQueriesPane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import DeleteCollectionConfirmationPaneTemplate from "./DeleteCollectionConfirmationPane.html";
-import DeleteDatabaseConfirmationPaneTemplate from "./DeleteDatabaseConfirmationPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphNewVertexPaneTemplate from "./GraphNewVertexPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
@@ -45,15 +44,6 @@ export class DeleteCollectionConfirmationPaneComponent {
     return {
       viewModel: PaneComponent,
       template: DeleteCollectionConfirmationPaneTemplate,
-    };
-  }
-}
-
-export class DeleteDatabaseConfirmationPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: DeleteDatabaseConfirmationPaneTemplate,
     };
   }
 }
