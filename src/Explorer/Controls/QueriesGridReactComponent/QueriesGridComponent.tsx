@@ -141,7 +141,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       },
     };
     return (
-      <div>
+      <div id="emptyQueryBanner">
         <div>
           You have not saved any queries yet. <br /> <br />
           To write a new query, open a new query tab and enter the desired query. Once ready to save, click on Save
