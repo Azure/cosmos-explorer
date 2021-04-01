@@ -48,6 +48,7 @@ import { FileSystemUtil } from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
@@ -55,7 +56,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
@@ -69,7 +70,6 @@ import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
-import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -163,8 +163,6 @@ export default class Explorer {
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public features: ko.Observable<any>;
-  public serverId: ko.Observable<string>;
-  public isTryCosmosDBSubscription: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -181,16 +179,10 @@ export default class Explorer {
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
-  public nonSystemDatabases: ko.Computed<ViewModels.Database[]>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
-  /**
-   * @deprecated
-   * Use a local loading state and spinner instead. Using a global isRefreshing state causes problems.
-   * */
-  public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
@@ -198,9 +190,8 @@ export default class Explorer {
   public resourceTokenCollectionId: ko.Observable<string>;
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
   public resourceTokenPartitionKey: ko.Observable<string>;
-  public isAuthWithResourceToken: ko.Observable<boolean>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
-  private resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
+  public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -219,14 +210,9 @@ export default class Explorer {
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public settingsPane: SettingsPane;
-  public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public uploadItemsPane: UploadItemsPane;
-  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
   public loadQueryPane: LoadQueryPane;
   public saveQueryPane: ContextualPaneBase;
   public browseQueriesPane: BrowseQueriesPane;
-  public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -263,7 +249,6 @@ export default class Explorer {
   public closeDialog: ExplorerParams["closeDialog"];
 
   private _panes: ContextualPaneBase[] = [];
-  private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -300,22 +285,6 @@ export default class Explorer {
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
-    let firstInitialization = true;
-    this.isRefreshingExplorer = ko.observable<boolean>(true);
-    this.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
-      if (!isRefreshing && firstInitialization) {
-        // set focus on first element
-        firstInitialization = false;
-        try {
-          document.getElementById("createNewContainerCommandButton").parentElement.parentElement.focus();
-        } catch (e) {
-          Logger.logWarning(
-            "getElementById('createNewContainerCommandButton') failed to find element",
-            "Explorer/this.isRefreshingExplorer.subscribe"
-          );
-        }
-      }
-    });
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -336,7 +305,9 @@ export default class Explorer {
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
-        this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases(true);
+        userContext.authType === AuthType.ResourceToken
+          ? this.refreshDatabaseForResourceToken()
+          : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         this.arcadiaWorkspaces = ko.observableArray();
@@ -347,9 +318,9 @@ export default class Explorer {
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
             this.isNotebookEnabled(
-              !this.isAuthWithResourceToken() &&
+              userContext.authType !== AuthType.ResourceToken &&
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
+                  userContext.features.enableNotebooks)
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -371,7 +342,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                this.isFeatureEnabled(Constants.Features.enableSpark)
+                userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               appInsights.trackEvent(
@@ -395,26 +366,20 @@ export default class Explorer {
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
-    this.features = ko.observable();
-    this.serverId = ko.observable<string>();
     this.queriesClient = new QueriesClient(this);
-    this.isTryCosmosDBSubscription = ko.observable<boolean>(false);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isAuthWithResourceToken = ko.observable<boolean>(false);
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
-    this.canExceedMaximumValue = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
-    );
+    this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
 
-    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
+    this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
@@ -494,7 +459,7 @@ export default class Explorer {
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
-      if (this.isFeatureEnabled(Constants.Features.enableFixedCollectionWithSharedThroughput)) {
+      if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
       }
 
@@ -553,20 +518,7 @@ export default class Explorer {
       () =>
         configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
-    );
-    this.defaultExperience.subscribe((defaultExperience: string) => {
-      if (
-        defaultExperience &&
-        defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase()
-      ) {
-        this._isSystemDatabasePredicate = (database: ViewModels.Database): boolean => {
-          return database.id() === "system";
-        };
-      }
-    });
-
+    this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -586,10 +538,6 @@ export default class Explorer {
         default:
           return "";
       }
-    });
-
-    this.nonSystemDatabases = ko.computed(() => {
-      return this.databases().filter((database: ViewModels.Database) => !this._isSystemDatabasePredicate(database));
     });
 
     this.addDatabasePane = new AddDatabasePane({
@@ -663,29 +611,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.settingsPane = new SettingsPane({
-      id: "settingspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      id: "executesprocparamspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPane = new UploadItemsPane({
-      id: "uploaditemspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-
     this.loadQueryPane = new LoadQueryPane({
       id: "loadquerypane",
       visible: ko.observable<boolean>(false),
@@ -702,13 +627,6 @@ export default class Explorer {
 
     this.browseQueriesPane = new BrowseQueriesPane({
       id: "browsequeriespane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadFilePane = new UploadFilePane({
-      id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -741,13 +659,9 @@ export default class Explorer {
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.settingsPane,
-      this.executeSprocParamsPane,
-      this.uploadItemsPane,
       this.loadQueryPane,
       this.saveQueryPane,
       this.browseQueriesPane,
-      this.uploadFilePane,
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
@@ -896,42 +810,29 @@ export default class Explorer {
     });
 
     // Override notebook server parameters from URL parameters
-    const featureSubcription = this.features.subscribe((features) => {
-      const serverInfo = this.notebookServerInfo();
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        serverInfo.notebookServerEndpoint = features[Constants.Features.notebookServerUrl];
-      }
+    if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
+      this.notebookServerInfo({
+        notebookServerEndpoint: userContext.features.notebookServerUrl,
+        authToken: userContext.features.notebookServerToken,
+      });
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        serverInfo.authToken = features[Constants.Features.notebookServerToken];
-      }
-      this.notebookServerInfo(serverInfo);
-      this.notebookServerInfo.valueHasMutated();
+    if (userContext.features.notebookBasePath) {
+      this.notebookBasePath(userContext.features.notebookBasePath);
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookBasePath)) {
-        this.notebookBasePath(features[Constants.Features.notebookBasePath]);
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.livyEndpoint)) {
-        this.sparkClusterConnectionInfo({
-          userName: undefined,
-          password: undefined,
-          endpoints: [
-            {
-              endpoint: features[Constants.Features.livyEndpoint],
-              kind: DataModels.SparkClusterEndpointKind.Livy,
-            },
-          ],
-        });
-        this.sparkClusterConnectionInfo.valueHasMutated();
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
-        updateUserContext({ useSDKOperations: true });
-      }
-
-      featureSubcription.dispose();
-    });
+    if (userContext.features.livyEndpoint) {
+      this.sparkClusterConnectionInfo({
+        userName: undefined,
+        password: undefined,
+        endpoints: [
+          {
+            endpoint: userContext.features.livyEndpoint,
+            kind: DataModels.SparkClusterEndpointKind.Livy,
+          },
+        ],
+      });
+    }
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -1015,20 +916,6 @@ export default class Explorer {
     return this.selectedNode() == null;
   }
 
-  public isFeatureEnabled(feature: string): boolean {
-    const features = this.features();
-
-    if (!features) {
-      return false;
-    }
-
-    if (feature in features && features[feature]) {
-      return true;
-    }
-
-    return false;
-  }
-
   public logConsoleData(consoleData: ConsoleData): void {
     this.setNotificationConsoleData(consoleData);
   }
@@ -1075,7 +962,6 @@ export default class Explorer {
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
-    this.isRefreshingExplorer(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -1105,22 +991,19 @@ export default class Explorer {
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
         this.selectedNode(currentlySelectedNode);
         this._setLoadingStatusText("Fetching containers...");
-        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-          .then(
-            () => {
-              this._setLoadingStatusText("Successfully fetched containers.");
-              deferred.resolve();
-            },
-            (reason) => {
-              this._setLoadingStatusText("Failed to fetch containers.");
-              deferred.reject(reason);
-            }
-          )
-          .finally(() => this.isRefreshingExplorer(false));
+        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
+          () => {
+            this._setLoadingStatusText("Successfully fetched containers.");
+            deferred.resolve();
+          },
+          (reason) => {
+            this._setLoadingStatusText("Failed to fetch containers.");
+            deferred.reject(reason);
+          }
+        );
       },
       (error) => {
         this._setLoadingStatusText("Failed to fetch databases.");
-        this.isRefreshingExplorer(false);
         deferred.reject(error);
         const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
@@ -1180,8 +1063,9 @@ export default class Explorer {
       description: "Refresh button clicked",
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    this.isRefreshingExplorer(true);
-    this.isAuthWithResourceToken() ? this.refreshDatabaseForResourceToken() : this.refreshAllDatabases();
+    userContext.authType === AuthType.ResourceToken
+      ? this.refreshDatabaseForResourceToken()
+      : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
@@ -1274,12 +1158,12 @@ export default class Explorer {
       throw error;
     } finally {
       // Overwrite with feature flags
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        connectionInfo.notebookServerEndpoint = this.features()[Constants.Features.notebookServerUrl];
+      if (userContext.features.notebookServerUrl) {
+        connectionInfo.notebookServerEndpoint = userContext.features.notebookServerUrl;
       }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        connectionInfo.authToken = this.features()[Constants.Features.notebookServerToken];
+      if (userContext.features.notebookServerToken) {
+        connectionInfo.authToken = userContext.features.notebookServerToken;
       }
 
       this.notebookServerInfo(connectionInfo);
@@ -1434,16 +1318,12 @@ export default class Explorer {
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.features(inputs.features);
-      this.serverId(inputs.serverId ?? Constants.ServerIds.productionPortal);
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
       if (inputs.addCollectionDefaultFlight) {
         this.flight(inputs.addCollectionDefaultFlight);
       }
-      this.isTryCosmosDBSubscription(inputs.isTryCosmosDBSubscription ?? false);
-      this.isAuthWithResourceToken(inputs.isAuthWithresourceToken ?? false);
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -1524,9 +1404,9 @@ export default class Explorer {
 
   public isRunningOnNationalCloud(): boolean {
     return (
-      this.serverId() === Constants.ServerIds.blackforest ||
-      this.serverId() === Constants.ServerIds.fairfax ||
-      this.serverId() === Constants.ServerIds.mooncake
+      userContext.portalEnv === "blackforest" ||
+      userContext.portalEnv === "fairfax" ||
+      userContext.portalEnv === "mooncake"
     );
   }
 
@@ -2197,38 +2077,6 @@ export default class Explorer {
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(notificationProgressId));
   }
 
-  public onUploadToNotebookServerClicked(parent?: NotebookContentItem): void {
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
-
-    this.uploadFilePane.openWithOptions({
-      paneTitle: "Upload file to notebook server",
-      selectFileInputLabel: "Select file to upload",
-      errorMessage: "Could not upload file",
-      inProgressMessage: "Uploading file to notebook server",
-      successMessage: "Successfully uploaded file to notebook server",
-      onSubmit: async (file: File): Promise<NotebookContentItem> => {
-        const readFileAsText = (inputFile: File): Promise<string> => {
-          const reader = new FileReader();
-          return new Promise((resolve, reject) => {
-            reader.onerror = () => {
-              reader.abort();
-              reject(`Problem parsing file: ${inputFile}`);
-            };
-            reader.onload = () => {
-              resolve(reader.result as string);
-            };
-            reader.readAsText(inputFile);
-          });
-        };
-
-        const fileContent = await readFileAsText(file);
-        return this.uploadFile(file.name, fileContent, parent);
-      },
-      extensions: undefined,
-      submitButtonLabel: "Upload",
-    });
-  }
-
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
@@ -2391,10 +2239,12 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (this.isPreferredApiCassandra()) {
       this.cassandraAddCollectionPane.open();
+    } else if (userContext.features.enableReactPane) {
+      this.openAddCollectionPanel();
     } else {
       this.addCollectionPane.open(this.selectedDatabaseId());
+      document.getElementById("linkAddCollection").focus();
     }
-    document.getElementById("linkAddCollection").focus();
   }
 
   private refreshCommandBarButtons(): void {
@@ -2523,7 +2373,7 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    this.isFeatureEnabled(Constants.Features.enableKOPanel)
+    userContext.features.enableKOPanel
       ? this.deleteCollectionConfirmationPane.open()
       : this.openSidePanel(
           "Delete Collection",
@@ -2543,6 +2393,44 @@ export default class Explorer {
         openNotificationConsole={this.expandConsole}
         closePanel={this.closeSidePanel}
         selectedDatabase={this.findSelectedDatabase()}
+      />
+    );
+  }
+
+  public openUploadItemsPanePane(): void {
+    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openSettingPane(): void {
+    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openExecuteSprocParamsPanel(): void {
+    this.openSidePanel(
+      "Input parameters",
+      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
+    );
+  }
+
+  public async openAddCollectionPanel(): Promise<void> {
+    await this.loadDatabaseOffers();
+    this.openSidePanel(
+      "New Collection",
+      <AddCollectionPanel
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        openNotificationConsole={() => this.expandConsole()}
+      />
+    );
+  }
+  public openUploadFilePanel(parent?: NotebookContentItem): void {
+    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    this.openSidePanel(
+      "Upload File",
+      <UploadFilePane
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
     );
   }

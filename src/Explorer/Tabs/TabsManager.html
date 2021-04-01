@@ -78,77 +78,9 @@
   <div class="tabPanesContainer">
     <!-- ko foreach: openedTabs -->
     <div class="tabs-container" data-bind="visible: $data.isActive">
-      <!-- ko if: $data.tabKind === 0 -->
-      <documents-tab params="{data: $data}"></documents-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 1 -->
-      <settings-tab params="{data: $data}"></settings-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 2 -->
-      <stored-procedure-tab params="{data: $data}"></stored-procedure-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 3 -->
-      <user-defined-function-tab params="{data: $data}"></user-defined-function-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 4 -->
-      <trigger-tab params="{data: $data}"></trigger-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 5 -->
-      <query-tab params="{data: $data}"></query-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 6 -->
-      <graph-tab params="{data: $data}"></graph-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 9 -->
-      <tables-query-tab class="flexContainer" params="{data: $data}"></tables-query-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 10 -->
-      <mongo-shell-tab params="{data: $data}"></mongo-shell-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 11 -->
-      <database-settings-tab params="{data: $data}"></database-settings-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 12 -->
-      <conflicts-tab params="{data: $data}"></conflicts-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 14 -->
-      <terminal-tab params="{data: $data}"></terminal-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 15 -->
-      <notebookv2-tab params="{data: $data}"></notebookv2-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 16 -->
-      <spark-master-tab params="{data: $data}"></spark-master-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 17 -->
-      <gallery-tab params="{data: $data}"></gallery-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 18 -->
-      <notebook-viewer-tab params="{data: $data}"></notebook-viewer-tab>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 20 -->
-      <collection-settings-tab-v2 params="{data: $data}"></collection-settings-tab-v2>
-      <!-- /ko -->
-
-      <!-- ko if: $data.tabKind === 21 -->
-      <database-settings-tab-v2 params="{data: $data}"></database-settings-tab-v2>
-      <!-- /ko -->
+      <span
+        data-bind="class: $data.constructor.component.name, component: { name: $data.constructor.component.name, params: $data }"
+      ></span>
     </div>
     <!-- /ko -->
   </div>

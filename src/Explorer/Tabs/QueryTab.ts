@@ -9,7 +9,7 @@ import * as HeadersUtility from "../../Common/HeadersUtility";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
-import { QueryUtils } from "../../Utils/QueryUtils";
+import * as QueryUtils from "../../Utils/QueryUtils";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
@@ -17,6 +17,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../Common/dataAccess/queryDocumentsPage";
+import template from "./QueryTab.html";
 
 enum ToggleState {
   Result,
@@ -24,6 +25,7 @@ enum ToggleState {
 }
 
 export default class QueryTab extends TabsBase implements ViewModels.WaitsForTemplate {
+  public static readonly component = { name: "query-tab", template };
   public queryEditorId: string;
   public executeQueryButton: ViewModels.Button;
   public fetchNextPageButton: ViewModels.Button;

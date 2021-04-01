@@ -6,6 +6,7 @@ import TabsBase from "./TabsBase";
 import Explorer from "../Explorer";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import { JunoClient, IGalleryItem } from "../../Juno/JunoClient";
+import template from "./GalleryTab.html";
 
 interface GalleryTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
@@ -21,6 +22,7 @@ interface GalleryTabOptions extends ViewModels.TabOptions {
  * Notebook gallery tab
  */
 export default class GalleryTab extends TabsBase {
+  public static readonly component = { name: "gallery-tab", template };
   private container: Explorer;
   private galleryAndNotebookViewerComponentProps: GalleryAndNotebookViewerComponentProps;
   public galleryAndNotebookViewerComponentAdapter: GalleryAndNotebookViewerComponentAdapter;
@@ -36,7 +38,7 @@ export default class GalleryTab extends TabsBase {
       galleryItem: options.galleryItem,
       isFavorite: options.isFavorite,
       selectedTab: options.selectedTab,
-      sortBy: SortBy.MostViewed,
+      sortBy: SortBy.MostRecent,
       searchText: undefined,
     };
     this.galleryAndNotebookViewerComponentAdapter = new GalleryAndNotebookViewerComponentAdapter(

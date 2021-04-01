@@ -1,4 +1,4 @@
-import { PropertyInfo, OnChange, Values, IsDisplayable, RefreshOptions } from "../Decorators";
+import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import {
   ChoiceItem,
   Description,
@@ -12,20 +12,20 @@ import {
   SmartUiInput,
 } from "../SelfServeTypes";
 import {
+  getMaxCollectionThroughput,
+  getMaxDatabaseThroughput,
+  getMinCollectionThroughput,
+  getMinDatabaseThroughput,
+  initialize,
   onRefreshSelfServeExample,
   Regions,
   update,
-  initialize,
-  getMinDatabaseThroughput,
-  getMaxDatabaseThroughput,
-  getMinCollectionThroughput,
-  getMaxCollectionThroughput,
 } from "./SelfServeExample.rp";
 
 const regionDropdownItems: ChoiceItem[] = [
-  { label: "North Central US", key: Regions.NorthCentralUS },
-  { label: "West US", key: Regions.WestUS },
-  { label: "East US 2", key: Regions.EastUS2 },
+  { labelTKey: "NorthCentralUS", key: Regions.NorthCentralUS },
+  { labelTKey: "WestUS", key: Regions.WestUS },
+  { labelTKey: "EastUS2", key: Regions.EastUS2 },
 ];
 
 const regionDropdownInfo: Info = {
@@ -203,11 +203,7 @@ export default class SelfServeExample extends SelfServeBaseClass {
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
     const initializeResponse = await initialize();
     const defaults = new Map<string, SmartUiInput>();
-    const currentRegionText = `current region selected is ${initializeResponse.regions}`;
-    defaults.set("currentRegionText", {
-      value: { textTKey: currentRegionText, type: DescriptionType.Text } as Description,
-      hidden: false,
-    });
+    defaults.set("currentRegionText", undefined);
     defaults.set("regions", { value: initializeResponse.regions });
     defaults.set("enableLogging", { value: initializeResponse.enableLogging });
     const accountName = initializeResponse.accountName;

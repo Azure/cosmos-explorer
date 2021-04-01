@@ -1,33 +1,1050 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
-<Translation>
-  <Component />
-</Translation>
+<div
+  style={
+    Object {
+      "overflowX": "auto",
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+        "padding": 10,
+      }
+    }
+  >
+    <StackItem>
+      <StyledCommandBarBase
+        items={
+          Array [
+            Object {
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Save",
+              },
+              "key": "save",
+              "onClick": [Function],
+              "text": "Save",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Undo",
+              },
+              "key": "discard",
+              "onClick": [Function],
+              "text": "Discard",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": false,
+              "iconProps": Object {
+                "iconName": "Refresh",
+              },
+              "key": "refresh",
+              "onClick": [Function],
+              "text": "Refresh",
+            },
+          ]
+        }
+        styles={
+          Object {
+            "root": Object {
+              "paddingLeft": 0,
+            },
+          }
+        }
+      />
+      <Separator
+        styles={
+          Object {
+            "root": Object {
+              "height": 1,
+              "padding": 0,
+              "selectors": Object {
+                "::before": Object {
+                  "background": undefined,
+                },
+              },
+            },
+          }
+        }
+      />
+    </StackItem>
+    <StyledMessageBarBase
+      messageBarType={0}
+    >
+      <Text>
+        refresh performed successfully
+      </Text>
+    </StyledMessageBarBase>
+    <SmartUiComponent
+      currentValues={
+        Map {
+          "throughput" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": 450,
+          },
+          "analyticalStore" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": false,
+          },
+          "database" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": "db2",
+          },
+        }
+      }
+      descriptor={
+        Object {
+          "initialize": [MockFunction] {
+            "calls": Array [
+              Array [],
+              Array [],
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "inputNames": Array [
+            "throughput",
+            "analyticalStore",
+            "database",
+          ],
+          "onRefresh": [MockFunction] {
+            "calls": Array [
+              Array [],
+              Array [],
+              Array [],
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "onSave": [MockFunction] {
+            "calls": Array [
+              Array [
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+              ],
+              Array [
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "root": Object {
+            "children": Array [
+              Object {
+                "id": "throughput",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "throughput",
+                  "defaultValue": 400,
+                  "labelTKey": "Throughput (input)",
+                  "max": 500,
+                  "min": 400,
+                  "placeholderTKey": undefined,
+                  "step": 10,
+                  "type": "number",
+                  "uiType": "Spinner",
+                },
+              },
+              Object {
+                "id": "containerId",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "containerId",
+                  "labelTKey": "Container id",
+                  "placeholderTKey": undefined,
+                  "type": "string",
+                },
+              },
+              Object {
+                "id": "analyticalStore",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "analyticalStore",
+                  "defaultValue": true,
+                  "falseLabelTKey": "Disabled",
+                  "labelTKey": "Analytical Store",
+                  "placeholderTKey": undefined,
+                  "trueLabelTKey": "Enabled",
+                  "type": "boolean",
+                },
+              },
+              Object {
+                "id": "database",
+                "info": undefined,
+                "input": Object {
+                  "choices": Array [
+                    Object {
+                      "key": "db1",
+                      "labelTKey": "Database 1",
+                    },
+                    Object {
+                      "key": "db2",
+                      "labelTKey": "Database 2",
+                    },
+                    Object {
+                      "key": "db3",
+                      "labelTKey": "Database 3",
+                    },
+                  ],
+                  "dataFieldName": "database",
+                  "defaultKey": "db2",
+                  "labelTKey": "Database",
+                  "placeholderTKey": undefined,
+                  "type": "object",
+                },
+              },
+            ],
+            "id": "root",
+            "info": Object {
+              "link": Object {
+                "href": "https://aka.ms/azure-cosmos-db-pricing",
+                "textTKey": "More Details",
+              },
+              "messageTKey": "Start at $24/mo per database",
+            },
+          },
+        }
+      }
+      disabled={true}
+      getTranslation={[Function]}
+      onError={[Function]}
+      onInputChange={[Function]}
+    />
+  </Stack>
+</div>
 `;
 
 exports[`SelfServeComponent message bar and spinner snapshots 2`] = `
-<Translation>
-  <Component />
-</Translation>
+<div
+  style={
+    Object {
+      "overflowX": "auto",
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+        "padding": 10,
+      }
+    }
+  >
+    <StackItem>
+      <StyledCommandBarBase
+        items={
+          Array [
+            Object {
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Save",
+              },
+              "key": "save",
+              "onClick": [Function],
+              "text": "Save",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Undo",
+              },
+              "key": "discard",
+              "onClick": [Function],
+              "text": "Discard",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": false,
+              "iconProps": Object {
+                "iconName": "Refresh",
+              },
+              "key": "refresh",
+              "onClick": [Function],
+              "text": "Refresh",
+            },
+          ]
+        }
+        styles={
+          Object {
+            "root": Object {
+              "paddingLeft": 0,
+            },
+          }
+        }
+      />
+      <Separator
+        styles={
+          Object {
+            "root": Object {
+              "height": 1,
+              "padding": 0,
+              "selectors": Object {
+                "::before": Object {
+                  "background": undefined,
+                },
+              },
+            },
+          }
+        }
+      />
+    </StackItem>
+    <SmartUiComponent
+      currentValues={
+        Map {
+          "throughput" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": 450,
+          },
+          "analyticalStore" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": false,
+          },
+          "database" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": "db2",
+          },
+        }
+      }
+      descriptor={
+        Object {
+          "initialize": [MockFunction] {
+            "calls": Array [
+              Array [],
+              Array [],
+              Array [],
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "inputNames": Array [
+            "throughput",
+            "analyticalStore",
+            "database",
+          ],
+          "onRefresh": [MockFunction] {
+            "calls": Array [
+              Array [],
+              Array [],
+              Array [],
+              Array [],
+              Array [],
+              Array [],
+              Array [],
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "onSave": [MockFunction] {
+            "calls": Array [
+              Array [
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+              ],
+              Array [
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+              ],
+              Array [
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+                Map {
+                  "throughput" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": 450,
+                  },
+                  "analyticalStore" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": false,
+                  },
+                  "database" => Object {
+                    "disabled": false,
+                    "hidden": false,
+                    "value": "db2",
+                  },
+                },
+              ],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "root": Object {
+            "children": Array [
+              Object {
+                "id": "throughput",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "throughput",
+                  "defaultValue": 400,
+                  "labelTKey": "Throughput (input)",
+                  "max": 500,
+                  "min": 400,
+                  "placeholderTKey": undefined,
+                  "step": 10,
+                  "type": "number",
+                  "uiType": "Spinner",
+                },
+              },
+              Object {
+                "id": "containerId",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "containerId",
+                  "labelTKey": "Container id",
+                  "placeholderTKey": undefined,
+                  "type": "string",
+                },
+              },
+              Object {
+                "id": "analyticalStore",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "analyticalStore",
+                  "defaultValue": true,
+                  "falseLabelTKey": "Disabled",
+                  "labelTKey": "Analytical Store",
+                  "placeholderTKey": undefined,
+                  "trueLabelTKey": "Enabled",
+                  "type": "boolean",
+                },
+              },
+              Object {
+                "id": "database",
+                "info": undefined,
+                "input": Object {
+                  "choices": Array [
+                    Object {
+                      "key": "db1",
+                      "labelTKey": "Database 1",
+                    },
+                    Object {
+                      "key": "db2",
+                      "labelTKey": "Database 2",
+                    },
+                    Object {
+                      "key": "db3",
+                      "labelTKey": "Database 3",
+                    },
+                  ],
+                  "dataFieldName": "database",
+                  "defaultKey": "db2",
+                  "labelTKey": "Database",
+                  "placeholderTKey": undefined,
+                  "type": "object",
+                },
+              },
+            ],
+            "id": "root",
+            "info": Object {
+              "link": Object {
+                "href": "https://aka.ms/azure-cosmos-db-pricing",
+                "textTKey": "More Details",
+              },
+              "messageTKey": "Start at $24/mo per database",
+            },
+          },
+        }
+      }
+      disabled={false}
+      getTranslation={[Function]}
+      onError={[Function]}
+      onInputChange={[Function]}
+    />
+  </Stack>
+</div>
 `;
 
 exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
-<Translation>
-  <Component />
-</Translation>
+<div
+  style={
+    Object {
+      "overflowX": "auto",
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+        "padding": 10,
+      }
+    }
+  >
+    <StackItem>
+      <StyledCommandBarBase
+        items={
+          Array [
+            Object {
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Save",
+              },
+              "key": "save",
+              "onClick": [Function],
+              "text": "Save",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Undo",
+              },
+              "key": "discard",
+              "onClick": [Function],
+              "text": "Discard",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Refresh",
+              },
+              "key": "refresh",
+              "onClick": [Function],
+              "text": "Refresh",
+            },
+          ]
+        }
+        styles={
+          Object {
+            "root": Object {
+              "paddingLeft": 0,
+            },
+          }
+        }
+      />
+      <Separator
+        styles={
+          Object {
+            "root": Object {
+              "height": 1,
+              "padding": 0,
+              "selectors": Object {
+                "::before": Object {
+                  "background": undefined,
+                },
+              },
+            },
+          }
+        }
+      />
+    </StackItem>
+    <StyledSpinnerBase
+      size={3}
+    />
+  </Stack>
+</div>
 `;
 
 exports[`SelfServeComponent message bar and spinner snapshots 4`] = `
 <StyledMessageBarBase
   messageBarType={1}
 >
-  sample error message
+  <Text>
+    sample error message
+  </Text>
 </StyledMessageBarBase>
 `;
 
 exports[`SelfServeComponent should render and honor save, discard, refresh actions 1`] = `
-<Translation>
-  <Component />
-</Translation>
+<div
+  style={
+    Object {
+      "overflowX": "auto",
+    }
+  }
+>
+  <Stack
+    tokens={
+      Object {
+        "childrenGap": 5,
+        "padding": 10,
+      }
+    }
+  >
+    <StackItem>
+      <StyledCommandBarBase
+        items={
+          Array [
+            Object {
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Save",
+              },
+              "key": "save",
+              "onClick": [Function],
+              "text": "Save",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": true,
+              "iconProps": Object {
+                "iconName": "Undo",
+              },
+              "key": "discard",
+              "onClick": [Function],
+              "text": "Discard",
+            },
+            Object {
+              "buttonStyles": Object {
+                "root": Object {
+                  "paddingLeft": 20,
+                },
+              },
+              "disabled": false,
+              "iconProps": Object {
+                "iconName": "Refresh",
+              },
+              "key": "refresh",
+              "onClick": [Function],
+              "text": "Refresh",
+            },
+          ]
+        }
+        styles={
+          Object {
+            "root": Object {
+              "paddingLeft": 0,
+            },
+          }
+        }
+      />
+      <Separator
+        styles={
+          Object {
+            "root": Object {
+              "height": 1,
+              "padding": 0,
+              "selectors": Object {
+                "::before": Object {
+                  "background": undefined,
+                },
+              },
+            },
+          }
+        }
+      />
+    </StackItem>
+    <SmartUiComponent
+      currentValues={
+        Map {
+          "throughput" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": 450,
+          },
+          "analyticalStore" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": false,
+          },
+          "database" => Object {
+            "disabled": false,
+            "hidden": false,
+            "value": "db2",
+          },
+        }
+      }
+      descriptor={
+        Object {
+          "initialize": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "inputNames": Array [
+            "throughput",
+            "analyticalStore",
+            "database",
+          ],
+          "onRefresh": [MockFunction] {
+            "calls": Array [
+              Array [],
+            ],
+            "results": Array [
+              Object {
+                "type": "return",
+                "value": Promise {},
+              },
+            ],
+          },
+          "onSave": [MockFunction],
+          "root": Object {
+            "children": Array [
+              Object {
+                "id": "throughput",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "throughput",
+                  "defaultValue": 400,
+                  "labelTKey": "Throughput (input)",
+                  "max": 500,
+                  "min": 400,
+                  "placeholderTKey": undefined,
+                  "step": 10,
+                  "type": "number",
+                  "uiType": "Spinner",
+                },
+              },
+              Object {
+                "id": "containerId",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "containerId",
+                  "labelTKey": "Container id",
+                  "placeholderTKey": undefined,
+                  "type": "string",
+                },
+              },
+              Object {
+                "id": "analyticalStore",
+                "info": undefined,
+                "input": Object {
+                  "dataFieldName": "analyticalStore",
+                  "defaultValue": true,
+                  "falseLabelTKey": "Disabled",
+                  "labelTKey": "Analytical Store",
+                  "placeholderTKey": undefined,
+                  "trueLabelTKey": "Enabled",
+                  "type": "boolean",
+                },
+              },
+              Object {
+                "id": "database",
+                "info": undefined,
+                "input": Object {
+                  "choices": Array [
+                    Object {
+                      "key": "db1",
+                      "labelTKey": "Database 1",
+                    },
+                    Object {
+                      "key": "db2",
+                      "labelTKey": "Database 2",
+                    },
+                    Object {
+                      "key": "db3",
+                      "labelTKey": "Database 3",
+                    },
+                  ],
+                  "dataFieldName": "database",
+                  "defaultKey": "db2",
+                  "labelTKey": "Database",
+                  "placeholderTKey": undefined,
+                  "type": "object",
+                },
+              },
+            ],
+            "id": "root",
+            "info": Object {
+              "link": Object {
+                "href": "https://aka.ms/azure-cosmos-db-pricing",
+                "textTKey": "More Details",
+              },
+              "messageTKey": "Start at $24/mo per database",
+            },
+          },
+        }
+      }
+      disabled={false}
+      getTranslation={[Function]}
+      onError={[Function]}
+      onInputChange={[Function]}
+    />
+  </Stack>
+</div>
 `;

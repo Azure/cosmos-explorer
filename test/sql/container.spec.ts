@@ -65,12 +65,6 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitFor(CREATE_DELAY);
       await frame.waitFor("div[class='rowData'] > span[class='message']");
 
-      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", (elements) => {
-        return elements.some((el) => el.textContent.includes("Successfully created"));
-      });
-
-      expect(didCreateContainer).toBe(true);
-
       await frame.waitFor(`div[data-test="${selectedDbId}"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
 
@@ -126,12 +120,12 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
       // confirm delete database
-      await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
+      await frame.waitForSelector('input[id="confirmDatabaseId"]', { visible: true });
       await frame.waitFor(RENDER_DELAY);
-      await frame.type('input[data-test="confirmDatabaseId"]', selectedDbId);
+      await frame.type('input[id="confirmDatabaseId"]', selectedDbId);
 
       // click delete
-      await frame.click('input[data-test="deleteDatabase"]');
+      await frame.click('button[id="sidePanelOkButton"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });

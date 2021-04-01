@@ -9,9 +9,29 @@ export interface PanelContainerProps {
   closePanel: () => void;
 }
 
-export class PanelContainerComponent extends React.Component<PanelContainerProps> {
+export interface PanelContainerState {
+  height: string;
+}
+
+export class PanelContainerComponent extends React.Component<PanelContainerProps, PanelContainerState> {
   private static readonly consoleHeaderHeight = 32;
   private static readonly consoleContentHeight = 220;
+
+  constructor(props: PanelContainerProps) {
+    super(props);
+
+    this.state = {
+      height: this.getPanelHeight(),
+    };
+  }
+
+  componentDidMount(): void {
+    window.addEventListener("resize", () => this.setState({ height: this.getPanelHeight() }));
+  }
+
+  componentWillUnmount(): void {
+    window.removeEventListener("resize", () => this.setState({ height: this.getPanelHeight() }));
+  }
 
   render(): JSX.Element {
     if (!this.props.panelContent) {
@@ -30,8 +50,10 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         headerClassName="panelHeader"
         styles={{
           navigation: { borderBottom: "1px solid #cccccc" },
-          content: { padding: "24px 34px 20px 34px", height: "100%" },
+          content: { padding: 0, height: "100%" },
           scrollableContent: { height: "100%" },
+          header: { padding: "0 0 8px 34px" },
+          commands: { marginTop: 8 },
         }}
         style={{ height: this.getPanelHeight() }}
       >

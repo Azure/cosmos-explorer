@@ -17,6 +17,7 @@ import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
+import template from "./DatabaseSettingsTab.html";
 import TabsBase from "./TabsBase";
 
 const updateThroughputBeyondLimitWarningMessage: string = `
@@ -44,6 +45,7 @@ const throughputApplyLongDelayMessage = (isAutoscale: boolean, throughput: numbe
   Database: ${databaseName}, ${currentThroughput(isAutoscale, throughput)}`;
 
 export default class DatabaseSettingsTab extends TabsBase implements ViewModels.WaitsForTemplate {
+  public static readonly component = { name: "database-settings-tab", template };
   // editables
   public isAutoPilotSelected: ViewModels.Editable<boolean>;
   public throughput: ViewModels.Editable<number>;
@@ -136,7 +138,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         return "";
       }
 
-      const serverId = this.container.serverId();
       const regions =
         (account &&
           account.properties &&
@@ -150,14 +151,14 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
         estimatedSpend = PricingUtils.getEstimatedSpendHtml(
           // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
           this.overrideWithAutoPilotSettings() ? this.autoPilotThroughput() : this.throughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
       } else {
         estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
           this.autoPilotThroughput(),
-          serverId,
+          userContext.portalEnv,
           regions,
           multimaster
         );
@@ -402,7 +403,6 @@ export default class DatabaseSettingsTab extends TabsBase implements ViewModels.
       this._setBaseline();
       this._wasAutopilotOriginallySet(this.isAutoPilotSelected());
     } catch (error) {
-      this.container.isRefreshingExplorer(false);
       this.isExecutionError(true);
       console.error(error);
       const errorMessage = getErrorMessage(error);

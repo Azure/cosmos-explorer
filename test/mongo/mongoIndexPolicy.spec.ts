@@ -33,7 +33,7 @@ describe("MongoDB Index policy tests", () => {
       await frame.click(`div[data-test="${collectionId}"]`);
 
       await frame.waitFor(`div[data-test="Scale & Settings"]`), { visible: true };
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(10000);
       await frame.click(`div[data-test="Scale & Settings"]`);
 
       await frame.waitFor(`button[data-content="Indexing Policy"]`), { visible: true };

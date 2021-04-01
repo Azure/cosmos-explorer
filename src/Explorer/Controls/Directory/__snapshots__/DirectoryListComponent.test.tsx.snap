@@ -350,12 +350,11 @@ exports[`test render renders with filters 1`] = `
       }
     >
       <div
-        className="ms-ScrollablePane root-40"
+        className="ms-ScrollablePane root-72"
         data-is-scrollable="true"
       >
         <div
-          aria-hidden="true"
-          className="stickyAbove-42"
+          className="stickyAbove-74"
           style={
             Object {
               "height": 0,
@@ -366,7 +365,7 @@ exports[`test render renders with filters 1`] = `
           }
         />
         <div
-          className="ms-ScrollablePane--contentContainer contentContainer-41"
+          className="ms-ScrollablePane--contentContainer contentContainer-73"
           data-is-scrollable={true}
         >
           <Sticky
@@ -375,7 +374,6 @@ exports[`test render renders with filters 1`] = `
           >
             <div>
               <div
-                aria-hidden={true}
                 style={
                   Object {
                     "pointerEvents": "none",
@@ -395,7 +393,6 @@ exports[`test render renders with filters 1`] = `
                 style={Object {}}
               >
                 <div
-                  aria-hidden={false}
                   style={
                     Object {
                       "backgroundColor": "",
@@ -411,6 +408,7 @@ exports[`test render renders with filters 1`] = `
                   >
                     <TextFieldBase
                       ariaLabel="Directory filter text box"
+                      canRevealPassword={false}
                       className="directoryListFilterTextBox"
                       deferredValidationTime={200}
                       onChange={[Function]}
@@ -693,18 +691,18 @@ exports[`test render renders with filters 1`] = `
                       validateOnLoad={true}
                     >
                       <div
-                        className="ms-TextField directoryListFilterTextBox root-46"
+                        className="ms-TextField directoryListFilterTextBox root-78"
                       >
                         <div
                           className="ms-TextField-wrapper"
                         >
                           <div
-                            className="ms-TextField-fieldGroup fieldGroup-47"
+                            className="ms-TextField-fieldGroup fieldGroup-79"
                           >
                             <input
                               aria-invalid={false}
                               aria-label="Directory filter text box"
-                              className="ms-TextField-field field-48"
+                              className="ms-TextField-field field-80"
                               id="TextField0"
                               onBlur={[Function]}
                               onChange={[Function]}
@@ -1123,7 +1121,7 @@ exports[`test render renders with filters 1`] = `
                               "iconDisabled": Object {
                                 "color": "#a19f9d",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
@@ -1149,7 +1147,7 @@ exports[`test render renders with filters 1`] = `
                               "menuIconDisabled": Object {
                                 "color": "#a19f9d",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                     "color": "GrayText",
                                   },
                                 },
@@ -1168,7 +1166,7 @@ exports[`test render renders with filters 1`] = `
                                       "position": "absolute",
                                       "right": 2,
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "bottom": -2,
                                           "left": -2,
                                           "outlineColor": "ButtonText",
@@ -1247,7 +1245,7 @@ exports[`test render renders with filters 1`] = `
                                       "position": "absolute",
                                       "right": 2,
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "bottom": -2,
                                           "left": -2,
                                           "outlineColor": "ButtonText",
@@ -1279,8 +1277,10 @@ exports[`test render renders with filters 1`] = `
                                   },
                                 },
                                 Object {
+                                  "backgroundColor": "#f3f2f1",
+                                  "color": "#a19f9d",
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "backgroundColor": "Window",
                                       "borderColor": "GrayText",
                                       "color": "GrayText",
@@ -1300,7 +1300,7 @@ exports[`test render renders with filters 1`] = `
                                   "backgroundColor": "#f3f2f1",
                                   "color": "#201f1e",
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "borderColor": "Highlight",
                                       "color": "Highlight",
                                     },
@@ -1326,7 +1326,7 @@ exports[`test render renders with filters 1`] = `
                               "splitButtonContainer": Array [
                                 Object {
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "border": "none",
                                     },
                                   },
@@ -1344,7 +1344,7 @@ exports[`test render renders with filters 1`] = `
                                       "position": "absolute",
                                       "right": 3,
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "border": "none",
                                           "bottom": -2,
                                           "left": -2,
@@ -1373,19 +1373,20 @@ exports[`test render renders with filters 1`] = `
                                       "borderBottomRightRadius": "0",
                                       "borderTopRightRadius": "0",
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "MsHighContrastAdjust": "none",
                                           "backgroundColor": "Window",
                                           "border": "1px solid WindowText",
                                           "borderRightWidth": "0",
                                           "color": "WindowText",
+                                          "forcedColorAdjust": "none",
                                         },
                                       },
                                     },
                                     ".ms-Button--primary + .ms-Button": Object {
                                       "border": "none",
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "border": "1px solid WindowText",
                                           "borderLeftWidth": "0",
                                         },
@@ -1398,10 +1399,11 @@ exports[`test render renders with filters 1`] = `
                                 "selectors": Object {
                                   ".ms-Button--primary": Object {
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "MsHighContrastAdjust": "none",
                                         "backgroundColor": "WindowText",
                                         "color": "Window",
+                                        "forcedColorAdjust": "none",
                                       },
                                     },
                                   },
@@ -1411,10 +1413,11 @@ exports[`test render renders with filters 1`] = `
                                 "selectors": Object {
                                   ".ms-Button--primary": Object {
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "MsHighContrastAdjust": "none",
                                         "backgroundColor": "WindowText",
                                         "color": "Window",
+                                        "forcedColorAdjust": "none",
                                       },
                                     },
                                   },
@@ -1424,12 +1427,11 @@ exports[`test render renders with filters 1`] = `
                                 "border": "none",
                                 "outline": "none",
                                 "selectors": Object {
-                                  "@media screen and (-ms-high-contrast: active)": Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                    "MsHighContrastAdjust": "none",
                                     "backgroundColor": "Window",
                                     "borderColor": "GrayText",
                                     "color": "GrayText",
-                                  },
-                                  "@media screen and (forced-colors: active)": Object {
                                     "forcedColorAdjust": "none",
                                   },
                                 },
@@ -1441,7 +1443,7 @@ exports[`test render renders with filters 1`] = `
                                 "selectors": Object {
                                   ".ms-Button--primary": Object {
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "backgroundColor": "Highlight",
                                         "color": "Window",
                                       },
@@ -1450,7 +1452,7 @@ exports[`test render renders with filters 1`] = `
                                   ".ms-Button.is-disabled": Object {
                                     "color": "#a19f9d",
                                     "selectors": Object {
-                                      "@media screen and (-ms-high-contrast: active)": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                         "backgroundColor": "Window",
                                         "borderColor": "GrayText",
                                         "color": "GrayText",
@@ -1466,7 +1468,7 @@ exports[`test render renders with filters 1`] = `
                                   "position": "absolute",
                                   "right": 31,
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "backgroundColor": "WindowText",
                                     },
                                   },
@@ -1478,7 +1480,7 @@ exports[`test render renders with filters 1`] = `
                                   "position": "absolute",
                                   "right": 31,
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "backgroundColor": "WindowText",
                                     },
                                   },
@@ -1495,7 +1497,7 @@ exports[`test render renders with filters 1`] = `
                                   "position": "absolute",
                                   "right": 31,
                                   "selectors": Object {
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "backgroundColor": "GrayText",
                                     },
                                   },
@@ -1518,7 +1520,7 @@ exports[`test render renders with filters 1`] = `
                                     ":hover": Object {
                                       "backgroundColor": "#edebe9",
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "color": "Highlight",
                                         },
                                       },
@@ -1526,6 +1528,11 @@ exports[`test render renders with filters 1`] = `
                                   },
                                 },
                                 Object {
+                                  "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                    ".ms-Button-menuIcon": Object {
+                                      "color": "WindowText",
+                                    },
+                                  },
                                   "border": "1px solid #8a8886",
                                   "borderBottomRightRadius": "2px",
                                   "borderLeft": "none",
@@ -1571,7 +1578,7 @@ exports[`test render renders with filters 1`] = `
                                   "selectors": Object {
                                     ".ms-Button--primary": Object {
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "backgroundColor": "Window",
                                           "borderColor": "GrayText",
                                           "color": "GrayText",
@@ -1580,7 +1587,7 @@ exports[`test render renders with filters 1`] = `
                                     },
                                     ".ms-Button-menuIcon": Object {
                                       "selectors": Object {
-                                        "@media screen and (-ms-high-contrast: active)": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                           "color": "GrayText",
                                         },
                                       },
@@ -1588,7 +1595,7 @@ exports[`test render renders with filters 1`] = `
                                     ":hover": Object {
                                       "cursor": "default",
                                     },
-                                    "@media screen and (-ms-high-contrast: active)": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
                                       "backgroundColor": "Window",
                                       "border": "1px solid GrayText",
                                       "color": "GrayText",
@@ -1893,7 +1900,7 @@ exports[`test render renders with filters 1`] = `
                         >
                           <button
                             aria-disabled={true}
-                            className="ms-Button ms-Button--default is-disabled directoryListButton root-54"
+                            className="ms-Button ms-Button--default is-disabled directoryListButton root-89"
                             data-is-focusable={false}
                             disabled={true}
                             onClick={[Function]}
@@ -1905,7 +1912,7 @@ exports[`test render renders with filters 1`] = `
                             type="button"
                           >
                             <span
-                              className="ms-Button-flexContainer flexContainer-55"
+                              className="ms-Button-flexContainer flexContainer-90"
                               data-automationid="splitbuttonprimary"
                             >
                               <div
@@ -1936,8 +1943,7 @@ exports[`test render renders with filters 1`] = `
           </List>
         </div>
         <div
-          aria-hidden="true"
-          className="stickyBelow-43"
+          className="stickyBelow-75"
           style={
             Object {
               "bottom": "0px",
@@ -1948,7 +1954,7 @@ exports[`test render renders with filters 1`] = `
           }
         >
           <div
-            className="stickyBelowItems-44"
+            className="stickyBelowItems-76"
           />
         </div>
       </div>

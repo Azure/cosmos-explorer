@@ -97,10 +97,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("graph-styling-pane")).toBe(true);
   });
 
-  it("should register upload-file-pane component", () => {
-    expect(ko.components.isRegistered("upload-file-pane")).toBe(true);
-  });
-
   it("should register string-input-pane component", () => {
     expect(ko.components.isRegistered("string-input-pane")).toBe(true);
   });

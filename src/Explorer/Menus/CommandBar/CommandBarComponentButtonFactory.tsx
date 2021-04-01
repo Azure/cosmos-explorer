@@ -1,37 +1,38 @@
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { Areas } from "../../../Common/Constants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-
-import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
+import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
+import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
-import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
-import * as Constants from "../../../Common/Constants";
-import OpenInTabIcon from "../../../../images/open-in-tab.svg";
-import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
-import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
-import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
-import SettingsIcon from "../../../../images/settings_15x15.svg";
-import AddUdfIcon from "../../../../images/AddUdf.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
+import AddUdfIcon from "../../../../images/AddUdf.svg";
+import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
+import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
+import GitHubIcon from "../../../../images/github.svg";
+import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import EnableNotebooksIcon from "../../../../images/notebook/Notebook-enable.svg";
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
-import GitHubIcon from "../../../../images/github.svg";
+import OpenInTabIcon from "../../../../images/open-in-tab.svg";
+import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
+import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
+import { AuthType } from "../../../AuthType";
+import * as Constants from "../../../Common/Constants";
+import { Areas } from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
-import Explorer from "../../Explorer";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../UserContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import * as React from "react";
+import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
 
 let counter = 0;
 
 export function createStaticCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  if (container.isAuthWithResourceToken()) {
+  if (userContext.authType === AuthType.ResourceToken) {
     return createStaticCommandBarButtonsForResourceToken(container);
   }
 
@@ -163,7 +164,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     const settingsPaneButton: CommandButtonComponentProps = {
       iconSrc: SettingsIcon,
       iconAlt: label,
-      onCommandClick: () => container.settingsPane.open(),
+      onCommandClick: () => container.openSettingPane(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,
@@ -406,7 +407,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
   return {
     iconSrc: NewNotebookIcon,
     iconAlt: label,
-    onCommandClick: () => container.onUploadToNotebookServerClicked(),
+    onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

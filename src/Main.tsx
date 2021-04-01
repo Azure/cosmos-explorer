@@ -1,18 +1,8 @@
 // CSS Dependencies
-import "abort-controller/polyfill";
-import "babel-polyfill";
 import "bootstrap/dist/css/bootstrap.css";
-import "es6-object-assign/auto";
-import "es6-symbol/implement";
-import "object.entries/auto";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import "promise-polyfill/src/polyfill";
-import "promise.prototype.finally/auto";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import "url-polyfill/url-polyfill.min";
-import "webcrypto-liner/build/webcrypto-liner.shim.min";
-import "whatwg-fetch";
 import "../externals/jquery-ui.min.css";
 import "../externals/jquery-ui.min.js";
 import "../externals/jquery-ui.structure.min.css";
@@ -37,6 +27,7 @@ import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
+import { AuthType } from "./AuthType";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
@@ -44,6 +35,7 @@ import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
+import "./Explorer/Controls/ThroughputInput/ThroughputInput.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
@@ -62,9 +54,9 @@ import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
-import "./Libs/is-integer-polyfill";
 import "./Libs/jquery";
 import "./Shared/appInsights";
+import { userContext } from "./UserContext";
 
 initializeIcons();
 
@@ -154,11 +146,11 @@ const App: React.FunctionComponent = () => {
                       </div>
                     </div>
                   </div>
-                  <div
-                    style={{ overflowY: "auto" }}
-                    data-bind="if: isAuthWithResourceToken(), react:resourceTreeForResourceToken"
-                  />
-                  <div style={{ overflowY: "auto" }} data-bind="if: !isAuthWithResourceToken(), react:resourceTree" />
+                  {userContext.authType === AuthType.ResourceToken ? (
+                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
+                  ) : (
+                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
+                  )}
                 </div>
                 {/*  Collections Window - End */}
               </div>
@@ -208,18 +200,12 @@ const App: React.FunctionComponent = () => {
             {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
-          <div
-            className="connectExplorerContainer"
-            data-bind="visible: !isRefreshingExplorer() && tabsManager.openedTabs().length === 0"
-          >
+          <div className="connectExplorerContainer" data-bind="visible: tabsManager.openedTabs().length === 0">
             <form className="connectExplorerFormContainer">
               <SplashScreen explorer={explorer} />
             </form>
           </div>
-          <div
-            className="tabsManagerContainer"
-            data-bind='component: { name: "tabs-manager", params: {data: tabsManager} }'
-          />
+          <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div
@@ -243,7 +229,6 @@ const App: React.FunctionComponent = () => {
         closePanel={closeSidePanel}
         isConsoleExpanded={isNotificationConsoleExpanded}
       />
-      <div data-bind="react:uploadItemsPaneAdapter" />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "delete-collection-confirmation-pane", params: { data: deleteCollectionConfirmationPane} }' />
@@ -254,13 +239,9 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "table-column-options-pane", params: { data: tableColumnOptionsPane} }' />
       <div data-bind='component: { name: "table-query-select-pane", params: { data: querySelectPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      <div data-bind='component: { name: "settings-pane", params: { data: settingsPane} }' />
-      <div data-bind='component: { name: "upload-items-pane", params: { data: uploadItemsPane} }' />
       <div data-bind='component: { name: "load-query-pane", params: { data: loadQueryPane} }' />
-      <div data-bind='component: { name: "execute-sproc-params-pane", params: { data: executeSprocParamsPane} }' />
       <div data-bind='component: { name: "save-query-pane", params: { data: saveQueryPane} }' />
       <div data-bind='component: { name: "browse-queries-pane", params: { data: browseQueriesPane} }' />
-      <div data-bind='component: { name: "upload-file-pane", params: { data: uploadFilePane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
       <KOCommentIfStart if="isGitHubPaneEnabled" />

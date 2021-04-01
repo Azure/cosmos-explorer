@@ -2,7 +2,7 @@ import * as DataModels from "../Contracts/DataModels";
 import * as Q from "q";
 import * as sinon from "sinon";
 import * as ViewModels from "../Contracts/ViewModels";
-import { QueryUtils } from "./QueryUtils";
+import * as QueryUtils from "./QueryUtils";
 
 describe("Query Utils", () => {
   function generatePartitionKeyForPath(path: string): DataModels.PartitionKey {

@@ -33,7 +33,7 @@ console.log("Subcription: ", subscriptionId);
 console.log("Account Name: ", accountName);
 
 const initTestExplorer = async (): Promise<void> => {
-  const { token } = await credentials.getToken("https://management.core.windows.net/.default");
+  const { token } = await credentials.getToken("https://management.azure.com//.default");
   updateUserContext({
     authorizationToken: `bearer ${token}`,
   });
@@ -79,7 +79,7 @@ const initTestExplorer = async (): Promise<void> => {
       // After we have received the "ready" message from the child iframe we can post configuration
       // This simulates the same action that happens in the portal
       console.dir(event.data);
-      if (event.data?.data === "ready") {
+      if (event.data?.kind === "ready") {
         iframe.contentWindow.postMessage(
           {
             signature: "pcIframe",
