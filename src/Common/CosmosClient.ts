@@ -32,7 +32,7 @@ export const tokenProvider = async (requestInfo: RequestInfo) => {
 };
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
-  requestContext.endpoint = window.location.origin + configContext.PROXY_PATH;
+  requestContext.endpoint = window.location.href + configContext.PROXY_PATH;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   return next(requestContext);
 };
