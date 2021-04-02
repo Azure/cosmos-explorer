@@ -1,8 +1,8 @@
-import Explorer from "../Explorer";
 import * as ko from "knockout";
-import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 import * as ViewModels from "../../Contracts/ViewModels";
+import Explorer from "../Explorer";
 import TabsBase from "../Tabs/TabsBase";
+import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 
 describe("ResourceTreeAdapter", () => {
   const mockContainer = (): Explorer =>
@@ -18,7 +18,7 @@ describe("ResourceTreeAdapter", () => {
         } as TabsBase),
       },
       isNotebookEnabled: ko.observable<boolean>(true),
-      nonSystemDatabases: ko.observable<ViewModels.Database[]>([]),
+      databases: ko.observable<ViewModels.Database[]>([]),
     } as unknown) as Explorer);
 
   // TODO isDataNodeSelected needs a better design and refactor, but for now, we protect some of the code paths

@@ -13,7 +13,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { QueryUtils } from "../../Utils/QueryUtils";
+import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import template from "./QueryTab.html";
 import TabsBase from "./TabsBase";
@@ -185,7 +185,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   };
 
   public onSaveQueryClick = (): void => {
-    this.collection && this.collection.container && this.collection.container.saveQueryPane.open();
+    this.collection && this.collection.container && this.collection.container.openSaveQueryPanel();
   };
 
   public onSavedQueriesClick = (): void => {

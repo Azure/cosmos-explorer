@@ -77,14 +77,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("delete-collection-confirmation-pane")).toBe(true);
   });
 
-  it("should register delete-database-confirmation-pane component", () => {
-    expect(ko.components.isRegistered("delete-database-confirmation-pane")).toBe(true);
-  });
-
-  it("should register save-query-pane component", () => {
-    expect(ko.components.isRegistered("save-query-pane")).toBe(true);
-  });
-
   it("should register browse-queries-pane component", () => {
     expect(ko.components.isRegistered("browse-queries-pane")).toBe(true);
   });
@@ -95,10 +87,6 @@ describe("Component Registerer", () => {
 
   it("should register graph-styling-pane component", () => {
     expect(ko.components.isRegistered("graph-styling-pane")).toBe(true);
-  });
-
-  it("should register upload-file-pane component", () => {
-    expect(ko.components.isRegistered("upload-file-pane")).toBe(true);
   });
 
   it("should register string-input-pane component", () => {

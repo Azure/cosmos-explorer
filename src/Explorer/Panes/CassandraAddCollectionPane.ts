@@ -261,10 +261,8 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         });
         this.keyspaceIds(cachedKeyspaceIdsList);
       };
-      this.container.nonSystemDatabases.subscribe((newDatabases: ViewModels.Database[]) =>
-        updateKeyspaceIds(newDatabases)
-      );
-      updateKeyspaceIds(this.container.nonSystemDatabases());
+      this.container.databases.subscribe((newDatabases: ViewModels.Database[]) => updateKeyspaceIds(newDatabases));
+      updateKeyspaceIds(this.container.databases());
     }
 
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {

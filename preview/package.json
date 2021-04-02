@@ -1,0 +1,17 @@
+{
+  "name": "cosmos-explorer-preview",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "az webapp up -n cosmos-explorer-preview --subscription cosmosdb-portalteam-generaldemo -g stfaul",
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Microsoft Corporation",
+  "dependencies": {
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^1.1.0"
+  }
+}
