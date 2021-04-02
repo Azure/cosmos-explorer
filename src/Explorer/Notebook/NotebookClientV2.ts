@@ -1,16 +1,14 @@
 // Manages all the redux logic for the notebook nteract code
 // TODO: Merge with NotebookClient?
-import { NotebookWorkspaceConnectionInfo } from "../../Contracts/DataModels";
-import * as Constants from "../../Common/Constants";
-import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
-
 // Vendor modules
 import {
   actions,
   AppState,
-  createHostRef,
+  ContentRecord, createHostRef,
   createKernelspecsRef,
-  makeAppRecord,
+  HostRecord,
+  HostRef,
+  IContentProvider, KernelspecsRef, makeAppRecord,
   makeCommsRecord,
   makeContentsRecord,
   makeEditorsRecord,
@@ -18,24 +16,22 @@ import {
   makeHostsRecord,
   makeJupyterHostRecord,
   makeStateRecord,
-  makeTransformsRecord,
-  ContentRecord,
-  HostRecord,
-  HostRef,
-  KernelspecsRef,
-  IContentProvider,
+  makeTransformsRecord
 } from "@nteract/core";
+import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
 import { Media } from "@nteract/outputs";
 import TransformVDOM from "@nteract/transform-vdom";
 import * as Immutable from "immutable";
-import { Store, AnyAction, MiddlewareAPI, Middleware, Dispatch } from "redux";
-
-import configureStore from "./NotebookComponent/store";
-
 import { Notification } from "react-notification-system";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { AnyAction, Dispatch, Middleware, MiddlewareAPI, Store } from "redux";
+import * as Constants from "../../Common/Constants";
+import { NotebookWorkspaceConnectionInfo } from "../../Contracts/DataModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import configureStore from "./NotebookComponent/store";
+import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
+import IFrameHTML from "./NotebookRenderer/outputs/IFrameHTML";
+import IFrameJavaScript from "./NotebookRenderer/outputs/IFrameJavaScript";
 
 export type KernelSpecsDisplay = { name: string; displayName: string };
 
@@ -168,8 +164,8 @@ export class NotebookClientV2 {
               "application/vnd.vega.v5+json": NullTransform,
               "application/vdom.v1+json": TransformVDOM,
               "application/json": Media.Json,
-              "application/javascript": Media.JavaScript,
-              "text/html": Media.HTML,
+              "application/javascript": IFrameJavaScript,
+              "text/html": IFrameHTML,
               "text/markdown": Media.Markdown,
               "text/latex": Media.LaTeX,
               "image/svg+xml": Media.SVG,
