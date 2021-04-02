@@ -96,7 +96,7 @@ jobs:
         env:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
       - name: Upload preview config to blob storage
-        run: az storage blob upload -d '$web' -f ./preview/config.json --account-name cosmosexplorerpreview --subscription cosmosdb-portalteam-generaldemo --destination-path "${GITHUB_SHA}/config.json" --account-key="${PREVIEW_STORAGE_KEY}"
+        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name cosmosexplorerpreview --subscription cosmosdb-portalteam-generaldemo --name "${GITHUB_SHA}/config.json" --account-key="${PREVIEW_STORAGE_KEY}"
         env:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
   endtoendemulator:
