@@ -10,7 +10,6 @@ import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleCompo
 import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
 import * as PaneComponents from "./Panes/PaneComponents";
 import ConflictsTab from "./Tabs/ConflictsTab";
-import DatabaseSettingsTab from "./Tabs/DatabaseSettingsTab";
 import DocumentsTab from "./Tabs/DocumentsTab";
 import GalleryTab from "./Tabs/GalleryTab";
 import GraphTab from "./Tabs/GraphTab";
@@ -53,7 +52,6 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
   TerminalTab,
   GalleryTab,
   NotebookViewerTab,
-  DatabaseSettingsTab,
   DatabaseSettingsTabV2,
 ].forEach(({ component: { name, template } }) => ko.components.register(name, { template }));
 
