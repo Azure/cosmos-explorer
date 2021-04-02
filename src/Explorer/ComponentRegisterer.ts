@@ -14,7 +14,6 @@ import DatabaseSettingsTab from "./Tabs/DatabaseSettingsTab";
 import DocumentsTab from "./Tabs/DocumentsTab";
 import GalleryTab from "./Tabs/GalleryTab";
 import GraphTab from "./Tabs/GraphTab";
-import MongoDocumentsTab from "./Tabs/MongoDocumentsTab";
 import MongoShellTab from "./Tabs/MongoShellTab";
 import NotebookTabV2 from "./Tabs/NotebookV2Tab";
 import NotebookViewerTab from "./Tabs/NotebookViewerTab";
@@ -73,7 +72,6 @@ ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEnt
 ko.components.register("table-column-options-pane", new PaneComponents.TableColumnOptionsPaneComponent());
 ko.components.register("table-query-select-pane", new PaneComponents.TableQuerySelectPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
-ko.components.register("load-query-pane", new PaneComponents.LoadQueryPaneComponent());
 ko.components.register("browse-queries-pane", new PaneComponents.BrowseQueriesPaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
 ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());
