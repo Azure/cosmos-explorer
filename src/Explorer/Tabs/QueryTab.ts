@@ -1,23 +1,22 @@
 import * as ko from "knockout";
+import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
+import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
+import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
+import { queryDocumentsPage } from "../../Common/dataAccess/queryDocumentsPage";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { HashMap } from "../../Common/HashMap";
+import * as HeadersUtility from "../../Common/HeadersUtility";
+import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
+import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import TabsBase from "./TabsBase";
-import { HashMap } from "../../Common/HashMap";
-import * as HeadersUtility from "../../Common/HeadersUtility";
-import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import * as QueryUtils from "../../Utils/QueryUtils";
-import SaveQueryIcon from "../../../images/save-cosmos.svg";
-
-import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
-import { queryDocumentsPage } from "../../Common/dataAccess/queryDocumentsPage";
 import template from "./QueryTab.html";
+import TabsBase from "./TabsBase";
 
 enum ToggleState {
   Result,
@@ -190,7 +189,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   };
 
   public onSaveQueryClick = (): void => {
-    this.collection && this.collection.container && this.collection.container.saveQueryPane.open();
+    this.collection && this.collection.container && this.collection.container.openSaveQueryPanel();
   };
 
   public onSavedQueriesClick = (): void => {
