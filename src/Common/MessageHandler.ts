@@ -56,7 +56,7 @@ export function sendMessage(data: any): void {
         signature: "pcIframe",
         data: data,
       },
-      portalChildWindow.document.referrer
+      portalChildWindow.document.referrer || "*"
     );
   }
 }
@@ -71,7 +71,7 @@ export function sendReadyMessage(): void {
         kind: "ready",
         data: "ready",
       },
-      portalChildWindow.document.referrer
+      portalChildWindow.document.referrer || "*"
     );
   }
 }
