@@ -94,6 +94,7 @@ jobs:
           path: dist/
       - run: |
           az storage blob upload-batch -d '$web' -s 'dist' --account-name cosmosexplorerpreview --subscription cosmosdb-portalteam-generaldemo --destination-path "${GITHUB_SHA}" --account-key="${PREVIEW_STORAGE_KEY}"
+          az storage blob upload -d '$web' -s 'preview/config.json' --account-name cosmosexplorerpreview --subscription cosmosdb-portalteam-generaldemo --destination-path "${GITHUB_SHA}/config.json" --account-key="${PREVIEW_STORAGE_KEY}"
         env:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
   endtoendemulator:
