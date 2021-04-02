@@ -36,8 +36,9 @@ describe("isReadyMessage", () => {
     ${{ data: { kind: "not-ready" } }}                    | ${false}
     ${{ data: { data: "not-ready" } }}                    | ${false}
     ${{ data: { data: "not-ready", kind: "not-ready" } }} | ${false}
+    ${{ data: {} }}                                       | ${false}
     ${{}}                                                 | ${false}
-  `("returns $expected when called with $domain", ({ event, expected }) => {
+  `("returns $expected when called with $event", ({ event, expected }) => {
     expect(isReadyMessage(event as MessageEvent)).toBe(expected);
   });
 });
