@@ -23,11 +23,18 @@ export type Features = {
   readonly ttl90Days: boolean;
 };
 
-export function extractFeatures(params?: URLSearchParams): Features {
-  params = params || new URLSearchParams(window.parent.location.search);
+export function extractFeatures(given = new URLSearchParams()): Features {
   const downcased = new URLSearchParams();
-  params.forEach((value, key) => downcased.append(key.toLocaleLowerCase(), value));
-  const get = (key: string) => downcased.get("feature." + key.toLocaleLowerCase()) ?? undefined;
+  const set = (value: string, key: string) => downcased.set(key.toLowerCase(), value);
+  const get = (key: string) => downcased.get("feature." + key) ?? undefined;
+
+  try {
+    new URLSearchParams(window.parent.location.search).forEach(set);
+  } catch {
+    //
+  } finally {
+    given.forEach(set);
+  }
 
   return {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),

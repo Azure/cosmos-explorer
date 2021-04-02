@@ -41,7 +41,6 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
 // Collection Tabs
 [
   DocumentsTab,
-  MongoDocumentsTab,
   StoredProcedureTab,
   TriggerTab,
   UserDefinedFunctionTab,
@@ -66,10 +65,7 @@ ko.components.register(
   "delete-collection-confirmation-pane",
   new PaneComponents.DeleteCollectionConfirmationPaneComponent()
 );
-ko.components.register(
-  "delete-database-confirmation-pane",
-  new PaneComponents.DeleteDatabaseConfirmationPaneComponent()
-);
+
 ko.components.register("graph-new-vertex-pane", new PaneComponents.GraphNewVertexPaneComponent());
 ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPaneComponent());
 ko.components.register("table-add-entity-pane", new PaneComponents.TableAddEntityPaneComponent());
@@ -77,12 +73,8 @@ ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEnt
 ko.components.register("table-column-options-pane", new PaneComponents.TableColumnOptionsPaneComponent());
 ko.components.register("table-query-select-pane", new PaneComponents.TableQuerySelectPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
-ko.components.register("settings-pane", new PaneComponents.SettingsPaneComponent());
-ko.components.register("execute-sproc-params-pane", new PaneComponents.ExecuteSprocParamsComponent());
-ko.components.register("upload-items-pane", new PaneComponents.UploadItemsPaneComponent());
 ko.components.register("load-query-pane", new PaneComponents.LoadQueryPaneComponent());
 ko.components.register("browse-queries-pane", new PaneComponents.BrowseQueriesPaneComponent());
-ko.components.register("upload-file-pane", new PaneComponents.UploadFilePaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
 ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());

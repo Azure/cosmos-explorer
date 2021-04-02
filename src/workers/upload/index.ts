@@ -1,7 +1,6 @@
-import "babel-polyfill";
 import { DocumentClientParams, UploadDetailsRecord, UploadDetails } from "./definitions";
 import { client } from "../../Common/CosmosClient";
-import { configContext, updateConfigContext } from "../../ConfigContext";
+import { updateConfigContext } from "../../ConfigContext";
 import { updateUserContext } from "../../UserContext";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 

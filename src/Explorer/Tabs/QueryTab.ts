@@ -13,7 +13,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { QueryUtils } from "../../Utils/QueryUtils";
+import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import template from "./QueryTab.html";
 import TabsBase from "./TabsBase";
