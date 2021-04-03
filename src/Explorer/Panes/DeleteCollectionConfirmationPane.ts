@@ -1,15 +1,14 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { deleteCollection } from "../../Common/dataAccess/deleteCollection";
+import DeleteFeedback from "../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export default class DeleteCollectionConfirmationPane extends ContextualPaneBase {
   public collectionIdConfirmationText: ko.Observable<string>;
@@ -31,8 +30,7 @@ export default class DeleteCollectionConfirmationPane extends ContextualPaneBase
     if (!this._isValid()) {
       const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
       this.formErrors("Input collection name does not match the selected collection");
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
+      logConsoleError(
         `Error while deleting collection ${selectedCollection && selectedCollection.id()}: ${this.formErrors()}`
       );
       return Promise.resolve();

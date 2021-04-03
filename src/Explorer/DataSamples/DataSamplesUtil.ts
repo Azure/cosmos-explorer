@@ -1,7 +1,6 @@
 import * as ViewModels from "../../Contracts/ViewModels";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 export class DataSamplesUtil {
@@ -20,18 +19,16 @@ export class DataSamplesUtil {
     if (this.hasContainer(databaseName, containerName, this.container.databases())) {
       const msg = `The container ${containerName} in database ${databaseName} already exists. Please delete it and retry.`;
       this.container.showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+      logConsoleError(msg);
       return;
     }
 
     await generator
       .createSampleContainerAsync()
-      .catch((error) =>
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Error creating sample container: ${error}`)
-      );
+      .catch((error) => logConsoleError(`Error creating sample container: ${error}`));
     const msg = `The sample ${containerName} in database ${databaseName} has been successfully created.`;
     this.container.showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
-    NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
+    logConsoleInfo(msg);
   }
 
   /**

@@ -1,12 +1,11 @@
+import * as ko from "knockout";
+import { Areas, KeyCodes } from "../../Common/Constants";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { Areas, KeyCodes } from "../../Common/Constants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import { ContextualPaneBase } from "./ContextualPaneBase";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as ko from "knockout";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { ContextualPaneBase } from "./ContextualPaneBase";
 
 export class SetupNotebooksPane extends ContextualPaneBase {
   private description: ko.Observable<string>;
@@ -57,10 +56,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
       dataExplorerArea: Areas.ContextualPane,
       paneTitle: this.title(),
     });
-    const id = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Creating a new default notebook workspace"
-    );
+    const clearInProgressMessage = logConsoleProgress("Creating a new default notebook workspace");
     try {
       this.isExecuting(true);
       await this.container.notebookWorkspaceManager.createNotebookWorkspaceAsync(
@@ -77,10 +73,7 @@ export class SetupNotebooksPane extends ContextualPaneBase {
         },
         startKey
       );
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Info,
-        "Successfully created a default notebook workspace for the account"
-      );
+      logConsoleInfo("Successfully created a default notebook workspace for the account");
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
@@ -95,13 +88,10 @@ export class SetupNotebooksPane extends ContextualPaneBase {
       );
       this.formErrors("Failed to setup a default notebook workspace");
       this.formErrorsDetails(`Failed to setup a default notebook workspace: ${errorMessage}`);
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Failed to create a default notebook workspace: ${errorMessage}`
-      );
+      logConsoleError(`Failed to create a default notebook workspace: ${errorMessage}`);
     } finally {
       this.isExecuting(false);
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
+      clearInProgressMessage();
     }
   }
 }

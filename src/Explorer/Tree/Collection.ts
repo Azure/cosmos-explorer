@@ -19,10 +19,9 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
 import Explorer from "../Explorer";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
@@ -966,7 +965,6 @@ export default class Collection implements ViewModels.Collection {
       return this._uploadFilesCors(fileList);
     }
     const documentUploader: Worker = new UploadWorker();
-    let inProgressNotificationId: string = "";
 
     if (!fileList || fileList.length === 0) {
       return Promise.reject("No files specified");
@@ -978,21 +976,18 @@ export default class Collection implements ViewModels.Collection {
       const runtimeError: string = event.data.runtimeError;
       const uploadDetails: UploadDetails = event.data.uploadDetails;
 
-      NotificationConsoleUtils.clearInProgressMessageWithId(inProgressNotificationId);
       documentUploader.terminate();
       if (!!runtimeError) {
         reject(runtimeError);
       } else if (numSuccessful === 0) {
         // all uploads failed
-        NotificationConsoleUtils.logConsoleError(`Failed to upload all documents to container ${this.id()}`);
+        logConsoleError(`Failed to upload all documents to container ${this.id()}`);
       } else if (numFailed > 0) {
-        NotificationConsoleUtils.logConsoleError(
+        logConsoleError(
           `Failed to upload ${numFailed} of ${numSuccessful + numFailed} documents to container ${this.id()}`
         );
       } else {
-        NotificationConsoleUtils.logConsoleInfo(
-          `Successfully uploaded all ${numSuccessful} documents to container ${this.id()}`
-        );
+        logConsoleInfo(`Successfully uploaded all ${numSuccessful} documents to container ${this.id()}`);
       }
       this._logUploadDetailsInConsole(uploadDetails);
       resolve(uploadDetails);
@@ -1020,10 +1015,7 @@ export default class Collection implements ViewModels.Collection {
       documentUploader.onerror = onerror.bind(null, reject);
 
       documentUploader.postMessage(uploaderMessage);
-      inProgressNotificationId = NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.InProgress,
-        `Uploading and creating documents in container ${this.id()}`
-      );
+      logConsoleProgress(`Uploading and creating documents in container ${this.id()}`);
     });
   };
 
@@ -1134,8 +1126,7 @@ export default class Collection implements ViewModels.Collection {
         if (stackTraceCount >= stackTraceLimit) {
           break;
         }
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
+        logConsoleError(
           `Document creation error for container ${this.id()} - file ${
             uploadDetailsRecords[currentFileIndex].fileName
           }: ${errors[i]}`
@@ -1145,14 +1136,12 @@ export default class Collection implements ViewModels.Collection {
       currentFileIndex++;
     }
 
-    uploadDetailsRecords.forEach((record: UploadDetailsRecord) => {
-      const consoleDataType: ConsoleDataType = record.numFailed > 0 ? ConsoleDataType.Error : ConsoleDataType.Info;
-      NotificationConsoleUtils.logConsoleMessage(
-        consoleDataType,
-        `Item creation summary for container ${this.id()} - file ${record.fileName}: ${
-          record.numSucceeded
-        } items created, ${record.numFailed} errors`
-      );
+    uploadDetailsRecords.forEach((record) => {
+      const message = `Item creation summary for container ${this.id()} - file ${record.fileName}: ${
+        record.numSucceeded
+      } items created, ${record.numFailed} errors`;
+
+      record.numFailed > 0 ? logConsoleError(message) : logConsoleInfo(message);
     });
   }
 
