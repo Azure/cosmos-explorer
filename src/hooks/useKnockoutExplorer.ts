@@ -23,6 +23,7 @@ import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
+import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
@@ -251,7 +252,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
             databaseAccount,
             resourceGroup: inputs.resourceGroup,
             subscriptionId: inputs.subscriptionId,
-            subscriptionType: inputs.subscriptionType,
+            subscriptionType: inputs.subscriptionType ?? CollectionCreation.DefaultSubscriptionType,
             quotaId: inputs.quotaId,
             portalEnv: inputs.serverId as PortalEnv,
           });

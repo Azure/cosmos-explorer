@@ -19,7 +19,6 @@ import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter"
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { SubscriptionType } from "../Contracts/SubscriptionType";
 import * as ViewModels from "../Contracts/ViewModels";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
@@ -119,11 +118,6 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.subscriptionType instead
-   * */
-  public subscriptionType: ko.Observable<SubscriptionType>;
   /**
    * @deprecated
    * Use userContext.apiType instead
@@ -291,7 +285,6 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -1025,10 +1018,8 @@ export default class Explorer {
 
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-    this._setLoadingStatusText("Fetching databases...");
     readDatabases().then(
       (databases: DataModels.Database[]) => {
-        this._setLoadingStatusText("Successfully fetched databases.");
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
           {
@@ -1041,20 +1032,16 @@ export default class Explorer {
         this.addDatabasesToList(deltaDatabases.toAdd);
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
         this.selectedNode(currentlySelectedNode);
-        this._setLoadingStatusText("Fetching containers...");
         this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
           () => {
-            this._setLoadingStatusText("Successfully fetched containers.");
             deferred.resolve();
           },
           (reason) => {
-            this._setLoadingStatusText("Failed to fetch containers.");
             deferred.reject(reason);
           }
         );
       },
       (error) => {
-        this._setLoadingStatusText("Failed to fetch databases.");
         deferred.reject(error);
         const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
@@ -1365,7 +1352,6 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.databaseAccount(databaseAccount);
-      this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
       if (inputs.addCollectionDefaultFlight) {
         this.flight(inputs.addCollectionDefaultFlight);
@@ -2355,32 +2341,6 @@ export default class Explorer {
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
       return tokenRefreshInterval;
-    }
-  }
-
-  private _setLoadingStatusText(text: string, title: string = "Welcome to Azure Cosmos DB") {
-    if (!text) {
-      return;
-    }
-
-    const loadingText = document.getElementById("explorerLoadingStatusText");
-    if (!loadingText) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusText') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-      return;
-    }
-    loadingText.innerHTML = text;
-
-    const loadingTitle = document.getElementById("explorerLoadingStatusTitle");
-    if (!loadingTitle) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusTitle') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-    } else {
-      loadingTitle.innerHTML = title;
     }
   }
 
