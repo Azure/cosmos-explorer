@@ -3,7 +3,6 @@ import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
-import { CollectionCreation } from "./Shared/Constants";
 
 interface UserContext {
   readonly authType?: AuthType;
@@ -35,7 +34,6 @@ const { enableSDKoperations: useSDKOperations } = features;
 
 const userContext: UserContext = {
   isTryCosmosDBSubscription: false,
-  subscriptionType: CollectionCreation.DefaultSubscriptionType,
   portalEnv: "prod",
   features,
   useSDKOperations,
