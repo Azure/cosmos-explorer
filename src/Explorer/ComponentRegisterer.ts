@@ -70,7 +70,6 @@ ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPane
 ko.components.register("table-add-entity-pane", new PaneComponents.TableAddEntityPaneComponent());
 ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEntityPaneComponent());
 ko.components.register("table-column-options-pane", new PaneComponents.TableColumnOptionsPaneComponent());
-ko.components.register("table-query-select-pane", new PaneComponents.TableQuerySelectPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
 ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());

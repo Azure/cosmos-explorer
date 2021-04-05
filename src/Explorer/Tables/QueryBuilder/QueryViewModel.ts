@@ -197,7 +197,6 @@ export default class QueryViewModel {
   };
 
   public selectQueryOptions(): Promise<any> {
-    this.queryTablesTab.container.querySelectPane.queryViewModel = this;
     this.queryTablesTab.container.openTableSelectQueryPanel(this);
     return null;
   }
