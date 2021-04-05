@@ -1,8 +1,8 @@
 {
     "DedicatedGatewayDescription": "Provision a dedicated gateway cluster for your Azure Cosmos DB account. A dedicated gateway is compute that is a front-end to data in your Azure Cosmos DB account. Your dedicated gateway automatically includes the integrated cache, which can improve read performance.",
     "DedicatedGateway": "Dedicated Gateway",
-    "Enable": "Enable",
-    "Disable": "Disable",
+    "Provisioned": "Provisioned",
+    "Deprovisioned": "Deprovisioned",
     "LearnAboutDedicatedGateway": "Learn more about dedicated gateway.",
     "DeprovisioningDetailsText": "Learn more about deprovisioning the dedicated gateway.",
     "DedicatedGatewayPricing": "Learn more about dedicated gateway pricing.",
