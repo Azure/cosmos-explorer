@@ -25,7 +25,7 @@ import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { appInsights } from "../Shared/appInsights";
+import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
@@ -342,7 +342,7 @@ export default class Explorer {
                 userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
-              appInsights.trackEvent(
+              trackEvent(
                 { name: "LoadedWithSparkEnabled" },
                 {
                   subscriptionId: userContext.subscriptionId,

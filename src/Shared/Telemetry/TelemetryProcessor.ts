@@ -3,7 +3,7 @@ import { configContext } from "../../ConfigContext";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
 import { SelfServeMessageTypes } from "../../Contracts/SelfServeContracts";
 import { userContext } from "../../UserContext";
-import { appInsights } from "../appInsights";
+import { startTrackEvent, stopTrackEvent, trackEvent } from "../appInsights";
 import { Action, ActionModifiers } from "./TelemetryConstants";
 
 // Right now, the ExplorerContracts has MessageTypes as a numeric enum (TelemetryInfo = 0) while the SelfServeContracts
@@ -27,7 +27,7 @@ export function trace(
     },
   });
 
-  appInsights.trackEvent({ name: Action[action] }, decorateData(data, actionModifier));
+  trackEvent({ name: Action[action] }, decorateData(data, actionModifier));
 }
 
 export function traceStart(
@@ -46,7 +46,7 @@ export function traceStart(
     },
   });
 
-  appInsights.startTrackEvent(Action[action]);
+  startTrackEvent(Action[action]);
   return timestamp;
 }
 
@@ -66,7 +66,7 @@ export function traceSuccess(
     },
   });
 
-  appInsights.stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Success));
+  stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Success));
 }
 
 export function traceFailure(
@@ -85,7 +85,7 @@ export function traceFailure(
     },
   });
 
-  appInsights.stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Failed));
+  stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Failed));
 }
 
 export function traceCancel(
@@ -104,7 +104,7 @@ export function traceCancel(
     },
   });
 
-  appInsights.stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Cancel));
+  stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Cancel));
 }
 
 export function traceOpen(
@@ -124,7 +124,7 @@ export function traceOpen(
     },
   });
 
-  appInsights.startTrackEvent(Action[action]);
+  startTrackEvent(Action[action]);
   return validTimestamp;
 }
 
@@ -145,7 +145,7 @@ export function traceMark(
     },
   });
 
-  appInsights.startTrackEvent(Action[action]);
+  startTrackEvent(Action[action]);
   return validTimestamp;
 }
 
