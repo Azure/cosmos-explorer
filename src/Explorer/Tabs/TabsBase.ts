@@ -50,7 +50,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.tabKind = options.tabKind;
     this.tabTitle = ko.observable<string>(options.title);
     this.tabPath =
-      (options.tabPath && ko.observable<string>(options.tabPath)) ||
+      ko.observable(options.tabPath ?? "") ||
       (this.collection &&
         ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${this.tabTitle()}`));
     this.isExecutionError = ko.observable<boolean>(false);
