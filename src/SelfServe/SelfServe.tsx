@@ -23,9 +23,11 @@ const loadTranslationFile = async (className: string): Promise<void> => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let translations: any;
   try {
-    translations = await import(`../Localization/${language}/${fileName}`);
+    translations = await import(
+      /* webpackChunkName: "Localization-[request]" */ `../Localization/${language}/${fileName}`
+    );
   } catch (e) {
-    translations = await import(`../Localization/en/${fileName}`);
+    translations = await import(/* webpackChunkName: "Localization-en-[request]" */ `../Localization/en/${fileName}`);
   }
   i18n.addResourceBundle(language, className, translations.default, true);
 };
@@ -39,12 +41,12 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
   switch (selfServeType) {
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
-      await loadTranslations(SelfServeExample.default.name);
+      await loadTranslations("SelfServeExample");
       return new SelfServeExample.default().toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
-      await loadTranslations(SqlX.default.name);
+      await loadTranslations("SqlX");
       return new SqlX.default().toSelfServeDescriptor();
     }
     default:

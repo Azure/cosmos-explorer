@@ -1,15 +1,25 @@
 ﻿import { sendMessage } from "../../Common/MessageHandler";
 import { configContext } from "../../ConfigContext";
 import { MessageTypes } from "../../Contracts/ExplorerContracts";
+import { SelfServeMessageTypes } from "../../Contracts/SelfServeContracts";
 import { userContext } from "../../UserContext";
 import { appInsights } from "../appInsights";
 import { Action, ActionModifiers } from "./TelemetryConstants";
 
-type TelemetryData = { [key: string]: unknown };
+// Right now, the ExplorerContracts has MessageTypes as a numeric enum (TelemetryInfo = 0) while the SelfServeContracts
+// has MessageTypes as a string enum (TelemetryInfo = "TelemetryInfo"). We should move to string enums for all use cases.
+type TelemetryType = MessageTypes.TelemetryInfo | SelfServeMessageTypes.TelemetryInfo;
 
-export function trace(action: Action, actionModifier: string = ActionModifiers.Mark, data: TelemetryData = {}): void {
+export type TelemetryData = { [key: string]: unknown };
+
+export function trace(
+  action: Action,
+  actionModifier: string = ActionModifiers.Mark,
+  data: TelemetryData = {},
+  type: TelemetryType = MessageTypes.TelemetryInfo
+): void {
   sendMessage({
-    type: MessageTypes.TelemetryInfo,
+    type: type,
     data: {
       action: Action[action],
       actionModifier: actionModifier,
@@ -20,10 +30,14 @@ export function trace(action: Action, actionModifier: string = ActionModifiers.M
   appInsights.trackEvent({ name: Action[action] }, decorateData(data, actionModifier));
 }
 
-export function traceStart(action: Action, data?: TelemetryData): number {
+export function traceStart(
+  action: Action,
+  data?: TelemetryData,
+  type: TelemetryType = MessageTypes.TelemetryInfo
+): number {
   const timestamp: number = Date.now();
   sendMessage({
-    type: MessageTypes.TelemetryInfo,
+    type: type,
     data: {
       action: Action[action],
       actionModifier: ActionModifiers.Start,
@@ -36,9 +50,14 @@ export function traceStart(action: Action, data?: TelemetryData): number {
   return timestamp;
 }
 
-export function traceSuccess(action: Action, data?: TelemetryData, timestamp?: number): void {
+export function traceSuccess(
+  action: Action,
+  data?: TelemetryData,
+  timestamp?: number,
+  type: TelemetryType = MessageTypes.TelemetryInfo
+): void {
   sendMessage({
-    type: MessageTypes.TelemetryInfo,
+    type: type,
     data: {
       action: Action[action],
       actionModifier: ActionModifiers.Success,
@@ -50,9 +69,14 @@ export function traceSuccess(action: Action, data?: TelemetryData, timestamp?: n
   appInsights.stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Success));
 }
 
-export function traceFailure(action: Action, data?: TelemetryData, timestamp?: number): void {
+export function traceFailure(
+  action: Action,
+  data?: TelemetryData,
+  timestamp?: number,
+  type: TelemetryType = MessageTypes.TelemetryInfo
+): void {
   sendMessage({
-    type: MessageTypes.TelemetryInfo,
+    type: type,
     data: {
       action: Action[action],
       actionModifier: ActionModifiers.Failed,
@@ -64,9 +88,14 @@ export function traceFailure(action: Action, data?: TelemetryData, timestamp?: n
   appInsights.stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Failed));
 }
 
-export function traceCancel(action: Action, data?: TelemetryData, timestamp?: number): void {
+export function traceCancel(
+  action: Action,
+  data?: TelemetryData,
+  timestamp?: number,
+  type: TelemetryType = MessageTypes.TelemetryInfo
+): void {
   sendMessage({
-    type: MessageTypes.TelemetryInfo,
+    type: type,
     data: {
       action: Action[action],
       actionModifier: ActionModifiers.Cancel,
@@ -78,10 +107,15 @@ export function traceCancel(action: Action, data?: TelemetryData, timestamp?: nu
   appInsights.stopTrackEvent(Action[action], decorateData(data, ActionModifiers.Cancel));
 }
 
-export function traceOpen(action: Action, data?: TelemetryData, timestamp?: number): number {
+export function traceOpen(
+  action: Action,
+  data?: TelemetryData,
+  timestamp?: number,
+  type: TelemetryType = MessageTypes.TelemetryInfo
+): number {
   const validTimestamp = timestamp || Date.now();
   sendMessage({
-    type: MessageTypes.TelemetryInfo,
+    type: type,
     data: {
       action: Action[action],
       actionModifier: ActionModifiers.Open,
@@ -94,10 +128,15 @@ export function traceOpen(action: Action, data?: TelemetryData, timestamp?: numb
   return validTimestamp;
 }
 
-export function traceMark(action: Action, data?: TelemetryData, timestamp?: number): number {
+export function traceMark(
+  action: Action,
+  data?: TelemetryData,
+  timestamp?: number,
+  type: TelemetryType = MessageTypes.TelemetryInfo
+): number {
   const validTimestamp = timestamp || Date.now();
   sendMessage({
-    type: MessageTypes.TelemetryInfo,
+    type: type,
     data: {
       action: Action[action],
       actionModifier: ActionModifiers.Mark,
