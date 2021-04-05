@@ -14,7 +14,7 @@ import { handleError, getErrorMessage, getErrorStack } from "../../Common/ErrorH
 import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { FileSystemUtil } from "../Notebook/FileSystemUtil";
+import * as FileSystemUtil from "../Notebook/FileSystemUtil";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
