@@ -6,6 +6,8 @@ import { userContext } from "../../UserContext";
 import { appInsights } from "../appInsights";
 import { Action, ActionModifiers } from "./TelemetryConstants";
 
+// Right now, the ExplorerContracts has MessageTypes as a numeric enum (TelemetryInfo = 0) while the SelfServeContracts
+// has MessageTypes as a string enum (TelemetryInfo = "TelemetryInfo"). We should move to string enums for all use cases.
 type TelemetryType = MessageTypes.TelemetryInfo | SelfServeMessageTypes.TelemetryInfo;
 
 export type TelemetryData = { [key: string]: unknown };
