@@ -14,7 +14,6 @@
     "./src/Common/DeleteFeedback.ts",
     "./src/Common/DocumentUtility.ts",
     "./src/Common/EnvironmentUtility.ts",
-    "./src/Common/HashMap.ts",
     "./src/Common/HeadersUtility.test.ts",
     "./src/Common/HeadersUtility.ts",
     "./src/Common/Logger.ts",
