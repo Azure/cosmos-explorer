@@ -162,5 +162,4 @@ export interface RefreshParams {
 
 export interface SelfServeTelemetryMessage extends TelemetryData {
   selfServeClassName: string;
-  data?: unknown;
 }
