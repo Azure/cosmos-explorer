@@ -138,7 +138,7 @@ export interface Database extends Resource {
   collections?: Collection[];
 }
 
-export interface DocumentId extends Resource {}
+export interface DocumentId extends Resource { }
 
 export interface ConflictId extends Resource {
   resourceId?: string;
@@ -273,7 +273,7 @@ export interface AutoPilotOfferSettings {
 }
 
 export interface CreateDatabaseParams {
-  autoPilotMaxThroughput?: number;
+  autoPilotMaxThroughput?: number | string;
   databaseId: string;
   databaseLevelThroughput?: boolean;
   offerThroughput?: number;

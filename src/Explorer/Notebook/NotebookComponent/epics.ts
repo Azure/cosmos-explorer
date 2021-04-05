@@ -44,7 +44,7 @@ import { CdbAppState } from "./types";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import * as TextFile from "./contents/file/text-file";
 import { NotebookUtil } from "../NotebookUtil";
-import { FileSystemUtil } from "../FileSystemUtil";
+import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
 import { Areas } from "../../../Common/Constants";
 

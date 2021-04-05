@@ -180,7 +180,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
     };
 
     if (isAutoPilotSelected) {
-      createDatabaseParams.autoPilotMaxThroughput = maxAutoPilotThroughputSet;
+      createDatabaseParams.autoPilotMaxThroughput = "" + maxAutoPilotThroughputSet;
     } else {
       createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
     }
