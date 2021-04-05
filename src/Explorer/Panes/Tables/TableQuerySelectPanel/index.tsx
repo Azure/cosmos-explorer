@@ -59,7 +59,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   };
 
   useEffect(() => {
-    setTableColumns(queryViewModel.columnOptions());
+    queryViewModel && setTableColumns(queryViewModel.columnOptions());
   }, []);
 
   const setTableColumns = (columnNames: string[]): void => {
@@ -137,7 +137,6 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
             <Checkbox
               label="Available Columns"
               checked={isAvailableColumnChecked}
-              defaultChecked
               onChange={availableColumnsCheckboxClick}
             />
             {columnOptions.map((column) => {
