@@ -68,8 +68,10 @@ import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
+import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -2418,6 +2420,13 @@ export default class Explorer {
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
+    );
+  }
+
+  public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
+    this.openSidePanel(
+      "Select Column",
+      <TableQuerySelectPanel explorer={this} closePanel={this.closeSidePanel} queryViewModel={queryViewModal} />
     );
   }
 }
