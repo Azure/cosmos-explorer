@@ -45,7 +45,7 @@
     "@uifabric/react-cards": "0.109.110",
     "@uifabric/styling": "7.13.7",
     "applicationinsights": "1.8.0",
-    "bootstrap": "3.4.1",
+    "bootstrap": "4.6.0",
     "canvas": "file:./canvas",
     "clean-webpack-plugin": "0.1.19",
     "clipboard-copy": "4.0.1",
