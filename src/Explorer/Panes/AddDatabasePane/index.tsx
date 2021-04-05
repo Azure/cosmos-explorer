@@ -13,7 +13,7 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
-import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
+import { ThroughputInput } from "../../Controls/ThroughputInput";
 import Explorer from "../../Explorer";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
@@ -56,12 +56,12 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>();
   const [formErrors, setFormErrors] = useState<string>("");
 
-  const throughputDefaults = container.collectionCreationDefaults.throughput;
-  const [throughput, setThroughput] = useState<number>(AutoPilotUtils.minAutoPilotThroughput);
-
-  const maxThroughputRU = throughputDefaults.unlimitedmax;
-  const maxThroughputRUText: string = maxThroughputRU?.toLocaleString();
   const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(container.isAutoscaleDefaultEnabled());
+
+  const throughputDefaults = container.collectionCreationDefaults.throughput;
+  const [throughput, setThroughput] = useState<number>(
+    isAutoPilotSelected ? AutoPilotUtils.minAutoPilotThroughput : throughputDefaults.shared
+  );
 
   const [throughputSpendAck, setThroughputSpendAck] = useState<boolean>(false);
 
@@ -334,7 +334,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
                       <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">
                         Contact support{" "}
                       </a>
-                      for more than <span>{maxThroughputRUText} </span> RU/s.
+                      for more than <span>{throughputDefaults.unlimitedmax?.toLocaleString()} </span> RU/s.
                     </p>
                   )}
                 </div>

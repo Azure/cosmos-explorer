@@ -1,0 +1,123 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ThroughputInput Pane should render Default properly 1`] = `
+<div
+  className="throughputInputContainer throughputInputSpacing"
+>
+  <Stack
+    horizontal={true}
+  >
+    <span
+      className="mandatoryStar"
+    >
+      * 
+    </span>
+    <Text
+      style={
+        Object {
+          "lineHeight": "20px",
+        }
+      }
+      variant="small"
+    >
+      Throughput (autoscale)
+    </Text>
+    <Tooltip>
+      Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage.
+    </Tooltip>
+  </Stack>
+  <Stack>
+    <StyledChoiceGroupBase
+      aria-label="mode"
+      onChange={[Function]}
+      options={
+        Array [
+          Object {
+            "key": "true",
+            "text": "Autoscale",
+          },
+          Object {
+            "key": "false",
+            "text": "Manual",
+          },
+        ]
+      }
+      selectedKey="true"
+    />
+  </Stack>
+  <Stack
+    className="throughputInputSpacing"
+  >
+    <Text
+      variant="small"
+    >
+      Provision maximum RU/s required by this resource. Estimate your required RU/s with 
+      <StyledLinkBase
+        href="https://cosmos.azure.com/capacitycalculator/"
+        target="_blank"
+      >
+        capacity calculator
+      </StyledLinkBase>
+      .
+    </Text>
+    <Stack
+      horizontal={true}
+    >
+      <Text
+        style={
+          Object {
+            "lineHeight": "20px",
+          }
+        }
+        variant="small"
+      >
+        Max RU/s
+      </Text>
+      <Tooltip>
+        After the first 40 GB of data stored, the max
+    RU/s will be automatically upgraded based on the new storage value.
+      </Tooltip>
+    </Stack>
+    <StyledTextFieldBase
+      aria-label="Max request units per second"
+      min={4000}
+      onChange={[Function]}
+      required={true}
+      step={1000}
+      styles={
+        Object {
+          "field": Object {
+            "fontSize": 12,
+          },
+          "fieldGroup": Object {
+            "height": 27,
+            "width": 300,
+          },
+        }
+      }
+      type="number"
+      value="4000"
+    />
+    <Text
+      variant="small"
+    >
+      Your 
+      container
+       throughput will automatically scale from
+       
+      <b>
+        400
+         RU/s (10% of max RU/s) - 
+        4000
+         RU/s
+      </b>
+       
+      based on usage.
+    </Text>
+  </Stack>
+  <CostEstimateText
+    isAutoscale={true}
+    requestUnits={4000}
+  />
+</div>
+`;

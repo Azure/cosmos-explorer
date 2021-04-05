@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upload Items Pane should render Default properly 1`] = `
+exports[`AddDatabasePane Pane should render Default properly 1`] = `
 <GenericRightPaneComponent
   container={
     Explorer {
@@ -792,26 +792,110 @@ exports[`Upload Items Pane should render Default properly 1`] = `
     }
   }
   formError=""
-  formErrorDetail=""
-  id="uploaditemspane"
+  id="copynotebookpane"
+  isExecuting={false}
   onClose={[Function]}
   onSubmit={[Function]}
-  submitButtonText="Upload"
-  title="Upload Items"
+  submitButtonText="OK"
+  title="New Database"
 >
-  <div
-    className="paneMainContent"
+  <form
+    style={
+      Object {
+        "height": "100%",
+      }
+    }
   >
-    <Upload
-      accept="application/json"
-      label="Select JSON Files"
-      multiple={true}
-      onUpload={[Function]}
-      tabIndex={0}
-      tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON
- documents. The combined size of all files in an individual upload operation must be less than 2 MB. You
- can perform multiple upload operations for larger data sets."
-    />
-  </div>
+    <div
+      aria-labelledby="databaseTitle"
+      className="paneContentContainer"
+      role="dialog"
+    >
+      <PanelInfoErrorComponent
+        link="https://aka.ms/azure-cosmos-db-pricing"
+        linkText="More details"
+        message="Start at $24/mo per database, multiple containers included"
+        messageType="info"
+        openNotificationConsole={[Function]}
+        showErrorDetails={false}
+      />
+      <div
+        className="paneMainContent"
+      >
+        <div>
+          <p>
+            <span
+              className="mandatoryStar"
+            >
+              *
+            </span>
+            <Text
+              variant="small"
+            >
+              Database id
+            </Text>
+            <Tooltip>
+              A database is a logical container of one or more collections
+            </Tooltip>
+          </p>
+          <StyledTextFieldBase
+            aria-label="Database id"
+            aria-required="true"
+            autoComplete="off"
+            autoFocus={true}
+            id="database-id"
+            onChange={[Function]}
+            pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+            placeholder="Type a new database id"
+            size={40}
+            title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+            type="text"
+            value=""
+          />
+          <div
+            aria-label="New database provision support"
+            className="databaseProvision"
+            style={
+              Object {
+                "display": "block ruby",
+              }
+            }
+          >
+            <StyledCheckboxBase
+              checked={true}
+              label="Provision throughput"
+              onChange={[Function]}
+              styles={
+                Object {
+                  "checkbox": Object {
+                    "height": 12,
+                    "width": 12,
+                  },
+                  "label": Object {
+                    "alignItems": "center",
+                    "padding": 0,
+                  },
+                }
+              }
+              tabIndex={0}
+              title="Provision shared throughput"
+            />
+             
+            <Tooltip>
+              Provisioned throughput at the database level will be shared across all collections within the database.
+            </Tooltip>
+          </div>
+          <div>
+            <ThroughputInput
+              isDatabase={true}
+              onCostAcknowledgeChange={[Function]}
+              setIsAutoscale={[Function]}
+              setThroughputValue={[Function]}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </GenericRightPaneComponent>
 `;
