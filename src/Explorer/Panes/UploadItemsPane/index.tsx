@@ -8,8 +8,6 @@ import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 
-const UPLOAD_FILE_SIZE_LIMIT_KB = 2097152;
-
 export interface UploadItemsPaneProps {
   explorer: Explorer;
   closePanel: () => void;
@@ -47,10 +45,6 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
       setFormError("No files specified");
       setFormErrorDetail("No files were specified. Please input at least one file.");
       logConsoleError("Could not upload items -- No files were specified. Please input at least one file.");
-    } else if (_totalFileSizeForFileList(files) > UPLOAD_FILE_SIZE_LIMIT_KB) {
-      setFormError("Upload file size limit exceeded");
-      setFormErrorDetail("Total file upload size exceeds the 2 MB file size limit.");
-      logConsoleError("Could not upload items -- Total file upload size exceeds the 2 MB file size limit.");
     }
 
     const selectedCollection = explorer.findSelectedCollection();
@@ -77,14 +71,6 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
 
   const updateSelectedFiles = (event: ChangeEvent<HTMLInputElement>): void => {
     setFiles(event.target.files);
-  };
-
-  const _totalFileSizeForFileList = (fileList: FileList): number => {
-    let totalFileSize = 0;
-    for (let i = 0; i < fileList?.length; i++) {
-      totalFileSize += fileList.item(i).size;
-    }
-    return totalFileSize;
   };
 
   const genericPaneProps: GenericRightPaneProps = {

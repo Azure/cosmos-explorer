@@ -50,7 +50,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePane } from "./Panes/AddDatabasePane";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
+import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
@@ -58,9 +58,9 @@ import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfi
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
-import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
 import NewVertexPane from "./Panes/NewVertexPane";
-import { SaveQueryPane } from "./Panes/SaveQueryPane";
+import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
@@ -209,9 +209,6 @@ export default class Explorer {
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public loadQueryPane: LoadQueryPane;
-  public saveQueryPane: ContextualPaneBase;
-  public browseQueriesPane: BrowseQueriesPane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -603,27 +600,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.loadQueryPane = new LoadQueryPane({
-      id: "loadquerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.saveQueryPane = new SaveQueryPane({
-      id: "savequerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.browseQueriesPane = new BrowseQueriesPane({
-      id: "browsequeriespane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.stringInputPane = new StringInputPane({
       id: "stringinputpane",
       visible: ko.observable<boolean>(false),
@@ -650,9 +626,6 @@ export default class Explorer {
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.loadQueryPane,
-      this.saveQueryPane,
-      this.browseQueriesPane,
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
@@ -2420,6 +2393,19 @@ export default class Explorer {
       <AddDatabasePane explorer={this} openNotificationConsole={this.expandConsole} closePanel={this.closeSidePanel} />
     );
   }
+
+  public openBrowseQueriesPanel(): void {
+    this.openSidePanel("Open Saved Queries", <BrowseQueriesPanel explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openLoadQueryPanel(): void {
+    this.openSidePanel("Load Query", <LoadQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
+  public openSaveQueryPanel(): void {
+    this.openSidePanel("Save Query", <SaveQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     parent = parent || this.resourceTree.myNotebooksContentRoot;
     this.openSidePanel(

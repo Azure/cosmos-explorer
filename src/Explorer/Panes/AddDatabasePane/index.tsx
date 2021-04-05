@@ -29,13 +29,8 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
   closePanel,
   openNotificationConsole,
 }: AddDatabasePaneProps) => {
-  const getSharedThroughputDefault = (): boolean => {
-    const { subscriptionType } = userContext;
-    if (subscriptionType === SubscriptionType.EA || container.isServerlessEnabled()) {
-      return false;
-    }
-    return true;
-  };
+  const { subscriptionType } = userContext;
+  const getSharedThroughputDefault = !(subscriptionType === SubscriptionType.EA || container.isServerlessEnabled());
   const _isAutoPilotSelectedAndWhatTier = (): DataModels.AutoPilotCreationSettings => {
     if (isAutoPilotSelected && maxAutoPilotThroughputSet) {
       return {
@@ -48,7 +43,6 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
   const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
   const databaseLabel: string = isCassandraAccount ? "keyspace" : "database";
   const collectionsLabel: string = isCassandraAccount ? "tables" : "collections";
-
   const databaseIdLabel: string = isCassandraAccount ? "Keyspace id" : "Database id";
   const databaseIdPlaceHolder: string = isCassandraAccount ? "Type a new keyspace id" : "Type a new database id";
 
@@ -58,15 +52,14 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
   } is a logical container of one or more ${isCassandraAccount ? "tables" : "collections"}`;
 
   const databaseLevelThroughputTooltipText = `Provisioned throughput at the ${databaseLabel} level will be shared across all ${collectionsLabel} within the ${databaseLabel}.`;
-  const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(getSharedThroughputDefault());
+  const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(getSharedThroughputDefault);
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>();
   const [formErrors, setFormErrors] = useState<string>("");
 
   const throughputDefaults = container.collectionCreationDefaults.throughput;
+  const [throughput, setThroughput] = useState<number>(AutoPilotUtils.minAutoPilotThroughput);
 
-  const [throughput, setThroughput] = useState<number>(throughputDefaults.shared);
-
-  const [maxThroughputRU, setMaxThroughputRU] = useState<number>(throughputDefaults.unlimitedmax);
+  const maxThroughputRU = throughputDefaults.unlimitedmax;
   const maxThroughputRUText: string = maxThroughputRU?.toLocaleString();
   const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(container.isAutoscaleDefaultEnabled());
 
@@ -96,9 +89,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
   const upsellAnchorUrl: string = isFreeTierAccount ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
 
   const upsellAnchorText: string = isFreeTierAccount ? "Learn more" : "More details";
-  const [maxAutoPilotThroughputSet, setMaxAutoPilotThroughputSet] = useState<number>(
-    AutoPilotUtils.minAutoPilotThroughput
-  );
+  const maxAutoPilotThroughputSet = AutoPilotUtils.minAutoPilotThroughput;
 
   const canConfigureThroughput = !container.isServerlessEnabled();
   const showUpsellMessage = () => {
@@ -115,31 +106,26 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
   const title: string = container?.addDatabaseText() || "New Database";
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
-  const _updateThroughputLimitByDatabase = () => {
-    const throughputDefaults = container.collectionCreationDefaults.throughput;
-    setThroughput(throughputDefaults.shared);
-    setMaxThroughputRU(throughputDefaults.unlimitedmax);
+  useEffect(() => {
+    setDatabaseCreateNewShared(getSharedThroughputDefault);
+  }, [subscriptionType]);
+
+  const addDatabasePaneMessage = {
+    database: {
+      id: databaseId,
+      shared: databaseCreateNewShared,
+    },
+    subscriptionType: SubscriptionType[subscriptionType],
+    subscriptionQuotaId: userContext.quotaId,
+    defaultsCheck: {
+      flight: container.flight(),
+    },
+    dataExplorerArea: Constants.Areas.ContextualPane,
   };
-  useEffect(() => {
-    _updateThroughputLimitByDatabase();
-  }, [databaseCreateNewShared]);
-
-  useEffect(() => {
-    setDatabaseCreateNewShared(getSharedThroughputDefault());
-  }, [userContext.subscriptionType]);
-
-  useEffect(() => {
-    setDatabaseId("");
-    setDatabaseCreateNewShared(getSharedThroughputDefault());
-    setIsAutoPilotSelected(container.isAutoscaleDefaultEnabled());
-    setMaxAutoPilotThroughputSet(AutoPilotUtils.minAutoPilotThroughput);
-    _updateThroughputLimitByDatabase();
-    setThroughputSpendAck(false);
-  }, [container.flight]);
 
   useEffect(() => {
     const addDatabasePaneOpenMessage = {
-      subscriptionType: SubscriptionType[userContext.subscriptionType],
+      subscriptionType: SubscriptionType[subscriptionType],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput: throughput,
@@ -158,17 +144,8 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
     const offerThroughput: number = _computeOfferThroughput();
 
     const addDatabasePaneStartMessage = {
-      database: {
-        id: databaseId,
-        shared: databaseCreateNewShared,
-      },
+      ...addDatabasePaneMessage,
       offerThroughput,
-      subscriptionType: SubscriptionType[userContext.subscriptionType],
-      subscriptionQuotaId: userContext.quotaId,
-      defaultsCheck: {
-        flight: container.flight(),
-      },
-      dataExplorerArea: Constants.Areas.ContextualPane,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDatabase, addDatabasePaneStartMessage);
     setFormErrors("");
@@ -178,9 +155,8 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
       databaseId: addDatabasePaneStartMessage.database.id,
       databaseLevelThroughput: addDatabasePaneStartMessage.database.shared,
     };
-
     if (isAutoPilotSelected) {
-      createDatabaseParams.autoPilotMaxThroughput = "" + maxAutoPilotThroughputSet;
+      createDatabaseParams.autoPilotMaxThroughput = "" + addDatabasePaneStartMessage.offerThroughput;
     } else {
       createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
     }
@@ -200,17 +176,8 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
     closePanel();
     container.refreshAllDatabases();
     const addDatabasePaneSuccessMessage = {
-      database: {
-        id: databaseId,
-        shared: databaseCreateNewShared,
-      },
-      offerThroughput: offerThroughput,
-      subscriptionType: SubscriptionType[userContext.subscriptionType],
-      subscriptionQuotaId: userContext.quotaId,
-      defaultsCheck: {
-        flight: container.flight(),
-      },
-      dataExplorerArea: Constants.Areas.ContextualPane,
+      ...addDatabasePaneMessage,
+      offerThroughput,
     };
     TelemetryProcessor.traceSuccess(Action.CreateDatabase, addDatabasePaneSuccessMessage, startKey);
   };
@@ -221,17 +188,8 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
     setFormErrors(errorMessage);
     setFormErrorsDetails(errorMessage);
     const addDatabasePaneFailedMessage = {
-      database: {
-        id: databaseId,
-        shared: databaseCreateNewShared,
-      },
-      offerThroughput: offerThroughput,
-      subscriptionType: SubscriptionType[userContext.subscriptionType],
-      subscriptionQuotaId: userContext.quotaId,
-      defaultsCheck: {
-        flight: container.flight(),
-      },
-      dataExplorerArea: Constants.Areas.ContextualPane,
+      ...addDatabasePaneMessage,
+      offerThroughput,
       error: errorMessage,
       errorStack: getErrorStack(error),
     };
@@ -244,10 +202,6 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
 
   const _computeOfferThroughput = (): number => {
     if (!canConfigureThroughput) {
-      return undefined;
-    }
-
-    if (isAutoPilotSelected) {
       return undefined;
     }
 
