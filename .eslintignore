@@ -126,11 +126,9 @@ src/Explorer/Panes/DeleteCollectionConfirmationPane.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.test.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.ts
 src/Explorer/Panes/GraphStylingPane.ts
-src/Explorer/Panes/LoadQueryPane.ts
 src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
-src/Explorer/Panes/SaveQueryPane.ts
 src/Explorer/Panes/SetupNotebooksPane.ts
 src/Explorer/Panes/StringInputPane.ts
 src/Explorer/Panes/SwitchDirectoryPane.ts

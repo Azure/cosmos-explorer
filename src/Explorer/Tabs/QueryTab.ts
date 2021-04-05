@@ -184,12 +184,8 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     await this._executeQueryDocumentsPage(0);
   };
 
-  public onLoadQueryClick = (): void => {
-    this.collection && this.collection.container && this.collection.container.loadQueryPane.open();
-  };
-
   public onSaveQueryClick = (): void => {
-    this.collection && this.collection.container && this.collection.container.saveQueryPane.open();
+    this.collection && this.collection.container && this.collection.container.openSaveQueryPanel();
   };
 
   public onSavedQueriesClick = (): void => {

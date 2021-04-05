@@ -433,7 +433,7 @@ function createOpenQueryFromDiskButton(container: Explorer): CommandButtonCompon
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
-    onCommandClick: () => container.loadQueryPane.open(),
+    onCommandClick: () => container.openLoadQueryPanel(),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

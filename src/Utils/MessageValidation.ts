@@ -20,3 +20,15 @@ function isValidOrigin(allowedOrigins: string[], event: MessageEvent): boolean {
   console.error(`Invalid parent frame origin detected: ${eventOrigin}`);
   return false;
 }
+
+export function isReadyMessage(event: MessageEvent): boolean {
+  if (!event?.data?.kind && !event?.data?.data) {
+    return false;
+  }
+
+  if (event.data.kind !== "ready" && event.data.data !== "ready") {
+    return false;
+  }
+
+  return true;
+}

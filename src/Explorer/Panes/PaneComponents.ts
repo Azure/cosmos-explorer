@@ -5,8 +5,6 @@ import DeleteCollectionConfirmationPaneTemplate from "./DeleteCollectionConfirma
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphNewVertexPaneTemplate from "./GraphNewVertexPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
-import LoadQueryPaneTemplate from "./LoadQueryPane.html";
-import SaveQueryPaneTemplate from "./SaveQueryPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
@@ -106,24 +104,6 @@ export class CassandraAddCollectionPaneComponent {
     return {
       viewModel: PaneComponent,
       template: CassandraAddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class LoadQueryPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: LoadQueryPaneTemplate,
-    };
-  }
-}
-
-export class SaveQueryPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: SaveQueryPaneTemplate,
     };
   }
 }
