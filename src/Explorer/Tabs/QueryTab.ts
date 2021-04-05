@@ -189,7 +189,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   };
 
   public onSavedQueriesClick = (): void => {
-    this.collection && this.collection.container && this.collection.container.browseQueriesPane.open();
+    this.collection && this.collection.container && this.collection.container.openBrowseQueriesPanel();
   };
 
   public async onFetchNextPageClick(): Promise<void> {

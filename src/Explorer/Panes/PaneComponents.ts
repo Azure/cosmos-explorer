@@ -1,6 +1,5 @@
 import AddCollectionPaneTemplate from "./AddCollectionPane.html";
 import AddDatabasePaneTemplate from "./AddDatabasePane.html";
-import BrowseQueriesPaneTemplate from "./BrowseQueriesPane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import DeleteCollectionConfirmationPaneTemplate from "./DeleteCollectionConfirmationPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
@@ -105,15 +104,6 @@ export class CassandraAddCollectionPaneComponent {
     return {
       viewModel: PaneComponent,
       template: CassandraAddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class BrowseQueriesPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: BrowseQueriesPaneTemplate,
     };
   }
 }
