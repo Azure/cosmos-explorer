@@ -52,6 +52,7 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import { CassandraAddCollectionPaneF } from "./Panes/CassandraAddCollectionPaneF";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
@@ -2210,8 +2211,9 @@ export default class Explorer {
   }
 
   public onNewCollectionClicked(): void {
-    if (this.isPreferredApiCassandra()) {
-      this.cassandraAddCollectionPane.open();
+    if (userContext.apiType === "Cassandra") {
+      // this.cassandraAddCollectionPane.open();
+      this.openCassandraAddCollectionPane();
     } else if (userContext.features.enableReactPane) {
       this.openAddCollectionPanel();
     } else {
@@ -2418,6 +2420,13 @@ export default class Explorer {
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
+    );
+  }
+
+  public openCassandraAddCollectionPane(): void {
+    this.openSidePanel(
+      "Add Table",
+      <CassandraAddCollectionPaneF explorer={this} closePanel={() => this.closeSidePanel()} />
     );
   }
 }
