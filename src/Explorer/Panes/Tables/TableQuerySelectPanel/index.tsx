@@ -93,11 +93,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
 
   const availableColumnsCheckboxClick = (event: React.FormEvent<HTMLElement>, isChecked: boolean): void => {
     setIsAvailableColumnChecked(isChecked);
-    if (isChecked) {
-      selectClearAll(isChecked);
-    } else {
-      selectClearAll(isChecked);
-    }
+    selectClearAll(isChecked);
   };
 
   const selectClearAll = (isChecked: boolean): void => {
