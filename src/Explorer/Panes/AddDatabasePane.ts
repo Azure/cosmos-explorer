@@ -231,9 +231,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     });
 
     this.resetData();
-    this.container.flight.subscribe(() => {
-      this.resetData();
-    });
 
     this.freeTierExceedThroughputTooltip = ko.pureComputed<string>(() =>
       this.isFreeTierAccount() && !this.container.isFirstResourceCreated()
@@ -280,7 +277,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput: this.throughput(),
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
@@ -305,7 +302,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
@@ -367,7 +364,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
@@ -389,7 +386,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
       subscriptionType: SubscriptionType[this.container.subscriptionType()],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
       error: errorMessage,

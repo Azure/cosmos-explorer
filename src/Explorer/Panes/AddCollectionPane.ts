@@ -478,9 +478,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.resetData();
-    this.container.flight.subscribe(() => {
-      this.resetData();
-    });
 
     this.freeTierExceedThroughputTooltip = ko.pureComputed<string>(() =>
       this.isFreeTierAccount() && !this.container.isFirstResourceCreated()
@@ -706,7 +703,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: this._getThroughput(),
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
@@ -810,7 +807,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: offerThroughput,
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
       useIndexingForSharedThroughput: this.useIndexingForSharedThroughput(),
@@ -882,7 +879,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
         };
@@ -914,7 +911,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           error: errorMessage,

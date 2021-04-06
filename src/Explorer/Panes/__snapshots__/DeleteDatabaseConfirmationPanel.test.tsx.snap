@@ -643,7 +643,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "title": [Function],
         "visible": [Function],
       },
-      "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
         "firstFieldHasFocus": [Function],
@@ -665,7 +664,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "visible": [Function],
       },
       "hasStorageAnalyticsAfecFeature": [Function],
-      "hasWriteAccess": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isCopyNotebookPaneEnabled": [Function],

@@ -642,7 +642,6 @@ exports[`Settings Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
         "firstFieldHasFocus": [Function],
@@ -664,7 +663,6 @@ exports[`Settings Pane should render Default properly 1`] = `
         "visible": [Function],
       },
       "hasStorageAnalyticsAfecFeature": [Function],
-      "hasWriteAccess": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isCopyNotebookPaneEnabled": [Function],
@@ -1570,7 +1568,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
         "firstFieldHasFocus": [Function],
@@ -1592,7 +1589,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         "visible": [Function],
       },
       "hasStorageAnalyticsAfecFeature": [Function],
-      "hasWriteAccess": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isCopyNotebookPaneEnabled": [Function],
