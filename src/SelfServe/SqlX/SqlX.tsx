@@ -1,5 +1,5 @@
 import { IsDisplayable, OnChange, RefreshOptions, Values } from "../Decorators";
-import { trace } from "../SelfServeTelemetryProcessor";
+import { selfServeTrace } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
@@ -177,7 +177,7 @@ export default class SqlX extends SelfServeBaseClass {
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
-    trace({ selfServeClassName: "SqlX" });
+    selfServeTrace({ selfServeClassName: "SqlX" });
 
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
@@ -234,7 +234,7 @@ export default class SqlX extends SelfServeBaseClass {
         portalNotification: {
           initialize: {
             titleTKey: "CreateInitializeTitle",
-            messageTKey: "CreateInitializeTitle",
+            messageTKey: "CreateInitializeMessage",
           },
           success: {
             titleTKey: "CreateSuccessTitle",

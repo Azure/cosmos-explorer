@@ -10,7 +10,6 @@ import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleCompo
 import { NewVertexComponent } from "./Graph/NewVertexComponent/NewVertexComponent";
 import * as PaneComponents from "./Panes/PaneComponents";
 import ConflictsTab from "./Tabs/ConflictsTab";
-import DatabaseSettingsTab from "./Tabs/DatabaseSettingsTab";
 import DocumentsTab from "./Tabs/DocumentsTab";
 import GalleryTab from "./Tabs/GalleryTab";
 import GraphTab from "./Tabs/GraphTab";
@@ -53,7 +52,6 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
   TerminalTab,
   GalleryTab,
   NotebookViewerTab,
-  DatabaseSettingsTab,
   DatabaseSettingsTabV2,
 ].forEach(({ component: { name, template } }) => ko.components.register(name, { template }));
 
@@ -69,7 +67,6 @@ ko.components.register("graph-new-vertex-pane", new PaneComponents.GraphNewVerte
 ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPaneComponent());
 ko.components.register("table-add-entity-pane", new PaneComponents.TableAddEntityPaneComponent());
 ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEntityPaneComponent());
-ko.components.register("table-column-options-pane", new PaneComponents.TableColumnOptionsPaneComponent());
 ko.components.register("table-query-select-pane", new PaneComponents.TableQuerySelectPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
