@@ -1158,12 +1158,14 @@ exports[`Table query select Panel should render Default properly 1`] = `
               >
                 <StyledCheckboxBase
                   checked={true}
+                  id="availableCheckbox"
                   label="Available Columns"
                   onChange={[Function]}
                 >
                   <CheckboxBase
                     boxSide="start"
                     checked={true}
+                    id="availableCheckbox"
                     label="Available Columns"
                     onChange={[Function]}
                     styles={[Function]}
@@ -1450,7 +1452,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         aria-label="Available Columns"
                         checked={true}
                         className="input-51"
-                        id="checkbox-3"
+                        id="availableCheckbox"
                         onBlur={[Function]}
                         onChange={[Function]}
                         onFocus={[Function]}
@@ -1458,7 +1460,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                       />
                       <label
                         className="ms-Checkbox-label label-52"
-                        htmlFor="checkbox-3"
+                        htmlFor="availableCheckbox"
                       >
                         <div
                           className="ms-Checkbox-checkbox checkbox-53"
@@ -2064,7 +2066,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         checked={true}
                         className="input-51"
                         disabled={false}
-                        id="checkbox-4"
+                        id="checkbox-3"
                         onBlur={[Function]}
                         onChange={[Function]}
                         onFocus={[Function]}
@@ -2072,7 +2074,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                       />
                       <label
                         className="ms-Checkbox-label label-52"
-                        htmlFor="checkbox-4"
+                        htmlFor="checkbox-3"
                       >
                         <div
                           className="ms-Checkbox-checkbox checkbox-53"
@@ -4119,8 +4121,8 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             >
                               <span
                                 className="ms-Button-label label-64"
-                                id="id__5"
-                                key="id__5"
+                                id="id__4"
+                                key="id__4"
                               >
                                 OK
                               </span>

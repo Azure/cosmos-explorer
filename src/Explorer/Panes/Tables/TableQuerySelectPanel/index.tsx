@@ -135,6 +135,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
           <Text>Select the columns that you want to query.</Text>
           <div className="column-select-view">
             <Checkbox
+              id="availableCheckbox"
               label="Available Columns"
               checked={isAvailableColumnChecked}
               onChange={availableColumnsCheckboxClick}
