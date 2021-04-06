@@ -691,7 +691,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
                   "container": [Circular],
                   "firstFieldHasFocus": [Function],
@@ -1581,7 +1580,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "flight": [Function],
               "graphStylingPane": GraphStylingPane {
                 "container": [Circular],
                 "firstFieldHasFocus": [Function],
@@ -2484,7 +2482,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "flight": [Function],
                 "graphStylingPane": GraphStylingPane {
                   "container": [Circular],
                   "firstFieldHasFocus": [Function],
@@ -3374,7 +3371,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "flight": [Function],
               "graphStylingPane": GraphStylingPane {
                 "container": [Circular],
                 "firstFieldHasFocus": [Function],

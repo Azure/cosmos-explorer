@@ -667,7 +667,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
         "firstFieldHasFocus": [Function],

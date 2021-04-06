@@ -668,7 +668,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "title": [Function],
         "visible": [Function],
       },
-      "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
         "firstFieldHasFocus": [Function],
