@@ -1,9 +1,8 @@
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
-import { GraphConfig } from "../../Tabs/GraphTab";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { GraphExplorer, GraphAccessor } from "./GraphExplorer";
-
+import { GraphConfig, IGraphConfig } from "../../Tabs/GraphTab";
+import { GraphAccessor, GraphExplorer } from "./GraphExplorer";
 interface Parameter {
   onIsNewVertexDisabledChange: (isEnabled: boolean) => void;
   onGraphAccessorCreated: (instance: GraphAccessor) => void;
@@ -25,16 +24,37 @@ interface Parameter {
   onLoadStartKey: number;
   onLoadStartKeyChange: (newKey: number) => void;
   resourceId: string;
+
+  igraphConfigUiData: ViewModels.IGraphConfigUiData;
+  igraphConfig: IGraphConfig;
 }
 
+interface IGraphExplorerProps {
+  isChanged: boolean;
+}
+
+interface IGraphExplorerStates {
+  isChangedState: boolean;
+}
+
+export interface GraphExplorerAdapter
+  extends ReactAdapter,
+    React.Component<IGraphExplorerProps, IGraphExplorerStates> {}
 export class GraphExplorerAdapter implements ReactAdapter {
   public params: Parameter;
   public parameters = {};
   public isNewVertexDisabled: boolean;
 
-  public constructor(params: Parameter) {
+  public constructor(params: Parameter, props?: IGraphExplorerProps) {
     this.params = params;
+    this.state = {
+      isChangedState: this.props && this.props.isChanged,
+    };
   }
+
+  // callGraphExplorer = (isChanged: boolean) => {
+  //   console.log("GraphExplorerAdapter > callGraphExplorer > ", isChanged);
+  // };
 
   public renderComponent(): JSX.Element {
     return (
@@ -57,6 +77,9 @@ export class GraphExplorerAdapter implements ReactAdapter {
         /* TODO Figure out how to make this Knockout-free */
         graphConfigUiData={this.params.graphConfigUiData}
         graphConfig={this.params.graphConfig}
+        igraphConfigUiData={this.params.igraphConfigUiData}
+        igraphCofig={this.params.igraphConfig}
+        isChanged={this.props && this.props.isChanged}
       />
     );
   }

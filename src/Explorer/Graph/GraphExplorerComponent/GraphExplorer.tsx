@@ -1,37 +1,36 @@
+import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as Q from "q";
 import * as React from "react";
-import * as LeftPane from "./LeftPaneComponent";
-import { MiddlePaneComponent } from "./MiddlePaneComponent";
-import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
-import * as NodeProperties from "./NodePropertiesComponent";
-import * as D3ForceGraph from "./D3ForceGraph";
-import { GraphVizComponentProps } from "./GraphVizComponent";
-import * as GraphData from "./GraphData";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import * as GraphUtil from "./GraphUtil";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import * as GremlinClient from "./GremlinClient";
-import * as StorageUtility from "../../../Shared/StorageUtility";
-import { ArraysByKeyCache } from "./ArraysByKeyCache";
-import { EdgeInfoCache } from "./EdgeInfoCache";
-import * as TabComponent from "../../Controls/Tabs/TabComponent";
-import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
-import { QueryContainerComponent } from "./QueryContainerComponent";
-import { GraphConfig } from "../../Tabs/GraphTab";
-import { EditorReact } from "../../Controls/Editor/EditorReact";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as Constants from "../../../Common/Constants";
-import { InputProperty } from "../../../Contracts/ViewModels";
-import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
+import * as Constants from "../../../Common/Constants";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
-import { FeedOptions } from "@azure/cosmos";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { InputProperty } from "../../../Contracts/ViewModels";
+import * as StorageUtility from "../../../Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
+import { EditorReact } from "../../Controls/Editor/EditorReact";
+import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
+import * as TabComponent from "../../Controls/Tabs/TabComponent";
+import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
+import { GraphConfig, IGraphConfig } from "../../Tabs/GraphTab";
+import { ArraysByKeyCache } from "./ArraysByKeyCache";
+import * as D3ForceGraph from "./D3ForceGraph";
+import { EdgeInfoCache } from "./EdgeInfoCache";
+import * as GraphData from "./GraphData";
+import * as GraphUtil from "./GraphUtil";
+import { GraphVizComponentProps } from "./GraphVizComponent";
+import * as GremlinClient from "./GremlinClient";
+import * as LeftPane from "./LeftPaneComponent";
+import { MiddlePaneComponent } from "./MiddlePaneComponent";
+import * as NodeProperties from "./NodePropertiesComponent";
+import { QueryContainerComponent } from "./QueryContainerComponent";
 
 export interface GraphAccessor {
   applyFilter: () => void;
@@ -62,6 +61,11 @@ export interface GraphExplorerProps {
   /* TODO Figure out how to make this Knockout-free */
   graphConfigUiData: ViewModels.GraphConfigUiData;
   graphConfig?: GraphConfig;
+
+  igraphConfigUiData: ViewModels.IGraphConfigUiData;
+  igraphCofig?: IGraphConfig;
+
+  isChanged: boolean;
 }
 
 export interface GraphHighlightedNodeData {

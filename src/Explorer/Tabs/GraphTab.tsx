@@ -1,16 +1,18 @@
 import * as ko from "knockout";
-import * as Q from "q";
-import * as ViewModels from "../../Contracts/ViewModels";
-import TabsBase from "./TabsBase";
-import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
-import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
+import React from "react";
 import NewVertexIcon from "../../../images/NewVertex.svg";
 import StyleIcon from "../../../images/Style.svg";
-import GraphStylingPane from "../Panes/GraphStylingPane";
-import NewVertexPane from "../Panes/NewVertexPane";
 import { DatabaseAccount } from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
+import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
+import GraphStylingPane from "../Panes/GraphStylingPane";
+import { GraphStylingPanel } from "../Panes/GraphStylingPanel";
+import NewVertexPane from "../Panes/NewVertexPane";
 import template from "./GraphTab.html";
+import TabsBase from "./TabsBase";
 
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -28,6 +30,18 @@ export interface GraphConfig {
   iconsMap: ko.Observable<GraphIconMap>;
 }
 
+export interface IGraphConfig {
+  nodeColor: string;
+  nodeColorKey: string;
+  linkColor: string;
+  showNeighborType: ViewModels.NeighborType;
+  nodeCaption: string;
+  nodeSize: number;
+  linkWidth: number;
+  nodeIconKey: string;
+  iconsMap: GraphIconMap;
+}
+
 interface GraphTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
   masterKey: string;
@@ -36,6 +50,20 @@ interface GraphTabOptions extends ViewModels.TabOptions {
   collectionPartitionKeyProperty: string;
 }
 
+export interface GraphParams {
+  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+}
+
+interface GraphTabStates {
+  isChange: boolean;
+}
+interface GraphTabProps {
+  options: TabsBase;
+}
+
+export default interface GraphTab extends TabsBase, React.Component<GraphTabProps, GraphTabStates> {}
+
+// export default class GraphTab extends React.Component<GraphTabProps, GraphTabStates> {
 export default class GraphTab extends TabsBase {
   public static readonly component = { name: "graph-tab", template };
   // Graph default configuration
@@ -50,16 +78,22 @@ export default class GraphTab extends TabsBase {
   private isGraphDisplayed: ko.Observable<boolean>;
   private graphAccessor: GraphAccessor;
   private graphConfig: GraphConfig;
+  private igraphConfig: IGraphConfig;
   private graphConfigUiData: ViewModels.GraphConfigUiData;
+  private igraphConfigUiData: ViewModels.IGraphConfigUiData;
   private isFilterQueryLoading: ko.Observable<boolean>;
   private isValidQuery: ko.Observable<boolean>;
   private newVertexPane: NewVertexPane;
   private graphStylingPane: GraphStylingPane;
   private collectionPartitionKeyProperty: string;
+  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public options: GraphTabOptions;
 
-  constructor(options: GraphTabOptions) {
+  constructor(options: GraphTabOptions, params?: GraphParams) {
     super(options);
-
+    this.state = {
+      isChange: false,
+    };
     this.newVertexPane = options.collection && options.collection.container.newVertexPane;
     this.graphStylingPane = options.collection && options.collection.container.graphStylingPane;
     this.collectionPartitionKeyProperty = options.collectionPartitionKeyProperty;
@@ -69,6 +103,9 @@ export default class GraphTab extends TabsBase {
     this.isGraphDisplayed = ko.observable(false);
     this.graphAccessor = null;
     this.graphConfig = GraphTab.createGraphConfig();
+    this.openSidePanel = params?.openSidePanel;
+    this.igraphConfigUiData = this.createIGraphConfigUiData();
+
     // TODO Merge this with this.graphConfig
     this.graphConfigUiData = GraphTab.createGraphConfigUiData(this.graphConfig);
     this.graphExplorerAdapter = new GraphExplorerAdapter({
@@ -104,10 +141,13 @@ export default class GraphTab extends TabsBase {
         }
       },
       resourceId: options.account.id,
+      igraphConfig: this.igraphConfig,
+      igraphConfigUiData: this.igraphConfigUiData,
     });
 
     this.isFilterQueryLoading = ko.observable(false);
     this.isValidQuery = ko.observable(true);
+    // this.setCaption = this.setCaption.bind(this);
   }
 
   public static getGremlinEndpoint(account: DatabaseAccount): string {
@@ -154,11 +194,28 @@ export default class GraphTab extends TabsBase {
       );
     });
   }
-  public openStyling() {
+
+  setValues = () => {
+    console.log("setValues > ", this.setState);
+    // this.setState({ isChange: true });
+    // this.graphExplorerAdapter.callGraphExplorer(this.state.isChange);
+  };
+
+  public openStyling(): void {
     this.setDefaultGraphConfigValues();
     // Update the styling pane with this instance
     this.graphStylingPane.setData(this.graphConfigUiData);
-    this.graphStylingPane.open();
+    // this.graphStylingPane.open();
+    userContext.features.enableKOPanel
+      ? this.graphStylingPane.open()
+      : this.collection.container.openSidePanel(
+          "Graph",
+          <GraphStylingPanel
+            explorer={this.collection.container}
+            closePanel={this.collection.container.closeSidePanel}
+            config={this.igraphConfigUiData}
+          />
+        );
   }
 
   public static createGraphConfig(): GraphConfig {
@@ -184,6 +241,19 @@ export default class GraphTab extends TabsBase {
       nodeColorKeyChoice: ko.observable(graphConfig.nodeColorKey()),
       nodeIconChoice: ko.observable(graphConfig.nodeIconKey()),
       nodeIconSet: ko.observable(null),
+    };
+  }
+
+  public createIGraphConfigUiData(): ViewModels.IGraphConfigUiData {
+    return {
+      showNeighborType: ViewModels.NeighborType.BOTH,
+      nodeProperties: [],
+      nodePropertiesWithNone: [],
+      nodeCaptionChoice: undefined,
+      nodeColorKeyChoice: undefined,
+      nodeIconChoice: undefined,
+      nodeIconSet: undefined,
+      setValues: this.setValues,
     };
   }
 

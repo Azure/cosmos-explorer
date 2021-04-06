@@ -211,6 +211,17 @@ export interface GraphConfigUiData {
   nodeIconSet: ko.Observable<string>;
 }
 
+export interface IGraphConfigUiData {
+  showNeighborType: NeighborType;
+  nodeProperties: string[];
+  nodePropertiesWithNone: string[];
+  nodeCaptionChoice: string;
+  nodeColorKeyChoice: string;
+  nodeIconChoice: string;
+  nodeIconSet: string;
+  setValues: () => void;
+}
+
 /**
  * User input for creating new vertex
  */
