@@ -1,7 +1,7 @@
-import { sendMessage } from "./MessageHandler";
-import { Diagnostics, MessageTypes } from "../Contracts/ExplorerContracts";
-import { appInsights } from "../Shared/appInsights";
 import { SeverityLevel } from "@microsoft/applicationinsights-web";
+import { Diagnostics, MessageTypes } from "../Contracts/ExplorerContracts";
+import { trackTrace } from "../Shared/appInsights";
+import { sendMessage } from "./MessageHandler";
 
 // TODO: Move to a separate Diagnostics folder
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,7 +46,7 @@ function _logEntry(entry: Diagnostics.LogEntry): void {
         return SeverityLevel.Information;
     }
   })(entry.level);
-  appInsights.trackTrace({ message: entry.message, severityLevel }, { area: entry.area });
+  trackTrace({ message: entry.message, severityLevel }, { area: entry.area });
 }
 
 function _generateLogEntry(

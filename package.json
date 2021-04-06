@@ -13,7 +13,7 @@
     "@babel/plugin-proposal-decorators": "7.12.12",
     "@jupyterlab/services": "6.0.2",
     "@jupyterlab/terminal": "3.0.3",
-    "@microsoft/applicationinsights-web": "2.5.9",
+    "@microsoft/applicationinsights-web": "2.6.1",
     "@nteract/commutable": "7.4.2",
     "@nteract/connected-components": "6.8.2",
     "@nteract/core": "15.1.0",
