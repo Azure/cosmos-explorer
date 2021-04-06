@@ -26,6 +26,7 @@ interface UserContext {
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
   readonly addCollectionFlight: string;
+  readonly hasWriteAccess: boolean;
 }
 
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
@@ -35,6 +36,7 @@ const features = extractFeatures();
 const { enableSDKoperations: useSDKOperations } = features;
 
 const userContext: UserContext = {
+  hasWriteAccess: true,
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
   features,

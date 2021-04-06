@@ -255,6 +255,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
             subscriptionType: inputs.subscriptionType,
             quotaId: inputs.quotaId,
             portalEnv: inputs.serverId as PortalEnv,
+            hasWriteAccess: inputs.hasWriteAccess ?? true,
             addCollectionFlight:
               inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
           });

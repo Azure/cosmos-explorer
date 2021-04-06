@@ -105,7 +105,6 @@ export default class Explorer {
   public deleteDatabaseText: ko.Observable<string>;
   public collectionTreeNodeAltText: ko.Observable<string>;
   public refreshTreeTitle: ko.Observable<string>;
-  public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
   /**
@@ -269,7 +268,6 @@ export default class Explorer {
     });
     this.addCollectionText = ko.observable<string>("New Collection");
     this.addDatabaseText = ko.observable<string>("New Database");
-    this.hasWriteAccess = ko.observable<boolean>(true);
     this.collectionTitle = ko.observable<string>("Collections");
     this.collectionTreeNodeAltText = ko.observable<string>("Collection");
     this.deleteCollectionText = ko.observable<string>("Delete Collection");
@@ -1289,7 +1287,6 @@ export default class Explorer {
       }
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
-      this.hasWriteAccess(inputs.hasWriteAccess ?? true);
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
