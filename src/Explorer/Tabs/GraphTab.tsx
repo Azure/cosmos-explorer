@@ -101,7 +101,7 @@ export default class GraphTab extends TabsBase {
     this.isNewVertexDisabled = ko.observable(false);
     this.isPropertyEditing = ko.observable(false);
     this.isGraphDisplayed = ko.observable(false);
-    this.graphAccessor = null;
+    this.graphAccessor = undefined;
     this.graphConfig = GraphTab.createGraphConfig();
     this.openSidePanel = params?.openSidePanel;
     this.igraphConfigUiData = this.createIGraphConfigUiData();
@@ -136,8 +136,8 @@ export default class GraphTab extends TabsBase {
       masterKey: options.masterKey,
       onLoadStartKey: options.onLoadStartKey,
       onLoadStartKeyChange: (onLoadStartKey: number): void => {
-        if (onLoadStartKey == null) {
-          this.onLoadStartKey = null;
+        if (onLoadStartKey === undefined) {
+          this.onLoadStartKey = undefined;
         }
       },
       resourceId: options.account.id,
@@ -179,15 +179,15 @@ export default class GraphTab extends TabsBase {
     this.newVertexPane.setPartitionKeyProperty(this.collectionPartitionKeyProperty);
     // TODO Must update GraphExplorer properties
     this.newVertexPane.subscribeOnSubmitCreate((result: ViewModels.NewVertexData) => {
-      this.newVertexPane.formErrors(null);
-      this.newVertexPane.formErrorsDetails(null);
+      this.newVertexPane.formErrors(undefined);
+      this.newVertexPane.formErrorsDetails(undefined);
       this.graphAccessor.addVertex(result).then(
         () => {
           this.newVertexPane.cancel();
         },
         (error: GraphExplorerError) => {
           this.newVertexPane.formErrors(error.title);
-          if (!!error.details) {
+          if (error.details) {
             this.newVertexPane.formErrorsDetails(error.details);
           }
         }
@@ -195,7 +195,8 @@ export default class GraphTab extends TabsBase {
     });
   }
 
-  setValues = () => {
+  setValues = () : void  => {
+    //eslint-disable-next-line
     console.log("setValues > ", this.setState);
     // this.setState({ isChange: true });
     // this.graphExplorerAdapter.callGraphExplorer(this.state.isChange);
@@ -221,13 +222,13 @@ export default class GraphTab extends TabsBase {
   public static createGraphConfig(): GraphConfig {
     return {
       nodeColor: ko.observable(GraphTab.NODE_COLOR),
-      nodeColorKey: ko.observable(null),
+      nodeColorKey: ko.observable(undefined),
       linkColor: ko.observable(GraphTab.LINK_COLOR),
       showNeighborType: ko.observable(ViewModels.NeighborType.TARGETS_ONLY),
       nodeCaption: ko.observable(GraphTab.DEFAULT_NODE_CAPTION),
       nodeSize: ko.observable(GraphTab.NODE_SIZE),
       linkWidth: ko.observable(GraphTab.LINK_WIDTH),
-      nodeIconKey: ko.observable(null),
+      nodeIconKey: ko.observable(undefined),
       iconsMap: ko.observable({}),
     };
   }
@@ -240,7 +241,7 @@ export default class GraphTab extends TabsBase {
       nodeCaptionChoice: ko.observable(graphConfig.nodeCaption()),
       nodeColorKeyChoice: ko.observable(graphConfig.nodeColorKey()),
       nodeIconChoice: ko.observable(graphConfig.nodeIconKey()),
-      nodeIconSet: ko.observable(null),
+      nodeIconSet: ko.observable(undefined),
     };
   }
 
@@ -262,17 +263,17 @@ export default class GraphTab extends TabsBase {
    */
   private setDefaultGraphConfigValues() {
     // Assign default values if null
-    if (this.graphConfigUiData.nodeCaptionChoice() === null && this.graphConfigUiData.nodeProperties().length > 1) {
+    if (this.graphConfigUiData.nodeCaptionChoice() === undefined && this.graphConfigUiData.nodeProperties().length > 1) {
       this.graphConfigUiData.nodeCaptionChoice(this.graphConfigUiData.nodeProperties()[0]);
     }
     if (
-      this.graphConfigUiData.nodeColorKeyChoice() === null &&
+      this.graphConfigUiData.nodeColorKeyChoice() === undefined &&
       this.graphConfigUiData.nodePropertiesWithNone().length > 1
     ) {
       this.graphConfigUiData.nodeColorKeyChoice(this.graphConfigUiData.nodePropertiesWithNone()[0]);
     }
     if (
-      this.graphConfigUiData.nodeIconChoice() === null &&
+      this.graphConfigUiData.nodeIconChoice() === undefined &&
       this.graphConfigUiData.nodePropertiesWithNone().length > 1
     ) {
       this.graphConfigUiData.nodeIconChoice(this.graphConfigUiData.nodePropertiesWithNone()[0]);

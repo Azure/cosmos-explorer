@@ -126,6 +126,7 @@ interface GraphExplorerState {
   filterQueryError: string;
   filterQueryWarning: string;
   filterQueryStatus: FilterQueryStatus;
+  change: string;
 }
 
 export interface EditedProperties {
@@ -242,6 +243,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       filterQueryError: null,
       filterQueryWarning: null,
       filterQueryStatus: FilterQueryStatus.NoResult,
+      change: null,
     };
 
     // Not part of React state

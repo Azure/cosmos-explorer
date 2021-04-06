@@ -8,9 +8,9 @@ interface GraphStyleProps {
 }
 
 export const GraphStyleComponentF: FunctionComponent<GraphStyleProps> = ({
-  config,
+  config
   // firstFieldHasFocus,
-}): JSX.Element => {
+}: GraphStyleProps): JSX.Element => {
   // const [firstFieldHasFocusState, setFirstFieldHasFocus] = useState(firstFieldHasFocus);
 
   const nodePropertiesOptions = config.nodeProperties.map((nodeProperty) => ({
