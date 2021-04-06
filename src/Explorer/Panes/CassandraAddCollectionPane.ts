@@ -117,10 +117,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
 
     this.resetData();
 
-    this.container.flight.subscribe(() => {
-      this.resetData();
-    });
-
     this.requestUnitsUsageCostDedicated = ko.computed(() => {
       const account = this.container.databaseAccount();
       if (!account) {
@@ -311,7 +307,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
@@ -363,7 +359,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
       toCreateKeyspace: toCreateKeyspace,
@@ -407,7 +403,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           toCreateKeyspace: toCreateKeyspace,
@@ -435,7 +431,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           toCreateKeyspace: toCreateKeyspace,

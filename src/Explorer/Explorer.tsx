@@ -98,10 +98,6 @@ export interface ExplorerParams {
 }
 
 export default class Explorer {
-  public flight: ko.Observable<string> = ko.observable<string>(
-    SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
-  );
-
   public addCollectionText: ko.Observable<string>;
   public addDatabaseText: ko.Observable<string>;
   public collectionTitle: ko.Observable<string>;
@@ -1294,9 +1290,6 @@ export default class Explorer {
       this.databaseAccount(databaseAccount);
       this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
       this.hasWriteAccess(inputs.hasWriteAccess ?? true);
-      if (inputs.addCollectionDefaultFlight) {
-        this.flight(inputs.addCollectionDefaultFlight);
-      }
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
