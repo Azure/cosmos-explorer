@@ -109,6 +109,16 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
     subscriptionId: inputs.subscriptionId,
   });
 
+  if (i18n.isInitialized) {
+    await displaySelfServeComponent(selfServeType);
+  } else {
+    i18n.on("initialized", async () => {
+      await displaySelfServeComponent(selfServeType);
+    });
+  }
+};
+
+const displaySelfServeComponent = async (selfServeType: SelfServeType): Promise<void> => {
   const descriptor = await getDescriptor(selfServeType);
   ReactDOM.render(renderComponent(descriptor), document.getElementById("selfServeContent"));
 };
