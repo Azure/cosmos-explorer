@@ -1,8 +1,6 @@
 import Q from "q";
-import _ from "underscore";
 import Explorer from "../../Explorer";
 import * as Entities from "../Entities";
-import * as DataTableOperations from "./DataTableOperations";
 import * as DataTableUtilities from "./DataTableUtilities";
 import TableEntityListViewModel from "./TableEntityListViewModel";
 
@@ -88,36 +86,6 @@ export default class TableCommands {
         });
     }
     return null;
-  }
-
-  public reorderColumnsBasedOnSelectedEntities(viewModel: TableEntityListViewModel): Q.Promise<boolean> {
-    var selected = viewModel.selected();
-    if (!selected || !selected.length) {
-      return null;
-    }
-
-    var table = viewModel.table;
-    var currentColumnNames: string[] = DataTableOperations.getDataTableHeaders(table);
-    var headersCount: number = currentColumnNames.length;
-
-    var headersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
-      selected,
-      viewModel.queryTablesTab.container.isPreferredApiCassandra()
-    );
-
-    // An array with elements representing indexes of selected entities' header union out of initial headers.
-    var orderOfLeftHeaders: number[] = headersUnion.map((item: string) => currentColumnNames.indexOf(item));
-
-    // An array with elements representing initial order of the table.
-    var initialOrder: number[] = DataTableOperations.getInitialOrder(headersCount);
-
-    // An array with elements representing indexes of headers not present in selected entities' header union.
-    var orderOfRightHeaders: number[] = _.difference(initialOrder, orderOfLeftHeaders);
-
-    // This will be the target order, with headers in selected entities on the left while others on the right, both in the initial order, respectively.
-    var targetOrder: number[] = orderOfLeftHeaders.concat(orderOfRightHeaders);
-
-    return DataTableOperations.reorderColumns(table, targetOrder);
   }
 
   public resetColumns(viewModel: TableEntityListViewModel): void {
