@@ -273,7 +273,7 @@ export interface AutoPilotOfferSettings {
 }
 
 export interface CreateDatabaseParams {
-  autoPilotMaxThroughput?: number | string;
+  autoPilotMaxThroughput?: number;
   databaseId: string;
   databaseLevelThroughput?: boolean;
   offerThroughput?: number;

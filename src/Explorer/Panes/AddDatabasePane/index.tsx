@@ -156,7 +156,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
       databaseLevelThroughput: addDatabasePaneStartMessage.database.shared,
     };
     if (isAutoPilotSelected) {
-      createDatabaseParams.autoPilotMaxThroughput = "" + addDatabasePaneStartMessage.offerThroughput;
+      createDatabaseParams.autoPilotMaxThroughput = addDatabasePaneStartMessage.offerThroughput;
     } else {
       createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
     }
@@ -324,6 +324,8 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
                   <ThroughputInput
                     showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
                     isDatabase={true}
+                    isAutoscaleSelected={isAutoPilotSelected}
+                    throughput={throughput}
                     setThroughputValue={(throughput: number) => setThroughput(throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
                     onCostAcknowledgeChange={(isAcknowledged: boolean) => setThroughputSpendAck(isAcknowledged)}

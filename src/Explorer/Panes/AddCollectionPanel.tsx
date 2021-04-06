@@ -218,6 +218,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
                     }
                     isDatabase={true}
+                    isAutoscaleSelected={this.isNewDatabaseAutoscale}
+                    throughput={this.newDatabaseThroughput}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
                     onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
@@ -439,6 +441,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
               }
               isDatabase={false}
+              isAutoscaleSelected={this.isCollectionAutoscale}
+              throughput={this.collectionThroughput}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {

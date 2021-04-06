@@ -9,7 +9,7 @@ import {
   TextField,
   TooltipHost,
 } from "office-ui-fabric-react";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { Tooltip } from "../../../Common/Tooltip";
 import * as SharedConstants from "../../../Shared/Constants";
@@ -25,12 +25,8 @@ export interface ThroughputInputProps {
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
   onCostAcknowledgeChange: (isAcknowledged: boolean) => void;
-}
-
-export interface ThroughputInputState {
   isAutoscaleSelected?: boolean;
   throughput?: number;
-  isCostAcknowledged?: boolean;
 }
 
 export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
@@ -38,20 +34,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   showFreeTierExceedThroughputTooltip,
   setThroughputValue,
   setIsAutoscale,
+  isAutoscaleSelected = true,
+  throughput = AutoPilotUtils.minAutoPilotThroughput,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
-  const [state, updateState] = useState<ThroughputInputState>({
-    isAutoscaleSelected: true,
-    throughput: AutoPilotUtils.minAutoPilotThroughput,
-    isCostAcknowledged: false,
-  });
-  const { isAutoscaleSelected, throughput, isCostAcknowledged } = state;
-  const setState = (newState: ThroughputInputState) => updateState({ ...state, ...newState });
-
-  useEffect(() => {
-    setThroughputValue(throughput);
-    setIsAutoscale(isAutoscaleSelected);
-  }, [isAutoscaleSelected, throughput]);
+  const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
 
   const getThroughputLabelText = (): string => {
     if (isAutoscaleSelected) {
@@ -67,7 +54,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const onThroughputValueChange = (newInput: string): void => {
     const newThroughput = parseInt(newInput);
-    setState({ throughput: newThroughput });
+    setThroughputValue(newThroughput);
+    setIsAutoscale(isAutoscaleSelected);
   };
 
   const getAutoScaleTooltip = (): string => {
@@ -95,12 +83,11 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const handleOnChangeMode = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
     if (option.key === "true") {
-      setState({ isAutoscaleSelected: true, throughput: AutoPilotUtils.minAutoPilotThroughput });
+      setThroughputValue(AutoPilotUtils.minAutoPilotThroughput);
+      setIsAutoscale(true);
     } else {
-      setState({
-        isAutoscaleSelected: false,
-        throughput: SharedConstants.CollectionCreation.DefaultCollectionRUs400,
-      });
+      setThroughputValue(SharedConstants.CollectionCreation.DefaultCollectionRUs400);
+      setIsAutoscale(false);
     }
   };
 
@@ -129,16 +116,16 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       {isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small">
+          <Text variant="small" data-testid="ruDescription">
             Provision maximum RU/s required by this resource. Estimate your required RU/s with&nbsp;
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
+            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" data-testid="ruDescription">
               capacity calculator
             </Link>
             .
           </Text>
 
           <Stack horizontal>
-            <Text variant="small" style={{ lineHeight: "20px" }}>
+            <Text variant="small" style={{ lineHeight: "20px" }} data-testid="maxRUDescription">
               Max RU/s
             </Text>
             <Tooltip>{getAutoScaleTooltip()}</Tooltip>
@@ -170,9 +157,9 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       {!isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small">
+          <Text variant="small" data-testid="ruDescription">
             Estimate your required RU/s with&nbsp;
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
+            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" data-testid="capacityLink">
               capacity calculator
             </Link>
             .
@@ -216,7 +203,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               label: { padding: 0, margin: "4px 4px 0 0" },
             }}
             onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) => {
-              setState({ isCostAcknowledged: isChecked });
+              setIsCostAcknowledged(isChecked);
               onCostAcknowledgeChange(isChecked);
             }}
           />
