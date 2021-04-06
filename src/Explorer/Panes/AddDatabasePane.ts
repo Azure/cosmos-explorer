@@ -61,11 +61,6 @@ export default class AddDatabasePane extends ContextualPaneBase {
     // TODO 388844: get defaults from parent frame
     this.databaseCreateNewShared = ko.observable<boolean>(this.getSharedThroughputDefault());
 
-    this.container.subscriptionType &&
-      this.container.subscriptionType.subscribe((subscriptionType) => {
-        this.databaseCreateNewShared(this.getSharedThroughputDefault());
-      });
-
     this.databaseIdLabel = ko.computed<string>(() =>
       this.container.isPreferredApiCassandra() ? "Keyspace id" : "Database id"
     );
@@ -273,7 +268,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     super.open();
     this.resetData();
     const addDatabasePaneOpenMessage = {
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput: this.throughput(),
@@ -299,7 +294,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared(),
       }),
       offerThroughput,
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: userContext.addCollectionFlight,
@@ -342,7 +337,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType = this.container.subscriptionType && this.container.subscriptionType();
+    const subscriptionType = userContext.subscriptionType;
 
     if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
@@ -361,7 +356,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared(),
       }),
       offerThroughput: offerThroughput,
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: userContext.addCollectionFlight,
@@ -383,7 +378,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         shared: this.databaseCreateNewShared(),
       }),
       offerThroughput: offerThroughput,
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         flight: userContext.addCollectionFlight,

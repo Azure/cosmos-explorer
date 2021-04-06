@@ -42,6 +42,7 @@ const userContext: UserContext = {
   features,
   useSDKOperations,
   addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
+  subscriptionType: CollectionCreation.DefaultSubscriptionType,
 };
 
 function updateUserContext(newContext: Partial<UserContext>): void {
