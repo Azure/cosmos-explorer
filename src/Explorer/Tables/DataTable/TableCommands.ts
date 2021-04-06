@@ -1,12 +1,10 @@
-import _ from "underscore";
 import Q from "q";
-import * as DataTableUtilities from "./DataTableUtilities";
-import * as DataTableOperations from "./DataTableOperations";
-import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Entities from "../Entities";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import * as TableColumnOptionsPane from "../../Panes/Tables/TableColumnOptionsPane";
+import _ from "underscore";
 import Explorer from "../../Explorer";
+import * as Entities from "../Entities";
+import * as DataTableOperations from "./DataTableOperations";
+import * as DataTableUtilities from "./DataTableUtilities";
+import TableEntityListViewModel from "./TableEntityListViewModel";
 
 export default class TableCommands {
   // Command Ids
@@ -89,34 +87,6 @@ export default class TableCommands {
           });
         });
     }
-    return null;
-  }
-
-  public customizeColumnsCommand(viewModel: TableEntityListViewModel): Q.Promise<any> {
-    var table: DataTables.DataTable = viewModel.table;
-    var displayedColumnNames: string[] = DataTableOperations.getDataTableHeaders(table);
-    var columnsCount: number = displayedColumnNames.length;
-    var currentOrder: number[] = DataTableOperations.getInitialOrder(columnsCount);
-    //Debug.assert(!!table && !!currentOrder && displayedColumnNames.length === currentOrder.length);
-
-    var currentSettings: boolean[];
-    try {
-      currentSettings = currentOrder.map((value: number, index: number) => {
-        return table.column(index).visible();
-      });
-    } catch (err) {
-      // Error
-    }
-
-    let parameters: TableColumnOptionsPane.IColumnSetting = <TableColumnOptionsPane.IColumnSetting>{
-      columnNames: displayedColumnNames,
-      order: currentOrder,
-      visible: currentSettings,
-    };
-
-    this._container.tableColumnOptionsPane.tableViewModel = viewModel;
-    this._container.tableColumnOptionsPane.parameters = parameters;
-    this._container.tableColumnOptionsPane.open();
     return null;
   }
 

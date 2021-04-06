@@ -67,7 +67,6 @@ import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
@@ -206,7 +205,6 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public tableColumnOptionsPane: TableColumnOptionsPane;
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
@@ -580,13 +578,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      id: "tablecolumnoptionspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.querySelectPane = new QuerySelectPane({
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
@@ -631,7 +622,6 @@ export default class Explorer {
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.tableColumnOptionsPane,
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
