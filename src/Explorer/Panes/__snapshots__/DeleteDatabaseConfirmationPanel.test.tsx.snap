@@ -689,7 +689,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "visible": [Function],
       },
       "hasStorageAnalyticsAfecFeature": [Function],
-      "hasWriteAccess": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isCopyNotebookPaneEnabled": [Function],

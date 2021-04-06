@@ -688,7 +688,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
         "visible": [Function],
       },
       "hasStorageAnalyticsAfecFeature": [Function],
-      "hasWriteAccess": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isCopyNotebookPaneEnabled": [Function],
