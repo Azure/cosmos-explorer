@@ -5,7 +5,6 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { SubscriptionType } from "../../Contracts/SubscriptionType";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as SharedConstants from "../../Shared/Constants";
@@ -302,7 +301,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         partitionKey: "",
         databaseId: this.keyspaceId(),
       }),
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
@@ -354,7 +353,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         hasDedicatedThroughput: this.dedicateTableThroughput(),
       }),
       keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
@@ -398,7 +397,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             hasDedicatedThroughput: this.dedicateTableThroughput(),
           }),
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-          subscriptionType: SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: userContext.subscriptionType,
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",
@@ -426,7 +425,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             hasDedicatedThroughput: this.dedicateTableThroughput(),
           },
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-          subscriptionType: SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: userContext.subscriptionType,
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",

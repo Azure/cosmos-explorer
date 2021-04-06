@@ -839,7 +839,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "subscriptionType": [Function],
                 "tabsManager": TabsManager {
                   "activeTab": [Function],
                   "openedTabs": [Function],
@@ -1677,7 +1676,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "subscriptionType": [Function],
               "tabsManager": TabsManager {
                 "activeTab": [Function],
                 "openedTabs": [Function],
@@ -2528,7 +2526,6 @@ exports[`SettingsComponent renders 1`] = `
                   "title": [Function],
                   "visible": [Function],
                 },
-                "subscriptionType": [Function],
                 "tabsManager": TabsManager {
                   "activeTab": [Function],
                   "openedTabs": [Function],
@@ -3366,7 +3363,6 @@ exports[`SettingsComponent renders 1`] = `
                 "title": [Function],
                 "visible": [Function],
               },
-              "subscriptionType": [Function],
               "tabsManager": TabsManager {
                 "activeTab": [Function],
                 "openedTabs": [Function],

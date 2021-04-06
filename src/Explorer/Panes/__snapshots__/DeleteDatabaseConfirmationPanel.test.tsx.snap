@@ -820,7 +820,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "title": [Function],
         "visible": [Function],
       },
-      "subscriptionType": [Function],
       "tabsManager": TabsManager {
         "activeTab": [Function],
         "openedTabs": [Function],

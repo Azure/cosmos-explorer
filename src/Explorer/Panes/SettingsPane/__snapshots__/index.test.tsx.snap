@@ -815,7 +815,6 @@ exports[`Settings Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "subscriptionType": [Function],
       "tabsManager": TabsManager {
         "activeTab": [Function],
         "openedTabs": [Function],
@@ -1741,7 +1740,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "subscriptionType": [Function],
       "tabsManager": TabsManager {
         "activeTab": [Function],
         "openedTabs": [Function],

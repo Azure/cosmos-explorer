@@ -815,7 +815,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
         "title": [Function],
         "visible": [Function],
       },
-      "subscriptionType": [Function],
       "tabsManager": TabsManager {
         "activeTab": [Function],
         "openedTabs": [Function],
