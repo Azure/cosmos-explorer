@@ -239,31 +239,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "title": [Function],
           "visible": [Function],
         },
-        TableColumnOptionsPane {
-          "allSelected": [Function],
-          "anyColumnSelected": [Function],
-          "availableColumnsLabel": "Available Columns",
-          "canMoveDown": [Function],
-          "canMoveUp": [Function],
-          "canSelectAll": [Function],
-          "columnOptions": [Function],
-          "container": [Circular],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "handleClick": [Function],
-          "id": "tablecolumnoptionspane",
-          "instructionLabel": "Choose the columns and the order in which you want to display them in the table.",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "moveDownLabel": "Move Down",
-          "moveUpLabel": "Move Up",
-          "noColumnSelectedWarning": "At least one column should be selected.",
-          "selectedColumnOption": null,
-          "title": [Function],
-          "titleLabel": "Column Options",
-          "visible": [Function],
-        },
         QuerySelectPane {
           "allSelected": [Function],
           "anyColumnSelected": [Function],
@@ -346,54 +321,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "throughputSpendAckVisible": [Function],
           "title": [Function],
           "userTableQuery": [Function],
-          "visible": [Function],
-        },
-        LoadQueryPane {
-          "container": [Circular],
-          "files": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "loadquerypane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "onImportLinkKeyPress": [Function],
-          "selectedFilesTitle": [Function],
-          "title": [Function],
-          "visible": [Function],
-        },
-        SaveQueryPane {
-          "canSaveQueries": [Function],
-          "container": [Circular],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "savequerypane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "queryName": [Function],
-          "setupQueries": [Function],
-          "setupSaveQueriesText": "For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “___Cosmos”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.",
-          "submit": [Function],
-          "title": [Function],
-          "visible": [Function],
-        },
-        BrowseQueriesPane {
-          "canSaveQueries": [Function],
-          "container": [Circular],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "browsequeriespane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "loadSavedQuery": [Function],
-          "queriesGridComponentAdapter": QueriesGridComponentAdapter {
-            "container": [Circular],
-            "parameters": [Function],
-          },
-          "setupQueries": [Function],
-          "title": [Function],
           "visible": [Function],
         },
         StringInputPane {
@@ -590,24 +517,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "visible": [Function],
       },
       "arcadiaToken": [Function],
-      "browseQueriesPane": BrowseQueriesPane {
-        "canSaveQueries": [Function],
-        "container": [Circular],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "browsequeriespane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "loadSavedQuery": [Function],
-        "queriesGridComponentAdapter": QueriesGridComponentAdapter {
-          "container": [Circular],
-          "parameters": [Function],
-        },
-        "setupQueries": [Function],
-        "title": [Function],
-        "visible": [Function],
-      },
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
       "cassandraAddCollectionPane": CassandraAddCollectionPane {
@@ -734,7 +643,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "title": [Function],
         "visible": [Function],
       },
-      "flight": [Function],
       "graphStylingPane": GraphStylingPane {
         "container": [Circular],
         "firstFieldHasFocus": [Function],
@@ -756,7 +664,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "visible": [Function],
       },
       "hasStorageAnalyticsAfecFeature": [Function],
-      "hasWriteAccess": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isCopyNotebookPaneEnabled": [Function],
@@ -785,20 +692,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isSparkEnabledForAccount": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
-      "loadQueryPane": LoadQueryPane {
-        "container": [Circular],
-        "files": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "loadquerypane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "onImportLinkKeyPress": [Function],
-        "selectedFilesTitle": [Function],
-        "title": [Function],
-        "visible": [Function],
-      },
       "memoryUsageInfo": [Function],
       "newVertexPane": NewVertexPane {
         "buildString": [Function],
@@ -880,22 +773,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "container": [Circular],
         "parameters": [Function],
       },
-      "saveQueryPane": SaveQueryPane {
-        "canSaveQueries": [Function],
-        "container": [Circular],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "savequerypane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "queryName": [Function],
-        "setupQueries": [Function],
-        "setupSaveQueriesText": "For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “___Cosmos”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.",
-        "submit": [Function],
-        "title": [Function],
-        "visible": [Function],
-      },
       "selectedDatabaseId": [Function],
       "selectedNode": [Function],
       "setInProgressConsoleDataIdToBeDeleted": undefined,
@@ -943,32 +820,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "title": [Function],
         "visible": [Function],
       },
-      "subscriptionType": [Function],
-      "tableColumnOptionsPane": TableColumnOptionsPane {
-        "allSelected": [Function],
-        "anyColumnSelected": [Function],
-        "availableColumnsLabel": "Available Columns",
-        "canMoveDown": [Function],
-        "canMoveUp": [Function],
-        "canSelectAll": [Function],
-        "columnOptions": [Function],
-        "container": [Circular],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "handleClick": [Function],
-        "id": "tablecolumnoptionspane",
-        "instructionLabel": "Choose the columns and the order in which you want to display them in the table.",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "moveDownLabel": "Move Down",
-        "moveUpLabel": "Move Up",
-        "noColumnSelectedWarning": "At least one column should be selected.",
-        "selectedColumnOption": null,
-        "title": [Function],
-        "titleLabel": "Column Options",
-        "visible": [Function],
-      },
       "tabsManager": TabsManager {
         "activeTab": [Function],
         "openedTabs": [Function],
@@ -999,7 +850,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         verticalAlign="start"
       >
         <div
-          className="ms-Stack panelInfoErrorContainer css-204"
+          className="ms-Stack panelInfoErrorContainer css-140"
         >
           <StyledIconBase
             className="panelWarningIcon"
@@ -1286,7 +1137,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             >
               <i
                 aria-hidden={true}
-                className="panelWarningIcon root-206"
+                className="panelWarningIcon root-142"
                 data-icon-name="WarningSolid"
               >
                 
@@ -1302,7 +1153,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               variant="small"
             >
               <span
-                className="panelWarningErrorMessage css-207"
+                className="panelWarningErrorMessage css-143"
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
                  
@@ -1327,7 +1178,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-207"
+            className="css-143"
           >
             Confirm by typing the database id
           </span>
@@ -1628,18 +1479,18 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField root-209"
+              className="ms-TextField root-145"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-210"
+                  className="ms-TextField-fieldGroup fieldGroup-146"
                 >
                   <input
                     aria-invalid={false}
                     autoFocus={true}
-                    className="ms-TextField-field field-211"
+                    className="ms-TextField-field field-147"
                     id="confirmDatabaseId"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -1662,7 +1513,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-228"
+            className="css-164"
           >
             Help us improve Azure Cosmos DB!
           </span>
@@ -1672,7 +1523,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-228"
+            className="css-164"
           >
             What is the reason why you are deleting this database?
           </span>
@@ -1975,17 +1826,17 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField ms-TextField--multiline root-209"
+              className="ms-TextField ms-TextField--multiline root-145"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-229"
+                  className="ms-TextField-fieldGroup fieldGroup-165"
                 >
                   <textarea
                     aria-invalid={false}
-                    className="ms-TextField-field field-230"
+                    className="ms-TextField-field field-166"
                     id="deleteDatabaseFeedbackInput"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -3677,7 +3528,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   variantClassName="ms-Button--primary"
                 >
                   <button
-                    className="ms-Button ms-Button--primary root-220"
+                    className="ms-Button ms-Button--primary root-156"
                     data-is-focusable={true}
                     id="sidePanelOkButton"
                     onClick={[Function]}
@@ -3689,14 +3540,14 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                     type="submit"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-221"
+                      className="ms-Button-flexContainer flexContainer-157"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-222"
+                        className="ms-Button-textContainer textContainer-158"
                       >
                         <span
-                          className="ms-Button-label label-224"
+                          className="ms-Button-label label-160"
                           id="id__3"
                           key="id__3"
                         >

@@ -8,14 +8,15 @@ i18n
   .init({
     fallbackLng: "en",
     detection: { order: ["navigator", "cookie", "localStorage", "sessionStorage", "querystring", "htmlTag"] },
-    debug: process.env.NODE_ENV === "development",
+    // temporarily setting debug to true to investigate loading issues in prod
+    debug: true,
     keySeparator: ".",
     interpolation: {
       formatSeparator: ",",
     },
     react: {
       wait: true,
-      bindI18n: "languageChanged loaded",
+      bindI18n: "languageChanged added loaded",
       bindI18nStore: "added removed",
       nsMode: "default",
       useSuspense: false,

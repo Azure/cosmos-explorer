@@ -19,13 +19,12 @@ import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter"
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { SubscriptionType } from "../Contracts/SubscriptionType";
 import * as ViewModels from "../Contracts/ViewModels";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { appInsights } from "../Shared/appInsights";
+import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
@@ -44,29 +43,28 @@ import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { FileSystemUtil } from "./Notebook/FileSystemUtil";
+import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
+import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
-import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
 import NewVertexPane from "./Panes/NewVertexPane";
-import { SaveQueryPane } from "./Panes/SaveQueryPane";
+import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
@@ -97,10 +95,6 @@ export interface ExplorerParams {
 }
 
 export default class Explorer {
-  public flight: ko.Observable<string> = ko.observable<string>(
-    SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
-  );
-
   public addCollectionText: ko.Observable<string>;
   public addDatabaseText: ko.Observable<string>;
   public collectionTitle: ko.Observable<string>;
@@ -108,7 +102,6 @@ export default class Explorer {
   public deleteDatabaseText: ko.Observable<string>;
   public collectionTreeNodeAltText: ko.Observable<string>;
   public refreshTreeTitle: ko.Observable<string>;
-  public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
   /**
@@ -117,11 +110,6 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.subscriptionType instead
-   * */
-  public subscriptionType: ko.Observable<SubscriptionType>;
   /**
    * @deprecated
    * Use userContext.apiType instead
@@ -204,13 +192,9 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public tableColumnOptionsPane: TableColumnOptionsPane;
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public loadQueryPane: LoadQueryPane;
-  public saveQueryPane: ContextualPaneBase;
-  public browseQueriesPane: BrowseQueriesPane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -274,7 +258,6 @@ export default class Explorer {
     });
     this.addCollectionText = ko.observable<string>("New Collection");
     this.addDatabaseText = ko.observable<string>("New Database");
-    this.hasWriteAccess = ko.observable<boolean>(true);
     this.collectionTitle = ko.observable<string>("Collections");
     this.collectionTreeNodeAltText = ko.observable<string>("Collection");
     this.deleteCollectionText = ko.observable<string>("Delete Collection");
@@ -282,7 +265,6 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -343,7 +325,7 @@ export default class Explorer {
                 userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
-              appInsights.trackEvent(
+              trackEvent(
                 { name: "LoadedWithSparkEnabled" },
                 {
                   subscriptionId: userContext.subscriptionId,
@@ -574,13 +556,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      id: "tablecolumnoptionspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.querySelectPane = new QuerySelectPane({
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
@@ -597,27 +572,6 @@ export default class Explorer {
 
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.loadQueryPane = new LoadQueryPane({
-      id: "loadquerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.saveQueryPane = new SaveQueryPane({
-      id: "savequerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.browseQueriesPane = new BrowseQueriesPane({
-      id: "browsequeriespane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -645,13 +599,9 @@ export default class Explorer {
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.tableColumnOptionsPane,
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.loadQueryPane,
-      this.saveQueryPane,
-      this.browseQueriesPane,
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
@@ -1301,11 +1251,6 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.databaseAccount(databaseAccount);
-      this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
-      this.hasWriteAccess(inputs.hasWriteAccess ?? true);
-      if (inputs.addCollectionDefaultFlight) {
-        this.flight(inputs.addCollectionDefaultFlight);
-      }
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -2403,6 +2348,19 @@ export default class Explorer {
       />
     );
   }
+
+  public openBrowseQueriesPanel(): void {
+    this.openSidePanel("Open Saved Queries", <BrowseQueriesPanel explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openLoadQueryPanel(): void {
+    this.openSidePanel("Load Query", <LoadQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
+  public openSaveQueryPanel(): void {
+    this.openSidePanel("Save Query", <SaveQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     parent = parent || this.resourceTree.myNotebooksContentRoot;
     this.openSidePanel(

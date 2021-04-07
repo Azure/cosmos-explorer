@@ -77,14 +77,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("delete-collection-confirmation-pane")).toBe(true);
   });
 
-  it("should register save-query-pane component", () => {
-    expect(ko.components.isRegistered("save-query-pane")).toBe(true);
-  });
-
-  it("should register browse-queries-pane component", () => {
-    expect(ko.components.isRegistered("browse-queries-pane")).toBe(true);
-  });
-
   it("should register graph-new-vertex-pane component", () => {
     expect(ko.components.isRegistered("graph-new-vertex-pane")).toBe(true);
   });
