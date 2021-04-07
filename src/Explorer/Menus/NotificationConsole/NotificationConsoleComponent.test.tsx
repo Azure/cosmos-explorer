@@ -1,9 +1,9 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import {
-  NotificationConsoleComponentProps,
-  NotificationConsoleComponent,
   ConsoleDataType,
+  NotificationConsoleComponent,
+  NotificationConsoleComponentProps,
 } from "./NotificationConsoleComponent";
 
 describe("NotificationConsoleComponent", () => {
@@ -12,9 +12,7 @@ describe("NotificationConsoleComponent", () => {
       consoleData: undefined,
       isConsoleExpanded: false,
       inProgressConsoleDataIdToBeDeleted: "",
-      setIsConsoleExpanded: (): void => {
-        /**/
-      },
+      setIsConsoleExpanded: (): void => undefined,
     };
   };
 
