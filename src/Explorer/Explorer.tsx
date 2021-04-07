@@ -925,10 +925,8 @@ export default class Explorer {
 
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-    this._setLoadingStatusText("Fetching databases...");
     readDatabases().then(
       (databases: DataModels.Database[]) => {
-        this._setLoadingStatusText("Successfully fetched databases.");
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
           {
@@ -941,20 +939,16 @@ export default class Explorer {
         this.addDatabasesToList(deltaDatabases.toAdd);
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
         this.selectedNode(currentlySelectedNode);
-        this._setLoadingStatusText("Fetching containers...");
         this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
           () => {
-            this._setLoadingStatusText("Successfully fetched containers.");
             deferred.resolve();
           },
           (reason) => {
-            this._setLoadingStatusText("Failed to fetch containers.");
             deferred.reject(reason);
           }
         );
       },
       (error) => {
-        this._setLoadingStatusText("Failed to fetch databases.");
         deferred.reject(error);
         const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
@@ -2223,32 +2217,6 @@ export default class Explorer {
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
       return tokenRefreshInterval;
-    }
-  }
-
-  private _setLoadingStatusText(text: string, title: string = "Welcome to Azure Cosmos DB") {
-    if (!text) {
-      return;
-    }
-
-    const loadingText = document.getElementById("explorerLoadingStatusText");
-    if (!loadingText) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusText') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-      return;
-    }
-    loadingText.innerHTML = text;
-
-    const loadingTitle = document.getElementById("explorerLoadingStatusTitle");
-    if (!loadingTitle) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusTitle') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-    } else {
-      loadingTitle.innerHTML = title;
     }
   }
 
