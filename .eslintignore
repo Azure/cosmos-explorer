@@ -133,7 +133,6 @@ src/Explorer/Panes/Tables/AddTableEntityPane.ts
 src/Explorer/Panes/Tables/EditTableEntityPane.ts
 src/Explorer/Panes/Tables/EntityPropertyViewModel.ts
 src/Explorer/Panes/Tables/QuerySelectPane.ts
-src/Explorer/Panes/Tables/TableColumnOptionsPane.ts
 src/Explorer/Panes/Tables/TableEntityPane.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyNameValidator.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts

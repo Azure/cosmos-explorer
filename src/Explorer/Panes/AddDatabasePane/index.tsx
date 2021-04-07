@@ -118,7 +118,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
     subscriptionType: SubscriptionType[subscriptionType],
     subscriptionQuotaId: userContext.quotaId,
     defaultsCheck: {
-      flight: container.flight(),
+      flight: userContext.addCollectionFlight,
     },
     dataExplorerArea: Constants.Areas.ContextualPane,
   };
@@ -129,7 +129,7 @@ export const AddDatabasePane: FunctionComponent<AddDatabasePaneProps> = ({
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         throughput: throughput,
-        flight: container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
