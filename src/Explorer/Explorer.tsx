@@ -93,6 +93,7 @@ export interface ExplorerParams {
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
+  tabsManager: TabsManager;
 }
 
 export default class Explorer {
@@ -600,7 +601,7 @@ export default class Explorer {
       container: this,
     });
 
-    this.tabsManager = new TabsManager();
+    this.tabsManager = params?.tabsManager ?? new TabsManager();
 
     this._panes = [
       this.addDatabasePane,
