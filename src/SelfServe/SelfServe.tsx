@@ -42,13 +42,13 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
       const selfServeExample = new SelfServeExample.default();
-      await loadTranslations(selfServeExample.getClassName());
+      await loadTranslations(selfServeExample.constructor.name);
       return selfServeExample.toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
       const sqlX = new SqlX.default();
-      await loadTranslations(sqlX.getClassName());
+      await loadTranslations(sqlX.constructor.name);
       return sqlX.toSelfServeDescriptor();
     }
     default:
