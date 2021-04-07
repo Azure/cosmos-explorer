@@ -19,13 +19,12 @@ import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter"
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { SubscriptionType } from "../Contracts/SubscriptionType";
 import * as ViewModels from "../Contracts/ViewModels";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { appInsights } from "../Shared/appInsights";
+import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
@@ -68,7 +67,6 @@ import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
@@ -99,10 +97,6 @@ export interface ExplorerParams {
 }
 
 export default class Explorer {
-  public flight: ko.Observable<string> = ko.observable<string>(
-    SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
-  );
-
   public addCollectionText: ko.Observable<string>;
   public addDatabaseText: ko.Observable<string>;
   public collectionTitle: ko.Observable<string>;
@@ -110,7 +104,6 @@ export default class Explorer {
   public deleteDatabaseText: ko.Observable<string>;
   public collectionTreeNodeAltText: ko.Observable<string>;
   public refreshTreeTitle: ko.Observable<string>;
-  public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
   /**
@@ -119,11 +112,6 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.subscriptionType instead
-   * */
-  public subscriptionType: ko.Observable<SubscriptionType>;
   /**
    * @deprecated
    * Use userContext.apiType instead
@@ -207,7 +195,6 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public tableColumnOptionsPane: TableColumnOptionsPane;
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
@@ -274,7 +261,6 @@ export default class Explorer {
     });
     this.addCollectionText = ko.observable<string>("New Collection");
     this.addDatabaseText = ko.observable<string>("New Database");
-    this.hasWriteAccess = ko.observable<boolean>(true);
     this.collectionTitle = ko.observable<string>("Collections");
     this.collectionTreeNodeAltText = ko.observable<string>("Collection");
     this.deleteCollectionText = ko.observable<string>("Delete Collection");
@@ -282,7 +268,6 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -343,7 +328,7 @@ export default class Explorer {
                 userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
-              appInsights.trackEvent(
+              trackEvent(
                 { name: "LoadedWithSparkEnabled" },
                 {
                   subscriptionId: userContext.subscriptionId,
@@ -581,13 +566,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      id: "tablecolumnoptionspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.querySelectPane = new QuerySelectPane({
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
@@ -632,7 +610,6 @@ export default class Explorer {
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.tableColumnOptionsPane,
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
@@ -1293,11 +1270,6 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.databaseAccount(databaseAccount);
-      this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
-      this.hasWriteAccess(inputs.hasWriteAccess ?? true);
-      if (inputs.addCollectionDefaultFlight) {
-        this.flight(inputs.addCollectionDefaultFlight);
-      }
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,

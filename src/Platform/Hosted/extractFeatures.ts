@@ -2,7 +2,6 @@ export type Features = {
   readonly canExceedMaximumValue: boolean;
   readonly cosmosdb: boolean;
   readonly enableChangeFeedPolicy: boolean;
-  readonly enableDatabaseSettingsTabV1: boolean;
   readonly enableFixedCollectionWithSharedThroughput: boolean;
   readonly enableKOPanel: boolean;
   readonly enableNotebooks: boolean;
@@ -40,7 +39,6 @@ export function extractFeatures(given = new URLSearchParams()): Features {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
-    enableDatabaseSettingsTabV1: "true" === get("enabledbsettingsv1"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
     enableNotebooks: "true" === get("enablenotebooks"),
