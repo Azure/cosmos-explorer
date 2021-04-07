@@ -68,27 +68,37 @@ export abstract class SelfServeBaseClass {
     baselineValues: ReadonlyMap<string, SmartUiInput>
   ) => Promise<OnSaveResult>;
   public abstract onRefresh: () => Promise<RefreshResult>;
+  private className: string;
+
+  constructor() {
+    this.className = this.constructor.name;
+  }
+
+  public getClassName(): string {
+    return this.className;
+  }
 
   public toSelfServeDescriptor(): SelfServeDescriptor {
-    const className = this.constructor.name;
-    const selfServeDescriptor = Reflect.getMetadata(className, this) as SelfServeDescriptor;
+    const selfServeDescriptor = Reflect.getMetadata(this.className, this) as SelfServeDescriptor;
 
     if (!this.initialize) {
-      throw new Error(`initialize() was not declared for the class '${className}'`);
+      throw new Error(`initialize() was not declared for the class '${this.className}'`);
     }
     if (!this.onSave) {
-      throw new Error(`onSave() was not declared for the class '${className}'`);
+      throw new Error(`onSave() was not declared for the class '${this.className}'`);
     }
     if (!this.onRefresh) {
-      throw new Error(`onRefresh() was not declared for the class '${className}'`);
+      throw new Error(`onRefresh() was not declared for the class '${this.className}'`);
     }
     if (!selfServeDescriptor?.root) {
-      throw new Error(`@IsDisplayable decorator was not declared for the class '${className}'`);
+      throw new Error(`@IsDisplayable decorator was not declared for the class '${this.className}'`);
     }
 
     selfServeDescriptor.initialize = this.initialize;
     selfServeDescriptor.onSave = this.onSave;
     selfServeDescriptor.onRefresh = this.onRefresh;
+    selfServeDescriptor.root.id = this.className;
+
     return selfServeDescriptor;
   }
 }

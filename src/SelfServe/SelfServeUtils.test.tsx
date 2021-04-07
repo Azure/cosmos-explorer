@@ -35,6 +35,8 @@ describe("SelfServeUtils", () => {
       public onSave = jest.fn();
       public onRefresh = jest.fn();
     }
+    const testClassObject = new Test();
+    expect(testClassObject.getClassName()).toEqual("Test");
     expect(() => new Test().toSelfServeDescriptor()).toThrow(
       "@IsDisplayable decorator was not declared for the class 'Test'"
     );
@@ -150,7 +152,7 @@ describe("SelfServeUtils", () => {
     ]);
     const expectedDescriptor = {
       root: {
-        id: "TestClass",
+        id: undefined as string,
         children: [
           {
             id: "dbThroughput",
@@ -270,7 +272,7 @@ describe("SelfServeUtils", () => {
         "invalidRegions",
       ],
     };
-    const descriptor = mapToSmartUiDescriptor("TestClass", context);
+    const descriptor = mapToSmartUiDescriptor(context);
     expect(descriptor).toEqual(expectedDescriptor);
   });
 });

@@ -38,20 +38,26 @@ const loadTranslations = async (className: string): Promise<void> => {
 };
 
 const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDescriptor> => {
+  let descriptor: SelfServeDescriptor;
   switch (selfServeType) {
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
-      await loadTranslations("SelfServeExample");
-      return new SelfServeExample.default().toSelfServeDescriptor();
+      const selfServeExample = new SelfServeExample.default();
+      await loadTranslations(selfServeExample.getClassName());
+      descriptor = selfServeExample.toSelfServeDescriptor();
+      break;
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
-      await loadTranslations("SqlX");
-      return new SqlX.default().toSelfServeDescriptor();
+      const sqlX = new SqlX.default();
+      await loadTranslations(sqlX.getClassName());
+      descriptor = sqlX.toSelfServeDescriptor();
+      break;
     }
     default:
       return undefined;
   }
+  return descriptor;
 };
 
 const renderComponent = (selfServeDescriptor: SelfServeDescriptor): JSX.Element => {
