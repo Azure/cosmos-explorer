@@ -1,3 +1,5 @@
+import { TelemetryData } from "../Shared/Telemetry/TelemetryProcessor";
+
 interface BaseInput {
   dataFieldName: string;
   errorMessage?: string;
@@ -98,7 +100,7 @@ export enum NumberUiType {
   Slider = "Slider",
 }
 
-export type ChoiceItem = { label: string; key: string };
+export type ChoiceItem = { labelTKey: string; key: string };
 
 export type InputType = number | string | boolean | ChoiceItem | Description;
 
@@ -156,4 +158,8 @@ export interface RefreshResult {
 
 export interface RefreshParams {
   retryIntervalInMs: number;
+}
+
+export interface SelfServeTelemetryMessage extends TelemetryData {
+  selfServeClassName: string;
 }

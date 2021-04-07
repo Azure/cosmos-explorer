@@ -252,7 +252,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: OpenQueryIcon,
         title: "Open Query",
         description: null,
-        onClick: () => this.container.browseQueriesPane.open(),
+        onClick: () => this.container.openBrowseQueriesPanel(),
       });
 
       if (!this.container.isPreferredApiCassandra()) {

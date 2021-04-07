@@ -19,13 +19,12 @@ import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter"
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { SubscriptionType } from "../Contracts/SubscriptionType";
 import * as ViewModels from "../Contracts/ViewModels";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { appInsights } from "../Shared/appInsights";
+import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
@@ -44,33 +43,31 @@ import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { FileSystemUtil } from "./Notebook/FileSystemUtil";
+import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
+import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
-import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
+import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
-import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
 import NewVertexPane from "./Panes/NewVertexPane";
-import { SaveQueryPane } from "./Panes/SaveQueryPane";
+import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
-import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -99,10 +96,6 @@ export interface ExplorerParams {
 }
 
 export default class Explorer {
-  public flight: ko.Observable<string> = ko.observable<string>(
-    SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
-  );
-
   public addCollectionText: ko.Observable<string>;
   public addDatabaseText: ko.Observable<string>;
   public collectionTitle: ko.Observable<string>;
@@ -110,7 +103,6 @@ export default class Explorer {
   public deleteDatabaseText: ko.Observable<string>;
   public collectionTreeNodeAltText: ko.Observable<string>;
   public refreshTreeTitle: ko.Observable<string>;
-  public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
   /**
@@ -119,11 +111,6 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.subscriptionType instead
-   * */
-  public subscriptionType: ko.Observable<SubscriptionType>;
   /**
    * @deprecated
    * Use userContext.apiType instead
@@ -180,7 +167,6 @@ export default class Explorer {
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
-  public nonSystemDatabases: ko.Computed<ViewModels.Database[]>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
@@ -205,22 +191,12 @@ export default class Explorer {
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
   public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
-  public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public tableColumnOptionsPane: TableColumnOptionsPane;
   public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public settingsPane: SettingsPane;
-  public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public uploadItemsPane: UploadItemsPane;
-  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
-  public loadQueryPane: LoadQueryPane;
-  public saveQueryPane: ContextualPaneBase;
-  public browseQueriesPane: BrowseQueriesPane;
-  public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -257,7 +233,6 @@ export default class Explorer {
   public closeDialog: ExplorerParams["closeDialog"];
 
   private _panes: ContextualPaneBase[] = [];
-  private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -285,7 +260,6 @@ export default class Explorer {
     });
     this.addCollectionText = ko.observable<string>("New Collection");
     this.addDatabaseText = ko.observable<string>("New Database");
-    this.hasWriteAccess = ko.observable<boolean>(true);
     this.collectionTitle = ko.observable<string>("Collections");
     this.collectionTreeNodeAltText = ko.observable<string>("Collection");
     this.deleteCollectionText = ko.observable<string>("Delete Collection");
@@ -293,7 +267,6 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -354,7 +327,7 @@ export default class Explorer {
                 userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
-              appInsights.trackEvent(
+              trackEvent(
                 { name: "LoadedWithSparkEnabled" },
                 {
                   subscriptionId: userContext.subscriptionId,
@@ -528,17 +501,6 @@ export default class Explorer {
         configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
-    this.defaultExperience.subscribe((defaultExperience: string) => {
-      if (
-        defaultExperience &&
-        defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase()
-      ) {
-        this._isSystemDatabasePredicate = (database: ViewModels.Database): boolean => {
-          return database.id() === "system";
-        };
-      }
-    });
-
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -560,10 +522,6 @@ export default class Explorer {
       }
     });
 
-    this.nonSystemDatabases = ko.computed(() => {
-      return this.databases().filter((database: ViewModels.Database) => !this._isSystemDatabasePredicate(database));
-    });
-
     this.addDatabasePane = new AddDatabasePane({
       id: "adddatabasepane",
       visible: ko.observable<boolean>(false),
@@ -581,13 +539,6 @@ export default class Explorer {
 
     this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
       id: "deletecollectionconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
-      id: "deletedatabaseconfirmationpane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -614,13 +565,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      id: "tablecolumnoptionspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.querySelectPane = new QuerySelectPane({
       id: "queryselectpane",
       visible: ko.observable<boolean>(false),
@@ -637,57 +581,6 @@ export default class Explorer {
 
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.settingsPane = new SettingsPane({
-      id: "settingspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      id: "executesprocparamspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPane = new UploadItemsPane({
-      id: "uploaditemspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-
-    this.loadQueryPane = new LoadQueryPane({
-      id: "loadquerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.saveQueryPane = new SaveQueryPane({
-      id: "savequerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.browseQueriesPane = new BrowseQueriesPane({
-      id: "browsequeriespane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadFilePane = new UploadFilePane({
-      id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -713,21 +606,12 @@ export default class Explorer {
       this.addDatabasePane,
       this.addCollectionPane,
       this.deleteCollectionConfirmationPane,
-      this.deleteDatabaseConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.tableColumnOptionsPane,
       this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.settingsPane,
-      this.executeSprocParamsPane,
-      this.uploadItemsPane,
-      this.loadQueryPane,
-      this.saveQueryPane,
-      this.browseQueriesPane,
-      this.uploadFilePane,
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
@@ -823,8 +707,6 @@ export default class Explorer {
         this.editTableEntityPane.title("Edit Table Row");
         this.deleteCollectionConfirmationPane.title("Delete Table");
         this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-        this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
-        this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -1347,7 +1229,12 @@ export default class Explorer {
   }
 
   public isLastNonEmptyDatabase(): boolean {
-    if (this.isLastDatabase() && this.databases()[0].collections && this.databases()[0].collections().length > 0) {
+    if (
+      this.isLastDatabase() &&
+      this.databases()[0] &&
+      this.databases()[0].collections &&
+      this.databases()[0].collections().length > 0
+    ) {
       return true;
     }
     return false;
@@ -1382,11 +1269,6 @@ export default class Explorer {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.databaseAccount(databaseAccount);
-      this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
-      this.hasWriteAccess(inputs.hasWriteAccess ?? true);
-      if (inputs.addCollectionDefaultFlight) {
-        this.flight(inputs.addCollectionDefaultFlight);
-      }
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -2140,38 +2022,6 @@ export default class Explorer {
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(notificationProgressId));
   }
 
-  public onUploadToNotebookServerClicked(parent?: NotebookContentItem): void {
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
-
-    this.uploadFilePane.openWithOptions({
-      paneTitle: "Upload file to notebook server",
-      selectFileInputLabel: "Select file to upload",
-      errorMessage: "Could not upload file",
-      inProgressMessage: "Uploading file to notebook server",
-      successMessage: "Successfully uploaded file to notebook server",
-      onSubmit: async (file: File): Promise<NotebookContentItem> => {
-        const readFileAsText = (inputFile: File): Promise<string> => {
-          const reader = new FileReader();
-          return new Promise((resolve, reject) => {
-            reader.onerror = () => {
-              reader.abort();
-              reject(`Problem parsing file: ${inputFile}`);
-            };
-            reader.onload = () => {
-              resolve(reader.result as string);
-            };
-            reader.readAsText(inputFile);
-          });
-        };
-
-        const fileContent = await readFileAsText(file);
-        return this.uploadFile(file.name, fileContent, parent);
-      },
-      extensions: undefined,
-      submitButtonLabel: "Upload",
-    });
-  }
-
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
@@ -2480,6 +2330,33 @@ export default class Explorer {
         );
   }
 
+  public openDeleteDatabaseConfirmationPane(): void {
+    this.openSidePanel(
+      "Delete Database",
+      <DeleteDatabaseConfirmationPanel
+        explorer={this}
+        openNotificationConsole={this.expandConsole}
+        closePanel={this.closeSidePanel}
+        selectedDatabase={this.findSelectedDatabase()}
+      />
+    );
+  }
+
+  public openUploadItemsPanePane(): void {
+    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openSettingPane(): void {
+    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openExecuteSprocParamsPanel(): void {
+    this.openSidePanel(
+      "Input parameters",
+      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
+    );
+  }
+
   public async openAddCollectionPanel(): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
@@ -2488,6 +2365,30 @@ export default class Explorer {
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+      />
+    );
+  }
+
+  public openBrowseQueriesPanel(): void {
+    this.openSidePanel("Open Saved Queries", <BrowseQueriesPanel explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openLoadQueryPanel(): void {
+    this.openSidePanel("Load Query", <LoadQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
+  public openSaveQueryPanel(): void {
+    this.openSidePanel("Save Query", <SaveQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
+  public openUploadFilePanel(parent?: NotebookContentItem): void {
+    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    this.openSidePanel(
+      "Upload File",
+      <UploadFilePane
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
     );
   }

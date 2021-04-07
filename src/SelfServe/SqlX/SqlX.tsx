@@ -1,4 +1,5 @@
 import { IsDisplayable, OnChange, RefreshOptions, Values } from "../Decorators";
+import { selfServeTrace } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
@@ -147,10 +148,10 @@ const onEnableDedicatedGatewayChange = (
 };
 
 const skuDropDownItems: ChoiceItem[] = [
-  { label: "CosmosD4s", key: CosmosD4s },
-  { label: "CosmosD8s", key: CosmosD8s },
-  { label: "CosmosD16s", key: CosmosD16s },
-  { label: "CosmosD32s", key: CosmosD32s },
+  { labelTKey: "CosmosD4s", key: CosmosD4s },
+  { labelTKey: "CosmosD8s", key: CosmosD8s },
+  { labelTKey: "CosmosD16s", key: CosmosD16s },
+  { labelTKey: "CosmosD32s", key: CosmosD32s },
 ];
 
 const getSkus = async (): Promise<ChoiceItem[]> => {
@@ -176,6 +177,8 @@ export default class SqlX extends SelfServeBaseClass {
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
+    selfServeTrace({ selfServeClassName: "SqlX" });
+
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
 
@@ -231,7 +234,7 @@ export default class SqlX extends SelfServeBaseClass {
         portalNotification: {
           initialize: {
             titleTKey: "CreateInitializeTitle",
-            messageTKey: "CreateInitializeTitle",
+            messageTKey: "CreateInitializeMessage",
           },
           success: {
             titleTKey: "CreateSuccessTitle",

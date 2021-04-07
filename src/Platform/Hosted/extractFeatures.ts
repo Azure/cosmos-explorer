@@ -2,7 +2,6 @@ export type Features = {
   readonly canExceedMaximumValue: boolean;
   readonly cosmosdb: boolean;
   readonly enableChangeFeedPolicy: boolean;
-  readonly enableDatabaseSettingsTabV1: boolean;
   readonly enableFixedCollectionWithSharedThroughput: boolean;
   readonly enableKOPanel: boolean;
   readonly enableNotebooks: boolean;
@@ -23,17 +22,23 @@ export type Features = {
   readonly ttl90Days: boolean;
 };
 
-export function extractFeatures(params?: URLSearchParams): Features {
-  params = params || new URLSearchParams(window.location.search);
+export function extractFeatures(given = new URLSearchParams()): Features {
   const downcased = new URLSearchParams();
-  params.forEach((value, key) => downcased.append(key.toLocaleLowerCase(), value));
-  const get = (key: string) => downcased.get("feature." + key.toLocaleLowerCase()) ?? undefined;
+  const set = (value: string, key: string) => downcased.set(key.toLowerCase(), value);
+  const get = (key: string) => downcased.get("feature." + key) ?? undefined;
+
+  try {
+    new URLSearchParams(window.parent.location.search).forEach(set);
+  } catch {
+    //
+  } finally {
+    given.forEach(set);
+  }
 
   return {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
-    enableDatabaseSettingsTabV1: "true" === get("enabledbsettingsv1"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
     enableNotebooks: "true" === get("enablenotebooks"),

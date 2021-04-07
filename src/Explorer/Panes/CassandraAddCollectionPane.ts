@@ -5,7 +5,6 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { SubscriptionType } from "../../Contracts/SubscriptionType";
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as AddCollectionUtility from "../../Shared/AddCollectionUtility";
 import * as SharedConstants from "../../Shared/Constants";
@@ -116,10 +115,6 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.sharedThroughputSpendAckText = ko.observable<string>();
 
     this.resetData();
-
-    this.container.flight.subscribe(() => {
-      this.resetData();
-    });
 
     this.requestUnitsUsageCostDedicated = ko.computed(() => {
       const account = this.container.databaseAccount();
@@ -261,10 +256,8 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         });
         this.keyspaceIds(cachedKeyspaceIdsList);
       };
-      this.container.nonSystemDatabases.subscribe((newDatabases: ViewModels.Database[]) =>
-        updateKeyspaceIds(newDatabases)
-      );
-      updateKeyspaceIds(this.container.nonSystemDatabases());
+      this.container.databases.subscribe((newDatabases: ViewModels.Database[]) => updateKeyspaceIds(newDatabases));
+      updateKeyspaceIds(this.container.databases());
     }
 
     this.autoPilotUsageCost = ko.pureComputed<string>(() => {
@@ -308,12 +301,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         partitionKey: "",
         databaseId: this.keyspaceId(),
       }),
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
@@ -360,12 +353,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
         hasDedicatedThroughput: this.dedicateTableThroughput(),
       }),
       keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: "u",
         throughput: this.throughput(),
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
       toCreateKeyspace: toCreateKeyspace,
@@ -404,12 +397,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             hasDedicatedThroughput: this.dedicateTableThroughput(),
           }),
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-          subscriptionType: SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: userContext.subscriptionType,
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           toCreateKeyspace: toCreateKeyspace,
@@ -432,12 +425,12 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
             hasDedicatedThroughput: this.dedicateTableThroughput(),
           },
           keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-          subscriptionType: SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: userContext.subscriptionType,
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: "u",
             throughput: this.throughput(),
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           toCreateKeyspace: toCreateKeyspace,

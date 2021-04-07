@@ -23,6 +23,7 @@ import {
   getDatabaseAccountKindFromExperience,
   getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
+import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
@@ -254,13 +255,16 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
             subscriptionType: inputs.subscriptionType,
             quotaId: inputs.quotaId,
             portalEnv: inputs.serverId as PortalEnv,
+            hasWriteAccess: inputs.hasWriteAccess ?? true,
+            addCollectionFlight:
+              inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
           });
 
           const explorer = new Explorer(explorerParams);
           explorer.configure(inputs);
           resolve(explorer);
           if (openAction) {
-            handleOpenAction(openAction, explorer.nonSystemDatabases(), explorer);
+            handleOpenAction(openAction, explorer.databases(), explorer);
           }
         }
       },
