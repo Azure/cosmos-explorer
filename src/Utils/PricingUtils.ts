@@ -1,6 +1,6 @@
-import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
-import * as Constants from "../Shared/Constants";
 import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
+import * as Constants from "../Shared/Constants";
+import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 
 interface ComputeRUUsagePriceHourlyArgs {
   serverId: string;
@@ -99,8 +99,8 @@ export function computeDisplayUsageString(usageInKB: number): string {
       usageInGB > 0.1
         ? usageInGB.toFixed(2) + " GB"
         : usageInMB > 0.1
-        ? usageInMB.toFixed(2) + " MB"
-        : usageInKB.toFixed(2) + " KB";
+          ? usageInMB.toFixed(2) + " MB"
+          : usageInKB.toFixed(2) + " KB";
   return displayUsageString;
 }
 
@@ -167,9 +167,8 @@ export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDat
     maxAutoPilotThroughputSet
   )} RU/s (10% of max RU/s) - ${maxAutoPilotThroughputSet} RU/s</b> based on usage. <br /><br />After the first ${AutoPilotUtils.getStorageBasedOnUserInput(
     maxAutoPilotThroughputSet
-  )} GB of data stored, the max RU/s will be automatically upgraded based on the new storage value. <a href='${
-    Constants.AutopilotDocumentation.Url
-  }' target='_blank' aria-label='Learn more about autoscale throughput'>Learn more</a>.`;
+  )} GB of data stored, the max RU/s will be automatically upgraded based on the new storage value. <a href='${Constants.AutopilotDocumentation.Url
+    }' target='_blank' aria-label='Learn more about autoscale throughput'>Learn more</a>.`;
 }
 
 export function getEstimatedAutoscaleSpendHtml(
@@ -196,8 +195,7 @@ export function getEstimatedAutoscaleSpendHtml(
     `Estimated monthly cost (${currency}): <b>` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice / 10)} - ` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} </b> ` +
-    `(${regions} ${regions === 1 ? "region" : "regions"}, ${
-      throughput / 10
+    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput / 10
     } - ${throughput} RU/s, ${currencySign}${pricePerRu}/RU)`
   );
 }
@@ -251,11 +249,11 @@ export function getEstimatedSpendAcknowledgeString(
   const currencySign: string = getCurrencySign(serverId);
   return !isAutoscale
     ? `I acknowledge the estimated ${currencySign}${calculateEstimateNumber(
-        dailyPrice
-      )} daily cost for the throughput above.`
+      dailyPrice
+    )} daily cost for the throughput above.`
     : `I acknowledge the estimated ${currencySign}${calculateEstimateNumber(
-        monthlyPrice / 10
-      )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
+      monthlyPrice / 10
+    )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
 export function getUpsellMessage(
@@ -282,7 +280,7 @@ export function getUpsellMessage(
   }
 }
 
-function getCollectionName(defaultExperience: string): string {
+export function getCollectionName(defaultExperience: string): string {
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:
       return "container";

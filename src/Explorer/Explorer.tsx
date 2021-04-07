@@ -36,6 +36,7 @@ import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationU
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -2300,12 +2301,13 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
+    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
     this.openSidePanel(
-      "Delete Container",
+      "Delete " + collectionName,
       <DeleteCollectionConfirmationPanel
         explorer={this}
+        collectionName={collectionName}
         closePanel={this.closeSidePanel}
-        openNotificationConsole={this.expandConsole}
       />
     );
   }

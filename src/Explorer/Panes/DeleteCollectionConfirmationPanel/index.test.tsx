@@ -63,8 +63,7 @@ describe("Delete Collection Confirmation Pane", () => {
       const props = {
         explorer: fakeExplorer,
         closePanel: (): void => undefined,
-        storageType: "Container",
-        openNotificationConsole: (): void => undefined,
+        collectionName: "container",
       };
       const wrapper = shallow(<DeleteCollectionConfirmationPanel {...props} />);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
@@ -117,9 +116,8 @@ describe("Delete Collection Confirmation Pane", () => {
     beforeEach(() => {
       const props = {
         explorer: fakeExplorer,
-        storageType: "Container",
         closePanel: (): void => undefined,
-        openNotificationConsole: (): void => undefined,
+        collectionName: "container",
       };
       wrapper = mount(<DeleteCollectionConfirmationPanel {...props} />);
     });
@@ -133,8 +131,8 @@ describe("Delete Collection Confirmation Pane", () => {
         .hostNodes()
         .simulate("change", { target: { value: selectedCollectionId } });
 
-      expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
+      expect(wrapper.exists(".genericPaneSubmitBtn")).toBe(true);
+      wrapper.find(".genericPaneSubmitBtn").hostNodes().simulate("click");
       expect(deleteCollection).toHaveBeenCalledWith(databaseId, selectedCollectionId);
 
       wrapper.unmount();
@@ -154,8 +152,8 @@ describe("Delete Collection Confirmation Pane", () => {
         .hostNodes()
         .simulate("change", { target: { value: feedbackText } });
 
-      expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
+      expect(wrapper.exists(".genericPaneSubmitBtn")).toBe(true);
+      wrapper.find(".genericPaneSubmitBtn").hostNodes().simulate("click");
       expect(deleteCollection).toHaveBeenCalledWith(databaseId, selectedCollectionId);
 
       const deleteFeedback = new DeleteFeedback(
