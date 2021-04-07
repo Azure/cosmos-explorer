@@ -18,6 +18,7 @@ export type Features = {
   readonly notebookServerToken?: string;
   readonly notebookServerUrl?: string;
   readonly selfServeType?: string;
+  readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
 };
@@ -55,6 +56,7 @@ export function extractFeatures(given = new URLSearchParams()): Features {
     notebookServerToken: get("notebookservertoken"),
     notebookServerUrl: get("notebookserverurl"),
     selfServeType: get("selfservetype"),
+    pr: get("pr"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
   };
