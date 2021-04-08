@@ -17,6 +17,7 @@ export interface GenericRightPaneProps {
   submitButtonText: string;
   title: string;
   isSubmitButtonHidden?: boolean;
+  isFooterHidden?: boolean;
 }
 
 export interface GenericRightPaneState {
@@ -52,7 +53,7 @@ export class GenericRightPaneComponent extends React.Component<GenericRightPaneP
             {this.renderPanelHeader()}
             {this.renderErrorSection()}
             {this.props.children}
-            {this.renderPanelFooter()}
+            {!this.props.isFooterHidden && this.renderPanelFooter()}
           </div>
           {this.renderLoadingScreen()}
         </div>

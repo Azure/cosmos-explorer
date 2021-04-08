@@ -596,7 +596,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.contextMenu = [
       {
         label: "Manage GitHub settings",
-        onClick: () => this.container.gitHubReposPane.open(),
+        onClick: () => this.container.openGitHubReposPanel("Manage GitHub settings"),
       },
       {
         label: "Disconnect from GitHub",

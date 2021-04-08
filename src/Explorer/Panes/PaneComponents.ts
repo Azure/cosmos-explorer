@@ -2,7 +2,6 @@ import AddCollectionPaneTemplate from "./AddCollectionPane.html";
 import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import DeleteCollectionConfirmationPaneTemplate from "./DeleteCollectionConfirmationPane.html";
-import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphNewVertexPaneTemplate from "./GraphNewVertexPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
@@ -122,15 +121,6 @@ export class SetupNotebooksPaneComponent {
     return {
       viewModel: PaneComponent,
       template: SetupNotebooksPaneTemplate,
-    };
-  }
-}
-
-export class GitHubReposPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: GitHubReposPaneTemplate,
     };
   }
 }

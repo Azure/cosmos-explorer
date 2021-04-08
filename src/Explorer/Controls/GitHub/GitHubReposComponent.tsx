@@ -23,8 +23,6 @@ export interface RepoListItem {
 }
 
 export class GitHubReposComponent extends React.Component<GitHubReposComponentProps> {
-  public static readonly ConnectToGitHubTitle = "Connect to GitHub";
-  public static readonly ManageGitHubRepoTitle = "Manage GitHub settings";
   private static readonly ManageGitHubRepoDescription =
     "Select your GitHub repos and branch(es) to pin to your notebooks workspace.";
   private static readonly ManageGitHubRepoResetConnection = "View or change your GitHub authorization settings.";
@@ -32,14 +30,6 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
   private static readonly CancelButtonText = "Cancel";
 
   public render(): JSX.Element {
-    const header: JSX.Element = (
-      <p>
-        {this.props.showAuthorizeAccess
-          ? GitHubReposComponent.ConnectToGitHubTitle
-          : GitHubReposComponent.ManageGitHubRepoTitle}
-      </p>
-    );
-
     const content: JSX.Element = this.props.showAuthorizeAccess ? (
       <AuthorizeAccessComponent {...this.props.authorizeAccessProps} />
     ) : (
@@ -66,9 +56,6 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
 
     return (
       <>
-        <div className={"firstdivbg headerline"} role="heading" aria-level={2}>
-          {header}
-        </div>
         <div className={"paneMainContent"}>{content}</div>
         {!this.props.showAuthorizeAccess && (
           <>
