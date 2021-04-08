@@ -89,6 +89,8 @@ export abstract class SelfServeBaseClass {
     selfServeDescriptor.initialize = this.initialize;
     selfServeDescriptor.onSave = this.onSave;
     selfServeDescriptor.onRefresh = this.onRefresh;
+    selfServeDescriptor.root.id = className;
+
     return selfServeDescriptor;
   }
 }

@@ -7,7 +7,6 @@ import GraphStylingPaneTemplate from "./GraphStylingPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
-import TableColumnOptionsPaneTemplate from "./Tables/TableColumnOptionsPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 import TableQuerySelectPaneTemplate from "./Tables/TableQuerySelectPane.html";
 
@@ -76,15 +75,6 @@ export class TableEditEntityPaneComponent {
     return {
       viewModel: PaneComponent,
       template: TableEditEntityPaneTemplate,
-    };
-  }
-}
-
-export class TableColumnOptionsPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: TableColumnOptionsPaneTemplate,
     };
   }
 }
