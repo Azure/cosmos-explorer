@@ -2179,11 +2179,8 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (this.isPreferredApiCassandra()) {
       this.cassandraAddCollectionPane.open();
-    } else if (userContext.features.enableReactPane) {
+    } else  {
       this.openAddCollectionPanel();
-    } else {
-      this.addCollectionPane.open(this.selectedDatabaseId());
-      document.getElementById("linkAddCollection").focus();
     }
   }
 
