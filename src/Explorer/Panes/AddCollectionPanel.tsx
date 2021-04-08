@@ -512,8 +512,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          <CollapsibleSectionComponent title="Advanced" isExpandedByDefault={false}>
-            <Stack className="panelGroupSpacing">
+          <CollapsibleSectionComponent
+            title="Advanced"
+            isExpandedByDefault={false}
+            onExpand={() => this.scrollToAdvancedSection()}
+          >
+            <Stack className="panelGroupSpacing" id="collapsibleSectionContent">
               {this.props.explorer.isEnableMongoCapabilityPresent() && (
                 <Stack>
                   <Stack horizontal>
@@ -911,6 +915,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return Constants.AnalyticalStorageTtl.Disabled;
+  }
+
+  private scrollToAdvancedSection(): void {
+    document.getElementById("collapsibleSectionContent")?.scrollIntoView();
   }
 
   private async submit(event: React.FormEvent<HTMLFormElement>): Promise<void> {

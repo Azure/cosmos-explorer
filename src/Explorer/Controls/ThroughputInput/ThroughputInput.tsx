@@ -39,7 +39,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
       <div className="throughputInputContainer throughputInputSpacing">
         <Stack horizontal>
           <span className="mandatoryStar">*&nbsp;</span>
-          <Text variant="small" style={{ lineHeight: "20px" }}>
+          <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
             {this.getThroughputLabelText()}
           </Text>
           <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={PricingUtils.getRuToolTipText()}>
