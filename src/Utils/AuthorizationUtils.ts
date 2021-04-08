@@ -18,6 +18,7 @@ export function getAuthorizationHeader(): ViewModels.AuthorizationTokenHeaderMet
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function decryptJWTToken(token: string) {
   if (!token) {
     Logger.logError("Cannot decrypt token: No JWT token found", "AuthorizationUtils/decryptJWTToken");
