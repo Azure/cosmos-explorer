@@ -1253,12 +1253,6 @@ export default class Explorer {
 
   public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
     if (inputs != null) {
-      // In development mode, save the iframe message from the portal in session storage.
-      // This allows webpack hot reload to funciton properly
-      if (process.env.NODE_ENV === "development") {
-        sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
-      }
-
       const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
