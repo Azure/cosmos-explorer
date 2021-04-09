@@ -15,7 +15,7 @@ interface EdgePropertyType {
 
 export const getNeighborTitle = (neighbor: NeighborVertexBasicInfo): string => {
   return `edge id: ${neighbor.edgeId}, vertex id: ${neighbor.id}`;
-}
+};
 
 /**
  * Collect all edges from this node
@@ -66,7 +66,7 @@ export const createEdgesfromNode = (
       });
     }
   }
-}
+};
 
 /**
  * From ['id1', 'id2', 'idn'] build the following string "'id1','id2','idn'".
@@ -96,7 +96,7 @@ export const getLimitedArrayString = (array: string[], maxSize: number): JoinArr
     result: output,
     consumedCount: i + 1,
   };
-}
+};
 
 export const createFetchEdgePairQuery = (
   outE: boolean,
@@ -113,19 +113,22 @@ export const createFetchEdgePairQuery = (
     const hasWithoutStep = joined.result ? `.has(id, without(${joined.result}))` : "";
 
     if (joined.consumedCount === excludedEdgeIds.length) {
-      gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}()${hasWithoutStep}.limit(${pageSize}).as('e').${outE ? "inV" : "outV"
-        }().as('v').select('e', 'v')`;
+      gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}()${hasWithoutStep}.limit(${pageSize}).as('e').${
+        outE ? "inV" : "outV"
+      }().as('v').select('e', 'v')`;
     } else {
       const start = startIndex - joined.consumedCount;
-      gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}()${hasWithoutStep}.range(${start},${start + pageSize
-        }).as('e').${outE ? "inV" : "outV"}().as('v').select('e', 'v')`;
+      gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}()${hasWithoutStep}.range(${start},${
+        start + pageSize
+      }).as('e').${outE ? "inV" : "outV"}().as('v').select('e', 'v')`;
     }
   } else {
-    gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}().limit(${pageSize}).as('e').${outE ? "inV" : "outV"
-      }().as('v').select('e', 'v')`;
+    gremlinQuery = `g.V(${pkid}).${outE ? "outE" : "inE"}().limit(${pageSize}).as('e').${
+      outE ? "inV" : "outV"
+    }().as('v').select('e', 'v')`;
   }
   return gremlinQuery;
-}
+};
 
 /**
  * Trim graph
@@ -141,7 +144,7 @@ export const trimGraph = (
   $.each(graphData.ids, (index: number, id: string) => {
     graphData.getVertexById(id)._isFixedPosition = importantNodes.indexOf(id) !== -1;
   });
-}
+};
 
 export const addRootChildToGraph = (
   root: GraphData.GremlinVertex,
@@ -152,7 +155,7 @@ export const addRootChildToGraph = (
   graphData.addVertex(child);
   createEdgesfromNode(child, graphData);
   graphData.addNeighborInfo(child);
-}
+};
 
 /**
  * TODO Perform minimal substitution to prevent breaking gremlin query and allow \"" for now.
@@ -160,7 +163,7 @@ export const addRootChildToGraph = (
  */
 export const escapeDoubleQuotes = (value: string): string => {
   return value === undefined ? value : value.replace(/"/g, '\\"');
-}
+};
 
 /**
  * Surround with double-quotes if val is a string.
@@ -176,7 +179,7 @@ export const getQuotedPropValue = (ip: ViewModels.InputPropertyValue): string =>
     default:
       return `"${escapeDoubleQuotes(ip.value as string)}"`;
   }
-}
+};
 
 /**
  * TODO Perform minimal substitution to prevent breaking gremlin query and allow \' for now.
@@ -184,4 +187,4 @@ export const getQuotedPropValue = (ip: ViewModels.InputPropertyValue): string =>
  */
 export const escapeSingleQuotes = (value: string): string => {
   return value === undefined ? value : value.replace(/'/g, "\\'");
-}
+};
