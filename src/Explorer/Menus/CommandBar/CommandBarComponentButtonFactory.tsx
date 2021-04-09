@@ -456,7 +456,7 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
     onCommandClick: () => container.setupNotebooksPane.openWithTitleAndDescription(label, description),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: !container.isNotebooksEnabledForAccount(),
+    disabled: false,
     ariaLabel: label,
     tooltipText: container.isNotebooksEnabledForAccount() ? "" : tooltip,
   };
