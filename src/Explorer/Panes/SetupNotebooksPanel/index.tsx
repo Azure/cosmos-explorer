@@ -38,6 +38,7 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
     submitButtonText: "",
     onClose: () => closePanel(),
     onSubmit: () => submit(),
+    isFooterHidden: true,
   };
 
   useEffect(() => {
@@ -139,24 +140,8 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
       <div className="paneContentContainer">
-        {/* <div className="firstdivbg headerline">
-          <span role="heading" aria-level={2}>
-          {title}
-          </span>
-          <div
-          className="closeImg"
-          role="button"
-          aria-label="Close pane"
-          tabIndex={0}
-          data-bind="click: cancel, event: { keypress: onCloseKeyPress }"
-          >
-          <img src="../../../images/close-black.svg" title="Close" alt="Close" />
-          </div>
-        </div> */}
-
         <div className="paneMainContent">
           <div className="pkPadding">
-            <div>This is Setup Notebooks Panel React</div>
             <div>{description}</div>
             <button
               id="completeSetupBtn"

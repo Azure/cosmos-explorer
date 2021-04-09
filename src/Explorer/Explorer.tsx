@@ -2236,8 +2236,8 @@ export default class Explorer {
     const description =
       "You have not yet created a notebooks workspace for this account. To proceed and start using notebooks, we'll need to create a default notebooks workspace in this account.";
 
-    this.setupNotebooksPane.openWithTitleAndDescription(title, description);
-    // this.openSetupNotebooksPanel(title, description);
+    // this.setupNotebooksPane.openWithTitleAndDescription(title, description);
+    this.openSetupNotebooksPanel(title, description);
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
