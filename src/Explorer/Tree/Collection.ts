@@ -525,24 +525,25 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const mongoSchemaTabs: MongoSchemaTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.MongoSchema,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as MongoSchemaTab[];
-    let mongoSchemaTab: MongoSchemaTab = mongoSchemaTabs && mongoSchemaTabs[0];
+    for (const tab of this.container.tabsManager.openedTabs()) {
+      if (
+        tab instanceof MongoSchemaTab &&
+        tab.collection?.databaseId === this.databaseId &&
+        tab.collection?.id() === this.id()
+      ) {
+        return this.container.tabsManager.activateTab(tab);
+      }
+    }
 
-    if (mongoSchemaTab) {
-      this.container.tabsManager.activateTab(mongoSchemaTab);
-    } else {
-      const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
-        databaseName: this.databaseId,
-        collectionName: this.id(),
-        dataExplorerArea: Constants.Areas.Tab,
-        tabTitle: "Schema",
-      });
-      this.documentIds([]);
-
-      mongoSchemaTab = new MongoSchemaTab({
+    const startKey = TelemetryProcessor.traceStart(Action.Tab, {
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: "Schema",
+    });
+    this.documentIds([]);
+    this.container.tabsManager.activateNewTab(
+      new MongoSchemaTab({
         account: userContext.databaseAccount,
         masterKey: userContext.masterKey || "",
         container: this.container,
@@ -555,9 +556,8 @@ export default class Collection implements ViewModels.Collection {
         isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      });
-      this.container.tabsManager.activateNewTab(mongoSchemaTab);
-    }
+      })
+    );
   };
 
   public onSettingsClick = async (): Promise<void> => {

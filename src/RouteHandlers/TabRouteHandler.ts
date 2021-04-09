@@ -60,6 +60,13 @@ export class TabRouteHandler {
     );
 
     this._tabRouter.addRoute(
+      `${Constants.HashRoutePrefixes.collections}/mongoSchema`,
+      (db_id: string, coll_id: string) => {
+        this._openMongoSchemaTabForResource(db_id, coll_id);
+      }
+    );
+
+    this._tabRouter.addRoute(
       `${Constants.HashRoutePrefixes.collections}/mongoQuery`,
       (db_id: string, coll_id: string) => {
         this._openMongoQueryTabForResource(db_id, coll_id);
