@@ -136,7 +136,7 @@ export function createFetchEdgePairQuery(
 export function trimGraph(
   currentRoot: GraphData.GremlinVertex,
   graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>
-) {
+): void {
   const importantNodes = [currentRoot.id].concat(currentRoot._ancestorsId);
   graphData.unloadAllVertices(importantNodes);
 
@@ -150,7 +150,7 @@ export function addRootChildToGraph(
   root: GraphData.GremlinVertex,
   child: GraphData.GremlinVertex,
   graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>
-) {
+): void {
   child._ancestorsId = (root._ancestorsId || []).concat([root.id]);
   graphData.addVertex(child);
   createEdgesfromNode(child, graphData);
