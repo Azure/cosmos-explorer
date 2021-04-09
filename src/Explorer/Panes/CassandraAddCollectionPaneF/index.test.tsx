@@ -11,6 +11,4 @@ describe("CassandraAddCollectionPane  Pane", () => {
     const wrapper = shallow(<CassandraAddCollectionPaneF {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
-
-  it("should render create new and Use existing choice button", () => {});
 });

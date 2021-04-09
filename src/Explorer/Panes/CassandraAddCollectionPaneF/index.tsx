@@ -1,6 +1,8 @@
+import { ChoiceGroup, IChoiceGroupOption } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { HashMap } from "../../../Common/HashMap";
+import { Tooltip } from "../../../Common/Tooltip";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as AddCollectionUtility from "../../../Shared/AddCollectionUtility";
@@ -247,8 +249,6 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
-    const focusElement = document.getElementById("keyspace-id");
-    focusElement && focusElement.focus();
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }, []);
 
@@ -476,6 +476,13 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     //   }
     // );
   };
+  const handleOnChangeKeyspaceType = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
+    setKeyspaceCreateNew(option.key === "true");
+  };
+  const optionList: IChoiceGroupOption[] = [
+    { key: "true", text: "Create new" },
+    { key: "false", text: "Use existing" },
+  ];
   const genericPaneProps: GenericRightPaneProps = {
     container,
     formError: formErrors,
@@ -493,80 +500,33 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
         <div className="seconddivpadding">
           <p>
             <span className="mandatoryStar">*</span> Keyspace name
-            <span className="infoTooltip" role="tooltip" tabIndex={0}>
-              <img className="infoImg" src="/info-bubble.svg" alt="More information" />
-              <span className="tooltiptext infoTooltipWidth">
-                Select an existing keyspace or enter a new keyspace id.
-              </span>
-            </span>
+            <Tooltip>Select an existing keyspace or enter a new keyspace id.</Tooltip>
           </p>
 
           <div className="createNewDatabaseOrUseExisting">
-            <input
-              className="createNewDatabaseOrUseExistingRadio"
-              aria-label="Create new keyspace"
-              name="databaseType"
-              type="radio"
-              role="radio"
-              id="keyspaceCreateNew"
-              data-test="addCollection-newDatabase"
-              tabIndex={0}
-              checked={keyspaceCreateNew}
-              value="true"
-              aria-checked={keyspaceCreateNew ? "true" : "false"}
+            <ChoiceGroup
+              selectedKey={"" + keyspaceCreateNew}
+              options={optionList}
+              onChange={handleOnChangeKeyspaceType}
+              aria-label="Create new keyspace | Use existing keyspace"
             />
-            <span className="createNewDatabaseOrUseExistingSpace">Create new</span>
-
-            <input
-              className="createNewDatabaseOrUseExistingRadio"
-              aria-label="Use existing keyspace"
-              name="databaseType"
-              type="radio"
-              role="radio"
-              id="keyspaceUseExisting"
-              data-test="addCollection-existingDatabase"
-              tabIndex={0}
-              checked={keyspaceCreateNew}
-              value="false"
-              aria-checked={!keyspaceCreateNew ? "true" : "false"}
-            />
-            <span className="createNewDatabaseOrUseExistingSpace">Use existing</span>
           </div>
 
-          {keyspaceCreateNew ? (
-            <input
-              id="keyspace-id"
-              data-test="addCollection-keyspaceId"
-              type="text"
-              autoComplete="off"
-              pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'"
-              placeholder="Type a new keyspace id"
-              size={40}
-              className="collid"
-              value={keyspaceId}
-              onChange={(e) => setKeyspaceId(e.target.value)}
-              aria-label="Keyspace id"
-              aria-required="true"
-              autoFocus
-            />
-          ) : (
-            <input
-              type="text"
-              aria-required="true"
-              autoComplete="off"
-              pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'"
-              list="keyspacesList"
-              placeholder="Choose existing keyspace id"
-              size={40}
-              className="collid"
-              value={keyspaceId}
-              onChange={(e) => setKeyspaceId(e.target.value)}
-              aria-label="Keyspace id"
-              autoFocus
-            />
-          )}
+          <input
+            type="text"
+            aria-required="true"
+            autoComplete="off"
+            pattern="[^/?#\\]*[^/?# \\]"
+            title="May not end with space nor contain characters '\' '/' '#' '?'"
+            list={keyspaceCreateNew ? "" : "keyspacesList"}
+            placeholder={keyspaceCreateNew ? "Type a new keyspace id" : "Choose existing keyspace id"}
+            size={40}
+            className="collid"
+            value={keyspaceId}
+            onChange={(e) => setKeyspaceId(e.target.value)}
+            aria-label="Keyspace id"
+            autoFocus
+          />
           {/* <datalist id="keyspacesList">
             {container.databases &&
               container.databases.map((data: { id: number }, index: number) => <option key={index}>{data.id}</option>)}
@@ -579,15 +539,13 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
                 id="keyspaceSharedThroughput"
                 title="Provision shared throughput"
                 checked={keyspaceHasSharedOffer}
+                onChange={(e) => setKeyspaceHasSharedOffer(e.target.checked)}
               />
               <span className="databaseProvisionText">Provision keyspace throughput</span>
-              <span className="infoTooltip" role="tooltip" tabIndex={0}>
-                <img className="infoImg" src="/info-bubble.svg" alt="More information" />
-                <span className="tooltiptext provisionDatabaseThroughput">
-                  Provisioned throughput at the keyspace level will be shared across unlimited number of tables within
-                  the keyspace
-                </span>
-              </span>
+              <Tooltip>
+                Provisioned throughput at the keyspace level will be shared across unlimited number of tables within the
+                keyspace
+              </Tooltip>
             </div>
           )}
           {canConfigureThroughput && keyspaceCreateNew && keyspaceHasSharedOffer && (
@@ -595,6 +553,8 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
               <ThroughputInput
                 showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
                 isDatabase={false}
+                isAutoscaleSelected={isAutoPilotSelected}
+                throughput={throughput}
                 setThroughputValue={(throughput: number) => setThroughput(throughput)}
                 setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
                 onCostAcknowledgeChange={(isAcknowledge: boolean) => {}}
@@ -641,17 +601,15 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
               id="tableSharedThroughput"
               title="Provision dedicated throughput for this table"
               checked={dedicateTableThroughput}
+              onChange={(e) => setDedicateTableThroughput(e.target.checked)}
             />
             <span>Provision dedicated throughput for this table</span>
-            <span className="leftAlignInfoTooltip" role="tooltip" tabIndex={0}>
-              <img className="infoImg" src="/info-bubble.svg" alt="More information" />
-              <span className="tooltiptext sharedCollectionThroughputTooltipWidth">
-                You can optionally provision dedicated throughput for a table within a keyspace that has throughput
-                provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and
-                does not count towards the throughput you provisioned for the keyspace. This throughput amount will be
-                billed in addition to the throughput amount you provisioned at the keyspace level.
-              </span>
-            </span>
+            <Tooltip>
+              You can optionally provision dedicated throughput for a table within a keyspace that has throughput
+              provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and
+              does not count towards the throughput you provisioned for the keyspace. This throughput amount will be
+              billed in addition to the throughput amount you provisioned at the keyspace level.
+            </Tooltip>
           </div>
         )}
         {canConfigureThroughput && (!keyspaceHasSharedOffer || dedicateTableThroughput) && (
@@ -659,6 +617,8 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
             <ThroughputInput
               showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
               isDatabase={false}
+              isAutoscaleSelected={isAutoPilotSelected}
+              throughput={throughput}
               setThroughputValue={(throughput: number) => setThroughput(throughput)}
               setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
               onCostAcknowledgeChange={(isAcknowledge: boolean) => {}}
