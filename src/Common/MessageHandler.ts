@@ -48,14 +48,14 @@ export function sendCachedDataMessage<TResponseDataModel>(
 }
 
 export function sendMessage(data: any): void {
-  sendMessageImpl({
+  _sendMessage({
     signature: "pcIframe",
     data: data,
   });
 }
 
 export function sendReadyMessage(): void {
-  sendMessageImpl({
+  _sendMessage({
     signature: "pcIframe",
     kind: "ready",
     data: "ready",
@@ -76,7 +76,7 @@ export function runGarbageCollector() {
   });
 }
 
-const sendMessageImpl = (message: any): void => {
+const _sendMessage = (message: any): void => {
   if (canSendMessage()) {
     // Portal window can receive messages from only child windows
     const portalChildWindow = getDataExplorerWindow(window) || window;

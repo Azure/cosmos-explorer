@@ -266,7 +266,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
           if (openAction) {
             handleOpenAction(openAction, explorer.databases(), explorer);
           }
-        } else if (shouldForwardMessage(message)) {
+        } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);
         }
       },
@@ -277,8 +277,9 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
   });
 }
 
-function shouldForwardMessage(message: PortalMessage) {
-  return message.type === MessageTypes.TelemetryInfo;
+function shouldForwardMessage(message: PortalMessage, messageOrigin: string) {
+  // Only allow forwarding messages from the same origin
+  return messageOrigin === window.document.location.origin && message.type === MessageTypes.TelemetryInfo;
 }
 
 function shouldProcessMessage(event: MessageEvent): boolean {
