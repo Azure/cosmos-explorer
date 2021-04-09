@@ -32,30 +32,16 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   notebookContent,
   parentDomElement,
 }: PublishNotebookPaneAProps): JSX.Element => {
-  const isOpened = true;
-  const [isCodeOfConductAccepted, setIsCodeOfConductAccepted] = useState<boolean>();
+  const [isCodeOfConductAccepted, setIsCodeOfConductAccepted] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
   const [formErrorDetail, setFormErrorDetail] = useState<string>("");
+  const [isExecuting, setIsExecuting] = useState<boolean>();
 
-  let isExecuting: boolean;
-
-  let description: string;
-  let tags: string;
-  let imageSrc: string;
-
-  const props: GenericRightPaneProps = {
-    container: container,
-    formError: formError,
-    formErrorDetail: formErrorDetail,
-    id: "publishnotebookpane",
-    isExecuting: isExecuting,
-    title: "Publish to gallery",
-    submitButtonText: "Publish",
-    onSubmit: () => submit(),
-    onClose: closePanel,
-    isSubmitButtonHidden: !isCodeOfConductAccepted,
-  };
+  const [notebookName, setNotebookName] = useState<string>(name);
+  const [notebookDescription, setNotebookDescription] = useState<string>("");
+  const [notebookTags, setNotebookTags] = useState<string>("");
+  const [imageSrc, setImageSrc] = useState<string>();
 
   const CodeOfConductAccepted = async () => {
     try {
@@ -86,23 +72,31 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   }, []);
 
   const submit = async (): Promise<void> => {
+    console.log(notebookName, notebookDescription, author, imageSrc);
     const clearPublishingMessage = NotificationConsoleUtils.logConsoleProgress(`Publishing ${name} to gallery`);
-    isExecuting = true;
+    setIsExecuting(true);
 
     let startKey: number;
 
-    if (!name || !description || !author || !imageSrc) {
-      setFormError(`Failed to publish ${name} to gallery`);
+    if (!notebookName || !notebookDescription || !author || !imageSrc) {
+      setFormError(`Failed to publish ${notebookName} to gallery`);
       setFormErrorDetail("Name, description, author and cover image are required");
       createFormError(formError, formErrorDetail, "PublishNotebookPaneAdapter/submit");
-      isExecuting = false;
+      setIsExecuting(false);
       return;
     }
 
     try {
       startKey = traceStart(Action.NotebooksGalleryPublish, {});
 
-      const response = await junoClient.publishNotebook(name, description, tags?.split(","), author, imageSrc, content);
+      const response = await junoClient.publishNotebook(
+        notebookName,
+        notebookDescription,
+        notebookTags?.split(","),
+        author,
+        imageSrc,
+        content
+      );
 
       const data = response.data;
       if (data) {
@@ -114,7 +108,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
             `Content of ${name} is currently being scanned for illegal content. It will not be available in the public gallery until the review is complete (may take a few days).`
           );
         } else {
-          NotificationConsoleUtils.logConsoleInfo(`Published ${name} to gallery`);
+          NotificationConsoleUtils.logConsoleInfo(`Published ${notebookName} to gallery`);
           container.openGallery(GalleryTab.Published);
         }
 
@@ -138,13 +132,13 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       );
 
       const errorMessage = getErrorMessage(error);
-      setFormError(`Failed to publish ${FileSystemUtil.stripExtension(name, "ipynb")} to gallery`);
+      setFormError(`Failed to publish ${FileSystemUtil.stripExtension(notebookName, "ipynb")} to gallery`);
       setFormErrorDetail(`${errorMessage}`);
       handleError(errorMessage, "PublishNotebookPaneAdapter/submit", formError);
       return;
     } finally {
       clearPublishingMessage();
-      isExecuting = false;
+      setIsExecuting(false);
     }
 
     closePanel();
@@ -161,18 +155,36 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     setFormErrorDetail("");
   };
 
+  const props: GenericRightPaneProps = {
+    container: container,
+    formError: formError,
+    formErrorDetail: formErrorDetail,
+    id: "publishnotebookpane",
+    isExecuting: isExecuting,
+    title: "Publish to gallery",
+    submitButtonText: "Publish",
+    onSubmit: () => submit(),
+    onClose: closePanel,
+    isSubmitButtonHidden: !isCodeOfConductAccepted,
+  };
+
   const publishNotebookPaneProps: PublishNotebookPaneProps = {
+    notebookDescription,
+    notebookTags,
+    imageSrc,
+    notebookName,
     notebookAuthor: author,
     notebookCreatedDate: new Date().toISOString(),
     notebookObject: notebookObject,
     notebookParentDomElement: parentDomElement,
     onError: createFormError,
     clearFormError: clearFormError,
+    setNotebookName,
+    setNotebookDescription,
+    setNotebookTags,
+    setImageSrc,
   };
-
-  return !isOpened ? (
-    <></>
-  ) : (
+  return (
     <GenericRightPaneComponent {...props}>
       {!isCodeOfConductAccepted ? (
         <div style={{ padding: "15px", marginTop: "10px" }}>

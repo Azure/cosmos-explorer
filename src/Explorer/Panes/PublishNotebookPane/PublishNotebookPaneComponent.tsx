@@ -8,12 +8,20 @@ import { NotebookUtil } from "../../Notebook/NotebookUtil";
 import "./styled.less";
 
 export interface PublishNotebookPaneProps {
+  notebookName: string;
   notebookAuthor: string;
+  notebookTags: string;
+  imageSrc: string;
+  notebookDescription: string;
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
   notebookParentDomElement?: HTMLElement;
   onError: (formError: string, formErrorDetail: string, area: string) => void;
   clearFormError: () => void;
+  setNotebookName: (newValue: string) => void;
+  setNotebookDescription: (newValue: string) => void;
+  setNotebookTags: (newValue: string) => void;
+  setImageSrc: (newValue: string) => void;
 }
 
 enum ImageTypes {
@@ -24,19 +32,25 @@ enum ImageTypes {
 }
 
 export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPaneProps> = ({
+  notebookName,
+  notebookTags,
+  imageSrc,
+  notebookDescription,
   notebookAuthor,
   notebookCreatedDate,
   notebookObject,
   notebookParentDomElement,
   onError,
   clearFormError,
+  setNotebookName,
+  setNotebookDescription,
+  setNotebookTags,
+  setImageSrc,
 }: PublishNotebookPaneProps) => {
-  const [notebookName, setNotebookName] = useState<string>();
-  const [notebookDescription, setNotebookDescription] = useState<string>();
-  const [notebookTags, setNotebookTags] = useState<string>();
   const [type, setType] = useState<string>();
-
-  const [imageSrc, setImageSrc] = useState<string>();
+  const CARD_WIDTH = 256;
+  const cardImageHeight = 144;
+  const cardHeightToWidthRatio = cardImageHeight / CARD_WIDTH;
 
   const maxImageSizeInMib = 1.5;
 
@@ -134,8 +148,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
       .then((canvas) => {
         //redraw canvas to fit Card Cover Image dimensions
         const originalImageData = canvas.toDataURL();
-        const requiredHeight =
-          parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+        const requiredHeight = parseInt(canvas.style.width.split("px")[0]) * cardHeightToWidthRatio;
         canvas.height = requiredHeight;
         const context = canvas.getContext("2d");
         const image = new Image();
@@ -270,7 +283,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
             isFavorite={undefined}
             showDownload={false}
             showDelete={false}
-            onClick={undefined}
+            onClick={() => {}}
             onTagClick={undefined}
             onFavoriteClick={undefined}
             onUnfavoriteClick={undefined}

@@ -137,7 +137,6 @@ export default class NotebookManager {
         parentDomElement={parentDomElement}
       />
     );
-    // await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement);
   }
 
   public openCopyNotebookPane(name: string, content: string): void {
