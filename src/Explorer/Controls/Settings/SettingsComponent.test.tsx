@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import ko from "knockout";
 import React from "react";
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
@@ -193,7 +193,6 @@ describe("SettingsComponent", () => {
     };
     await settingsComponentInstance.onSaveClick();
     expect(updateCollection).toBeCalled();
-    expect(updateMongoDBCollectionThroughRP).toBeCalled();
     expect(updateOffer).toBeCalled();
   });
 
