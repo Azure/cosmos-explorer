@@ -283,7 +283,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
             isFavorite={undefined}
             showDownload={false}
             showDelete={false}
-            onClick={() => {}}
+            onClick={() => undefined}
             onTagClick={undefined}
             onFavoriteClick={undefined}
             onUnfavoriteClick={undefined}

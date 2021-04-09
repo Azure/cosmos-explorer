@@ -72,7 +72,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   }, []);
 
   const submit = async (): Promise<void> => {
-    console.log(notebookName, notebookDescription, author, imageSrc);
     const clearPublishingMessage = NotificationConsoleUtils.logConsoleProgress(`Publishing ${name} to gallery`);
     setIsExecuting(true);
 

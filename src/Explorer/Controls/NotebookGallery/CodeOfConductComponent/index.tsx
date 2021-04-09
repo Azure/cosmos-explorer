@@ -15,11 +15,13 @@ export const CodeOfConductComponent: FunctionComponent<CodeOfConductComponentPro
   junoClient,
   onAcceptCodeOfConduct,
 }: CodeOfConductComponentProps) => {
-  let descriptionPara1: string = "Azure Cosmos DB Notebook Gallery - Code of Conduct";
-  let descriptionPara2: string =
-    "The notebook public gallery contains notebook samples shared by users of Azure Cosmos DB.";
-  let descriptionPara3: string = "In order to view and publish your samples to the gallery, you must accept the ";
-  let link1: { label: string; url: string } = { label: "code of conduct.", url: CodeOfConductEndpoints.codeOfConduct };
+  const descriptionPara1 = "Azure Cosmos DB Notebook Gallery - Code of Conduct";
+  const descriptionPara2 = "The notebook public gallery contains notebook samples shared by users of Azure Cosmos DB.";
+  const descriptionPara3 = "In order to view and publish your samples to the gallery, you must accept the ";
+  const link1: { label: string; url: string } = {
+    label: "code of conduct.",
+    url: CodeOfConductEndpoints.codeOfConduct,
+  };
 
   const [readCodeOfConduct, setReadCodeOfConduct] = useState<boolean>(false);
 

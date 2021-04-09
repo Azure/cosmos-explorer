@@ -48,7 +48,6 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
 }: GalleryCardComponentProps) => {
   const CARD_WIDTH = 256;
   const cardImageHeight = 144;
-  const cardHeightToWidthRatio = cardImageHeight / CARD_WIDTH;
   const cardDescriptionMaxChars = 80;
   const cardItemGapBig = 10;
   const cardItemGapSmall = 8;
