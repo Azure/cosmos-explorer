@@ -62,6 +62,7 @@ import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
+import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
@@ -300,16 +301,19 @@ export default class Explorer {
         );
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
-            this.isNotebookEnabled(
-              userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  userContext.features.enableNotebooks)
-            );
-
+            //Commented by Swapnil to force enable notebooks
+            // this.isNotebookEnabled(
+            //   userContext.authType !== AuthType.ResourceToken &&
+            //     ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+            //       userContext.features.enableNotebooks)
+            // );
+            // this.isNotebookEnabled(false);
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
               dataExplorerArea: Constants.Areas.Notebook,
             });
+            // Added by Swapnil to force enable notebooks
+            this._openSetupNotebooksPaneForQuickstart();
 
             if (this.isNotebookEnabled()) {
               await this.initNotebooks(this.databaseAccount());
@@ -1810,11 +1814,18 @@ export default class Explorer {
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
     const authType = userContext.authType;
-    if (
-      authType === AuthType.EncryptedToken ||
-      authType === AuthType.ResourceToken ||
-      authType === AuthType.MasterKey
-    ) {
+    //Commented by Swapnil to force enable notebooks
+    // if (
+    //   authType === AuthType.EncryptedToken ||
+    //   authType === AuthType.ResourceToken ||
+    //   authType === AuthType.MasterKey
+    // )
+    // {
+    //   this.isNotebooksEnabledForAccount(false);
+    //   return;
+    // }
+    //Added by Swapnil to force enable notebooks
+    if (true) {
       this.isNotebooksEnabledForAccount(false);
       return;
     }
@@ -2226,6 +2237,7 @@ export default class Explorer {
       "You have not yet created a notebooks workspace for this account. To proceed and start using notebooks, we'll need to create a default notebooks workspace in this account.";
 
     this.setupNotebooksPane.openWithTitleAndDescription(title, description);
+    // this.openSetupNotebooksPanel(title, description);
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
@@ -2358,6 +2370,18 @@ export default class Explorer {
         explorer={this}
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
+      />
+    );
+  }
+
+  public openSetupNotebooksPanel(title: string, description: string): void {
+    this.openSidePanel(
+      "Enable Notebooks",
+      <SetupNoteBooksPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        panelTitle={title}
+        panelDescription={description}
       />
     );
   }
