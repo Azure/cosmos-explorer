@@ -22,7 +22,8 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     changeFeedPolicy: undefined,
     analyticalStorageTtl: undefined,
     geospatialConfig: undefined,
-  } as DataModels.Collection),
+    indexes: [],
+  }),
 }));
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
