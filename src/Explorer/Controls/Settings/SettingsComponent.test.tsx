@@ -5,7 +5,6 @@ import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 import Explorer from "../../Explorer";
 import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
@@ -24,12 +23,6 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     analyticalStorageTtl: undefined,
     geospatialConfig: undefined,
   } as DataModels.Collection),
-  updateMongoDBCollectionThroughRP: jest.fn().mockReturnValue({
-    id: undefined,
-    shardKey: undefined,
-    indexes: [],
-    analyticalStorageTtl: undefined,
-  } as MongoDBCollectionResource),
 }));
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
