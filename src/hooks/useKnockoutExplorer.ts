@@ -3,7 +3,7 @@ import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
 import { AccountKind, DefaultAccountExperience } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import { sendReadyMessage } from "../Common/MessageHandler";
+import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
@@ -266,6 +266,8 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
           if (openAction) {
             handleOpenAction(openAction, explorer.databases(), explorer);
           }
+        } else if (shouldForwardMessage(message)) {
+          sendMessage(message);
         }
       },
       false
@@ -273,6 +275,10 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
 
     sendReadyMessage();
   });
+}
+
+function shouldForwardMessage(message: PortalMessage) {
+  return message.type === MessageTypes.TelemetryInfo;
 }
 
 function shouldProcessMessage(event: MessageEvent): boolean {

@@ -48,32 +48,18 @@ export function sendCachedDataMessage<TResponseDataModel>(
 }
 
 export function sendMessage(data: any): void {
-  if (canSendMessage()) {
-    // We try to find data explorer window first, then fallback to current window
-    const portalChildWindow = getDataExplorerWindow(window) || window;
-    portalChildWindow.parent.postMessage(
-      {
-        signature: "pcIframe",
-        data: data,
-      },
-      portalChildWindow.document.referrer || "*"
-    );
-  }
+  sendMessageImpl({
+    signature: "pcIframe",
+    data: data,
+  });
 }
 
 export function sendReadyMessage(): void {
-  if (canSendMessage()) {
-    // We try to find data explorer window first, then fallback to current window
-    const portalChildWindow = getDataExplorerWindow(window) || window;
-    portalChildWindow.parent.postMessage(
-      {
-        signature: "pcIframe",
-        kind: "ready",
-        data: "ready",
-      },
-      portalChildWindow.document.referrer || "*"
-    );
-  }
+  sendMessageImpl({
+    signature: "pcIframe",
+    kind: "ready",
+    data: "ready",
+  });
 }
 
 export function canSendMessage(): boolean {
@@ -89,3 +75,17 @@ export function runGarbageCollector() {
     }
   });
 }
+
+const sendMessageImpl = (message: any): void => {
+  if (canSendMessage()) {
+    // Portal window can receive messages from only child windows
+    const portalChildWindow = getDataExplorerWindow(window) || window;
+    if (portalChildWindow === window) {
+      // Current window is a child of portal, send message to portal window
+      portalChildWindow.parent.postMessage(message, portalChildWindow.document.referrer || "*");
+    } else {
+      // Current window is not a child of portal, send message to the child window instead (which is data explorer)
+      portalChildWindow.postMessage(message, portalChildWindow.location.origin || "*");
+    }
+  }
+};
