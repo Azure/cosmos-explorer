@@ -25,7 +25,6 @@ import TerminalTab from "./Tabs/TerminalTab";
 import TriggerTab from "./Tabs/TriggerTab";
 import UserDefinedFunctionTab from "./Tabs/UserDefinedFunctionTab";
 
-
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("new-vertex-form", NewVertexComponent);
 ko.components.register("error-display", new ErrorDisplayComponent());
@@ -59,7 +58,6 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
 // Panes
 ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());
 ko.components.register("add-collection-pane", new PaneComponents.AddCollectionPaneComponent());
-
 
 ko.components.register("graph-new-vertex-pane", new PaneComponents.GraphNewVertexPaneComponent());
 ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPaneComponent());

@@ -34,7 +34,6 @@ export class AddCollectionPaneComponent {
   }
 }
 
-
 export class GraphNewVertexPaneComponent {
   constructor() {
     return {
