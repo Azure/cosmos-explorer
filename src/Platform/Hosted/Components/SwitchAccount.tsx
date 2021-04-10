@@ -1,7 +1,6 @@
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
-import * as React from "react";
-import { FunctionComponent } from "react";
+import React from "react";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
+import { DropdownItem, SearchableDropdown } from "./SearchableDropdown";
 
 interface Props {
   accounts: DatabaseAccount[];
@@ -10,29 +9,31 @@ interface Props {
   dismissMenu: () => void;
 }
 
-export const SwitchAccount: FunctionComponent<Props> = ({
+export const SwitchAccount: React.FunctionComponent<Props> = ({
   accounts,
   setSelectedAccountName,
   selectedAccount,
-  dismissMenu,
+  dismissMenu
 }: Props) => {
+  const accountItems = accounts?.map((account) => ({
+    key: account.name,
+    text: account.name,
+  }));
+
+  const defaultAccount = selectedAccount && {
+    key: selectedAccount.name,
+    text: selectedAccount.name,
+  };
+
   return (
-    <Dropdown
-      label="Cosmos DB Account Name"
-      className="accountSwitchAccountDropdown"
-      options={accounts?.map((account) => ({
-        key: account.name,
-        text: account.name,
-        data: account,
-      }))}
-      onChange={(_, option) => {
-        setSelectedAccountName(String(option.key));
+    <SearchableDropdown
+      items={accountItems}
+      title="Cosmos DB Account Name"
+      defaultSelectedItem={defaultAccount}
+      placeholder={accounts?.length === 0 ? "No Accounts Found" : "Select an Account"}
+      onItemSelected={(accountItem: DropdownItem) => {
+        setSelectedAccountName(accountItem.key);
         dismissMenu();
-      }}
-      defaultSelectedKey={selectedAccount?.name}
-      placeholder={accounts && accounts.length === 0 ? "No Accounts Found" : "Select an Account"}
-      styles={{
-        callout: "accountSwitchAccountDropdownMenu",
       }}
     />
   );
