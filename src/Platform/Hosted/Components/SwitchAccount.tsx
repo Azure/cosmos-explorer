@@ -13,7 +13,7 @@ export const SwitchAccount: React.FunctionComponent<Props> = ({
   accounts,
   setSelectedAccountName,
   selectedAccount,
-  dismissMenu
+  dismissMenu,
 }: Props) => {
   const accountItems = accounts?.map((account) => ({
     key: account.name,
