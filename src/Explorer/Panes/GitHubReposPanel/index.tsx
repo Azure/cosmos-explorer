@@ -148,31 +148,21 @@ export const GitHubReposPanel: FunctionComponent<IGitHubReposPanelProps> = ({
   };
 
   const setup = (forceShowConnectToGitHub = false): void => {
-    //eslint-disable-next-line
-    console.log("setup > ", forceShowConnectToGitHub);
-
     forceShowConnectToGitHub || !explorer.notebookManager?.gitHubOAuthService.isLoggedIn()
       ? setupForConnectToGitHub()
       : setupForManageRepos();
   };
 
   const setupForConnectToGitHub = (): void => {
-    //eslint-disable-next-line
-    console.log("setupForConnectToGitHub");
     gitHubReposProps.showAuthorizeAccess = false;
     gitHubReposProps.authorizeAccessProps.scope = getOAuthScope();
     setLoadingFalse();
-    // setTitle(GitHubReposComponent.ConnectToGitHubTitle); // Used for telemetry
     triggerRender();
   };
 
   const setupForManageRepos = async (): Promise<void> => {
-    //eslint-disable-next-line
-    console.log("setupForManageRepos");
-
     gitHubReposProps.showAuthorizeAccess = true;
     setLoadingFalse();
-    // setTitle(GitHubReposComponent.ManageGitHubRepoTitle);
     TelemetryProcessor.trace(Action.NotebooksGitHubManageRepo, ActionModifiers.Mark, {
       dataExplorerArea: Areas.Notebook,
     });

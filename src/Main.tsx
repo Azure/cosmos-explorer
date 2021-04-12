@@ -240,9 +240,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
-      <KOCommentIfStart if="isGitHubPaneEnabled" />
-      <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
-      <KOCommentEnd />
       <KOCommentIfStart if="isPublishNotebookPaneEnabled" />
       <div data-bind="react: publishNotebookPaneAdapter" />
       <KOCommentEnd />

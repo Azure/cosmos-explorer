@@ -203,7 +203,6 @@ export default class Explorer {
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
-  public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: ReactAdapter;
   public copyNotebookPaneAdapter: ReactAdapter;
   private gitHubClient: GitHubClient;
@@ -211,7 +210,6 @@ export default class Explorer {
   public junoClient: JunoClient;
 
   // features
-  public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
@@ -363,7 +361,6 @@ export default class Explorer {
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
@@ -744,9 +741,6 @@ export default class Explorer {
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
           refreshNotebookList: () => this.refreshNotebookList(),
         });
-
-        this.gitHubReposPane = this.notebookManager.gitHubReposPane;
-        this.isGitHubPaneEnabled(true);
       }
 
       this.refreshCommandBarButtons();
@@ -804,7 +798,6 @@ export default class Explorer {
         undefined,
         "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
         "Connect to GitHub",
-        // () => this.gitHubReposPane.open(),
         () => this.openGitHubReposPanel("Connect to GitHub"),
         "Cancel",
         undefined

@@ -18,7 +18,6 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
-import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
@@ -46,7 +45,6 @@ export default class NotebookManager {
   public gitHubOAuthService: GitHubOAuthService;
   private gitHubClient: GitHubClient;
 
-  public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
   public copyNotebookPaneAdapter: CopyNotebookPaneAdapter;
 
@@ -90,9 +88,7 @@ export default class NotebookManager {
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
       this.gitHubClient.setToken(token?.access_token);
 
-      if (this.gitHubReposPane.visible()) {
-        this.params.container.openGitHubReposPanel("Manager GitHub settings");
-      }
+      this.params.container.openGitHubReposPanel("Manager GitHub settings");
 
       this.params.refreshCommandBarButtons();
       this.params.refreshNotebookList();
