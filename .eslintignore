@@ -298,8 +298,6 @@ src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.t
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponent.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
