@@ -4,6 +4,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
 <ExecuteSprocParamsPanel
   closePanel={[Function]}
   explorer={Object {}}
+  storedProcedure={Object {}}
 >
   <GenericRightPaneComponent
     container={Object {}}
