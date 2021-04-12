@@ -202,12 +202,10 @@ export default class Explorer {
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: ReactAdapter;
-  public copyNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
-  public isCopyNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
   public isMongoIndexingEnabled: ko.Observable<boolean>;
@@ -358,7 +356,6 @@ export default class Explorer {
     this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
-    this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
     this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
 
@@ -1575,11 +1572,7 @@ export default class Explorer {
   }
 
   public copyNotebook(name: string, content: string): void {
-    if (this.notebookManager) {
-      this.notebookManager.openCopyNotebookPane(name, content);
-      this.copyNotebookPaneAdapter = this.notebookManager.copyNotebookPaneAdapter;
-      this.isCopyNotebookPaneEnabled(true);
-    }
+    this.notebookManager?.openCopyNotebookPane(name, content);
   }
 
   public showOkModalDialog(title: string, msg: string): void {
