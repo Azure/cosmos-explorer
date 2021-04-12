@@ -35,6 +35,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
   container,
   junoClient,
   gitHubOAuthService,
+  closePanel,
 }: CopyNotebookPanelProps) => {
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formError, setFormError] = useState<string>("");
@@ -84,17 +85,16 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
       }
 
       NotificationConsoleUtils.logConsoleInfo(`Successfully copied ${name} to ${destination}`);
+      closePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       setFormError(`Failed to copy ${name} to ${destination}`);
       setFormErrorDetail(`${errorMessage}`);
       handleError(errorMessage, "CopyNotebookPaneAdapter/submit", formError);
-      return;
     } finally {
       clearMessage && clearMessage();
       setIsExecuting(false);
     }
-    close();
   };
 
   const copyNotebook = async (location: Location): Promise<NotebookContentItem> => {
@@ -135,7 +135,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
     isExecuting: isExecuting,
     title: "Copy notebook",
     submitButtonText: "OK",
-    onClose: () => close(),
+    onClose: closePanel,
     onSubmit: () => submit(),
   };
 
