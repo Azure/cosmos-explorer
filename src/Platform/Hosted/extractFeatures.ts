@@ -24,7 +24,7 @@ export type Features = {
   readonly ttl90Days: boolean;
 };
 
-export function extractFeatures(given = new URLSearchParams()): Features {
+export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
   const downcased = new URLSearchParams();
   const set = (value: string, key: string) => downcased.set(key.toLowerCase(), value);
   const get = (key: string) => downcased.get("feature." + key) ?? undefined;
