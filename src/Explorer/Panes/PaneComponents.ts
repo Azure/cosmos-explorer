@@ -8,7 +8,6 @@ import GraphStylingPaneTemplate from "./GraphStylingPane.html";
 import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
-import TableColumnOptionsPaneTemplate from "./Tables/TableColumnOptionsPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 
 export class PaneComponent {
@@ -79,16 +78,6 @@ export class TableEditEntityPaneComponent {
     };
   }
 }
-
-export class TableColumnOptionsPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: TableColumnOptionsPaneTemplate,
-    };
-  }
-}
-
 export class CassandraAddCollectionPaneComponent {
   constructor() {
     return {

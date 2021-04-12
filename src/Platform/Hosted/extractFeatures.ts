@@ -2,7 +2,6 @@ export type Features = {
   readonly canExceedMaximumValue: boolean;
   readonly cosmosdb: boolean;
   readonly enableChangeFeedPolicy: boolean;
-  readonly enableDatabaseSettingsTabV1: boolean;
   readonly enableFixedCollectionWithSharedThroughput: boolean;
   readonly enableKOPanel: boolean;
   readonly enableNotebooks: boolean;
@@ -18,7 +17,9 @@ export type Features = {
   readonly notebookBasePath?: string;
   readonly notebookServerToken?: string;
   readonly notebookServerUrl?: string;
+  readonly sandboxNotebookOutputs: boolean;
   readonly selfServeType?: string;
+  readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
 };
@@ -40,7 +41,6 @@ export function extractFeatures(given = new URLSearchParams()): Features {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
-    enableDatabaseSettingsTabV1: "true" === get("enabledbsettingsv1"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
     enableNotebooks: "true" === get("enablenotebooks"),
@@ -56,7 +56,9 @@ export function extractFeatures(given = new URLSearchParams()): Features {
     notebookBasePath: get("notebookbasepath"),
     notebookServerToken: get("notebookservertoken"),
     notebookServerUrl: get("notebookserverurl"),
+    sandboxNotebookOutputs: "true" === get("sandboxnotebookoutputs"),
     selfServeType: get("selfservetype"),
+    pr: get("pr"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
   };

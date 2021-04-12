@@ -53,6 +53,7 @@ import "./Explorer/Tabs/QueryTab.less";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
+import { useTabs } from "./hooks/useTabs";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
 import "./Shared/appInsights";
@@ -78,6 +79,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
+  const { tabs, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -87,7 +89,9 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
     openDialog,
     closeDialog,
+    tabsManager,
   };
+
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
@@ -200,11 +204,7 @@ const App: React.FunctionComponent = () => {
             {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
-          <div className="connectExplorerContainer" data-bind="visible: tabsManager.openedTabs().length === 0">
-            <form className="connectExplorerFormContainer">
-              <SplashScreen explorer={explorer} />
-            </form>
-          </div>
+          {tabs.length === 0 && <SplashScreen explorer={explorer} />}
           <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
         </div>
         {/* Collections Tree and Tabs - End */}
@@ -236,7 +236,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "table-add-entity-pane", params: { data: addTableEntityPane} }' />
       <div data-bind='component: { name: "table-edit-entity-pane", params: { data: editTableEntityPane} }' />
-      <div data-bind='component: { name: "table-column-options-pane", params: { data: tableColumnOptionsPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />

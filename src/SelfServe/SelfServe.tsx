@@ -23,9 +23,11 @@ const loadTranslationFile = async (className: string): Promise<void> => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let translations: any;
   try {
-    translations = await import(`../Localization/${language}/${fileName}`);
+    translations = await import(
+      /* webpackChunkName: "Localization-[request]" */ `../Localization/${language}/${fileName}`
+    );
   } catch (e) {
-    translations = await import(`../Localization/en/${fileName}`);
+    translations = await import(/* webpackChunkName: "Localization-en-[request]" */ `../Localization/en/${fileName}`);
   }
   i18n.addResourceBundle(language, className, translations.default, true);
 };
@@ -39,13 +41,15 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
   switch (selfServeType) {
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
-      await loadTranslations(SelfServeExample.default.name);
-      return new SelfServeExample.default().toSelfServeDescriptor();
+      const selfServeExample = new SelfServeExample.default();
+      await loadTranslations(selfServeExample.constructor.name);
+      return selfServeExample.toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
-      await loadTranslations(SqlX.default.name);
-      return new SqlX.default().toSelfServeDescriptor();
+      const sqlX = new SqlX.default();
+      await loadTranslations(sqlX.constructor.name);
+      return sqlX.toSelfServeDescriptor();
     }
     default:
       return undefined;
@@ -107,6 +111,16 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
     subscriptionId: inputs.subscriptionId,
   });
 
+  if (i18n.isInitialized) {
+    await displaySelfServeComponent(selfServeType);
+  } else {
+    i18n.on("initialized", async () => {
+      await displaySelfServeComponent(selfServeType);
+    });
+  }
+};
+
+const displaySelfServeComponent = async (selfServeType: SelfServeType): Promise<void> => {
   const descriptor = await getDescriptor(selfServeType);
   ReactDOM.render(renderComponent(descriptor), document.getElementById("selfServeContent"));
 };
