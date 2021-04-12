@@ -64,12 +64,14 @@ import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
+import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
+import QueryTablesTab from "./Tabs/QueryTablesTab";
 import TabsBase from "./Tabs/TabsBase";
 import { TabsManager } from "./Tabs/TabsManager";
 import TerminalTab from "./Tabs/TerminalTab";
@@ -2391,5 +2393,14 @@ export default class Explorer {
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
     );
+  }
+
+  public openAddTableEntityPanel(queryTablesTab: QueryTablesTab): void {
+    false
+      ? this.addTableEntityPane.open()
+      : this.openSidePanel(
+          "Add Table Entity",
+          <AddTableEntityPanel explorer={this} closePanel={this.closeSidePanel} queryTablesTab={queryTablesTab} />
+        );
   }
 }

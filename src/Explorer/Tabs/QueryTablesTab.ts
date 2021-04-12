@@ -1,21 +1,20 @@
 import * as ko from "knockout";
 import Q from "q";
-import * as ViewModels from "../../Contracts/ViewModels";
-import TabsBase from "./TabsBase";
-import TableEntityListViewModel from "../Tables/DataTable/TableEntityListViewModel";
-import QueryViewModel from "../Tables/QueryBuilder/QueryViewModel";
-import TableCommands from "../Tables/DataTable/TableCommands";
-import { TableDataClient } from "../Tables/TableDataClient";
-
+import AddEntityIcon from "../../../images/AddEntity.svg";
+import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
+import EditEntityIcon from "../../../images/Edit-entity.svg";
+import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import QueryBuilderIcon from "../../../images/Query-Builder.svg";
 import QueryTextIcon from "../../../images/Query-Text.svg";
-import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
-import AddEntityIcon from "../../../images/AddEntity.svg";
-import EditEntityIcon from "../../../images/Edit-entity.svg";
-import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
-import Explorer from "../Explorer";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../Explorer";
+import TableCommands from "../Tables/DataTable/TableCommands";
+import TableEntityListViewModel from "../Tables/DataTable/TableEntityListViewModel";
+import QueryViewModel from "../Tables/QueryBuilder/QueryViewModel";
+import { TableDataClient } from "../Tables/TableDataClient";
 import template from "./QueryTablesTab.html";
+import TabsBase from "./TabsBase";
 
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
@@ -147,7 +146,7 @@ export default class QueryTablesTab extends TabsBase {
 
   public onAddEntityClick = (): Q.Promise<any> => {
     this.container.addTableEntityPane.tableViewModel = this.tableEntityListViewModel();
-    this.container.addTableEntityPane.open();
+    this.container.openAddTableEntityPanel(this);
     return null;
   };
 
