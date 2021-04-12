@@ -1,16 +1,17 @@
 // TODO: Renable this rule for the file or turn it off everywhere
 /* eslint-disable react/display-name */
 
-import { StyleConstants } from "../../../Common/Constants";
-import { FunctionComponent, useState, useEffect } from "react";
-import * as React from "react";
 import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
+import * as React from "react";
+import { FunctionComponent, useEffect, useState } from "react";
+import { StyleConstants } from "../../../Common/Constants";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { useSubscriptions } from "../../../hooks/useSubscriptions";
+import { fetchDatabaseAADToken } from "../../../hooks/useAADAuth";
 import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
-import { SwitchSubscription } from "./SwitchSubscription";
+import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { SwitchAccount } from "./SwitchAccount";
+import { SwitchSubscription } from "./SwitchSubscription";
 
 const buttonStyles: IButtonStyles = {
   root: {
@@ -58,6 +59,10 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
   const [selectedAccountName, setSelectedAccountName] = useState<string>(() =>
     localStorage.getItem("cachedDatabaseAccountName")
   );
+  const cachedTenantId = localStorage.getItem("cachedTenantId");
+  const [tenantId] = React.useState<string>(cachedTenantId);
+  const [aadToken, setAADToken] = React.useState<string>();
+
   const selectedAccount = accounts?.find((account) => account.name === selectedAccountName);
 
   useEffect(() => {
@@ -77,6 +82,13 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
       setDatabaseAccount(selectedAccount);
     }
   }, [selectedAccount]);
+
+  useEffect(() => {
+    if (selectedAccount) {
+      const endpoint = selectedAccount.properties.documentEndpoint
+      fetchDatabaseAADToken(endpoint, tenantId, aadToken, setAADToken)
+    }
+  }, [selectedAccount])
 
   const buttonText = selectedAccount?.name || "Select a Database Account";
 

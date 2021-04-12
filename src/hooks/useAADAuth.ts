@@ -1,6 +1,7 @@
-import * as React from "react";
 import { useBoolean } from "@uifabric/react-hooks";
-import { UserAgentApplication, Account, Configuration } from "msal";
+import { Account, Configuration, UserAgentApplication } from "msal";
+import * as React from "react";
+import { updateUserContext } from "../UserContext";
 
 const config: Configuration = {
   cache: {
@@ -98,4 +99,21 @@ export function useAADAuth(): ReturnType {
     logout,
     switchTenant,
   };
+}
+
+export function fetchDatabaseAADToken(endpoint: string, tenantId: string, aadToken: string, setAADToken: React.Dispatch<React.SetStateAction<string>>) {
+
+  msal.acquireTokenSilent({
+    // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+    forceRefresh: true,
+    authority: `https://login.microsoftonline.com/${tenantId}`,
+    scopes: [`${endpoint}/.default`],
+  }).then(({ accessToken }) => {
+    setAADToken(accessToken)
+    console.log({ accessToken })
+    updateUserContext({ endpoint, aadToken: accessToken })
+  })
+
+  console.log({ aadToken })
+  return aadToken;
 }
