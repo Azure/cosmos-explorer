@@ -1436,7 +1436,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isCopyNotebookPaneEnabled": [Function],
       "isEnableMongoCapabilityPresent": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
-      "isGitHubPaneEnabled": [Function],
       "isHostedDataExplorerEnabled": [Function],
       "isLastCollection": [Function],
       "isLastNonEmptyDatabase": [Function],
