@@ -9,7 +9,6 @@ import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
-import TableQuerySelectPaneTemplate from "./Tables/TableQuerySelectPane.html";
 
 export class PaneComponent {
   constructor(data: any) {
@@ -79,16 +78,6 @@ export class TableEditEntityPaneComponent {
     };
   }
 }
-
-export class TableQuerySelectPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: TableQuerySelectPaneTemplate,
-    };
-  }
-}
-
 export class CassandraAddCollectionPaneComponent {
   constructor() {
     return {
