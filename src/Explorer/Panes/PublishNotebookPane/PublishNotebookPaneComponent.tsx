@@ -47,7 +47,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   setNotebookTags,
   setImageSrc,
 }: PublishNotebookPaneProps) => {
-  const [type, setType] = useState<string>();
+  const [type, setType] = useState<string>(ImageTypes.CustomImage);
   const CARD_WIDTH = 256;
   const cardImageHeight = 144;
   const cardHeightToWidthRatio = cardImageHeight / CARD_WIDTH;

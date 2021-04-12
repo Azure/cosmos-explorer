@@ -186,11 +186,11 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   return (
     <GenericRightPaneComponent {...props}>
       {!isCodeOfConductAccepted ? (
-        <div style={{ padding: "15px", marginTop: "10px" }}>
+        <div style={{ padding: "25px", marginTop: "10px" }}>
           <CodeOfConductComponent
             junoClient={junoClient}
-            onAcceptCodeOfConduct={() => {
-              setIsCodeOfConductAccepted(true);
+            onAcceptCodeOfConduct={(isAccepted) => {
+              setIsCodeOfConductAccepted(isAccepted);
             }}
           />
         </div>
