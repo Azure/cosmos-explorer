@@ -118,6 +118,44 @@ export const getEntityValuePlaceholder = (entityType: string | number): string =
   }
 };
 
+export const isValidEntities = (entities: EntityRowType[]): boolean => {
+  for (let i = 0; i < entities.length; i++) {
+    const { property } = entities[i];
+    if (property === "" || property === undefined) {
+      return false;
+    }
+  }
+  return true;
+};
+
+const isEntityPropertyTypeDisable = (header: string): boolean => {
+  if (header === "PartitionKey" || header === "RowKey") {
+    return true;
+  }
+  return false;
+};
+
+export const getDefaultEntities = (headers: string[], entityTypes: { [key: string]: string }): EntityRowType[] => {
+  const defaultEntities: EntityRowType[] = [];
+  headers.forEach((header: string) => {
+    if (header !== "Timestamp") {
+      const entityType = entityTypes ? entityTypes[header] : "String";
+      const entityRow = {
+        property: header,
+        type: entityType,
+        value: "",
+        isPropertyTypeDisable: isEntityPropertyTypeDisable(header),
+        isDeleteOptionVisible: !isEntityPropertyTypeDisable(header),
+        id: 1,
+        entityValuePlaceholder: defaultStringPlaceHolder,
+        isEntityTypeDate: entityType === "DateTime",
+      };
+      defaultEntities.push(entityRow);
+    }
+  });
+  return defaultEntities;
+};
+
 // Type of entity row
 export interface EntityRowType {
   property: string;

@@ -13,8 +13,14 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import AddPropertyIcon from "../../../../../images/Add-property.svg";
 import RevertBackIcon from "../../../../../images/RevertBack.svg";
 import { TableEntity } from "../../../../Common/TableEntity";
+import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
+import * as TableConstants from "../../../Tables/Constants";
+import * as DataTableUtilities from "../../../Tables/DataTable/DataTableUtilities";
+import TableEntityListViewModel from "../../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../../Tables/Entities";
+import * as TableEntityProcessor from "../../../Tables/TableEntityProcessor";
+import * as Utilities from "../../../Tables/Utilities";
 import QueryTablesTab from "../../../Tabs/QueryTablesTab";
 import { PanelContainerComponent } from "../../PanelContainerComponent";
 import {
@@ -24,12 +30,13 @@ import {
   backImageProps,
   columnProps,
   dataTypeLabel,
-  defaultEntities,
   detailedHelp,
   entityFromAttributes,
   EntityRowType,
+  getDefaultEntities,
   getEntityValuePlaceholder,
   imageProps,
+  isValidEntities,
   options,
 } from "../Validators/EntityTableHelper";
 
@@ -37,14 +44,16 @@ interface AddTableEntityPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   queryTablesTab: QueryTablesTab;
+  tableEntityListViewModel: TableEntityListViewModel;
 }
 
 export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = ({
   explorer,
   closePanel,
   queryTablesTab,
+  tableEntityListViewModel,
 }: AddTableEntityPanelProps): JSX.Element => {
-  const [entities, setEntities] = useState<EntityRowType[]>(defaultEntities);
+  const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [
     isEntityValuePanelOpen,
@@ -53,19 +62,35 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 
   // Get default and previous saved entity headers
   useEffect(() => {
-    // [Todo] Sunil
-    // const headers = tableViewModel.headers;
-  }, []);
-
-  const isValidEntities = (entities: EntityRowType[]): boolean => {
-    for (let i = 0; i < entities.length; i++) {
-      const { property } = entities[i];
-      if (property === "" || property === undefined) {
-        return false;
+    let headers = tableEntityListViewModel.headers;
+    if (DataTableUtilities.checkForDefaultHeader(headers)) {
+      headers = [];
+      if (userContext.apiType === "Tables") {
+        headers = [TableConstants.EntityKeyNames.PartitionKey, TableConstants.EntityKeyNames.RowKey];
       }
     }
-    return true;
-  };
+
+    const entityItems = tableEntityListViewModel.items();
+    const entityTypes = Utilities.getDataTypesFromEntities(headers, entityItems);
+    const defaultEntities = getDefaultEntities(headers, entityTypes);
+    setEntities(defaultEntities);
+
+    if (userContext.apiType === "Cassandra") {
+      // (<CassandraAPIDataClient>this.container.tableDataClient)
+      //   .getTableSchema(this.tableViewModel.queryTablesTab.collection)
+      //   .then((columns: CassandraTableKey[]) => {
+      //     this.displayedAttributes(
+      //       this.constructDisplayedAttributes(
+      //         columns.map((col) => col.property),
+      //         Utilities.getDataTypesFromCassandraSchema(columns)
+      //       )
+      //     );
+      //     this.updateIsActionEnabled();
+      //     super.open();
+      //     this.focusValueElement();
+      //   });
+    }
+  }, []);
 
   const submit = (): void => {
     if (!isValidEntities(entities)) {
@@ -75,48 +100,42 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     explorer.tableDataClient
       .createDocument(queryTablesTab.collection, entity)
       .then((newEntity: Entities.ITableEntity) => {
-        console.log("newEntity", newEntity);
-        // [Todo: Sunil]: Will get tableViewModel and use addEntityToCache
-
-        // explorer.addTableEntityPane.tableViewModel.addEntityToCache(newEntity).then(() => {
-        //   if (!tryInsertNewHeaders(explorer.addTableEntityPane.tableViewModel, newEntity)) {
-        //     explorer.addTableEntityPane.tableViewModel.redrawTableThrottled();
-        //   }
-        // });
+        tableEntityListViewModel.addEntityToCache(newEntity).then(() => {
+          if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
+            tableEntityListViewModel.redrawTableThrottled();
+          }
+        });
         closePanel();
       });
   };
 
-  // [Todo: Sunil]
+  const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
+    let newHeaders: string[] = [];
+    const keys = Object.keys(newEntity);
+    keys &&
+      keys.forEach((key: string) => {
+        if (
+          !_.contains(viewModel.headers, key) &&
+          key !== TableEntityProcessor.keyProperties.attachments &&
+          key !== TableEntityProcessor.keyProperties.etag &&
+          key !== TableEntityProcessor.keyProperties.resourceId &&
+          key !== TableEntityProcessor.keyProperties.self &&
+          (!(userContext.apiType === "Cassandra") || key !== TableConstants.EntityKeyNames.RowKey)
+        ) {
+          newHeaders.push(key);
+        }
+      });
 
-  // const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
-  //   let newHeaders: string[] = [];
-  //   const keys = Object.keys(newEntity);
-  //   keys &&
-  //     keys.forEach((key: string) => {
-  //       if (
-  //         !_.contains(viewModel.headers, key) &&
-  //         key !== TableEntityProcessor.keyProperties.attachments &&
-  //         key !== TableEntityProcessor.keyProperties.etag &&
-  //         key !== TableEntityProcessor.keyProperties.resourceId &&
-  //         key !== TableEntityProcessor.keyProperties.self &&
-  //         (!viewModel.queryTablesTab.container.isPreferredApiCassandra() ||
-  //           key !== TableConstants.EntityKeyNames.RowKey)
-  //       ) {
-  //         newHeaders.push(key);
-  //       }
-  //     });
-
-  //   let newHeadersInserted = false;
-  //   if (newHeaders.length) {
-  //     if (!DataTableUtilities.checkForDefaultHeader(viewModel.headers)) {
-  //       newHeaders = viewModel.headers.concat(newHeaders);
-  //     }
-  //     viewModel.updateHeaders(newHeaders, /* notifyColumnChanges */ true, /* enablePrompt */ false);
-  //     newHeadersInserted = true;
-  //   }
-  //   return newHeadersInserted;
-  // };
+    let newHeadersInserted = false;
+    if (newHeaders.length) {
+      if (!DataTableUtilities.checkForDefaultHeader(viewModel.headers)) {
+        newHeaders = viewModel.headers.concat(newHeaders);
+      }
+      viewModel.updateHeaders(newHeaders, /* notifyColumnChanges */ true, /* enablePrompt */ false);
+      newHeadersInserted = true;
+    }
+    return newHeadersInserted;
+  };
 
   // Add new entity row
   const addNewEntity = (): void => {

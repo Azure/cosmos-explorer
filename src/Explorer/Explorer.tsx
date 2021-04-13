@@ -69,6 +69,7 @@ import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
@@ -2395,12 +2396,17 @@ export default class Explorer {
     );
   }
 
-  public openAddTableEntityPanel(queryTablesTab: QueryTablesTab): void {
+  public openAddTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
     false
       ? this.addTableEntityPane.open()
       : this.openSidePanel(
           "Add Table Entity",
-          <AddTableEntityPanel explorer={this} closePanel={this.closeSidePanel} queryTablesTab={queryTablesTab} />
+          <AddTableEntityPanel
+            explorer={this}
+            closePanel={this.closeSidePanel}
+            queryTablesTab={queryTablesTab}
+            tableEntityListViewModel={tableEntityListViewModel}
+          />
         );
   }
 }

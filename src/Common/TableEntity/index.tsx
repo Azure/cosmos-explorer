@@ -97,6 +97,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         className="addEntityTextField"
         id="entityValueId"
         autoFocus
+        type={selectedKey === "Double" || selectedKey === "Int32" || selectedKey === "Int64" ? "number" : "string"}
         placeholder={entityValuePlaceholder}
         value={typeof entityValue === "string" && entityValue}
         onChange={onEntityValueChange}
