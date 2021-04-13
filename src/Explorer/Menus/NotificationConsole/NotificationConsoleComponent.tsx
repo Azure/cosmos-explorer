@@ -315,7 +315,7 @@ const PrPreview = (props: { pr: string }) => {
   return (
     <>
       <span className="consoleSplitter" />
-      <a target="_blank" href={url.href} style={{ marginRight: "1em", fontWeight: "bold" }}>
+      <a target="_blank" rel="noreferrer" href={url.href} style={{ marginRight: "1em", fontWeight: "bold" }}>
         {ref}
       </a>
     </>
