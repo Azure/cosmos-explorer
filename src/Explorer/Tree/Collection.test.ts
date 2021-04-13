@@ -41,7 +41,6 @@ describe("Collection", () => {
       return false;
     };
 
-
     mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
 
     return generateCollection(mockContainer, "abc", data, {} as DataModels.Offer);

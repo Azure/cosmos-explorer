@@ -15,8 +15,7 @@ interface SampleDataFile extends DataModels.CreateCollectionParams {
 export class ContainerSampleGenerator {
   private sampleDataFile: SampleDataFile;
 
-  private constructor(private container: Explorer) {
-  }
+  private constructor(private container: Explorer) {}
 
   /**
    * Factory function to load the json data file
