@@ -9,7 +9,6 @@ import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import { StyleConstants } from "../../../Common/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { userContext } from "../../../UserContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -32,7 +31,6 @@ export class CommandBarComponentAdapter implements ReactAdapter {
     const toWatch = [
       container.isPreferredApiTable,
       container.isPreferredApiMongoDB,
-      userContext.apiType === "SQL",
       container.isPreferredApiCassandra,
       container.isPreferredApiGraph,
       container.deleteCollectionText,

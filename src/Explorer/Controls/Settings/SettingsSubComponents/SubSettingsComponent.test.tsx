@@ -1,7 +1,6 @@
 import { shallow } from "enzyme";
 import ko from "knockout";
 import React from "react";
-import { updateUserContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import { ChangeFeedPolicyState, GeospatialConfigType, TtlOff, TtlOn, TtlOnNoDefault, TtlType } from "../SettingsUtils";
 import { collection, container } from "../TestUtils";
@@ -57,7 +56,6 @@ describe("SubSettingsComponent", () => {
   };
 
   it("renders", () => {
-    updateUserContext({});
     const wrapper = shallow(<SubSettingsComponent {...baseProps} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#timeToLive")).toEqual(true);
