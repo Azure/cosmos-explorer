@@ -123,7 +123,7 @@ export interface ISchemaRequest {
 export interface Collection extends Resource {
   // Only in Mongo collections loaded via ARM
   shardKey?: {
-    [key: string]: "Hash";
+    [key: string]: string;
   };
   defaultTtl?: number;
   indexingPolicy?: IndexingPolicy;
