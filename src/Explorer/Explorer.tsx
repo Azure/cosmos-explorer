@@ -66,9 +66,10 @@ import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
-import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
+import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -196,7 +197,6 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
@@ -567,13 +567,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.querySelectPane = new QuerySelectPane({
-      id: "queryselectpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.newVertexPane = new NewVertexPane({
       id: "newvertexpane",
       visible: ko.observable<boolean>(false),
@@ -611,7 +604,6 @@ export default class Explorer {
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.stringInputPane,
@@ -2368,6 +2360,12 @@ export default class Explorer {
     this.openSidePanel(
       "Add Table",
       <CassandraAddCollectionPaneF explorer={this} closePanel={() => this.closeSidePanel()} />
+    );
+  }
+  public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
+    this.openSidePanel(
+      "Select Column",
+      <TableQuerySelectPanel explorer={this} closePanel={this.closeSidePanel} queryViewModel={queryViewModal} />
     );
   }
 }

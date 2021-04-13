@@ -6,7 +6,7 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -782,12 +782,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
       try {
         const newMongoIndexes = this.getMongoIndexesToSave();
-        const newMongoCollection: MongoDBCollectionResource = {
+        const newMongoCollection = {
           ...this.mongoDBCollectionResource,
           indexes: newMongoIndexes,
         };
 
-        this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
+        this.mongoDBCollectionResource = await updateCollection(
           this.collection.databaseId,
           this.collection.id(),
           newMongoCollection
