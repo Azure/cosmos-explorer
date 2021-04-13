@@ -513,9 +513,7 @@ export default class Collection implements ViewModels.Collection {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Documents",
         tabPath: "",
-
         collection: this,
-
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
         isActive: ko.observable(false),
