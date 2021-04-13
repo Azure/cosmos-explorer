@@ -7,7 +7,7 @@ import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 export class DataSamplesUtil {
   private static readonly DialogTitle = "Create Sample Container";
-  constructor(private container: Explorer) { }
+  constructor(private container: Explorer) {}
 
   /**
    * Check if Database/Container is already there: if so, show modal to delete
