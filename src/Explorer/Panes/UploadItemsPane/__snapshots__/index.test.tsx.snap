@@ -653,7 +653,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
-      "isPreferredApiCassandra": [Function],
       "isPreferredApiDocumentDB": [Function],
       "isPreferredApiGraph": [Function],
       "isPreferredApiMongoDB": [Function],

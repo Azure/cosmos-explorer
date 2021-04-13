@@ -388,7 +388,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.container == null ||
         !!this.container.isPreferredApiMongoDB() ||
         !!this.container.isPreferredApiTable() ||
-        !!this.container.isPreferredApiCassandra() ||
+        userContext.apiType === "Cassandra" ||
         !!this.container.isPreferredApiGraph()
       ) {
         return false;
@@ -599,7 +599,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiCassandra() && this.container.hasStorageAnalyticsAfecFeature()) {
+      if (userContext.apiType === "Cassandra" && this.container.hasStorageAnalyticsAfecFeature()) {
         return true;
       }
 
@@ -776,10 +776,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let partitionKeyVersion: number = this.largePartitionKey() ? 2 : undefined;
     let partitionKey: DataModels.PartitionKey = partitionKeyPath.trim()
       ? {
-          paths: [partitionKeyPath],
-          kind: Constants.BackendDefaults.partitionKeyKind,
-          version: partitionKeyVersion,
-        }
+        paths: [partitionKeyPath],
+        kind: Constants.BackendDefaults.partitionKeyKind,
+        version: partitionKeyVersion,
+      }
       : null;
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
 

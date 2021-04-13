@@ -203,12 +203,12 @@ export default class Collection implements ViewModels.Collection {
 
     this.showConflicts = ko.observable<boolean>(
       container &&
-        container.databaseAccount &&
-        container.databaseAccount() &&
-        container.databaseAccount().properties &&
-        container.databaseAccount().properties.enableMultipleWriteLocations &&
-        data &&
-        !!data.conflictResolutionPolicy
+      container.databaseAccount &&
+      container.databaseAccount() &&
+      container.databaseAccount().properties &&
+      container.databaseAccount().properties.enableMultipleWriteLocations &&
+      data &&
+      !!data.conflictResolutionPolicy
     );
 
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);
@@ -377,7 +377,7 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    if (this.container.isPreferredApiCassandra() && !this.cassandraKeys) {
+    if (userContext.apiType === "Cassandra" && !this.cassandraKeys) {
       (<CassandraAPIDataClient>this.container.tableDataClient).getTableKeys(this).then((keys: CassandraTableKeys) => {
         this.cassandraKeys = keys;
       });
@@ -394,7 +394,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.documentIds([]);
       let title = `Entities`;
-      if (this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType === "Cassandra") {
         title = `Rows`;
       }
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -1136,8 +1136,7 @@ export default class Collection implements ViewModels.Collection {
         }
         NotificationConsoleUtils.logConsoleMessage(
           ConsoleDataType.Error,
-          `Document creation error for container ${this.id()} - file ${
-            uploadDetailsRecords[currentFileIndex].fileName
+          `Document creation error for container ${this.id()} - file ${uploadDetailsRecords[currentFileIndex].fileName
           }: ${errors[i]}`
         );
         stackTraceCount++;
@@ -1149,8 +1148,7 @@ export default class Collection implements ViewModels.Collection {
       const consoleDataType: ConsoleDataType = record.numFailed > 0 ? ConsoleDataType.Error : ConsoleDataType.Info;
       NotificationConsoleUtils.logConsoleMessage(
         consoleDataType,
-        `Item creation summary for container ${this.id()} - file ${record.fileName}: ${
-          record.numSucceeded
+        `Item creation summary for container ${this.id()} - file ${record.fileName}: ${record.numSucceeded
         } items created, ${record.numFailed} errors`
       );
     });
@@ -1163,7 +1161,7 @@ export default class Collection implements ViewModels.Collection {
     if (this.container.isPreferredApiTable()) {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       this.onTableEntitiesClick();
       return;
     } else if (this.container.isPreferredApiGraph()) {
@@ -1183,7 +1181,7 @@ export default class Collection implements ViewModels.Collection {
   public getLabel(): string {
     if (this.container.isPreferredApiTable()) {
       return "Entities";
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       return "Rows";
     } else if (this.container.isPreferredApiGraph()) {
       return "Graph";

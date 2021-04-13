@@ -1,6 +1,7 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
 import { KeyCodes } from "../../../Common/Constants";
+import { userContext } from "../../../UserContext";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
@@ -46,7 +47,7 @@ export default class QueryViewModel {
     this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel();
 
     this.queryTextIsReadOnly = ko.computed<boolean>(() => {
-      return !this.queryTablesTab.container.isPreferredApiCassandra();
+      return userContext.apiType !== "Cassandra";
     });
     let initialOptions = this._tableEntityListViewModel.headers;
     this.columnOptions = ko.observableArray<string>(initialOptions);
@@ -126,9 +127,9 @@ export default class QueryViewModel {
   private setFilter = (): string => {
     var queryString = this.isEditorActive()
       ? this.queryText()
-      : this.queryTablesTab.container.isPreferredApiCassandra()
-      ? this.queryBuilderViewModel().getCqlFilterFromClauses()
-      : this.queryBuilderViewModel().getODataFilterFromClauses();
+      : userContext.apiType === "Cassandra"
+        ? this.queryBuilderViewModel().getCqlFilterFromClauses()
+        : this.queryBuilderViewModel().getODataFilterFromClauses();
     var filter = queryString;
     this.queryText(filter);
     return this.queryText();
@@ -159,7 +160,7 @@ export default class QueryViewModel {
 
   public runQuery = (): DataTables.DataTable => {
     var filter = this.setFilter();
-    if (filter && !this.queryTablesTab.container.isPreferredApiCassandra()) {
+    if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
     }
     var top = this.topValue();

@@ -123,7 +123,7 @@ export class ResourceTreeContextMenuButtonFactory {
     container: Explorer,
     storedProcedure: StoredProcedure
   ): TreeNodeMenuItem[] {
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       return [];
     }
 
@@ -137,7 +137,7 @@ export class ResourceTreeContextMenuButtonFactory {
   }
 
   public static createTriggerContextMenuItems(container: Explorer, trigger: Trigger): TreeNodeMenuItem[] {
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       return [];
     }
 
@@ -154,7 +154,7 @@ export class ResourceTreeContextMenuButtonFactory {
     container: Explorer,
     userDefinedFunction: UserDefinedFunction
   ): TreeNodeMenuItem[] {
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       return [];
     }
 

@@ -74,7 +74,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       buttons.push(createOpenCassandraTerminalButton(container));
     }
   }
@@ -159,7 +159,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     return buttons;
   }
 
-  if (!container.isPreferredApiCassandra()) {
+  if (userContext.apiType !== "Cassandra") {
     const label = "Settings";
     const settingsPaneButton: CommandButtonComponentProps = {
       iconSrc: SettingsIcon,

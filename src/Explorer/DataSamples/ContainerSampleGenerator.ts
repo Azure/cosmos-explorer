@@ -1,12 +1,12 @@
-import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
-import GraphTab from ".././Tabs/GraphTab";
-import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import Explorer from "../Explorer";
 import { createCollection } from "../../Common/dataAccess/createCollection";
 import { createDocument } from "../../Common/dataAccess/createDocument";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import GraphTab from ".././Tabs/GraphTab";
+import Explorer from "../Explorer";
+import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 
 interface SampleDataFile extends DataModels.CreateCollectionParams {
   data: any[];
@@ -15,7 +15,7 @@ interface SampleDataFile extends DataModels.CreateCollectionParams {
 export class ContainerSampleGenerator {
   private sampleDataFile: SampleDataFile;
 
-  private constructor(private container: Explorer) {}
+  private constructor(private container: Explorer) { }
 
   /**
    * Factory function to load the json data file
@@ -32,7 +32,7 @@ export class ContainerSampleGenerator {
         /* webpackChunkName: "sqlSampleJsonData" */ "../../../sampleData/sqlSampleData.json"
       );
     } else {
-      return Promise.reject(`Sample generation not supported for this API ${container.defaultExperience()}`);
+      return Promise.reject(`Sample generation not supported for this API ${userContext.apiType}`);
     }
 
     generator.setData(dataFileContent);

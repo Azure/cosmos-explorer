@@ -273,7 +273,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (!this.container.isPreferredApiCassandra() || !this.container.isServerlessEnabled()) {
+    if (userContext.apiType !== "Cassandra" || !this.container.isServerlessEnabled()) {
       children.push({
         label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
