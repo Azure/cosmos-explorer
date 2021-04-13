@@ -135,7 +135,6 @@ src/Explorer/Panes/SwitchDirectoryPane.ts
 src/Explorer/Panes/Tables/AddTableEntityPane.ts
 src/Explorer/Panes/Tables/EditTableEntityPane.ts
 src/Explorer/Panes/Tables/EntityPropertyViewModel.ts
-src/Explorer/Panes/Tables/QuerySelectPane.ts
 src/Explorer/Panes/Tables/TableEntityPane.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyNameValidator.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts
@@ -299,8 +298,6 @@ src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.t
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponent.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx

@@ -112,21 +112,18 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
 
 export const buildSmartUiDescriptor = (className: string, target: unknown): void => {
   const context = Reflect.getMetadata(className, target) as Map<string, DecoratorProperties>;
-  const smartUiDescriptor = mapToSmartUiDescriptor(className, context);
+  const smartUiDescriptor = mapToSmartUiDescriptor(context);
   Reflect.defineMetadata(className, smartUiDescriptor, target);
 };
 
-export const mapToSmartUiDescriptor = (
-  className: string,
-  context: Map<string, DecoratorProperties>
-): SelfServeDescriptor => {
+export const mapToSmartUiDescriptor = (context: Map<string, DecoratorProperties>): SelfServeDescriptor => {
   const inputNames: string[] = [];
   const root = context.get("root");
   context.delete("root");
 
   const smartUiDescriptor: SelfServeDescriptor = {
     root: {
-      id: className,
+      id: undefined,
       info: undefined,
       children: [],
     },
