@@ -154,25 +154,18 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
 }
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = [];
-  if (configContext.platform === Platform.Hosted) {
-    return buttons;
-  }
-
-  if (!container.isPreferredApiCassandra()) {
-    const label = "Settings";
-    const settingsPaneButton: CommandButtonComponentProps = {
+  const buttons: CommandButtonComponentProps[] = [
+    {
       iconSrc: SettingsIcon,
-      iconAlt: label,
+      iconAlt: "Settings",
       onCommandClick: () => container.openSettingPane(),
       commandButtonLabel: undefined,
-      ariaLabel: label,
-      tooltipText: label,
+      ariaLabel: "Settings",
+      tooltipText: "Settings",
       hasPopup: true,
       disabled: false,
-    };
-    buttons.push(settingsPaneButton);
-  }
+    },
+  ];
 
   if (container.isHostedDataExplorerEnabled()) {
     const label = "Open Full Screen";
