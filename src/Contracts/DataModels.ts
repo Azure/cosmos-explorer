@@ -121,6 +121,10 @@ export interface ISchemaRequest {
 }
 
 export interface Collection extends Resource {
+  // Only in Mongo collections loaded via ARM
+  shardKey?: {
+    [key: string]: "Hash";
+  };
   defaultTtl?: number;
   indexingPolicy?: IndexingPolicy;
   partitionKey?: PartitionKey;
