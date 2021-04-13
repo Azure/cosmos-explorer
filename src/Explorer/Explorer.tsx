@@ -1279,6 +1279,11 @@ export default class Explorer {
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
     }
+
+    // sandboxNotebookOutputs is turned ON by default. Only turn it off if the flight says so
+    if (flights.indexOf(Constants.Flights.SandboxNotebookOutputs) === -1) {
+      userContext.features.sandboxNotebookOutputs = false;
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {

@@ -104,6 +104,7 @@ export class Flights {
   public static readonly MongoIndexEditor = "mongoindexeditor";
   public static readonly MongoIndexing = "mongoindexing";
   public static readonly AutoscaleTest = "autoscaletest";
+  public static readonly SandboxNotebookOutputs = "sandboxnotebookoutputs";
 }
 
 export class AfecFeatures {
