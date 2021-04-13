@@ -1,12 +1,11 @@
-import * as DataModels from "../../Contracts/DataModels";
-import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import * as StringUtils from "../../Utils/StringUtils";
-import { FileSystemUtil } from "./FileSystemUtil";
-import { NotebookUtil } from "./NotebookUtil";
-
-import { ServerConfig, IContent, IContentProvider, FileType, IEmptyContent } from "@nteract/core";
-import { AjaxResponse } from "rxjs/ajax";
 import { stringifyNotebook } from "@nteract/commutable";
+import { FileType, IContent, IContentProvider, IEmptyContent, ServerConfig } from "@nteract/core";
+import { AjaxResponse } from "rxjs/ajax";
+import * as DataModels from "../../Contracts/DataModels";
+import * as StringUtils from "../../Utils/StringUtils";
+import * as FileSystemUtil from "./FileSystemUtil";
+import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
+import { NotebookUtil } from "./NotebookUtil";
 
 export class NotebookContentClient {
   constructor(

@@ -1,0 +1,58 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Browse queries panel Should render Default properly 1`] = `
+<BrowseQueriesPanel
+  closePanel={[Function]}
+  explorer={
+    Object {
+      "canSaveQueries": [Function],
+      "queriesClient": Object {
+        "getQueries": [Function],
+      },
+    }
+  }
+>
+  <div
+    className="panelFormWrapper"
+  >
+    <div
+      className="panelMainContent"
+    >
+      <QueriesGridComponent
+        containerVisible={true}
+        onQuerySelect={[Function]}
+        queriesClient={
+          Object {
+            "getQueries": [Function],
+          }
+        }
+        saveQueryEnabled={true}
+      >
+        <div
+          id="emptyQueryBanner"
+        >
+          <div>
+            You have not saved any queries yet. 
+            <br />
+             
+            <br />
+            To write a new query, open a new query tab and enter the desired query. Once ready to save, click on Save Query and follow the prompt in order to save the query.
+          </div>
+          <img
+            alt="Save query helper banner"
+            src=""
+            style={
+              Object {
+                "border": "1px solid undefined",
+                "height": "150px",
+                "marginTop": "20px",
+                "width": "310px",
+              }
+            }
+          />
+        </div>
+      </QueriesGridComponent>
+    </div>
+  </div>
+</BrowseQueriesPanel>
+`;

@@ -50,10 +50,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.subscriptions = [];
   }
 
-  public shouldComponentUpdate() {
-    return this.container.tabsManager.openedTabs.length === 0;
-  }
-
   public componentWillUnmount() {
     while (this.subscriptions.length) {
       this.subscriptions.pop().dispose();
@@ -62,7 +58,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      this.container.tabsManager.openedTabs.subscribe(() => this.setState({})),
       this.container.selectedNode.subscribe(() => this.setState({})),
       this.container.isNotebookEnabled.subscribe(() => this.setState({}))
     );
@@ -80,7 +75,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
 
-    return (
+    const formContainer = (jsx: JSX.Element) => (
+      <div className="connectExplorerContainer">
+        <form className="connectExplorerFormContainer">{jsx}</form>
+      </div>
+    );
+
+    return formContainer(
       <div className="splashScreenContainer">
         <div className="splashScreen">
           <div className="title">
@@ -252,7 +253,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: OpenQueryIcon,
         title: "Open Query",
         description: null,
-        onClick: () => this.container.browseQueriesPane.open(),
+        onClick: () => this.container.openBrowseQueriesPanel(),
       });
 
       if (!this.container.isPreferredApiCassandra()) {

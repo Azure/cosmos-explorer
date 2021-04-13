@@ -164,7 +164,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     const settingsPaneButton: CommandButtonComponentProps = {
       iconSrc: SettingsIcon,
       iconAlt: label,
-      onCommandClick: () => container.settingsPane.open(),
+      onCommandClick: () => container.openSettingPane(),
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,
@@ -407,7 +407,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
   return {
     iconSrc: NewNotebookIcon,
     iconAlt: label,
-    onCommandClick: () => container.onUploadToNotebookServerClicked(),
+    onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,
@@ -420,7 +420,7 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
-    onCommandClick: () => container.browseQueriesPane.open(),
+    onCommandClick: () => container.openBrowseQueriesPanel(),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -433,7 +433,7 @@ function createOpenQueryFromDiskButton(container: Explorer): CommandButtonCompon
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
-    onCommandClick: () => container.loadQueryPane.open(),
+    onCommandClick: () => container.openLoadQueryPanel(),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

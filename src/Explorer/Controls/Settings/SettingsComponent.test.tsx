@@ -1,17 +1,18 @@
 import { shallow } from "enzyme";
-import React from "react";
-import { SettingsComponentProps, SettingsComponent, SettingsComponentState } from "./SettingsComponent";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
-import { collection } from "./TestUtils";
-import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
-import { TtlType, isDirty } from "./SettingsUtils";
+import React from "react";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
+import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
+import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
+import { isDirty, TtlType } from "./SettingsUtils";
+import { collection } from "./TestUtils";
 jest.mock("../../../Common/dataAccess/getIndexTransformationProgress", () => ({
   getIndexTransformationProgress: jest.fn().mockReturnValue(undefined),
 }));
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
   updateCollection: jest.fn().mockReturnValue({
     id: undefined,
@@ -21,16 +22,9 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     changeFeedPolicy: undefined,
     analyticalStorageTtl: undefined,
     geospatialConfig: undefined,
-  } as DataModels.Collection),
-  updateMongoDBCollectionThroughRP: jest.fn().mockReturnValue({
-    id: undefined,
-    shardKey: undefined,
     indexes: [],
-    analyticalStorageTtl: undefined,
-  } as MongoDBCollectionResource),
+  }),
 }));
-import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
 }));
@@ -134,7 +128,6 @@ describe("SettingsComponent", () => {
       loadCollections: undefined,
       findCollectionWithId: undefined,
       openAddCollection: undefined,
-      onDeleteDatabaseContextMenuClick: undefined,
       readSettings: undefined,
       onSettingsClick: undefined,
       loadOffer: undefined,
@@ -194,7 +187,6 @@ describe("SettingsComponent", () => {
     };
     await settingsComponentInstance.onSaveClick();
     expect(updateCollection).toBeCalled();
-    expect(updateMongoDBCollectionThroughRP).toBeCalled();
     expect(updateOffer).toBeCalled();
   });
 

@@ -53,6 +53,7 @@ import "./Explorer/Tabs/QueryTab.less";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
+import { useTabs } from "./hooks/useTabs";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
 import "./Shared/appInsights";
@@ -78,6 +79,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
+  const { tabs, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -87,7 +89,9 @@ const App: React.FunctionComponent = () => {
     closeSidePanel,
     openDialog,
     closeDialog,
+    tabsManager,
   };
+
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
@@ -200,11 +204,7 @@ const App: React.FunctionComponent = () => {
             {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
-          <div className="connectExplorerContainer" data-bind="visible: tabsManager.openedTabs().length === 0">
-            <form className="connectExplorerFormContainer">
-              <SplashScreen explorer={explorer} />
-            </form>
-          </div>
+          {tabs.length === 0 && <SplashScreen explorer={explorer} />}
           <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
         </div>
         {/* Collections Tree and Tabs - End */}
@@ -229,25 +229,14 @@ const App: React.FunctionComponent = () => {
         closePanel={closeSidePanel}
         isConsoleExpanded={isNotificationConsoleExpanded}
       />
-      <div data-bind="react:uploadItemsPaneAdapter" />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "delete-collection-confirmation-pane", params: { data: deleteCollectionConfirmationPane} }' />
-      <div data-bind='component: { name: "delete-database-confirmation-pane", params: { data: deleteDatabaseConfirmationPane} }' />
       <div data-bind='component: { name: "graph-new-vertex-pane", params: { data: newVertexPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "table-add-entity-pane", params: { data: addTableEntityPane} }' />
       <div data-bind='component: { name: "table-edit-entity-pane", params: { data: editTableEntityPane} }' />
-      <div data-bind='component: { name: "table-column-options-pane", params: { data: tableColumnOptionsPane} }' />
-      <div data-bind='component: { name: "table-query-select-pane", params: { data: querySelectPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      <div data-bind='component: { name: "settings-pane", params: { data: settingsPane} }' />
-      <div data-bind='component: { name: "upload-items-pane", params: { data: uploadItemsPane} }' />
-      <div data-bind='component: { name: "load-query-pane", params: { data: loadQueryPane} }' />
-      <div data-bind='component: { name: "execute-sproc-params-pane", params: { data: executeSprocParamsPane} }' />
-      <div data-bind='component: { name: "save-query-pane", params: { data: saveQueryPane} }' />
-      <div data-bind='component: { name: "browse-queries-pane", params: { data: browseQueriesPane} }' />
-      <div data-bind='component: { name: "upload-file-pane", params: { data: uploadFilePane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
       <KOCommentIfStart if="isGitHubPaneEnabled" />
