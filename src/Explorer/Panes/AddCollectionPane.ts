@@ -127,13 +127,13 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
     this.partitionKey.extend({ rateLimit: 100 });
     this.partitionKeyPattern = ko.pureComputed(() => {
-      if (this.container && this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "^/[^/]*";
       }
       return ".*";
     });
     this.partitionKeyTitle = ko.pureComputed(() => {
-      if (this.container && this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "May not use composite partition key";
       }
       return "";
@@ -331,7 +331,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
       if (currentCollections >= maxCollections) {
         let typeOfContainer = "collection";
-        if (this.container.isPreferredApiGraph() || this.container.isPreferredApiTable()) {
+        if (userContext.apiType === "Gremlin" || this.container.isPreferredApiTable()) {
           typeOfContainer = "container";
         }
 
@@ -368,7 +368,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "e.g., address.zipCode";
       }
 
-      if (this.container && !!this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "e.g., /address";
       }
 
@@ -389,7 +389,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         !!this.container.isPreferredApiMongoDB() ||
         !!this.container.isPreferredApiTable() ||
         !!this.container.isPreferredApiCassandra() ||
-        !!this.container.isPreferredApiGraph()
+        userContext.apiType === "Gremlin"
       ) {
         return false;
       }
@@ -776,10 +776,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let partitionKeyVersion: number = this.largePartitionKey() ? 2 : undefined;
     let partitionKey: DataModels.PartitionKey = partitionKeyPath.trim()
       ? {
-          paths: [partitionKeyPath],
-          kind: Constants.BackendDefaults.partitionKeyKind,
-          version: partitionKeyVersion,
-        }
+        paths: [partitionKeyPath],
+        kind: Constants.BackendDefaults.partitionKeyKind,
+        version: partitionKeyVersion,
+      }
       : null;
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
 
@@ -1011,7 +1011,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return false;
     }
 
-    if (this.container.isPreferredApiGraph() && (this.partitionKey() === "/id" || this.partitionKey() === "/label")) {
+    if (userContext.apiType === "Gremlin" && (this.partitionKey() === "/id" || this.partitionKey() === "/label")) {
       this.formErrors("/id and /label as partition keys are not allowed for graph.");
       return false;
     }

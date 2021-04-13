@@ -90,15 +90,15 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createDivider());
     }
 
-    const isSqlQuerySupported = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+    const isSqlQuerySupported = container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin";
     if (isSqlQuerySupported) {
       const newSqlQueryBtn = createNewSQLQueryButton(container);
       buttons.push(newSqlQueryBtn);
     }
 
     const isSupportedOpenQueryApi =
-      container.isPreferredApiDocumentDB() || container.isPreferredApiMongoDB() || container.isPreferredApiGraph();
-    const isSupportedOpenQueryFromDiskApi = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+      container.isPreferredApiDocumentDB() || container.isPreferredApiMongoDB() || userContext.apiType === "Gremlin";
+    const isSupportedOpenQueryFromDiskApi = container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin";
     if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
@@ -224,7 +224,7 @@ export function createDivider(): CommandButtonComponentProps {
 }
 
 function areScriptsSupported(container: Explorer): boolean {
-  return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+  return container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin";
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
@@ -296,7 +296,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
 }
 
 function createNewSQLQueryButton(container: Explorer): CommandButtonComponentProps {
-  if (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) {
+  if (container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin") {
     const label = "New SQL Query";
     return {
       iconSrc: AddSqlQueryIcon,

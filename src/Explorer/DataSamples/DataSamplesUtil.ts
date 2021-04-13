@@ -1,4 +1,5 @@
 import * as ViewModels from "../../Contracts/ViewModels";
+import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
@@ -6,7 +7,7 @@ import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 export class DataSamplesUtil {
   private static readonly DialogTitle = "Create Sample Container";
-  constructor(private container: Explorer) {}
+  constructor(private container: Explorer) { }
 
   /**
    * Check if Database/Container is already there: if so, show modal to delete
@@ -56,6 +57,6 @@ export class DataSamplesUtil {
   }
 
   public isSampleContainerCreationSupported(): boolean {
-    return this.container.isPreferredApiDocumentDB() || this.container.isPreferredApiGraph();
+    return this.container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin";
   }
 }
