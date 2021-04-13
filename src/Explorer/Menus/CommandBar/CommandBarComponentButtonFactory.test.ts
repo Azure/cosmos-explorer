@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import { AuthType } from "../../../AuthType";
+import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
@@ -15,7 +16,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isPreferredApiTable = ko.computed(() => true);
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableTable" }],
+          },
+        } as DatabaseAccount,
+      });
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
@@ -54,7 +61,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isPreferredApiTable = ko.computed(() => true);
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableTable" }],
+          },
+        } as DatabaseAccount,
+      });
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
@@ -118,7 +131,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isPreferredApiTable = ko.computed(() => true);
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableTable" }],
+          },
+        } as DatabaseAccount,
+      });
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
@@ -198,7 +217,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isPreferredApiTable = ko.computed(() => true);
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableTable" }],
+          },
+        } as DatabaseAccount,
+      });
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
@@ -279,7 +304,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isPreferredApiTable = ko.computed(() => true);
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableTable" }],
+          },
+        } as DatabaseAccount,
+      });
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
 

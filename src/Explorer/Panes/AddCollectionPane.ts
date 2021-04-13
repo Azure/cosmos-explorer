@@ -331,7 +331,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
       if (currentCollections >= maxCollections) {
         let typeOfContainer = "collection";
-        if (this.container.isPreferredApiGraph() || this.container.isPreferredApiTable()) {
+        if (this.container.isPreferredApiGraph() || userContext.apiType === "Tables") {
           typeOfContainer = "container";
         }
 
@@ -387,7 +387,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       if (
         this.container == null ||
         !!this.container.isPreferredApiMongoDB() ||
-        !!this.container.isPreferredApiTable() ||
+        userContext.apiType === "Tables" ||
         !!this.container.isPreferredApiCassandra() ||
         !!this.container.isPreferredApiGraph()
       ) {
@@ -398,7 +398,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.partitionKeyVisible = ko.computed<boolean>(() => {
-      if (this.container == null || !!this.container.isPreferredApiTable()) {
+      if (this.container == null || userContext.apiType === "Tables") {
         return false;
       }
 
@@ -763,7 +763,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return;
     }
 
-    if (!!this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
       this.databaseId(SharedConstants.CollectionCreation.TablesAPIDefaultDatabase);
       this.partitionKey("/'$pk'");
@@ -958,7 +958,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   public isNonTableApi = (): boolean => {
-    return !this.container.isPreferredApiTable();
+    return userContext.apiType !== "Tables";
   };
 
   public isUnlimitedStorageSelected = (): boolean => {
@@ -1032,7 +1032,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
   private _setFocus() {
     // Autofocus is enabled on AddCollectionPane based on the preferred API
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       const focusTableId = document.getElementById("containerId");
       focusTableId && focusTableId.focus();
       return;

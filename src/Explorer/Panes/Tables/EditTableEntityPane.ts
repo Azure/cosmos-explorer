@@ -1,14 +1,15 @@
 import * as ko from "knockout";
 import _ from "underscore";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { CassandraTableKey, CassandraAPIDataClient } from "../../Tables/TableDataClient";
-import * as Entities from "../../Tables/Entities";
-import TableEntityPane from "./TableEntityPane";
-import * as Utilities from "../../Tables/Utilities";
-import * as TableConstants from "../../Tables/Constants";
-import EntityPropertyViewModel from "./EntityPropertyViewModel";
-import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
+import { userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+import * as TableConstants from "../../Tables/Constants";
+import * as Entities from "../../Tables/Entities";
+import { CassandraAPIDataClient, CassandraTableKey } from "../../Tables/TableDataClient";
+import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
+import * as Utilities from "../../Tables/Utilities";
+import EntityPropertyViewModel from "./EntityPropertyViewModel";
+import TableEntityPane from "./TableEntityPane";
 
 export default class EditTableEntityPane extends TableEntityPane {
   container: Explorer;
@@ -70,7 +71,7 @@ export default class EditTableEntityPane extends TableEntityPane {
 
   public open() {
     this.displayedAttributes(this.constructDisplayedAttributes(this.originEntity));
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       this.originalDocument = TableEntityProcessor.convertEntitiesToDocuments(
         [<Entities.ITableEntityForTablesAPI>this.originEntity],
         this.tableViewModel.queryTablesTab.collection

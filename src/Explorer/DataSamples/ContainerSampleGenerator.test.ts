@@ -4,6 +4,7 @@ jest.mock("../../Common/dataAccess/createDocument");
 import * as ko from "knockout";
 import Q from "q";
 import { createDocument } from "../../Common/dataAccess/createDocument";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
@@ -16,7 +17,6 @@ describe("ContainerSampleGenerator", () => {
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => false);
-    explorerStub.isPreferredApiTable = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiCassandra = ko.computed<boolean>(() => false);
     explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
     explorerStub.findDatabaseWithId = () => database;
@@ -137,7 +137,13 @@ describe("ContainerSampleGenerator", () => {
   it("should not create any sample for Table API account", async () => {
     const experience = "not supported api";
     const explorerStub = createExplorerStub(undefined);
-    explorerStub.isPreferredApiTable = ko.computed<boolean>(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableTable" }],
+        },
+      } as DatabaseAccount,
+    });
     explorerStub.defaultExperience = ko.observable<string>(experience);
 
     // Rejects with error that contains experience
