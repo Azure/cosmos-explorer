@@ -1,6 +1,6 @@
-import { NeighborVertexBasicInfo } from "./GraphExplorer";
-import * as GraphData from "./GraphData";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import * as GraphData from "./GraphData";
+import { NeighborVertexBasicInfo } from "./GraphExplorer";
 
 interface JoinArrayMaxCharOutput {
   result: string; // string output
@@ -13,9 +13,9 @@ interface EdgePropertyType {
   inV?: string;
 }
 
-export function getNeighborTitle(neighbor: NeighborVertexBasicInfo): string {
+export const getNeighborTitle = (neighbor: NeighborVertexBasicInfo): string => {
   return `edge id: ${neighbor.edgeId}, vertex id: ${neighbor.id}`;
-}
+};
 
 /**
  * Collect all edges from this node
@@ -23,11 +23,11 @@ export function getNeighborTitle(neighbor: NeighborVertexBasicInfo): string {
  * @param graphData
  * @param newNodes (optional) object describing new nodes encountered
  */
-export function createEdgesfromNode(
+export const createEdgesfromNode = (
   vertex: GraphData.GremlinVertex,
   graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>,
   newNodes?: { [id: string]: boolean }
-): void {
+): void => {
   if (Object.prototype.hasOwnProperty.call(vertex, "outE")) {
     const outE = vertex.outE;
     for (const label in outE) {
@@ -66,7 +66,7 @@ export function createEdgesfromNode(
       });
     }
   }
-}
+};
 
 /**
  * From ['id1', 'id2', 'idn'] build the following string "'id1','id2','idn'".
@@ -75,7 +75,7 @@ export function createEdgesfromNode(
  * @param maxSize
  * @return
  */
-export function getLimitedArrayString(array: string[], maxSize: number): JoinArrayMaxCharOutput {
+export const getLimitedArrayString = (array: string[], maxSize: number): JoinArrayMaxCharOutput => {
   if (!array || array.length === 0 || array[0].length + 2 > maxSize) {
     return { result: "", consumedCount: 0 };
   }
@@ -96,16 +96,16 @@ export function getLimitedArrayString(array: string[], maxSize: number): JoinArr
     result: output,
     consumedCount: i + 1,
   };
-}
+};
 
-export function createFetchEdgePairQuery(
+export const createFetchEdgePairQuery = (
   outE: boolean,
   pkid: string,
   excludedEdgeIds: string[],
   startIndex: number,
   pageSize: number,
   withoutStepArgMaxLenght: number
-): string {
+): string => {
   let gremlinQuery: string;
   if (excludedEdgeIds.length > 0) {
     // build a string up to max char
@@ -128,15 +128,15 @@ export function createFetchEdgePairQuery(
     }().as('v').select('e', 'v')`;
   }
   return gremlinQuery;
-}
+};
 
 /**
  * Trim graph
  */
-export function trimGraph(
+export const trimGraph = (
   currentRoot: GraphData.GremlinVertex,
   graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>
-): void {
+): void => {
   const importantNodes = [currentRoot.id].concat(currentRoot._ancestorsId);
   graphData.unloadAllVertices(importantNodes);
 
@@ -144,32 +144,32 @@ export function trimGraph(
   $.each(graphData.ids, (index: number, id: string) => {
     graphData.getVertexById(id)._isFixedPosition = importantNodes.indexOf(id) !== -1;
   });
-}
+};
 
-export function addRootChildToGraph(
+export const addRootChildToGraph = (
   root: GraphData.GremlinVertex,
   child: GraphData.GremlinVertex,
   graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>
-): void {
+): void => {
   child._ancestorsId = (root._ancestorsId || []).concat([root.id]);
   graphData.addVertex(child);
   createEdgesfromNode(child, graphData);
   graphData.addNeighborInfo(child);
-}
+};
 
 /**
  * TODO Perform minimal substitution to prevent breaking gremlin query and allow \"" for now.
  * @param value
  */
-export function escapeDoubleQuotes(value: string): string {
+export const escapeDoubleQuotes = (value: string): string => {
   return value === undefined ? value : value.replace(/"/g, '\\"');
-}
+};
 
 /**
  * Surround with double-quotes if val is a string.
  * @param val
  */
-export function getQuotedPropValue(ip: ViewModels.InputPropertyValue): string {
+export const getQuotedPropValue = (ip: ViewModels.InputPropertyValue): string => {
   switch (ip.type) {
     case "number":
     case "boolean":
@@ -179,12 +179,12 @@ export function getQuotedPropValue(ip: ViewModels.InputPropertyValue): string {
     default:
       return `"${escapeDoubleQuotes(ip.value as string)}"`;
   }
-}
+};
 
 /**
  * TODO Perform minimal substitution to prevent breaking gremlin query and allow \' for now.
  * @param value
  */
-export function escapeSingleQuotes(value: string): string {
+export const escapeSingleQuotes = (value: string): string => {
   return value === undefined ? value : value.replace(/'/g, "\\'");
-}
+};

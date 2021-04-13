@@ -3,11 +3,13 @@ import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabr
 import React, { FunctionComponent, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import Explorer from "../../Explorer";
+import StoredProcedure from "../../Tree/StoredProcedure";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 import { InputParameter } from "./InputParameter";
 
 interface ExecuteSprocParamsPaneProps {
   explorer: Explorer;
+  storedProcedure: StoredProcedure;
   closePanel: () => void;
 }
 
@@ -23,6 +25,7 @@ interface UnwrappedExecuteSprocParam {
 
 export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
   explorer,
+  storedProcedure,
   closePanel,
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
@@ -77,8 +80,7 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
     }
     setLoadingTrue();
     const sprocParams = wrappedSprocParams && wrappedSprocParams.map((sprocParam) => sprocParam.text);
-    const currentSelectedSproc = explorer.findSelectedStoredProcedure();
-    currentSelectedSproc.execute(sprocParams, partitionValue);
+    storedProcedure.execute(sprocParams, partitionValue);
     setLoadingFalse();
     closePanel();
   };
