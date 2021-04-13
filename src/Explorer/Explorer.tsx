@@ -120,11 +120,6 @@ export default class Explorer {
   public defaultExperience: ko.Observable<string>;
   /**
    * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "SQL"
-   * */
-  public isPreferredApiDocumentDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
    * */
   public isPreferredApiCassandra: ko.Computed<boolean>;
@@ -420,11 +415,6 @@ export default class Explorer {
       updateUserContext({
         defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
       });
-    });
-
-    this.isPreferredApiDocumentDB = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.DocumentDB.toLowerCase();
     });
 
     this.isPreferredApiCassandra = ko.computed(() => {

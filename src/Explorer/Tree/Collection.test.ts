@@ -1,8 +1,7 @@
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
-import Collection from "./Collection";
+import * as DataModels from "../../Contracts/DataModels";
 import Explorer from "../Explorer";
+import Collection from "./Collection";
 jest.mock("monaco-editor");
 
 describe("Collection", () => {
@@ -41,12 +40,8 @@ describe("Collection", () => {
     mockContainer.isDatabaseNodeOrNoneSelected = () => {
       return false;
     };
-    mockContainer.isPreferredApiDocumentDB = ko.computed(() => {
-      return true;
-    });
-    mockContainer.isPreferredApiGraph = ko.computed(() => {
-      return false;
-    });
+
+
     mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
 
     return generateCollection(mockContainer, "abc", data, {} as DataModels.Offer);

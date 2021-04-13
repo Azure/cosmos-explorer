@@ -90,15 +90,15 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createDivider());
     }
 
-    const isSqlQuerySupported = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+    const isSqlQuerySupported = userContext.apiType === "SQL" || container.isPreferredApiGraph();
     if (isSqlQuerySupported) {
       const newSqlQueryBtn = createNewSQLQueryButton(container);
       buttons.push(newSqlQueryBtn);
     }
 
     const isSupportedOpenQueryApi =
-      container.isPreferredApiDocumentDB() || container.isPreferredApiMongoDB() || container.isPreferredApiGraph();
-    const isSupportedOpenQueryFromDiskApi = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+      userContext.apiType === "SQL" || container.isPreferredApiMongoDB() || container.isPreferredApiGraph();
+    const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || container.isPreferredApiGraph();
     if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
@@ -224,7 +224,7 @@ export function createDivider(): CommandButtonComponentProps {
 }
 
 function areScriptsSupported(container: Explorer): boolean {
-  return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+  return userContext.apiType === "SQL" || container.isPreferredApiGraph();
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
@@ -296,7 +296,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
 }
 
 function createNewSQLQueryButton(container: Explorer): CommandButtonComponentProps {
-  if (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) {
+  if (userContext.apiType === "SQL" || container.isPreferredApiGraph()) {
     const label = "New SQL Query";
     return {
       iconSrc: AddSqlQueryIcon,
