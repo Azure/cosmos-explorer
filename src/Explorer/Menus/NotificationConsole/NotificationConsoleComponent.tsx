@@ -2,19 +2,20 @@
  * React component for control bar
  */
 
-import * as React from "react";
-import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
-import AnimateHeight from "react-animate-height";
 import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
-import LoadingIcon from "../../../../images/loading.svg";
+import * as React from "react";
+import AnimateHeight from "react-animate-height";
+import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
+import ClearIcon from "../../../../images/Clear.svg";
 import ErrorBlackIcon from "../../../../images/error_black.svg";
+import ErrorRedIcon from "../../../../images/error_red.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
 import InfoIcon from "../../../../images/info_color.svg";
-import ErrorRedIcon from "../../../../images/error_red.svg";
-import ClearIcon from "../../../../images/Clear.svg";
-import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
-import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
+import LoadingIcon from "../../../../images/loading.svg";
 import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
+import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
+import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
+import { userContext } from "../../../UserContext";
 
 /**
  * Log levels
@@ -76,7 +77,7 @@ export class NotificationConsoleComponent extends React.Component<
   public componentDidUpdate(
     prevProps: NotificationConsoleComponentProps,
     prevState: NotificationConsoleComponentState
-  ) {
+  ): void {
     const currentHeaderStatus = NotificationConsoleComponent.extractHeaderStatus(this.props.consoleData);
 
     if (
@@ -97,7 +98,7 @@ export class NotificationConsoleComponent extends React.Component<
     }
   }
 
-  public setElememntRef = (element: HTMLElement) => {
+  public setElememntRef = (element: HTMLElement): void => {
     this.consoleHeaderElement = element;
   };
 
@@ -116,7 +117,7 @@ export class NotificationConsoleComponent extends React.Component<
           className="notificationConsoleHeader"
           id="notificationConsoleHeader"
           ref={this.setElememntRef}
-          onClick={(event: React.MouseEvent<HTMLDivElement>) => this.expandCollapseConsole()}
+          onClick={() => this.expandCollapseConsole()}
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
           tabIndex={0}
         >
@@ -135,6 +136,7 @@ export class NotificationConsoleComponent extends React.Component<
                 <span className="numInfoItems">{numInfoItems}</span>
               </span>
             </span>
+            {userContext.features.pr && <PrPreview pr={userContext.features.pr} />}
             <span className="consoleSplitter" />
             <span className="headerStatus">
               <span className="headerStatusEllipsis">{this.state.headerStatus}</span>
@@ -304,3 +306,18 @@ export class NotificationConsoleComponent extends React.Component<
     );
   };
 }
+
+const PrPreview = (props: { pr: string }) => {
+  const url = new URL(props.pr);
+  const [, ref] = url.hash.split("#");
+  url.hash = "";
+
+  return (
+    <>
+      <span className="consoleSplitter" />
+      <a target="_blank" href={url.href} style={{ marginRight: "1em", fontWeight: "bold" }}>
+        {ref}
+      </a>
+    </>
+  );
+};

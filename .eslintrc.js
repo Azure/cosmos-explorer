@@ -3,7 +3,7 @@ module.exports = {
     browser: true,
     es6: true,
   },
-  plugins: ["@typescript-eslint", "no-null", "prefer-arrow"],
+  plugins: ["@typescript-eslint", "no-null", "prefer-arrow", "react-hooks"],
   extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
   globals: {
     Atomics: "readonly",
@@ -20,7 +20,7 @@ module.exports = {
   overrides: [
     {
       files: ["**/*.tsx"],
-      extends: ["plugin:react/recommended"], // TODO: Add react-hooks
+      extends: ["plugin:react/recommended"],
       plugins: ["react"],
     },
     {
@@ -42,6 +42,8 @@ module.exports = {
     "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
     eqeqeq: "error",
     "react/display-name": "off",
+    "react-hooks/rules-of-hooks": "warn", // TODO: error
+    "react-hooks/exhaustive-deps": "warn", // TODO: error
     "no-restricted-syntax": [
       "error",
       {
