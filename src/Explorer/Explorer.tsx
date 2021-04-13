@@ -1014,7 +1014,7 @@ export default class Explorer {
 
   // Facade
   public provideFeedbackEmail = () => {
-    window.open(Constants.Urls.feedbackEmail, "_self");
+    window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
   public async getArcadiaToken(): Promise<string> {
