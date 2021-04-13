@@ -17,7 +17,6 @@ import { TableDataClient } from "../Tables/TableDataClient";
 import template from "./QueryTablesTab.html";
 import TabsBase from "./TabsBase";
 
-
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
   public static readonly component = { name: "tables-query-tab", template };

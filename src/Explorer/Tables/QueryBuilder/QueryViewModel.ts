@@ -128,8 +128,8 @@ export default class QueryViewModel {
     var queryString = this.isEditorActive()
       ? this.queryText()
       : userContext.apiType === "Cassandra"
-        ? this.queryBuilderViewModel().getCqlFilterFromClauses()
-        : this.queryBuilderViewModel().getODataFilterFromClauses();
+      ? this.queryBuilderViewModel().getCqlFilterFromClauses()
+      : this.queryBuilderViewModel().getODataFilterFromClauses();
     var filter = queryString;
     this.queryText(filter);
     return this.queryText();

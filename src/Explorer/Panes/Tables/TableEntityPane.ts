@@ -252,8 +252,7 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
           key !== TableEntityProcessor.keyProperties.etag &&
           key !== TableEntityProcessor.keyProperties.resourceId &&
           key !== TableEntityProcessor.keyProperties.self &&
-          (userContext.apiType !== "Cassandra" ||
-            key !== TableConstants.EntityKeyNames.RowKey)
+          (userContext.apiType !== "Cassandra" || key !== TableConstants.EntityKeyNames.RowKey)
         ) {
           newHeaders.push(key);
         }

@@ -413,10 +413,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
 
         var entities = this.cache.data;
-        if (
-          userContext.apiType === "Cassandra" &&
-          DataTableUtilities.checkForDefaultHeader(this.headers)
-        ) {
+        if (userContext.apiType === "Cassandra" && DataTableUtilities.checkForDefaultHeader(this.headers)) {
           (<CassandraAPIDataClient>this.queryTablesTab.container.tableDataClient)
             .getTableSchema(this.queryTablesTab.collection)
             .then((headers: CassandraTableKey[]) => {

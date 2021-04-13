@@ -168,10 +168,7 @@ export default class EditTableEntityPane extends TableEntityPane {
     var updatedEntity: any = {};
     displayedAttributes &&
       displayedAttributes.forEach((attribute: EntityPropertyViewModel) => {
-        if (
-          attribute.name() &&
-          (userContext.apiType !== "Cassandra" || attribute.value() !== "")
-        ) {
+        if (attribute.name() && (userContext.apiType !== "Cassandra" || attribute.value() !== "")) {
           var value = attribute.getPropertyValue();
           var type = attribute.type();
           if (type === TableConstants.TableType.Int64) {

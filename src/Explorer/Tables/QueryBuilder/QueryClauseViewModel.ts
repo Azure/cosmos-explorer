@@ -72,8 +72,8 @@ export default class QueryClauseViewModel {
       const isPreferredApiCassandra = userContext.apiType === "Cassandra";
       const cassandraKeys = isPreferredApiCassandra
         ? this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys.map(
-          (key) => key.property
-        )
+            (key) => key.property
+          )
         : [];
       return (
         (this.isValue() || this.isCustomRangeTimestamp()) &&

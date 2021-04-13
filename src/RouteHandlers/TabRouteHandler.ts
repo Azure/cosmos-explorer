@@ -10,14 +10,14 @@ import { userContext } from "../UserContext";
 export class TabRouteHandler {
   private _tabRouter: any;
 
-  constructor() { }
+  constructor() {}
 
   public initRouteHandler(
     onMatch?: (request: string, data: { route: any; params: string[]; isFirst: boolean }) => void
   ): void {
     this._initRouter();
     const parseHash = (newHash: string, oldHash: string) => this._tabRouter.parse(newHash);
-    const defaultRoutedCallback = (request: string, data: { route: any; params: string[]; isFirst: boolean }) => { };
+    const defaultRoutedCallback = (request: string, data: { route: any; params: string[]; isFirst: boolean }) => {};
     this._tabRouter.routed.add(onMatch || defaultRoutedCallback);
     hasher.initialized.add(parseHash);
     hasher.changed.add(parseHash);
