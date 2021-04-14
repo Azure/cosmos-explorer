@@ -5,6 +5,7 @@ import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import ScriptTabBase from "../Explorer/Tabs/ScriptTabBase";
 import TabsBase from "../Explorer/Tabs/TabsBase";
+import { userContext } from "../UserContext";
 
 export class TabRouteHandler {
   private _tabRouter: any;
@@ -134,10 +135,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiDocumentDB() &&
-        collection.onDocumentDBDocumentsClick();
+      userContext.apiType === "SQL" && collection.onDocumentDBDocumentsClick();
     });
   }
 

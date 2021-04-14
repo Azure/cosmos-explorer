@@ -1,6 +1,6 @@
-import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
-import * as Constants from "../Shared/Constants";
 import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
+import * as Constants from "../Shared/Constants";
+import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 
 interface ComputeRUUsagePriceHourlyArgs {
   serverId: string;
@@ -282,7 +282,7 @@ export function getUpsellMessage(
   }
 }
 
-function getCollectionName(defaultExperience: string): string {
+export function getCollectionName(defaultExperience: string): string {
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:
       return "container";
