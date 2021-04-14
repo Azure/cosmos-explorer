@@ -3,6 +3,7 @@ import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
+import { CollectionCreation } from "./Shared/Constants";
 
 interface UserContext {
   readonly authType?: AuthType;
@@ -24,6 +25,8 @@ interface UserContext {
   readonly isTryCosmosDBSubscription?: boolean;
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
+  readonly addCollectionFlight: string;
+  readonly hasWriteAccess: boolean;
 }
 
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
@@ -33,10 +36,13 @@ const features = extractFeatures();
 const { enableSDKoperations: useSDKOperations } = features;
 
 const userContext: UserContext = {
+  hasWriteAccess: true,
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
   features,
   useSDKOperations,
+  addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
+  subscriptionType: CollectionCreation.DefaultSubscriptionType,
 };
 
 function updateUserContext(newContext: Partial<UserContext>): void {

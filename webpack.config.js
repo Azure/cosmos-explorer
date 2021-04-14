@@ -220,7 +220,10 @@ module.exports = function (env = {}, argv = {}) {
           terserOptions: {
             // These options increase our initial bundle size by ~5% but the builds are significantly faster and won't run out of memory
             compress: false,
-            mangle: true,
+            mangle: {
+              keep_fnames: true,
+              keep_classnames: true,
+            },
           },
         }),
       ],
