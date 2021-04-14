@@ -7,7 +7,7 @@ import {
   Label,
   Stack,
   Text,
-  TextField,
+  TextField
 } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
@@ -40,7 +40,7 @@ import {
   getPanelTitle,
   imageProps,
   isValidEntities,
-  options,
+  options
 } from "../Validators/EntityTableHelper";
 
 interface AddTableEntityPanelProps {
