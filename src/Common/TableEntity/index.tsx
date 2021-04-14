@@ -13,6 +13,7 @@ import {
 import React, { FunctionComponent } from "react";
 import DeleteIcon from "../../../images/delete.svg";
 import EditIcon from "../../../images/Edit_entity.svg";
+import { userContext } from "../../UserContext";
 
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 
@@ -132,7 +133,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           <Image {...imageProps} src={EditIcon} alt="editEntity" id="editEntity" onClick={onEditEntity} />
         </TooltipHost>
 
-        {isDeleteOptionVisible && (
+        {isDeleteOptionVisible && userContext.apiType !== "Cassandra" && (
           <TooltipHost content="Delete property" id="deleteTooltip">
             <Image {...imageProps} src={DeleteIcon} alt="delete entity" id="deleteEntity" onClick={onDeleteEntity} />
           </TooltipHost>

@@ -10,6 +10,7 @@ import {
   TextField,
 } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
+import * as _ from "underscore";
 import AddPropertyIcon from "../../../../../images/Add-property.svg";
 import RevertBackIcon from "../../../../../images/RevertBack.svg";
 import { TableEntity } from "../../../../Common/TableEntity";
@@ -24,7 +25,6 @@ import * as Utilities from "../../../Tables/Utilities";
 import QueryTablesTab from "../../../Tabs/QueryTablesTab";
 import { PanelContainerComponent } from "../../PanelContainerComponent";
 import {
-  addButtonLabel,
   attributeNameLabel,
   attributeValueLabel,
   backImageProps,
@@ -33,8 +33,11 @@ import {
   detailedHelp,
   entityFromAttributes,
   EntityRowType,
+  getAddButtonLabel,
+  getButtonLabel,
   getDefaultEntities,
   getEntityValuePlaceholder,
+  getPanelTitle,
   imageProps,
   isValidEntities,
   options,
@@ -92,10 +95,12 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     }
   }, []);
 
-  const submit = (): void => {
+  const submit = (event: React.FormEvent<HTMLInputElement>): void => {
     if (!isValidEntities(entities)) {
       return undefined;
     }
+    event.preventDefault();
+
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
     explorer.tableDataClient
       .createDocument(queryTablesTab.collection, entity)
@@ -235,10 +240,12 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
                 />
               );
             })}
-            <Stack horizontal onClick={addNewEntity} className="addButtonEntiy">
-              <Image {...imageProps} src={AddPropertyIcon} alt="Add Entity" />
-              <Text className="addNewParamStyle">{addButtonLabel}</Text>
-            </Stack>
+            {userContext.apiType !== "Cassandra" && (
+              <Stack horizontal onClick={addNewEntity} className="addButtonEntiy">
+                <Image {...imageProps} src={AddPropertyIcon} alt="Add Entity" />
+                <Text className="addNewParamStyle">{getAddButtonLabel(userContext.apiType)}</Text>
+              </Stack>
+            )}
           </div>
           {renderPanelFooter()}
         </div>
@@ -250,7 +257,12 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     return (
       <div className="paneFooter">
         <div className="leftpanel-okbut">
-          <input type="submit" onClick={submit} className="genericPaneSubmitBtn" value="Add Entity" />
+          <input
+            type="submit"
+            onClick={submit}
+            className="genericPaneSubmitBtn"
+            value={getButtonLabel(userContext.apiType)}
+          />
         </div>
       </div>
     );
@@ -291,7 +303,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 
   return (
     <PanelContainerComponent
-      headerText="Add Table Entity"
+      headerText={getPanelTitle(userContext.apiType)}
       panelWidth="700px"
       isOpen={true}
       panelContent={renderPanelContent()}

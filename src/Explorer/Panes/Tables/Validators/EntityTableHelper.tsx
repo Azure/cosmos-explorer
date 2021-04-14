@@ -1,4 +1,5 @@
 import { IImageProps, IStackProps } from "office-ui-fabric-react";
+import * as _ from "underscore";
 import * as TableConstants from "../../../Tables/Constants";
 import * as Entities from "../../../Tables/Entities";
 import * as Utilities from "../../../Tables/Utilities";
@@ -139,7 +140,7 @@ export const getDefaultEntities = (headers: string[], entityTypes: { [key: strin
   const defaultEntities: EntityRowType[] = [];
   headers.forEach((header: string) => {
     if (header !== "Timestamp") {
-      const entityType = entityTypes ? entityTypes[header] : "String";
+      const entityType = !_.isEmpty(entityTypes) ? entityTypes[header] : "String";
       const entityRow = {
         property: header,
         type: entityType,
@@ -154,6 +155,27 @@ export const getDefaultEntities = (headers: string[], entityTypes: { [key: strin
     }
   });
   return defaultEntities;
+};
+
+export const getPanelTitle = (apiType: string): string => {
+  if (apiType === "Cassandra") {
+    return "Add Table Row";
+  }
+  return "Add Table Row";
+};
+
+export const getAddButtonLabel = (apiType: string): string => {
+  if (apiType === "Cassandra") {
+    return "Add Row";
+  }
+  return addButtonLabel;
+};
+
+export const getButtonLabel = (apiType: string): string => {
+  if (apiType === "Cassandra") {
+    return "Add Row";
+  }
+  return "Add Entity";
 };
 
 // Type of entity row
