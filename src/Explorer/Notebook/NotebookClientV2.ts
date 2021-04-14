@@ -34,6 +34,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import configureStore from "./NotebookComponent/store";
 import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
+import HTML from "./NotebookRenderer/outputs/html";
 import JavaScript from "./NotebookRenderer/outputs/javascript";
 
 export type KernelSpecsDisplay = { name: string; displayName: string };
@@ -168,7 +169,7 @@ export class NotebookClientV2 {
               "application/vdom.v1+json": TransformVDOM,
               "application/json": Media.Json,
               "application/javascript": userContext.features.sandboxNotebookOutputs ? JavaScript : Media.JavaScript,
-              "text/html": Media.HTML,
+              "text/html": userContext.features.sandboxNotebookOutputs ? HTML : Media.HTML,
               "text/markdown": Media.Markdown,
               "text/latex": Media.LaTeX,
               "image/svg+xml": Media.SVG,

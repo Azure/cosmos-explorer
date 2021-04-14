@@ -41,7 +41,7 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
     );
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     this.resizeObserver?.disconnect();
   }
 
