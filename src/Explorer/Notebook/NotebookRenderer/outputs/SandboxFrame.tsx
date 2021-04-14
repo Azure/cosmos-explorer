@@ -15,6 +15,7 @@ interface SandboxFrameState {
 
 export class SandboxFrame extends React.PureComponent<SandboxFrameProps, SandboxFrameState> {
   private resizeObserver: ResizeObserver;
+  private mutationObserver: MutationObserver;
 
   constructor(props: SandboxFrameProps) {
     super(props);
@@ -43,22 +44,26 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
 
   componentWillUnmount(): void {
     this.resizeObserver?.disconnect();
+    this.mutationObserver?.disconnect();
   }
 
   onFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {
     const doc = (event.target as HTMLIFrameElement).contentDocument;
     copyStyles(document, doc);
 
-    this.setState({
-      frameBody: doc.body,
-      frameHeight: doc.body.scrollHeight,
-    });
+    this.setState({ frameBody: doc.body });
 
-    this.resizeObserver = new ResizeObserver(() =>
-      this.setState({
-        frameHeight: this.state.frameBody.scrollHeight,
-      })
-    );
-    this.resizeObserver.observe(doc.body);
+    this.mutationObserver = new MutationObserver(() => {
+      const bodyFirstElementChild = this.state.frameBody?.firstElementChild;
+      if (!this.resizeObserver && bodyFirstElementChild) {
+        this.resizeObserver = new ResizeObserver(() =>
+          this.setState({
+            frameHeight: this.state.frameBody?.firstElementChild.scrollHeight,
+          })
+        );
+        this.resizeObserver.observe(bodyFirstElementChild);
+      }
+    });
+    this.mutationObserver.observe(doc.body, { childList: true });
   }
 }
