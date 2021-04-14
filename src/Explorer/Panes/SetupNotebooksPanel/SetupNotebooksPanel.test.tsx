@@ -10,6 +10,7 @@ describe("Setup Notebooks Panel", () => {
     const props = {
       explorer: fakeExplorer,
       closePanel: (): void => undefined,
+      openNotificationConsole: (): void => undefined,
       panelTitle: "",
       panelDescription: "",
     };
@@ -22,6 +23,7 @@ describe("Setup Notebooks Panel", () => {
     const props = {
       explorer: fakeExplorer,
       closePanel: (): void => undefined,
+      openNotificationConsole: (): void => undefined,
       panelTitle: "",
       panelDescription: "",
     };

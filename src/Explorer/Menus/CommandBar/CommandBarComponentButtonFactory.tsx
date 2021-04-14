@@ -490,7 +490,6 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
-        // container.setupNotebooksPane.openWithTitleAndDescription(title, description);
         container.openSetupNotebooksPanel(title, description);
       }
     },
@@ -517,7 +516,6 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
-        // container.setupNotebooksPane.openWithTitleAndDescription(title, description);
         container.openSetupNotebooksPanel(title, description);
       }
     },

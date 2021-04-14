@@ -305,7 +305,7 @@ export default class Explorer {
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
                   userContext.features.enableNotebooks)
             );
-            // this.isNotebookEnabled(false);
+            this.isNotebookEnabled(false);
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
               dataExplorerArea: Constants.Areas.Notebook,
@@ -1804,7 +1804,6 @@ export default class Explorer {
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
     const authType = userContext.authType;
-    //Commented by Swapnil to force enable notebooks
     if (
       authType === AuthType.EncryptedToken ||
       authType === AuthType.ResourceToken ||
@@ -1813,11 +1812,6 @@ export default class Explorer {
       this.isNotebooksEnabledForAccount(false);
       return;
     }
-    //Added by Swapnil to force enable notebooks
-    // if (true) {
-    //   this.isNotebooksEnabledForAccount(false);
-    //   return;
-    // }
 
     const databaseAccount = this.databaseAccount();
     const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
@@ -2365,10 +2359,11 @@ export default class Explorer {
 
   public openSetupNotebooksPanel(title: string, description: string): void {
     this.openSidePanel(
-      "Enable Notebooks",
+      title,
       <SetupNoteBooksPanel
         explorer={this}
         closePanel={this.closeSidePanel}
+        openNotificationConsole={() => this.expandConsole()}
         panelTitle={title}
         panelDescription={description}
       />

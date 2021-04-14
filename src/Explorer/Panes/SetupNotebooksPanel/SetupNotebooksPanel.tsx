@@ -9,36 +9,27 @@ import { userContext } from "../../../UserContext";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
+import { PanelLoadingScreen } from "../PanelLoadingScreen";
 interface ISetupNoteBooksPanelProps {
   explorer: Explorer;
   closePanel: () => void;
+  openNotificationConsole: () => void;
   panelTitle: string;
   panelDescription: string;
 }
 export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> = ({
   explorer,
   closePanel,
+  openNotificationConsole,
   panelTitle,
   panelDescription,
 }: ISetupNoteBooksPanelProps): JSX.Element => {
   const title = panelTitle;
   const description = panelDescription;
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
-  const [formError, setFormError] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
-  const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
-    formError: formError,
-    formErrorDetail: formErrorsDetails,
-    id: "setupNoteBooksPanel",
-    isExecuting: isLoading,
-    title: title,
-    submitButtonText: "",
-    onClose: () => closePanel(),
-    onSubmit: () => submit(),
-    isFooterHidden: true,
-  };
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
 
   useEffect(() => {
     resetData();
@@ -46,8 +37,8 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
   }, []);
 
   const resetData = () => {
-    setFormError("");
-    setFormErrorsDetails("");
+    setErrorMessage("");
+    setShowErrorDetails(false);
   };
 
   const open = () => {
@@ -121,9 +112,8 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
         },
         startKey
       );
-
-      setFormError("Failed to setup a default notebook workspace");
-      setFormErrorsDetails(`Failed to setup a default notebook workspace: ${errorMessage}`);
+      setErrorMessage("Failed to setup a default notebook workspace");
+      setShowErrorDetails(true);
       NotificationConsoleUtils.logConsoleMessage(
         ConsoleDataType.Error,
         `Failed to create a default notebook workspace: ${errorMessage}`
@@ -135,30 +125,29 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
-      <div className="paneContentContainer">
-        <div className="paneMainContent">
-          <div className="pkPadding">
-            <div>{description}</div>
-            <PrimaryButton
-              text="Complete Setup"
-              onClick={onCompleteSetupClick}
-              onKeyPress={onCompleteSetupKeyPress}
-              aria-label="Complete setup"
-            />
-            {/* <button
-              id="completeSetupBtn"
-              className="btncreatecoll1 btnSetupQueries"
-              type="button"
-              aria-label="Complete setup"
-              onClick={onCompleteSetupClick}
-              onKeyPress={onCompleteSetupKeyPress}
-            >
-              Complete setup
-            </button> */}
-          </div>
+    <form className="panelFormWrapper" onSubmit={() => submit()}>
+      {errorMessage && (
+        <PanelInfoErrorComponent
+          message={errorMessage}
+          messageType="error"
+          showErrorDetails={showErrorDetails}
+          openNotificationConsole={openNotificationConsole}
+        />
+      )}
+      <div className="panelMainContent">
+        <div className="pkPadding">
+          <div>{description}</div>
+          <PrimaryButton
+            id="completeSetupBtn"
+            className="btncreatecoll1 btnSetupQueries"
+            text="Complete Setup"
+            onClick={onCompleteSetupClick}
+            onKeyPress={onCompleteSetupKeyPress}
+            aria-label="Complete setup"
+          />
         </div>
       </div>
-    </GenericRightPaneComponent>
+      {isLoading && <PanelLoadingScreen />}
+    </form>
   );
 };
