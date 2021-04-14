@@ -36,6 +36,7 @@ import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationU
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -52,7 +53,6 @@ import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
@@ -190,7 +190,6 @@ export default class Explorer {
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
-  public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
@@ -536,13 +535,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      id: "deletecollectionconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.graphStylingPane = new GraphStylingPane({
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
@@ -597,7 +589,6 @@ export default class Explorer {
     this._panes = [
       this.addDatabasePane,
       this.addCollectionPane,
-      this.deleteCollectionConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
@@ -634,8 +625,6 @@ export default class Explorer {
         this.addCollectionPane.collectionWithThroughputInSharedTitle(
           "Provision dedicated throughput for this container"
         );
-        this.deleteCollectionConfirmationPane.title("Delete Container");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
         this.refreshTreeTitle("Refresh containers");
         break;
       case "Mongo":
@@ -662,8 +651,6 @@ export default class Explorer {
         this.addCollectionPane.title("Add Graph");
         this.addCollectionPane.collectionIdTitle("Graph id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-        this.deleteCollectionConfirmationPane.title("Delete Graph");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
         this.refreshTreeTitle("Refresh graphs");
         break;
       case "Tables":
@@ -679,8 +666,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Entity");
         this.editTableEntityPane.title("Edit Table Entity");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -696,8 +681,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Row");
         this.editTableEntityPane.title("Edit Table Row");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -2234,16 +2217,15 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    userContext.features.enableKOPanel
-      ? this.deleteCollectionConfirmationPane.open()
-      : this.openSidePanel(
-          "Delete Collection",
-          <DeleteCollectionConfirmationPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
+    this.openSidePanel(
+      "Delete " + collectionName,
+      <DeleteCollectionConfirmationPanel
+        explorer={this}
+        collectionName={collectionName}
+        closePanel={this.closeSidePanel}
+      />
+    );
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
