@@ -303,7 +303,7 @@ function createNewSQLQueryButton(container: Explorer): CommandButtonComponentPro
       hasPopup: true,
       disabled: container.isDatabaseNodeOrNoneSelected(),
     };
-  } else if (container.isPreferredApiMongoDB()) {
+  } else if (userContext.apiType === "Mongo") {
     const label = "New Query";
     return {
       iconSrc: AddSqlQueryIcon,

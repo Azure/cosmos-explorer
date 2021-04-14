@@ -354,6 +354,11 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("should only show New SQL Query and Open Query buttons", () => {
+      updateUserContext({
+        databaseAccount: {
+          kind: "DocumentDB",
+        } as DatabaseAccount,
+      });
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       expect(buttons.length).toBe(2);
       expect(buttons[0].commandButtonLabel).toBe("New SQL Query");
