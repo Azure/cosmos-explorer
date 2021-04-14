@@ -25,7 +25,6 @@
     "@nteract/iron-icons": "1.0.0",
     "@nteract/jupyter-widgets": "2.0.0",
     "@nteract/logos": "1.0.0",
-    "@nteract/markdown": "4.4.0",
     "@nteract/monaco-editor": "3.2.2",
     "@nteract/octicons": "2.0.0",
     "@nteract/outputs": "3.0.9",
@@ -179,6 +178,9 @@
     "webpack-dev-server": "3.11.0",
     "worker-loader": "2.0.0"
   },
+  "resolutions": {
+    "@nteract/markdown": "4.6.0"
+  },
   "scripts": {
     "start": "node --max-old-space-size=10196 node_modules/webpack-dev-server/bin/webpack-dev-server.js",
     "dev": "echo \"WARNING: npm run dev has been deprecated\" && npm run build",
@@ -203,7 +205,8 @@
     "strict:find": "node ./strict-null-checks/find.js",
     "strict:add": "node ./strict-null-checks/auto-add.js",
     "compile:fullStrict": "tsc -p ./tsconfig.json --strictNullChecks",
-    "generateARMClients": "ts-node --compiler-options '{\"module\":\"commonjs\"}' utils/armClientGenerator/generator.ts"
+    "generateARMClients": "ts-node --compiler-options '{\"module\":\"commonjs\"}' utils/armClientGenerator/generator.ts",
+    "preinstall": "npx npm-force-resolutions"
   },
   "repository": {
     "type": "git",
