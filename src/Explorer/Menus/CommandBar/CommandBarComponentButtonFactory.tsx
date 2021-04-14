@@ -453,7 +453,6 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
   return {
     iconSrc: EnableNotebooksIcon,
     iconAlt: label,
-    // onCommandClick: () => container.setupNotebooksPane.openWithTitleAndDescription(label, description),
     onCommandClick: () => container.openSetupNotebooksPanel(label, description),
     commandButtonLabel: label,
     hasPopup: false,

@@ -70,5 +70,4 @@ ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEnt
 ko.components.register("table-query-select-pane", new PaneComponents.TableQuerySelectPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
 ko.components.register("string-input-pane", new PaneComponents.StringInputPaneComponent());
-ko.components.register("setup-notebooks-pane", new PaneComponents.SetupNotebooksPaneComponent());
 ko.components.register("github-repos-pane", new PaneComponents.GitHubReposPaneComponent());

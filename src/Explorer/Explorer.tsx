@@ -61,8 +61,7 @@ import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
 import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
-import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel";
+import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
@@ -200,7 +199,6 @@ export default class Explorer {
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
-  public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
   public publishNotebookPaneAdapter: ReactAdapter;
   public copyNotebookPaneAdapter: ReactAdapter;
@@ -302,18 +300,18 @@ export default class Explorer {
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
             //Commented by Swapnil to force enable notebooks
-            // this.isNotebookEnabled(
-            //   userContext.authType !== AuthType.ResourceToken &&
-            //     ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-            //       userContext.features.enableNotebooks)
-            // );
+            this.isNotebookEnabled(
+              userContext.authType !== AuthType.ResourceToken &&
+                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                  userContext.features.enableNotebooks)
+            );
             // this.isNotebookEnabled(false);
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
               dataExplorerArea: Constants.Areas.Notebook,
             });
             // Added by Swapnil to force enable notebooks
-            this._openSetupNotebooksPaneForQuickstart();
+            // this._openSetupNotebooksPaneForQuickstart();
 
             if (this.isNotebookEnabled()) {
               await this.initNotebooks(this.databaseAccount());
@@ -598,13 +596,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.setupNotebooksPane = new SetupNotebooksPane({
-      id: "setupnotebookspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.tabsManager = params?.tabsManager ?? new TabsManager();
 
     this._panes = [
@@ -618,7 +609,6 @@ export default class Explorer {
       this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.stringInputPane,
-      this.setupNotebooksPane,
     ];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
@@ -1815,20 +1805,19 @@ export default class Explorer {
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
     const authType = userContext.authType;
     //Commented by Swapnil to force enable notebooks
-    // if (
-    //   authType === AuthType.EncryptedToken ||
-    //   authType === AuthType.ResourceToken ||
-    //   authType === AuthType.MasterKey
-    // )
-    // {
-    //   this.isNotebooksEnabledForAccount(false);
-    //   return;
-    // }
-    //Added by Swapnil to force enable notebooks
-    if (true) {
+    if (
+      authType === AuthType.EncryptedToken ||
+      authType === AuthType.ResourceToken ||
+      authType === AuthType.MasterKey
+    ) {
       this.isNotebooksEnabledForAccount(false);
       return;
     }
+    //Added by Swapnil to force enable notebooks
+    // if (true) {
+    //   this.isNotebooksEnabledForAccount(false);
+    //   return;
+    // }
 
     const databaseAccount = this.databaseAccount();
     const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();

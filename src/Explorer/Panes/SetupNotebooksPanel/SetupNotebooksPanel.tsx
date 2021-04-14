@@ -1,6 +1,7 @@
 import { useBoolean } from "@uifabric/react-hooks";
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { Areas, KeyCodes } from "../../../Common/Constants";
+import { PrimaryButton } from "office-ui-fabric-react";
+import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from "react";
+import { Areas, NormalizedEventKey } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -21,8 +22,6 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
   panelTitle,
   panelDescription,
 }: ISetupNoteBooksPanelProps): JSX.Element => {
-  // const [title, setTitle] = useState<string>(panelTitle);
-  // const [description, setDescription] = useState<string>(panelDescription);
   const title = panelTitle;
   const description = panelDescription;
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
@@ -32,7 +31,7 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
     container: explorer,
     formError: formError,
     formErrorDetail: formErrorsDetails,
-    id: "gitHubReposPanel",
+    id: "setupNoteBooksPanel",
     isExecuting: isLoading,
     title: title,
     submitButtonText: "",
@@ -51,14 +50,7 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
     setFormErrorsDetails("");
   };
 
-  // const openWithTitleAndDescription = (title: string, description: string) => {
-  //   setTitle(title);
-  //   setDescription(description);
-  //   open();
-  // };
-
   const open = () => {
-    // super.open();
     const completeSetupBtn = document.getElementById("completeSetupBtn");
     completeSetupBtn && completeSetupBtn.focus();
   };
@@ -71,8 +63,8 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
     await setupNotebookWorkspace();
   };
 
-  const onCompleteSetupKeyPress = async (event: KeyboardEvent) => {
-    if (event.keyCode === KeyCodes.Space || event.keyCode === KeyCodes.Enter) {
+  const onCompleteSetupKeyPress = async (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === " " || event.key === NormalizedEventKey.Enter) {
       await setupNotebookWorkspace();
       event.stopPropagation();
       return false;
@@ -89,10 +81,12 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
       dataExplorerArea: Areas.ContextualPane,
       paneTitle: title,
     });
+
     const id = NotificationConsoleUtils.logConsoleMessage(
       ConsoleDataType.InProgress,
       "Creating a new default notebook workspace"
     );
+
     try {
       setLoadingTrue();
       await explorer.notebookWorkspaceManager.createNotebookWorkspaceAsync(
@@ -100,7 +94,9 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
         "default"
       );
       explorer.isAccountReady.valueHasMutated(); // re-trigger init notebooks
-      // this.close();
+
+      closePanel();
+
       TelemetryProcessor.traceSuccess(
         Action.CreateNotebookWorkspace,
         {
@@ -125,6 +121,7 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
         },
         startKey
       );
+
       setFormError("Failed to setup a default notebook workspace");
       setFormErrorsDetails(`Failed to setup a default notebook workspace: ${errorMessage}`);
       NotificationConsoleUtils.logConsoleMessage(
@@ -143,16 +140,22 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
         <div className="paneMainContent">
           <div className="pkPadding">
             <div>{description}</div>
-            <button
+            <PrimaryButton
+              text="Complete Setup"
+              onClick={onCompleteSetupClick}
+              onKeyPress={onCompleteSetupKeyPress}
+              aria-label="Complete setup"
+            />
+            {/* <button
               id="completeSetupBtn"
               className="btncreatecoll1 btnSetupQueries"
               type="button"
               aria-label="Complete setup"
-              onClick={() => onCompleteSetupClick}
-              onKeyPress={() => onCompleteSetupKeyPress}
+              onClick={onCompleteSetupClick}
+              onKeyPress={onCompleteSetupKeyPress}
             >
               Complete setup
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
