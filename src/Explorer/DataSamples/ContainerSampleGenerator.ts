@@ -23,11 +23,11 @@ export class ContainerSampleGenerator {
   public static async createSampleGeneratorAsync(container: Explorer): Promise<ContainerSampleGenerator> {
     const generator = new ContainerSampleGenerator(container);
     let dataFileContent: any;
-    if (container.isPreferredApiGraph()) {
+    if (userContext.apiType === "Gremlin") {
       dataFileContent = await import(
         /* webpackChunkName: "gremlinSampleJsonData" */ "../../../sampleData/gremlinSampleData.json"
       );
-    } else if (container.isPreferredApiDocumentDB()) {
+    } else if (userContext.apiType === "SQL") {
       dataFileContent = await import(
         /* webpackChunkName: "sqlSampleJsonData" */ "../../../sampleData/sqlSampleData.json"
       );

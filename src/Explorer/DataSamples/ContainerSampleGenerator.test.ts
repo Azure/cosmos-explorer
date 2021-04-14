@@ -16,7 +16,6 @@ describe("ContainerSampleGenerator", () => {
     explorerStub.databases = ko.observableArray<ViewModels.Database>([database]);
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
-    explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiTable = ko.computed<boolean>(() => false);
     explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
     explorerStub.findDatabaseWithId = () => database;
@@ -31,7 +30,7 @@ describe("ContainerSampleGenerator", () => {
   it("should insert documents for sql API account", async () => {
     const sampleCollectionId = "SampleCollection";
     const sampleDatabaseId = "SampleDB";
-
+    updateUserContext({});
     const sampleData = {
       databaseId: sampleDatabaseId,
       offerThroughput: 400,
@@ -66,7 +65,7 @@ describe("ContainerSampleGenerator", () => {
     database.findCollectionWithId = () => collection;
 
     const explorerStub = createExplorerStub(database);
-    explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => true);
+
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
 
@@ -125,20 +124,30 @@ describe("ContainerSampleGenerator", () => {
   });
 
   it("should not create any sample for Mongo API account", async () => {
-    const experience = "not supported api";
+    const experience = "Sample generation not supported for this API Mongo";
     const explorerStub = createExplorerStub(undefined);
-    explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => true);
-    explorerStub.defaultExperience = ko.observable<string>(experience);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableMongo" }],
+        },
+      } as DatabaseAccount,
+    });
 
     // Rejects with error that contains experience
     expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });
 
   it("should not create any sample for Table API account", async () => {
-    const experience = "Sample generation not supported for this API SQL";
+    const experience = "Sample generation not supported for this API Tables";
     const explorerStub = createExplorerStub(undefined);
-    explorerStub.isPreferredApiTable = ko.computed<boolean>(() => true);
-    explorerStub.defaultExperience = ko.observable<string>(experience);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableTable" }],
+        },
+      } as DatabaseAccount,
+    });
 
     // Rejects with error that contains experience
     await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
@@ -146,7 +155,6 @@ describe("ContainerSampleGenerator", () => {
 
   it("should not create any sample for Cassandra API account", async () => {
     const experience = "Sample generation not supported for this API Cassandra";
-
     updateUserContext({
       databaseAccount: {
         properties: {
@@ -155,7 +163,6 @@ describe("ContainerSampleGenerator", () => {
       } as DatabaseAccount,
     });
     const explorerStub = createExplorerStub(undefined);
-
     // Rejects with error that contains experience
     await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });

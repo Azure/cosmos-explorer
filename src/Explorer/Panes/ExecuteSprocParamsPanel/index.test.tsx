@@ -1,12 +1,15 @@
 import { mount } from "enzyme";
 import React from "react";
 import Explorer from "../../Explorer";
+import StoredProcedure from "../../Tree/StoredProcedure";
 import { ExecuteSprocParamsPanel } from "./index";
 
 describe("Excute Sproc Param Pane", () => {
   const fakeExplorer = {} as Explorer;
+  const fakeSproc = {} as StoredProcedure;
   const props = {
     explorer: fakeExplorer,
+    storedProcedure: fakeSproc,
     closePanel: (): void => undefined,
   };
 

@@ -1,5 +1,4 @@
 import { shallow } from "enzyme";
-import ko from "knockout";
 import React from "react";
 import { DatabaseAccount } from "../../../../Contracts/DataModels";
 import { updateUserContext } from "../../../../UserContext";
@@ -9,8 +8,6 @@ import { collection, container } from "../TestUtils";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
 
 describe("SubSettingsComponent", () => {
-  container.isPreferredApiDocumentDB = ko.computed(() => true);
-
   const baseProps: SubSettingsComponentProps = {
     collection: collection,
     container: container,

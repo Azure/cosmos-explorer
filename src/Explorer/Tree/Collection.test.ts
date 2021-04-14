@@ -38,12 +38,7 @@ describe("Collection", () => {
     mockContainer.isDatabaseNodeOrNoneSelected = () => {
       return false;
     };
-    mockContainer.isPreferredApiDocumentDB = ko.computed(() => {
-      return true;
-    });
-    mockContainer.isPreferredApiGraph = ko.computed(() => {
-      return false;
-    });
+
     mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
 
     return generateCollection(mockContainer, "abc", data, {} as DataModels.Offer);

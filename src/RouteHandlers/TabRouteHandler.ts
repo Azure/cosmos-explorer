@@ -135,10 +135,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiDocumentDB() &&
-        collection.onDocumentDBDocumentsClick();
+      userContext.apiType === "SQL" && collection.onDocumentDBDocumentsClick();
     });
   }
 

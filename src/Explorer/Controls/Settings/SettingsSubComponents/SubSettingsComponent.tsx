@@ -68,8 +68,8 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   constructor(props: SubSettingsComponentProps) {
     super(props);
-    this.ttlVisible = (this.props.container && userContext.apiType !== "Cassandra") || false;
-    this.geospatialVisible = this.props.container.isPreferredApiDocumentDB();
+    this.ttlVisible = userContext.apiType !== "Cassandra";
+    this.geospatialVisible = userContext.apiType === "SQL";
     this.partitionKeyValue = "/" + this.props.collection.partitionKeyProperty;
     this.partitionKeyName = this.props.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
   }
