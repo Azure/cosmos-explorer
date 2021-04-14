@@ -177,7 +177,7 @@
     "webpack-bundle-analyzer": "3.6.1",
     "webpack-cli": "3.3.10",
     "webpack-dev-server": "3.11.0",
-    "worker-loader": "2.0.0"
+    "worker-loader": "3.0.8"
   },
   "scripts": {
     "start": "node --max-old-space-size=10196 node_modules/webpack-dev-server/bin/webpack-dev-server.js",
