@@ -3,6 +3,7 @@ import {
   ChoiceGroup,
   DirectionalHint,
   IChoiceGroupOption,
+  Label,
   Link,
   Stack,
   Text,
@@ -98,11 +99,10 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   return (
     <div className="throughputInputContainer throughputInputSpacing">
       <Stack horizontal>
-        <span className="mandatoryStar">*&nbsp;</span>
-        <Text variant="small" style={{ lineHeight: "20px" }}>
+        <Label required>
           {getThroughputLabelText()}
-        </Text>
-        <Tooltip>{PricingUtils.getRuToolTipText()}</Tooltip>
+          <Tooltip>{PricingUtils.getRuToolTipText()}</Tooltip>
+        </Label>
       </Stack>
 
       <Stack>
@@ -142,7 +142,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             min={AutoPilotUtils.minAutoPilotThroughput}
             value={throughput.toString()}
             aria-label="Max request units per second"
-            required={true}
+            required
           />
 
           <Text variant="small">

@@ -1,4 +1,4 @@
-import { ChoiceGroup, IChoiceGroupOption } from "office-ui-fabric-react";
+import { ChoiceGroup, IChoiceGroupOption, Label, TextField } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { HashMap } from "../../../Common/HashMap";
@@ -27,7 +27,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
 }: CassandraAddCollectionPaneFProps) => {
   const throughputDefaults = container.collectionCreationDefaults.throughput;
   const [createTableQuery, setCreateTableQuery] = useState<string>("CREATE TABLE ");
-  const [keyspaceId, setKeyspaceId] = useState<string>();
+  const [keyspaceId, setKeyspaceId] = useState<string>("");
   const [maxThroughputRU, setMaxThroughputRU] = useState<number>(throughputDefaults.unlimitedmax);
   const [minThroughputRU, setMinThroughputRU] = useState<number>(throughputDefaults.unlimitedmin);
   const [tableId, setTableId] = useState<string>("");
@@ -216,7 +216,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     return estimatedSpend;
   });
 
-  let keyspaceOffers: HashMap<DataModels.Offer>;
+  let keyspaceOffers: HashMap<DataModels.Offer> = new HashMap();
   let title = "Add Table";
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formErrors, setFormErrors] = useState<string>("");
@@ -499,8 +499,9 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
       <div className="paneMainContent">
         <div className="seconddivpadding">
           <p>
-            <span className="mandatoryStar">*</span> Keyspace name
-            <Tooltip>Select an existing keyspace or enter a new keyspace id.</Tooltip>
+            <Label required>
+              Keyspace name <Tooltip>Select an existing keyspace or enter a new keyspace id.</Tooltip>
+            </Label>
           </p>
 
           <div className="createNewDatabaseOrUseExisting">
@@ -512,8 +513,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
             />
           </div>
 
-          <input
-            type="text"
+          <TextField
             aria-required="true"
             autoComplete="off"
             pattern="[^/?#\\]*[^/?# \\]"
@@ -521,9 +521,8 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
             list={keyspaceCreateNew ? "" : "keyspacesList"}
             placeholder={keyspaceCreateNew ? "Type a new keyspace id" : "Choose existing keyspace id"}
             size={40}
-            className="collid"
             value={keyspaceId}
-            onChange={(e) => setKeyspaceId(e.target.value)}
+            onChange={(e, newValue) => setKeyspaceId(newValue)}
             aria-label="Keyspace id"
             autoFocus
           />
@@ -564,14 +563,15 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
         </div>
         <div className="seconddivpadding">
           <p>
-            <span className="mandatoryStar">*</span> Enter CQL command to create the table.
-            <a href="https://aka.ms/cassandra-create-table" target="_blank">
-              Learn More
-            </a>
+            <Label required>
+              Enter CQL command to create the table.
+              <a href="https://aka.ms/cassandra-create-table" target="_blank">
+                Learn More
+              </a>
+            </Label>
           </p>
           <div style={{ float: "left", paddingTop: "3px", paddingRight: "3px" }}>{createTableQuery}</div>
-          <input
-            type="text"
+          <TextField
             data-test="addCollection-tableId"
             aria-required="true"
             autoComplete="off"
@@ -581,17 +581,17 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
             size={20}
             className="textfontclr"
             value={tableId}
-            onChange={(e) => setTableId(e.target.value)}
+            onChange={(e, newValue) => setTableId(newValue)}
             style={{ marginBottom: "5px" }}
           />
-          <textarea
+          <TextField
+            multiline
             id="editor-area"
-            rows={15}
+            rows={5}
             aria-label="Table Schema"
             value={userTableQuery}
-            onChange={(e) => setUserTableQuery(e.target.value)}
-            style={{ height: "125px", width: "calc(100% - 80px)", resize: "vertical" }}
-          ></textarea>
+            onChange={(e, newValue) => setUserTableQuery(newValue)}
+          />
         </div>
 
         {canConfigureThroughput && keyspaceHasSharedOffer && !keyspaceCreateNew && (
