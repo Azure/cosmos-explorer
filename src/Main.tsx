@@ -48,6 +48,7 @@ import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Graph/NewVertexComponent/newVertexComponent.less";
+import { CommandBarComponent } from "./Explorer/Menus/CommandBar/CommandBarComponent";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
@@ -59,6 +60,7 @@ import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Tabs/QueryTab.less";
 import { useConfig } from "./hooks/useConfig";
+import { useExplorerState } from "./hooks/useExplorerState";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
@@ -99,6 +101,8 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
+  const { commandBarProperties } = useExplorerState(explorer);
+
   if (!explorer) {
     return <LoadingExplorer />;
   }
@@ -107,7 +111,7 @@ const App: React.FunctionComponent = () => {
     <div className="flexContainer">
       <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
         {/* Main Command Bar - Start */}
-        <div data-bind="react: commandBarComponentAdapter" />
+        <CommandBarComponent {...commandBarProperties} />
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
           {/* Collections Tree - Start */}
