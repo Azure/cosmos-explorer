@@ -196,7 +196,7 @@ export default class Collection implements ViewModels.Collection {
         .map((node) => <Trigger>node);
     });
 
-    const showScriptsMenus: boolean = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+    const showScriptsMenus: boolean = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     this.showStoredProcedures = ko.observable<boolean>(showScriptsMenus);
     this.showTriggers = ko.observable<boolean>(showScriptsMenus);
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);

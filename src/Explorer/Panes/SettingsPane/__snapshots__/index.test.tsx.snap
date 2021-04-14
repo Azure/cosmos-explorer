@@ -624,7 +624,6 @@ exports[`Settings Pane should render Default properly 1`] = `
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
       "isPreferredApiCassandra": [Function],
-      "isPreferredApiDocumentDB": [Function],
       "isPreferredApiGraph": [Function],
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
@@ -762,6 +761,41 @@ exports[`Settings Pane should render Default properly 1`] = `
   <div
     className="paneMainContent"
   >
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart pageOptionsPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Page options
+          <Tooltip>
+            Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
+          </Tooltip>
+        </div>
+        <StyledChoiceGroupBase
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "custom",
+                "text": "Custom",
+              },
+              Object {
+                "key": "unlimited",
+                "text": "Unlimited",
+              },
+            ]
+          }
+          selectedKey="unlimited"
+        />
+      </div>
+      <div
+        className="tabs settingsSectionPart"
+      />
+    </div>
     <div
       className="settingsSection"
     >
@@ -1477,7 +1511,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
       "isPreferredApiCassandra": [Function],
-      "isPreferredApiDocumentDB": [Function],
       "isPreferredApiGraph": [Function],
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
