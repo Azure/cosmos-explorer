@@ -111,11 +111,7 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.apiType instead
-   * */
-  public defaultExperience: ko.Observable<string>;
+
   /**
    * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
@@ -402,12 +398,10 @@ export default class Explorer {
       bounds: splitterBounds,
       direction: SplitterDirection.Vertical,
     });
-    this.defaultExperience = ko.observable<string>();
     this.databaseAccount.subscribe((databaseAccount) => {
       const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
         databaseAccount
       );
-      this.defaultExperience(defaultExperience);
       // TODO. Remove this entirely
       updateUserContext({
         defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
@@ -415,16 +409,16 @@ export default class Explorer {
     });
 
     this.isPreferredApiCassandra = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
+      const defaultExperience = userContext.apiType || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase();
     });
     this.isPreferredApiGraph = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
+      const defaultExperience = userContext.apiType || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Graph.toLowerCase();
     });
 
     this.isPreferredApiTable = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
+      const defaultExperience = userContext.apiType || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Table.toLowerCase();
     });
 
@@ -449,7 +443,7 @@ export default class Explorer {
     );
 
     this.isPreferredApiMongoDB = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
+      const defaultExperience = userContext.apiType || "";
       if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.MongoDB.toLowerCase()) {
         return true;
       }

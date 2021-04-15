@@ -238,7 +238,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
         userContext.portalEnv,
         this.isFreeTierAccount(),
         this.container.isFirstResourceCreated(),
-        this.container.defaultExperience(),
+        userContext.apiType,
         false
       );
     });

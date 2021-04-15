@@ -1,10 +1,11 @@
 import * as ko from "knockout";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import * as Constants from "../../Common/Constants";
-import DocumentsTab from "./DocumentsTab";
+import { updateUserContext } from "../../UserContext";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import DocumentsTab from "./DocumentsTab";
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {
@@ -29,7 +30,13 @@ describe("Documents tab", () => {
     const explorer = new Explorer();
 
     const mongoExplorer = new Explorer();
-    mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableGremlin" }],
+        },
+      } as DatabaseAccount,
+    });
 
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
