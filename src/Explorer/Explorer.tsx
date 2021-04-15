@@ -62,7 +62,7 @@ import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
-import { StringInputPane } from "./Panes/StringInputPane";
+import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";

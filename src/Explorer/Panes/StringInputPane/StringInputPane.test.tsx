@@ -1,8 +1,8 @@
 import { mount } from "enzyme";
 import React from "react";
-import { StringInputPane } from ".";
 import Explorer from "../../Explorer";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
+import { StringInputPane } from "./StringInputPane";
 const props = {
   explorer: new Explorer(),
   closePanel: (): void => undefined,
