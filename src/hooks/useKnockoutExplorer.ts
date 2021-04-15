@@ -18,6 +18,7 @@ import {
   ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
+import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
@@ -25,7 +26,7 @@ import {
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { PortalEnv, updateUserContext } from "../UserContext";
+import { PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
@@ -201,11 +202,12 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
     if (process.env.NODE_ENV === "development" && !window.location.search.includes("disablePortalInitCache")) {
       const initMessage = sessionStorage.getItem("portalDataExplorerInitMessage");
       if (initMessage) {
-        const message = JSON.parse(initMessage);
+        const message = JSON.parse(initMessage) as DataExplorerInputsFrame;
         console.warn(
           "Loaded cached portal iframe message from session storage. Do a full page refresh to get a new message"
         );
         console.dir(message);
+        updateContextsFromPortalMessage(message);
         const explorer = new Explorer(explorerParams);
         explorer.configure(message);
         resolve(explorer);
@@ -237,29 +239,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
             inputs.extensionEndpoint = configContext.PROXY_PATH;
           }
 
-          const authorizationToken = inputs.authorizationToken || "";
-          const masterKey = inputs.masterKey || "";
-          const databaseAccount = inputs.databaseAccount;
-
-          updateConfigContext({
-            BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
-            ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
-          });
-
-          updateUserContext({
-            authorizationToken,
-            masterKey,
-            databaseAccount,
-            resourceGroup: inputs.resourceGroup,
-            subscriptionId: inputs.subscriptionId,
-            subscriptionType: inputs.subscriptionType,
-            quotaId: inputs.quotaId,
-            portalEnv: inputs.serverId as PortalEnv,
-            hasWriteAccess: inputs.hasWriteAccess ?? true,
-            addCollectionFlight:
-              inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
-          });
-
+          updateContextsFromPortalMessage(inputs);
           const explorer = new Explorer(explorerParams);
           explorer.configure(inputs);
           resolve(explorer);
@@ -297,6 +277,41 @@ function shouldProcessMessage(event: MessageEvent): boolean {
   }
 
   return true;
+}
+
+function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
+  if (
+    configContext.BACKEND_ENDPOINT &&
+    configContext.platform === Platform.Portal &&
+    process.env.NODE_ENV === "development"
+  ) {
+    inputs.extensionEndpoint = configContext.PROXY_PATH;
+  }
+
+  const authorizationToken = inputs.authorizationToken || "";
+  const masterKey = inputs.masterKey || "";
+  const databaseAccount = inputs.databaseAccount;
+
+  updateConfigContext({
+    BACKEND_ENDPOINT: inputs.extensionEndpoint || configContext.BACKEND_ENDPOINT,
+    ARM_ENDPOINT: normalizeArmEndpoint(inputs.csmEndpoint || configContext.ARM_ENDPOINT),
+  });
+
+  updateUserContext({
+    authorizationToken,
+    masterKey,
+    databaseAccount,
+    resourceGroup: inputs.resourceGroup,
+    subscriptionId: inputs.subscriptionId,
+    subscriptionType: inputs.subscriptionType,
+    quotaId: inputs.quotaId,
+    portalEnv: inputs.serverId as PortalEnv,
+    hasWriteAccess: inputs.hasWriteAccess ?? true,
+    addCollectionFlight: inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
+  });
+  if (inputs.features) {
+    Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
+  }
 }
 
 interface PortalMessage {

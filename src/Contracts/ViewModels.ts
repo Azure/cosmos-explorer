@@ -390,6 +390,9 @@ export interface DataExplorerInputsFrame {
   dataExplorerVersion?: string;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
+  features?: {
+    [key: string]: string;
+  };
 }
 
 export interface SelfServeFrameInputs {
