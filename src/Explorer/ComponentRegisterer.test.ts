@@ -73,10 +73,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("add-collection-pane")).toBe(true);
   });
 
-  it("should register delete-collection-confirmation-pane component", () => {
-    expect(ko.components.isRegistered("delete-collection-confirmation-pane")).toBe(true);
-  });
-
   it("should register graph-new-vertex-pane component", () => {
     expect(ko.components.isRegistered("graph-new-vertex-pane")).toBe(true);
   });

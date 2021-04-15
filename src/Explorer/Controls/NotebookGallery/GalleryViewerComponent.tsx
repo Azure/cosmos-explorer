@@ -139,11 +139,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         key: SortBy.MostRecent,
         text: GalleryViewerComponent.mostRecentText,
       },
+      {
+        key: SortBy.MostFavorited,
+        text: GalleryViewerComponent.mostFavoritedText,
+      },
     ];
-    this.sortingOptions.push({
-      key: SortBy.MostFavorited,
-      text: GalleryViewerComponent.mostFavoritedText,
-    });
 
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
     this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
@@ -655,7 +655,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
-    const isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
+    const isFavorite =
+      this.props.container && this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,

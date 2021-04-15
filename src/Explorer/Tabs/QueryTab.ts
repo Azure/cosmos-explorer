@@ -13,6 +13,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import template from "./QueryTab.html";
@@ -95,9 +96,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
       this.aggregatedQueryMetrics(this._aggregateQueryMetrics(metrics))
     );
     this.isQueryMetricsEnabled = ko.computed<boolean>(() => {
-      return (
-        (this.collection && this.collection.container && this.collection.container.isPreferredApiDocumentDB()) || false
-      );
+      return userContext.apiType === "SQL" || false;
     });
     this.activityId = ko.observable<string>();
     this.roundTrips = ko.observable<number>();
@@ -117,7 +116,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
 
     this._isSaveQueriesEnabled = ko.computed<boolean>(() => {
       const container = this.collection && this.collection.container;
-      return (container && (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph())) || false;
+      return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     });
 
     this.maybeSubQuery = ko.computed<boolean>(function () {

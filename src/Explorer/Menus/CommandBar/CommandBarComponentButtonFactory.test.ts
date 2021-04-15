@@ -337,7 +337,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
-      mockExplorer.isPreferredApiDocumentDB = ko.computed(() => true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
