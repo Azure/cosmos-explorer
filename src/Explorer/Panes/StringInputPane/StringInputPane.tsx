@@ -1,5 +1,5 @@
 import { TextField } from "office-ui-fabric-react";
-import React, { FunctionComponent, useState } from "react";
+import React, { FormEvent, FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
@@ -102,10 +102,11 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
         <TextField
           label={inputLabel}
           name="collectionIdConfirmation"
-          required
           value={stringInput}
           autoFocus
-          onChange={(event, newValue) => setStringInput(newValue)}
+          onChange={(event: FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) =>
+            setStringInput(newValue)
+          }
           aria-label={inputLabel}
         />
       </div>

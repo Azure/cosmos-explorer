@@ -734,7 +734,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "type": 0,
     }
   }
-  onSubmit={[Function]}
+  onSubmit={[MockFunction]}
   paneTitle="Create new directory"
   submitButtonLabel="Create"
   successMessage="Created directory "
@@ -2596,7 +2596,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
               label="Enter new directory name"
               name="collectionIdConfirmation"
               onChange={[Function]}
-              required={true}
               value=""
             >
               <TextFieldBase
@@ -2607,7 +2606,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 label="Enter new directory name"
                 name="collectionIdConfirmation"
                 onChange={[Function]}
-                required={true}
                 resizable={true}
                 styles={[Function]}
                 theme={
@@ -2887,7 +2885,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 value=""
               >
                 <div
-                  className="ms-TextField is-required root-114"
+                  className="ms-TextField root-114"
                 >
                   <div
                     className="ms-TextField-wrapper"
@@ -2895,13 +2893,11 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                     <StyledLabelBase
                       htmlFor="TextField3"
                       id="TextFieldLabel5"
-                      required={true}
                       styles={[Function]}
                     >
                       <LabelBase
                         htmlFor="TextField3"
                         id="TextFieldLabel5"
-                        required={true}
                         styles={[Function]}
                         theme={
                           Object {
@@ -3200,7 +3196,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         onChange={[Function]}
                         onFocus={[Function]}
                         onInput={[Function]}
-                        required={true}
                         type="text"
                         value=""
                       />

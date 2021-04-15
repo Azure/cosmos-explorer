@@ -1,7 +1,6 @@
 import { mount } from "enzyme";
 import React from "react";
 import Explorer from "../../Explorer";
-import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import { StringInputPane } from "./StringInputPane";
 const props = {
   explorer: new Explorer(),
@@ -13,7 +12,7 @@ const props = {
   paneTitle: "Create new directory",
   submitButtonLabel: "Create",
   defaultInput: "",
-  onSubmit: (notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> => undefined,
+  onSubmit: jest.fn(),
   notebookFile: {
     name: "Untitled1123.ipynb",
     path: "notebooks/Untitled1123.ipynb",
