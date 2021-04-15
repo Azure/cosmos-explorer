@@ -1028,8 +1028,6 @@ export default class Collection implements ViewModels.Collection {
 
     try {
       const parsedContent = JSON.parse(documentContent);
-
-      debugger;
       if (Array.isArray(parsedContent)) {
         // We need some limit here as not to attempt uploading a huge file of JSON docs all in parallel. It will crash the browser.
         // Why 20? In testing it worked well. We may want to tweak this concurrency limit or eventually expose it to the user
