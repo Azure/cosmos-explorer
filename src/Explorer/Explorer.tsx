@@ -36,6 +36,7 @@ import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationU
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -53,7 +54,6 @@ import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { CassandraAddCollectionPaneF } from "./Panes/CassandraAddCollectionPaneF";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
@@ -80,8 +80,6 @@ import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
-import Trigger from "./Tree/Trigger";
-import UserDefinedFunction from "./Tree/UserDefinedFunction";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -119,11 +117,6 @@ export default class Explorer {
    * Use userContext.apiType instead
    * */
   public defaultExperience: ko.Observable<string>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "SQL"
-   * */
-  public isPreferredApiDocumentDB: ko.Computed<boolean>;
   /**
    * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
@@ -193,7 +186,6 @@ export default class Explorer {
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
-  public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
@@ -423,11 +415,6 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiDocumentDB = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.DocumentDB.toLowerCase();
-    });
-
     this.isPreferredApiCassandra = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase();
@@ -539,13 +526,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      id: "deletecollectionconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.graphStylingPane = new GraphStylingPane({
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
@@ -600,7 +580,6 @@ export default class Explorer {
     this._panes = [
       this.addDatabasePane,
       this.addCollectionPane,
-      this.deleteCollectionConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
@@ -637,8 +616,6 @@ export default class Explorer {
         this.addCollectionPane.collectionWithThroughputInSharedTitle(
           "Provision dedicated throughput for this container"
         );
-        this.deleteCollectionConfirmationPane.title("Delete Container");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
         this.refreshTreeTitle("Refresh containers");
         break;
       case "Mongo":
@@ -665,8 +642,6 @@ export default class Explorer {
         this.addCollectionPane.title("Add Graph");
         this.addCollectionPane.collectionIdTitle("Graph id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-        this.deleteCollectionConfirmationPane.title("Delete Graph");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
         this.refreshTreeTitle("Refresh graphs");
         break;
       case "Tables":
@@ -682,8 +657,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Entity");
         this.editTableEntityPane.title("Edit Table Entity");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -699,8 +672,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Row");
         this.editTableEntityPane.title("Edit Table Row");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -1017,7 +988,7 @@ export default class Explorer {
 
   // Facade
   public provideFeedbackEmail = () => {
-    window.open(Constants.Urls.feedbackEmail, "_self");
+    window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
   public async getArcadiaToken(): Promise<string> {
@@ -1286,49 +1257,6 @@ export default class Explorer {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
-  public findSelectedStoredProcedure(): StoredProcedure {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
-      const openedSprocTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.StoredProcedures,
-        (tab) => tab.node && tab.node.rid === storedProcedure.rid
-      );
-      return (
-        storedProcedure.rid === this.selectedNode().rid ||
-        (!!openedSprocTab && openedSprocTab.length > 0 && openedSprocTab[0].isActive())
-      );
-    });
-  }
-
-  public findSelectedUDF(): UserDefinedFunction {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
-      const openedUdfTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.UserDefinedFunctions,
-        (tab) => tab.node && tab.node.rid === userDefinedFunction.rid
-      );
-      return (
-        userDefinedFunction.rid === this.selectedNode().rid ||
-        (!!openedUdfTab && openedUdfTab.length > 0 && openedUdfTab[0].isActive())
-      );
-    });
-  }
-
-  public findSelectedTrigger(): Trigger {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
-      const openedTriggerTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.Triggers,
-        (tab) => tab.node && tab.node.rid === trigger.rid
-      );
-      return (
-        trigger.rid === this.selectedNode().rid ||
-        (!!openedTriggerTab && openedTriggerTab.length > 0 && openedTriggerTab[0].isActive())
-      );
-    });
   }
 
   public closeAllPanes(): void {
@@ -2281,16 +2209,15 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    userContext.features.enableKOPanel
-      ? this.deleteCollectionConfirmationPane.open()
-      : this.openSidePanel(
-          "Delete Collection",
-          <DeleteCollectionConfirmationPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
+    this.openSidePanel(
+      "Delete " + collectionName,
+      <DeleteCollectionConfirmationPanel
+        explorer={this}
+        collectionName={collectionName}
+        closePanel={this.closeSidePanel}
+      />
+    );
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
@@ -2313,10 +2240,14 @@ export default class Explorer {
     this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
   }
 
-  public openExecuteSprocParamsPanel(): void {
+  public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     this.openSidePanel(
       "Input parameters",
-      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
+      <ExecuteSprocParamsPanel
+        explorer={this}
+        storedProcedure={storedProcedure}
+        closePanel={() => this.closeSidePanel()}
+      />
     );
   }
 

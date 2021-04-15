@@ -12,7 +12,7 @@ interface Props {
   mediaType: "text/javascript";
 }
 
-export class JavaScript extends React.PureComponent<Props> {
+export class SandboxJavaScript extends React.PureComponent<Props> {
   static defaultProps = {
     data: "",
     mediaType: "application/javascript",
@@ -23,4 +23,4 @@ export class JavaScript extends React.PureComponent<Props> {
   }
 }
 
-export default JavaScript;
+export default SandboxJavaScript;

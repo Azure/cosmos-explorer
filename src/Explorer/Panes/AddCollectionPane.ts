@@ -591,7 +591,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return false;
       }
 
-      if (this.container.isPreferredApiDocumentDB()) {
+      if (userContext.apiType === "SQL") {
         return true;
       }
 

@@ -253,7 +253,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
    * @param container
    */
   private static showScriptNodes(container: Explorer): boolean {
-    return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+    return userContext.apiType === "SQL" || container.isPreferredApiGraph();
   }
 
   private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): TreeNode {

@@ -36,6 +36,7 @@ const features = extractFeatures();
 const { enableSDKoperations: useSDKOperations } = features;
 
 const userContext: UserContext = {
+  apiType: "SQL",
   hasWriteAccess: true,
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
