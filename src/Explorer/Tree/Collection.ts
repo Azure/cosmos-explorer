@@ -14,10 +14,10 @@ import * as Logger from "../../Common/Logger";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { UploadDetailsRecord } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import { UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
 import Explorer from "../Explorer";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
@@ -989,7 +989,7 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  public async uploadFiles(files: FileList): Promise<UploadDetails> {
+  public async uploadFiles(files: FileList): Promise<{ data: UploadDetailsRecord[] }> {
     const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
 
     return { data };

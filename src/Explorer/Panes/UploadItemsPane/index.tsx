@@ -1,9 +1,9 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "office-ui-fabric-react";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Upload } from "../../../Common/Upload";
+import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
-import { UploadDetails, UploadDetailsRecord } from "../../../workers/upload/definitions";
 import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
@@ -48,7 +48,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     selectedCollection
       ?.uploadFiles(files)
       .then(
-        (uploadDetails: UploadDetails) => {
+        (uploadDetails) => {
           setUploadFileData(uploadDetails.data);
           setFiles(undefined);
         },
