@@ -23,7 +23,7 @@ import KeyboardShortcuts from "./decorators/kbd-shortcuts";
 import "./default.css";
 import MarkdownCell from "./markdown-cell";
 import "./NotebookRenderer.less";
-import IFrameOutputs from "./outputs/IFrameOutputs";
+import SandboxOutputs from "./outputs/SandboxOutputs";
 import Prompt from "./Prompt";
 import { promptContent } from "./PromptContent";
 import StatusBar from "./StatusBar";
@@ -110,12 +110,12 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                             outputs: userContext.features.sandboxNotebookOutputs
                               ? (props: any) => (
-                                  <IFrameOutputs id={id} contentRef={contentRef}>
+                                  <SandboxOutputs id={id} contentRef={contentRef}>
                                     <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
                                     <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
                                     <KernelOutputError />
                                     <StreamText />
-                                  </IFrameOutputs>
+                                  </SandboxOutputs>
                                 )
                               : undefined,
                           }}

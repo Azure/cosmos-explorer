@@ -150,6 +150,11 @@ module.exports = function (env = {}, argv = {}) {
       chunks: ["heatmap"],
     }),
     new HtmlWebpackPlugin({
+      filename: "notebookOutputViewer.html",
+      template: "src/NotebookOutputViewer/notebookOutputViewer.html",
+      chunks: ["notebookOutputViewer"],
+    }),
+    new HtmlWebpackPlugin({
       filename: "notebookViewer.html",
       template: "src/NotebookViewer/notebookViewer.html",
       chunks: ["notebookViewer"],
@@ -190,6 +195,7 @@ module.exports = function (env = {}, argv = {}) {
       testExplorer: "./test/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
+      notebookOutputViewer: "./src/NotebookOutputViewer/NotebookOutputViewer.tsx",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
       galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
       selfServe: "./src/SelfServe/SelfServe.tsx",
@@ -233,6 +239,7 @@ module.exports = function (env = {}, argv = {}) {
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
       hot: false,
+      disableHostCheck: true,
       inline: !isCI,
       liveReload: !isCI,
       https: true,

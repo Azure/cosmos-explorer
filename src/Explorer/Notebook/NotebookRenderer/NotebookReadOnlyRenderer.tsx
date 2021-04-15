@@ -14,7 +14,7 @@ import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import "./default.css";
 import "./NotebookReadOnlyRenderer.less";
-import IFrameOutputs from "./outputs/IFrameOutputs";
+import SandboxOutputs from "./outputs/SandboxOutputs";
 
 export interface NotebookRendererProps {
   contentRef: any;
@@ -64,12 +64,12 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                   prompt: (props: { id: string; contentRef: string }) => this.renderPrompt(props.id, props.contentRef),
                   outputs: userContext.features.sandboxNotebookOutputs
                     ? (props: any) => (
-                        <IFrameOutputs id={id} contentRef={contentRef}>
+                        <SandboxOutputs id={id} contentRef={contentRef}>
                           <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
                           <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
                           <KernelOutputError />
                           <StreamText />
-                        </IFrameOutputs>
+                        </SandboxOutputs>
                       )
                     : undefined,
                   editor: {
