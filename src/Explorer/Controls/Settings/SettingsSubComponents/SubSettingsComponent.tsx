@@ -334,7 +334,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   public render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
-        {userContext.apiType === "Cassandra" && this.getTtlComponent()}
+        {userContext.apiType !== "Cassandra" && this.getTtlComponent()}
 
         {this.geospatialVisible && this.getGeoSpatialComponent()}
 
