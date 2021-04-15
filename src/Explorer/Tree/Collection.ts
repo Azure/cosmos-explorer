@@ -1,8 +1,7 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
+import pLimit from "p-limit";
 import * as _ from "underscore";
-import UploadWorker from "worker-loader!../../workers/upload";
-import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
@@ -13,16 +12,13 @@ import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefine
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
+import { UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
 import Explorer from "../Explorer";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
@@ -958,73 +954,6 @@ export default class Collection implements ViewModels.Collection {
     this.uploadFiles(event.originalEvent.dataTransfer.files);
   }
 
-  public uploadFiles = (fileList: FileList): Promise<UploadDetails> => {
-    // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
-    if (configContext.platform === Platform.Hosted && userContext.authType === AuthType.AAD) {
-      return this._uploadFilesCors(fileList);
-    }
-    const documentUploader: Worker = new UploadWorker();
-    let inProgressNotificationId: string = "";
-
-    if (!fileList || fileList.length === 0) {
-      return Promise.reject("No files specified");
-    }
-
-    const onmessage = (resolve: (value: UploadDetails) => void, reject: (reason: any) => void, event: MessageEvent) => {
-      const numSuccessful: number = event.data.numUploadsSuccessful;
-      const numFailed: number = event.data.numUploadsFailed;
-      const runtimeError: string = event.data.runtimeError;
-      const uploadDetails: UploadDetails = event.data.uploadDetails;
-
-      NotificationConsoleUtils.clearInProgressMessageWithId(inProgressNotificationId);
-      documentUploader.terminate();
-      if (!!runtimeError) {
-        reject(runtimeError);
-      } else if (numSuccessful === 0) {
-        // all uploads failed
-        NotificationConsoleUtils.logConsoleError(`Failed to upload all documents to container ${this.id()}`);
-      } else if (numFailed > 0) {
-        NotificationConsoleUtils.logConsoleError(
-          `Failed to upload ${numFailed} of ${numSuccessful + numFailed} documents to container ${this.id()}`
-        );
-      } else {
-        NotificationConsoleUtils.logConsoleInfo(
-          `Successfully uploaded all ${numSuccessful} documents to container ${this.id()}`
-        );
-      }
-      this._logUploadDetailsInConsole(uploadDetails);
-      resolve(uploadDetails);
-    };
-    function onerror(reject: (reason: any) => void, event: ErrorEvent) {
-      documentUploader.terminate();
-      reject(event.error);
-    }
-
-    const uploaderMessage: StartUploadMessageParams = {
-      files: fileList,
-      documentClientParams: {
-        databaseId: this.databaseId,
-        containerId: this.id(),
-        masterKey: userContext.masterKey,
-        endpoint: userContext.endpoint,
-        accessToken: userContext.accessToken,
-        platform: configContext.platform,
-        databaseAccount: userContext.databaseAccount,
-      },
-    };
-
-    return new Promise<UploadDetails>((resolve, reject) => {
-      documentUploader.onmessage = onmessage.bind(null, resolve, reject);
-      documentUploader.onerror = onerror.bind(null, reject);
-
-      documentUploader.postMessage(uploaderMessage);
-      inProgressNotificationId = NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.InProgress,
-        `Uploading and creating documents in container ${this.id()}`
-      );
-    });
-  };
-
   public async getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
     if (!this.container) {
       return undefined;
@@ -1060,13 +989,13 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  private async _uploadFilesCors(files: FileList): Promise<UploadDetails> {
-    const data = await Promise.all(Array.from(files).map((file) => this._uploadFile(file)));
+  public async uploadFiles(files: FileList): Promise<UploadDetails> {
+    const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
 
     return { data };
   }
 
-  private _uploadFile(file: File): Promise<UploadDetailsRecord> {
+  private uploadFile(file: File): Promise<UploadDetailsRecord> {
     const reader = new FileReader();
     const onload = (resolve: (value: UploadDetailsRecord) => void, evt: any): void => {
       const fileData: string = evt.target.result;
@@ -1098,17 +1027,24 @@ export default class Collection implements ViewModels.Collection {
     };
 
     try {
-      const content = JSON.parse(documentContent);
+      const parsedContent = JSON.parse(documentContent);
 
-      if (Array.isArray(content)) {
-        await Promise.all(
-          content.map(async (documentContent) => {
-            await createDocument(this, documentContent);
+      debugger;
+      if (Array.isArray(parsedContent)) {
+        // We need some limit here as not to attempt uploading a huge file of JSON docs all in parallel. It will crash the browser.
+        // Why 20? In testing it worked well. We may want to tweak this concurrency limit or eventually expose it to the user
+        // TODO: Move this to use the new bulk APIs in the SDK
+        const promiseLimiter = pLimit(20);
+        const createOperations = parsedContent.map((doc) =>
+          promiseLimiter(async () => {
+            await createDocument(this, doc);
             record.numSucceeded++;
           })
         );
+
+        await Promise.all(createOperations);
       } else {
-        await createDocument(this, documentContent);
+        await createDocument(this, parsedContent);
         record.numSucceeded++;
       }
 
@@ -1118,40 +1054,6 @@ export default class Collection implements ViewModels.Collection {
       record.errors = [...record.errors, error.message];
       return record;
     }
-  }
-
-  private _logUploadDetailsInConsole(uploadDetails: UploadDetails): void {
-    const uploadDetailsRecords: UploadDetailsRecord[] = uploadDetails.data;
-    const numFiles: number = uploadDetailsRecords.length;
-    const stackTraceLimit: number = 100;
-    let stackTraceCount: number = 0;
-    let currentFileIndex = 0;
-    while (stackTraceCount < stackTraceLimit && currentFileIndex < numFiles) {
-      const errors: string[] = uploadDetailsRecords[currentFileIndex].errors;
-      for (let i = 0; i < errors.length; i++) {
-        if (stackTraceCount >= stackTraceLimit) {
-          break;
-        }
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Document creation error for container ${this.id()} - file ${
-            uploadDetailsRecords[currentFileIndex].fileName
-          }: ${errors[i]}`
-        );
-        stackTraceCount++;
-      }
-      currentFileIndex++;
-    }
-
-    uploadDetailsRecords.forEach((record: UploadDetailsRecord) => {
-      const consoleDataType: ConsoleDataType = record.numFailed > 0 ? ConsoleDataType.Error : ConsoleDataType.Info;
-      NotificationConsoleUtils.logConsoleMessage(
-        consoleDataType,
-        `Item creation summary for container ${this.id()} - file ${record.fileName}: ${
-          record.numSucceeded
-        } items created, ${record.numFailed} errors`
-      );
-    });
   }
 
   /**

@@ -84,6 +84,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     onClose: closePanel,
     onSubmit,
   };
+
   const columns: IColumn[] = [
     {
       key: "fileName",

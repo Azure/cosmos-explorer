@@ -1,21 +1,4 @@
-import { DatabaseAccount } from "../../Contracts/DataModels";
-import { Platform } from "../../ConfigContext";
-
-export interface StartUploadMessageParams {
-  files: FileList;
-  documentClientParams: DocumentClientParams;
-}
-
-export interface DocumentClientParams {
-  databaseId: string;
-  containerId: string;
-  masterKey: string;
-  endpoint: string;
-  accessToken: string;
-  platform: Platform;
-  databaseAccount: DatabaseAccount;
-}
-
+// TODO: Remove this file and move definitions. Its only here due to old worker code that has been removed
 export interface UploadDetailsRecord {
   fileName: string;
   numSucceeded: number;
