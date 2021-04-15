@@ -172,6 +172,27 @@ export default class Database implements ViewModels.Database {
   public async loadCollections(): Promise<void> {
     const collectionVMs: Collection[] = [];
     const collections: DataModels.Collection[] = await readCollections(this.id());
+    // TODO Remove
+    // This is a hack to make Mongo collections read via ARM have a SQL-ish partitionKey property
+    if (userContext.apiType === "Mongo") {
+      collections.map((collection) => {
+        if (collection.shardKey) {
+          const shardKey = Object.keys(collection.shardKey)[0];
+          collection.partitionKey = {
+            version: undefined,
+            kind: "Hash",
+            paths: [`/"$v"/"${shardKey.split(".").join(`"/"$v"/"`)}"/"$v"`],
+          };
+        } else {
+          collection.partitionKey = {
+            paths: ["/'$v'/'_partitionKey'/'$v'"],
+            kind: "Hash",
+            version: 2,
+            systemKey: true,
+          };
+        }
+      });
+    }
     const deltaCollections = this.getDeltaCollections(collections);
 
     collections.forEach((collection: DataModels.Collection) => {

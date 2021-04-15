@@ -58,10 +58,6 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
 // Panes
 ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());
 ko.components.register("add-collection-pane", new PaneComponents.AddCollectionPaneComponent());
-ko.components.register(
-  "delete-collection-confirmation-pane",
-  new PaneComponents.DeleteCollectionConfirmationPaneComponent()
-);
 
 ko.components.register("graph-new-vertex-pane", new PaneComponents.GraphNewVertexPaneComponent());
 ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPaneComponent());
