@@ -11,7 +11,7 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 import { userContext } from "../../../UserContext";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
 export interface DeleteCollectionConfirmationPanelProps {
   explorer: Explorer;
   collectionName: string;
@@ -97,7 +97,7 @@ export const DeleteCollectionConfirmationPanel: FunctionComponent<DeleteCollecti
       );
     }
   };
-  const genericPaneProps: GenericRightPaneProps = {
+  const genericPaneProps: RightPaneWrapperProps = {
     container: explorer,
     formError: formError,
     formErrorDetail: formError,
@@ -109,7 +109,7 @@ export const DeleteCollectionConfirmationPanel: FunctionComponent<DeleteCollecti
     onSubmit: submit,
   };
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneWrapper {...genericPaneProps}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
@@ -147,6 +147,6 @@ export const DeleteCollectionConfirmationPanel: FunctionComponent<DeleteCollecti
           )}
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneWrapper>
   );
 };

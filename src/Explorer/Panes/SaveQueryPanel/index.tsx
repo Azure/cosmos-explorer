@@ -9,7 +9,7 @@ import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetr
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import QueryTab from "../../Tabs/QueryTab";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
 
 interface SaveQueryPanelProps {
   explorer: Explorer;
@@ -28,7 +28,7 @@ export const SaveQueryPanel: FunctionComponent<SaveQueryPanelProps> = ({
   const setupSaveQueriesText = `For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “${SavedQueries.DatabaseName}”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.`;
   const title = "Save Query";
   const { canSaveQueries } = explorer;
-  const genericPaneProps: GenericRightPaneProps = {
+  const genericPaneProps: RightPaneWrapperProps = {
     container: explorer,
     formError: formError,
     formErrorDetail: formErrorsDetails,
@@ -146,7 +146,7 @@ export const SaveQueryPanel: FunctionComponent<SaveQueryPanelProps> = ({
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneWrapper {...genericPaneProps}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           {!canSaveQueries() ? (
@@ -163,6 +163,6 @@ export const SaveQueryPanel: FunctionComponent<SaveQueryPanelProps> = ({
           )}
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneWrapper>
   );
 };

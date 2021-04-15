@@ -1,20 +1,20 @@
+import { toJS } from "@nteract/commutable";
+import { ImmutableNotebook } from "@nteract/commutable/src";
 import ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import Explorer from "../Explorer";
-import { JunoClient } from "../../Juno/JunoClient";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
-import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
-import { ImmutableNotebook } from "@nteract/commutable/src";
-import { toJS } from "@nteract/commutable";
-import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
 import { HttpStatusCodes } from "../../Common/Constants";
-import { handleError, getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
-import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
+import { getErrorMessage, getErrorStack, handleError } from "../../Common/ErrorHandlingUtils";
+import { JunoClient } from "../../Juno/JunoClient";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
+import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
+import Explorer from "../Explorer";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
+import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
+import { RightPaneWrapper, RightPaneWrapperProps } from "./RightPaneWrapper/RightPaneWrapper";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -44,7 +44,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       return undefined;
     }
 
-    const props: GenericRightPaneProps = {
+    const props: RightPaneWrapperProps = {
       container: this.container,
       formError: this.formError,
       formErrorDetail: this.formErrorDetail,
@@ -74,7 +74,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     };
 
     return (
-      <GenericRightPaneComponent {...props}>
+      <RightPaneWrapper {...props}>
         {!this.isCodeOfConductAccepted ? (
           <div style={{ padding: "15px", marginTop: "10px" }}>
             <CodeOfConductComponent
@@ -88,7 +88,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         ) : (
           <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
         )}
-      </GenericRightPaneComponent>
+      </RightPaneWrapper>
     );
   }
 

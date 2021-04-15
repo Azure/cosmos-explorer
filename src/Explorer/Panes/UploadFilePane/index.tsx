@@ -3,7 +3,7 @@ import { Upload } from "../../../Common/Upload";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
 
 export interface UploadFilePanelProps {
   explorer: Explorer;
@@ -89,7 +89,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
     return uploadFile(file.name, fileContent);
   };
 
-  const genericPaneProps: GenericRightPaneProps = {
+  const genericPaneProps: RightPaneWrapperProps = {
     container: container,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
@@ -102,10 +102,10 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneWrapper {...genericPaneProps}>
       <div className="paneMainContent">
         <Upload label={selectFileInputLabel} accept={extensions} onUpload={updateSelectedFiles} />
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneWrapper>
   );
 };

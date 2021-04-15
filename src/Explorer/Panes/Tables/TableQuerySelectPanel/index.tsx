@@ -4,7 +4,7 @@ import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import * as Constants from "../../../Tables/Constants";
 import QueryViewModel from "../../../Tables/QueryBuilder/QueryViewModel";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../../GenericRightPaneComponent";
+import { RightPaneWrapper, RightPaneWrapperProps } from "../../RightPaneWrapper/RightPaneWrapper";
 
 interface TableQuerySelectPanelProps {
   explorer: Explorer;
@@ -28,7 +28,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   ]);
   const [isAvailableColumnChecked, setIsAvailableColumnChecked] = useState<boolean>(true);
 
-  const genericPaneProps: GenericRightPaneProps = {
+  const genericPaneProps: RightPaneWrapperProps = {
     container: explorer,
     formError: "",
     formErrorDetail: "",
@@ -125,7 +125,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneWrapper {...genericPaneProps}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <Text>Select the columns that you want to query.</Text>
@@ -150,6 +150,6 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
           </div>
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneWrapper>
   );
 };
