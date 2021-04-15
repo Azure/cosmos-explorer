@@ -184,10 +184,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
         messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
         styles={{ text: { fontSize: 14 } }}
       >
-        To enable document expiration in a Mongo collection, you need to create a time-to-live index.
+        To enable time-to-live (TTL) for your collection/documents,
         <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
-          Learn more.
+          create a TTL index
         </Link>
+        .
       </MessageBar>
     ) : (
       <Stack {...titleAndInputStackProps}>
