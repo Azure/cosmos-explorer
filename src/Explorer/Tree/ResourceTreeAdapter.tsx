@@ -750,7 +750,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       {
         label: "Rename",
         iconSrc: NotebookIcon,
-        onClick: () => this.container.renameNotebook(item).then(() => this.triggerRender()),
+        onClick: () => this.container.renameNotebook(item),
       },
       {
         label: "New Directory",
