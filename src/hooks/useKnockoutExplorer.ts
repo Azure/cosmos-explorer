@@ -18,6 +18,7 @@ import {
   ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
+import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
@@ -25,7 +26,7 @@ import {
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
-import { PortalEnv, updateUserContext } from "../UserContext";
+import { PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
@@ -308,6 +309,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     hasWriteAccess: inputs.hasWriteAccess ?? true,
     addCollectionFlight: inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
   });
+  if (inputs.features) {
+    Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
+  }
 }
 
 interface PortalMessage {

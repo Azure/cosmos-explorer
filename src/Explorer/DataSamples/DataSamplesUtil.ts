@@ -57,6 +57,6 @@ export class DataSamplesUtil {
   }
 
   public isSampleContainerCreationSupported(): boolean {
-    return this.container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin";
+    return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   }
 }

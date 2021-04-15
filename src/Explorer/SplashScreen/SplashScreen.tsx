@@ -227,7 +227,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     }
 
     if (!this.container.isDatabaseNodeOrNoneSelected()) {
-      if (this.container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin") {
+      if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {

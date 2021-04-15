@@ -27,7 +27,7 @@ export type Features = {
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
   const downcased = new URLSearchParams();
   const set = (value: string, key: string) => downcased.set(key.toLowerCase(), value);
-  const get = (key: string) => downcased.get("feature." + key) ?? undefined;
+  const get = (key: string, defaultValue?: string) => downcased.get("feature." + key) ?? defaultValue;
 
   try {
     new URLSearchParams(window.parent.location.search).forEach(set);
@@ -56,7 +56,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebookBasePath: get("notebookbasepath"),
     notebookServerToken: get("notebookservertoken"),
     notebookServerUrl: get("notebookserverurl"),
-    sandboxNotebookOutputs: "true" === get("sandboxnotebookoutputs"),
+    sandboxNotebookOutputs: "true" === get("sandboxnotebookoutputs", "true"),
     selfServeType: get("selfservetype"),
     pr: get("pr"),
     showMinRUSurvey: "true" === get("showminrusurvey"),

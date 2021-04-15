@@ -96,9 +96,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
       this.aggregatedQueryMetrics(this._aggregateQueryMetrics(metrics))
     );
     this.isQueryMetricsEnabled = ko.computed<boolean>(() => {
-      return (
-        (this.collection && this.collection.container && this.collection.container.isPreferredApiDocumentDB()) || false
-      );
+      return userContext.apiType === "SQL" || false;
     });
     this.activityId = ko.observable<string>();
     this.roundTrips = ko.observable<number>();
@@ -118,7 +116,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
 
     this._isSaveQueriesEnabled = ko.computed<boolean>(() => {
       const container = this.collection && this.collection.container;
-      return (container && (container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin")) || false;
+      return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     });
 
     this.maybeSubQuery = ko.computed<boolean>(function () {

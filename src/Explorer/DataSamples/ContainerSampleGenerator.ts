@@ -27,7 +27,7 @@ export class ContainerSampleGenerator {
       dataFileContent = await import(
         /* webpackChunkName: "gremlinSampleJsonData" */ "../../../sampleData/gremlinSampleData.json"
       );
-    } else if (container.isPreferredApiDocumentDB()) {
+    } else if (userContext.apiType === "SQL") {
       dataFileContent = await import(
         /* webpackChunkName: "sqlSampleJsonData" */ "../../../sampleData/sqlSampleData.json"
       );

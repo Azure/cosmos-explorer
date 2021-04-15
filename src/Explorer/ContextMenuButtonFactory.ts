@@ -55,7 +55,7 @@ export class ResourceTreeContextMenuButtonFactory {
     selectedCollection: ViewModels.Collection
   ): TreeNodeMenuItem[] {
     const items: TreeNodeMenuItem[] = [];
-    if (container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin") {
+    if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null),
@@ -80,7 +80,7 @@ export class ResourceTreeContextMenuButtonFactory {
       });
     }
 
-    if (container.isPreferredApiDocumentDB() || userContext.apiType === "Gremlin") {
+    if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
       items.push({
         iconSrc: AddStoredProcedureIcon,
         onClick: () => {

@@ -72,8 +72,8 @@ describe("Collection Add and Delete Tables spec", () => {
       await frame.type('input[id="confirmCollectionId"]', textId);
 
       // click delete
-      await frame.waitFor('button[id="sidePanelOkButton"]', { visible: true });
-      await frame.click('button[id="sidePanelOkButton"]');
+      await frame.waitFor("button.genericPaneSubmitBtn", { visible: true });
+      await frame.click("button.genericPaneSubmitBtn");
       await frame.waitFor(LOADING_STATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await frame.waitFor(LOADING_STATE_DELAY);

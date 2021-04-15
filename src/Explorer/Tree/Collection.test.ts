@@ -40,9 +40,6 @@ describe("Collection", () => {
     mockContainer.isDatabaseNodeOrNoneSelected = () => {
       return false;
     };
-    mockContainer.isPreferredApiDocumentDB = ko.computed(() => {
-      return true;
-    });
 
     mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
 
