@@ -23,8 +23,8 @@ export class CommandBarComponentAdapter implements ReactAdapter {
   constructor(container: Explorer) {
     this.container = container;
     this.tabsButtons = [];
-    this.isNotebookTabActive = ko.computed(() =>
-      container.tabsManager.isTabActive(ViewModels.CollectionTabKind.NotebookV2)
+    this.isNotebookTabActive = ko.computed(
+      () => container.tabsManager.activeTab()?.tabKind === ViewModels.CollectionTabKind.NotebookV2
     );
 
     // These are the parameters watched by the react binding that will trigger a renderComponent() if one of the ko mutates

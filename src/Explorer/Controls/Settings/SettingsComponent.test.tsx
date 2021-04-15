@@ -38,7 +38,6 @@ describe("SettingsComponent", () => {
       tabPath: "",
       node: undefined,
       hashLocation: "settings",
-      isActive: ko.observable(false),
       onUpdateTabsButtons: undefined,
     }),
   };
