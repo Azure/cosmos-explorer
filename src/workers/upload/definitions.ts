@@ -3,6 +3,7 @@ export interface UploadDetailsRecord {
   fileName: string;
   numSucceeded: number;
   numFailed: number;
+  numThrottled: number;
   errors: string[];
 }
 

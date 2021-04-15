@@ -13,12 +13,6 @@ export interface UploadItemsPaneProps {
   closePanel: () => void;
 }
 
-interface IUploadFileData {
-  numSucceeded: number;
-  numFailed: number;
-  fileName: string;
-}
-
 const getTitle = (): string => {
   if (userContext.apiType === "Cassandra" || userContext.apiType === "Tables") {
     return "Upload Tables";
@@ -106,12 +100,12 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     },
   ];
 
-  const _renderItemColumn = (item: IUploadFileData, index: number, column: IColumn) => {
+  const _renderItemColumn = (item: UploadDetailsRecord, index: number, column: IColumn) => {
     switch (column.key) {
       case "status":
-        return <span>{item.numSucceeded + " items created, " + item.numFailed + " errors"}</span>;
+        return `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
       default:
-        return <span>{item.fileName}</span>;
+        return item.fileName;
     }
   };
 

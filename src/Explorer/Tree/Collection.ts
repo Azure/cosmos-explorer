@@ -1,8 +1,8 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
-import pLimit from "p-limit";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
+import { bulkCreateDocument } from "../../Common/dataAccess/bulkCreateDocument";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
 import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
@@ -1006,6 +1006,7 @@ export default class Collection implements ViewModels.Collection {
       resolve({
         fileName: file.name,
         numSucceeded: 0,
+        numThrottled: 0,
         numFailed: 1,
         errors: [(evt as any).error.message],
       });
@@ -1023,24 +1024,30 @@ export default class Collection implements ViewModels.Collection {
       fileName: fileName,
       numSucceeded: 0,
       numFailed: 0,
+      numThrottled: 0,
       errors: [],
     };
 
     try {
       const parsedContent = JSON.parse(documentContent);
       if (Array.isArray(parsedContent)) {
-        // We need some limit here as not to attempt uploading a huge file of JSON docs all in parallel. It will crash the browser.
-        // Why 20? In testing it worked well. We may want to tweak this concurrency limit or eventually expose it to the user
-        // TODO: Move this to use the new bulk APIs in the SDK
-        const promiseLimiter = pLimit(20);
-        const createOperations = parsedContent.map((doc) =>
-          promiseLimiter(async () => {
-            await createDocument(this, doc);
-            record.numSucceeded++;
-          })
+        const chunkSize = 50; // 100 is the max # of bulk operations the SDK currently accepts but usually results in throttles on 400RU collections
+        const chunkedContent = Array.from({ length: Math.ceil(parsedContent.length / chunkSize) }, (_, index) =>
+          parsedContent.slice(index * chunkSize, index * chunkSize + chunkSize)
         );
-
-        await Promise.all(createOperations);
+        for (const chunk of chunkedContent) {
+          const responses = await bulkCreateDocument(this, chunk);
+          for (const response of responses) {
+            if (response.statusCode === 201) {
+              record.numSucceeded++;
+            } else if (response.statusCode === 429) {
+              record.numThrottled++;
+            } else {
+              record.numFailed++;
+              record.errors = [...record.errors, `${response.statusCode} ${response.resourceBody}`];
+            }
+          }
+        }
       } else {
         await createDocument(this, parsedContent);
         record.numSucceeded++;
