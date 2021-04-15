@@ -76,7 +76,6 @@ export class CassandraAddCollectionPaneComponent {
   }
 }
 
-
 export class SetupNotebooksPaneComponent {
   constructor() {
     return {
