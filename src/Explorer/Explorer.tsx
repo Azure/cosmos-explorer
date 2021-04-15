@@ -1619,7 +1619,10 @@ export default class Explorer {
         "",
         <StringInputPane
           explorer={this}
-          closePanel={this.closeSidePanel}
+          closePanel={() => {
+            this.closeSidePanel();
+            this.resourceTree.triggerRender();
+          }}
           inputLabel="Enter new notebook name"
           submitButtonLabel="Rename"
           errorMessage="Could not rename notebook"
@@ -1647,7 +1650,10 @@ export default class Explorer {
       "",
       <StringInputPane
         explorer={this}
-        closePanel={this.closeSidePanel}
+        closePanel={() => {
+          this.closeSidePanel();
+          this.resourceTree.triggerRender();
+        }}
         errorMessage="Could not create directory "
         inProgressMessage="Creating directory "
         successMessage="Created directory "
