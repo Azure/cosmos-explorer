@@ -1,0 +1,139 @@
+import { ImmutableDisplayData, ImmutableExecuteResult, JSONObject } from "@nteract/commutable";
+import { ContentRef } from "@nteract/core";
+import DataExplorer from "@nteract/data-explorer";
+import { Media } from "@nteract/outputs";
+import PlotlyTransform from "@nteract/transform-plotly";
+import TransformVDOM from "@nteract/transform-vdom";
+import Immutable from "immutable";
+import React from "react";
+
+const NullTransform = (): any => null;
+
+const displayOrder = Immutable.List([
+  "application/vnd.jupyter.widget-view+json",
+  "application/vnd.vega.v5+json",
+  "application/vnd.vega.v4+json",
+  "application/vnd.vega.v3+json",
+  "application/vnd.vega.v2+json",
+  "application/vnd.vegalite.v3+json",
+  "application/vnd.vegalite.v2+json",
+  "application/vnd.vegalite.v1+json",
+  "application/geo+json",
+  "application/vnd.plotly.v1+json",
+  "text/vnd.plotly.v1+html",
+  "application/x-nteract-model-debug+json",
+  "application/vnd.dataresource+json",
+  "application/vdom.v1+json",
+  "application/json",
+  "application/javascript",
+  "text/html",
+  "text/markdown",
+  "text/latex",
+  "image/svg+xml",
+  "image/gif",
+  "image/png",
+  "image/jpeg",
+  "text/plain",
+]);
+
+const transformsById = Immutable.Map({
+  "text/vnd.plotly.v1+html": PlotlyTransform,
+  "application/vnd.plotly.v1+json": PlotlyTransform,
+  "application/geo+json": NullTransform,
+  "application/x-nteract-model-debug+json": NullTransform,
+  "application/vnd.dataresource+json": DataExplorer,
+  "application/vnd.jupyter.widget-view+json": NullTransform,
+  "application/vnd.vegalite.v1+json": NullTransform,
+  "application/vnd.vegalite.v2+json": NullTransform,
+  "application/vnd.vegalite.v3+json": NullTransform,
+  "application/vnd.vega.v2+json": NullTransform,
+  "application/vnd.vega.v3+json": NullTransform,
+  "application/vnd.vega.v4+json": NullTransform,
+  "application/vnd.vega.v5+json": NullTransform,
+  "application/vdom.v1+json": TransformVDOM,
+  "application/json": Media.Json,
+  "application/javascript": Media.JavaScript,
+  "text/html": Media.HTML,
+  "text/markdown": Media.Markdown,
+  "text/latex": Media.LaTeX,
+  "image/svg+xml": Media.SVG,
+  "image/gif": Media.Image,
+  "image/png": Media.Image,
+  "image/jpeg": Media.Image,
+  "text/plain": Media.Plain,
+});
+
+interface TransformMediaProps {
+  output_type: string;
+  id: string;
+  contentRef: ContentRef;
+  output?: ImmutableDisplayData | ImmutableExecuteResult;
+  onMetadataChange: (metadata: JSONObject, mediaType: string) => void;
+}
+
+export const TransformMedia = (props: TransformMediaProps) => {
+  const { Media, mediaType, data, metadata } = getMediaInfo(props);
+
+  // If we had no valid result, return an empty output
+  if (!mediaType || !data) {
+    return null;
+  }
+
+  return (
+    <Media
+      onMetadataChange={props.onMetadataChange}
+      data={data}
+      metadata={metadata}
+      contentRef={props.contentRef}
+      id={props.id}
+    />
+  );
+};
+
+const richestMediaType = (
+  output: ImmutableExecuteResult | ImmutableDisplayData,
+  order: Immutable.List<string>,
+  handlers: Immutable.Map<string, any>
+) => {
+  const outputData = output.data;
+
+  // Find the first mediaType in the output data that we support with a handler
+  const mediaType = order.find((key) => {
+    return outputData.hasOwnProperty(key) && (handlers.hasOwnProperty(key) || handlers.get(key, false));
+  });
+
+  return mediaType;
+};
+
+const getMediaInfo = (props: TransformMediaProps) => {
+  const { output, output_type } = props;
+  // This component should only be used with display data and execute result
+  if (!output || !(output_type === "display_data" || output_type === "execute_result")) {
+    console.warn("connected transform media managed to get a non media bundle output");
+    return {
+      Media: NullTransform,
+    };
+  }
+
+  const mediaType = richestMediaType(output, displayOrder, transformsById);
+
+  if (mediaType) {
+    const metadata = output.metadata.get(mediaType);
+    const data = output.data[mediaType];
+    const Media = transformsById.get(mediaType) as React.ComponentType<any>;
+    return {
+      Media,
+      mediaType,
+      data,
+      metadata,
+    };
+  }
+
+  return {
+    Media: NullTransform,
+    mediaType,
+    output,
+  };
+};
+
+export default TransformMedia;

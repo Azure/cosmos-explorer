@@ -31,11 +31,8 @@ import * as Constants from "../../Common/Constants";
 import { NotebookWorkspaceConnectionInfo } from "../../Contracts/DataModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
 import configureStore from "./NotebookComponent/store";
 import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
-import SandboxJavaScript from "./NotebookRenderer/outputs/SandboxJavaScript";
-import SanitizedHTML from "./NotebookRenderer/outputs/SanitizedHTML";
 
 export type KernelSpecsDisplay = { name: string; displayName: string };
 
@@ -168,10 +165,8 @@ export class NotebookClientV2 {
               "application/vnd.vega.v5+json": NullTransform,
               "application/vdom.v1+json": TransformVDOM,
               "application/json": Media.Json,
-              "application/javascript": userContext.features.sandboxNotebookOutputs
-                ? SandboxJavaScript
-                : Media.JavaScript,
-              "text/html": userContext.features.sandboxNotebookOutputs ? SanitizedHTML : Media.HTML,
+              "application/javascript": Media.JavaScript,
+              "text/html": Media.HTML,
               "text/markdown": Media.Markdown,
               "text/latex": Media.LaTeX,
               "image/svg+xml": Media.SVG,
