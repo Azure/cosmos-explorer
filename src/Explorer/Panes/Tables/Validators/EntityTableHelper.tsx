@@ -5,28 +5,6 @@ import * as Entities from "../../../Tables/Entities";
 import * as Utilities from "../../../Tables/Utilities";
 
 export const defaultStringPlaceHolder = "Enter identifier value.";
-export const defaultEntities = [
-  {
-    property: "PartitionKey",
-    type: "String",
-    value: "",
-    isPropertyTypeDisable: true,
-    isDeleteOptionVisible: false,
-    id: 1,
-    entityValuePlaceholder: defaultStringPlaceHolder,
-    isEntityTypeDate: false,
-  },
-  {
-    property: "RowKey",
-    type: "String",
-    value: "",
-    isPropertyTypeDisable: true,
-    isDeleteOptionVisible: false,
-    id: 2,
-    entityValuePlaceholder: defaultStringPlaceHolder,
-    isEntityTypeDate: false,
-  },
-];
 
 // Dropdown options
 export const options = [
@@ -50,6 +28,7 @@ export const backImageProps: IImageProps = {
   height: 16,
   className: "backImageIcon",
 };
+
 /* Labels */
 export const attributeNameLabel = "Property Name";
 export const dataTypeLabel = "Type";
@@ -99,20 +78,21 @@ export const entityFromAttributes = (entities: EntityRowType[]): Entities.ITable
 
 // GetPlaceholder according to entity type
 export const getEntityValuePlaceholder = (entityType: string | number): string => {
+  const { String, Boolean, DateTime, Double, Guid, Int32, Int64 } = TableConstants.TableType;
   switch (entityType) {
-    case "String":
+    case String:
       return stringPlaceholder;
-    case "Boolean":
+    case Boolean:
       return booleanPlaceHolder;
-    case "DateTime":
+    case DateTime:
       return datePlaceholder;
-    case "Double":
+    case Double:
       return doublePlaceholder;
-    case "Guid":
+    case Guid:
       return guidPlaceholder;
-    case "Int32":
+    case Int32:
       return intPlaceholder;
-    case "Int64":
+    case Int64:
       return int64Placeholder;
     default:
       return "";
@@ -130,13 +110,13 @@ export const isValidEntities = (entities: EntityRowType[]): boolean => {
 };
 
 const isEntityPropertyTypeDisable = (header: string): boolean => {
-  if (header === "PartitionKey" || header === "RowKey") {
+  if (header === TableConstants.EntityKeyNames.PartitionKey || header === TableConstants.EntityKeyNames.RowKey) {
     return true;
   }
   return false;
 };
 
-export const getDefaultEntities = (headers: string[], entityTypes: { [key: string]: string }): EntityRowType[] => {
+export const getDefaultEntities = (headers: string[], entityTypes: EntityType): EntityRowType[] => {
   const defaultEntities: EntityRowType[] = [];
   headers.forEach((header: string) => {
     if (header !== "Timestamp") {
@@ -149,7 +129,7 @@ export const getDefaultEntities = (headers: string[], entityTypes: { [key: strin
         isDeleteOptionVisible: !isEntityPropertyTypeDisable(header),
         id: 1,
         entityValuePlaceholder: defaultStringPlaceHolder,
-        isEntityTypeDate: entityType === "DateTime",
+        isEntityTypeDate: entityType === TableConstants.TableType.DateTime,
       };
       defaultEntities.push(entityRow);
     }
@@ -178,6 +158,13 @@ export const getButtonLabel = (apiType: string): string => {
   return "Add Entity";
 };
 
+export const getFormattedTime = (displayValue: string): string => {
+  const date = new Date(displayValue);
+  const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
+  const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
+  return `${hours}:${minutes}`;
+};
+
 // Type of entity row
 export interface EntityRowType {
   property: string;
@@ -189,4 +176,9 @@ export interface EntityRowType {
   entityValuePlaceholder: string;
   isEntityTypeDate: boolean;
   entityTimeValue?: string;
+  isEntityValueDisable?: boolean;
+}
+
+export interface EntityType {
+  [key: string]: string;
 }

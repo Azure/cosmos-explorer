@@ -66,6 +66,7 @@ import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
+import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel/EditTableEntityPanel";
 import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
@@ -2369,6 +2370,18 @@ export default class Explorer {
             tableEntityListViewModel={tableEntityListViewModel}
           />
         );
+  }
+
+  public openEditTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
+    this.openSidePanel(
+      "Edit Table Entity",
+      <EditTableEntityPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        queryTablesTab={queryTablesTab}
+        tableEntityListViewModel={tableEntityListViewModel}
+      />
+    );
   }
 
   public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {

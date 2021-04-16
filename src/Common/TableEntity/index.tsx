@@ -31,6 +31,7 @@ export interface TableEntityProps {
   options: { key: string; text: string }[];
   isPropertyTypeDisable: boolean;
   entityTimeValue: string;
+  isEntityValueDisable?: boolean;
   onDeleteEntity?: () => void;
   onEditEntity?: () => void;
   onEntityPropertyChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
@@ -54,6 +55,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
   isPropertyTypeDisable,
   isEntityTypeDate,
   entityTimeValue,
+  isEntityValueDisable,
   onEditEntity,
   onDeleteEntity,
   onEntityPropertyChange,
@@ -80,27 +82,31 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
             value={entityValue && new Date(entityValue)}
             ariaLabel={entityValuePlaceholder}
             onSelectDate={onSelectDate}
+            disabled={isEntityValueDisable}
           />
           <TextField
             label={entityValueLabel && entityValueLabel}
             id="entityTimeId"
             autoFocus
             type="time"
+            disabled={isEntityValueDisable}
             value={entityTimeValue}
             onChange={onEntityTimeValueChange}
           />
         </>
       );
     }
+
     return (
       <TextField
         label={entityValueLabel && entityValueLabel}
         className="addEntityTextField"
         id="entityValueId"
+        disabled={isEntityValueDisable}
         autoFocus
         type={selectedKey === "Double" || selectedKey === "Int32" || selectedKey === "Int64" ? "number" : "string"}
         placeholder={entityValuePlaceholder}
-        value={typeof entityValue === "string" && entityValue}
+        value={(typeof entityValue === "string" || typeof entityValue === "number") && entityValue}
         onChange={onEntityValueChange}
       />
     );
@@ -129,9 +135,11 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           styles={dropdownStyles}
         />
         {renderEntityValue()}
-        <TooltipHost content="Edit property" id="editTooltip">
-          <Image {...imageProps} src={EditIcon} alt="editEntity" id="editEntity" onClick={onEditEntity} />
-        </TooltipHost>
+        {!isEntityValueDisable && (
+          <TooltipHost content="Edit property" id="editTooltip">
+            <Image {...imageProps} src={EditIcon} alt="editEntity" id="editEntity" onClick={onEditEntity} />
+          </TooltipHost>
+        )}
 
         {isDeleteOptionVisible && userContext.apiType !== "Cassandra" && (
           <TooltipHost content="Delete property" id="deleteTooltip">
