@@ -27,7 +27,7 @@ export class IFrameOutputs extends React.PureComponent<ComponentProps & StatePro
     return (
       <SandboxFrame
         style={{ border: "none", width: "100%" }}
-        sandbox="allow-downloads allow-forms allow-pointer-lock allow-popups allow-same-origin allow-scripts allow-popups-to-escape-sandbox"
+        sandbox="allow-downloads allow-forms allow-pointer-lock allow-same-origin allow-scripts"
       >
         <div className={`nteract-cell-outputs ${hidden ? "hidden" : ""} ${expanded ? "expanded" : ""}`}>
           {outputs.map((output, index) => (

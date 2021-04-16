@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "@azure/arm-cosmosdb": "9.1.0",
-    "@azure/cosmos": "3.9.0",
+    "@azure/cosmos": "3.10.5",
     "@azure/cosmos-language-service": "0.0.5",
     "@azure/identity": "1.2.1",
     "@azure/ms-rest-nodeauth": "3.0.7",
@@ -92,6 +92,7 @@
     "reflect-metadata": "0.1.13",
     "rx-jupyter": "5.5.12",
     "rxjs": "6.6.3",
+    "sanitize-html": "2.3.3",
     "styled-components": "4.3.2",
     "swr": "0.4.0",
     "terser-webpack-plugin": "3.1.0",
@@ -124,6 +125,7 @@
     "@types/react-dom": "17.0.3",
     "@types/react-notification-system": "0.2.39",
     "@types/react-redux": "7.1.7",
+    "@types/sanitize-html": "1.27.2",
     "@types/sinon": "2.3.3",
     "@types/styled-components": "5.1.1",
     "@types/underscore": "1.7.36",
@@ -176,8 +178,7 @@
     "webpack": "4.43.0",
     "webpack-bundle-analyzer": "3.6.1",
     "webpack-cli": "3.3.10",
-    "webpack-dev-server": "3.11.0",
-    "worker-loader": "2.0.0"
+    "webpack-dev-server": "3.11.0"
   },
   "scripts": {
     "start": "node --max-old-space-size=10196 node_modules/webpack-dev-server/bin/webpack-dev-server.js",
