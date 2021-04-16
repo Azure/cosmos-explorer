@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Load Query Pane should render Default properly 1`] = `
-<RightPaneWrapper
+<RightPaneForm
   closePanel={[Function]}
   container={
     Explorer {
@@ -3588,5 +3588,5 @@ exports[`Load Query Pane should render Default properly 1`] = `
       </div>
     </div>
   </div>
-</RightPaneWrapper>
+</RightPaneForm>
 `;

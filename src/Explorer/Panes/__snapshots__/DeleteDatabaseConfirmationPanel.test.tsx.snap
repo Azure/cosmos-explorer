@@ -781,11 +781,13 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         >
           <StyledIconBase
             className="panelWarningIcon"
+            data-testid="warningIcon"
             iconName="WarningSolid"
             key=".0:$.0"
           >
             <IconBase
               className="panelWarningIcon"
+              data-testid="warningIcon"
               iconName="WarningSolid"
               styles={[Function]}
               theme={
@@ -1066,6 +1068,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                 aria-hidden={true}
                 className="panelWarningIcon root-142"
                 data-icon-name="WarningSolid"
+                data-testid="warningIcon"
               >
                 
               </i>
@@ -1077,13 +1080,14 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           >
             <Text
               className="panelWarningErrorMessage"
+              data-testid="panelmessage"
               variant="small"
             >
               <span
                 className="panelWarningErrorMessage css-143"
+                data-testid="panelmessage"
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
-                 
               </span>
             </Text>
           </span>
@@ -1786,11 +1790,15 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         className="panelFooter"
       >
         <CustomizedPrimaryButton
+          ariaLabel="OK"
+          data-testid="submit"
           id="sidePanelOkButton"
           text="OK"
           type="submit"
         >
           <PrimaryButton
+            ariaLabel="OK"
+            data-testid="submit"
             id="sidePanelOkButton"
             text="OK"
             theme={
@@ -2069,6 +2077,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             type="submit"
           >
             <CustomizedDefaultButton
+              ariaLabel="OK"
+              data-testid="submit"
               id="sidePanelOkButton"
               onRenderDescription={[Function]}
               primary={true}
@@ -2349,6 +2359,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               type="submit"
             >
               <DefaultButton
+                ariaLabel="OK"
+                data-testid="submit"
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
                 primary={true}
@@ -2629,7 +2641,9 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                 type="submit"
               >
                 <BaseButton
+                  ariaLabel="OK"
                   baseClassName="ms-Button"
+                  data-testid="submit"
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
                   primary={true}
@@ -3455,8 +3469,10 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   variantClassName="ms-Button--primary"
                 >
                   <button
+                    aria-label="OK"
                     className="ms-Button ms-Button--primary root-156"
                     data-is-focusable={true}
+                    data-testid="submit"
                     id="sidePanelOkButton"
                     onClick={[Function]}
                     onKeyDown={[Function]}
