@@ -87,7 +87,7 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
         }
         return sprocParam.text;
       });
-    storedProcedure.execute(sprocParams, partitionValue);
+    storedProcedure.execute(sprocParams, partitionKey === "custom" ? JSON.parse(partitionValue) : partitionValue);
     setLoadingFalse();
     closePanel();
   };
