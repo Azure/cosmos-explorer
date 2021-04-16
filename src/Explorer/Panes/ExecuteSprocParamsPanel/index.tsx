@@ -30,7 +30,7 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [paramKeyValues, setParamKeyValues] = useState<UnwrappedExecuteSprocParam[]>([{ key: "string", text: "" }]);
-  const [partitionValue, setPartitionValue] = useState<string>("");
+  const [partitionValue, setPartitionValue] = useState<string>(); // Defaulting to undefined here is important. It is not the same partition key as ""
   const [selectedKey, setSelectedKey] = React.useState<IDropdownOption>({ key: "string", text: "" });
   const [formError, setFormError] = useState<string>("");
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
