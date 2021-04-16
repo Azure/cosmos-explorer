@@ -1,9 +1,12 @@
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
-import { Upload } from "../../../Common/Upload";
+import { Upload } from "../../../Common/Upload/Upload";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
 export interface UploadFilePanelProps {
   explorer: Explorer;

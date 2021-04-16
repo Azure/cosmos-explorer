@@ -2,7 +2,7 @@ import { shallow } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
 import Explorer from "../../Explorer";
-import { SaveQueryPanel } from "./index";
+import { SaveQueryPane } from "./SaveQueryPane";
 
 describe("Save Query Pane", () => {
   const fakeExplorer = {} as Explorer;
@@ -13,7 +13,7 @@ describe("Save Query Pane", () => {
     closePanel: (): void => undefined,
   };
 
-  const wrapper = shallow(<SaveQueryPanel {...props} />);
+  const wrapper = shallow(<SaveQueryPane {...props} />);
 
   it("should return true if can save Queries else false", () => {
     fakeExplorer.canSaveQueries = ko.computed<boolean>(() => true);
@@ -26,7 +26,7 @@ describe("Save Query Pane", () => {
   });
 
   it("should render Default properly", () => {
-    const wrapper = shallow(<SaveQueryPanel {...props} />);
+    const wrapper = shallow(<SaveQueryPane {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

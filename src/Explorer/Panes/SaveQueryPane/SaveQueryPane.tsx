@@ -9,17 +9,20 @@ import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetr
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import QueryTab from "../../Tabs/QueryTab";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
-interface SaveQueryPanelProps {
+interface SaveQueryPaneProps {
   explorer: Explorer;
   closePanel: () => void;
 }
 
-export const SaveQueryPanel: FunctionComponent<SaveQueryPanelProps> = ({
+export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
   explorer,
   closePanel,
-}: SaveQueryPanelProps): JSX.Element => {
+}: SaveQueryPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");

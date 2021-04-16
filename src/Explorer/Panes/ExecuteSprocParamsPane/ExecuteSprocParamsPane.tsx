@@ -4,7 +4,10 @@ import React, { FunctionComponent, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import Explorer from "../../Explorer";
 import StoredProcedure from "../../Tree/StoredProcedure";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 import { InputParameter } from "./InputParameter";
 
 interface ExecuteSprocParamsPaneProps {
@@ -23,7 +26,7 @@ interface UnwrappedExecuteSprocParam {
   text: string;
 }
 
-export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
+export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
   explorer,
   storedProcedure,
   closePanel,
