@@ -95,7 +95,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   const constructDisplayedAttributes = (entity: Entities.ITableEntity): EntityRowType[] => {
     const displayedAttributes: EntityRowType[] = [];
     const keys = Object.keys(entity);
-    keys &&
+    keys.length &&
       keys.forEach((key: string) => {
         if (
           key !== TableEntityProcessor.keyProperties.attachments &&
