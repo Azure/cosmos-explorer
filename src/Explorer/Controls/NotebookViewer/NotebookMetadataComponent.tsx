@@ -1,17 +1,7 @@
 /**
  * Wrapper around Notebook metadata
  */
-import {
-  FontWeights,
-  Icon,
-  IconButton,
-  Link,
-  Persona,
-  PersonaSize,
-  PrimaryButton,
-  Stack,
-  Text,
-} from "@fluentui/react";
+import { FontWeights, Icon, IconButton, Link, Persona, PersonaSize, PrimaryButton, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";

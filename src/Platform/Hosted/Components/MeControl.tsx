@@ -1,11 +1,4 @@
-import {
-  FocusZone,
-  DefaultButton,
-  DirectionalHint,
-  Persona,
-  PersonaInitialsColor,
-  PersonaSize,
-} from "@fluentui/react";
+import { FocusZone, DefaultButton, DirectionalHint, Persona, PersonaInitialsColor, PersonaSize } from "@fluentui/react";
 import * as React from "react";
 import { Account } from "msal";
 import { useGraphPhoto } from "../../../hooks/useGraphPhoto";
