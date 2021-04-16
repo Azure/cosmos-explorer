@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
+import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { readCollections } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
@@ -174,7 +175,7 @@ export default class Database implements ViewModels.Database {
     const collections: DataModels.Collection[] = await readCollections(this.id());
     // TODO Remove
     // This is a hack to make Mongo collections read via ARM have a SQL-ish partitionKey property
-    if (userContext.apiType === "Mongo") {
+    if (userContext.apiType === "Mongo" && userContext.authType === AuthType.AAD) {
       collections.map((collection) => {
         if (collection.shardKey) {
           const shardKey = Object.keys(collection.shardKey)[0];
