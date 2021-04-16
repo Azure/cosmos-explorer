@@ -1,9 +1,9 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "office-ui-fabric-react";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Upload } from "../../../Common/Upload";
+import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
-import { UploadDetails, UploadDetailsRecord } from "../../../workers/upload/definitions";
 import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
@@ -11,12 +11,6 @@ import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/Rig
 export interface UploadItemsPaneProps {
   explorer: Explorer;
   closePanel: () => void;
-}
-
-interface IUploadFileData {
-  numSucceeded: number;
-  numFailed: number;
-  fileName: string;
 }
 
 const getTitle = (): string => {
@@ -54,7 +48,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     selectedCollection
       ?.uploadFiles(files)
       .then(
-        (uploadDetails: UploadDetails) => {
+        (uploadDetails) => {
           setUploadFileData(uploadDetails.data);
           setFiles(undefined);
         },
@@ -84,6 +78,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     onClose: closePanel,
     onSubmit,
   };
+
   const columns: IColumn[] = [
     {
       key: "fileName",
@@ -105,12 +100,12 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     },
   ];
 
-  const _renderItemColumn = (item: IUploadFileData, index: number, column: IColumn) => {
+  const _renderItemColumn = (item: UploadDetailsRecord, index: number, column: IColumn) => {
     switch (column.key) {
       case "status":
-        return <span>{item.numSucceeded + " items created, " + item.numFailed + " errors"}</span>;
+        return `${item.numSucceeded} created, ${item.numThrottled} throttled, ${item.numFailed} errors`;
       default:
-        return <span>{item.fileName}</span>;
+        return item.fileName;
     }
   };
 
