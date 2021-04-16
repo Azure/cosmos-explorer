@@ -12,7 +12,7 @@ import Explorer from "../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
-import { RightPaneWrapper, RightPaneWrapperProps } from "./RightPaneWrapper/RightPaneWrapper";
+import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";
@@ -51,7 +51,7 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
       return undefined;
     }
 
-    const genericPaneProps: RightPaneWrapperProps = {
+    const genericPaneProps: RightPaneFormProps = {
       container: this.container,
       formError: this.formError,
       formErrorDetail: this.formErrorDetail,
@@ -70,9 +70,9 @@ export class CopyNotebookPaneAdapter implements ReactAdapter {
     };
 
     return (
-      <RightPaneWrapper {...genericPaneProps}>
+      <RightPaneForm {...genericPaneProps}>
         <CopyNotebookPaneComponent {...copyNotebookPaneProps} />
-      </RightPaneWrapper>
+      </RightPaneForm>
     );
   }
 

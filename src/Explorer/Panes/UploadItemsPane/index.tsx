@@ -6,7 +6,7 @@ import { userContext } from "../../../UserContext";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
-import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface UploadItemsPaneProps {
   explorer: Explorer;
@@ -67,7 +67,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
     setFiles(event.target.files);
   };
 
-  const genericPaneProps: RightPaneWrapperProps = {
+  const genericPaneProps: RightPaneFormProps = {
     container: explorer,
     formError,
     formErrorDetail,
@@ -110,7 +110,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
   };
 
   return (
-    <RightPaneWrapper {...genericPaneProps}>
+    <RightPaneForm {...genericPaneProps}>
       <div className="paneMainContent">
         <Upload
           label="Select JSON Files"
@@ -136,6 +136,6 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
           </div>
         )}
       </div>
-    </RightPaneWrapper>
+    </RightPaneForm>
   );
 };

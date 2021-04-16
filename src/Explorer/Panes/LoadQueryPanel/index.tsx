@@ -8,7 +8,7 @@ import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Ut
 import Explorer from "../../Explorer";
 import QueryTab from "../../Tabs/QueryTab";
 import { Collection } from "..//../../Contracts/ViewModels";
-import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
+import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 
 interface LoadQueryPanelProps {
   explorer: Explorer;
@@ -33,7 +33,7 @@ export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
   };
 
   const title = "Load Query";
-  const genericPaneProps: RightPaneWrapperProps = {
+  const genericPaneProps: GenericRightPaneProps = {
     container: explorer,
     formError: formError,
     formErrorDetail: formErrorsDetails,
@@ -104,7 +104,7 @@ export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
   };
 
   return (
-    <RightPaneWrapper {...genericPaneProps}>
+    <GenericRightPaneComponent {...genericPaneProps}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <Stack horizontal>
@@ -129,6 +129,6 @@ export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
           </Stack>
         </div>
       </div>
-    </RightPaneWrapper>
+    </GenericRightPaneComponent>
   );
 };

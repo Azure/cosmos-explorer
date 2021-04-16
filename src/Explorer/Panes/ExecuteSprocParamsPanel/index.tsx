@@ -4,7 +4,7 @@ import React, { FunctionComponent, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import Explorer from "../../Explorer";
 import StoredProcedure from "../../Tree/StoredProcedure";
-import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
+import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 import { InputParameter } from "./InputParameter";
 
 interface ExecuteSprocParamsPaneProps {
@@ -39,7 +39,7 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
     setSelectedKey(item);
   };
 
-  const genericPaneProps: RightPaneWrapperProps = {
+  const genericPaneProps: GenericRightPaneProps = {
     container: explorer,
     formError: formError,
     formErrorDetail: formErrorsDetails,
@@ -120,7 +120,7 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
   };
 
   return (
-    <RightPaneWrapper {...genericPaneProps}>
+    <GenericRightPaneComponent {...genericPaneProps}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <InputParameter
@@ -160,6 +160,6 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
           </Stack>
         </div>
       </div>
-    </RightPaneWrapper>
+    </GenericRightPaneComponent>
   );
 };

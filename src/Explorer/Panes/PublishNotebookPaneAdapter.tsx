@@ -14,7 +14,7 @@ import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
-import { RightPaneWrapper, RightPaneWrapperProps } from "./RightPaneWrapper/RightPaneWrapper";
+import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -44,7 +44,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       return undefined;
     }
 
-    const props: RightPaneWrapperProps = {
+    const props: RightPaneFormProps = {
       container: this.container,
       formError: this.formError,
       formErrorDetail: this.formErrorDetail,
@@ -74,7 +74,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     };
 
     return (
-      <RightPaneWrapper {...props}>
+      <RightPaneForm {...props}>
         {!this.isCodeOfConductAccepted ? (
           <div style={{ padding: "15px", marginTop: "10px" }}>
             <CodeOfConductComponent
@@ -88,7 +88,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
         ) : (
           <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
         )}
-      </RightPaneWrapper>
+      </RightPaneForm>
     );
   }
 

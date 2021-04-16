@@ -8,7 +8,7 @@ import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import { RightPaneWrapper, RightPaneWrapperProps } from "../RightPaneWrapper/RightPaneWrapper";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface SettingsPaneProps {
   explorer: Explorer;
@@ -103,7 +103,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     setGraphAutoVizDisabled(option.key);
   };
 
-  const genericPaneProps: RightPaneWrapperProps = {
+  const genericPaneProps: RightPaneFormProps = {
     container,
     formError: formErrors,
     formErrorDetail: "",
@@ -128,7 +128,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     setPageOption(option.key);
   };
   return (
-    <RightPaneWrapper {...genericPaneProps}>
+    <RightPaneForm {...genericPaneProps}>
       <div className="paneMainContent">
         {shouldShowQueryPageOptions && (
           <div className="settingsSection">
@@ -248,6 +248,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
           </div>
         </div>
       </div>
-    </RightPaneWrapper>
+    </RightPaneForm>
   );
 };

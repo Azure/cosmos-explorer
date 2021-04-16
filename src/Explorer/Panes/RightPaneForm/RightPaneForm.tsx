@@ -6,7 +6,7 @@ import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
 
-export interface RightPaneWrapperProps {
+export interface RightPaneFormProps {
   container: Explorer;
   formError: string;
   formErrorDetail: string;
@@ -24,7 +24,7 @@ export interface GenericRightPaneState {
   panelHeight: number;
 }
 
-export const RightPaneWrapper: FunctionComponent<RightPaneWrapperProps> = ({
+export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   container,
   formError,
   formErrorDetail,
@@ -36,7 +36,7 @@ export const RightPaneWrapper: FunctionComponent<RightPaneWrapperProps> = ({
   title,
   isSubmitButtonHidden = false,
   children,
-}: RightPaneWrapperProps) => {
+}: RightPaneFormProps) => {
   const getPanelHeight = (): number => {
     const notificationConsoleElement: HTMLElement = document.getElementById("explorerNotificationConsole");
     return window.innerHeight - $(notificationConsoleElement).height();
