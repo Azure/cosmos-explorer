@@ -1060,7 +1060,7 @@ export default class Collection implements ViewModels.Collection {
               `${documentsToAttempt.length} document creations were throttled. Waiting ${retryAttempts} seconds and retrying throttled documents`
             );
             retryAttempts++;
-            sleep(retryAttempts);
+            await sleep(retryAttempts);
           }
         }
       } else {
