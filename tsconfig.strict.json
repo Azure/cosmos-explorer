@@ -104,8 +104,7 @@
     "./src/i18n.ts",
     "./src/quickstart.ts",
     "./src/setupTests.ts",
-    "./src/userContext.test.ts",
-    "./src/workers/upload/definitions.ts"
+    "./src/userContext.test.ts"
   ],
   "include": [
     "src/Controls/**/*",
