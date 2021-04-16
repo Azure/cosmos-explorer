@@ -1042,12 +1042,13 @@ export default class Collection implements ViewModels.Collection {
           let documentsToAttempt = chunk;
           while (retryAttempts < 10 && !chunkComplete) {
             const responses = await bulkCreateDocument(this, documentsToAttempt);
+            const attemptedDocuments = [...documentsToAttempt];
             documentsToAttempt = [];
             responses.forEach((response, index) => {
               if (response.statusCode === 201) {
                 record.numSucceeded++;
               } else if (response.statusCode === 429) {
-                documentsToAttempt.push(chunk[index]);
+                documentsToAttempt.push(attemptedDocuments[index]);
               } else {
                 record.numFailed++;
               }
