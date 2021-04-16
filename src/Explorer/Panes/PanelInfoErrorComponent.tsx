@@ -1,5 +1,5 @@
 import React from "react";
-import { Icon, Link, Stack, Text } from "office-ui-fabric-react";
+import { Icon, Link, Stack, Text } from "@fluentui/react";
 
 export interface PanelInfoErrorProps {
   message: string;

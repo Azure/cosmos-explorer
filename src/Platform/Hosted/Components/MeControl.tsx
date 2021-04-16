@@ -5,7 +5,7 @@ import {
   Persona,
   PersonaInitialsColor,
   PersonaSize,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import * as React from "react";
 import { Account } from "msal";
 import { useGraphPhoto } from "../../../hooks/useGraphPhoto";

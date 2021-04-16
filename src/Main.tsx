@@ -1,6 +1,6 @@
 // CSS Dependencies
+import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";

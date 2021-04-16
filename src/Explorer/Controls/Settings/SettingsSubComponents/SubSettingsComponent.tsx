@@ -7,7 +7,7 @@ import {
   Stack,
   Text,
   TextField,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";

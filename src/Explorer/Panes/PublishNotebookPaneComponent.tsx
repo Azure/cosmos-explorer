@@ -1,4 +1,4 @@
-import { ITextFieldProps, Stack, Text, TextField, Dropdown, IDropdownProps } from "office-ui-fabric-react";
+import { ITextFieldProps, Stack, Text, TextField, Dropdown, IDropdownProps } from "@fluentui/react";
 import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";

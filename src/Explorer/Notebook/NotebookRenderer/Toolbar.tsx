@@ -1,21 +1,15 @@
+import { ContextualMenuItemType, DirectionalHint, IconButton, IContextualMenuItem } from "@fluentui/react";
+import { CellId, CellType } from "@nteract/commutable";
+import { actions, AppState, DocumentRecordProps } from "@nteract/core";
+import * as selectors from "@nteract/selectors";
+import { CellToolbarContext } from "@nteract/stateful-components";
 import { ContentRef } from "@nteract/types";
+import { RecordOf } from "immutable";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { IconButton } from "office-ui-fabric-react/lib/Button";
-import {
-  DirectionalHint,
-  IContextualMenuItem,
-  ContextualMenuItemType,
-} from "office-ui-fabric-react/lib/ContextualMenu";
-import { actions, AppState, DocumentRecordProps } from "@nteract/core";
-import { CellToolbarContext } from "@nteract/stateful-components";
-import { CellType, CellId } from "@nteract/commutable";
-import * as selectors from "@nteract/selectors";
-import { RecordOf } from "immutable";
-import * as cdbActions from "../NotebookComponent/actions";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as cdbActions from "../NotebookComponent/actions";
 
 export interface ComponentProps {
   contentRef: ContentRef;

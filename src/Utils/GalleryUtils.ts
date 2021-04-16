@@ -7,7 +7,7 @@ import {
   GalleryViewerComponent,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
-import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
+import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "@fluentui/react";
 import { TextFieldProps } from "../Explorer/Controls/Dialog";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import { HttpStatusCodes } from "../Common/Constants";

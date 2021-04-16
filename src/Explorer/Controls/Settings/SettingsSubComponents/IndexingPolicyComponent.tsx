@@ -2,7 +2,7 @@ import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
 import * as monaco from "monaco-editor";
 import { isDirty, isIndexTransforming } from "../SettingsUtils";
-import { MessageBar, MessageBarType, Stack } from "office-ui-fabric-react";
+import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
 import { indexingPolicynUnsavedWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
 import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 

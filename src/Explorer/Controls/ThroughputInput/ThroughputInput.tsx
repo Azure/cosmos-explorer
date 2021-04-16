@@ -1,4 +1,4 @@
-import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "office-ui-fabric-react";
+import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
 import React from "react";
 import * as Constants from "../../../Common/Constants";
 import * as SharedConstants from "../../../Shared/Constants";

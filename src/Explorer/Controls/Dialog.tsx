@@ -1,15 +1,21 @@
-import * as React from "react";
-import { Dialog as FluentDialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric-react/lib/Dialog";
-import { IButtonProps, PrimaryButton, DefaultButton } from "office-ui-fabric-react/lib/Button";
-import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
-import { Link } from "office-ui-fabric-react/lib/Link";
 import {
   ChoiceGroup,
+  DefaultButton,
+  Dialog as FluentDialog,
+  DialogFooter,
+  DialogType,
   FontIcon,
+  IButtonProps,
   IChoiceGroupProps,
+  IDialogProps,
   IProgressIndicatorProps,
+  ITextFieldProps,
+  Link,
+  PrimaryButton,
   ProgressIndicator,
-} from "office-ui-fabric-react";
+  TextField,
+} from "@fluentui/react";
+import * as React from "react";
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;

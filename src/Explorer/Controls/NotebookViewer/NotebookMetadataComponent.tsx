@@ -11,7 +11,7 @@ import {
   PrimaryButton,
   Stack,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";

@@ -12,7 +12,7 @@ import {
   SelectableOptionMenuItemType,
   IRenderFunction,
   ISelectableOption,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";

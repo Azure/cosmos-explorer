@@ -1,4 +1,4 @@
-import { Icon, Label, Stack } from "office-ui-fabric-react";
+import { Icon, Label, Stack } from "@fluentui/react";
 import * as React from "react";
 import { accordionStackTokens } from "../Settings/SettingsRenderUtils";
 

@@ -1,25 +1,24 @@
-import { Card } from "@uifabric/react-cards";
 import {
+  BaseButton,
+  Button,
   FontWeights,
   Icon,
   IconButton,
   Image,
   ImageFit,
-  Persona,
-  Text,
   Link,
-  BaseButton,
-  Button,
-  LinkBase,
+  Persona,
   Separator,
-  TooltipHost,
   Spinner,
   SpinnerSize,
-} from "office-ui-fabric-react";
+  Text,
+  TooltipHost,
+} from "@fluentui/react";
+import { Card } from "@uifabric/react-cards";
 import * as React from "react";
+import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
 import * as FileSystemUtil from "../../../Notebook/FileSystemUtil";
-import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 
 export interface GalleryCardComponentProps {
   data: IGalleryItem;
@@ -228,7 +227,7 @@ export class GalleryCardComponent extends React.Component<GalleryCardComponentPr
 
   private onClick = (
     event:
-      | React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | LinkBase, MouseEvent>
+      | React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | MouseEvent>
       | React.MouseEvent<
           HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
           MouseEvent
