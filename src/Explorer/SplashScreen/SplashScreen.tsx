@@ -256,7 +256,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         onClick: () => this.container.openBrowseQueriesPanel(),
       });
 
-      if (!this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType !== "Cassandra") {
         items.push({
           iconSrc: NewStoredProcedureIcon,
           title: "New Stored Procedure",

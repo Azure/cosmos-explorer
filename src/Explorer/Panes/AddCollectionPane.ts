@@ -384,17 +384,11 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.uniqueKeysVisible = ko.pureComputed<boolean>(() => {
-      if (
-        this.container == null ||
-        !!this.container.isPreferredApiMongoDB() ||
-        !!this.container.isPreferredApiTable() ||
-        !!this.container.isPreferredApiCassandra() ||
-        userContext.apiType === "Gremlin"
-      ) {
-        return false;
+      if (userContext.apiType === "SQL") {
+        return true;
       }
 
-      return true;
+      return false;
     });
 
     this.partitionKeyVisible = ko.computed<boolean>(() => {
@@ -599,7 +593,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiCassandra() && this.container.hasStorageAnalyticsAfecFeature()) {
+      if (userContext.apiType === "Cassandra" && this.container.hasStorageAnalyticsAfecFeature()) {
         return true;
       }
 

@@ -5,6 +5,7 @@ import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
@@ -107,7 +108,13 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.shouldShowKeyspaceSharedThroughputMessage()).toEqual(false);
 
     const newContainer = new Explorer();
-    newContainer.isPreferredApiCassandra = ko.computed(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableCassandra" }],
+        },
+      } as DataModels.DatabaseAccount,
+    });
 
     const newCollection = { ...collection };
     newCollection.container = newContainer;
