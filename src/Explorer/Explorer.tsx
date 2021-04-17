@@ -121,11 +121,7 @@ export default class Explorer {
    * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
    * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
-   * */
-  public isPreferredApiGraph: ko.Computed<boolean>;
+
   /**
    * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
@@ -409,11 +405,6 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiGraph = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Graph.toLowerCase();
-    });
-
     this.isPreferredApiTable = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Table.toLowerCase();
@@ -477,7 +468,9 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal &&
+        !this.isRunningOnNationalCloud() &&
+        userContext.apiType !== "Gremlin"
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {

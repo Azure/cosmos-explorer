@@ -1087,7 +1087,7 @@ export default class Collection implements ViewModels.Collection {
     } else if (userContext.apiType === "Cassandra") {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       this.onGraphDocumentsClick();
       return;
     } else if (this.container.isPreferredApiMongoDB()) {
@@ -1106,7 +1106,7 @@ export default class Collection implements ViewModels.Collection {
       return "Entities";
     } else if (userContext.apiType === "Cassandra") {
       return "Rows";
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       return "Graph";
     } else if (this.container.isPreferredApiMongoDB()) {
       return "Documents";

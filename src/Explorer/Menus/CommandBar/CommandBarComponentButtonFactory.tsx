@@ -90,15 +90,15 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createDivider());
     }
 
-    const isSqlQuerySupported = userContext.apiType === "SQL" || container.isPreferredApiGraph();
+    const isSqlQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     if (isSqlQuerySupported) {
       const newSqlQueryBtn = createNewSQLQueryButton(container);
       buttons.push(newSqlQueryBtn);
     }
 
     const isSupportedOpenQueryApi =
-      userContext.apiType === "SQL" || container.isPreferredApiMongoDB() || container.isPreferredApiGraph();
-    const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || container.isPreferredApiGraph();
+      userContext.apiType === "SQL" || container.isPreferredApiMongoDB() || userContext.apiType === "Gremlin";
+    const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
@@ -107,7 +107,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createOpenQueryFromDiskButton(container));
     }
 
-    if (areScriptsSupported(container)) {
+    if (areScriptsSupported()) {
       const label = "New Stored Procedure";
       const newStoredProcedureBtn: CommandButtonComponentProps = {
         iconSrc: AddStoredProcedureIcon,
@@ -216,8 +216,8 @@ export function createDivider(): CommandButtonComponentProps {
   };
 }
 
-function areScriptsSupported(container: Explorer): boolean {
-  return userContext.apiType === "SQL" || container.isPreferredApiGraph();
+function areScriptsSupported(): boolean {
+  return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
@@ -325,8 +325,7 @@ function createNewSQLQueryButton(container: Explorer): CommandButtonComponentPro
 export function createScriptCommandButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  const shouldEnableScriptsCommands: boolean =
-    !container.isDatabaseNodeOrNoneSelected() && areScriptsSupported(container);
+  const shouldEnableScriptsCommands: boolean = !container.isDatabaseNodeOrNoneSelected() && areScriptsSupported();
 
   if (shouldEnableScriptsCommands) {
     const label = "New Stored Procedure";

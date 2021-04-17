@@ -31,7 +31,6 @@ export class CommandBarComponentAdapter implements ReactAdapter {
     const toWatch = [
       container.isPreferredApiTable,
       container.isPreferredApiMongoDB,
-      container.isPreferredApiGraph,
       container.deleteCollectionText,
       container.deleteDatabaseText,
       container.addCollectionText,

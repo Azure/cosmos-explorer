@@ -158,10 +158,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiGraph() &&
-        collection.onGraphDocumentsClick();
+      userContext.apiType === "Gremlin" && collection.onGraphDocumentsClick();
     });
   }
 

@@ -14,7 +14,6 @@ describe("ContainerSampleGenerator", () => {
   const createExplorerStub = (database: ViewModels.Database): Explorer => {
     const explorerStub = {} as Explorer;
     explorerStub.databases = ko.observableArray<ViewModels.Database>([database]);
-    explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiTable = ko.computed<boolean>(() => false);
     explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
@@ -115,7 +114,13 @@ describe("ContainerSampleGenerator", () => {
     collection.databaseId = database.id();
 
     const explorerStub = createExplorerStub(database);
-    explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableGremlin" }],
+        },
+      } as DatabaseAccount,
+    });
 
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
