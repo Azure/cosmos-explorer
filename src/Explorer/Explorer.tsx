@@ -118,11 +118,6 @@ export default class Explorer {
   public defaultExperience: ko.Observable<string>;
   /**
    * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
-   * */
-  public isPreferredApiCassandra: ko.Computed<boolean>;
-  /**
-   * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
    * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
@@ -414,10 +409,6 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiCassandra = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase();
-    });
     this.isPreferredApiGraph = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Graph.toLowerCase();
@@ -2097,7 +2088,7 @@ export default class Explorer {
   }
 
   public onNewCollectionClicked(): void {
-    if (this.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
     } else if (userContext.features.enableReactPane) {
       this.openAddCollectionPanel();

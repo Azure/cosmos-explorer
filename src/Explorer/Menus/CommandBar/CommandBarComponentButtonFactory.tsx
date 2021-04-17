@@ -74,7 +74,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       buttons.push(createOpenCassandraTerminalButton(container));
     }
   }
@@ -289,7 +289,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
 }
 
 function createNewSQLQueryButton(container: Explorer): CommandButtonComponentProps {
-  if (userContext.apiType === "SQL" || container.isPreferredApiGraph()) {
+  if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
     const label = "New SQL Query";
     return {
       iconSrc: AddSqlQueryIcon,
@@ -303,7 +303,7 @@ function createNewSQLQueryButton(container: Explorer): CommandButtonComponentPro
       hasPopup: true,
       disabled: container.isDatabaseNodeOrNoneSelected(),
     };
-  } else if (container.isPreferredApiMongoDB()) {
+  } else if (userContext.apiType === "Mongo") {
     const label = "New Query";
     return {
       iconSrc: AddSqlQueryIcon,

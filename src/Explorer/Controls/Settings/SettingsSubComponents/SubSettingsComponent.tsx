@@ -320,7 +320,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   public getPartitionKeyVisible = (): boolean => {
     if (
-      this.props.container.isPreferredApiCassandra() ||
+      userContext.apiType === "Cassandra" ||
       this.props.container.isPreferredApiTable() ||
       !this.props.collection.partitionKeyProperty ||
       (this.props.container.isPreferredApiMongoDB() && this.props.collection.partitionKey.systemKey)

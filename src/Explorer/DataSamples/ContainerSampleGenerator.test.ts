@@ -17,7 +17,6 @@ describe("ContainerSampleGenerator", () => {
     explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
     explorerStub.isPreferredApiTable = ko.computed<boolean>(() => false);
-    explorerStub.isPreferredApiCassandra = ko.computed<boolean>(() => false);
     explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
     explorerStub.findDatabaseWithId = () => database;
     explorerStub.refreshAllDatabases = () => Q.resolve();
@@ -156,8 +155,6 @@ describe("ContainerSampleGenerator", () => {
 
   it("should not create any sample for Cassandra API account", async () => {
     const experience = "Sample generation not supported for this API Cassandra";
-    const explorerStub = createExplorerStub(undefined);
-
     updateUserContext({
       databaseAccount: {
         properties: {
@@ -165,6 +162,7 @@ describe("ContainerSampleGenerator", () => {
         },
       } as DatabaseAccount,
     });
+    const explorerStub = createExplorerStub(undefined);
     // Rejects with error that contains experience
     await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });
