@@ -1,9 +1,8 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as _ from "underscore";
-import UploadWorker from "worker-loader!../../workers/upload";
-import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { bulkCreateDocument } from "../../Common/dataAccess/bulkCreateDocument";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
 import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
@@ -13,16 +12,14 @@ import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefine
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { UploadDetailsRecord } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
+import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
@@ -377,7 +374,7 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    if (this.container.isPreferredApiCassandra() && !this.cassandraKeys) {
+    if (userContext.apiType === "Cassandra" && !this.cassandraKeys) {
       (<CassandraAPIDataClient>this.container.tableDataClient).getTableKeys(this).then((keys: CassandraTableKeys) => {
         this.cassandraKeys = keys;
       });
@@ -394,7 +391,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.documentIds([]);
       let title = `Entities`;
-      if (this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType === "Cassandra") {
         title = `Rows`;
       }
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -958,73 +955,6 @@ export default class Collection implements ViewModels.Collection {
     this.uploadFiles(event.originalEvent.dataTransfer.files);
   }
 
-  public uploadFiles = (fileList: FileList): Promise<UploadDetails> => {
-    // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
-    if (configContext.platform === Platform.Hosted && userContext.authType === AuthType.AAD) {
-      return this._uploadFilesCors(fileList);
-    }
-    const documentUploader: Worker = new UploadWorker();
-    let inProgressNotificationId: string = "";
-
-    if (!fileList || fileList.length === 0) {
-      return Promise.reject("No files specified");
-    }
-
-    const onmessage = (resolve: (value: UploadDetails) => void, reject: (reason: any) => void, event: MessageEvent) => {
-      const numSuccessful: number = event.data.numUploadsSuccessful;
-      const numFailed: number = event.data.numUploadsFailed;
-      const runtimeError: string = event.data.runtimeError;
-      const uploadDetails: UploadDetails = event.data.uploadDetails;
-
-      NotificationConsoleUtils.clearInProgressMessageWithId(inProgressNotificationId);
-      documentUploader.terminate();
-      if (!!runtimeError) {
-        reject(runtimeError);
-      } else if (numSuccessful === 0) {
-        // all uploads failed
-        NotificationConsoleUtils.logConsoleError(`Failed to upload all documents to container ${this.id()}`);
-      } else if (numFailed > 0) {
-        NotificationConsoleUtils.logConsoleError(
-          `Failed to upload ${numFailed} of ${numSuccessful + numFailed} documents to container ${this.id()}`
-        );
-      } else {
-        NotificationConsoleUtils.logConsoleInfo(
-          `Successfully uploaded all ${numSuccessful} documents to container ${this.id()}`
-        );
-      }
-      this._logUploadDetailsInConsole(uploadDetails);
-      resolve(uploadDetails);
-    };
-    function onerror(reject: (reason: any) => void, event: ErrorEvent) {
-      documentUploader.terminate();
-      reject(event.error);
-    }
-
-    const uploaderMessage: StartUploadMessageParams = {
-      files: fileList,
-      documentClientParams: {
-        databaseId: this.databaseId,
-        containerId: this.id(),
-        masterKey: userContext.masterKey,
-        endpoint: userContext.endpoint,
-        accessToken: userContext.accessToken,
-        platform: configContext.platform,
-        databaseAccount: userContext.databaseAccount,
-      },
-    };
-
-    return new Promise<UploadDetails>((resolve, reject) => {
-      documentUploader.onmessage = onmessage.bind(null, resolve, reject);
-      documentUploader.onerror = onerror.bind(null, reject);
-
-      documentUploader.postMessage(uploaderMessage);
-      inProgressNotificationId = NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.InProgress,
-        `Uploading and creating documents in container ${this.id()}`
-      );
-    });
-  };
-
   public async getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
     if (!this.container) {
       return undefined;
@@ -1060,13 +990,13 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  private async _uploadFilesCors(files: FileList): Promise<UploadDetails> {
-    const data = await Promise.all(Array.from(files).map((file) => this._uploadFile(file)));
+  public async uploadFiles(files: FileList): Promise<{ data: UploadDetailsRecord[] }> {
+    const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
 
     return { data };
   }
 
-  private _uploadFile(file: File): Promise<UploadDetailsRecord> {
+  private uploadFile(file: File): Promise<UploadDetailsRecord> {
     const reader = new FileReader();
     const onload = (resolve: (value: UploadDetailsRecord) => void, evt: any): void => {
       const fileData: string = evt.target.result;
@@ -1077,6 +1007,7 @@ export default class Collection implements ViewModels.Collection {
       resolve({
         fileName: file.name,
         numSucceeded: 0,
+        numThrottled: 0,
         numFailed: 1,
         errors: [(evt as any).error.message],
       });
@@ -1094,21 +1025,47 @@ export default class Collection implements ViewModels.Collection {
       fileName: fileName,
       numSucceeded: 0,
       numFailed: 0,
+      numThrottled: 0,
       errors: [],
     };
 
     try {
-      const content = JSON.parse(documentContent);
-
-      if (Array.isArray(content)) {
-        await Promise.all(
-          content.map(async (documentContent) => {
-            await createDocument(this, documentContent);
-            record.numSucceeded++;
-          })
+      const parsedContent = JSON.parse(documentContent);
+      if (Array.isArray(parsedContent)) {
+        const chunkSize = 100; // 100 is the max # of bulk operations the SDK currently accepts
+        const chunkedContent = Array.from({ length: Math.ceil(parsedContent.length / chunkSize) }, (_, index) =>
+          parsedContent.slice(index * chunkSize, index * chunkSize + chunkSize)
         );
+        for (const chunk of chunkedContent) {
+          let retryAttempts = 0;
+          let chunkComplete = false;
+          let documentsToAttempt = chunk;
+          while (retryAttempts < 10 && !chunkComplete) {
+            const responses = await bulkCreateDocument(this, documentsToAttempt);
+            const attemptedDocuments = [...documentsToAttempt];
+            documentsToAttempt = [];
+            responses.forEach((response, index) => {
+              if (response.statusCode === 201) {
+                record.numSucceeded++;
+              } else if (response.statusCode === 429) {
+                documentsToAttempt.push(attemptedDocuments[index]);
+              } else {
+                record.numFailed++;
+              }
+            });
+            if (documentsToAttempt.length === 0) {
+              chunkComplete = true;
+              break;
+            }
+            logConsoleInfo(
+              `${documentsToAttempt.length} document creations were throttled. Waiting ${retryAttempts} seconds and retrying throttled documents`
+            );
+            retryAttempts++;
+            await sleep(retryAttempts);
+          }
+        }
       } else {
-        await createDocument(this, documentContent);
+        await createDocument(this, parsedContent);
         record.numSucceeded++;
       }
 
@@ -1120,40 +1077,6 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  private _logUploadDetailsInConsole(uploadDetails: UploadDetails): void {
-    const uploadDetailsRecords: UploadDetailsRecord[] = uploadDetails.data;
-    const numFiles: number = uploadDetailsRecords.length;
-    const stackTraceLimit: number = 100;
-    let stackTraceCount: number = 0;
-    let currentFileIndex = 0;
-    while (stackTraceCount < stackTraceLimit && currentFileIndex < numFiles) {
-      const errors: string[] = uploadDetailsRecords[currentFileIndex].errors;
-      for (let i = 0; i < errors.length; i++) {
-        if (stackTraceCount >= stackTraceLimit) {
-          break;
-        }
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Document creation error for container ${this.id()} - file ${
-            uploadDetailsRecords[currentFileIndex].fileName
-          }: ${errors[i]}`
-        );
-        stackTraceCount++;
-      }
-      currentFileIndex++;
-    }
-
-    uploadDetailsRecords.forEach((record: UploadDetailsRecord) => {
-      const consoleDataType: ConsoleDataType = record.numFailed > 0 ? ConsoleDataType.Error : ConsoleDataType.Info;
-      NotificationConsoleUtils.logConsoleMessage(
-        consoleDataType,
-        `Item creation summary for container ${this.id()} - file ${record.fileName}: ${
-          record.numSucceeded
-        } items created, ${record.numFailed} errors`
-      );
-    });
-  }
-
   /**
    * Top-level method that will open the correct tab type depending on account API
    */
@@ -1161,10 +1084,10 @@ export default class Collection implements ViewModels.Collection {
     if (userContext.apiType === "Tables") {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       this.onGraphDocumentsClick();
       return;
     } else if (this.container.isPreferredApiMongoDB()) {
@@ -1181,9 +1104,9 @@ export default class Collection implements ViewModels.Collection {
   public getLabel(): string {
     if (userContext.apiType === "Tables") {
       return "Entities";
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       return "Rows";
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       return "Graph";
     } else if (this.container.isPreferredApiMongoDB()) {
       return "Documents";
@@ -1237,4 +1160,8 @@ export default class Collection implements ViewModels.Collection {
       }
     }
   }
+}
+
+function sleep(seconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }

@@ -137,7 +137,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
       this.shouldShowIndexingPolicyEditor =
-        this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
+        this.container && userContext.apiType !== "Cassandra" && !this.container.isPreferredApiMongoDB();
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
@@ -299,7 +299,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.state.wasAutopilotOriginallySet !== this.state.isAutoPilotSelected;
 
   public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
-    this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
+    this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
     this.container?.databaseAccount &&

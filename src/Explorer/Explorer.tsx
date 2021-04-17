@@ -118,20 +118,9 @@ export default class Explorer {
   public defaultExperience: ko.Observable<string>;
   /**
    * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
-   * */
-  public isPreferredApiCassandra: ko.Computed<boolean>;
-  /**
-   * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
    * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
-   * */
-  public isPreferredApiGraph: ko.Computed<boolean>;
-
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   /**
    * @deprecated
@@ -410,15 +399,6 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiCassandra = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase();
-    });
-    this.isPreferredApiGraph = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Graph.toLowerCase();
-    });
-
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
@@ -477,7 +457,9 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal &&
+        !this.isRunningOnNationalCloud() &&
+        userContext.apiType !== "Gremlin"
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
@@ -2088,7 +2070,7 @@ export default class Explorer {
   }
 
   public onNewCollectionClicked(): void {
-    if (this.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
     } else if (userContext.features.enableReactPane) {
       this.openAddCollectionPanel();

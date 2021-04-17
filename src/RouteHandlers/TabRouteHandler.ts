@@ -147,7 +147,7 @@ export class TabRouteHandler {
       );
       collection &&
         collection.container &&
-        (userContext.apiType === "Tables" || collection.container.isPreferredApiCassandra()) &&
+        (userContext.apiType === "Tables" || userContext.apiType === "Cassandra") &&
         collection.onTableEntitiesClick();
     });
   }
@@ -158,10 +158,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiGraph() &&
-        collection.onGraphDocumentsClick();
+      userContext.apiType === "Gremlin" && collection.onGraphDocumentsClick();
     });
   }
 

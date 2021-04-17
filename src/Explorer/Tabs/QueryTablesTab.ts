@@ -176,7 +176,7 @@ export default class QueryTablesTab extends TabsBase {
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     if (this.queryBuilderButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "CQL Query Builder" : "Query Builder";
+      const label = userContext.apiType === "Cassandra" ? "CQL Query Builder" : "Query Builder";
       buttons.push({
         iconSrc: QueryBuilderIcon,
         iconAlt: label,
@@ -190,7 +190,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.queryTextButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "CQL Query Text" : "Query Text";
+      const label = userContext.apiType === "Cassandra" ? "CQL Query Text" : "Query Text";
       buttons.push({
         iconSrc: QueryTextIcon,
         iconAlt: label,
@@ -217,7 +217,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.addEntityButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "Add Row" : "Add Entity";
+      const label = userContext.apiType === "Cassandra" ? "Add Row" : "Add Entity";
       buttons.push({
         iconSrc: AddEntityIcon,
         iconAlt: label,
@@ -230,7 +230,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.editEntityButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "Edit Row" : "Edit Entity";
+      const label = userContext.apiType === "Cassandra" ? "Edit Row" : "Edit Entity";
       buttons.push({
         iconSrc: EditEntityIcon,
         iconAlt: label,
@@ -243,7 +243,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.deleteEntityButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "Delete Rows" : "Delete Entities";
+      const label = userContext.apiType === "Cassandra" ? "Delete Rows" : "Delete Entities";
       buttons.push({
         iconSrc: DeleteEntitiesIcon,
         iconAlt: label,

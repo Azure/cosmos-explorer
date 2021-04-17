@@ -34,9 +34,7 @@ describe("Collection", () => {
     mockContainer.isPreferredApiMongoDB = ko.computed(() => {
       return false;
     });
-    mockContainer.isPreferredApiCassandra = ko.computed(() => {
-      return false;
-    });
+
     mockContainer.isDatabaseNodeOrNoneSelected = () => {
       return false;
     };

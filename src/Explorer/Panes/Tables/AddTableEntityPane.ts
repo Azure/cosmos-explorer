@@ -25,11 +25,9 @@ export default class AddTableEntityPane extends TableEntityPane {
   constructor(options: ViewModels.PaneOptions) {
     super(options);
     this.submitButtonText("Add Entity");
-    this.container.isPreferredApiCassandra.subscribe((isCassandra) => {
-      if (isCassandra) {
-        this.submitButtonText("Add Row");
-      }
-    });
+    if (userContext.apiType === "Cassandra") {
+      this.submitButtonText("Add Row");
+    }
     this.scrollId = ko.observable<string>("addEntityScroll");
   }
 
@@ -58,7 +56,7 @@ export default class AddTableEntityPane extends TableEntityPane {
         headers = [TableConstants.EntityKeyNames.PartitionKey, TableConstants.EntityKeyNames.RowKey];
       }
     }
-    if (this.container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       (<CassandraAPIDataClient>this.container.tableDataClient)
         .getTableSchema(this.tableViewModel.queryTablesTab.collection)
         .then((columns: CassandraTableKey[]) => {
@@ -95,7 +93,7 @@ export default class AddTableEntityPane extends TableEntityPane {
     headers &&
       headers.forEach((key: string) => {
         if (!_.contains<string>(AddTableEntityPane._excludedFields, key)) {
-          if (this.container.isPreferredApiCassandra()) {
+          if (userContext.apiType === "Cassandra") {
             const cassandraKeys = this.tableViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys
               .concat(this.tableViewModel.queryTablesTab.collection.cassandraKeys.clusteringKeys)
               .map((key) => key.property);
