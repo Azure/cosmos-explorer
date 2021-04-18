@@ -1,7 +1,6 @@
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
-import * as React from "react";
-import { FunctionComponent } from "react";
+import React from "react";
 import { Subscription } from "../../../Contracts/DataModels";
+import { DropdownItem, SearchableDropdown } from "./SearchableDropdown";
 
 interface Props {
   subscriptions: Subscription[];
@@ -9,30 +8,28 @@ interface Props {
   setSelectedSubscriptionId: (id: string) => void;
 }
 
-export const SwitchSubscription: FunctionComponent<Props> = ({
+export const SwitchSubscription: React.FunctionComponent<Props> = ({
   subscriptions,
   setSelectedSubscriptionId,
   selectedSubscription,
 }: Props) => {
+  const subscriptionItems = subscriptions?.map((sub) => ({
+    key: sub.subscriptionId,
+    text: sub.displayName,
+  }));
+
+  const defaultSubscription = selectedSubscription && {
+    key: selectedSubscription.subscriptionId,
+    text: selectedSubscription.displayName,
+  };
+
   return (
-    <Dropdown
-      label="Subscription"
-      className="accountSwitchSubscriptionDropdown"
-      options={subscriptions?.map((sub) => {
-        return {
-          key: sub.subscriptionId,
-          text: sub.displayName,
-          data: sub,
-        };
-      })}
-      onChange={(_, option) => {
-        setSelectedSubscriptionId(String(option.key));
-      }}
-      defaultSelectedKey={selectedSubscription?.subscriptionId}
-      placeholder={subscriptions && subscriptions.length === 0 ? "No Subscriptions Found" : "Select a Subscription"}
-      styles={{
-        callout: "accountSwitchSubscriptionDropdownMenu",
-      }}
+    <SearchableDropdown
+      items={subscriptionItems}
+      title="Subscription"
+      defaultSelectedItem={defaultSubscription}
+      placeholder={subscriptions?.length === 0 ? "No Subscriptions Found" : "Select a Subscription"}
+      onItemSelected={(subscriptionItem: DropdownItem) => setSelectedSubscriptionId(subscriptionItem.key)}
     />
   );
 };
