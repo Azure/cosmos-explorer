@@ -57,8 +57,6 @@ app.get("/pull/:pr(\\d+)", (req, res) => {
 
       const portal = new URL("https://ms.portal.azure.com/");
       portal.searchParams.set("dataExplorerSource", explorer.href);
-      portal.hash =
-        "@microsoft.onmicrosoft.com/resource/subscriptions/b9c77f10-b438-4c32-9819-eef8a654e478/resourceGroups/stfaul/providers/Microsoft.DocumentDb/databaseAccounts/stfaul-sql/dataExplorer";
 
       return res.redirect(portal.href);
     })

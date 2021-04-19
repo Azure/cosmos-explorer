@@ -88,7 +88,6 @@ export default class NotebookTabV2 extends TabsBase {
   public onCloseTabButtonClick(): Q.Promise<any> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
-      this.isActive(false);
       super.onCloseTabButtonClick();
     };
 
