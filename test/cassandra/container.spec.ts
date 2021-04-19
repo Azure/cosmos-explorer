@@ -1,6 +1,6 @@
 import { jest } from "@jest/globals";
 import "expect-playwright";
-import { Frame } from "playwright";
+import { safeClick } from "../utils/safeClick";
 import { generateUniqueName } from "../utils/shared";
 jest.setTimeout(120000);
 
@@ -33,13 +33,3 @@ test("Cassandra keyspace and table CRUD", async () => {
   await expect(explorer).not.toHaveText(".dataResourceTree", keyspaceId);
   await expect(explorer).not.toHaveText(".dataResourceTree", tableId);
 });
-
-async function safeClick(page: Frame, selector: string) {
-  // TODO: Remove. Playwright does this for you... mostly.
-  // But our knockout+react setup sometimes leaves dom nodes detached and even playwright can't recover.
-  // Resource tree is particually bad.
-  // Ideally this should only be added as a last resort
-  await page.waitForSelector(selector);
-  await page.waitForTimeout(5000);
-  await page.click(selector);
-}

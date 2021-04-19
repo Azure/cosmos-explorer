@@ -176,7 +176,6 @@ jobs:
           - ./test/mongo/mongoIndexPolicy.spec.ts
           - ./test/notebooks/uploadAndOpenNotebook.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
-          - ./test/sql/container.spec.ts
           - ./test/sql/resourceToken.spec.ts
           - ./test/tables/container.spec.ts
     steps:
@@ -208,6 +207,8 @@ jobs:
       matrix:
         test-file:
           - ./test/cassandra/container.spec.ts
+          - ./test/sql/container.spec.ts
+          - ./test/mongo/container.spec.ts
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 14.x
