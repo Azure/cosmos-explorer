@@ -301,7 +301,6 @@ export default class Collection implements ViewModels.Collection {
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
@@ -349,7 +348,6 @@ export default class Collection implements ViewModels.Collection {
         conflictIds: ko.observableArray<ConflictId>([]),
         tabKind: ViewModels.CollectionTabKind.Conflicts,
         title: "Conflicts",
-        isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Conflicts`,
@@ -406,12 +404,9 @@ export default class Collection implements ViewModels.Collection {
         tabKind: ViewModels.CollectionTabKind.QueryTables,
         title: title,
         tabPath: "",
-
         collection: this,
-
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/entities`,
-        isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
@@ -463,7 +458,6 @@ export default class Collection implements ViewModels.Collection {
         collectionPartitionKeyProperty: this.partitionKeyProperty,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
         collectionId: this.id(),
-        isActive: ko.observable(false),
         databaseId: this.databaseId,
         isTabsContentExpanded: this.container.isTabsContentExpanded,
         onLoadStartKey: startKey,
@@ -513,7 +507,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
-        isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
@@ -556,7 +549,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
-      isActive: ko.observable(false),
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     };
 
@@ -599,7 +591,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
-      isActive: ko.observable(false),
       queryText: queryText,
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
@@ -629,7 +620,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
-      isActive: ko.observable(false),
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
@@ -661,7 +651,6 @@ export default class Collection implements ViewModels.Collection {
       collectionPartitionKeyProperty: this.partitionKeyProperty,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
       collectionId: this.id(),
-      isActive: ko.observable(false),
       databaseId: this.databaseId,
       isTabsContentExpanded: this.container.isTabsContentExpanded,
       onLoadStartKey: startKey,
@@ -680,7 +669,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      isActive: ko.observable(false),
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
