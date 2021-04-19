@@ -20,6 +20,7 @@ import * as TableConstants from "../../../Tables/Constants";
 import * as DataTableUtilities from "../../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../../Tables/Entities";
+import { CassandraAPIDataClient, CassandraTableKey } from "../../../Tables/TableDataClient";
 import * as TableEntityProcessor from "../../../Tables/TableEntityProcessor";
 import * as Utilities from "../../../Tables/Utilities";
 import QueryTablesTab from "../../../Tabs/QueryTablesTab";
@@ -28,6 +29,7 @@ import {
   attributeNameLabel,
   attributeValueLabel,
   backImageProps,
+  cassandraOptions,
   columnProps,
   dataTypeLabel,
   detailedHelp,
@@ -35,6 +37,7 @@ import {
   EntityRowType,
   getAddButtonLabel,
   getButtonLabel,
+  getCassandraDefaultEntities,
   getDefaultEntities,
   getEntityValuePlaceholder,
   getPanelTitle,
@@ -58,11 +61,13 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 }: AddTableEntityPanelProps): JSX.Element => {
   const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
+  const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
+  const [entityAttributeProperty, setEntityAttributeProperty] = useState<string>("");
   const [
     isEntityValuePanelOpen,
     { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
   ] = useBoolean(false);
-
+  const cassandraApiClient = new CassandraAPIDataClient();
   // Get default and previous saved entity headers
   useEffect(() => {
     let headers = tableEntityListViewModel.headers;
@@ -72,17 +77,16 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         headers = [TableConstants.EntityKeyNames.PartitionKey, TableConstants.EntityKeyNames.RowKey];
       }
     }
-
-    const entityItems = tableEntityListViewModel.items();
-    const entityTypes = Utilities.getDataTypesFromEntities(headers, entityItems);
-    const defaultEntities = getDefaultEntities(headers, entityTypes);
-    setEntities(defaultEntities);
-
     if (userContext.apiType === "Cassandra") {
+      cassandraApiClient.getTableSchema(queryTablesTab.collection).then((columns: CassandraTableKey[]) => {
+        const cassandraEntities = Utilities.getDataTypesFromCassandraSchema(columns);
+        const cassandraDefaultEntities: EntityRowType[] = getCassandraDefaultEntities(headers, cassandraEntities);
+        setEntities(cassandraDefaultEntities);
+      });
       // (<CassandraAPIDataClient>this.container.tableDataClient)
       //   .getTableSchema(this.tableViewModel.queryTablesTab.collection)
       //   .then((columns: CassandraTableKey[]) => {
-      //     this.displayedAttributes(
+      //     this.displapyedAttributes(
       //       this.constructDisplayedAttributes(
       //         columns.map((col) => col.property),
       //         Utilities.getDataTypesFromCassandraSchema(columns)
@@ -92,6 +96,11 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
       //     super.open();
       //     this.focusValueElement();
       //   });
+    } else {
+      const entityItems = tableEntityListViewModel.items();
+      const entityTypes = Utilities.getDataTypesFromEntities(headers, entityItems);
+      const defaultEntities: EntityRowType[] = getDefaultEntities(headers, entityTypes);
+      setEntities(defaultEntities);
     }
   }, []);
 
@@ -194,6 +203,9 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 
   // Open edit entity value modal
   const editEntity = (rowEndex: number): void => {
+    const entityAttribute: EntityRowType = entities[rowEndex] && entities[rowEndex];
+    setEntityAttributeValue(entityAttribute.value);
+    setEntityAttributeProperty(entityAttribute.property);
     setSelectedRow(rowEndex);
     setIsEntityValuePanelTrue();
   };
@@ -211,7 +223,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
                   entityTypeLabel={index === 0 && dataTypeLabel}
                   entityPropertyLabel={index === 0 && attributeNameLabel}
                   entityValueLabel={index === 0 && attributeValueLabel}
-                  options={options}
+                  options={userContext.apiType === "Cassandra" ? cassandraOptions : options}
                   isPropertyTypeDisable={entity.isPropertyTypeDisable}
                   entityProperty={entity.property}
                   selectedKey={entity.type}
@@ -268,15 +280,14 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     );
   };
 
-  const onRenderNavigationContent: IRenderFunction<IPanelProps> = React.useCallback(
-    () => (
+  const onRenderNavigationContent: IRenderFunction<IPanelProps> = () => {
+    return (
       <Stack horizontal {...columnProps}>
         <Image {...backImageProps} src={RevertBackIcon} alt="back" onClick={() => setIsEntityValuePanelFalse()} />
-        <Label>PartitionKey</Label>
+        <Label>{entityAttributeProperty}</Label>
       </Stack>
-    ),
-    []
-  );
+    );
+  };
 
   if (isEntityValuePanelOpen) {
     return (
@@ -290,8 +301,10 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
             multiline
             rows={5}
             className="entityValueTextField"
+            value={entityAttributeValue}
             onChange={(event, newInput?: string) => {
               entityChange(newInput, selectedRow, "value");
+              setEntityAttributeValue(newInput);
             }}
           />
         }
