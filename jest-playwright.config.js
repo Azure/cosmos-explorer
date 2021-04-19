@@ -5,6 +5,7 @@ module.exports = {
   launchOptions: {
     headless: isCI,
     slowMo: 10,
+    timeout: 60000,
   },
   contextOptions: {
     ignoreHTTPSErrors: true,
