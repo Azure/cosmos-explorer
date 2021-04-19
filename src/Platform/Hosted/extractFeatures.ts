@@ -13,7 +13,7 @@ export type Features = {
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
   readonly hostedDataExplorer: boolean;
-  readonly junoEndpoint: string;
+  readonly junoEndpoint?: string;
   readonly livyEndpoint?: string;
   readonly notebookBasePath?: string;
   readonly notebookServerToken?: string;
