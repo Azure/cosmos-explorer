@@ -15,3 +15,4 @@ Contracts/*
 .cache/
 .env
 failure.png
+screenshots/*

@@ -20,9 +20,9 @@ test("Cassandra keyspace and table CRUD", async () => {
   await explorer.click('[data-test="addCollection-tableId"]');
   await explorer.fill('[data-test="addCollection-tableId"]', tableId);
   await explorer.click('[aria-label="Add Table"] [data-test="addCollection-createCollection"]');
-  await clickResourceTree(explorer, keyspaceId);
+  await clickResourceTree(explorer, `.nodeItem >> text=${keyspaceId}`);
   await explorer.click(`[data-test="${tableId}"] [aria-label="More"]`);
-  await explorer.click('button[role="menuitem"]:has-text("Delete Table")');
+  await clickResourceTree(explorer, 'button[role="menuitem"]:has-text("Delete Table")');
   await explorer.fill('text=* Confirm by typing the table id >> input[type="text"]', tableId);
   await explorer.click('[aria-label="Submit"]');
   await explorer.click(`[data-test="${keyspaceId}"] [aria-label="More"]`);
@@ -36,7 +36,7 @@ test("Cassandra keyspace and table CRUD", async () => {
 
 async function clickResourceTree(page: Frame, selector: string) {
   // TODO: Remove. The resource tree has stability issues so we need to wait for it to show, wait some time, then click
-  await page.waitForSelector(`.nodeItem >> text=${selector}`);
+  await page.waitForSelector(selector);
   await page.waitForTimeout(5000);
-  await page.click(`.nodeItem >> text=${selector}`);
+  await page.click(selector);
 }

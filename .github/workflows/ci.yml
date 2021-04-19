@@ -224,7 +224,7 @@ jobs:
         if: failure()
         with:
           name: screenshots
-          path: failed-*
+          path: screenshots/
   cleanupaccounts:
     name: "Cleanup Test Database Accounts"
     runs-on: ubuntu-latest
