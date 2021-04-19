@@ -14,6 +14,7 @@ import { TabsManager } from "./TabsManager";
 
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
+  private static id = 0;
   public static readonly component = { name: "tab", template: "" };
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
@@ -22,7 +23,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public rid: string;
   public hasFocus: ko.Observable<boolean>;
   public isMouseOver: ko.Observable<boolean>;
-  public tabId: string;
+  public tabId = `tab${TabsBase.id++}`;
   public tabKind: ViewModels.CollectionTabKind;
   public tabTitle: ko.Observable<string>;
   public tabPath: ko.Observable<string>;
@@ -31,14 +32,11 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public isExecuting: ko.Observable<boolean>;
   public pendingNotification?: ko.Observable<DataModels.Notification>;
   public manager?: TabsManager;
-
   protected _theme: string;
   public onLoadStartKey: number;
 
   constructor(options: ViewModels.TabOptions) {
     super();
-    const id = new Date().getTime().toString();
-
     this._theme = ThemeUtility.getMonacoTheme(options.theme);
     this.node = options.node;
     this.collection = options.collection;
@@ -46,7 +44,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.rid = options.rid || (this.collection && this.collection.rid) || "";
     this.hasFocus = ko.observable<boolean>(false);
     this.isMouseOver = ko.observable<boolean>(false);
-    this.tabId = `tab${id}`;
     this.tabKind = options.tabKind;
     this.tabTitle = ko.observable<string>(options.title);
     this.tabPath =
