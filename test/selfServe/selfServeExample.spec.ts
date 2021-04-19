@@ -1,5 +1,3 @@
-jest.setTimeout(300000);
-
 test("Self Serve", async () => {
   await page.goto("https://localhost:1234/testExplorer.html?iframeSrc=selfServe.html");
   const handle = await page.waitForSelector("iframe");
