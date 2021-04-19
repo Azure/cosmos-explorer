@@ -1,4 +1,5 @@
 import AddCollectionPaneTemplate from "./AddCollectionPane.html";
+import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphNewVertexPaneTemplate from "./GraphNewVertexPane.html";
@@ -8,12 +9,21 @@ import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 
+
 export class PaneComponent {
   constructor(data: any) {
     return data.data;
   }
 }
 
+export class AddDatabasePaneComponent {
+  constructor() {
+    return {
+      viewModel: PaneComponent,
+      template: AddDatabasePaneTemplate,
+    };
+  }
+}
 export class AddCollectionPaneComponent {
   constructor() {
     return {

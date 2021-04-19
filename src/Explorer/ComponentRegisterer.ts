@@ -56,6 +56,8 @@ ko.components.register("tabs-manager", { template: TabsManagerTemplate });
 ].forEach(({ component: { name, template } }) => ko.components.register(name, { template }));
 
 // Panes
+
+ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());
 ko.components.register("add-collection-pane", new PaneComponents.AddCollectionPaneComponent());
 
 ko.components.register("graph-new-vertex-pane", new PaneComponents.GraphNewVertexPaneComponent());
