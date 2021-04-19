@@ -41,8 +41,16 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   const submit = () => {
-    setFormErrors("");
-    setFormErrorsDetails("");
+    console.log("stringInput", stringInput);
+    if (stringInput === "") {
+      const errorMessage = "Please  " + inputLabel;
+      setFormErrors(errorMessage);
+      logConsoleError("Error while " + paneTitle + " : " + errorMessage);
+      return;
+    } else {
+      setFormErrors("");
+      setFormErrorsDetails("");
+    }
 
     const clearMessage = logConsoleProgress(`${inProgressMessage} ${stringInput}`);
     setIsExecuting(true);
@@ -104,6 +112,7 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
           name="collectionIdConfirmation"
           value={stringInput}
           autoFocus
+          required
           onChange={(event: FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) =>
             setStringInput(newValue)
           }
