@@ -85,9 +85,7 @@
   <div class="tabPanesContainer">
     <!-- ko foreach: openedTabs -->
     <div class="tabs-container" data-bind="visible: $parent.activeTab() === $data">
-      <span
-        data-bind="class: $data.constructor.component.name, component: { name: $data.constructor.component.name, params: $data }"
-      ></span>
+      <span data-bind="component: { name: $data.constructor.component.name, params: $data }"></span>
     </div>
     <!-- /ko -->
   </div>
