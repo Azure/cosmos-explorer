@@ -559,6 +559,12 @@ export default class Explorer {
     });
 
     this.tabsManager = params?.tabsManager ?? new TabsManager();
+    this.tabsManager.openedTabs.subscribe((tabs) => {
+      if (tabs.length === 0) {
+        this.selectedNode(undefined);
+        this.onUpdateTabsButtons([]);
+      }
+    });
 
     this._panes = [
       this.addDatabasePane,
@@ -1570,7 +1576,6 @@ export default class Explorer {
         collection: null,
         masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -1976,7 +1981,6 @@ export default class Explorer {
         tabPath: title,
         collection: null,
         hashLocation: hashLocation,
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,

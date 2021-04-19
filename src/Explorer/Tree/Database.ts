@@ -78,7 +78,6 @@ export default class Database implements ViewModels.Database {
             rid: this.rid,
             database: this,
             hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
-            isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons,
           };
