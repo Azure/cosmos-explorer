@@ -196,12 +196,12 @@ export default class Collection implements ViewModels.Collection {
 
     this.showConflicts = ko.observable<boolean>(
       container &&
-      container.databaseAccount &&
-      container.databaseAccount() &&
-      container.databaseAccount().properties &&
-      container.databaseAccount().properties.enableMultipleWriteLocations &&
-      data &&
-      !!data.conflictResolutionPolicy
+        container.databaseAccount &&
+        container.databaseAccount() &&
+        container.databaseAccount().properties &&
+        container.databaseAccount().properties.enableMultipleWriteLocations &&
+        data &&
+        !!data.conflictResolutionPolicy
     );
 
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);

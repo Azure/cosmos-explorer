@@ -58,7 +58,7 @@ describe("ContainerSampleGenerator", () => {
     const database = {
       id: ko.observable(sampleDatabaseId),
       collections: ko.observableArray<ViewModels.Collection>([collection]),
-      loadCollections: () => { },
+      loadCollections: () => {},
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
 
@@ -107,7 +107,7 @@ describe("ContainerSampleGenerator", () => {
     const database = {
       id: ko.observable(sampleDatabaseId),
       collections: ko.observableArray<ViewModels.Collection>([collection]),
-      loadCollections: () => { },
+      loadCollections: () => {},
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
     collection.databaseId = database.id();

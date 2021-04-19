@@ -79,4 +79,3 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { userContext, updateUserContext };
-
