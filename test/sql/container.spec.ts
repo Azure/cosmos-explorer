@@ -1,6 +1,6 @@
 import "expect-puppeteer";
 import { Frame } from "puppeteer";
-import { generateDatabaseName, generateUniqueName, login } from "../utils/shared";
+import { generateDatabaseName, generateUniqueName } from "../utils/shared";
 
 jest.setTimeout(300000);
 const LOADING_STATE_DELAY = 2500;
@@ -14,7 +14,9 @@ describe("Collection Add and Delete SQL spec", () => {
       const dbId = generateDatabaseName();
       const collectionId = generateUniqueName("col");
       const sharedKey = `/skey${generateUniqueName()}`;
-      const frame = await login(process.env.PORTAL_RUNNER_CONNECTION_STRING);
+      await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-sql-runner");
+      const handle = await page.waitForSelector("iframe");
+      const frame = await handle.contentFrame();
 
       // create new collection
       await frame.waitFor('button[data-test="New Container"]', { visible: true });
@@ -65,12 +67,6 @@ describe("Collection Add and Delete SQL spec", () => {
       await frame.waitFor(CREATE_DELAY);
       await frame.waitFor("div[class='rowData'] > span[class='message']");
 
-      const didCreateContainer = await frame.$$eval("div[class='rowData'] > span[class='message']", (elements) => {
-        return elements.some((el) => el.textContent.includes("Successfully created"));
-      });
-
-      expect(didCreateContainer).toBe(true);
-
       await frame.waitFor(`div[data-test="${selectedDbId}"]`), { visible: true };
       await frame.waitFor(LOADING_STATE_DELAY);
 
@@ -105,8 +101,8 @@ describe("Collection Add and Delete SQL spec", () => {
         await frame.type('input[id="confirmCollectionId"]', textId);
 
         // click delete
-        await frame.waitFor('button[id="sidePanelOkButton"]', { visible: true });
-        await frame.click('button[id="sidePanelOkButton"]');
+        await frame.waitFor("button.genericPaneSubmitBtn", { visible: true });
+        await frame.click("button.genericPaneSubmitBtn");
         await frame.waitFor(LOADING_STATE_DELAY);
         await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
 
@@ -115,25 +111,25 @@ describe("Collection Add and Delete SQL spec", () => {
 
       // click context menu for database
       await frame.waitFor(`div[data-test="${selectedDbId}"] > div > button`);
-      await frame.waitFor(RENDER_DELAY);
+      await frame.waitFor(CREATE_DELAY);
       const button = await frame.$(`div[data-test="${selectedDbId}"] > div > button`);
       await button.focus();
       await button.asElement().click();
 
       // click delete database
-      await frame.waitFor(RENDER_DELAY);
+      await frame.waitFor(CREATE_DELAY);
       await frame.waitFor('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
       await frame.click('span[class="treeComponentMenuItemLabel deleteDatabaseMenuItemLabel"]');
 
       // confirm delete database
-      await frame.waitForSelector('input[data-test="confirmDatabaseId"]', { visible: true });
-      await frame.waitFor(RENDER_DELAY);
-      await frame.type('input[data-test="confirmDatabaseId"]', selectedDbId);
+      await frame.waitForSelector('input[id="confirmDatabaseId"]', { visible: true });
+      await frame.waitFor(CREATE_DELAY);
+      await frame.type('input[id="confirmDatabaseId"]', selectedDbId);
 
       // click delete
-      await frame.click('input[data-test="deleteDatabase"]');
+      await frame.click('button[id="sidePanelOkButton"]');
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
-      await frame.waitFor(LOADING_STATE_DELAY);
+      await frame.waitFor(CREATE_DELAY);
       await frame.waitForSelector('div[class="splashScreen"] > div[class="title"]', { visible: true });
       await expect(page).not.toMatchElement(`div[data-test="${selectedDbId}"]`);
     } catch (error) {

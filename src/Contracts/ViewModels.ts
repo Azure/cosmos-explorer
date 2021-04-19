@@ -15,12 +15,19 @@ import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
-import { UploadDetails } from "../workers/upload/definitions";
 import * as DataModels from "./DataModels";
 import { SubscriptionType } from "./SubscriptionType";
 
 export interface TokenProvider {
   getAuthHeader(): Promise<Headers>;
+}
+
+export interface UploadDetailsRecord {
+  fileName: string;
+  numSucceeded: number;
+  numFailed: number;
+  numThrottled: number;
+  errors: string[];
 }
 
 export interface QueryResultsMetadata {
@@ -88,7 +95,6 @@ export interface Database extends TreeNode {
   loadCollections(): Promise<void>;
   findCollectionWithId(collectionId: string): Collection;
   openAddCollection(database: Database, event: MouseEvent): void;
-  onDeleteDatabaseContextMenuClick(source: Database, event: MouseEvent | KeyboardEvent): void;
   onSettingsClick: () => void;
   loadOffer(): Promise<void>;
   getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
@@ -175,7 +181,7 @@ export interface Collection extends CollectionBase {
 
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
-  uploadFiles(fileList: FileList): Promise<UploadDetails>;
+  uploadFiles(fileList: FileList): Promise<{ data: UploadDetailsRecord[] }>;
 
   getLabel(): string;
   getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
@@ -270,7 +276,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  isActive: ko.Observable<boolean>;
   hashLocation: string;
   onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
   isTabsContentExpanded?: ko.Observable<boolean>;
@@ -376,7 +381,6 @@ export interface DataExplorerInputsFrame {
   masterKey?: string;
   hasWriteAccess?: boolean;
   authorizationToken?: string;
-  features: { [key: string]: string };
   csmEndpoint?: string;
   dnsSuffix?: string;
   serverId?: string;
@@ -392,6 +396,9 @@ export interface DataExplorerInputsFrame {
   dataExplorerVersion?: string;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
+  features?: {
+    [key: string]: string;
+  };
 }
 
 export interface SelfServeFrameInputs {

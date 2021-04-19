@@ -17,8 +17,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -89,8 +87,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -106,8 +102,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -123,8 +117,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -143,8 +135,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -160,8 +150,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 

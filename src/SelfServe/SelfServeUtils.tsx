@@ -1,6 +1,6 @@
 import "reflect-metadata";
+import { userContext } from "../UserContext";
 import {
-  Node,
   AnyDisplay,
   BooleanInput,
   ChoiceInput,
@@ -10,13 +10,13 @@ import {
   Info,
   InputType,
   InputTypeValue,
+  Node,
   NumberInput,
+  RefreshParams,
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
-  RefreshParams,
 } from "./SelfServeTypes";
-import { userContext } from "../UserContext";
 
 export enum SelfServeType {
   // No self serve type passed, launch explorer
@@ -112,21 +112,18 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
 
 export const buildSmartUiDescriptor = (className: string, target: unknown): void => {
   const context = Reflect.getMetadata(className, target) as Map<string, DecoratorProperties>;
-  const smartUiDescriptor = mapToSmartUiDescriptor(className, context);
+  const smartUiDescriptor = mapToSmartUiDescriptor(context);
   Reflect.defineMetadata(className, smartUiDescriptor, target);
 };
 
-export const mapToSmartUiDescriptor = (
-  className: string,
-  context: Map<string, DecoratorProperties>
-): SelfServeDescriptor => {
+export const mapToSmartUiDescriptor = (context: Map<string, DecoratorProperties>): SelfServeDescriptor => {
   const inputNames: string[] = [];
   const root = context.get("root");
   context.delete("root");
 
   const smartUiDescriptor: SelfServeDescriptor = {
     root: {
-      id: className,
+      id: undefined,
       info: undefined,
       children: [],
     },
@@ -195,5 +192,5 @@ export const generateBladeLink = (blade: BladeType): string => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroupName = userContext.resourceGroup;
   const databaseAccountName = userContext.databaseAccount.name;
-  return `www.portal.azure.com/#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
+  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };

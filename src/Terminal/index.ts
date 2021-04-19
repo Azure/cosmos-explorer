@@ -1,5 +1,3 @@
-import "babel-polyfill";
-import "promise-polyfill/src/polyfill"; // polyfill Promise on IE
 import "@jupyterlab/terminal/style/index.css";
 import "./index.css";
 import { ServerConnection } from "@jupyterlab/services";

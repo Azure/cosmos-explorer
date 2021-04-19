@@ -1,8 +1,9 @@
 import * as ViewModels from "../../Contracts/ViewModels";
-import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
+import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import Explorer from "../Explorer";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 export class DataSamplesUtil {
   private static readonly DialogTitle = "Create Sample Container";
@@ -17,7 +18,7 @@ export class DataSamplesUtil {
 
     const databaseName = generator.getDatabaseId();
     const containerName = generator.getCollectionId();
-    if (this.hasContainer(databaseName, containerName, this.container.nonSystemDatabases())) {
+    if (this.hasContainer(databaseName, containerName, this.container.databases())) {
       const msg = `The container ${containerName} in database ${databaseName} already exists. Please delete it and retry.`;
       this.container.showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
       NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
@@ -56,6 +57,6 @@ export class DataSamplesUtil {
   }
 
   public isSampleContainerCreationSupported(): boolean {
-    return this.container.isPreferredApiDocumentDB() || this.container.isPreferredApiGraph();
+    return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   }
 }

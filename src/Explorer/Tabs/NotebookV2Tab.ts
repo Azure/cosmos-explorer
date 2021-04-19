@@ -1,38 +1,36 @@
-import * as _ from "underscore";
-import * as Q from "q";
+import { stringifyNotebook, toJS } from "@nteract/commutable";
 import * as ko from "knockout";
-
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import TabsBase from "./TabsBase";
-
-import NewCellIcon from "../../../images/notebook/Notebook-insert-cell.svg";
-import CutIcon from "../../../images/notebook/Notebook-cut.svg";
-import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
-import PasteIcon from "../../../images/notebook/Notebook-paste.svg";
-import RunIcon from "../../../images/notebook/Notebook-run.svg";
-import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
-import RestartIcon from "../../../images/notebook/Notebook-restart.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
+import * as Q from "q";
+import * as _ from "underscore";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
-import InterruptKernelIcon from "../../../images/notebook/Notebook-stop.svg";
-import KillKernelIcon from "../../../images/notebook/Notebook-stop.svg";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
+import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
+import CutIcon from "../../../images/notebook/Notebook-cut.svg";
+import NewCellIcon from "../../../images/notebook/Notebook-insert-cell.svg";
+import PasteIcon from "../../../images/notebook/Notebook-paste.svg";
+import RestartIcon from "../../../images/notebook/Notebook-restart.svg";
+import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
+import RunIcon from "../../../images/notebook/Notebook-run.svg";
+import { default as InterruptKernelIcon, default as KillKernelIcon } from "../../../images/notebook/Notebook-stop.svg";
+import SaveIcon from "../../../images/save-cosmos.svg";
 import { Areas, ArmApiVersions } from "../../Common/Constants";
+import { configContext } from "../../ConfigContext";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { trackEvent } from "../../Shared/appInsights";
+import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../Explorer";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
-import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
-import { configContext } from "../../ConfigContext";
-import Explorer from "../Explorer";
+import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { toJS, stringifyNotebook } from "@nteract/commutable";
-import { appInsights } from "../../Shared/appInsights";
-import { userContext } from "../../UserContext";
+import template from "./NotebookV2Tab.html";
+import TabsBase from "./TabsBase";
 
 export interface NotebookTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
@@ -42,6 +40,7 @@ export interface NotebookTabOptions extends ViewModels.TabOptions {
 }
 
 export default class NotebookTabV2 extends TabsBase {
+  public static readonly component = { name: "notebookv2-tab", template };
   private static clientManager: NotebookClientV2;
   private container: Explorer;
   public notebookPath: ko.Observable<string>;
@@ -89,7 +88,6 @@ export default class NotebookTabV2 extends TabsBase {
   public onCloseTabButtonClick(): Q.Promise<any> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
-      this.isActive(false);
       super.onCloseTabButtonClick();
     };
 
@@ -426,7 +424,7 @@ export default class NotebookTabV2 extends TabsBase {
       return;
     }
 
-    appInsights.trackEvent(
+    trackEvent(
       { name: "SparkPoolSelected" },
       {
         subscriptionId: userContext.subscriptionId,

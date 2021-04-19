@@ -26,8 +26,10 @@ import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
 import { deleteConflict } from "../../Common/dataAccess/deleteConflict";
 import { queryConflicts } from "../../Common/dataAccess/queryConflicts";
+import template from "./ConflictsTab.html";
 
 export default class ConflictsTab extends TabsBase {
+  public static readonly component = { name: "conflicts-tab", template };
   public selectedConflictId: ko.Observable<ConflictId>;
   public selectedConflictContent: ViewModels.Editable<string>;
   public selectedConflictCurrent: ViewModels.Editable<string>;

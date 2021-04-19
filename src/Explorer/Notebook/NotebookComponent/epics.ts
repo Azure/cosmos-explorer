@@ -1,4 +1,4 @@
-import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
+import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer, from } from "rxjs";
 import { webSocket } from "rxjs/webSocket";
 import { StateObservable } from "redux-observable";
 import { ofType } from "redux-observable";
@@ -44,7 +44,7 @@ import { CdbAppState } from "./types";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import * as TextFile from "./contents/file/text-file";
 import { NotebookUtil } from "../NotebookUtil";
-import { FileSystemUtil } from "../FileSystemUtil";
+import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
 import { Areas } from "../../../Common/Constants";
 
@@ -944,6 +944,39 @@ const traceNotebookKernelEpic = (
   );
 };
 
+const resetCellStatusOnExecuteCanceledEpic = (
+  action$: Observable<actions.ExecuteCanceled>,
+  state$: StateObservable<AppState>
+): Observable<actions.UpdateCellStatus> => {
+  return action$.pipe(
+    ofType(actions.EXECUTE_CANCELED),
+    mergeMap((action) => {
+      const contentRef = action.payload.contentRef;
+      const model = state$.value.core.entities.contents.byRef.get(contentRef).model;
+      let busyCellIds: string[] = [];
+
+      if (model.type === "notebook") {
+        const cellMap = model.transient.get("cellMap");
+        if (cellMap) {
+          for (const entry of cellMap.toArray()) {
+            const cellId = entry[0];
+            const status = model.transient.getIn(["cellMap", cellId, "status"]);
+            if (status === "busy") {
+              busyCellIds.push(cellId);
+            }
+          }
+        }
+      }
+
+      return from(busyCellIds).pipe(
+        map((busyCellId) => {
+          return actions.updateCellStatus({ id: busyCellId, contentRef, status: undefined });
+        })
+      );
+    })
+  );
+};
+
 export const allEpics = [
   addInitialCodeCellEpic,
   focusInitialCodeCellEpic,
@@ -960,4 +993,5 @@ export const allEpics = [
   traceNotebookTelemetryEpic,
   traceNotebookInfoEpic,
   traceNotebookKernelEpic,
+  resetCellStatusOnExecuteCanceledEpic,
 ];

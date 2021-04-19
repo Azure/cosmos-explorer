@@ -6,13 +6,15 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
+import { isInvalidParentFrameOrigin, isReadyMessage } from "../../Utils/MessageValidation";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import template from "./MongoShellTab.html";
 import TabsBase from "./TabsBase";
 
 export default class MongoShellTab extends TabsBase {
+  public static readonly component = { name: "mongo-shell-tab", template };
   public url: ko.Computed<string>;
   private _container: Explorer;
   private _runtimeEndpoint: string;
@@ -83,10 +85,7 @@ export default class MongoShellTab extends TabsBase {
   }
 
   private handleReadyMessage(event: MessageEvent, shellIframe: HTMLIFrameElement) {
-    if (typeof event.data["data"] !== "string") {
-      return;
-    }
-    if (event.data.data !== "ready") {
+    if (!isReadyMessage(event)) {
       return;
     }
 

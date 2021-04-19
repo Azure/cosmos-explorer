@@ -7,13 +7,14 @@ import * as Constants from "../../Common/Constants";
 import { createStoredProcedure } from "../../Common/dataAccess/createStoredProcedure";
 import { updateStoredProcedure } from "../../Common/dataAccess/updateStoredProcedure";
 import editable from "../../Common/EditableUtility";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import StoredProcedure from "../Tree/StoredProcedure";
 import ScriptTabBase from "./ScriptTabBase";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import template from "./StoredProcedureTab.html";
 
 enum ToggleState {
   Result = "result",
@@ -21,6 +22,7 @@ enum ToggleState {
 }
 
 export default class StoredProcedureTab extends ScriptTabBase {
+  public static readonly component = { name: "stored-procedure-tab", template };
   public collection: ViewModels.Collection;
   public node: StoredProcedure;
   public executeResultsEditorId: string;
@@ -206,7 +208,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
       iconSrc: ExecuteQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        this.collection && this.collection.container.executeSprocParamsPane.open();
+        this.collection && this.collection.container.openExecuteSprocParamsPanel(this.node);
       },
       commandButtonLabel: label,
       ariaLabel: label,

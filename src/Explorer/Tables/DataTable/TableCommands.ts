@@ -1,12 +1,9 @@
-import _ from "underscore";
 import Q from "q";
-import * as DataTableUtilities from "./DataTableUtilities";
-import * as DataTableOperations from "./DataTableOperations";
-import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Entities from "../Entities";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import * as TableColumnOptionsPane from "../../Panes/Tables/TableColumnOptionsPane";
+import { userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+import * as Entities from "../Entities";
+import * as DataTableUtilities from "./DataTableUtilities";
+import TableEntityListViewModel from "./TableEntityListViewModel";
 
 export default class TableCommands {
   // Command Ids
@@ -77,7 +74,7 @@ export default class TableCommands {
     }
     var entitiesToDelete: Entities.ITableEntity[] = viewModel.selected();
     let deleteMessage: string = "Are you sure you want to delete the selected entities?";
-    if (viewModel.queryTablesTab.container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       deleteMessage = "Are you sure you want to delete the selected rows?";
     }
     if (window.confirm(deleteMessage)) {
@@ -90,64 +87,6 @@ export default class TableCommands {
         });
     }
     return null;
-  }
-
-  public customizeColumnsCommand(viewModel: TableEntityListViewModel): Q.Promise<any> {
-    var table: DataTables.DataTable = viewModel.table;
-    var displayedColumnNames: string[] = DataTableOperations.getDataTableHeaders(table);
-    var columnsCount: number = displayedColumnNames.length;
-    var currentOrder: number[] = DataTableOperations.getInitialOrder(columnsCount);
-    //Debug.assert(!!table && !!currentOrder && displayedColumnNames.length === currentOrder.length);
-
-    var currentSettings: boolean[];
-    try {
-      currentSettings = currentOrder.map((value: number, index: number) => {
-        return table.column(index).visible();
-      });
-    } catch (err) {
-      // Error
-    }
-
-    let parameters: TableColumnOptionsPane.IColumnSetting = <TableColumnOptionsPane.IColumnSetting>{
-      columnNames: displayedColumnNames,
-      order: currentOrder,
-      visible: currentSettings,
-    };
-
-    this._container.tableColumnOptionsPane.tableViewModel = viewModel;
-    this._container.tableColumnOptionsPane.parameters = parameters;
-    this._container.tableColumnOptionsPane.open();
-    return null;
-  }
-
-  public reorderColumnsBasedOnSelectedEntities(viewModel: TableEntityListViewModel): Q.Promise<boolean> {
-    var selected = viewModel.selected();
-    if (!selected || !selected.length) {
-      return null;
-    }
-
-    var table = viewModel.table;
-    var currentColumnNames: string[] = DataTableOperations.getDataTableHeaders(table);
-    var headersCount: number = currentColumnNames.length;
-
-    var headersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
-      selected,
-      viewModel.queryTablesTab.container.isPreferredApiCassandra()
-    );
-
-    // An array with elements representing indexes of selected entities' header union out of initial headers.
-    var orderOfLeftHeaders: number[] = headersUnion.map((item: string) => currentColumnNames.indexOf(item));
-
-    // An array with elements representing initial order of the table.
-    var initialOrder: number[] = DataTableOperations.getInitialOrder(headersCount);
-
-    // An array with elements representing indexes of headers not present in selected entities' header union.
-    var orderOfRightHeaders: number[] = _.difference(initialOrder, orderOfLeftHeaders);
-
-    // This will be the target order, with headers in selected entities on the left while others on the right, both in the initial order, respectively.
-    var targetOrder: number[] = orderOfLeftHeaders.concat(orderOfRightHeaders);
-
-    return DataTableOperations.reorderColumns(table, targetOrder);
   }
 
   public resetColumns(viewModel: TableEntityListViewModel): void {

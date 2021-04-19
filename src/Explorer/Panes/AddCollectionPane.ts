@@ -105,10 +105,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseId = ko.observable<string>();
     this.databaseCreateNew = ko.observable<boolean>(true);
     this.databaseCreateNewShared = ko.observable<boolean>(this.getSharedThroughputDefault());
-    this.container.subscriptionType &&
-      this.container.subscriptionType.subscribe((subscriptionType) => {
-        this.databaseCreateNewShared(this.getSharedThroughputDefault());
-      });
     this.collectionWithThroughputInShared = ko.observable<boolean>(false);
     this.databaseIds = ko.observableArray<string>();
     this.uniqueKeys = ko.observableArray<DynamicListItem>();
@@ -131,13 +127,13 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
     this.partitionKey.extend({ rateLimit: 100 });
     this.partitionKeyPattern = ko.pureComputed(() => {
-      if (this.container && this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "^/[^/]*";
       }
       return ".*";
     });
     this.partitionKeyTitle = ko.pureComputed(() => {
-      if (this.container && this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "May not use composite partition key";
       }
       return "";
@@ -335,7 +331,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
       if (currentCollections >= maxCollections) {
         let typeOfContainer = "collection";
-        if (this.container.isPreferredApiGraph() || this.container.isPreferredApiTable()) {
+        if (userContext.apiType === "Gremlin" || this.container.isPreferredApiTable()) {
           typeOfContainer = "container";
         }
 
@@ -372,7 +368,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "e.g., address.zipCode";
       }
 
-      if (this.container && !!this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "e.g., /address";
       }
 
@@ -392,13 +388,16 @@ export default class AddCollectionPane extends ContextualPaneBase {
         this.container == null ||
         userContext.apiType === "Mongo" ||
         !!this.container.isPreferredApiTable() ||
-        !!this.container.isPreferredApiCassandra() ||
-        !!this.container.isPreferredApiGraph()
+        !!(userContext.apiType === "Cassandra") ||
+        !!(userContext.apiType === "Gremlin")
       ) {
         return false;
       }
+      if (userContext.apiType === "SQL") {
+        return true;
+      }
 
-      return true;
+      return false;
     });
 
     this.partitionKeyVisible = ko.computed<boolean>(() => {
@@ -474,9 +473,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.resetData();
-    this.container.flight.subscribe(() => {
-      this.resetData();
-    });
 
     this.freeTierExceedThroughputTooltip = ko.pureComputed<string>(() =>
       this.isFreeTierAccount() && !this.container.isFirstResourceCreated()
@@ -594,7 +590,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return false;
       }
 
-      if (this.container.isPreferredApiDocumentDB()) {
+      if (userContext.apiType === "SQL") {
         return true;
       }
 
@@ -602,7 +598,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiCassandra() && this.container.hasStorageAnalyticsAfecFeature()) {
+      if (userContext.apiType === "Cassandra" && this.container.hasStorageAnalyticsAfecFeature()) {
         return true;
       }
 
@@ -655,7 +651,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType = this.container.subscriptionType && this.container.subscriptionType();
+    const subscriptionType = userContext.subscriptionType;
     if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
@@ -697,12 +693,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
         partitionKey: this.partitionKey(),
         databaseId: this.databaseId(),
       }),
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: this._getThroughput(),
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
@@ -779,10 +775,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let partitionKeyVersion: number = this.largePartitionKey() ? 2 : undefined;
     let partitionKey: DataModels.PartitionKey = partitionKeyPath.trim()
       ? {
-          paths: [partitionKeyPath],
-          kind: Constants.BackendDefaults.partitionKeyKind,
-          version: partitionKeyVersion,
-        }
+        paths: [partitionKeyPath],
+        kind: Constants.BackendDefaults.partitionKeyKind,
+        version: partitionKeyVersion,
+      }
       : null;
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
 
@@ -801,12 +797,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
         uniqueKeyPolicy,
         collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
       }),
-      subscriptionType: SubscriptionType[this.container.subscriptionType()],
+      subscriptionType: userContext.subscriptionType,
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
         storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
         throughput: offerThroughput,
-        flight: this.container.flight(),
+        flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
       useIndexingForSharedThroughput: this.useIndexingForSharedThroughput(),
@@ -873,12 +869,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
           }),
-          subscriptionType: SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: userContext.subscriptionType,
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
         };
@@ -905,12 +901,12 @@ export default class AddCollectionPane extends ContextualPaneBase {
             uniqueKeyPolicy,
             collectionWithThroughputInShared: this.collectionWithThroughputInShared(),
           },
-          subscriptionType: SubscriptionType[this.container.subscriptionType()],
+          subscriptionType: userContext.subscriptionType,
           subscriptionQuotaId: userContext.quotaId,
           defaultsCheck: {
             storage: this.storage() === Constants.BackendDefaults.singlePartitionStorageInGb ? "f" : "u",
             throughput: offerThroughput,
-            flight: this.container.flight(),
+            flight: userContext.addCollectionFlight,
           },
           dataExplorerArea: Constants.Areas.ContextualPane,
           error: errorMessage,
@@ -990,7 +986,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.container.openEnableSynapseLinkDialog();
   }
 
-  public ttl90DaysEnabled: () => boolean = () => this.container.isFeatureEnabled(Constants.Features.ttl90Days);
+  public ttl90DaysEnabled: () => boolean = () => userContext.features.ttl90Days;
 
   public isValid(): boolean {
     // TODO add feature flag that disables validation for customers with custom accounts
@@ -1014,7 +1010,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return false;
     }
 
-    if (this.container.isPreferredApiGraph() && (this.partitionKey() === "/id" || this.partitionKey() === "/label")) {
+    if (userContext.apiType === "Gremlin" && (this.partitionKey() === "/id" || this.partitionKey() === "/label")) {
       this.formErrors("/id and /label as partition keys are not allowed for graph.");
       return false;
     }
@@ -1198,7 +1194,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
     if (this.isAnalyticalStorageOn()) {
       // TODO: always default to 90 days once the backend hotfix is deployed
-      return this.container.isFeatureEnabled(Constants.Features.ttl90Days)
+      return userContext.features.ttl90Days
         ? Constants.AnalyticalStorageTtl.Days90
         : Constants.AnalyticalStorageTtl.Infinite;
     }

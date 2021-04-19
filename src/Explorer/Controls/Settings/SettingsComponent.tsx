@@ -6,7 +6,7 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -136,12 +136,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.container = this.collection?.container;
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
-      this.shouldShowIndexingPolicyEditor =
-        this.container && !this.container.isPreferredApiCassandra() && userContext.apiType !== "Mongo";
+      this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
 
-      this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
-        Constants.Features.enableChangeFeedPolicy
-      );
+      this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
@@ -300,7 +297,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.state.wasAutopilotOriginallySet !== this.state.isAutoPilotSelected;
 
   public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
-    this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
+    this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
     this.container?.databaseAccount &&
@@ -326,7 +323,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         ? this.saveCollectionSettings(startKey)
         : this.saveDatabaseSettings(startKey));
     } catch (error) {
-      this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
       console.error(error);
       traceFailure(
@@ -700,7 +696,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(
@@ -785,12 +780,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
       try {
         const newMongoIndexes = this.getMongoIndexesToSave();
-        const newMongoCollection: MongoDBCollectionResource = {
+        const newMongoCollection = {
           ...this.mongoDBCollectionResource,
           indexes: newMongoIndexes,
         };
 
-        this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
+        this.mongoDBCollectionResource = await updateCollection(
           this.collection.databaseId,
           this.collection.id(),
           newMongoCollection
@@ -863,7 +858,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         });
       }
     }
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(

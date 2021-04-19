@@ -135,10 +135,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiDocumentDB() &&
-        collection.onDocumentDBDocumentsClick();
+      userContext.apiType === "SQL" && collection.onDocumentDBDocumentsClick();
     });
   }
 
@@ -150,7 +147,7 @@ export class TabRouteHandler {
       );
       collection &&
         collection.container &&
-        (collection.container.isPreferredApiTable() || collection.container.isPreferredApiCassandra()) &&
+        (collection.container.isPreferredApiTable() || userContext.apiType === "Cassandra") &&
         collection.onTableEntitiesClick();
     });
   }
@@ -161,10 +158,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiGraph() &&
-        collection.onGraphDocumentsClick();
+      userContext.apiType === "Gremlin" && collection.onGraphDocumentsClick();
     });
   }
 
@@ -389,14 +383,7 @@ export class TabRouteHandler {
 
   private _executeActionHelper(action: () => void): void {
     const explorer = window.dataExplorer;
-    if (!!explorer && (explorer.isRefreshingExplorer() || !explorer.isAccountReady())) {
-      const refreshSubscription = explorer.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
-        if (!isRefreshing) {
-          action();
-          refreshSubscription.dispose();
-        }
-      });
-    } else {
+    if (explorer && explorer.isAccountReady()) {
       action();
     }
   }

@@ -3,13 +3,14 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { deleteStoredProcedure } from "../../Common/dataAccess/deleteStoredProcedure";
 import { executeStoredProcedure } from "../../Common/dataAccess/executeStoredProcedure";
+import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TabsBase from "../Tabs/TabsBase";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -56,7 +57,7 @@ export default class StoredProcedure {
     this.rid = data._rid;
     this.id = ko.observable(data.id);
     this.body = ko.observable(data.body as string);
-    this.isExecuteEnabled = this.container.isFeatureEnabled(Constants.Features.executeSproc);
+    this.isExecuteEnabled = userContext.features.executeSproc;
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
@@ -75,7 +76,6 @@ export default class StoredProcedure {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
-      isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons,
     });
 
@@ -122,7 +122,6 @@ export default class StoredProcedure {
           this.collection.databaseId,
           this.collection.id()
         )}/sprocs/${this.id()}`,
-        isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
@@ -137,7 +136,7 @@ export default class StoredProcedure {
 
     deleteStoredProcedure(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
-        this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       (reason) => {}

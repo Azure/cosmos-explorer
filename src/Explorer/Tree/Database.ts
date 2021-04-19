@@ -1,23 +1,23 @@
-import * as _ from "underscore";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
+import * as _ from "underscore";
+import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { readCollections } from "../../Common/dataAccess/readCollections";
+import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import DatabaseSettingsTab from "../Tabs/DatabaseSettingsTab";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import Collection from "./Collection";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as Logger from "../../Common/Logger";
-import Explorer from "../Explorer";
-import { readCollections } from "../../Common/dataAccess/readCollections";
-import { JunoClient, IJunoResponse } from "../../Juno/JunoClient";
-import { userContext } from "../../UserContext";
-import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
@@ -58,20 +58,13 @@ export default class Database implements ViewModels.Database {
     });
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
-    const useDatabaseSettingsTabV1: boolean = this.container.isFeatureEnabled(
-      Constants.Features.enableDatabaseSettingsTabV1
-    );
-    const tabKind: ViewModels.CollectionTabKind = useDatabaseSettingsTabV1
-      ? ViewModels.CollectionTabKind.DatabaseSettings
-      : ViewModels.CollectionTabKind.DatabaseSettingsV2;
+    const tabKind = ViewModels.CollectionTabKind.DatabaseSettingsV2;
     const matchingTabs = this.container.tabsManager.getTabs(tabKind, (tab) => tab.node?.id() === this.id());
-    let settingsTab: DatabaseSettingsTab | DatabaseSettingsTabV2 = useDatabaseSettingsTabV1
-      ? (matchingTabs?.[0] as DatabaseSettingsTab)
-      : (matchingTabs?.[0] as DatabaseSettingsTabV2);
+    let settingsTab = matchingTabs?.[0] as DatabaseSettingsTabV2;
+
     if (!settingsTab) {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.id(),
-
         dataExplorerArea: Constants.Areas.Tab,
         tabTitle: "Scale",
       });
@@ -79,22 +72,17 @@ export default class Database implements ViewModels.Database {
         (data: any) => {
           const pendingNotification: DataModels.Notification = data?.[0];
           const tabOptions: ViewModels.TabOptions = {
-            tabKind: useDatabaseSettingsTabV1
-              ? ViewModels.CollectionTabKind.DatabaseSettings
-              : ViewModels.CollectionTabKind.DatabaseSettingsV2,
+            tabKind,
             title: "Scale",
             tabPath: "",
             node: this,
             rid: this.rid,
             database: this,
             hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
-            isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons,
           };
-          settingsTab = useDatabaseSettingsTabV1
-            ? new DatabaseSettingsTab(tabOptions)
-            : new DatabaseSettingsTabV2(tabOptions);
+          settingsTab = new DatabaseSettingsTabV2(tabOptions);
           settingsTab.pendingNotification(pendingNotification);
           this.container.tabsManager.activateNewTab(settingsTab);
         },
@@ -144,10 +132,6 @@ export default class Database implements ViewModels.Database {
     );
   }
 
-  public onDeleteDatabaseContextMenuClick(source: ViewModels.Database, event: MouseEvent | KeyboardEvent) {
-    this.container.deleteDatabaseConfirmationPane.open();
-  }
-
   public selectDatabase() {
     this.container.selectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -188,6 +172,27 @@ export default class Database implements ViewModels.Database {
   public async loadCollections(): Promise<void> {
     const collectionVMs: Collection[] = [];
     const collections: DataModels.Collection[] = await readCollections(this.id());
+    // TODO Remove
+    // This is a hack to make Mongo collections read via ARM have a SQL-ish partitionKey property
+    if (userContext.apiType === "Mongo" && userContext.authType === AuthType.AAD) {
+      collections.map((collection) => {
+        if (collection.shardKey) {
+          const shardKey = Object.keys(collection.shardKey)[0];
+          collection.partitionKey = {
+            version: undefined,
+            kind: "Hash",
+            paths: [`/"$v"/"${shardKey.split(".").join(`"/"$v"/"`)}"/"$v"`],
+          };
+        } else {
+          collection.partitionKey = {
+            paths: ["/'$v'/'_partitionKey'/'$v'"],
+            kind: "Hash",
+            version: 2,
+            systemKey: true,
+          };
+        }
+      });
+    }
     const deltaCollections = this.getDeltaCollections(collections);
 
     collections.forEach((collection: DataModels.Collection) => {

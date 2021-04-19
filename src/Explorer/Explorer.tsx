@@ -19,13 +19,12 @@ import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter"
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
-import { SubscriptionType } from "../Contracts/SubscriptionType";
 import * as ViewModels from "../Contracts/ViewModels";
 import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { appInsights } from "../Shared/appInsights";
+import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
@@ -37,6 +36,7 @@ import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationU
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -44,32 +44,31 @@ import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
-import { FileSystemUtil } from "./Notebook/FileSystemUtil";
+import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
+import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane";
+import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
-import DeleteDatabaseConfirmationPane from "./Panes/DeleteDatabaseConfirmationPane";
-import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane";
+import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
+import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
-import { LoadQueryPane } from "./Panes/LoadQueryPane";
+import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
 import NewVertexPane from "./Panes/NewVertexPane";
-import { SaveQueryPane } from "./Panes/SaveQueryPane";
+import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
-import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
-import { TableColumnOptionsPane } from "./Panes/Tables/TableColumnOptionsPane";
+import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
-import { UploadItemsPaneAdapter } from "./Panes/UploadItemsPaneAdapter";
+import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -80,8 +79,6 @@ import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
-import Trigger from "./Tree/Trigger";
-import UserDefinedFunction from "./Tree/UserDefinedFunction";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -95,13 +92,10 @@ export interface ExplorerParams {
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
+  tabsManager: TabsManager;
 }
 
 export default class Explorer {
-  public flight: ko.Observable<string> = ko.observable<string>(
-    SharedConstants.CollectionCreation.DefaultAddCollectionDefaultFlight
-  );
-
   public addCollectionText: ko.Observable<string>;
   public addDatabaseText: ko.Observable<string>;
   public collectionTitle: ko.Observable<string>;
@@ -109,7 +103,6 @@ export default class Explorer {
   public deleteDatabaseText: ko.Observable<string>;
   public collectionTreeNodeAltText: ko.Observable<string>;
   public refreshTreeTitle: ko.Observable<string>;
-  public hasWriteAccess: ko.Observable<boolean>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
   /**
@@ -120,29 +113,9 @@ export default class Explorer {
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   /**
    * @deprecated
-   * Use userContext.subscriptionType instead
-   * */
-  public subscriptionType: ko.Observable<SubscriptionType>;
-  /**
-   * @deprecated
    * Use userContext.apiType instead
    * */
   public defaultExperience: ko.Observable<string>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "SQL"
-   * */
-  public isPreferredApiDocumentDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
-   * */
-  public isPreferredApiCassandra: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
-   * */
-  public isPreferredApiGraph: ko.Computed<boolean>;
   /**
    * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
@@ -174,16 +147,10 @@ export default class Explorer {
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
-  public nonSystemDatabases: ko.Computed<ViewModels.Database[]>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
   public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
-  /**
-   * @deprecated
-   * Use a local loading state and spinner instead. Using a global isRefreshing state causes problems.
-   * */
-  public isRefreshingExplorer: ko.Observable<boolean>;
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
@@ -203,23 +170,11 @@ export default class Explorer {
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
-  public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
-  public deleteDatabaseConfirmationPane: DeleteDatabaseConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public tableColumnOptionsPane: TableColumnOptionsPane;
-  public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public settingsPane: SettingsPane;
-  public executeSprocParamsPane: ExecuteSprocParamsPane;
-  public uploadItemsPane: UploadItemsPane;
-  public uploadItemsPaneAdapter: UploadItemsPaneAdapter;
-  public loadQueryPane: LoadQueryPane;
-  public saveQueryPane: ContextualPaneBase;
-  public browseQueriesPane: BrowseQueriesPane;
-  public uploadFilePane: UploadFilePane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -256,7 +211,6 @@ export default class Explorer {
   public closeDialog: ExplorerParams["closeDialog"];
 
   private _panes: ContextualPaneBase[] = [];
-  private _isSystemDatabasePredicate: (database: ViewModels.Database) => boolean = (database) => false;
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -284,7 +238,6 @@ export default class Explorer {
     });
     this.addCollectionText = ko.observable<string>("New Collection");
     this.addDatabaseText = ko.observable<string>("New Database");
-    this.hasWriteAccess = ko.observable<boolean>(true);
     this.collectionTitle = ko.observable<string>("Collections");
     this.collectionTreeNodeAltText = ko.observable<string>("Collection");
     this.deleteCollectionText = ko.observable<string>("Delete Collection");
@@ -292,23 +245,6 @@ export default class Explorer {
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
     this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
-    this.subscriptionType = ko.observable<SubscriptionType>(SharedConstants.CollectionCreation.DefaultSubscriptionType);
-    let firstInitialization = true;
-    this.isRefreshingExplorer = ko.observable<boolean>(true);
-    this.isRefreshingExplorer.subscribe((isRefreshing: boolean) => {
-      if (!isRefreshing && firstInitialization) {
-        // set focus on first element
-        firstInitialization = false;
-        try {
-          document.getElementById("createNewContainerCommandButton").parentElement.parentElement.focus();
-        } catch (e) {
-          Logger.logWarning(
-            "getElementById('createNewContainerCommandButton') failed to find element",
-            "Explorer/this.isRefreshingExplorer.subscribe"
-          );
-        }
-      }
-    });
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -344,7 +280,7 @@ export default class Explorer {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  this.isFeatureEnabled(Constants.Features.enableNotebooks))
+                  userContext.features.enableNotebooks)
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -366,10 +302,10 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                this.isFeatureEnabled(Constants.Features.enableSpark)
+                userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
-              appInsights.trackEvent(
+              trackEvent(
                 { name: "LoadedWithSparkEnabled" },
                 {
                   subscriptionId: userContext.subscriptionId,
@@ -390,7 +326,6 @@ export default class Explorer {
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
-    this.features = ko.observable();
     this.queriesClient = new QueriesClient(this);
 
     this.resourceTokenDatabaseId = ko.observable<string>();
@@ -402,11 +337,9 @@ export default class Explorer {
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
     this.isCopyNotebookPaneEnabled = ko.observable<boolean>(false);
 
-    this.canExceedMaximumValue = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.canExceedMaximumValue)
-    );
+    this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
 
-    this.isSchemaEnabled = ko.computed<boolean>(() => this.isFeatureEnabled(Constants.Features.enableSchema));
+    this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
@@ -466,27 +399,13 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiDocumentDB = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.DocumentDB.toLowerCase();
-    });
-
-    this.isPreferredApiCassandra = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase();
-    });
-    this.isPreferredApiGraph = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Graph.toLowerCase();
-    });
-
     this.isPreferredApiTable = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Table.toLowerCase();
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
-      if (this.isFeatureEnabled(Constants.Features.enableFixedCollectionWithSharedThroughput)) {
+      if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
       }
 
@@ -522,22 +441,11 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal &&
+        !this.isRunningOnNationalCloud() &&
+        userContext.apiType !== "Gremlin"
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() =>
-      this.isFeatureEnabled(Constants.Features.enableRightPanelV2)
-    );
-    this.defaultExperience.subscribe((defaultExperience: string) => {
-      if (
-        defaultExperience &&
-        defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase()
-      ) {
-        this._isSystemDatabasePredicate = (database: ViewModels.Database): boolean => {
-          return database.id() === "system";
-        };
-      }
-    });
-
+    this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -559,10 +467,6 @@ export default class Explorer {
       }
     });
 
-    this.nonSystemDatabases = ko.computed(() => {
-      return this.databases().filter((database: ViewModels.Database) => !this._isSystemDatabasePredicate(database));
-    });
-
     this.addDatabasePane = new AddDatabasePane({
       id: "adddatabasepane",
       visible: ko.observable<boolean>(false),
@@ -573,20 +477,6 @@ export default class Explorer {
     this.addCollectionPane = new AddCollectionPane({
       isPreferredApiTable: ko.computed(() => this.isPreferredApiTable()),
       id: "addcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      id: "deletecollectionconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.deleteDatabaseConfirmationPane = new DeleteDatabaseConfirmationPane({
-      id: "deletedatabaseconfirmationpane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -613,20 +503,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.tableColumnOptionsPane = new TableColumnOptionsPane({
-      id: "tablecolumnoptionspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.querySelectPane = new QuerySelectPane({
-      id: "queryselectpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.newVertexPane = new NewVertexPane({
       id: "newvertexpane",
       visible: ko.observable<boolean>(false),
@@ -636,57 +512,6 @@ export default class Explorer {
 
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.settingsPane = new SettingsPane({
-      id: "settingspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.executeSprocParamsPane = new ExecuteSprocParamsPane({
-      id: "executesprocparamspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPane = new UploadItemsPane({
-      id: "uploaditemspane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadItemsPaneAdapter = new UploadItemsPaneAdapter(this);
-
-    this.loadQueryPane = new LoadQueryPane({
-      id: "loadquerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.saveQueryPane = new SaveQueryPane({
-      id: "savequerypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.browseQueriesPane = new BrowseQueriesPane({
-      id: "browsequeriespane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.uploadFilePane = new UploadFilePane({
-      id: "uploadfilepane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -706,27 +531,22 @@ export default class Explorer {
       container: this,
     });
 
-    this.tabsManager = new TabsManager();
+    this.tabsManager = params?.tabsManager ?? new TabsManager();
+    this.tabsManager.openedTabs.subscribe((tabs) => {
+      if (tabs.length === 0) {
+        this.selectedNode(undefined);
+        this.onUpdateTabsButtons([]);
+      }
+    });
 
     this._panes = [
       this.addDatabasePane,
       this.addCollectionPane,
-      this.deleteCollectionConfirmationPane,
-      this.deleteDatabaseConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.tableColumnOptionsPane,
-      this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
-      this.settingsPane,
-      this.executeSprocParamsPane,
-      this.uploadItemsPane,
-      this.loadQueryPane,
-      this.saveQueryPane,
-      this.browseQueriesPane,
-      this.uploadFilePane,
       this.stringInputPane,
       this.setupNotebooksPane,
     ];
@@ -758,8 +578,6 @@ export default class Explorer {
         this.addCollectionPane.collectionWithThroughputInSharedTitle(
           "Provision dedicated throughput for this container"
         );
-        this.deleteCollectionConfirmationPane.title("Delete Container");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
         this.refreshTreeTitle("Refresh containers");
         break;
       case "Mongo":
@@ -786,8 +604,6 @@ export default class Explorer {
         this.addCollectionPane.title("Add Graph");
         this.addCollectionPane.collectionIdTitle("Graph id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-        this.deleteCollectionConfirmationPane.title("Delete Graph");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
         this.refreshTreeTitle("Refresh graphs");
         break;
       case "Tables":
@@ -803,8 +619,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Entity");
         this.editTableEntityPane.title("Edit Table Entity");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -820,10 +634,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Row");
         this.editTableEntityPane.title("Edit Table Row");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
-        this.deleteDatabaseConfirmationPane.title("Delete Keyspace");
-        this.deleteDatabaseConfirmationPane.databaseIdConfirmationText("Confirm by typing the keyspace id");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -877,42 +687,29 @@ export default class Explorer {
     });
 
     // Override notebook server parameters from URL parameters
-    const featureSubcription = this.features.subscribe((features) => {
-      const serverInfo = this.notebookServerInfo();
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        serverInfo.notebookServerEndpoint = features[Constants.Features.notebookServerUrl];
-      }
+    if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
+      this.notebookServerInfo({
+        notebookServerEndpoint: userContext.features.notebookServerUrl,
+        authToken: userContext.features.notebookServerToken,
+      });
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        serverInfo.authToken = features[Constants.Features.notebookServerToken];
-      }
-      this.notebookServerInfo(serverInfo);
-      this.notebookServerInfo.valueHasMutated();
+    if (userContext.features.notebookBasePath) {
+      this.notebookBasePath(userContext.features.notebookBasePath);
+    }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookBasePath)) {
-        this.notebookBasePath(features[Constants.Features.notebookBasePath]);
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.livyEndpoint)) {
-        this.sparkClusterConnectionInfo({
-          userName: undefined,
-          password: undefined,
-          endpoints: [
-            {
-              endpoint: features[Constants.Features.livyEndpoint],
-              kind: DataModels.SparkClusterEndpointKind.Livy,
-            },
-          ],
-        });
-        this.sparkClusterConnectionInfo.valueHasMutated();
-      }
-
-      if (this.isFeatureEnabled(Constants.Features.enableSDKoperations)) {
-        updateUserContext({ useSDKOperations: true });
-      }
-
-      featureSubcription.dispose();
-    });
+    if (userContext.features.livyEndpoint) {
+      this.sparkClusterConnectionInfo({
+        userName: undefined,
+        password: undefined,
+        endpoints: [
+          {
+            endpoint: userContext.features.livyEndpoint,
+            kind: DataModels.SparkClusterEndpointKind.Livy,
+          },
+        ],
+      });
+    }
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -996,20 +793,6 @@ export default class Explorer {
     return this.selectedNode() == null;
   }
 
-  public isFeatureEnabled(feature: string): boolean {
-    const features = this.features();
-
-    if (!features) {
-      return false;
-    }
-
-    if (feature in features && features[feature]) {
-      return true;
-    }
-
-    return false;
-  }
-
   public logConsoleData(consoleData: ConsoleData): void {
     this.setNotificationConsoleData(consoleData);
   }
@@ -1056,7 +839,6 @@ export default class Explorer {
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
-    this.isRefreshingExplorer(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -1069,10 +851,8 @@ export default class Explorer {
 
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-    this._setLoadingStatusText("Fetching databases...");
     readDatabases().then(
       (databases: DataModels.Database[]) => {
-        this._setLoadingStatusText("Successfully fetched databases.");
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
           {
@@ -1085,23 +865,16 @@ export default class Explorer {
         this.addDatabasesToList(deltaDatabases.toAdd);
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
         this.selectedNode(currentlySelectedNode);
-        this._setLoadingStatusText("Fetching containers...");
-        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd)
-          .then(
-            () => {
-              this._setLoadingStatusText("Successfully fetched containers.");
-              deferred.resolve();
-            },
-            (reason) => {
-              this._setLoadingStatusText("Failed to fetch containers.");
-              deferred.reject(reason);
-            }
-          )
-          .finally(() => this.isRefreshingExplorer(false));
+        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
+          () => {
+            deferred.resolve();
+          },
+          (reason) => {
+            deferred.reject(reason);
+          }
+        );
       },
       (error) => {
-        this._setLoadingStatusText("Failed to fetch databases.");
-        this.isRefreshingExplorer(false);
         deferred.reject(error);
         const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
@@ -1161,7 +934,6 @@ export default class Explorer {
       description: "Refresh button clicked",
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    this.isRefreshingExplorer(true);
     userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
@@ -1178,7 +950,7 @@ export default class Explorer {
 
   // Facade
   public provideFeedbackEmail = () => {
-    window.open(Constants.Urls.feedbackEmail, "_self");
+    window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
   public async getArcadiaToken(): Promise<string> {
@@ -1257,12 +1029,12 @@ export default class Explorer {
       throw error;
     } finally {
       // Overwrite with feature flags
-      if (this.isFeatureEnabled(Constants.Features.notebookServerUrl)) {
-        connectionInfo.notebookServerEndpoint = this.features()[Constants.Features.notebookServerUrl];
+      if (userContext.features.notebookServerUrl) {
+        connectionInfo.notebookServerEndpoint = userContext.features.notebookServerUrl;
       }
 
-      if (this.isFeatureEnabled(Constants.Features.notebookServerToken)) {
-        connectionInfo.authToken = this.features()[Constants.Features.notebookServerToken];
+      if (userContext.features.notebookServerToken) {
+        connectionInfo.authToken = userContext.features.notebookServerToken;
       }
 
       this.notebookServerInfo(connectionInfo);
@@ -1378,7 +1150,12 @@ export default class Explorer {
   }
 
   public isLastNonEmptyDatabase(): boolean {
-    if (this.isLastDatabase() && this.databases()[0].collections && this.databases()[0].collections().length > 0) {
+    if (
+      this.isLastDatabase() &&
+      this.databases()[0] &&
+      this.databases()[0].collections &&
+      this.databases()[0].collections().length > 0
+    ) {
       return true;
     }
     return false;
@@ -1412,13 +1189,7 @@ export default class Explorer {
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.features(inputs.features);
       this.databaseAccount(databaseAccount);
-      this.subscriptionType(inputs.subscriptionType ?? SharedConstants.CollectionCreation.DefaultSubscriptionType);
-      this.hasWriteAccess(inputs.hasWriteAccess ?? true);
-      if (inputs.addCollectionDefaultFlight) {
-        this.flight(inputs.addCollectionDefaultFlight);
-      }
       this.setFeatureFlagsFromFlights(inputs.flights);
       TelemetryProcessor.traceSuccess(
         Action.LoadDatabaseAccount,
@@ -1448,49 +1219,6 @@ export default class Explorer {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
-  public findSelectedStoredProcedure(): StoredProcedure {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
-      const openedSprocTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.StoredProcedures,
-        (tab) => tab.node && tab.node.rid === storedProcedure.rid
-      );
-      return (
-        storedProcedure.rid === this.selectedNode().rid ||
-        (!!openedSprocTab && openedSprocTab.length > 0 && openedSprocTab[0].isActive())
-      );
-    });
-  }
-
-  public findSelectedUDF(): UserDefinedFunction {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
-      const openedUdfTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.UserDefinedFunctions,
-        (tab) => tab.node && tab.node.rid === userDefinedFunction.rid
-      );
-      return (
-        userDefinedFunction.rid === this.selectedNode().rid ||
-        (!!openedUdfTab && openedUdfTab.length > 0 && openedUdfTab[0].isActive())
-      );
-    });
-  }
-
-  public findSelectedTrigger(): Trigger {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
-      const openedTriggerTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.Triggers,
-        (tab) => tab.node && tab.node.rid === trigger.rid
-      );
-      return (
-        trigger.rid === this.selectedNode().rid ||
-        (!!openedTriggerTab && openedTriggerTab.length > 0 && openedTriggerTab[0].isActive())
-      );
-    });
   }
 
   public closeAllPanes(): void {
@@ -1821,7 +1549,6 @@ export default class Explorer {
         collection: null,
         masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -2172,38 +1899,6 @@ export default class Explorer {
       .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(notificationProgressId));
   }
 
-  public onUploadToNotebookServerClicked(parent?: NotebookContentItem): void {
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
-
-    this.uploadFilePane.openWithOptions({
-      paneTitle: "Upload file to notebook server",
-      selectFileInputLabel: "Select file to upload",
-      errorMessage: "Could not upload file",
-      inProgressMessage: "Uploading file to notebook server",
-      successMessage: "Successfully uploaded file to notebook server",
-      onSubmit: async (file: File): Promise<NotebookContentItem> => {
-        const readFileAsText = (inputFile: File): Promise<string> => {
-          const reader = new FileReader();
-          return new Promise((resolve, reject) => {
-            reader.onerror = () => {
-              reader.abort();
-              reject(`Problem parsing file: ${inputFile}`);
-            };
-            reader.onload = () => {
-              resolve(reader.result as string);
-            };
-            reader.readAsText(inputFile);
-          });
-        };
-
-        const fileContent = await readFileAsText(file);
-        return this.uploadFile(file.name, fileContent, parent);
-      },
-      extensions: undefined,
-      submitButtonLabel: "Upload",
-    });
-  }
-
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
@@ -2259,7 +1954,6 @@ export default class Explorer {
         tabPath: title,
         collection: null,
         hashLocation: hashLocation,
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -2364,12 +2058,14 @@ export default class Explorer {
   }
 
   public onNewCollectionClicked(): void {
-    if (this.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
+    } else if (userContext.features.enableReactPane) {
+      this.openAddCollectionPanel();
     } else {
       this.addCollectionPane.open(this.selectedDatabaseId());
+      document.getElementById("linkAddCollection").focus();
     }
-    document.getElementById("linkAddCollection").focus();
   }
 
   private refreshCommandBarButtons(): void {
@@ -2402,32 +2098,6 @@ export default class Explorer {
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
       return tokenRefreshInterval;
-    }
-  }
-
-  private _setLoadingStatusText(text: string, title: string = "Welcome to Azure Cosmos DB") {
-    if (!text) {
-      return;
-    }
-
-    const loadingText = document.getElementById("explorerLoadingStatusText");
-    if (!loadingText) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusText') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-      return;
-    }
-    loadingText.innerHTML = text;
-
-    const loadingTitle = document.getElementById("explorerLoadingStatusTitle");
-    if (!loadingTitle) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusTitle') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-    } else {
-      loadingTitle.innerHTML = title;
     }
   }
 
@@ -2498,15 +2168,88 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    this.isFeatureEnabled(Constants.Features.enableKOPanel)
-      ? this.deleteCollectionConfirmationPane.open()
-      : this.openSidePanel(
-          "Delete Collection",
-          <DeleteCollectionConfirmationPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
+    this.openSidePanel(
+      "Delete " + collectionName,
+      <DeleteCollectionConfirmationPanel
+        explorer={this}
+        collectionName={collectionName}
+        closePanel={this.closeSidePanel}
+      />
+    );
+  }
+
+  public openDeleteDatabaseConfirmationPane(): void {
+    this.openSidePanel(
+      "Delete Database",
+      <DeleteDatabaseConfirmationPanel
+        explorer={this}
+        openNotificationConsole={this.expandConsole}
+        closePanel={this.closeSidePanel}
+        selectedDatabase={this.findSelectedDatabase()}
+      />
+    );
+  }
+
+  public openUploadItemsPanePane(): void {
+    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openSettingPane(): void {
+    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
+    this.openSidePanel(
+      "Input parameters",
+      <ExecuteSprocParamsPanel
+        explorer={this}
+        storedProcedure={storedProcedure}
+        closePanel={() => this.closeSidePanel()}
+      />
+    );
+  }
+
+  public async openAddCollectionPanel(): Promise<void> {
+    await this.loadDatabaseOffers();
+    this.openSidePanel(
+      "New Collection",
+      <AddCollectionPanel
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        openNotificationConsole={() => this.expandConsole()}
+      />
+    );
+  }
+
+  public openBrowseQueriesPanel(): void {
+    this.openSidePanel("Open Saved Queries", <BrowseQueriesPanel explorer={this} closePanel={this.closeSidePanel} />);
+  }
+
+  public openLoadQueryPanel(): void {
+    this.openSidePanel("Load Query", <LoadQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
+  public openSaveQueryPanel(): void {
+    this.openSidePanel("Save Query", <SaveQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+  }
+
+  public openUploadFilePanel(parent?: NotebookContentItem): void {
+    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    this.openSidePanel(
+      "Upload File",
+      <UploadFilePane
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
+      />
+    );
+  }
+
+  public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
+    this.openSidePanel(
+      "Select Column",
+      <TableQuerySelectPanel explorer={this} closePanel={this.closeSidePanel} queryViewModel={queryViewModal} />
+    );
   }
 }

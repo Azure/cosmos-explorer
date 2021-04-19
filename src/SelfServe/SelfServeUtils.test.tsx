@@ -131,9 +131,9 @@ describe("SelfServeUtils", () => {
           type: "object",
           labelTKey: "Regions",
           choices: [
-            { label: "South West US", key: "SWUS" },
-            { label: "North Central US", key: "NCUS" },
-            { label: "East US 2", key: "EUS2" },
+            { labelTKey: "South West US", key: "SWUS" },
+            { labelTKey: "North Central US", key: "NCUS" },
+            { labelTKey: "East US 2", key: "EUS2" },
           ],
         },
       ],
@@ -150,7 +150,6 @@ describe("SelfServeUtils", () => {
     ]);
     const expectedDescriptor = {
       root: {
-        id: "TestClass",
         children: [
           {
             id: "dbThroughput",
@@ -238,9 +237,9 @@ describe("SelfServeUtils", () => {
               type: "object",
               labelTKey: "Regions",
               choices: [
-                { label: "South West US", key: "SWUS" },
-                { label: "North Central US", key: "NCUS" },
-                { label: "East US 2", key: "EUS2" },
+                { labelTKey: "South West US", key: "SWUS" },
+                { labelTKey: "North Central US", key: "NCUS" },
+                { labelTKey: "East US 2", key: "EUS2" },
               ],
             },
             children: [] as Node[],
@@ -270,7 +269,7 @@ describe("SelfServeUtils", () => {
         "invalidRegions",
       ],
     };
-    const descriptor = mapToSmartUiDescriptor("TestClass", context);
+    const descriptor = mapToSmartUiDescriptor(context);
     expect(descriptor).toEqual(expectedDescriptor);
   });
 });

@@ -23,15 +23,17 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { QueryUtils } from "../../Utils/QueryUtils";
+import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import DocumentId from "../Tree/DocumentId";
+import template from "./DocumentsTab.html";
 import TabsBase from "./TabsBase";
 
 export default class DocumentsTab extends TabsBase {
+  public static readonly component = { name: "documents-tab", template };
   public selectedDocumentId: ko.Observable<DocumentId>;
   public selectedDocumentContent: ViewModels.Editable<string>;
   public initialDocumentContent: ko.Observable<string>;
@@ -871,8 +873,6 @@ export default class DocumentsTab extends TabsBase {
       buttons.push(DocumentsTab._createUploadButton(this.collection.container));
     }
 
-    const features = this.collection.container.features() || {};
-
     return buttons;
   }
 
@@ -913,12 +913,7 @@ export default class DocumentsTab extends TabsBase {
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        const focusElement = document.getElementById("itemImportLink");
-        const uploadItemsPane = container.isRightPanelV2Enabled()
-          ? container.uploadItemsPaneAdapter
-          : container.uploadItemsPane;
-        selectedCollection && uploadItemsPane.open();
-        focusElement && focusElement.focus();
+        selectedCollection && container.openUploadItemsPanePane();
       },
       commandButtonLabel: label,
       ariaLabel: label,

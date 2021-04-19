@@ -239,7 +239,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
     return (
       <Stack {...createAndAddMongoIndexStackProps} styles={mediumWidthStackStyles}>
-        <CollapsibleSectionComponent title="Current index(es)">
+        <CollapsibleSectionComponent title="Current index(es)" isExpandedByDefault={true}>
           {
             <>
               <DetailsList
@@ -266,7 +266,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
     return (
       <Stack styles={mediumWidthStackStyles}>
-        <CollapsibleSectionComponent title="Index(es) to be dropped">
+        <CollapsibleSectionComponent title="Index(es) to be dropped" isExpandedByDefault={true}>
           {indexesToBeDropped.length > 0 && (
             <DetailsList
               styles={customDetailsListStyles}

@@ -1,28 +1,55 @@
+import { Spinner, SpinnerSize } from "office-ui-fabric-react";
+import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import * as React from "react";
 import ReactDOM from "react-dom";
-import { sendMessage } from "../Common/MessageHandler";
+import { withTranslation } from "react-i18next";
+import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
+import { sendReadyMessage } from "../Common/MessageHandler";
+import { configContext, updateConfigContext } from "../ConfigContext";
+import { SelfServeFrameInputs } from "../Contracts/ViewModels";
+import i18n from "../i18n";
+import { updateUserContext } from "../UserContext";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
+import "./SelfServe.less";
 import { SelfServeComponent } from "./SelfServeComponent";
 import { SelfServeDescriptor } from "./SelfServeTypes";
 import { SelfServeType } from "./SelfServeUtils";
-import { SelfServeFrameInputs } from "../Contracts/ViewModels";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { configContext, updateConfigContext } from "../ConfigContext";
-import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
-import { updateUserContext } from "../UserContext";
-import "./SelfServe.less";
-import { Spinner, SpinnerSize } from "office-ui-fabric-react";
 initializeIcons();
+
+const loadTranslationFile = async (className: string): Promise<void> => {
+  const language = i18n.languages[0];
+  const fileName = `${className}.json`;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let translations: any;
+  try {
+    translations = await import(
+      /* webpackChunkName: "Localization-[request]" */ `../Localization/${language}/${fileName}`
+    );
+  } catch (e) {
+    translations = await import(/* webpackChunkName: "Localization-en-[request]" */ `../Localization/en/${fileName}`);
+  }
+  i18n.addResourceBundle(language, className, translations.default, true);
+};
+
+const loadTranslations = async (className: string): Promise<void> => {
+  await loadTranslationFile("Common");
+  await loadTranslationFile(className);
+};
 
 const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDescriptor> => {
   switch (selfServeType) {
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
-      return new SelfServeExample.default().toSelfServeDescriptor();
+      const selfServeExample = new SelfServeExample.default();
+      await loadTranslations(selfServeExample.constructor.name);
+      return selfServeExample.toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
-      return new SqlX.default().toSelfServeDescriptor();
+      const sqlX = new SqlX.default();
+      await loadTranslations(sqlX.constructor.name);
+      return sqlX.toSelfServeDescriptor();
     }
     default:
       return undefined;
@@ -33,7 +60,8 @@ const renderComponent = (selfServeDescriptor: SelfServeDescriptor): JSX.Element 
   if (!selfServeDescriptor) {
     return <h1>Invalid self serve type!</h1>;
   }
-  return <SelfServeComponent descriptor={selfServeDescriptor} />;
+  const SelfServeComponentTranslated = withTranslation()(SelfServeComponent);
+  return <SelfServeComponentTranslated descriptor={selfServeDescriptor} />;
 };
 
 const renderSpinner = (): JSX.Element => {
@@ -83,10 +111,20 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
     subscriptionId: inputs.subscriptionId,
   });
 
+  if (i18n.isInitialized) {
+    await displaySelfServeComponent(selfServeType);
+  } else {
+    i18n.on("initialized", async () => {
+      await displaySelfServeComponent(selfServeType);
+    });
+  }
+};
+
+const displaySelfServeComponent = async (selfServeType: SelfServeType): Promise<void> => {
   const descriptor = await getDescriptor(selfServeType);
   ReactDOM.render(renderComponent(descriptor), document.getElementById("selfServeContent"));
 };
 
 ReactDOM.render(renderSpinner(), document.getElementById("selfServeContent"));
 window.addEventListener("message", handleMessage, false);
-sendMessage("ready");
+sendReadyMessage();

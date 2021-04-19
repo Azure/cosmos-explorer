@@ -2,36 +2,53 @@ import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
 import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
+import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
+import { CollectionCreation } from "./Shared/Constants";
 
 interface UserContext {
-  authType?: AuthType;
-  masterKey?: string;
-  subscriptionId?: string;
-  resourceGroup?: string;
-  databaseAccount?: DatabaseAccount;
-  endpoint?: string;
-  accessToken?: string;
-  authorizationToken?: string;
-  resourceToken?: string;
-  defaultExperience?: DefaultAccountExperienceType;
-  useSDKOperations?: boolean;
-  subscriptionType?: SubscriptionType;
-  quotaId?: string;
+  readonly authType?: AuthType;
+  readonly masterKey?: string;
+  readonly subscriptionId?: string;
+  readonly resourceGroup?: string;
+  readonly databaseAccount?: DatabaseAccount;
+  readonly endpoint?: string;
+  readonly accessToken?: string;
+  readonly authorizationToken?: string;
+  readonly resourceToken?: string;
+  readonly useSDKOperations: boolean;
+  readonly defaultExperience?: DefaultAccountExperienceType;
+  readonly subscriptionType?: SubscriptionType;
+  readonly quotaId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
   apiType?: ApiType;
-  isTryCosmosDBSubscription?: boolean;
-  portalEnv?: PortalEnv;
+  readonly isTryCosmosDBSubscription?: boolean;
+  readonly portalEnv?: PortalEnv;
+  readonly features: Features;
+  readonly addCollectionFlight: string;
+  readonly hasWriteAccess: boolean;
 }
 
 type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
-const userContext: UserContext = { isTryCosmosDBSubscription: false, portalEnv: "prod" };
+const features = extractFeatures();
+const { enableSDKoperations: useSDKOperations } = features;
 
-function updateUserContext(newContext: UserContext): void {
+const userContext: UserContext = {
+  apiType: "SQL",
+  hasWriteAccess: true,
+  isTryCosmosDBSubscription: false,
+  portalEnv: "prod",
+  features,
+  useSDKOperations,
+  addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
+  subscriptionType: CollectionCreation.DefaultSubscriptionType,
+};
+
+function updateUserContext(newContext: Partial<UserContext>): void {
   if (newContext.databaseAccount) {
-    newContext.apiType = apiType(userContext.databaseAccount);
+    newContext.apiType = apiType(newContext.databaseAccount);
   }
   Object.assign(userContext, newContext);
 }
@@ -62,3 +79,4 @@ function apiType(account: DatabaseAccount | undefined): ApiType {
 }
 
 export { userContext, updateUserContext };
+
