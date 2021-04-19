@@ -9,7 +9,6 @@ import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import { StyleConstants } from "../../../Common/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { userContext } from "../../../UserContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -30,7 +29,6 @@ export class CommandBarComponentAdapter implements ReactAdapter {
 
     // These are the parameters watched by the react binding that will trigger a renderComponent() if one of the ko mutates
     const toWatch = [
-      userContext.apiType === "Tables",
       container.isPreferredApiMongoDB,
       container.deleteCollectionText,
       container.deleteDatabaseText,
