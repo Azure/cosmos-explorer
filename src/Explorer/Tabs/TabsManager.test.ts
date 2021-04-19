@@ -1,11 +1,11 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as DataModels from "../../Contracts/DataModels";
-import { TabsManager } from "./TabsManager";
-import DocumentsTab from "./DocumentsTab";
+import * as ViewModels from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
-import QueryTab from "./QueryTab";
 import DocumentId from "../Tree/DocumentId";
+import DocumentsTab from "./DocumentsTab";
+import QueryTab from "./QueryTab";
+import { TabsManager } from "./TabsManager";
 
 describe("Tabs manager tests", () => {
   let tabsManager: TabsManager;
@@ -50,7 +50,6 @@ describe("Tabs manager tests", () => {
       database,
       title: "",
       tabPath: "",
-      isActive: ko.observable<boolean>(false),
       hashLocation: "",
       onUpdateTabsButtons: undefined,
     });
@@ -63,7 +62,6 @@ describe("Tabs manager tests", () => {
       title: "",
       tabPath: "",
       hashLocation: "",
-      isActive: ko.observable<boolean>(false),
       onUpdateTabsButtons: undefined,
     });
 
@@ -72,10 +70,7 @@ describe("Tabs manager tests", () => {
     documentsTab.tabId = "2";
   });
 
-  beforeEach(() => {
-    tabsManager = new TabsManager();
-    explorer.tabsManager = tabsManager;
-  });
+  beforeEach(() => (tabsManager = new TabsManager()));
 
   it("open new tabs", () => {
     tabsManager.activateNewTab(queryTab);
@@ -122,7 +117,7 @@ describe("Tabs manager tests", () => {
     tabsManager.activateNewTab(queryTab);
     tabsManager.activateNewTab(documentsTab);
 
-    tabsManager.closeTab(documentsTab.tabId, explorer);
+    tabsManager.closeTab(documentsTab);
     expect(tabsManager.openedTabs().length).toBe(1);
     expect(tabsManager.openedTabs()[0]).toEqual(queryTab);
     expect(tabsManager.activeTab()).toEqual(queryTab);

@@ -1,11 +1,11 @@
 import { shallow } from "enzyme";
 import ko from "knockout";
 import React from "react";
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
@@ -23,13 +23,8 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     changeFeedPolicy: undefined,
     analyticalStorageTtl: undefined,
     geospatialConfig: undefined,
-  } as DataModels.Collection),
-  updateMongoDBCollectionThroughRP: jest.fn().mockReturnValue({
-    id: undefined,
-    shardKey: undefined,
     indexes: [],
-    analyticalStorageTtl: undefined,
-  } as MongoDBCollectionResource),
+  }),
 }));
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
@@ -44,7 +39,6 @@ describe("SettingsComponent", () => {
       tabPath: "",
       node: undefined,
       hashLocation: "settings",
-      isActive: ko.observable(false),
       onUpdateTabsButtons: undefined,
     }),
   };
@@ -113,7 +107,13 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.shouldShowKeyspaceSharedThroughputMessage()).toEqual(false);
 
     const newContainer = new Explorer();
-    newContainer.isPreferredApiCassandra = ko.computed(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableCassandra" }],
+        },
+      } as DataModels.DatabaseAccount,
+    });
 
     const newCollection = { ...collection };
     newCollection.container = newContainer;
@@ -193,7 +193,6 @@ describe("SettingsComponent", () => {
     };
     await settingsComponentInstance.onSaveClick();
     expect(updateCollection).toBeCalled();
-    expect(updateMongoDBCollectionThroughRP).toBeCalled();
     expect(updateOffer).toBeCalled();
   });
 

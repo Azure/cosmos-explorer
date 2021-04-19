@@ -36,6 +36,7 @@ import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationU
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -52,7 +53,6 @@ import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import DeleteCollectionConfirmationPane from "./Panes/DeleteCollectionConfirmationPane";
 import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
@@ -65,9 +65,10 @@ import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
 import { StringInputPane } from "./Panes/StringInputPane";
 import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
-import { QuerySelectPane } from "./Panes/Tables/QuerySelectPane";
+import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
@@ -78,8 +79,6 @@ import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
-import Trigger from "./Tree/Trigger";
-import UserDefinedFunction from "./Tree/UserDefinedFunction";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -93,6 +92,7 @@ export interface ExplorerParams {
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
+  tabsManager: TabsManager;
 }
 
 export default class Explorer {
@@ -118,24 +118,10 @@ export default class Explorer {
   public defaultExperience: ko.Observable<string>;
   /**
    * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "SQL"
-   * */
-  public isPreferredApiDocumentDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
-   * */
-  public isPreferredApiCassandra: ko.Computed<boolean>;
-  /**
-   * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
    * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
-   * */
-  public isPreferredApiGraph: ko.Computed<boolean>;
+
   /**
    * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
@@ -190,11 +176,9 @@ export default class Explorer {
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
-  public deleteCollectionConfirmationPane: DeleteCollectionConfirmationPane;
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public querySelectPane: QuerySelectPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
@@ -421,20 +405,6 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiDocumentDB = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.DocumentDB.toLowerCase();
-    });
-
-    this.isPreferredApiCassandra = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase();
-    });
-    this.isPreferredApiGraph = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Graph.toLowerCase();
-    });
-
     this.isPreferredApiTable = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Table.toLowerCase();
@@ -498,7 +468,9 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal &&
+        !this.isRunningOnNationalCloud() &&
+        userContext.apiType !== "Gremlin"
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
@@ -537,13 +509,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.deleteCollectionConfirmationPane = new DeleteCollectionConfirmationPane({
-      id: "deletecollectionconfirmationpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.graphStylingPane = new GraphStylingPane({
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
@@ -560,13 +525,6 @@ export default class Explorer {
 
     this.editTableEntityPane = new EditTableEntityPane({
       id: "edittableentitypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.querySelectPane = new QuerySelectPane({
-      id: "queryselectpane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -600,16 +558,20 @@ export default class Explorer {
       container: this,
     });
 
-    this.tabsManager = new TabsManager();
+    this.tabsManager = params?.tabsManager ?? new TabsManager();
+    this.tabsManager.openedTabs.subscribe((tabs) => {
+      if (tabs.length === 0) {
+        this.selectedNode(undefined);
+        this.onUpdateTabsButtons([]);
+      }
+    });
 
     this._panes = [
       this.addDatabasePane,
       this.addCollectionPane,
-      this.deleteCollectionConfirmationPane,
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.querySelectPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.stringInputPane,
@@ -643,8 +605,6 @@ export default class Explorer {
         this.addCollectionPane.collectionWithThroughputInSharedTitle(
           "Provision dedicated throughput for this container"
         );
-        this.deleteCollectionConfirmationPane.title("Delete Container");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the container id");
         this.refreshTreeTitle("Refresh containers");
         break;
       case "Mongo":
@@ -671,8 +631,6 @@ export default class Explorer {
         this.addCollectionPane.title("Add Graph");
         this.addCollectionPane.collectionIdTitle("Graph id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
-        this.deleteCollectionConfirmationPane.title("Delete Graph");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the graph id");
         this.refreshTreeTitle("Refresh graphs");
         break;
       case "Tables":
@@ -688,8 +646,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Entity");
         this.editTableEntityPane.title("Edit Table Entity");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -705,8 +661,6 @@ export default class Explorer {
         this.refreshTreeTitle("Refresh tables");
         this.addTableEntityPane.title("Add Table Row");
         this.editTableEntityPane.title("Edit Table Row");
-        this.deleteCollectionConfirmationPane.title("Delete Table");
-        this.deleteCollectionConfirmationPane.collectionIdConfirmationText("Confirm by typing the table id");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -924,10 +878,8 @@ export default class Explorer {
 
     // TODO: Refactor
     const deferred: Q.Deferred<any> = Q.defer();
-    this._setLoadingStatusText("Fetching databases...");
     readDatabases().then(
       (databases: DataModels.Database[]) => {
-        this._setLoadingStatusText("Successfully fetched databases.");
         TelemetryProcessor.traceSuccess(
           Action.LoadDatabases,
           {
@@ -940,20 +892,16 @@ export default class Explorer {
         this.addDatabasesToList(deltaDatabases.toAdd);
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
         this.selectedNode(currentlySelectedNode);
-        this._setLoadingStatusText("Fetching containers...");
         this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
           () => {
-            this._setLoadingStatusText("Successfully fetched containers.");
             deferred.resolve();
           },
           (reason) => {
-            this._setLoadingStatusText("Failed to fetch containers.");
             deferred.reject(reason);
           }
         );
       },
       (error) => {
-        this._setLoadingStatusText("Failed to fetch databases.");
         deferred.reject(error);
         const errorMessage = getErrorMessage(error);
         TelemetryProcessor.traceFailure(
@@ -1029,7 +977,7 @@ export default class Explorer {
 
   // Facade
   public provideFeedbackEmail = () => {
-    window.open(Constants.Urls.feedbackEmail, "_self");
+    window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
   public async getArcadiaToken(): Promise<string> {
@@ -1298,49 +1246,6 @@ export default class Explorer {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  // TODO: Refactor below methods, minimize dependencies and add unit tests where necessary
-  public findSelectedStoredProcedure(): StoredProcedure {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.storedProcedures(), (storedProcedure: StoredProcedure) => {
-      const openedSprocTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.StoredProcedures,
-        (tab) => tab.node && tab.node.rid === storedProcedure.rid
-      );
-      return (
-        storedProcedure.rid === this.selectedNode().rid ||
-        (!!openedSprocTab && openedSprocTab.length > 0 && openedSprocTab[0].isActive())
-      );
-    });
-  }
-
-  public findSelectedUDF(): UserDefinedFunction {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.userDefinedFunctions(), (userDefinedFunction: UserDefinedFunction) => {
-      const openedUdfTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.UserDefinedFunctions,
-        (tab) => tab.node && tab.node.rid === userDefinedFunction.rid
-      );
-      return (
-        userDefinedFunction.rid === this.selectedNode().rid ||
-        (!!openedUdfTab && openedUdfTab.length > 0 && openedUdfTab[0].isActive())
-      );
-    });
-  }
-
-  public findSelectedTrigger(): Trigger {
-    const selectedCollection: ViewModels.Collection = this.findSelectedCollection();
-    return _.find(selectedCollection.triggers(), (trigger: Trigger) => {
-      const openedTriggerTab = this.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.Triggers,
-        (tab) => tab.node && tab.node.rid === trigger.rid
-      );
-      return (
-        trigger.rid === this.selectedNode().rid ||
-        (!!openedTriggerTab && openedTriggerTab.length > 0 && openedTriggerTab[0].isActive())
-      );
-    });
   }
 
   public closeAllPanes(): void {
@@ -1671,7 +1576,6 @@ export default class Explorer {
         collection: null,
         masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -2077,7 +1981,6 @@ export default class Explorer {
         tabPath: title,
         collection: null,
         hashLocation: hashLocation,
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -2182,7 +2085,7 @@ export default class Explorer {
   }
 
   public onNewCollectionClicked(): void {
-    if (this.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
     } else if (userContext.features.enableReactPane) {
       this.openAddCollectionPanel();
@@ -2222,32 +2125,6 @@ export default class Explorer {
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
       return tokenRefreshInterval;
-    }
-  }
-
-  private _setLoadingStatusText(text: string, title: string = "Welcome to Azure Cosmos DB") {
-    if (!text) {
-      return;
-    }
-
-    const loadingText = document.getElementById("explorerLoadingStatusText");
-    if (!loadingText) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusText') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-      return;
-    }
-    loadingText.innerHTML = text;
-
-    const loadingTitle = document.getElementById("explorerLoadingStatusTitle");
-    if (!loadingTitle) {
-      Logger.logError(
-        "getElementById('explorerLoadingStatusTitle') failed to find element",
-        "Explorer/_setLoadingStatusText"
-      );
-    } else {
-      loadingTitle.innerHTML = title;
     }
   }
 
@@ -2318,16 +2195,15 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    userContext.features.enableKOPanel
-      ? this.deleteCollectionConfirmationPane.open()
-      : this.openSidePanel(
-          "Delete Collection",
-          <DeleteCollectionConfirmationPanel
-            explorer={this}
-            closePanel={() => this.closeSidePanel()}
-            openNotificationConsole={() => this.expandConsole()}
-          />
-        );
+    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
+    this.openSidePanel(
+      "Delete " + collectionName,
+      <DeleteCollectionConfirmationPanel
+        explorer={this}
+        collectionName={collectionName}
+        closePanel={this.closeSidePanel}
+      />
+    );
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
@@ -2350,10 +2226,14 @@ export default class Explorer {
     this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
   }
 
-  public openExecuteSprocParamsPanel(): void {
+  public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     this.openSidePanel(
       "Input parameters",
-      <ExecuteSprocParamsPanel explorer={this} closePanel={() => this.closeSidePanel()} />
+      <ExecuteSprocParamsPanel
+        explorer={this}
+        storedProcedure={storedProcedure}
+        closePanel={() => this.closeSidePanel()}
+      />
     );
   }
 
@@ -2390,6 +2270,13 @@ export default class Explorer {
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
+    );
+  }
+
+  public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
+    this.openSidePanel(
+      "Select Column",
+      <TableQuerySelectPanel explorer={this} closePanel={this.closeSidePanel} queryViewModel={queryViewModal} />
     );
   }
 }

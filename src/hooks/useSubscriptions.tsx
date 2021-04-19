@@ -1,5 +1,5 @@
-import { Subscription } from "../Contracts/DataModels";
 import useSWR from "swr";
+import { Subscription } from "../Contracts/DataModels";
 
 interface SubscriptionListResult {
   nextLink: string;
@@ -28,7 +28,7 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
     );
     subscriptions = [...subscriptions, ...validSubscriptions];
   }
-  return subscriptions;
+  return subscriptions.sort((a, b) => a.displayName.localeCompare(b.displayName));
 }
 
 export function useSubscriptions(armToken: string): Subscription[] | undefined {

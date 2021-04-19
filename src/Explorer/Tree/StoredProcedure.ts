@@ -76,7 +76,6 @@ export default class StoredProcedure {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
-      isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons,
     });
 
@@ -123,7 +122,6 @@ export default class StoredProcedure {
           this.collection.databaseId,
           this.collection.id()
         )}/sprocs/${this.id()}`,
-        isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
@@ -138,7 +136,7 @@ export default class StoredProcedure {
 
     deleteStoredProcedure(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
-        this.container.tabsManager.removeTabByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       (reason) => {}
