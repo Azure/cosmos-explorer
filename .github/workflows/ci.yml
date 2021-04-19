@@ -173,7 +173,6 @@ jobs:
       fail-fast: false
       matrix:
         test-file:
-          - ./test/mongo/mongoIndexPolicy.spec.ts
           - ./test/notebooks/uploadAndOpenNotebook.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
           - ./test/sql/resourceToken.spec.ts
