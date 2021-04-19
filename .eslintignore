@@ -45,7 +45,6 @@ src/Definitions/jquery.d.ts
 src/Definitions/plotly.js-cartesian-dist.d-min.ts
 src/Definitions/png.d.ts
 src/Definitions/svg.d.ts
-src/Definitions/worker.d.ts
 src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
 src/Explorer/ContextMenuButtonFactory.ts
@@ -118,8 +117,6 @@ src/Explorer/Panes/AddCollectionPane.ts
 src/Explorer/Panes/BrowseQueriesPane.ts
 src/Explorer/Panes/CassandraAddCollectionPane.ts
 src/Explorer/Panes/ContextualPaneBase.ts
-src/Explorer/Panes/DeleteCollectionConfirmationPane.test.ts
-src/Explorer/Panes/DeleteCollectionConfirmationPane.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.test.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.ts
 src/Explorer/Panes/GraphStylingPane.ts
@@ -132,7 +129,6 @@ src/Explorer/Panes/SwitchDirectoryPane.ts
 src/Explorer/Panes/Tables/AddTableEntityPane.ts
 src/Explorer/Panes/Tables/EditTableEntityPane.ts
 src/Explorer/Panes/Tables/EntityPropertyViewModel.ts
-src/Explorer/Panes/Tables/QuerySelectPane.ts
 src/Explorer/Panes/Tables/TableEntityPane.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyNameValidator.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts
@@ -248,7 +244,6 @@ src/Utils/QueryUtils.test.ts
 src/applyExplorerBindings.ts
 src/global.d.ts
 src/setupTests.ts
-src/workers/upload/index.ts
 src/Explorer/Controls/AccessibleElement/AccessibleElement.tsx
 src/Explorer/Controls/Accordion/AccordionComponent.tsx
 src/Explorer/Controls/AccountSwitch/AccountSwitchComponent.test.tsx
@@ -296,8 +291,6 @@ src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.t
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.test.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponent.tsx
-src/Explorer/Menus/NotificationConsole/NotificationConsoleComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponent.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx

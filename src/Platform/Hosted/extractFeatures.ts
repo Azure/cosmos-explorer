@@ -17,15 +17,17 @@ export type Features = {
   readonly notebookBasePath?: string;
   readonly notebookServerToken?: string;
   readonly notebookServerUrl?: string;
+  readonly sandboxNotebookOutputs: boolean;
   readonly selfServeType?: string;
+  readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
 };
 
-export function extractFeatures(given = new URLSearchParams()): Features {
+export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
   const downcased = new URLSearchParams();
   const set = (value: string, key: string) => downcased.set(key.toLowerCase(), value);
-  const get = (key: string) => downcased.get("feature." + key) ?? undefined;
+  const get = (key: string, defaultValue?: string) => downcased.get("feature." + key) ?? defaultValue;
 
   try {
     new URLSearchParams(window.parent.location.search).forEach(set);
@@ -54,7 +56,9 @@ export function extractFeatures(given = new URLSearchParams()): Features {
     notebookBasePath: get("notebookbasepath"),
     notebookServerToken: get("notebookservertoken"),
     notebookServerUrl: get("notebookserverurl"),
+    sandboxNotebookOutputs: "true" === get("sandboxnotebookoutputs", "true"),
     selfServeType: get("selfservetype"),
+    pr: get("pr"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
   };

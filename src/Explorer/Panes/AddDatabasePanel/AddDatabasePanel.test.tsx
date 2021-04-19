@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { AddDatabasePane } from ".";
 import Explorer from "../../Explorer";
+import { AddDatabasePane } from "../AddDatabasePane";
 const props = {
   explorer: new Explorer(),
   closePanel: (): void => undefined,
