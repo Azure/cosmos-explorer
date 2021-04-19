@@ -149,8 +149,8 @@ jobs:
         shell: bash
         env:
           NODE_TLS_REJECT_UNAUTHORIZED: 0
-  endtoendhosted:
-    name: "End to End Tests"
+  endtoendpuppeteer:
+    name: "End to End Tests (Puppeteer)"
     needs: [cleanupaccounts]
     runs-on: ubuntu-latest
     env:
@@ -173,7 +173,6 @@ jobs:
       fail-fast: false
       matrix:
         test-file:
-          - ./test/cassandra/container.spec.ts
           - ./test/mongo/mongoIndexPolicy.spec.ts
           - ./test/notebooks/uploadAndOpenNotebook.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
@@ -191,7 +190,37 @@ jobs:
       - run: node utils/cleanupDBs.js
       - run: npm run wait-for-server
       - name: ${{ matrix['test-file'] }}
-        run: npx jest -c ./jest.config.e2e.js --detectOpenHandles ${{ matrix['test-file'] }}
+        run: npx jest -c ./jest.config.puppeteer.js --detectOpenHandles ${{ matrix['test-file'] }}
+        shell: bash
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: screenshots
+          path: failed-*
+  endtoendpuppeteer:
+    name: "End to End Tests (Playwright)"
+    needs: [cleanupaccounts]
+    runs-on: ubuntu-latest
+    env:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
+    strategy:
+      fail-fast: false
+      matrix:
+        test-file:
+          - ./test/cassandra/container.spec.ts
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: npm ci
+      - run: npm start &
+      - run: node utils/cleanupDBs.js
+      - run: npm run wait-for-server
+      - name: ${{ matrix['test-file'] }}
+        run: npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }}
         shell: bash
       - uses: actions/upload-artifact@v2
         if: failure()

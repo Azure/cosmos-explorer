@@ -29,7 +29,7 @@ describe("MongoDB Index policy tests", () => {
   });
 });
 
-async function clickResourceTree(page: any, selector: string) {
+async function clickResourceTree(page: Frame, selector: string) {
   // TODO: Remove. The resource tree has stability issues so we need to wait for it to show, wait some time, then click
   await page.waitForSelector(`.nodeItem >> text=${selector}`);
   await page.waitForTimeout(5000);

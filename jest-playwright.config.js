@@ -3,7 +3,8 @@ const isCI = require("is-ci");
 module.exports = {
   exitOnPageError: false,
   launchOptions: {
-    headless: false,
+    headless: isCI,
+    slowMo: 10,
   },
   contextOptions: {
     ignoreHTTPSErrors: true,
