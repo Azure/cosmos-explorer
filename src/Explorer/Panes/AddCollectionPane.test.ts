@@ -1,7 +1,8 @@
 import * as Constants from "../../Common/Constants";
-import AddCollectionPane from "./AddCollectionPane";
-import Explorer from "../Explorer";
 import { DatabaseAccount } from "../../Contracts/DataModels";
+import { updateUserContext } from "../../UserContext";
+import Explorer from "../Explorer";
+import AddCollectionPane from "./AddCollectionPane";
 
 describe("Add Collection Pane", () => {
   describe("isValid()", () => {
@@ -50,7 +51,14 @@ describe("Add Collection Pane", () => {
     });
 
     it("should be false if graph API and partition key is /id or /label", () => {
-      explorer.defaultExperience(Constants.DefaultAccountExperience.Graph.toLowerCase());
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableGremlin" }],
+          },
+        } as DatabaseAccount,
+      });
+
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       addCollectionPane.partitionKey("/id");
       expect(addCollectionPane.isValid()).toBe(false);
@@ -60,7 +68,13 @@ describe("Add Collection Pane", () => {
     });
 
     it("should be true for any non-graph API with /id or /label partition key", () => {
-      explorer.defaultExperience(Constants.DefaultAccountExperience.DocumentDB.toLowerCase());
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableCassandra" }],
+          },
+        } as DatabaseAccount,
+      });
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
 
       addCollectionPane.partitionKey("/id");

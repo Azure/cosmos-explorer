@@ -153,7 +153,7 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 ✅ DO
 
-- Use [Puppeteer](https://developers.google.com/web/tools/puppeteer) and [Jest](https://jestjs.io/)
+- Use [Playwright](https://github.com/microsoft/playwright) and [Jest](https://jestjs.io/)
 - Write or modify an existing E2E test that covers the primary use case of any major feature.
   - Use caution. Do not try to cover every case. End to End tests can be slow and brittle.
 

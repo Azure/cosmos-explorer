@@ -118,19 +118,10 @@ export default class Explorer {
   public defaultExperience: ko.Observable<string>;
   /**
    * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Cassandra"
-   * */
-  public isPreferredApiCassandra: ko.Computed<boolean>;
-  /**
-   * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
    * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Gremlin"
-   * */
-  public isPreferredApiGraph: ko.Computed<boolean>;
+
   /**
    * @deprecated
    * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
@@ -416,15 +407,6 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiCassandra = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Cassandra.toLowerCase();
-    });
-    this.isPreferredApiGraph = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Graph.toLowerCase();
-    });
-
     this.isPreferredApiTable = ko.computed(() => {
       const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
       return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Table.toLowerCase();
@@ -488,7 +470,9 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal && !this.isRunningOnNationalCloud() && !this.isPreferredApiGraph()
+        configContext.platform === Platform.Portal &&
+        !this.isRunningOnNationalCloud() &&
+        userContext.apiType !== "Gremlin"
     );
     this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
@@ -570,6 +554,12 @@ export default class Explorer {
     });
 
     this.tabsManager = params?.tabsManager ?? new TabsManager();
+    this.tabsManager.openedTabs.subscribe((tabs) => {
+      if (tabs.length === 0) {
+        this.selectedNode(undefined);
+        this.onUpdateTabsButtons([]);
+      }
+    });
 
     this._panes = [
       this.addDatabasePane,
@@ -1580,7 +1570,6 @@ export default class Explorer {
         collection: null,
         masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -1986,7 +1975,6 @@ export default class Explorer {
         tabPath: title,
         collection: null,
         hashLocation: hashLocation,
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -2091,7 +2079,7 @@ export default class Explorer {
   }
 
   public onNewCollectionClicked(): void {
-    if (this.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
     } else if (userContext.features.enableReactPane) {
       this.openAddCollectionPanel();
