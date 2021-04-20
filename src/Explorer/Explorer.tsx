@@ -58,7 +58,6 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
-import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
@@ -188,7 +187,6 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
-  public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
   public setupNotebooksPane: SetupNotebooksPane;
@@ -546,13 +544,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.newVertexPane = new NewVertexPane({
-      id: "newvertexpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -582,7 +573,6 @@ export default class Explorer {
       this.graphStylingPane,
       this.addTableEntityPane,
       this.editTableEntityPane,
-      this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.stringInputPane,
       this.setupNotebooksPane,
