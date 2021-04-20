@@ -1,5 +1,4 @@
 import { ImmutableDisplayData, ImmutableExecuteResult, JSONObject } from "@nteract/commutable";
-import { Media } from "@nteract/outputs";
 import { ContentRef } from "@nteract/types";
 import React, { Suspense } from "react";
 
@@ -41,53 +40,26 @@ const transformsById = new Map<string, React.ComponentType<any>>([
   ["application/geo+json", NullTransform], // TODO: The geojson transform will likely need some work because of the basemap URL(s)
   ["application/x-nteract-model-debug+json", React.lazy(() => import("@nteract/transform-model-debug"))],
   ["application/vnd.dataresource+json", React.lazy(() => import("@nteract/data-explorer"))],
-  [
-    "application/vnd.jupyter.widget-view+json",
-    React.lazy(() => import("@nteract/jupyter-widgets").then((widgets) => ({ default: widgets.WidgetDisplay }))),
-  ],
-  [
-    "application/vnd.vegalite.v1+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite1 }))),
-  ],
-  [
-    "application/vnd.vegalite.v2+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite2 }))),
-  ],
-  [
-    "application/vnd.vegalite.v3+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite3 }))),
-  ],
-  [
-    "application/vnd.vegalite.v4+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite4 }))),
-  ],
-  [
-    "application/vnd.vega.v2+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega2 }))),
-  ],
-  [
-    "application/vnd.vega.v3+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega3 }))),
-  ],
-  [
-    "application/vnd.vega.v4+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega4 }))),
-  ],
-  [
-    "application/vnd.vega.v5+json",
-    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega5 }))),
-  ],
+  ["application/vnd.jupyter.widget-view+json", React.lazy(() => import("./transforms/WidgetDisplay"))],
+  ["application/vnd.vegalite.v1+json", React.lazy(() => import("./transforms/VegaLite1"))],
+  ["application/vnd.vegalite.v2+json", React.lazy(() => import("./transforms/VegaLite2"))],
+  ["application/vnd.vegalite.v3+json", React.lazy(() => import("./transforms/VegaLite3"))],
+  ["application/vnd.vegalite.v4+json", React.lazy(() => import("./transforms/VegaLite4"))],
+  ["application/vnd.vega.v2+json", React.lazy(() => import("./transforms/Vega2"))],
+  ["application/vnd.vega.v3+json", React.lazy(() => import("./transforms/Vega3"))],
+  ["application/vnd.vega.v4+json", React.lazy(() => import("./transforms/Vega4"))],
+  ["application/vnd.vega.v5+json", React.lazy(() => import("./transforms/Vega5"))],
   ["application/vdom.v1+json", React.lazy(() => import("@nteract/transform-vdom"))],
-  ["application/json", Media.Json],
-  ["application/javascript", Media.JavaScript],
-  ["text/html", Media.HTML],
-  ["text/markdown", Media.Markdown],
-  ["text/latex", Media.LaTeX],
-  ["image/svg+xml", Media.SVG],
-  ["image/gif", Media.Image],
-  ["image/png", Media.Image],
-  ["image/jpeg", Media.Image],
-  ["text/plain", Media.Plain],
+  ["application/json", React.lazy(() => import("@nteract/outputs/lib/components/media/json"))],
+  ["application/javascript", React.lazy(() => import("@nteract/outputs/lib/components/media/javascript"))],
+  ["text/html", React.lazy(() => import("@nteract/outputs/lib/components/media/html"))],
+  ["text/markdown", React.lazy(() => import("@nteract/outputs/lib/components/media/markdown"))],
+  ["text/latex", React.lazy(() => import("@nteract/outputs/lib/components/media/latex"))],
+  ["image/svg+xml", React.lazy(() => import("@nteract/outputs/lib/components/media/svg"))],
+  ["image/gif", React.lazy(() => import("@nteract/outputs/lib/components/media/image"))],
+  ["image/png", React.lazy(() => import("@nteract/outputs/lib/components/media/image"))],
+  ["image/jpeg", React.lazy(() => import("@nteract/outputs/lib/components/media/image"))],
+  ["text/plain", React.lazy(() => import("@nteract/outputs/lib/components/media/plain"))],
 ]);
 
 interface TransformMediaProps {
