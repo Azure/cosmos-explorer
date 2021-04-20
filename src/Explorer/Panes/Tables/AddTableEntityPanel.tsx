@@ -11,20 +11,20 @@ import {
 } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
-import AddPropertyIcon from "../../../../../images/Add-property.svg";
-import RevertBackIcon from "../../../../../images/RevertBack.svg";
-import { TableEntity } from "../../../../Common/TableEntity";
-import { userContext } from "../../../../UserContext";
-import Explorer from "../../../Explorer";
-import * as TableConstants from "../../../Tables/Constants";
-import * as DataTableUtilities from "../../../Tables/DataTable/DataTableUtilities";
-import TableEntityListViewModel from "../../../Tables/DataTable/TableEntityListViewModel";
-import * as Entities from "../../../Tables/Entities";
-import { CassandraAPIDataClient, CassandraTableKey } from "../../../Tables/TableDataClient";
-import * as TableEntityProcessor from "../../../Tables/TableEntityProcessor";
-import * as Utilities from "../../../Tables/Utilities";
-import QueryTablesTab from "../../../Tabs/QueryTablesTab";
-import { PanelContainerComponent } from "../../PanelContainerComponent";
+import AddPropertyIcon from "../../../../images/Add-property.svg";
+import RevertBackIcon from "../../../../images/RevertBack.svg";
+import { TableEntity } from "../../../Common/TableEntity";
+import { userContext } from "../../../UserContext";
+import Explorer from "../../Explorer";
+import * as TableConstants from "../../Tables/Constants";
+import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
+import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
+import * as Entities from "../../Tables/Entities";
+import { CassandraAPIDataClient, CassandraTableKey } from "../../Tables/TableDataClient";
+import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
+import * as Utilities from "../../Tables/Utilities";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { PanelContainerComponent } from "../PanelContainerComponent";
 import {
   attributeNameLabel,
   attributeValueLabel,
@@ -34,7 +34,6 @@ import {
   dataTypeLabel,
   detailedHelp,
   entityFromAttributes,
-  EntityRowType,
   getAddButtonLabel,
   getButtonLabel,
   getCassandraDefaultEntities,
@@ -44,13 +43,26 @@ import {
   imageProps,
   isValidEntities,
   options,
-} from "../Validators/EntityTableHelper";
+} from "./Validators/EntityTableHelper";
 
 interface AddTableEntityPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   queryTablesTab: QueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
+  cassandraApiClient: CassandraAPIDataClient;
+}
+
+interface EntityRowType {
+  property: string;
+  type: string;
+  value: string;
+  isPropertyTypeDisable: boolean;
+  isDeleteOptionVisible: boolean;
+  id: number;
+  entityValuePlaceholder: string;
+  isEntityTypeDate: boolean;
+  entityTimeValue?: string;
 }
 
 export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = ({
@@ -58,6 +70,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   closePanel,
   queryTablesTab,
   tableEntityListViewModel,
+  cassandraApiClient,
 }: AddTableEntityPanelProps): JSX.Element => {
   const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
@@ -67,8 +80,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     isEntityValuePanelOpen,
     { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
   ] = useBoolean(false);
-  const cassandraApiClient = new CassandraAPIDataClient();
-  // Get default and previous saved entity headers
+
+  /* Get default and previous saved entity headers */
   useEffect(() => {
     let headers = tableEntityListViewModel.headers;
     if (DataTableUtilities.checkForDefaultHeader(headers)) {
@@ -83,19 +96,6 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         const cassandraDefaultEntities: EntityRowType[] = getCassandraDefaultEntities(headers, cassandraEntities);
         setEntities(cassandraDefaultEntities);
       });
-      // (<CassandraAPIDataClient>this.container.tableDataClient)
-      //   .getTableSchema(this.tableViewModel.queryTablesTab.collection)
-      //   .then((columns: CassandraTableKey[]) => {
-      //     this.displapyedAttributes(
-      //       this.constructDisplayedAttributes(
-      //         columns.map((col) => col.property),
-      //         Utilities.getDataTypesFromCassandraSchema(columns)
-      //       )
-      //     );
-      //     this.updateIsActionEnabled();
-      //     super.open();
-      //     this.focusValueElement();
-      //   });
     } else {
       const entityItems = tableEntityListViewModel.items();
       const entityTypes = Utilities.getDataTypesFromEntities(headers, entityItems);
@@ -104,6 +104,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     }
   }, []);
 
+  /* Add new entity attribute */
   const submit = (event: React.FormEvent<HTMLInputElement>): void => {
     if (!isValidEntities(entities)) {
       return undefined;
@@ -151,9 +152,9 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     return newHeadersInserted;
   };
 
-  // Add new entity row
+  /* Add new entity row */
   const addNewEntity = (): void => {
-    const cloneEntities = [...entities];
+    const cloneEntities: EntityRowType[] = [...entities];
     cloneEntities.splice(cloneEntities.length, 0, {
       property: "",
       type: "String",
@@ -167,16 +168,16 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     setEntities(cloneEntities);
   };
 
-  // Delete entity row
+  /* Delete entity row */
   const deleteEntityAtIndex = (indexToRemove: number): void => {
-    const cloneEntities = [...entities];
+    const cloneEntities: EntityRowType[] = [...entities];
     cloneEntities.splice(indexToRemove, 1);
     setEntities(cloneEntities);
   };
 
-  // handle Entity change
+  /* handle Entity change */
   const entityChange = (value: string | Date, indexOfInput: number, key: string): void => {
-    const cloneEntities = [...entities];
+    const cloneEntities: EntityRowType[] = [...entities];
     if (key === "property") {
       cloneEntities[indexOfInput].property = value.toString();
     } else if (key === "time") {
@@ -187,21 +188,21 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     setEntities(cloneEntities);
   };
 
-  // handle Entity type
+  /* handle Entity type */
   const entityTypeChange = (
     _event: React.FormEvent<HTMLDivElement>,
     selectedType: IDropdownOption,
     indexOfEntity: number
   ): void => {
-    const entityValuePlaceholder = getEntityValuePlaceholder(selectedType.key);
-    const cloneEntities = [...entities];
+    const entityValuePlaceholder: string = getEntityValuePlaceholder(selectedType.key);
+    const cloneEntities: EntityRowType[] = [...entities];
     cloneEntities[indexOfEntity].type = selectedType.key.toString();
     cloneEntities[indexOfEntity].entityValuePlaceholder = entityValuePlaceholder;
     cloneEntities[indexOfEntity].isEntityTypeDate = selectedType.key === "DateTime";
     setEntities(cloneEntities);
   };
 
-  // Open edit entity value modal
+  /* Open edit entity value modal */
   const editEntity = (rowEndex: number): void => {
     const entityAttribute: EntityRowType = entities[rowEndex] && entities[rowEndex];
     setEntityAttributeValue(entityAttribute.value);

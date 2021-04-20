@@ -1,16 +1,18 @@
 import { mount } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
-import Explorer from "../../../Explorer";
-import TableListViewModal from "../../../Tables/DataTable/TableEntityListViewModel";
-import * as Entities from "../../../Tables/Entities";
-import QueryTablesTab from "../../../Tabs/QueryTablesTab";
-import { AddTableEntityPanel } from "./index";
+import Explorer from "../../Explorer";
+import TableListViewModal from "../../Tables/DataTable/TableEntityListViewModel";
+import * as Entities from "../../Tables/Entities";
+import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { AddTableEntityPanel } from "./AddTableEntityPanel";
 
 describe("Excute Add Table Entity Pane", () => {
   const fakeExplorer = {} as Explorer;
   const fakeQueryTablesTab = {} as QueryTablesTab;
   const fakeTableEntityListViewModel = {} as TableListViewModal;
+  const fakeCassandraApiClient = {} as CassandraAPIDataClient;
   fakeTableEntityListViewModel.items = ko.observableArray<Entities.ITableEntity>();
   fakeTableEntityListViewModel.headers = [];
   const props = {
@@ -18,6 +20,7 @@ describe("Excute Add Table Entity Pane", () => {
     closePanel: (): void => undefined,
     queryTablesTab: fakeQueryTablesTab,
     tableEntityListViewModel: fakeTableEntityListViewModel,
+    cassandraApiClient: fakeCassandraApiClient,
   };
 
   it("should render Default properly", () => {
@@ -25,7 +28,7 @@ describe("Excute Add Table Entity Pane", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("initially display 4 input field, 2 properties and 1 entity values", () => {
+  it("initially display 4 input field, 2 properties and 2 entity values", () => {
     const wrapper = mount(<AddTableEntityPanel {...props} />);
     expect(wrapper.find("input[type='text']")).toHaveLength(0);
   });

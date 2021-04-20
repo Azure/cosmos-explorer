@@ -2367,6 +2367,7 @@ export default class Explorer {
             closePanel={this.closeSidePanel}
             queryTablesTab={queryTablesTab}
             tableEntityListViewModel={tableEntityListViewModel}
+            cassandraApiClient={new CassandraAPIDataClient()}
           />
         );
   }
