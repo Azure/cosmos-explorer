@@ -7,7 +7,6 @@ import { IGitHubResponse } from "../GitHub/GitHubClient";
 import { IGitHubOAuthToken } from "../GitHub/GitHubOAuthService";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
-import { number } from "prop-types";
 
 export interface IJunoResponse<T> {
   status: number;
@@ -484,8 +483,20 @@ export class JunoClient {
     };
   }
 
+  // public for tests
+  public static getJunoEndpoint(): string {
+    const junoEndpoint = userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
+    if (configContext.allowedJunoOrigins.indexOf(new URL(junoEndpoint).origin) === -1) {
+      const error = `${junoEndpoint} not allowed as juno endpoint`;
+      console.error(error);
+      throw new Error(error);
+    }
+
+    return junoEndpoint;
+  }
+
   private getNotebooksUrl(): string {
-    return `${configContext.JUNO_ENDPOINT}/api/notebooks`;
+    return `${JunoClient.getJunoEndpoint()}/api/notebooks`;
   }
 
   private getAccount(): string {
@@ -501,7 +512,7 @@ export class JunoClient {
   }
 
   private getAnalyticsUrl(): string {
-    return `${configContext.JUNO_ENDPOINT}/api/analytics`;
+    return `${JunoClient.getJunoEndpoint()}/api/analytics`;
   }
 
   private static getHeaders(): HeadersInit {
