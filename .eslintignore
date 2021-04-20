@@ -102,6 +102,7 @@ src/Explorer/Notebook/NotebookComponent/__mocks__/rx-jupyter.ts
 src/Explorer/Notebook/NotebookComponent/actions.ts
 src/Explorer/Notebook/NotebookComponent/epics.test.ts
 src/Explorer/Notebook/NotebookComponent/epics.ts
+src/Explorer/Notebook/NotebookComponent/loadTransform.ts
 src/Explorer/Notebook/NotebookComponent/reducers.ts
 src/Explorer/Notebook/NotebookComponent/store.ts
 src/Explorer/Notebook/NotebookComponent/types.ts

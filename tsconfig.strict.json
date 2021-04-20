@@ -47,6 +47,7 @@
     "./src/Explorer/Notebook/FileSystemUtil.ts",
     "./src/Explorer/Notebook/NTeractUtil.ts",
     "./src/Explorer/Notebook/NotebookComponent/actions.ts",
+    "./src/Explorer/Notebook/NotebookComponent/loadTransform.ts",
     "./src/Explorer/Notebook/NotebookComponent/reducers.ts",
     "./src/Explorer/Notebook/NotebookComponent/types.ts",
     "./src/Explorer/Notebook/NotebookContentClient.ts",

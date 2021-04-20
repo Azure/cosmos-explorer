@@ -1,11 +1,9 @@
 import { CellId } from "@nteract/commutable";
 import { CellType } from "@nteract/commutable/src";
 import { actions, ContentRef } from "@nteract/core";
-import { KernelOutputError, StreamText } from "@nteract/outputs";
 import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
-import TransformMedia from "@nteract/stateful-components/lib/outputs/transform-media";
 import * as React from "react";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -13,6 +11,7 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { userContext } from "../../../UserContext";
 import * as cdbActions from "../NotebookComponent/actions";
+import loadTransform from "../NotebookComponent/loadTransform";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import CellCreator from "./decorators/CellCreator";
@@ -70,6 +69,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 
   componentDidMount() {
+    if (!userContext.features.sandboxNotebookOutputs) {
+      loadTransform(this.props as any);
+    }
     this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
@@ -107,14 +109,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             ),
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                             outputs: userContext.features.sandboxNotebookOutputs
-                              ? (props: any) => (
-                                  <SandboxOutputs id={id} contentRef={contentRef}>
-                                    <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
-                                    <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
-                                    <KernelOutputError />
-                                    <StreamText />
-                                  </SandboxOutputs>
-                                )
+                              ? () => <SandboxOutputs id={id} contentRef={contentRef} />
                               : undefined,
                           }}
                         </CodeCell>

@@ -15,7 +15,6 @@ import { OutputsProps } from "../../../../NotebookOutputViewer/NotebookOutputVie
 interface ComponentProps {
   id: string;
   contentRef: ContentRef;
-  children: React.ReactNode;
 }
 
 interface StateProps {
@@ -41,7 +40,7 @@ export class SandboxOutputs extends React.PureComponent<ComponentProps & StatePr
         heightCalculationMethod="taggedElement"
         onLoad={(event) => this.handleFrameLoad(event)}
         src="./notebookOutputViewer.html"
-        style={{ width: "1px", minWidth: "100%", border: "none" }}
+        style={{ height: "1px", width: "1px", minWidth: "100%", border: "none" }}
         sandbox="allow-downloads allow-popups allow-forms allow-pointer-lock allow-scripts allow-popups-to-escape-sandbox"
       />
     );
