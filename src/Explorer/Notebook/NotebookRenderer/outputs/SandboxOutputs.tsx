@@ -37,6 +37,8 @@ export class SandboxOutputs extends React.PureComponent<ComponentProps & StatePr
     return (
       <IframeResizer
         checkOrigin={false}
+        loading="lazy"
+        heightCalculationMethod="taggedElement"
         onLoad={(event) => this.handleFrameLoad(event)}
         src="./notebookOutputViewer.html"
         style={{ width: "1px", minWidth: "100%", border: "none" }}

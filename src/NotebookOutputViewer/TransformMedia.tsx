@@ -4,18 +4,18 @@ import DataExplorer from "@nteract/data-explorer";
 import { Media } from "@nteract/outputs";
 import PlotlyTransform from "@nteract/transform-plotly";
 import TransformVDOM from "@nteract/transform-vdom";
-import Immutable from "immutable";
 import React from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const NullTransform = (): any => undefined;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-null/no-null
+const NullTransform = (): any => null;
 
-const displayOrder = Immutable.List([
+const displayOrder = [
   "application/vnd.jupyter.widget-view+json",
   "application/vnd.vega.v5+json",
   "application/vnd.vega.v4+json",
   "application/vnd.vega.v3+json",
   "application/vnd.vega.v2+json",
+  "application/vnd.vegalite.v4+json",
   "application/vnd.vegalite.v3+json",
   "application/vnd.vegalite.v2+json",
   "application/vnd.vegalite.v1+json",
@@ -35,34 +35,36 @@ const displayOrder = Immutable.List([
   "image/png",
   "image/jpeg",
   "text/plain",
-]);
+];
 
-const transformsById = Immutable.Map({
-  "text/vnd.plotly.v1+html": PlotlyTransform,
-  "application/vnd.plotly.v1+json": PlotlyTransform,
-  "application/geo+json": NullTransform,
-  "application/x-nteract-model-debug+json": NullTransform,
-  "application/vnd.dataresource+json": DataExplorer,
-  "application/vnd.jupyter.widget-view+json": NullTransform,
-  "application/vnd.vegalite.v1+json": NullTransform,
-  "application/vnd.vegalite.v2+json": NullTransform,
-  "application/vnd.vegalite.v3+json": NullTransform,
-  "application/vnd.vega.v2+json": NullTransform,
-  "application/vnd.vega.v3+json": NullTransform,
-  "application/vnd.vega.v4+json": NullTransform,
-  "application/vnd.vega.v5+json": NullTransform,
-  "application/vdom.v1+json": TransformVDOM,
-  "application/json": Media.Json,
-  "application/javascript": Media.JavaScript,
-  "text/html": Media.HTML,
-  "text/markdown": Media.Markdown,
-  "text/latex": Media.LaTeX,
-  "image/svg+xml": Media.SVG,
-  "image/gif": Media.Image,
-  "image/png": Media.Image,
-  "image/jpeg": Media.Image,
-  "text/plain": Media.Plain,
-});
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const transformsById = new Map<string, React.ComponentType<any>>([
+  ["text/vnd.plotly.v1+html", PlotlyTransform],
+  ["application/vnd.plotly.v1+json", PlotlyTransform],
+  ["application/geo+json", NullTransform],
+  ["application/x-nteract-model-debug+json", NullTransform],
+  ["application/vnd.dataresource+json", DataExplorer],
+  ["application/vnd.jupyter.widget-view+json", NullTransform],
+  ["application/vnd.vegalite.v1+json", NullTransform],
+  ["application/vnd.vegalite.v2+json", NullTransform],
+  ["application/vnd.vegalite.v3+json", NullTransform],
+  ["application/vnd.vegalite.v4+json", NullTransform],
+  ["application/vnd.vega.v2+json", NullTransform],
+  ["application/vnd.vega.v3+json", NullTransform],
+  ["application/vnd.vega.v4+json", NullTransform],
+  ["application/vnd.vega.v5+json", NullTransform],
+  ["application/vdom.v1+json", TransformVDOM],
+  ["application/json", Media.Json],
+  ["application/javascript", Media.JavaScript],
+  ["text/html", Media.HTML],
+  ["text/markdown", Media.Markdown],
+  ["text/latex", Media.LaTeX],
+  ["image/svg+xml", Media.SVG],
+  ["image/gif", Media.Image],
+  ["image/png", Media.Image],
+  ["image/jpeg", Media.Image],
+  ["text/plain", Media.Plain],
+]);
 
 interface TransformMediaProps {
   output_type: string;
@@ -77,7 +79,8 @@ export const TransformMedia = (props: TransformMediaProps): JSX.Element => {
 
   // If we had no valid result, return an empty output
   if (!mediaType || !data) {
-    return undefined;
+    // eslint-disable-next-line no-null/no-null
+    return null;
   }
 
   return (
@@ -105,14 +108,14 @@ const getMediaInfo = (props: TransformMediaProps) => {
   const mediaType = displayOrder.find(
     (key) =>
       Object.prototype.hasOwnProperty.call(output.data, key) &&
-      (Object.prototype.hasOwnProperty.call(transformsById, key) || !!transformsById.get(key, false))
+      (Object.prototype.hasOwnProperty.call(transformsById, key) || transformsById.get(key))
   );
 
   if (mediaType) {
     const metadata = output.metadata.get(mediaType);
     const data = output.data[mediaType];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Media = transformsById.get(mediaType) as React.ComponentType<any>;
+
+    const Media = transformsById.get(mediaType);
     return {
       Media,
       mediaType,

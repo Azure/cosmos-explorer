@@ -5,8 +5,9 @@ import "bootstrap/dist/css/bootstrap.css";
 import postRobot from "post-robot";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import "../../externals/iframeResizer.contentWindow.min.js";
-import "./NotebookOutputViewer.less";
+import "../../externals/iframeResizer.contentWindow.min.js"; // Required for iFrameResizer to work
+import "../Explorer/Notebook/NotebookRenderer/base.css";
+import "../Explorer/Notebook/NotebookRenderer/default.css";
 import { TransformMedia } from "./TransformMedia";
 
 export interface OutputsProps {
@@ -39,7 +40,10 @@ const onInit = async () => {
       };
 
       const outputs = (
-        <div className={`nteract-cell-outputs ${props.hidden ? "hidden" : ""} ${props.expanded ? "expanded" : ""}`}>
+        <div
+          data-iframe-height
+          className={`nteract-cell-outputs ${props.hidden ? "hidden" : ""} ${props.expanded ? "expanded" : ""}`}
+        >
           {props.outputs?.map((output, index) => (
             <Output output={createImmutableOutput(output)} key={index}>
               <TransformMedia

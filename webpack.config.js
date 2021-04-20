@@ -2,6 +2,8 @@ require("dotenv/config");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const InlineChunkHtmlPlugin = require("react-dev-utils/InlineChunkHtmlPlugin");
+const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
 const { EnvironmentPlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -173,6 +175,10 @@ module.exports = function (env = {}, argv = {}) {
       filename: "selfServe.html",
       template: "src/SelfServe/selfServe.html",
       chunks: ["selfServe"],
+    }),
+    new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/notebookOutputViewer/]),
+    new HTMLInlineCSSWebpackPlugin({
+      filter: (fileName) => fileName.includes("notebookOutputViewer"),
     }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
