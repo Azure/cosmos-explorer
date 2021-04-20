@@ -19,7 +19,6 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { CollectionCreation, IndexingPolicies } from "../../Shared/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -49,7 +48,7 @@ export interface AddCollectionPanelState {
   partitionKey: string;
   enableDedicatedThroughput: boolean;
   createMongoWildCardIndex: boolean;
-  useHashV1: boolean;
+  useHashV2: boolean;
   enableAnalyticalStore: boolean;
   uniqueKeys: string[];
   errorMessage: string;
@@ -68,20 +67,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     super(props);
 
     this.state = {
-      createNewDatabase: userContext.defaultExperience !== DefaultAccountExperienceType.Table,
+      createNewDatabase: userContext.apiType !== "Tables",
       newDatabaseId: "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
-      selectedDatabaseId:
-        userContext.defaultExperience === DefaultAccountExperienceType.Table
-          ? CollectionCreation.TablesAPIDefaultDatabase
-          : undefined,
+      selectedDatabaseId: userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : undefined,
       collectionId: "",
       enableIndexing: true,
-      isSharded: userContext.defaultExperience !== DefaultAccountExperienceType.Table,
+      isSharded: userContext.apiType !== "Tables",
       partitionKey: "",
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: true,
-      useHashV1: false,
+      useHashV2: false,
       enableAnalyticalStore: false,
       uniqueKeys: [],
       errorMessage: "",
@@ -120,11 +116,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         )}
 
         <div className="panelMainContent">
-          <Stack hidden={userContext.defaultExperience === DefaultAccountExperienceType.Table}>
+          <Stack hidden={userContext.apiType === "Tables"}>
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
-                Database id
+                Database {userContext.apiType === "Mongo" ? "name" : "id"}
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
@@ -192,7 +188,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 {!this.isServerlessAccount() && (
                   <Stack horizontal>
                     <Checkbox
-                      label="Provision database throughput"
+                      label={`Share throughput across ${this.getCollectionName().toLocaleLowerCase()}s`}
                       checked={this.state.isSharedThroughputChecked}
                       styles={{
                         text: { fontSize: 12 },
@@ -242,7 +238,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
-                {`${this.getCollectionName()} id`}
+                {`${this.getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
@@ -317,7 +313,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {userContext.defaultExperience === DefaultAccountExperienceType.MongoDB &&
+          {userContext.apiType === "Mongo" &&
             (!this.state.isSharedThroughputChecked ||
               this.props.explorer.isFixedCollectionWithSharedThroughputSupported()) && (
               <Stack>
@@ -393,12 +389,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 className="panelTextField"
                 placeholder={this.getPartitionKeyPlaceHolder()}
                 aria-label={this.getPartitionKeyName()}
-                pattern={userContext.defaultExperience === DefaultAccountExperienceType.Graph ? "^/[^/]*" : ".*"}
-                title={
-                  userContext.defaultExperience === DefaultAccountExperienceType.Graph
-                    ? "May not use composite partition key"
-                    : ""
-                }
+                pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
+                title={userContext.apiType === "Gremlin" ? "May not use composite partition key" : ""}
                 value={this.state.partitionKey}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                   this.setState({ partitionKey: event.target.value })
@@ -447,7 +439,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             />
           )}
 
-          {userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB && (
+          {userContext.apiType === "SQL" && (
             <Stack>
               <Stack horizontal>
                 <Text className="panelTextBold" variant="small">
@@ -471,7 +463,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         type="text"
                         autoComplete="off"
                         placeholder={
-                          userContext.defaultExperience === DefaultAccountExperienceType.MongoDB
+                          userContext.apiType === "Mongo"
                             ? "Comma separated paths e.g. firstName,address.zipCode"
                             : "Comma separated paths e.g. /firstName,/address/zipCode"
                         }
@@ -512,134 +504,123 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          <CollapsibleSectionComponent title="Advanced" isExpandedByDefault={false}>
-            <Stack className="panelGroupSpacing">
-              {this.props.explorer.isEnableMongoCapabilityPresent() && (
-                <Stack>
-                  <Stack horizontal>
-                    <span className="mandatoryStar">*&nbsp;</span>
-                    <Text className="panelTextBold" variant="small">
-                      Indexing
-                    </Text>
-                    <TooltipHost
-                      directionalHint={DirectionalHint.bottomLeftEdge}
-                      content="By default, only the field _id is indexed. Creating a wildcard index on all fields will quickly optimize
+          {userContext.apiType !== "Tables" && (
+            <CollapsibleSectionComponent title="Advanced" isExpandedByDefault={false}>
+              <Stack className="panelGroupSpacing">
+                {this.props.explorer.isEnableMongoCapabilityPresent() && (
+                  <Stack>
+                    <Stack horizontal>
+                      <span className="mandatoryStar">*&nbsp;</span>
+                      <Text className="panelTextBold" variant="small">
+                        Indexing
+                      </Text>
+                      <TooltipHost
+                        directionalHint={DirectionalHint.bottomLeftEdge}
+                        content="By default, only the field _id is indexed. Creating a wildcard index on all fields will quickly optimize
               query performance and is recommended during development."
-                    >
-                      <Icon iconName="InfoSolid" className="panelInfoIcon" />
-                    </TooltipHost>
-                  </Stack>
+                      >
+                        <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                      </TooltipHost>
+                    </Stack>
 
+                    <Checkbox
+                      label="Create a Wildcard Index on all fields"
+                      checked={this.state.createMongoWildCardIndex}
+                      styles={{
+                        text: { fontSize: 12 },
+                        checkbox: { width: 12, height: 12 },
+                        label: { padding: 0, alignItems: "center" },
+                      }}
+                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
+                        this.setState({ createMongoWildCardIndex: isChecked })
+                      }
+                    />
+                  </Stack>
+                )}
+
+                {userContext.apiType === "SQL" && (
                   <Checkbox
-                    label="Create a Wildcard Index on all fields"
-                    checked={this.state.createMongoWildCardIndex}
+                    label="My partition key is larger than 100 bytes"
+                    checked={this.state.useHashV2}
                     styles={{
                       text: { fontSize: 12 },
                       checkbox: { width: 12, height: 12 },
                       label: { padding: 0, alignItems: "center" },
                     }}
                     onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                      this.setState({ createMongoWildCardIndex: isChecked })
+                      this.setState({ useHashV2: isChecked })
                     }
                   />
-                </Stack>
-              )}
+                )}
 
-              {userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB && (
-                <Stack className="panelGroupSpacing">
-                  <Stack horizontal verticalAlign="start">
-                    <Checkbox
-                      checked={this.state.useHashV1}
-                      styles={{
-                        checkbox: { width: 12, height: 12 },
-                        label: { padding: 0, margin: "4px 4px 0 0" },
-                      }}
-                      onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) =>
-                        this.setState({ useHashV1: isChecked })
-                      }
-                    />
-                    <Text variant="small" style={{ lineHeight: "20px" }}>
-                      My application uses an older Cosmos .NET or Java SDK version (.NET V1 or Java V2)
-                    </Text>
-                  </Stack>
-
-                  <Text variant="small">
-                    To ensure compatibility with older SDKs, the created container will use a legacy partitioning scheme
-                    that supports partition key values of size up to 100 bytes.{" "}
-                    <Link target="_blank" href="https://aka.ms/cosmosdb/pkv2">
-                      Learn more
-                    </Link>
-                  </Text>
-                </Stack>
-              )}
-
-              {this.shouldShowAnalyticalStoreOptions() && (
-                <Stack className="panelGroupSpacing">
-                  <Stack horizontal>
-                    <Text className="panelTextBold" variant="small">
-                      Analytical store
-                    </Text>
-                    <TooltipHost
-                      directionalHint={DirectionalHint.bottomLeftEdge}
-                      content="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads. Learn more"
-                    >
-                      <Icon iconName="InfoSolid" className="panelInfoIcon" />
-                    </TooltipHost>
-                  </Stack>
-
-                  <Stack horizontal verticalAlign="center">
-                    <input
-                      className="panelRadioBtn"
-                      checked={this.state.enableAnalyticalStore}
-                      disabled={!this.isSynapseLinkEnabled()}
-                      aria-label="Enable analytical store"
-                      aria-checked={this.state.enableAnalyticalStore}
-                      name="analyticalStore"
-                      type="radio"
-                      role="radio"
-                      id="enableAnalyticalStoreBtn"
-                      tabIndex={0}
-                      onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
-                    />
-                    <span className="panelRadioBtnLabel">On</span>
-
-                    <input
-                      className="panelRadioBtn"
-                      checked={!this.state.enableAnalyticalStore}
-                      disabled={!this.isSynapseLinkEnabled()}
-                      aria-label="Disable analytical store"
-                      aria-checked={!this.state.enableAnalyticalStore}
-                      name="analyticalStore"
-                      type="radio"
-                      role="radio"
-                      id="disableAnalyticalStoreBtn"
-                      tabIndex={0}
-                      onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
-                    />
-                    <span className="panelRadioBtnLabel">Off</span>
-                  </Stack>
-
-                  {!this.isSynapseLinkEnabled() && (
-                    <Stack className="panelGroupSpacing">
-                      <Text variant="small">
-                        Azure Synapse Link is required for creating an analytical store container. Enable Synapse Link
-                        for this Cosmos DB account.{" "}
-                        <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
-                          Learn more
-                        </Link>
+                {this.shouldShowAnalyticalStoreOptions() && (
+                  <Stack className="panelGroupSpacing">
+                    <Stack horizontal>
+                      <Text className="panelTextBold" variant="small">
+                        Analytical store
                       </Text>
-                      <DefaultButton
-                        text="Enable"
-                        onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
-                        style={{ height: 27, width: 80 }}
-                        styles={{ label: { fontSize: 12 } }}
-                      />
+                      <TooltipHost
+                        directionalHint={DirectionalHint.bottomLeftEdge}
+                        content="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads. Learn more"
+                      >
+                        <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                      </TooltipHost>
                     </Stack>
-                  )}
-                </Stack>
-              )}
-            </Stack>
-          </CollapsibleSectionComponent>
+
+                    <Stack horizontal verticalAlign="center">
+                      <input
+                        className="panelRadioBtn"
+                        checked={this.state.enableAnalyticalStore}
+                        disabled={!this.isSynapseLinkEnabled()}
+                        aria-label="Enable analytical store"
+                        aria-checked={this.state.enableAnalyticalStore}
+                        name="analyticalStore"
+                        type="radio"
+                        role="radio"
+                        id="enableAnalyticalStoreBtn"
+                        tabIndex={0}
+                        onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
+                      />
+                      <span className="panelRadioBtnLabel">On</span>
+
+                      <input
+                        className="panelRadioBtn"
+                        checked={!this.state.enableAnalyticalStore}
+                        disabled={!this.isSynapseLinkEnabled()}
+                        aria-label="Disable analytical store"
+                        aria-checked={!this.state.enableAnalyticalStore}
+                        name="analyticalStore"
+                        type="radio"
+                        role="radio"
+                        id="disableAnalyticalStoreBtn"
+                        tabIndex={0}
+                        onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
+                      />
+                      <span className="panelRadioBtnLabel">Off</span>
+                    </Stack>
+
+                    {!this.isSynapseLinkEnabled() && (
+                      <Stack className="panelGroupSpacing">
+                        <Text variant="small">
+                          Azure Synapse Link is required for creating an analytical store container. Enable Synapse Link
+                          for this Cosmos DB account.{" "}
+                          <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
+                            Learn more
+                          </Link>
+                        </Text>
+                        <DefaultButton
+                          text="Enable"
+                          onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
+                          style={{ height: 27, width: 80 }}
+                          styles={{ label: { fontSize: 12 } }}
+                        />
+                      </Stack>
+                    )}
+                  </Stack>
+                )}
+              </Stack>
+            </CollapsibleSectionComponent>
+          )}
         </div>
 
         <PanelFooterComponent buttonLabel="OK" />
@@ -657,30 +638,30 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getCollectionName(): string {
-    switch (userContext.defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
+    switch (userContext.apiType) {
+      case "SQL":
         return "Container";
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         return "Collection";
-      case DefaultAccountExperienceType.Cassandra:
-      case DefaultAccountExperienceType.Table:
+      case "Cassandra":
+      case "Tables":
         return "Table";
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         return "Graph";
       default:
-        throw new Error(`Unsupported default experience type: ${userContext.defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${userContext.apiType}`);
     }
   }
 
   private getPartitionKeyName(): string {
-    return userContext.defaultExperience === DefaultAccountExperienceType.MongoDB ? "Shard key" : "Partition key";
+    return userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
   }
 
   private getPartitionKeyPlaceHolder(): string {
-    switch (userContext.defaultExperience) {
-      case DefaultAccountExperienceType.MongoDB:
+    switch (userContext.apiType) {
+      case "Mongo":
         return "e.g., address.zipCode";
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         return "e.g., /address";
       default:
         return "e.g., /address/zipCode";
@@ -817,11 +798,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    switch (userContext.defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
-      case DefaultAccountExperienceType.MongoDB:
+    switch (userContext.apiType) {
+      case "SQL":
+      case "Mongo":
         return true;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         return this.props.explorer.hasStorageAnalyticsAfecFeature();
       default:
         return false;
@@ -855,7 +836,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         const validPaths: string[] = uniqueKey.split(",")?.filter((path) => path?.length > 0);
         const trimmedPaths: string[] = validPaths?.map((path) => path.trim());
         if (trimmedPaths?.length > 0) {
-          if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
+          if (userContext.apiType === "Mongo") {
             trimmedPaths.map((path) => {
               const transformedPath = path.split(".").join("/");
               if (transformedPath[0] !== "/") {
@@ -888,7 +869,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     if (
-      userContext.defaultExperience === DefaultAccountExperienceType.Graph &&
+      userContext.apiType === "Gremlin" &&
       (this.state.partitionKey === "/id" || this.state.partitionKey === "/label")
     ) {
       this.setState({ errorMessage: "/id and /label as partition keys are not allowed for graph." });
@@ -924,14 +905,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     let databaseId = this.state.createNewDatabase ? this.state.newDatabaseId.trim() : this.state.selectedDatabaseId;
     let partitionKeyString = this.state.partitionKey.trim();
 
-    if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+    if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
       databaseId = CollectionCreation.TablesAPIDefaultDatabase;
       partitionKeyString = "/'$pk'";
     }
 
     const uniqueKeyPolicy: DataModels.UniqueKeyPolicy = this.parseUniqueKeys();
-    const partitionKeyVersion = this.state.useHashV1 ? undefined : 2;
+    const partitionKeyVersion = this.state.useHashV2 ? 2 : undefined;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
           paths: [partitionKeyString],
