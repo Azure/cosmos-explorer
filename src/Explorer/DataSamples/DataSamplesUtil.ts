@@ -57,6 +57,6 @@ export class DataSamplesUtil {
   }
 
   public isSampleContainerCreationSupported(): boolean {
-    return userContext.apiType === "SQL" || this.container.isPreferredApiGraph();
+    return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   }
 }

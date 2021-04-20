@@ -1149,7 +1149,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 isAddRemoveVisible={false}
                 onParamKeyChange={[Function]}
                 onParamValueChange={[Function]}
-                paramValue=""
                 selectedKey="string"
               >
                 <StyledLabelBase>
@@ -2684,7 +2683,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       key=".0:$.1"
                       label="Value"
                       onChange={[Function]}
-                      value=""
                     >
                       <TextFieldBase
                         autoFocus={true}
@@ -2969,7 +2967,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           }
                         }
                         validateOnLoad={true}
-                        value=""
                       >
                         <div
                           className="ms-TextField root-70"

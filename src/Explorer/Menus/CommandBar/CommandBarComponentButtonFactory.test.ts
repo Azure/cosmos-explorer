@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import { AuthType } from "../../../AuthType";
+import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
@@ -17,7 +18,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
-      mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
@@ -56,7 +56,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
-      mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
@@ -119,7 +118,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer = {} as Explorer;
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
-      mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
@@ -208,15 +206,26 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     beforeEach(() => {
-      mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => true);
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableCassandra" }],
+          },
+        } as DatabaseAccount,
+      });
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
     });
 
     it("Cassandra Api not available - button should be hidden", () => {
-      mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
-
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableMongo" }],
+          },
+        } as DatabaseAccount,
+      });
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeUndefined();
@@ -281,7 +290,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isPreferredApiTable = ko.computed(() => true);
       mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
-      mockExplorer.isPreferredApiCassandra = ko.computed<boolean>(() => false);
 
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
@@ -346,6 +354,11 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("should only show New SQL Query and Open Query buttons", () => {
+      updateUserContext({
+        databaseAccount: {
+          kind: "DocumentDB",
+        } as DatabaseAccount,
+      });
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       expect(buttons.length).toBe(2);
       expect(buttons[0].commandButtonLabel).toBe("New SQL Query");

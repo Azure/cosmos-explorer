@@ -50,6 +50,7 @@ import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponen
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Tabs/QueryTab.less";
+import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
@@ -79,7 +80,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
-  const { tabs, tabsManager } = useTabs();
+  const { tabs, activeTab, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -205,7 +206,7 @@ const App: React.FunctionComponent = () => {
           </div>
           {/* Collections Tree - End */}
           {tabs.length === 0 && <SplashScreen explorer={explorer} />}
-          <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
+          <Tabs tabs={tabs} activeTab={activeTab} />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div
