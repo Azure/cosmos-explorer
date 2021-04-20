@@ -4,7 +4,7 @@ test("Self Serve", async () => {
   const frame = await handle.contentFrame();
 
   // wait for refresh RP call to end
-  await frame.waitFor(10000);
+  await page.waitForTimeout(10000);
 
   // id of the display element is in the format {PROPERTY_NAME}-{DISPLAY_NAME}-{DISPLAY_TYPE}
   await frame.waitForSelector("#description-text-display");
