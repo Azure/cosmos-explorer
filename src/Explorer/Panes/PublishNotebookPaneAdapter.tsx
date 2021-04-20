@@ -1,20 +1,21 @@
+import { toJS } from "@nteract/commutable";
+import { ImmutableNotebook } from "@nteract/commutable/src";
 import ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import Explorer from "../Explorer";
+import { HttpStatusCodes } from "../../Common/Constants";
+import { getErrorMessage, getErrorStack, handleError } from "../../Common/ErrorHandlingUtils";
 import { JunoClient } from "../../Juno/JunoClient";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
+import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
+import Explorer from "../Explorer";
+import * as FileSystemUtil from "../Notebook/FileSystemUtil";
+import { SnapshotFragment } from "../Notebook/NotebookComponent/types";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
-import { ImmutableNotebook } from "@nteract/commutable/src";
-import { toJS } from "@nteract/commutable";
-import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConductComponent";
-import { HttpStatusCodes } from "../../Common/Constants";
-import { handleError, getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
-import { traceFailure, traceStart, traceSuccess } from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import * as FileSystemUtil from "../Notebook/FileSystemUtil";
 
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
@@ -31,6 +32,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private imageSrc: string;
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
+  private cellOutputSnapshots: SnapshotFragment[];
   private isCodeOfConductAccepted: boolean;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
@@ -65,6 +67,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       notebookCreatedDate: new Date().toISOString(),
       notebookObject: this.notebookObject,
       notebookParentDomElement: this.parentDomElement,
+      cellOutputSnapshots: this.cellOutputSnapshots,
       onChangeName: (newValue: string) => (this.name = newValue),
       onChangeDescription: (newValue: string) => (this.description = newValue),
       onChangeTags: (newValue: string) => (this.tags = newValue),
@@ -100,7 +103,8 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     name: string,
     author: string,
     notebookContent: string | ImmutableNotebook,
-    parentDomElement: HTMLElement
+    parentDomElement: HTMLElement,
+    cellOutputSnapshots: SnapshotFragment[]
   ): Promise<void> {
     try {
       const response = await this.junoClient.isCodeOfConductAccepted();
@@ -126,6 +130,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       this.notebookObject = notebookContent;
     }
     this.parentDomElement = parentDomElement;
+    this.cellOutputSnapshots = cellOutputSnapshots;
 
     this.isOpened = true;
     this.triggerRender();

@@ -1,8 +1,12 @@
-import * as Immutable from "immutable";
-import { AppState, ContentRef } from "@nteract/core";
-
-import { Notebook } from "../../../Common/Constants";
 import { CellId } from "@nteract/commutable";
+import { AppState, ContentRef } from "@nteract/core";
+import * as Immutable from "immutable";
+import { Notebook } from "../../../Common/Constants";
+
+export interface SnapshotFragment {
+  image: HTMLImageElement;
+  boundingClientRect: DOMRect;
+}
 
 export interface CdbRecordProps {
   databaseAccountName: string | undefined;
@@ -10,6 +14,7 @@ export interface CdbRecordProps {
   kernelRestartDelayMs: number;
   hoveredCellId: CellId | undefined;
   currentNotebookParentElements: Map<ContentRef, HTMLElement>;
+  cellOutputSnapshots: SnapshotFragment[];
 }
 
 export type CdbRecord = Immutable.RecordOf<CdbRecordProps>;
@@ -24,4 +29,5 @@ export const makeCdbRecord = Immutable.Record<CdbRecordProps>({
   kernelRestartDelayMs: Notebook.kernelRestartInitialDelayMs,
   hoveredCellId: undefined,
   currentNotebookParentElements: new Map<ContentRef, HTMLElement>(),
+  cellOutputSnapshots: undefined,
 });

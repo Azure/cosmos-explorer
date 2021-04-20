@@ -82,6 +82,13 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       }
       return state.set("currentNotebookParentElements", parentEltsMap);
     }
+
+    case cdbActions.STORE_CELL_OUTPUT_SNAPSHOT: {
+      const typedAction = action as cdbActions.StoreCellOutputSnapshotAction;
+      const snapshotFragments = state.cellOutputSnapshots || [];
+      snapshotFragments.push(typedAction.payload.snapshot);
+      return state.set("cellOutputSnapshots", snapshotFragments);
+    }
   }
   return state;
 };

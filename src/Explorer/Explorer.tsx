@@ -45,6 +45,7 @@ import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
+import { SnapshotFragment } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
@@ -285,8 +286,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  userContext.features.enableNotebooks)
+              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                userContext.features.enableNotebooks)
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -308,7 +309,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
+              userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
@@ -1476,9 +1477,9 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
+  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement, cellOutputSnapshots?: SnapshotFragment[]): Promise<void> {
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
+      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement, cellOutputSnapshots);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }

@@ -1,11 +1,12 @@
-import { ITextFieldProps, Stack, Text, TextField, Dropdown, IDropdownProps } from "office-ui-fabric-react";
+import { ImmutableNotebook } from "@nteract/commutable/src";
+import Html2Canvas from "html2canvas";
+import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
-import "./PublishNotebookPaneComponent.less";
-import Html2Canvas from "html2canvas";
-import { ImmutableNotebook } from "@nteract/commutable/src";
+import { SnapshotFragment } from "../Notebook/NotebookComponent/types";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
+import "./PublishNotebookPaneComponent.less";
 
 export interface PublishNotebookPaneProps {
   notebookName: string;
@@ -15,6 +16,7 @@ export interface PublishNotebookPaneProps {
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
   notebookParentDomElement?: HTMLElement;
+  cellOutputSnapshots?: SnapshotFragment[];
   onChangeName: (newValue: string) => void;
   onChangeDescription: (newValue: string) => void;
   onChangeTags: (newValue: string) => void;
@@ -99,10 +101,27 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
           const context = canvas.getContext("2d");
           const image = new Image();
           image.src = originalImageData;
+
           image.onload = () => {
             context.drawImage(image, 0, 0);
+
+            // draw cell outputs
+            if (this.props.cellOutputSnapshots) {
+              console.log(`found ${this.props.cellOutputSnapshots.length} snapshots`);
+              const parentRect = target.getBoundingClientRect();
+
+              this.props.cellOutputSnapshots.forEach(snapshot => {
+                context.drawImage(snapshot.image, snapshot.boundingClientRect.x - parentRect.x, snapshot.boundingClientRect.y - parentRect.y);
+              });
+            }
+
             updateImageSrcWithScreenshot(canvas.toDataURL());
+
+            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
+            window.location.href = image2; // it will save locally
+
           };
+
         })
         .catch((error) => {
           onError(error);

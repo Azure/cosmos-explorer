@@ -28,6 +28,7 @@ import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBa
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
+import { CdbAppState } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import template from "./NotebookV2Tab.html";
 import TabsBase from "./TabsBase";
@@ -485,11 +486,16 @@ export default class NotebookTabV2 extends TabsBase {
       source: Source.CommandBarMenu,
     });
 
+    // TODO get snapshots from somewhere better
+    const cellOutputSnapshots = (NotebookTabV2.clientManager.getStore().getState() as CdbAppState).cdb
+      .cellOutputSnapshots;
+
     const notebookContent = this.notebookComponentAdapter.getContent();
     await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      this.notebookComponentAdapter.getNotebookParentElement()
+      this.notebookComponentAdapter.getNotebookParentElement(),
+      cellOutputSnapshots
     );
   };
 

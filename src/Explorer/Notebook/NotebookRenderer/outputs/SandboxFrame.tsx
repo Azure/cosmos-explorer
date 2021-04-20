@@ -1,10 +1,15 @@
+import Html2Canvas from "html2canvas";
 import React from "react";
 import ReactDOM from "react-dom";
 import { copyStyles } from "../../../../Utils/StyleUtils";
+import { GalleryCardComponent } from "../../../Controls/NotebookGallery/Cards/GalleryCardComponent";
+import { SnapshotFragment } from "../../NotebookComponent/types";
 
 interface SandboxFrameProps {
   style: React.CSSProperties;
   sandbox: string;
+  onNewSnapshot: (snapshot: SnapshotFragment) => void;
+  snapshotTimestamp: number;
 }
 
 interface SandboxFrameState {
@@ -16,6 +21,7 @@ interface SandboxFrameState {
 export class SandboxFrame extends React.PureComponent<SandboxFrameProps, SandboxFrameState> {
   private resizeObserver: ResizeObserver;
   private mutationObserver: MutationObserver;
+  private topNodeRef = React.createRef<HTMLDivElement>();
 
   constructor(props: SandboxFrameProps) {
     super(props);
@@ -27,7 +33,46 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
     };
   }
 
+  componentDidUpdate(prevProps: SandboxFrameProps): void {
+    if (!this.props.snapshotTimestamp || prevProps.snapshotTimestamp === this.props.snapshotTimestamp) {
+      return;
+    }
+
+    const target = this.topNodeRef.current;
+    // target.scrollIntoView();
+    Html2Canvas(target, {
+      useCORS: true,
+      allowTaint: true,
+      scale: 1,
+      logging: true,
+    })
+      .then((canvas) => {
+        //redraw canvas to fit Card Cover Image dimensions
+        const originalImageData = canvas.toDataURL();
+        const requiredHeight =
+          parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+        canvas.height = requiredHeight;
+        const context = canvas.getContext("2d");
+        const image = new Image();
+        image.src = originalImageData;
+        image.onload = () => {
+          context.drawImage(image, 0, 0);
+          console.log('Update snapshot image')
+          this.props.onNewSnapshot({
+            image,
+            boundingClientRect: this.state.frame.getBoundingClientRect()
+          });
+        };
+      })
+      .catch((error) => {
+        // TODO HANDLE ERROR
+        console.error(error);
+      });
+  }
+
   render(): JSX.Element {
+    // eslint-disable-next-line
+    console.log('SandboxFrame: render');
     return (
       <iframe
         ref={(ele) => this.setState({ frame: ele })}
@@ -37,9 +82,18 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
         sandbox={this.props.sandbox}
         height={this.state.frameHeight}
       >
-        {this.state.frameBody && ReactDOM.createPortal(this.props.children, this.state.frameBody)}
+        {this.state.frameBody && ReactDOM.createPortal(this.renderChildren(), this.state.frameBody)}
       </iframe>
     );
+  }
+
+  /**
+   * Wrap children under one node that can be snapshot
+   */
+  private renderChildren() {
+    return <div ref={this.topNodeRef}>
+      {this.props.children}
+    </div>
   }
 
   componentWillUnmount(): void {
@@ -48,6 +102,9 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
   }
 
   onFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {
+    // eslint-disable-next-line
+    console.log('onFrameLoad: start');
+
     const doc = (event.target as HTMLIFrameElement).contentDocument;
     copyStyles(document, doc);
 

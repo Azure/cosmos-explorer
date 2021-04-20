@@ -1,6 +1,7 @@
 import { CellId } from "@nteract/commutable";
 import { ContentRef } from "@nteract/core";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { SnapshotFragment } from "./types";
 
 export const CLOSE_NOTEBOOK = "CLOSE_NOTEBOOK";
 export interface CloseNotebookAction {
@@ -100,6 +101,21 @@ export const UpdateNotebookParentDomElt = (payload: {
 }): UpdateNotebookParentDomEltAction => {
   return {
     type: UPDATE_NOTEBOOK_PARENT_DOM_ELTS,
+    payload,
+  };
+};
+
+export const STORE_CELL_OUTPUT_SNAPSHOT = "STORE_CELL_OUTPUT_SNAPSHOT";
+export interface StoreCellOutputSnapshotAction {
+  type: "STORE_CELL_OUTPUT_SNAPSHOT";
+  payload: {
+    snapshot: SnapshotFragment;
+  };
+}
+
+export const storeCellOutputSnapshot = (payload: { snapshot: SnapshotFragment }): StoreCellOutputSnapshotAction => {
+  return {
+    type: STORE_CELL_OUTPUT_SNAPSHOT,
     payload,
   };
 };
