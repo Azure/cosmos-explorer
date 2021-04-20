@@ -208,6 +208,7 @@ jobs:
           - ./test/mongo/container.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
           - ./test/notebooks/upload.spec.ts
+          - ./test/sql/resourceToken.spec.ts
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js 14.x
