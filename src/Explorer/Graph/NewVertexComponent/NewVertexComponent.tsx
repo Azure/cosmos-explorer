@@ -5,7 +5,6 @@ import DeleteIcon from "../../../../images/delete.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { GremlinPropertyValueType, InputPropertyValueTypeString, NewVertexData } from "../../../Contracts/ViewModels";
 import { EditorNodePropertiesComponent } from "../GraphExplorerComponent/EditorNodePropertiesComponent";
-import "./NewVertexComponent.less";
 
 export interface INewVertexComponentProps {
   newVertexDataProp: NewVertexData;
