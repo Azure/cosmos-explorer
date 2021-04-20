@@ -285,8 +285,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  userContext.features.enableNotebooks)
+              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                userContext.features.enableNotebooks)
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -308,7 +308,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
+              userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
@@ -1729,7 +1729,11 @@ export default class Explorer {
     }
 
     const databaseAccount = this.databaseAccount();
-    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
+    const databaseAccountLocations = databaseAccount && [
+      databaseAccount?.location.toLowerCase(),
+      ...databaseAccount?.properties?.readLocations?.map(location => location?.locationName?.toLowerCase()),
+      ...databaseAccount?.properties?.writeLocations?.map(location => location?.locationName?.toLowerCase())
+    ];
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
@@ -1754,9 +1758,15 @@ export default class Explorer {
         this.isNotebooksEnabledForAccount(true);
         return;
       }
-      const isAccountInAllowedLocation = !disallowedLocations.some(
-        (disallowedLocation) => disallowedLocation === databaseAccountLocation
-      );
+      const isAccountInAllowedLocation = databaseAccountLocations?.some(
+        (accountLocation) => {
+          if (!accountLocation) {
+            return false;
+          }
+
+          return !disallowedLocations.some(disallowedLocation => disallowedLocation === accountLocation); // not a disallowed location
+        }
+      ) || false;
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
