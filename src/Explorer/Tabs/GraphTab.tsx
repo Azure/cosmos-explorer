@@ -9,7 +9,6 @@ import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerCompone
 import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import GraphStylingPane from "../Panes/GraphStylingPane";
-// import NewVertexPane from "../Panes/NewVertexPane";
 import { NewVertexPanel } from "../Panes/NewVertexPanel/NewVertexPanel";
 import template from "./GraphTab.html";
 import TabsBase from "./TabsBase";
@@ -54,7 +53,6 @@ export default class GraphTab extends TabsBase {
   private graphConfigUiData: ViewModels.GraphConfigUiData;
   private isFilterQueryLoading: ko.Observable<boolean>;
   private isValidQuery: ko.Observable<boolean>;
-  // private newVertexPane: NewVertexPane;
   private graphStylingPane: GraphStylingPane;
   private collectionPartitionKeyProperty: string;
   private contextualPane: ContextualPaneBase;
@@ -62,7 +60,6 @@ export default class GraphTab extends TabsBase {
   constructor(options: GraphTabOptions) {
     super(options);
 
-    // this.newVertexPane = options.collection && options.collection.container.newVertexPane;
     this.graphStylingPane = options.collection && options.collection.container.graphStylingPane;
     this.collectionPartitionKeyProperty = options.collectionPartitionKeyProperty;
 
@@ -137,10 +134,8 @@ export default class GraphTab extends TabsBase {
 
   /* Command bar */
   private showNewVertexEditor(): void {
-    // this.newVertexPane.open();
-
     this.collection.container.openSidePanel(
-      "New Graph Vertex",
+      "New Vertex",
       <NewVertexPanel
         explorer={this.collection.container}
         partitionKeyPropertyProp={this.collectionPartitionKeyProperty}
@@ -150,42 +145,18 @@ export default class GraphTab extends TabsBase {
           handleErrorScenario: (errorMessage: string) => void,
           handleSuccessScenario: () => void
         ): void => {
-          //eslint-disable-next-line
-          console.log("GraphTab > New onSubmit > ", result);
           this.graphAccessor.addVertex(result).then(
             () => {
               handleSuccessScenario();
-              // console.log("error > GraphExplorerError > return > inside");
               this.contextualPane.cancel();
             },
             (error: GraphExplorerError) => {
-              // console.log("error > GraphExplorerError > error", error.title);
               handleErrorScenario(error.title);
             }
           );
         }}
       />
     );
-
-    // console.log("GraphTab > ", this.collectionPartitionKeyProperty);
-    // this.newVertexPane.setPartitionKeyProperty(this.collectionPartitionKeyProperty);
-    // // TODO Must update GraphExplorer properties
-    // this.newVertexPane.subscribeOnSubmitCreate((result: ViewModels.NewVertexData) => {
-    //   console.log("GraphTab > Old onSubmit > ", result);
-    //   this.newVertexPane.formErrors(undefined);
-    //   this.newVertexPane.formErrorsDetails(undefined);
-    //   this.graphAccessor.addVertex(result).then(
-    //     () => {
-    //       this.newVertexPane.cancel();
-    //     },
-    //     (error: GraphExplorerError) => {
-    //       this.newVertexPane.formErrors(error.title);
-    //       if (!error.details) {
-    //         this.newVertexPane.formErrorsDetails(error.details);
-    //       }
-    //     }
-    //   );
-    // });
   }
   public openStyling(): void {
     this.setDefaultGraphConfigValues();
