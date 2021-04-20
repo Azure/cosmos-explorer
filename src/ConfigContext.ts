@@ -26,6 +26,7 @@ export interface ConfigContext {
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   hostedExplorerURL: string;
   armAPIVersion?: string;
+  allowedJunoOrigins: string[];
 }
 
 // Default configuration
@@ -53,6 +54,13 @@ let configContext: Readonly<ConfigContext> = {
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+  allowedJunoOrigins: [
+    "https://juno-test.documents-dev.windows-int.net",
+    "https://juno-test2.documents-dev.windows-int.net",
+    "https://tools.cosmos.azure.com",
+    "https://tools-staging.cosmos.azure.com",
+    "https://localhost",
+  ],
 };
 
 export function resetConfigContext(): void {
@@ -86,11 +94,16 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     });
     if (response.status === 200) {
       try {
-        const { allowedParentFrameOrigins, ...externalConfig } = await response.json();
+        const { allowedParentFrameOrigins, allowedJunoOrigins, ...externalConfig } = await response.json();
         Object.assign(configContext, externalConfig);
         if (allowedParentFrameOrigins && allowedParentFrameOrigins.length > 0) {
           updateConfigContext({
             allowedParentFrameOrigins: [...configContext.allowedParentFrameOrigins, ...allowedParentFrameOrigins],
+          });
+        }
+        if (allowedJunoOrigins && allowedJunoOrigins.length > 0) {
+          updateConfigContext({
+            allowedJunoOrigins: [...configContext.allowedJunoOrigins, ...allowedJunoOrigins],
           });
         }
       } catch (error) {
