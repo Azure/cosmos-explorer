@@ -14,13 +14,33 @@
     "target": "es2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": ["es5", "es6", "dom"],
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": ["jest"]
+    "types": [
+      "jest"
+    ]
   },
-  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts"],
-  "exclude": ["./src/**/__mocks__/**/*"]
+  "typedocOptions": {
+    "entryPoints": [
+      "./src/SelfServe/Decorators.tsx",
+      "./src/SelfServe/SelfServeTelemetryProcessor.ts",
+      "./src/SelfServe/SelfServeTypes.ts",
+      "./src/SelfServe/SelfServeUtils.tsx"
+    ],
+    "out": "docs"
+  },
+  "include": [
+    "./src/**/*",
+    "./test/testExplorer/TestExplorer.ts"
+  ],
+  "exclude": [
+    "./src/**/__mocks__/**/*"
+  ]
 }
