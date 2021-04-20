@@ -44,7 +44,6 @@ export default class UserDefinedFunction {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
-      isActive: ko.observable(false),
       onUpdateTabsButtons: source.container.onUpdateTabsButtons,
     });
 
@@ -82,7 +81,6 @@ export default class UserDefinedFunction {
           this.collection.databaseId,
           this.collection.id()
         )}/udfs/${this.id()}`,
-        isActive: ko.observable(false),
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
@@ -106,7 +104,7 @@ export default class UserDefinedFunction {
 
     deleteUserDefinedFunction(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
-        this.container.tabsManager.removeTabByComparator((tab) => tab.node && tab.node.rid === this.rid);
+        this.container.tabsManager.closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       (reason) => {}

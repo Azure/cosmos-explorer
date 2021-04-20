@@ -626,8 +626,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
-      "isPreferredApiCassandra": [Function],
-      "isPreferredApiGraph": [Function],
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
