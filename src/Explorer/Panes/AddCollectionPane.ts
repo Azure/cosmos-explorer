@@ -384,15 +384,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.uniqueKeysVisible = ko.pureComputed<boolean>(() => {
-      if (
-        this.container == null ||
-        userContext.apiType === "Mongo" ||
-        !!this.container.isPreferredApiTable() ||
-        !!(userContext.apiType === "Cassandra") ||
-        !!(userContext.apiType === "Gremlin")
-      ) {
-        return false;
-      }
       if (userContext.apiType === "SQL") {
         return true;
       }
