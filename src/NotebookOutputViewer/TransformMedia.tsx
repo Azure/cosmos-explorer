@@ -1,4 +1,5 @@
 import { ImmutableDisplayData, ImmutableExecuteResult, JSONObject } from "@nteract/commutable";
+import { Media } from "@nteract/outputs";
 import { ContentRef } from "@nteract/types";
 import React, { Suspense } from "react";
 
@@ -50,16 +51,16 @@ const transformsById = new Map<string, React.ComponentType<any>>([
   ["application/vnd.vega.v4+json", React.lazy(() => import("./transforms/Vega4"))],
   ["application/vnd.vega.v5+json", React.lazy(() => import("./transforms/Vega5"))],
   ["application/vdom.v1+json", React.lazy(() => import("@nteract/transform-vdom"))],
-  ["application/json", React.lazy(() => import("@nteract/outputs/lib/components/media/json"))],
-  ["application/javascript", React.lazy(() => import("@nteract/outputs/lib/components/media/javascript"))],
-  ["text/html", React.lazy(() => import("@nteract/outputs/lib/components/media/html"))],
-  ["text/markdown", React.lazy(() => import("@nteract/outputs/lib/components/media/markdown"))],
-  ["text/latex", React.lazy(() => import("@nteract/outputs/lib/components/media/latex"))],
-  ["image/svg+xml", React.lazy(() => import("@nteract/outputs/lib/components/media/svg"))],
-  ["image/gif", React.lazy(() => import("@nteract/outputs/lib/components/media/image"))],
-  ["image/png", React.lazy(() => import("@nteract/outputs/lib/components/media/image"))],
-  ["image/jpeg", React.lazy(() => import("@nteract/outputs/lib/components/media/image"))],
-  ["text/plain", React.lazy(() => import("@nteract/outputs/lib/components/media/plain"))],
+  ["application/json", Media.Json],
+  ["application/javascript", Media.JavaScript],
+  ["text/html", Media.HTML],
+  ["text/markdown", Media.Markdown],
+  ["text/latex", Media.LaTeX],
+  ["image/svg+xml", Media.SVG],
+  ["image/gif", Media.Image],
+  ["image/png", Media.Image],
+  ["image/jpeg", Media.Image],
+  ["text/plain", Media.Plain],
 ]);
 
 interface TransformMediaProps {

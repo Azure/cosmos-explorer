@@ -1,7 +1,6 @@
 import { createImmutableOutput, JSONObject, OnDiskOutput } from "@nteract/commutable";
-import KernelOutputError from "@nteract/outputs/lib/components/kernel-output-error";
-import Output from "@nteract/outputs/lib/components/output";
-import StreamText from "@nteract/outputs/lib/components/stream-text";
+import { KernelOutputError, Output, StreamText } from "@nteract/outputs";
+import { ContentRef } from "@nteract/types";
 import "bootstrap/dist/css/bootstrap.css";
 import postRobot from "post-robot";
 import * as React from "react";
@@ -13,7 +12,7 @@ import { TransformMedia } from "./TransformMedia";
 
 export interface OutputsProps {
   id: string;
-  contentRef: string;
+  contentRef: ContentRef;
   hidden: boolean;
   expanded: boolean;
   outputs: OnDiskOutput[];
