@@ -71,7 +71,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       buttons.push(createOpenCassandraTerminalButton(container));
     }
   }
@@ -87,15 +87,15 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createDivider());
     }
 
-    const isSqlQuerySupported = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+    const isSqlQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     if (isSqlQuerySupported) {
       const newSqlQueryBtn = createNewSQLQueryButton(container);
       buttons.push(newSqlQueryBtn);
     }
 
     const isSupportedOpenQueryApi =
-      container.isPreferredApiDocumentDB() || container.isPreferredApiMongoDB() || container.isPreferredApiGraph();
-    const isSupportedOpenQueryFromDiskApi = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+      userContext.apiType === "SQL" || container.isPreferredApiMongoDB() || userContext.apiType === "Gremlin";
+    const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
@@ -104,7 +104,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createOpenQueryFromDiskButton(container));
     }
 
-    if (areScriptsSupported(container)) {
+    if (areScriptsSupported()) {
       const label = "New Stored Procedure";
       const newStoredProcedureBtn: CommandButtonComponentProps = {
         iconSrc: AddStoredProcedureIcon,
@@ -151,25 +151,18 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
 }
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = [];
-  if (configContext.platform === Platform.Hosted) {
-    return buttons;
-  }
-
-  if (!container.isPreferredApiCassandra()) {
-    const label = "Settings";
-    const settingsPaneButton: CommandButtonComponentProps = {
+  const buttons: CommandButtonComponentProps[] = [
+    {
       iconSrc: SettingsIcon,
-      iconAlt: label,
+      iconAlt: "Settings",
       onCommandClick: () => container.openSettingPane(),
       commandButtonLabel: undefined,
-      ariaLabel: label,
-      tooltipText: label,
+      ariaLabel: "Settings",
+      tooltipText: "Settings",
       hasPopup: true,
       disabled: false,
-    };
-    buttons.push(settingsPaneButton);
-  }
+    },
+  ];
 
   if (container.isHostedDataExplorerEnabled()) {
     const label = "Open Full Screen";
@@ -220,8 +213,8 @@ export function createDivider(): CommandButtonComponentProps {
   };
 }
 
-function areScriptsSupported(container: Explorer): boolean {
-  return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+function areScriptsSupported(): boolean {
+  return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
@@ -293,7 +286,7 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
 }
 
 function createNewSQLQueryButton(container: Explorer): CommandButtonComponentProps {
-  if (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) {
+  if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
     const label = "New SQL Query";
     return {
       iconSrc: AddSqlQueryIcon,
@@ -307,7 +300,7 @@ function createNewSQLQueryButton(container: Explorer): CommandButtonComponentPro
       hasPopup: true,
       disabled: container.isDatabaseNodeOrNoneSelected(),
     };
-  } else if (container.isPreferredApiMongoDB()) {
+  } else if (userContext.apiType === "Mongo") {
     const label = "New Query";
     return {
       iconSrc: AddSqlQueryIcon,
@@ -329,8 +322,7 @@ function createNewSQLQueryButton(container: Explorer): CommandButtonComponentPro
 export function createScriptCommandButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  const shouldEnableScriptsCommands: boolean =
-    !container.isDatabaseNodeOrNoneSelected() && areScriptsSupported(container);
+  const shouldEnableScriptsCommands: boolean = !container.isDatabaseNodeOrNoneSelected() && areScriptsSupported();
 
   if (shouldEnableScriptsCommands) {
     const label = "New Stored Procedure";

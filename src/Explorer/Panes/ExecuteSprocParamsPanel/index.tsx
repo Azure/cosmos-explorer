@@ -3,11 +3,13 @@ import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabr
 import React, { FunctionComponent, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import Explorer from "../../Explorer";
+import StoredProcedure from "../../Tree/StoredProcedure";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
 import { InputParameter } from "./InputParameter";
 
 interface ExecuteSprocParamsPaneProps {
   explorer: Explorer;
+  storedProcedure: StoredProcedure;
   closePanel: () => void;
 }
 
@@ -23,11 +25,12 @@ interface UnwrappedExecuteSprocParam {
 
 export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
   explorer,
+  storedProcedure,
   closePanel,
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [paramKeyValues, setParamKeyValues] = useState<UnwrappedExecuteSprocParam[]>([{ key: "string", text: "" }]);
-  const [partitionValue, setPartitionValue] = useState<string>("");
+  const [partitionValue, setPartitionValue] = useState<string>(); // Defaulting to undefined here is important. It is not the same partition key as ""
   const [selectedKey, setSelectedKey] = React.useState<IDropdownOption>({ key: "string", text: "" });
   const [formError, setFormError] = useState<string>("");
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
@@ -76,9 +79,15 @@ export const ExecuteSprocParamsPanel: FunctionComponent<ExecuteSprocParamsPanePr
       return;
     }
     setLoadingTrue();
-    const sprocParams = wrappedSprocParams && wrappedSprocParams.map((sprocParam) => sprocParam.text);
-    const currentSelectedSproc = explorer.findSelectedStoredProcedure();
-    currentSelectedSproc.execute(sprocParams, partitionValue);
+    const sprocParams =
+      wrappedSprocParams &&
+      wrappedSprocParams.map((sprocParam) => {
+        if (sprocParam.key === "custom") {
+          return JSON.parse(sprocParam.text);
+        }
+        return sprocParam.text;
+      });
+    storedProcedure.execute(sprocParams, partitionKey === "custom" ? JSON.parse(partitionValue) : partitionValue);
     setLoadingFalse();
     closePanel();
   };

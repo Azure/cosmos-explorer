@@ -133,21 +133,6 @@ exports[`Settings Pane should render Default properly 1`] = `
           "useIndexingForSharedThroughput": [Function],
           "visible": [Function],
         },
-        DeleteCollectionConfirmationPane {
-          "collectionIdConfirmation": [Function],
-          "collectionIdConfirmationText": [Function],
-          "container": [Circular],
-          "containerDeleteFeedback": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "deletecollectionconfirmationpane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "recordDeleteFeedback": [Function],
-          "title": [Function],
-          "visible": [Function],
-        },
         GraphStylingPane {
           "container": [Circular],
           "firstFieldHasFocus": [Function],
@@ -236,27 +221,6 @@ exports[`Settings Pane should render Default properly 1`] = `
           "scrollId": [Function],
           "submitButtonText": [Function],
           "title": [Function],
-          "visible": [Function],
-        },
-        QuerySelectPane {
-          "allSelected": [Function],
-          "anyColumnSelected": [Function],
-          "availableColumnsTableQueryLabel": "Available Columns",
-          "canSelectAll": [Function],
-          "columnOptions": [Function],
-          "container": [Circular],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "handleClick": [Function],
-          "id": "queryselectpane",
-          "instructionLabel": "Select the columns that you want to query.",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "noColumnSelectedWarning": "At least one column should be selected.",
-          "selectedColumnOption": null,
-          "title": [Function],
-          "titleLabel": "Select Columns",
           "visible": [Function],
         },
         NewVertexPane {
@@ -591,21 +555,6 @@ exports[`Settings Pane should render Default properly 1`] = `
       "databaseAccount": [Function],
       "databases": [Function],
       "defaultExperience": [Function],
-      "deleteCollectionConfirmationPane": DeleteCollectionConfirmationPane {
-        "collectionIdConfirmation": [Function],
-        "collectionIdConfirmationText": [Function],
-        "container": [Circular],
-        "containerDeleteFeedback": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "deletecollectionconfirmationpane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "recordDeleteFeedback": [Function],
-        "title": [Function],
-        "visible": [Function],
-      },
       "deleteCollectionText": [Function],
       "deleteDatabaseText": [Function],
       "editTableEntityPane": EditTableEntityPane {
@@ -1440,9 +1389,6 @@ exports[`Settings Pane should render Default properly 1`] = `
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
-      "isPreferredApiCassandra": [Function],
-      "isPreferredApiDocumentDB": [Function],
-      "isPreferredApiGraph": [Function],
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
@@ -1486,27 +1432,6 @@ exports[`Settings Pane should render Default properly 1`] = `
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
         "container": [Circular],
-      },
-      "querySelectPane": QuerySelectPane {
-        "allSelected": [Function],
-        "anyColumnSelected": [Function],
-        "availableColumnsTableQueryLabel": "Available Columns",
-        "canSelectAll": [Function],
-        "columnOptions": [Function],
-        "container": [Circular],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "handleClick": [Function],
-        "id": "queryselectpane",
-        "instructionLabel": "Select the columns that you want to query.",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "noColumnSelectedWarning": "At least one column should be selected.",
-        "selectedColumnOption": null,
-        "title": [Function],
-        "titleLabel": "Select Columns",
-        "visible": [Function],
       },
       "refreshDatabaseAccount": [Function],
       "refreshNotebookList": [Function],
@@ -1605,6 +1530,41 @@ exports[`Settings Pane should render Default properly 1`] = `
   <div
     className="paneMainContent"
   >
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart pageOptionsPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Page options
+          <Tooltip>
+            Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
+          </Tooltip>
+        </div>
+        <StyledChoiceGroupBase
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "custom",
+                "text": "Custom",
+              },
+              Object {
+                "key": "unlimited",
+                "text": "Unlimited",
+              },
+            ]
+          }
+          selectedKey="unlimited"
+        />
+      </div>
+      <div
+        className="tabs settingsSectionPart"
+      />
+    </div>
     <div
       className="settingsSection"
     >
@@ -1829,21 +1789,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           "useIndexingForSharedThroughput": [Function],
           "visible": [Function],
         },
-        DeleteCollectionConfirmationPane {
-          "collectionIdConfirmation": [Function],
-          "collectionIdConfirmationText": [Function],
-          "container": [Circular],
-          "containerDeleteFeedback": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "deletecollectionconfirmationpane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "recordDeleteFeedback": [Function],
-          "title": [Function],
-          "visible": [Function],
-        },
         GraphStylingPane {
           "container": [Circular],
           "firstFieldHasFocus": [Function],
@@ -1932,27 +1877,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           "scrollId": [Function],
           "submitButtonText": [Function],
           "title": [Function],
-          "visible": [Function],
-        },
-        QuerySelectPane {
-          "allSelected": [Function],
-          "anyColumnSelected": [Function],
-          "availableColumnsTableQueryLabel": "Available Columns",
-          "canSelectAll": [Function],
-          "columnOptions": [Function],
-          "container": [Circular],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "handleClick": [Function],
-          "id": "queryselectpane",
-          "instructionLabel": "Select the columns that you want to query.",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "noColumnSelectedWarning": "At least one column should be selected.",
-          "selectedColumnOption": null,
-          "title": [Function],
-          "titleLabel": "Select Columns",
           "visible": [Function],
         },
         NewVertexPane {
@@ -2287,21 +2211,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "databaseAccount": [Function],
       "databases": [Function],
       "defaultExperience": [Function],
-      "deleteCollectionConfirmationPane": DeleteCollectionConfirmationPane {
-        "collectionIdConfirmation": [Function],
-        "collectionIdConfirmationText": [Function],
-        "container": [Circular],
-        "containerDeleteFeedback": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "id": "deletecollectionconfirmationpane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "recordDeleteFeedback": [Function],
-        "title": [Function],
-        "visible": [Function],
-      },
       "deleteCollectionText": [Function],
       "deleteDatabaseText": [Function],
       "editTableEntityPane": EditTableEntityPane {
@@ -3136,9 +3045,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
-      "isPreferredApiCassandra": [Function],
-      "isPreferredApiDocumentDB": [Function],
-      "isPreferredApiGraph": [Function],
       "isPreferredApiMongoDB": [Function],
       "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
@@ -3182,27 +3088,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
         "container": [Circular],
-      },
-      "querySelectPane": QuerySelectPane {
-        "allSelected": [Function],
-        "anyColumnSelected": [Function],
-        "availableColumnsTableQueryLabel": "Available Columns",
-        "canSelectAll": [Function],
-        "columnOptions": [Function],
-        "container": [Circular],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "handleClick": [Function],
-        "id": "queryselectpane",
-        "instructionLabel": "Select the columns that you want to query.",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "noColumnSelectedWarning": "At least one column should be selected.",
-        "selectedColumnOption": null,
-        "title": [Function],
-        "titleLabel": "Select Columns",
-        "visible": [Function],
       },
       "refreshDatabaseAccount": [Function],
       "refreshNotebookList": [Function],
