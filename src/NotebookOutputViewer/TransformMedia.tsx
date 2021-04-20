@@ -1,10 +1,7 @@
 import { ImmutableDisplayData, ImmutableExecuteResult, JSONObject } from "@nteract/commutable";
-import { ContentRef } from "@nteract/core";
-import DataExplorer from "@nteract/data-explorer";
 import { Media } from "@nteract/outputs";
-import PlotlyTransform from "@nteract/transform-plotly";
-import TransformVDOM from "@nteract/transform-vdom";
-import React from "react";
+import { ContentRef } from "@nteract/types";
+import React, { Suspense } from "react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, no-null/no-null
 const NullTransform = (): any => null;
@@ -39,21 +36,48 @@ const displayOrder = [
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const transformsById = new Map<string, React.ComponentType<any>>([
-  ["text/vnd.plotly.v1+html", PlotlyTransform],
-  ["application/vnd.plotly.v1+json", PlotlyTransform],
-  ["application/geo+json", NullTransform],
-  ["application/x-nteract-model-debug+json", NullTransform],
-  ["application/vnd.dataresource+json", DataExplorer],
-  ["application/vnd.jupyter.widget-view+json", NullTransform],
-  ["application/vnd.vegalite.v1+json", NullTransform],
-  ["application/vnd.vegalite.v2+json", NullTransform],
-  ["application/vnd.vegalite.v3+json", NullTransform],
-  ["application/vnd.vegalite.v4+json", NullTransform],
-  ["application/vnd.vega.v2+json", NullTransform],
-  ["application/vnd.vega.v3+json", NullTransform],
-  ["application/vnd.vega.v4+json", NullTransform],
-  ["application/vnd.vega.v5+json", NullTransform],
-  ["application/vdom.v1+json", TransformVDOM],
+  ["text/vnd.plotly.v1+html", React.lazy(() => import("@nteract/transform-plotly"))],
+  ["application/vnd.plotly.v1+json", React.lazy(() => import("@nteract/transform-plotly"))],
+  ["application/geo+json", NullTransform], // TODO: The geojson transform will likely need some work because of the basemap URL(s)
+  ["application/x-nteract-model-debug+json", React.lazy(() => import("@nteract/transform-model-debug"))],
+  ["application/vnd.dataresource+json", React.lazy(() => import("@nteract/data-explorer"))],
+  [
+    "application/vnd.jupyter.widget-view+json",
+    React.lazy(() => import("@nteract/jupyter-widgets").then((widgets) => ({ default: widgets.WidgetDisplay }))),
+  ],
+  [
+    "application/vnd.vegalite.v1+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite1 }))),
+  ],
+  [
+    "application/vnd.vegalite.v2+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite2 }))),
+  ],
+  [
+    "application/vnd.vegalite.v3+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite3 }))),
+  ],
+  [
+    "application/vnd.vegalite.v4+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.VegaLite4 }))),
+  ],
+  [
+    "application/vnd.vega.v2+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega2 }))),
+  ],
+  [
+    "application/vnd.vega.v3+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega3 }))),
+  ],
+  [
+    "application/vnd.vega.v4+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega4 }))),
+  ],
+  [
+    "application/vnd.vega.v5+json",
+    React.lazy(() => import("@nteract/transform-vega").then((vega) => ({ default: vega.Vega5 }))),
+  ],
+  ["application/vdom.v1+json", React.lazy(() => import("@nteract/transform-vdom"))],
   ["application/json", Media.Json],
   ["application/javascript", Media.JavaScript],
   ["text/html", Media.HTML],
@@ -84,13 +108,15 @@ export const TransformMedia = (props: TransformMediaProps): JSX.Element => {
   }
 
   return (
-    <Media
-      onMetadataChange={props.onMetadataChange}
-      data={data}
-      metadata={metadata}
-      contentRef={props.contentRef}
-      id={props.id}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <Media
+        onMetadataChange={props.onMetadataChange}
+        data={data}
+        metadata={metadata}
+        contentRef={props.contentRef}
+        id={props.id}
+      />
+    </Suspense>
   );
 };
 

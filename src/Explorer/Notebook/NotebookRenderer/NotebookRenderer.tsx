@@ -13,7 +13,6 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { userContext } from "../../../UserContext";
 import * as cdbActions from "../NotebookComponent/actions";
-import loadTransform from "../NotebookComponent/loadTransform";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import CellCreator from "./decorators/CellCreator";
@@ -71,7 +70,6 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 
   componentDidMount() {
-    loadTransform(this.props as any);
     this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 

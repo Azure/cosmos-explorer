@@ -9,7 +9,6 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { userContext } from "../../../UserContext";
-import loadTransform from "../NotebookComponent/loadTransform";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import "./default.css";
@@ -26,10 +25,6 @@ export interface NotebookRendererProps {
  * This is the class that uses nteract to render a read-only notebook.
  */
 class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
-  componentDidMount() {
-    loadTransform(this.props as any);
-  }
-
   private renderPrompt(id: string, contentRef: string): JSX.Element {
     if (this.props.hidePrompts) {
       return <></>;
