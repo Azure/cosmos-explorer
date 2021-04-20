@@ -16,3 +16,4 @@ Contracts/*
 .env
 failure.png
 screenshots/*
+GettingStarted-ignore*.ipynb
