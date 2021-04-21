@@ -1,4 +1,4 @@
-import { mount, ReactWrapper, shallow } from "enzyme";
+import { shallow, ShallowWrapper } from "enzyme";
 import React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
@@ -6,7 +6,7 @@ import { NewVertexPanel } from "./NewVertexPanel";
 
 describe("New Vertex Panel", () => {
   let fakeExplorer: Explorer;
-  let wrapper: ReactWrapper;
+  let wrapper: ShallowWrapper;
 
   beforeEach(() => {
     fakeExplorer = new Explorer();
@@ -16,17 +16,10 @@ describe("New Vertex Panel", () => {
     const props = {
       explorer: fakeExplorer,
       partitionKeyPropertyProp: "",
-      onSubmit: (
-        //eslint-disable-next-line
-        result: ViewModels.NewVertexData,
-        //eslint-disable-next-line
-        handleErrorScenario: (errorMsg: string) => void,
-        //eslint-disable-next-line
-        handleSuccessScenario: () => void
-      ): void => undefined,
+      onSubmit: (): void => undefined,
       openNotificationConsole: (): void => undefined,
     };
-    wrapper = mount(<NewVertexPanel {...props} />);
+    wrapper = shallow(<NewVertexPanel {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
