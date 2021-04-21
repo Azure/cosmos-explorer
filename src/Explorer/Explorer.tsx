@@ -63,14 +63,16 @@ import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane";
-import AddTableEntityPane from "./Panes/Tables/AddTableEntityPane";
+import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
+import QueryTablesTab from "./Tabs/QueryTablesTab";
 import TabsBase from "./Tabs/TabsBase";
 import { TabsManager } from "./Tabs/TabsManager";
 import TerminalTab from "./Tabs/TerminalTab";
@@ -177,7 +179,6 @@ export default class Explorer {
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
-  public addTableEntityPane: AddTableEntityPane;
   public editTableEntityPane: EditTableEntityPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
@@ -514,13 +515,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.addTableEntityPane = new AddTableEntityPane({
-      id: "addtableentitypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.editTableEntityPane = new EditTableEntityPane({
       id: "edittableentitypane",
       visible: ko.observable<boolean>(false),
@@ -561,7 +555,6 @@ export default class Explorer {
       this.addDatabasePane,
       this.addCollectionPane,
       this.graphStylingPane,
-      this.addTableEntityPane,
       this.editTableEntityPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
@@ -634,7 +627,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.addTableEntityPane.title("Add Table Entity");
         this.editTableEntityPane.title("Edit Table Entity");
         this.tableDataClient = new TablesAPIDataClient();
         break;
@@ -649,7 +641,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.addTableEntityPane.title("Add Table Row");
         this.editTableEntityPane.title("Edit Table Row");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
@@ -2263,6 +2254,18 @@ export default class Explorer {
     );
   }
 
+  public openAddTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
+    this.openSidePanel(
+      "Add Table Entity",
+      <AddTableEntityPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        queryTablesTab={queryTablesTab}
+        tableEntityListViewModel={tableEntityListViewModel}
+        cassandraApiClient={new CassandraAPIDataClient()}
+      />
+    );
+  }
   public openSetupNotebooksPanel(title: string, description: string): void {
     this.openSidePanel(
       title,
