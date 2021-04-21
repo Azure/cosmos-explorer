@@ -85,10 +85,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("string-input-pane")).toBe(true);
   });
 
-  it("should register setup-notebooks-pane component", () => {
-    expect(ko.components.isRegistered("setup-notebooks-pane")).toBe(true);
-  });
-
   it("should register dynamic-list component", () => {
     expect(ko.components.isRegistered("dynamic-list")).toBe(true);
   });
