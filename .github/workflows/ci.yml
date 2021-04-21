@@ -128,7 +128,6 @@ jobs:
           path: failed-*
   endtoend:
     name: "E2E"
-    needs: [cleanupaccounts]
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
