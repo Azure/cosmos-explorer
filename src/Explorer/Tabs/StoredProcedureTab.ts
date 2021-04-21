@@ -208,7 +208,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
       iconSrc: ExecuteQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        this.collection && this.collection.container.openExecuteSprocParamsPanel();
+        this.collection && this.collection.container.openExecuteSprocParamsPanel(this.node);
       },
       commandButtonLabel: label,
       ariaLabel: label,

@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
+import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import { readCollections } from "../../Common/dataAccess/readCollections";
 import { readDatabaseOffer } from "../../Common/dataAccess/readDatabaseOffer";
@@ -77,7 +78,6 @@ export default class Database implements ViewModels.Database {
             rid: this.rid,
             database: this,
             hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
-            isActive: ko.observable(false),
             onLoadStartKey: startKey,
             onUpdateTabsButtons: this.container.onUpdateTabsButtons,
           };
@@ -168,6 +168,27 @@ export default class Database implements ViewModels.Database {
   public async loadCollections(): Promise<void> {
     const collectionVMs: Collection[] = [];
     const collections: DataModels.Collection[] = await readCollections(this.id());
+    // TODO Remove
+    // This is a hack to make Mongo collections read via ARM have a SQL-ish partitionKey property
+    if (userContext.apiType === "Mongo" && userContext.authType === AuthType.AAD) {
+      collections.map((collection) => {
+        if (collection.shardKey) {
+          const shardKey = Object.keys(collection.shardKey)[0];
+          collection.partitionKey = {
+            version: undefined,
+            kind: "Hash",
+            paths: [`/"$v"/"${shardKey.split(".").join(`"/"$v"/"`)}"/"$v"`],
+          };
+        } else {
+          collection.partitionKey = {
+            paths: ["/'$v'/'_partitionKey'/'$v'"],
+            kind: "Hash",
+            version: 2,
+            systemKey: true,
+          };
+        }
+      });
+    }
     const deltaCollections = this.getDeltaCollections(collections);
 
     collections.forEach((collection: DataModels.Collection) => {
