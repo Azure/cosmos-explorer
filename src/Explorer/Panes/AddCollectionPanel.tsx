@@ -505,7 +505,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           )}
 
           {userContext.apiType !== "Tables" && (
-            <CollapsibleSectionComponent title="Advanced" isExpandedByDefault={false}>
+            <CollapsibleSectionComponent
+              title="Advanced"
+              isExpandedByDefault={false}
+              onClick={() => TelemetryProcessor.traceOpen(Action.OpenAddCollectionPaneAdvancedSection)}
+            >
               <Stack className="panelGroupSpacing">
                 {this.props.explorer.isEnableMongoCapabilityPresent() && (
                   <Stack>
