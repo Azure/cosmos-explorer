@@ -1,14 +1,14 @@
-import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
+import * as DataModels from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { userContext } from "../../UserContext";
+import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+import { listGremlinDatabases } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { listSqlDatabases } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
-import { listSqlDatabases } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { listGremlinDatabases } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
 
 export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
@@ -34,10 +34,8 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
 
 async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
   let rpResponse;
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const { subscriptionId, resourceGroup, defaultExperience, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:

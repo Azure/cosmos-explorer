@@ -68,10 +68,8 @@ async function updateCollectionWithARM(
   collectionId: string,
   newCollection: Partial<Collection>
 ): Promise<Collection> {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const { subscriptionId, resourceGroup, defaultExperience, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:

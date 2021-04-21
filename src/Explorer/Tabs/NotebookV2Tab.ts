@@ -55,7 +55,7 @@ export default class NotebookTabV2 extends TabsBase {
     if (!NotebookTabV2.clientManager) {
       NotebookTabV2.clientManager = new NotebookClientV2({
         connectionInfo: this.container.notebookServerInfo(),
-        databaseAccountName: this.container.databaseAccount().name,
+        databaseAccountName: userContext?.databaseAccount?.name,
         defaultExperience: this.container.defaultExperience(),
         contentProvider: this.container.notebookManager?.notebookContentProvider,
       });

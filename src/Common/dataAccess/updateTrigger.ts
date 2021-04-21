@@ -1,15 +1,15 @@
+import { TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { userContext } from "../../UserContext";
+import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   SqlTriggerCreateUpdateParameters,
   SqlTriggerResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { TriggerDefinition } from "@azure/cosmos";
-import { client } from "../CosmosClient";
-import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateTrigger(
   databaseId: string,
@@ -17,16 +17,17 @@ export async function updateTrigger(
   trigger: TriggerDefinition
 ): Promise<TriggerDefinition> {
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
+  const { authType, useSDKOperations, defaultExperience, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
     if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+      authType === AuthType.AAD &&
+      !useSDKOperations &&
+      defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {
       const getResponse = await getSqlTrigger(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
+        subscriptionId,
+        resourceGroup,
+        databaseAccount.name,
         databaseId,
         collectionId,
         trigger.id
@@ -40,9 +41,9 @@ export async function updateTrigger(
           },
         };
         const rpResponse = await createUpdateSqlTrigger(
-          userContext.subscriptionId,
-          userContext.resourceGroup,
-          userContext.databaseAccount.name,
+          subscriptionId,
+          resourceGroup,
+          databaseAccount.name,
           databaseId,
           collectionId,
           trigger.id,

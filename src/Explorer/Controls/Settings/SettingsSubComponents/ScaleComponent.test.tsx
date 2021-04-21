@@ -1,14 +1,15 @@
 import { shallow } from "enzyme";
+import ko from "knockout";
 import React from "react";
-import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
-import { container, collection } from "../TestUtils";
-import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
-import Explorer from "../../../Explorer";
 import * as Constants from "../../../../Common/Constants";
 import * as DataModels from "../../../../Contracts/DataModels";
-import { throughputUnit } from "../SettingsRenderUtils";
 import * as SharedConstants from "../../../../Shared/Constants";
-import ko from "knockout";
+import { updateUserContext } from "../../../../UserContext";
+import Explorer from "../../../Explorer";
+import { throughputUnit } from "../SettingsRenderUtils";
+import { collection, container } from "../TestUtils";
+import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
+import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 describe("ScaleComponent", () => {
   const nonNationalCloudContainer = new Explorer();
@@ -80,25 +81,26 @@ describe("ScaleComponent", () => {
 
   it("autoScale enabled", () => {
     const newContainer = new Explorer();
-
-    newContainer.databaseAccount({
-      id: undefined,
-      name: undefined,
-      location: undefined,
-      type: undefined,
-      kind: "documentdb",
-      tags: undefined,
-      properties: {
-        documentEndpoint: undefined,
-        tableEndpoint: undefined,
-        gremlinEndpoint: undefined,
-        cassandraEndpoint: undefined,
-        capabilities: [
-          {
-            name: Constants.CapabilityNames.EnableAutoScale.toLowerCase(),
-            description: undefined,
-          },
-        ],
+    updateUserContext({
+      databaseAccount: {
+        id: undefined,
+        name: undefined,
+        location: undefined,
+        type: undefined,
+        kind: "documentdb",
+        tags: undefined,
+        properties: {
+          documentEndpoint: undefined,
+          tableEndpoint: undefined,
+          gremlinEndpoint: undefined,
+          cassandraEndpoint: undefined,
+          capabilities: [
+            {
+              name: Constants.CapabilityNames.EnableAutoScale.toLowerCase(),
+              description: undefined,
+            },
+          ],
+        },
       },
     });
     const props = { ...baseProps, container: newContainer };

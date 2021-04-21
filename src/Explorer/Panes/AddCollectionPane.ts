@@ -177,7 +177,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const account = this.container.databaseAccount();
+      const { databaseAccount: account } = userContext;
       if (!account) {
         return "";
       }
@@ -235,7 +235,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const account = this.container.databaseAccount();
+      const { databaseAccount: account } = userContext;
       if (!account) {
         return "";
       }
@@ -528,10 +528,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.isFreeTierAccount = ko.computed<boolean>(() => {
-      const databaseAccount = this.container && this.container.databaseAccount && this.container.databaseAccount();
-      const isFreeTierAccount =
-        databaseAccount && databaseAccount.properties && databaseAccount.properties.enableFreeTier;
-      return isFreeTierAccount;
+      return userContext?.databaseAccount?.properties?.enableFreeTier;
     });
 
     this.showUpsellMessage = ko.pureComputed(() => {
@@ -601,9 +598,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this._isSynapseLinkEnabled = ko.computed(() => {
-      const databaseAccount =
-        (this.container && this.container.databaseAccount && this.container.databaseAccount()) ||
-        ({} as DataModels.DatabaseAccount);
+      const databaseAccount = userContext?.databaseAccount || ({} as DataModels.DatabaseAccount);
       const properties = databaseAccount.properties || ({} as DataModels.DatabaseAccountExtendedProperties);
 
       // TODO: remove check for capability once all accounts have been migrated
@@ -646,7 +641,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType = userContext.subscriptionType;
+    const { subscriptionType } = userContext;
     if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }

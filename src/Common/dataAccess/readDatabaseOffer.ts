@@ -1,14 +1,14 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
-import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { userContext } from "../../UserContext";
 import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { handleError } from "../ErrorHandlingUtils";
+import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
-import { userContext } from "../../UserContext";
 
 export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promise<Offer> => {
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
@@ -32,10 +32,8 @@ export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promis
 };
 
 const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const { subscriptionId, resourceGroup, defaultExperience, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   let rpResponse;
   try {

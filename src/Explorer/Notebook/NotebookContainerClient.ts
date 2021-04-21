@@ -1,12 +1,13 @@
 /**
  * Notebook container related stuff
  */
-import * as DataModels from "../../Contracts/DataModels";
 import * as Constants from "../../Common/Constants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as Logger from "../../Common/Logger";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import * as DataModels from "../../Contracts/DataModels";
+import { userContext } from "../../UserContext";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 
 export class NotebookContainerClient {
   private reconnectingNotificationId: string;
@@ -132,14 +133,15 @@ export class NotebookContainerClient {
 
   private async recreateNotebookWorkspaceAsync(): Promise<void> {
     const explorer = window.dataExplorer;
-    if (!explorer || !explorer.databaseAccount() || !explorer.databaseAccount().id) {
+    const { databaseAccount } = userContext;
+    if (!databaseAccount?.id) {
       throw new Error("DataExplorer not initialized");
     }
 
     const notebookWorkspaceManager = explorer.notebookWorkspaceManager;
     try {
-      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
-      await notebookWorkspaceManager.createNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
+      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(databaseAccount?.id, "default");
+      await notebookWorkspaceManager.createNotebookWorkspaceAsync(databaseAccount?.id, "default");
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);

@@ -187,7 +187,6 @@ function configureEmulator(explorerParams: ExplorerParams): Explorer {
     authType: AuthType.MasterKey,
   });
   const explorer = new Explorer(explorerParams);
-  explorer.databaseAccount(emulatorAccount);
   explorer.isAccountReady(true);
   return explorer;
 }

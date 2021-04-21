@@ -238,7 +238,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (
       this.container.isPreferredApiMongoDB() &&
       this.container.isEnableMongoCapabilityPresent() &&
-      this.container.databaseAccount()
+      userContext?.databaseAccount
     ) {
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
@@ -302,8 +302,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
-    this.container?.databaseAccount &&
-    this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
+    userContext?.databaseAccount?.properties?.enableMultipleWriteLocations &&
     this.collection.conflictResolutionPolicy &&
     !!this.collection.conflictResolutionPolicy();
 

@@ -1,33 +1,33 @@
-import * as DataModels from "../../Contracts/DataModels";
-import { AuthType } from "../../AuthType";
 import { ContainerResponse, DatabaseResponse } from "@azure/cosmos";
+import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
+import { AuthType } from "../../AuthType";
+import * as DataModels from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
-import { createMongoCollectionWithProxy } from "../MongoProxyClient";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
   getCassandraTable,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
-  createUpdateMongoDBCollection,
-  getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import {
   createUpdateGremlinGraph,
   getGremlinGraph,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import {
+  createUpdateMongoDBCollection,
+  getMongoDBCollection,
+} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
-import { createDatabase } from "./createDatabase";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
+import { createMongoCollectionWithProxy } from "../MongoProxyClient";
+import { createDatabase } from "./createDatabase";
 
 export const createCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   const clearMessage = logConsoleProgress(
@@ -63,7 +63,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
 };
 
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  const defaultExperience = userContext.defaultExperience;
+  const { defaultExperience } = userContext;
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:
       return createSqlContainer(params);

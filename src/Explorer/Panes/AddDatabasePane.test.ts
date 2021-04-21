@@ -85,7 +85,7 @@ describe("Add Database Pane", () => {
     });
 
     it("should display free tier text in upsell messaging", () => {
-      explorer.databaseAccount(mockFreeTierDatabaseAccount);
+      updateUserContext({ databaseAccount: mockFreeTierDatabaseAccount });
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.isFreeTierAccount()).toBe(true);
       expect(addDatabasePane.upsellMessage()).toContain("With free tier");
@@ -94,7 +94,7 @@ describe("Add Database Pane", () => {
     });
 
     it("should display standard texr in upsell messaging", () => {
-      explorer.databaseAccount(mockDatabaseAccount);
+      updateUserContext({ databaseAccount: mockDatabaseAccount });
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.isFreeTierAccount()).toBe(false);
       expect(addDatabasePane.upsellMessage()).toContain("Start at");

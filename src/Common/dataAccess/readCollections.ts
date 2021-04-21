@@ -34,10 +34,9 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
 async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Collection[]> {
   let rpResponse;
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+
+  const { subscriptionId, resourceGroup, defaultExperience, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:

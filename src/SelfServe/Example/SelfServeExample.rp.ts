@@ -1,6 +1,6 @@
-import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
-import { userContext } from "../../UserContext";
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
+import { userContext } from "../../UserContext";
+import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { RefreshResult } from "../SelfServeTypes";
 export enum Regions {
   NorthCentralUS = "NorthCentralUS",
@@ -67,9 +67,9 @@ export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
   const refreshCountString = SessionStorageUtility.getEntry("refreshCount");
   const refreshCount = refreshCountString ? parseInt(refreshCountString) : 0;
 
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const databaseAccountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const databaseAccountName = databaseAccount.name;
+
   const databaseAccountGetResults = await get(subscriptionId, resourceGroup, databaseAccountName);
   const isUpdateInProgress = databaseAccountGetResults.properties.provisioningState !== "Succeeded";
 

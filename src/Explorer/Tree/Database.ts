@@ -253,7 +253,7 @@ export default class Database implements ViewModels.Database {
       Logger.logError(
         JSON.stringify({
           error: getErrorMessage(error),
-          accountName: this.container && this.container.databaseAccount(),
+          accountName: userContext?.databaseAccount,
           databaseName: this.id(),
           collectionName: this.id(),
         }),

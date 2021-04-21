@@ -112,18 +112,13 @@ export default class AddDatabasePane extends ContextualPaneBase {
         return "";
       }
 
-      const account = this.container.databaseAccount();
+      const { databaseAccount: account } = userContext;
       if (!account) {
         return "";
       }
 
-      const regions =
-        (account &&
-          account.properties &&
-          account.properties.readLocations &&
-          account.properties.readLocations.length) ||
-        1;
-      const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
+      const regions = account?.properties?.readLocations?.length || 1;
+      const multimaster = account?.properties?.enableMultipleWriteLocations || false;
 
       let estimatedSpendAcknowledge: string;
       let estimatedSpend: string;
@@ -175,10 +170,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     });
 
     this.isFreeTierAccount = ko.computed<boolean>(() => {
-      const databaseAccount = this.container && this.container.databaseAccount && this.container.databaseAccount();
-      const isFreeTierAccount =
-        databaseAccount && databaseAccount.properties && databaseAccount.properties.enableFreeTier;
-      return isFreeTierAccount;
+      return userContext?.databaseAccount?.properties?.enableFreeTier;
     });
 
     this.showUpsellMessage = ko.pureComputed(() => {
@@ -337,7 +329,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType = userContext.subscriptionType;
+    const { subscriptionType } = userContext;
 
     if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;

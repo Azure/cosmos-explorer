@@ -1,18 +1,18 @@
+import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
-import {
-  SqlStoredProcedureCreateUpdateParameters,
-  SqlStoredProcedureResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
+import { userContext } from "../../UserContext";
 import {
   createUpdateSqlStoredProcedure,
   getSqlStoredProcedure,
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
+import {
+  SqlStoredProcedureCreateUpdateParameters,
+  SqlStoredProcedureResource,
+} from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateStoredProcedure(
   databaseId: string,
@@ -21,15 +21,24 @@ export async function updateStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
+    const {
+      authType,
+      useSDKOperations,
+      defaultExperience,
+      subscriptionId,
+      resourceGroup,
+      databaseAccount,
+    } = userContext;
+
     if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+      authType === AuthType.AAD &&
+      !useSDKOperations &&
+      defaultExperience === DefaultAccountExperienceType.DocumentDB
     ) {
       const getResponse = await getSqlStoredProcedure(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
+        subscriptionId,
+        resourceGroup,
+        databaseAccount.name,
         databaseId,
         collectionId,
         storedProcedure.id
@@ -43,9 +52,9 @@ export async function updateStoredProcedure(
           },
         };
         const rpResponse = await createUpdateSqlStoredProcedure(
-          userContext.subscriptionId,
-          userContext.resourceGroup,
-          userContext.databaseAccount.name,
+          subscriptionId,
+          resourceGroup,
+          databaseAccount.name,
           databaseId,
           collectionId,
           storedProcedure.id,

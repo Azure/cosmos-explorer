@@ -1,32 +1,32 @@
-import * as DataModels from "../../Contracts/DataModels";
-import { AuthType } from "../../AuthType";
 import { DatabaseResponse } from "@azure/cosmos";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
+import { AuthType } from "../../AuthType";
+import * as DataModels from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import {
-  CassandraKeyspaceCreateUpdateParameters,
-  GremlinDatabaseCreateUpdateParameters,
-  MongoDBDatabaseCreateUpdateParameters,
-  SqlDatabaseCreateUpdateParameters,
-  CreateUpdateOptions,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
-import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraKeyspace,
   getCassandraKeyspace,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
-  createUpdateMongoDBDatabase,
-  getMongoDBDatabase,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import {
   createUpdateGremlinDatabase,
   getGremlinDatabase,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import {
+  createUpdateMongoDBDatabase,
+  getMongoDBDatabase,
+} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import {
+  CassandraKeyspaceCreateUpdateParameters,
+  CreateUpdateOptions,
+  GremlinDatabaseCreateUpdateParameters,
+  MongoDBDatabaseCreateUpdateParameters,
+  SqlDatabaseCreateUpdateParameters,
+} from "../../Utils/arm/generatedClients/2020-04-01/types";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
 
 export async function createDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
   const clearMessage = logConsoleProgress(`Creating a new database ${params.databaseId}`);
@@ -49,7 +49,8 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
 }
 
 async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  const defaultExperience = userContext.defaultExperience;
+  const { defaultExperience } = userContext;
+
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:
       return createSqlDatabase(params);

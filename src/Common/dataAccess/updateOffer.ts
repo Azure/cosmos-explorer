@@ -1,54 +1,54 @@
-import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { HttpHeaders } from "../Constants";
-import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
 import { OfferDefinition } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
-import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { parseSDKOfferResponse } from "../OfferUtility";
-import { readCollectionOffer } from "./readCollectionOffer";
-import { readDatabaseOffer } from "./readDatabaseOffer";
+import { AuthType } from "../../AuthType";
+import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { userContext } from "../../UserContext";
 import {
-  updateSqlDatabaseThroughput,
-  migrateSqlDatabaseToAutoscale,
-  migrateSqlDatabaseToManualThroughput,
-  migrateSqlContainerToAutoscale,
-  migrateSqlContainerToManualThroughput,
-  updateSqlContainerThroughput,
-} from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import {
-  updateCassandraKeyspaceThroughput,
   migrateCassandraKeyspaceToAutoscale,
   migrateCassandraKeyspaceToManualThroughput,
   migrateCassandraTableToAutoscale,
   migrateCassandraTableToManualThroughput,
+  updateCassandraKeyspaceThroughput,
   updateCassandraTableThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
-  updateMongoDBDatabaseThroughput,
-  migrateMongoDBDatabaseToAutoscale,
-  migrateMongoDBDatabaseToManualThroughput,
-  migrateMongoDBCollectionToAutoscale,
-  migrateMongoDBCollectionToManualThroughput,
-  updateMongoDBCollectionThroughput,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import {
-  updateGremlinDatabaseThroughput,
   migrateGremlinDatabaseToAutoscale,
   migrateGremlinDatabaseToManualThroughput,
   migrateGremlinGraphToAutoscale,
   migrateGremlinGraphToManualThroughput,
+  updateGremlinDatabaseThroughput,
   updateGremlinGraphThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { userContext } from "../../UserContext";
+import {
+  migrateMongoDBCollectionToAutoscale,
+  migrateMongoDBCollectionToManualThroughput,
+  migrateMongoDBDatabaseToAutoscale,
+  migrateMongoDBDatabaseToManualThroughput,
+  updateMongoDBCollectionThroughput,
+  updateMongoDBDatabaseThroughput,
+} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import {
+  migrateSqlContainerToAutoscale,
+  migrateSqlContainerToManualThroughput,
+  migrateSqlDatabaseToAutoscale,
+  migrateSqlDatabaseToManualThroughput,
+  updateSqlContainerThroughput,
+  updateSqlDatabaseThroughput,
+} from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   migrateTableToAutoscale,
   migrateTableToManualThroughput,
   updateTableThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/2020-04-01/types";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { HttpHeaders } from "../Constants";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
+import { parseSDKOfferResponse } from "../OfferUtility";
+import { readCollectionOffer } from "./readCollectionOffer";
+import { readDatabaseOffer } from "./readDatabaseOffer";
 
 export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => {
   let updatedOffer: Offer;
@@ -145,9 +145,8 @@ const updateDatabaseOfferWithARM = async (params: UpdateOfferParams): Promise<Of
 };
 
 const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateSqlContainerToAutoscale(
@@ -179,9 +178,8 @@ const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void>
 };
 
 const updateMongoCollectionOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateMongoDBCollectionToAutoscale(
@@ -213,9 +211,8 @@ const updateMongoCollectionOffer = async (params: UpdateOfferParams): Promise<vo
 };
 
 const updateCassandraTableOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateCassandraTableToAutoscale(
@@ -247,9 +244,8 @@ const updateCassandraTableOffer = async (params: UpdateOfferParams): Promise<voi
 };
 
 const updateGremlinGraphOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateGremlinGraphToAutoscale(
@@ -281,9 +277,8 @@ const updateGremlinGraphOffer = async (params: UpdateOfferParams): Promise<void>
 };
 
 const updateTableOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateTableToAutoscale(subscriptionId, resourceGroup, accountName, params.collectionId);
@@ -296,9 +291,8 @@ const updateTableOffer = async (params: UpdateOfferParams): Promise<void> => {
 };
 
 const updateSqlDatabaseOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateSqlDatabaseToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);
@@ -311,9 +305,8 @@ const updateSqlDatabaseOffer = async (params: UpdateOfferParams): Promise<void> 
 };
 
 const updateMongoDatabaseOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateMongoDBDatabaseToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);
@@ -326,9 +319,8 @@ const updateMongoDatabaseOffer = async (params: UpdateOfferParams): Promise<void
 };
 
 const updateCassandraKeyspaceOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateCassandraKeyspaceToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);
@@ -341,9 +333,8 @@ const updateCassandraKeyspaceOffer = async (params: UpdateOfferParams): Promise<
 };
 
 const updateGremlinDatabaseOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateGremlinDatabaseToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);

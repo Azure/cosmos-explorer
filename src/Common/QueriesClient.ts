@@ -5,16 +5,16 @@ import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "../Explorer/Explorer";
 import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { userContext } from "../UserContext";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import * as QueryUtils from "../Utils/QueryUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
-import { userContext } from "../UserContext";
-import { queryDocumentsPage } from "./dataAccess/queryDocumentsPage";
 import { createCollection } from "./dataAccess/createCollection";
-import { handleError } from "./ErrorHandlingUtils";
 import { createDocument } from "./dataAccess/createDocument";
 import { deleteDocument } from "./dataAccess/deleteDocument";
 import { queryDocuments } from "./dataAccess/queryDocuments";
+import { queryDocumentsPage } from "./dataAccess/queryDocumentsPage";
+import { handleError } from "./ErrorHandlingUtils";
 
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
@@ -182,11 +182,8 @@ export class QueriesClient {
   }
 
   public getResourceId(): string {
-    const databaseAccount = userContext.databaseAccount;
-    const databaseAccountName = (databaseAccount && databaseAccount.name) || "";
-    const subscriptionId = userContext.subscriptionId || "";
-    const resourceGroup = userContext.resourceGroup || "";
-
+    const { databaseAccount, subscriptionId = "", resourceGroup = "" } = userContext;
+    const databaseAccountName = databaseAccount?.name || "";
     return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}`;
   }
 

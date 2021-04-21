@@ -1,25 +1,24 @@
+import { FeedOptions } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
-
-import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { AuthType } from "../../AuthType";
-import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import { FeedOptions } from "@azure/cosmos";
 import * as Constants from "../../Common/Constants";
-import * as Entities from "./Entities";
-import * as HeadersUtility from "../../Common/HeadersUtility";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as TableConstants from "./Constants";
-import * as TableEntityProcessor from "./TableEntityProcessor";
-import * as ViewModels from "../../Contracts/ViewModels";
-import Explorer from "../Explorer";
-import { configContext } from "../../ConfigContext";
-import { handleError } from "../../Common/ErrorHandlingUtils";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import { handleError } from "../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../Common/HeadersUtility";
+import { configContext } from "../../ConfigContext";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { ConsoleDataType } from "../../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { userContext } from "../../UserContext";
+import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import * as TableConstants from "./Constants";
+import * as Entities from "./Entities";
+import * as TableEntityProcessor from "./TableEntityProcessor";
 
 export interface CassandraTableKeys {
   partitionKeys: CassandraTableKey[];
@@ -261,7 +260,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     const clearMessage =
       shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
     try {
-      const authType = userContext.authType;
+      const { authType, databaseAccount } = userContext;
       const apiEndpoint: string =
         authType === AuthType.EncryptedToken
           ? Constants.CassandraBackend.guestQueryApi
@@ -269,12 +268,9 @@ export class CassandraAPIDataClient extends TableDataClient {
       const data: any = await $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
         type: "POST",
         data: {
-          accountName:
-            collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-          cassandraEndpoint: this.trimCassandraEndpoint(
-            collection.container.databaseAccount().properties.cassandraEndpoint
-          ),
-          resourceId: collection.container.databaseAccount().id,
+          accountName: databaseAccount?.name,
+          cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+          resourceId: databaseAccount?.id,
           keyspaceId: collection.databaseId,
           tableId: collection.id(),
           query,
@@ -424,21 +420,20 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching keys for table ${collection.id()}`
     );
-    const authType = userContext.authType;
+    const { authType, databaseAccount } = userContext;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
         : Constants.CassandraBackend.keysApi;
     let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKeys>();
+
     $.ajax(endpoint, {
       type: "POST",
       data: {
-        accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-        cassandraEndpoint: this.trimCassandraEndpoint(
-          collection.container.databaseAccount().properties.cassandraEndpoint
-        ),
-        resourceId: collection.container.databaseAccount().id,
+        accountName: databaseAccount?.name,
+        cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+        resourceId: databaseAccount?.id,
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       },
@@ -473,21 +468,21 @@ export class CassandraAPIDataClient extends TableDataClient {
       ConsoleDataType.InProgress,
       `Fetching schema for table ${collection.id()}`
     );
-    const authType = userContext.authType;
+
+    const { databaseAccount, authType } = userContext;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
         : Constants.CassandraBackend.schemaApi;
     let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKey[]>();
+
     $.ajax(endpoint, {
       type: "POST",
       data: {
-        accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-        cassandraEndpoint: this.trimCassandraEndpoint(
-          collection.container.databaseAccount().properties.cassandraEndpoint
-        ),
-        resourceId: collection.container.databaseAccount().id,
+        accountName: databaseAccount?.name,
+        cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+        resourceId: databaseAccount?.id,
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       },
@@ -516,7 +511,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private createOrDeleteQuery(cassandraEndpoint: string, resourceId: string, query: string): Q.Promise<any> {
     const deferred = Q.defer();
-    const authType = userContext.authType;
+    const { authType, databaseAccount } = userContext;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi
@@ -524,7 +519,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
       type: "POST",
       data: {
-        accountName: userContext.databaseAccount?.name,
+        accountName: databaseAccount?.name,
         cassandraEndpoint: this.trimCassandraEndpoint(cassandraEndpoint),
         resourceId: resourceId,
         query: query,

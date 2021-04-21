@@ -829,7 +829,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private isSynapseLinkEnabled(): boolean {
-    const properties = userContext.databaseAccount?.properties;
+    const { properties } = userContext.databaseAccount;
 
     if (!properties) {
       return false;
