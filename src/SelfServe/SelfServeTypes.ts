@@ -72,26 +72,37 @@ export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput 
 /**@internal */
 export type InputTypeValue = "number" | "string" | "boolean" | "object";
 
+export type initializeCallback =
+  /**
+   * @returns Promise of Map of propertyName => {@linkcode SmartUiInput} which will become the current state of the UI.
+   */
+  () => Promise<Map<string, SmartUiInput>>;
+
+export type onSaveCallback =
+  /**
+   * @param currentValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the current state of the UI
+   * @param baselineValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the initial state of the UI
+   */
+  (
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Promise<OnSaveResult>;
+
+/**
+ * The SelfServe base class
+ */
 export abstract class SelfServeBaseClass {
   /**
    * Sets default values for the properties of the Self Serve Class. Typically, you can make rest calls here
    * to fetch the initial values for the properties. This is also called after the onSave callback, to reinitialize the defaults.
-   *
-   * @returns Map of propertyName => {@linkcode SmartUiInput} which will become the current state of the UI.
    */
-  public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
+  public abstract initialize: initializeCallback;
 
   /**
    * Callback that is triggerred when the submit button is clicked. You should perform your rest API
    * calls here using the data from the different inputs passed as a Map to this callback function.
-   *
-   * @param currentValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the current state of the UI
-   * @param baselineValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the initial state of the UI
    */
-  public abstract onSave: (
-    currentValues: Map<string, SmartUiInput>,
-    baselineValues: ReadonlyMap<string, SmartUiInput>
-  ) => Promise<OnSaveResult>;
+  public abstract onSave: onSaveCallback;
 
   /**
    * Callback that is triggered when the refresh button is clicked. Here, You should perform the your rest API
@@ -128,23 +139,24 @@ export abstract class SelfServeBaseClass {
 
 /**
  * Function that dictates how the overall UI should transform when the UI element corresponding to a property, say prop1, is changed.
- * The callback can be used to
- *           a) Change the value (and reflect it in the UI) for another property, say prop2
- *           b) Change the visibility for prop2 in the UI
- *           c) Disable or enable the UI element corresponding to prop2
+ * The callback can be used to\
+ *           * Change the value (and reflect it in the UI) for another property, say prop2\
+ *           * Change the visibility for prop2 in the UI\
+ *           * Disable or enable the UI element corresponding to prop2\
  * depending on logic based on the newValue of prop1, the currentValues Map and baselineValues Map.
- *
- * @param newValue - The newValue that the property needs to be set to, after the change in the UI element corresponding to this property.
- * @param currentValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the current state of the UI.
- * @param baselineValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the initial state of the UI.
- *
- * @returns A new Map of propertyName => {@linkcode SmartUiInput} corresponding to the new state of the overall UI
  */
-export type OnChangeCallback = (
-  newValue: InputType,
-  currentState: Map<string, SmartUiInput>,
-  baselineValues: ReadonlyMap<string, SmartUiInput>
-) => Map<string, SmartUiInput>;
+export type OnChangeCallback =
+  /**
+   * @param newValue - The newValue that the property needs to be set to, after the change in the UI element corresponding to this property.
+   * @param currentValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the current state of the UI.
+   * @param baselineValues - The map of propertyName => {@linkcode SmartUiInput} corresponding to the initial state of the UI.
+   * @returns A new Map of propertyName => {@linkcode SmartUiInput} corresponding to the new state of the overall UI
+   */
+  (
+    newValue: InputType,
+    currentValues: Map<string, SmartUiInput>,
+    baselineValues: ReadonlyMap<string, SmartUiInput>
+  ) => Map<string, SmartUiInput>;
 
 export enum NumberUiType {
   /**
