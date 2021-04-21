@@ -1,6 +1,6 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { PrimaryButton } from "office-ui-fabric-react";
-import React, { FunctionComponent, KeyboardEvent, useEffect, useState } from "react";
+import React, { FunctionComponent, KeyboardEvent, useState } from "react";
 import { Areas, NormalizedEventKey } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -8,47 +8,28 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 import { userContext } from "../../../UserContext";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
-interface ISetupNoteBooksPanelProps {
+interface SetupNoteBooksPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   openNotificationConsole: () => void;
   panelTitle: string;
   panelDescription: string;
 }
-export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> = ({
+
+export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = ({
   explorer,
   closePanel,
   openNotificationConsole,
   panelTitle,
   panelDescription,
-}: ISetupNoteBooksPanelProps): JSX.Element => {
+}: SetupNoteBooksPanelProps): JSX.Element => {
   const title = panelTitle;
   const description = panelDescription;
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
-
-  useEffect(() => {
-    resetData();
-    open();
-  }, []);
-
-  const resetData = () => {
-    setErrorMessage("");
-    setShowErrorDetails(false);
-  };
-
-  const open = () => {
-    const completeSetupBtn = document.getElementById("completeSetupBtn");
-    completeSetupBtn && completeSetupBtn.focus();
-  };
-
-  const submit = () => {
-    // override default behavior because this is not a form
-  };
 
   const onCompleteSetupClick = async () => {
     await setupNotebookWorkspace();
@@ -73,10 +54,7 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
       paneTitle: title,
     });
 
-    const id = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      "Creating a new default notebook workspace"
-    );
+    const clear = NotificationConsoleUtils.logConsoleProgress("Creating a new default notebook workspace");
 
     try {
       setLoadingTrue();
@@ -96,10 +74,7 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
         },
         startKey
       );
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Info,
-        "Successfully created a default notebook workspace for the account"
-      );
+      NotificationConsoleUtils.logConsoleInfo("Successfully created a default notebook workspace for the account");
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       TelemetryProcessor.traceFailure(
@@ -112,20 +87,17 @@ export const SetupNoteBooksPanel: FunctionComponent<ISetupNoteBooksPanelProps> =
         },
         startKey
       );
-      setErrorMessage("Failed to setup a default notebook workspace");
+      setErrorMessage(`Failed to setup a default notebook workspace: ${errorMessage}`);
       setShowErrorDetails(true);
-      NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.Error,
-        `Failed to create a default notebook workspace: ${errorMessage}`
-      );
+      NotificationConsoleUtils.logConsoleError(`Failed to create a default notebook workspace: ${errorMessage}`);
     } finally {
       setLoadingFalse();
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
+      clear();
     }
   };
 
   return (
-    <form className="panelFormWrapper" onSubmit={() => submit()}>
+    <form className="panelFormWrapper">
       {errorMessage && (
         <PanelInfoErrorComponent
           message={errorMessage}
