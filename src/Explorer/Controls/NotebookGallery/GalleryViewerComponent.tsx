@@ -21,18 +21,18 @@ import {
   Text,
 } from "office-ui-fabric-react";
 import * as React from "react";
+import { HttpStatusCodes } from "../../../Common/Constants";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
+import Explorer from "../../Explorer";
 import { Dialog, DialogProps } from "../Dialog";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
-import "./GalleryViewerComponent.less";
-import { HttpStatusCodes } from "../../../Common/Constants";
-import Explorer from "../../Explorer";
 import { CodeOfConductComponent } from "./CodeOfConductComponent";
+import "./GalleryViewerComponent.less";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
-import { handleError } from "../../../Common/ErrorHandlingUtils";
-import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -138,11 +138,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         key: SortBy.MostRecent,
         text: GalleryViewerComponent.mostRecentText,
       },
+      {
+        key: SortBy.MostFavorited,
+        text: GalleryViewerComponent.mostFavoritedText,
+      },
     ];
-    this.sortingOptions.push({
-      key: SortBy.MostFavorited,
-      text: GalleryViewerComponent.mostFavoritedText,
-    });
 
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
     this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
@@ -654,7 +654,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
-    const isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
+    const isFavorite =
+      this.props.container && this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,

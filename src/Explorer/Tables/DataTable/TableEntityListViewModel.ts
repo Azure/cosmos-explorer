@@ -5,6 +5,7 @@ import { Areas } from "../../../Common/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../UserContext";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
@@ -412,10 +413,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
 
         var entities = this.cache.data;
-        if (
-          this.queryTablesTab.container.isPreferredApiCassandra() &&
-          DataTableUtilities.checkForDefaultHeader(this.headers)
-        ) {
+        if (userContext.apiType === "Cassandra" && DataTableUtilities.checkForDefaultHeader(this.headers)) {
           (<CassandraAPIDataClient>this.queryTablesTab.container.tableDataClient)
             .getTableSchema(this.queryTablesTab.collection)
             .then((headers: CassandraTableKey[]) => {
@@ -427,7 +425,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         } else {
           var selectedHeadersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
             entities,
-            this.queryTablesTab.container.isPreferredApiCassandra()
+            userContext.apiType === "Cassandra"
           );
           var newHeaders: string[] = _.difference(selectedHeadersUnion, this.headers);
           if (newHeaders.length > 0) {
@@ -512,7 +510,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             return Q.resolve(finalEntities);
           }
         );
-      } else if (this.continuationToken && this.queryTablesTab.container.isPreferredApiCassandra()) {
+      } else if (this.continuationToken && userContext.apiType === "Cassandra") {
         promise = Q(
           this.queryTablesTab.container.tableDataClient.queryDocuments(
             this.queryTablesTab.collection,
@@ -523,7 +521,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         );
       } else {
         let query = this.sqlQuery();
-        if (this.queryTablesTab.container.isPreferredApiCassandra()) {
+        if (userContext.apiType === "Cassandra") {
           query = this.cqlQuery();
         }
         promise = Q(

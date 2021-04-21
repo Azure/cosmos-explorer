@@ -50,6 +50,7 @@ import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponen
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Tabs/QueryTab.less";
+import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
@@ -79,7 +80,7 @@ const App: React.FunctionComponent = () => {
   };
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
-  const { tabs, tabsManager } = useTabs();
+  const { tabs, activeTab, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -205,7 +206,7 @@ const App: React.FunctionComponent = () => {
           </div>
           {/* Collections Tree - End */}
           {tabs.length === 0 && <SplashScreen explorer={explorer} />}
-          <div className="tabsManagerContainer" data-bind='component: { name: "tabs-manager", params: tabsManager }' />
+          <Tabs tabs={tabs} activeTab={activeTab} />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div
@@ -231,7 +232,6 @@ const App: React.FunctionComponent = () => {
       />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
-      <div data-bind='component: { name: "delete-collection-confirmation-pane", params: { data: deleteCollectionConfirmationPane} }' />
       <div data-bind='component: { name: "graph-new-vertex-pane", params: { data: newVertexPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "table-add-entity-pane", params: { data: addTableEntityPane} }' />

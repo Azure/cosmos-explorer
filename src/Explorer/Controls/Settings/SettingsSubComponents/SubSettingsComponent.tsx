@@ -1,28 +1,38 @@
+import {
+  ChoiceGroup,
+  IChoiceGroupOption,
+  Label,
+  Link,
+  MessageBar,
+  Stack,
+  Text,
+  TextField,
+} from "office-ui-fabric-react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
-import {
-  GeospatialConfigType,
-  TtlType,
-  ChangeFeedPolicyState,
-  isDirty,
-  IsComponentDirtyResult,
-  TtlOn,
-  TtlOff,
-  TtlOnNoDefault,
-  getSanitizedInputValue,
-} from "../SettingsUtils";
+import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import { Label, Text, TextField, Stack, IChoiceGroupOption, ChoiceGroup, MessageBar } from "office-ui-fabric-react";
 import {
-  getTextFieldStyles,
   changeFeedPolicyToolTip,
+  getChoiceGroupStyles,
+  getTextFieldStyles,
+  messageBarStyles,
   subComponentStackProps,
   titleAndInputStackProps,
-  getChoiceGroupStyles,
   ttlWarning,
-  messageBarStyles,
 } from "../SettingsRenderUtils";
+import {
+  ChangeFeedPolicyState,
+  GeospatialConfigType,
+  getSanitizedInputValue,
+  IsComponentDirtyResult,
+  isDirty,
+  TtlOff,
+  TtlOn,
+  TtlOnNoDefault,
+  TtlType,
+} from "../SettingsUtils";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface SubSettingsComponentProps {
@@ -60,17 +70,15 @@ export interface SubSettingsComponentProps {
 
 export class SubSettingsComponent extends React.Component<SubSettingsComponentProps> {
   private shouldCheckComponentIsDirty = true;
-  private ttlVisible: boolean;
   private geospatialVisible: boolean;
   private partitionKeyValue: string;
   private partitionKeyName: string;
 
   constructor(props: SubSettingsComponentProps) {
     super(props);
-    this.ttlVisible = (this.props.container && !this.props.container.isPreferredApiCassandra()) || false;
-    this.geospatialVisible = this.props.container.isPreferredApiDocumentDB();
+    this.geospatialVisible = userContext.apiType === "SQL";
     this.partitionKeyValue = "/" + this.props.collection.partitionKeyProperty;
-    this.partitionKeyName = this.props.container.isPreferredApiMongoDB() ? "Shard key" : "Partition key";
+    this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
   }
 
   componentDidMount(): void {
@@ -170,39 +178,51 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   ): void =>
     this.props.onChangeFeedPolicyChange(ChangeFeedPolicyState[option.key as keyof typeof ChangeFeedPolicyState]);
 
-  private getTtlComponent = (): JSX.Element => (
-    <Stack {...titleAndInputStackProps}>
-      <ChoiceGroup
-        id="timeToLive"
-        label="Time to Live"
-        selectedKey={this.props.timeToLive}
-        options={this.ttlChoiceGroupOptions}
-        onChange={this.onTtlChange}
-        styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
-      />
-      {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
-        <MessageBar
-          messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
-          styles={messageBarStyles}
-        >
-          {ttlWarning}
-        </MessageBar>
-      )}
-      {this.props.timeToLive === TtlType.On && (
-        <TextField
-          id="timeToLiveSeconds"
-          styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
-          type="number"
-          required
-          min={1}
-          max={Int32.Max}
-          value={this.props.timeToLiveSeconds?.toString()}
-          onChange={this.onTimeToLiveSecondsChange}
-          suffix="second(s)"
+  private getTtlComponent = (): JSX.Element =>
+    userContext.apiType === "Mongo" ? (
+      <MessageBar
+        messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+        styles={{ text: { fontSize: 14 } }}
+      >
+        To enable time-to-live (TTL) for your collection/documents,
+        <Link href="https://docs.microsoft.com/en-us/azure/cosmos-db/mongodb-time-to-live" target="_blank">
+          create a TTL index
+        </Link>
+        .
+      </MessageBar>
+    ) : (
+      <Stack {...titleAndInputStackProps}>
+        <ChoiceGroup
+          id="timeToLive"
+          label="Time to Live"
+          selectedKey={this.props.timeToLive}
+          options={this.ttlChoiceGroupOptions}
+          onChange={this.onTtlChange}
+          styles={getChoiceGroupStyles(this.props.timeToLive, this.props.timeToLiveBaseline)}
         />
-      )}
-    </Stack>
-  );
+        {isDirty(this.props.timeToLive, this.props.timeToLiveBaseline) && this.props.timeToLive === TtlType.On && (
+          <MessageBar
+            messageBarIconProps={{ iconName: "InfoSolid", className: "messageBarInfoIcon" }}
+            styles={messageBarStyles}
+          >
+            {ttlWarning}
+          </MessageBar>
+        )}
+        {this.props.timeToLive === TtlType.On && (
+          <TextField
+            id="timeToLiveSeconds"
+            styles={getTextFieldStyles(this.props.timeToLiveSeconds, this.props.timeToLiveSecondsBaseline)}
+            type="number"
+            required
+            min={1}
+            max={Int32.Max}
+            value={this.props.timeToLiveSeconds?.toString()}
+            onChange={this.onTimeToLiveSecondsChange}
+            suffix="second(s)"
+          />
+        )}
+      </Stack>
+    );
 
   private analyticalTtlChoiceGroupOptions: IChoiceGroupOption[] = [
     { key: TtlType.Off, text: "Off", disabled: true },
@@ -300,7 +320,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   public getPartitionKeyVisible = (): boolean => {
     if (
-      this.props.container.isPreferredApiCassandra() ||
+      userContext.apiType === "Cassandra" ||
       this.props.container.isPreferredApiTable() ||
       !this.props.collection.partitionKeyProperty ||
       (this.props.container.isPreferredApiMongoDB() && this.props.collection.partitionKey.systemKey)
@@ -315,7 +335,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
   public render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
-        {this.ttlVisible && this.getTtlComponent()}
+        {userContext.apiType !== "Cassandra" && this.getTtlComponent()}
 
         {this.geospatialVisible && this.getGeoSpatialComponent()}
 

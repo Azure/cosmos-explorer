@@ -1,4 +1,5 @@
 import Q from "q";
+import { userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import * as Entities from "../Entities";
 import * as DataTableUtilities from "./DataTableUtilities";
@@ -73,7 +74,7 @@ export default class TableCommands {
     }
     var entitiesToDelete: Entities.ITableEntity[] = viewModel.selected();
     let deleteMessage: string = "Are you sure you want to delete the selected entities?";
-    if (viewModel.queryTablesTab.container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       deleteMessage = "Are you sure you want to delete the selected rows?";
     }
     if (window.confirm(deleteMessage)) {

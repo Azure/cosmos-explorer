@@ -14,7 +14,7 @@
     "target": "es2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": ["es5", "es6", "dom", "webworker.importscripts"],
+    "lib": ["es5", "es6", "dom"],
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
