@@ -1,5 +1,8 @@
 import { createImmutableOutput, JSONObject, OnDiskOutput } from "@nteract/commutable";
-import { KernelOutputError, Output, StreamText } from "@nteract/outputs";
+// import outputs individually to avoid increasing the bundle size
+import { KernelOutputError } from "@nteract/outputs/lib/components/kernel-output-error";
+import { Output } from "@nteract/outputs/lib/components/output";
+import { StreamText } from "@nteract/outputs/lib/components/stream-text";
 import { ContentRef } from "@nteract/types";
 import "bootstrap/dist/css/bootstrap.css";
 import postRobot from "post-robot";

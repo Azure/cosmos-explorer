@@ -1,5 +1,12 @@
 import { ImmutableDisplayData, ImmutableExecuteResult, JSONObject } from "@nteract/commutable";
-import { Media } from "@nteract/outputs";
+// import outputs individually to avoid increasing the bundle size
+import { HTML } from "@nteract/outputs/lib/components/media/html";
+import { Image } from "@nteract/outputs/lib/components/media/image";
+import { JavaScript } from "@nteract/outputs/lib/components/media/javascript";
+import { Json } from "@nteract/outputs/lib/components/media/json";
+import { LaTeX } from "@nteract/outputs/lib/components/media/latex";
+import { Plain } from "@nteract/outputs/lib/components/media/plain";
+import { SVG } from "@nteract/outputs/lib/components/media/svg";
 import { ContentRef } from "@nteract/types";
 import React, { Suspense } from "react";
 
@@ -50,16 +57,16 @@ const transformsById = new Map<string, React.ComponentType<any>>([
   ["application/vnd.vega.v4+json", React.lazy(() => import("./transforms/Vega4"))],
   ["application/vnd.vega.v5+json", React.lazy(() => import("./transforms/Vega5"))],
   ["application/vdom.v1+json", React.lazy(() => import("@nteract/transform-vdom"))],
-  ["application/json", Media.Json],
-  ["application/javascript", Media.JavaScript],
-  ["text/html", Media.HTML],
-  ["text/markdown", Media.Markdown],
-  ["text/latex", Media.LaTeX],
-  ["image/svg+xml", Media.SVG],
-  ["image/gif", Media.Image],
-  ["image/png", Media.Image],
-  ["image/jpeg", Media.Image],
-  ["text/plain", Media.Plain],
+  ["application/json", Json],
+  ["application/javascript", JavaScript],
+  ["text/html", HTML],
+  ["text/markdown", React.lazy(() => import("@nteract/outputs/lib/components/media/markdown"))], // Markdown increases the bundle size so lazy load it
+  ["text/latex", LaTeX],
+  ["image/svg+xml", SVG],
+  ["image/gif", Image],
+  ["image/png", Image],
+  ["image/jpeg", Image],
+  ["text/plain", Plain],
 ]);
 
 interface TransformMediaProps {
