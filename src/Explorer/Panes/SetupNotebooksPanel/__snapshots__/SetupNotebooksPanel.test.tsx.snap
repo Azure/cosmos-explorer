@@ -10,7 +10,6 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
 >
   <form
     className="panelFormWrapper"
-    onSubmit={[Function]}
   >
     <div
       className="panelMainContent"
