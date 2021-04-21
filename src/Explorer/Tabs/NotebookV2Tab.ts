@@ -27,6 +27,7 @@ import Explorer from "../Explorer";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
+import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { CdbAppState } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
@@ -487,16 +488,32 @@ export default class NotebookTabV2 extends TabsBase {
     });
 
     // TODO get snapshots from somewhere better
-    const cellOutputSnapshots = (NotebookTabV2.clientManager.getStore().getState() as CdbAppState).cdb
-      .cellOutputSnapshots;
+    const notebookReduxStore = NotebookTabV2.clientManager.getStore();
+    const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
+
+    notebookReduxStore.subscribe(() => {
+      // Change has been made, update the pane
+      if (onSnapshotImageSrcChangeFct && cdbState.notebookSnapshot) {
+        onSnapshotImageSrcChangeFct(cdbState.notebookSnapshot.imageSrc);
+      }
+    });
 
     const notebookContent = this.notebookComponentAdapter.getContent();
-    await this.container.publishNotebook(
+    let onSnapshotImageSrcChangeFct: (newImageSrc: string) => void = undefined;
+    const { onSnapshotImageSrcChange } = await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
       this.notebookComponentAdapter.getNotebookParentElement(),
-      cellOutputSnapshots
+      [...cdbState.cellOutputSnapshots.values()],
+      (viewport: DOMRect) =>
+        notebookReduxStore.dispatch(
+          CdbActions.takeNotebookSnapshot({
+            viewport,
+            requestId: new Date().getTime().toString(),
+          })
+        )
     );
+    onSnapshotImageSrcChangeFct = onSnapshotImageSrcChange;
   };
 
   private copyNotebook = () => {

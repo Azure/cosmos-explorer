@@ -6,6 +6,7 @@ import { Notebook } from "../../../Common/Constants";
 export interface SnapshotFragment {
   image: HTMLImageElement;
   boundingClientRect: DOMRect;
+  requestId: string;
 }
 
 export interface CdbRecordProps {
@@ -14,7 +15,12 @@ export interface CdbRecordProps {
   kernelRestartDelayMs: number;
   hoveredCellId: CellId | undefined;
   currentNotebookParentElements: Map<ContentRef, HTMLElement>;
-  cellOutputSnapshots: SnapshotFragment[];
+  cellOutputSnapshots: Map<string, SnapshotFragment>;
+  notebookSnapshot: { imageSrc: string; requestId: string };
+  pendingSnapshotRequest: {
+    requestId: string;
+    viewport: DOMRect;
+  };
 }
 
 export type CdbRecord = Immutable.RecordOf<CdbRecordProps>;
@@ -29,5 +35,7 @@ export const makeCdbRecord = Immutable.Record<CdbRecordProps>({
   kernelRestartDelayMs: Notebook.kernelRestartInitialDelayMs,
   hoveredCellId: undefined,
   currentNotebookParentElements: new Map<ContentRef, HTMLElement>(),
-  cellOutputSnapshots: undefined,
+  cellOutputSnapshots: new Map(),
+  notebookSnapshot: undefined,
+  pendingSnapshotRequest: undefined,
 });

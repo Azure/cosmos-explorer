@@ -17,6 +17,7 @@ import { SnapshotFragment } from "../Notebook/NotebookComponent/types";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
+export interface OpenPublishPaneReturnType { onSnapshotImageSrcChange: (newImageSrc: string) => void }
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
   private isOpened: boolean;
@@ -30,10 +31,12 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private description: string;
   private tags: string;
   private imageSrc: string;
+  private snapshotImageSrc: string;
   private notebookObject: ImmutableNotebook;
   private parentDomElement: HTMLElement;
   private cellOutputSnapshots: SnapshotFragment[];
   private isCodeOfConductAccepted: boolean;
+  private onTakeSnapshot: (viewport: DOMRect) => void;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
@@ -68,12 +71,14 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       notebookObject: this.notebookObject,
       notebookParentDomElement: this.parentDomElement,
       cellOutputSnapshots: this.cellOutputSnapshots,
+      snapshotImageSrc: this.snapshotImageSrc,
       onChangeName: (newValue: string) => (this.name = newValue),
       onChangeDescription: (newValue: string) => (this.description = newValue),
       onChangeTags: (newValue: string) => (this.tags = newValue),
       onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
       onError: this.createFormError,
       clearFormError: this.clearFormError,
+      onTakeSnapshot: (viewport: DOMRect) => this.onTakeSnapshot(viewport)
     };
 
     return (
@@ -104,8 +109,11 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     author: string,
     notebookContent: string | ImmutableNotebook,
     parentDomElement: HTMLElement,
-    cellOutputSnapshots: SnapshotFragment[]
-  ): Promise<void> {
+    cellOutputSnapshots: SnapshotFragment[],
+    onTakeSnapshot: (viewport: DOMRect) => void
+  ): Promise<OpenPublishPaneReturnType> {
+    this.onTakeSnapshot = onTakeSnapshot;
+
     try {
       const response = await this.junoClient.isCodeOfConductAccepted();
       if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
@@ -134,6 +142,13 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
 
     this.isOpened = true;
     this.triggerRender();
+
+    return {
+      onSnapshotImageSrcChange: (newImageSrc: string): void => {
+        this.snapshotImageSrc = newImageSrc;
+        this.triggerRender();
+      }
+    }
   }
 
   public close(): void {

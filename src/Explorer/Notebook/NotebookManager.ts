@@ -21,7 +21,7 @@ import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
-import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
+import { OpenPublishPaneReturnType, PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { SnapshotFragment } from "./NotebookComponent/types";
@@ -125,9 +125,17 @@ export default class NotebookManager {
     name: string,
     content: string | ImmutableNotebook,
     parentDomElement: HTMLElement,
-    cellOutputSnapshots: SnapshotFragment[]
-  ): Promise<void> {
-    await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement, cellOutputSnapshots);
+    cellOutputSnapshots: SnapshotFragment[],
+    onTakeSnapshot: (viewport: DOMRect) => void
+  ): Promise<OpenPublishPaneReturnType> {
+    return await this.publishNotebookPaneAdapter.open(
+      name,
+      getFullName(),
+      content,
+      parentDomElement,
+      cellOutputSnapshots,
+      onTakeSnapshot
+    );
   }
 
   public openCopyNotebookPane(name: string, content: string): void {

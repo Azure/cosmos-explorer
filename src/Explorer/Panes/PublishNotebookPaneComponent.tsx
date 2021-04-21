@@ -17,12 +17,14 @@ export interface PublishNotebookPaneProps {
   notebookObject: ImmutableNotebook;
   notebookParentDomElement?: HTMLElement;
   cellOutputSnapshots?: SnapshotFragment[];
+  snapshotImageSrc: string;
   onChangeName: (newValue: string) => void;
   onChangeDescription: (newValue: string) => void;
   onChangeTags: (newValue: string) => void;
   onChangeImageSrc: (newValue: string) => void;
   onError: (formError: string, formErrorDetail: string, area: string) => void;
   clearFormError: () => void;
+  onTakeSnapshot: (viewport: DOMRect) => void;
 }
 
 interface PublishNotebookPaneState {
@@ -180,7 +182,8 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
           try {
-            await this.takeScreenshot(this.props.notebookParentDomElement, screenshotErrorHandler);
+            // await this.takeScreenshot(this.props.notebookParentDomElement, screenshotErrorHandler);
+            this.props.onTakeSnapshot(undefined);
           } catch (error) {
             screenshotErrorHandler(error);
           }

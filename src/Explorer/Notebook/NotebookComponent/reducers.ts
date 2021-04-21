@@ -83,11 +83,33 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       return state.set("currentNotebookParentElements", parentEltsMap);
     }
 
+    case cdbActions.START_CELL_OUTPUT_SNAPSHOT: {
+      const typedAction = action as cdbActions.StartCellOutputSnapshotAction;
+      state.cellOutputSnapshots.set(typedAction.payload.cellId, undefined);
+      // TODO Simpler datastructure to instantiate new Map?
+      return state.set("cellOutputSnapshots", new Map(state.cellOutputSnapshots.entries()));
+    }
+
     case cdbActions.STORE_CELL_OUTPUT_SNAPSHOT: {
       const typedAction = action as cdbActions.StoreCellOutputSnapshotAction;
-      const snapshotFragments = state.cellOutputSnapshots || [];
-      snapshotFragments.push(typedAction.payload.snapshot);
-      return state.set("cellOutputSnapshots", snapshotFragments);
+      state.cellOutputSnapshots.set(typedAction.payload.cellId, typedAction.payload.snapshot);
+      // TODO Simpler datastructure to instantiate new Map?
+      return state.set("cellOutputSnapshots", new Map(state.cellOutputSnapshots.entries()));
+    }
+
+    case cdbActions.STORE_CELL_OUTPUT_SNAPSHOT: {
+      const typedAction = action as cdbActions.StoreNotebookSnapshotAction;
+      // Clear pending request
+      return state.set("notebookSnapshot", typedAction.payload).set("pendingSnapshotRequest", undefined);
+    }
+
+    case cdbActions.TAKE_NOTEBOOK_SNAPSHOT: {
+      const typedAction = action as cdbActions.TakeNotebookSnapshotAction;
+      // Clear previous snapshots
+      return state
+        .set("cellOutputSnapshots", new Map())
+        .set("notebookSnapshot", undefined)
+        .set("pendingSnapshotRequest", typedAction.payload);
     }
   }
   return state;

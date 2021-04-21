@@ -105,17 +105,71 @@ export const UpdateNotebookParentDomElt = (payload: {
   };
 };
 
+export const START_CELL_OUTPUT_SNAPSHOT = "START_CELL_OUTPUT_SNAPSHOT";
+export interface StartCellOutputSnapshotAction {
+  type: "START_CELL_OUTPUT_SNAPSHOT";
+  payload: {
+    cellId: string;
+  };
+}
+
+export const startCellOutputSnapshot = (payload: { cellId: string }): StartCellOutputSnapshotAction => {
+  return {
+    type: START_CELL_OUTPUT_SNAPSHOT,
+    payload,
+  };
+};
+
 export const STORE_CELL_OUTPUT_SNAPSHOT = "STORE_CELL_OUTPUT_SNAPSHOT";
 export interface StoreCellOutputSnapshotAction {
   type: "STORE_CELL_OUTPUT_SNAPSHOT";
   payload: {
+    cellId: string;
     snapshot: SnapshotFragment;
   };
 }
 
-export const storeCellOutputSnapshot = (payload: { snapshot: SnapshotFragment }): StoreCellOutputSnapshotAction => {
+export const storeCellOutputSnapshot = (payload: {
+  cellId: string;
+  snapshot: SnapshotFragment;
+}): StoreCellOutputSnapshotAction => {
   return {
     type: STORE_CELL_OUTPUT_SNAPSHOT,
+    payload,
+  };
+};
+
+export const STORE_NOTEBOOK_SNAPSHOT = "STORE_NOTEBOOK_SNAPSHOT";
+export interface StoreNotebookSnapshotAction {
+  type: "STORE_NOTEBOOK_SNAPSHOT";
+  payload: {
+    imageSrc: string;
+    requestId: string;
+  };
+}
+
+export const storeNotebookSnapshot = (payload: {
+  imageSrc: string;
+  requestId: string;
+}): StoreNotebookSnapshotAction => {
+  return {
+    type: STORE_NOTEBOOK_SNAPSHOT,
+    payload,
+  };
+};
+
+export const TAKE_NOTEBOOK_SNAPSHOT = "TAKE_NOTEBOOK_SNAPSHOT";
+export interface TakeNotebookSnapshotAction {
+  type: "TAKE_NOTEBOOK_SNAPSHOT";
+  payload: {
+    viewport: DOMRect;
+    requestId: string;
+  };
+}
+
+export const takeNotebookSnapshot = (payload: { viewport: DOMRect; requestId: string }): TakeNotebookSnapshotAction => {
+  return {
+    type: TAKE_NOTEBOOK_SNAPSHOT,
     payload,
   };
 };

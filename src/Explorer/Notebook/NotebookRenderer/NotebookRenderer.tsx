@@ -14,6 +14,8 @@ import { Dispatch } from "redux";
 import { userContext } from "../../../UserContext";
 import * as cdbActions from "../NotebookComponent/actions";
 import loadTransform from "../NotebookComponent/loadTransform";
+import { CdbAppState, SnapshotFragment } from "../NotebookComponent/types";
+import { NotebookUtil } from "../NotebookUtil";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import CellCreator from "./decorators/CellCreator";
@@ -35,9 +37,19 @@ export interface NotebookRendererBaseProps {
 
 interface NotebookRendererDispatchProps {
   updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => void;
+  storeNotebookSnapshot: (imageSrc: string, requestId: string) => void;
 }
 
-type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatchProps;
+interface StateProps {
+  pendingSnapshotRequest: {
+    requestId: string;
+    viewport: DOMRect;
+  };
+  cellOutputSnapshots: Map<string, SnapshotFragment>;
+  notebookSnapshot: { imageSrc: string; requestId: string };
+}
+
+type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatchProps & StateProps;
 
 const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, children: React.ReactNode) => {
   const Cell = () => (
@@ -75,8 +87,39 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
+  /**
+   * @return true if there is a snapshot for each cell output
+   */
+  private areSnapshotForAllOutputsPresent(): boolean {
+    for (let [key, value] of this.props.cellOutputSnapshots) {
+      if (!value) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   componentDidUpdate() {
     this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
+
+    console.log('Notebook renderer before test',
+      this.props.pendingSnapshotRequest,
+      this.props.notebookSnapshot,
+      this.areSnapshotForAllOutputsPresent(),
+      this.props.cellOutputSnapshots,
+    );
+    // Take a snapshot if there's a pending request and all the outputs are also saved
+    if (this.props.pendingSnapshotRequest &&
+      (!this.props.notebookSnapshot || this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
+      this.areSnapshotForAllOutputsPresent()) {
+      console.log('EXECUTING SNAPSHOT');
+      NotebookUtil.takeScreenshot(
+        this.notebookRendererRef.current,
+        [...this.props.cellOutputSnapshots.values()],
+        error => console.error(error),
+        (imageSrc: string) => this.props.storeNotebookSnapshot(imageSrc, this.props.pendingSnapshotRequest.requestId)
+      );
+    }
   }
 
   componentWillUnmount() {
@@ -110,13 +153,13 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                             outputs: userContext.features.sandboxNotebookOutputs
                               ? (props: any) => (
-                                  <IFrameOutputs id={id} contentRef={contentRef}>
-                                    <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
-                                    <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
-                                    <KernelOutputError />
-                                    <StreamText />
-                                  </IFrameOutputs>
-                                )
+                                <IFrameOutputs id={id} contentRef={contentRef}>
+                                  <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
+                                  <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
+                                  <KernelOutputError />
+                                  <StreamText />
+                                </IFrameOutputs>
+                              )
                               : undefined,
                           }}
                         </CodeCell>
@@ -163,28 +206,38 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 }
 
+export const makeMapStateToProps = (
+  initialState: CdbAppState,
+  ownProps: NotebookRendererProps
+): ((state: CdbAppState) => StateProps) => {
+  const mapStateToProps = (state: CdbAppState): StateProps => {
+    const { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot } = state.cdb;
+    return { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot };
+  };
+  return mapStateToProps;
+};
+
 const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererBaseProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-      addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => {
-        return dispatch(
-          actions.addTransform({
-            mediaType: transform.MIMETYPE,
-            component: transform,
-          })
-        );
-      },
-      updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => {
-        return dispatch(
-          cdbActions.UpdateNotebookParentDomElt({
-            contentRef,
-            parentElt,
-          })
-        );
-      },
+      addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => dispatch(
+        actions.addTransform({
+          mediaType: transform.MIMETYPE,
+          component: transform,
+        })),
+      updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => dispatch(
+        cdbActions.UpdateNotebookParentDomElt({
+          contentRef,
+          parentElt,
+        })),
+      storeNotebookSnapshot: (imageSrc: string, requestId: string) => dispatch(
+        cdbActions.storeNotebookSnapshot({
+          imageSrc,
+          requestId,
+        }))
     };
   };
   return mapDispatchToProps;
 };
 
-export default connect(null, makeMapDispatchToProps)(BaseNotebookRenderer);
+export default connect(makeMapStateToProps, makeMapDispatchToProps)(BaseNotebookRenderer);

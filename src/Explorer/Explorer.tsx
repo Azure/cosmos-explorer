@@ -60,6 +60,7 @@ import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
 import NewVertexPane from "./Panes/NewVertexPane";
+import { OpenPublishPaneReturnType } from "./Panes/PublishNotebookPaneAdapter";
 import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
 import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNotebooksPane } from "./Panes/SetupNotebooksPane";
@@ -1477,12 +1478,17 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement, cellOutputSnapshots?: SnapshotFragment[]): Promise<void> {
+  public async publishNotebook(name: string, content: string | unknown,
+    parentDomElement?: HTMLElement, cellOutputSnapshots?: SnapshotFragment[],
+    onTakeSnapshot?: (viewport: DOMRect) => void): Promise<OpenPublishPaneReturnType> {
+    let result = undefined;
+
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement, cellOutputSnapshots);
+      result = await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement, cellOutputSnapshots, onTakeSnapshot);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
+    return result;
   }
 
   public copyNotebook(name: string, content: string): void {

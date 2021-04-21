@@ -8,8 +8,9 @@ import { SnapshotFragment } from "../../NotebookComponent/types";
 interface SandboxFrameProps {
   style: React.CSSProperties;
   sandbox: string;
+  onSnapshotStarted: () => void;
   onNewSnapshot: (snapshot: SnapshotFragment) => void;
-  snapshotTimestamp: number;
+  snapshotRequestId: string;
 }
 
 interface SandboxFrameState {
@@ -34,10 +35,11 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
   }
 
   componentDidUpdate(prevProps: SandboxFrameProps): void {
-    if (!this.props.snapshotTimestamp || prevProps.snapshotTimestamp === this.props.snapshotTimestamp) {
+    if (!this.props.snapshotRequestId || prevProps.snapshotRequestId === this.props.snapshotRequestId) {
       return;
     }
 
+    this.props.onSnapshotStarted();
     const target = this.topNodeRef.current;
     // target.scrollIntoView();
     Html2Canvas(target, {
@@ -60,7 +62,8 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
           console.log('Update snapshot image')
           this.props.onNewSnapshot({
             image,
-            boundingClientRect: this.state.frame.getBoundingClientRect()
+            boundingClientRect: this.state.frame.getBoundingClientRect(),
+            requestId: this.props.snapshotRequestId
           });
         };
       })

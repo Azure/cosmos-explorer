@@ -1,8 +1,11 @@
+import { ImmutableCodeCell, ImmutableNotebook } from "@nteract/commutable";
+import Html2Canvas from "html2canvas";
 import path from "path";
-import { ImmutableNotebook, ImmutableCodeCell } from "@nteract/commutable";
-import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import * as StringUtils from "../../Utils/StringUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
+import * as StringUtils from "../../Utils/StringUtils";
+import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
+import { SnapshotFragment } from "./NotebookComponent/types";
+import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";
@@ -160,4 +163,53 @@ export class NotebookUtil {
     }
     throw new Error("Output does not exist for any of the cells.");
   }
+
+  public static takeScreenshot = (
+    target: HTMLElement,
+    subImages: SnapshotFragment[],
+    onError: (error: Error) => void,
+    onSuccess: (imageSrc: string) => void
+  ): void => {
+    target.scrollIntoView();
+    Html2Canvas(target, {
+      useCORS: true,
+      allowTaint: true,
+      scale: 1,
+      logging: true,
+    })
+      .then((canvas) => {
+        //redraw canvas to fit Card Cover Image dimensions
+        const originalImageData = canvas.toDataURL();
+        const requiredHeight =
+          parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+        canvas.height = requiredHeight;
+        const context = canvas.getContext("2d");
+        const image = new Image();
+        image.src = originalImageData;
+
+        image.onload = () => {
+          context.drawImage(image, 0, 0);
+
+          // draw sub images
+          if (subImages) {
+            const parentRect = target.getBoundingClientRect();
+            subImages.forEach((snapshot) => {
+              context.drawImage(
+                snapshot.image,
+                snapshot.boundingClientRect.x - parentRect.x,
+                snapshot.boundingClientRect.y - parentRect.y
+              );
+            });
+          }
+
+          onSuccess(canvas.toDataURL());
+
+          const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+          window.location.href = image2; // it will save locally
+        };
+      })
+      .catch((error) => {
+        onError(error);
+      });
+  };
 }

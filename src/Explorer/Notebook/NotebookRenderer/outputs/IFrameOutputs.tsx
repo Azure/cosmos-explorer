@@ -5,7 +5,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import * as cdbActions from "../../NotebookComponent/actions";
-import { SnapshotFragment } from "../../NotebookComponent/types";
+import { CdbAppState, SnapshotFragment } from "../../NotebookComponent/types";
 import { SandboxFrame } from "./SandboxFrame";
 
 // Adapted from https://github.com/nteract/nteract/blob/main/packages/stateful-components/src/outputs/index.tsx
@@ -17,37 +17,35 @@ interface ComponentProps {
   children: React.ReactNode;
 }
 
-interface IFrameOutputsDispatchProps {
-  storeSnapshotFragment: (snapshotFragment: SnapshotFragment) => void;
+interface DispatchProps {
+  storeSnapshotFragment: (cellId: string, snapshotFragment: SnapshotFragment) => void;
+  startSnapshotFragment: (cellId: string) => void;
 }
 interface StateProps {
   hidden: boolean;
   expanded: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   outputs: Immutable.List<any>;
+
+  pendingSnapshotRequestId: string;
+  currentOutputSnapshotRequestId: string;
 }
 
-export class IFrameOutputs extends React.PureComponent<ComponentProps & StateProps & IFrameOutputsDispatchProps, { snapshotTimestamp: number }> {
-  constructor(props: ComponentProps & StateProps & IFrameOutputsDispatchProps) {
-    super(props);
-    this.state = {
-      snapshotTimestamp: undefined
-    }
-  }
-
+type IFrameOutputProps = ComponentProps & StateProps & DispatchProps;
+export class IFrameOutputs extends React.PureComponent<IFrameOutputProps> {
   private onNewSnapshot = (snapshot: SnapshotFragment): void => {
     // console.log('height', snapshot.boundingClientRect.y);
-    this.props.storeSnapshotFragment(snapshot);
+    this.props.storeSnapshotFragment(this.props.id, snapshot);
 
     // const image2 = imgTemp.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
     // window.location.href = image2; // it will save locally
   }
 
-  componentDidMount(): void {
-    setTimeout(() => {
-      this.setState({ snapshotTimestamp: new Date().getTime() });
-    }, 10000);
-  }
+  // componentDidMount(): void {
+  //   setTimeout(() => {
+  //     this.setState({ snapshotTimestamp: new Date().getTime() });
+  //   }, 10000);
+  // }
 
   render(): JSX.Element {
     const { outputs, children, hidden, expanded } = this.props;
@@ -55,8 +53,9 @@ export class IFrameOutputs extends React.PureComponent<ComponentProps & StatePro
       <SandboxFrame
         style={{ border: "none", width: "100%" }}
         sandbox="allow-downloads allow-forms allow-pointer-lock allow-same-origin allow-scripts"
-        snapshotTimestamp={this.state.snapshotTimestamp}
+        snapshotRequestId={this.props.pendingSnapshotRequestId}
         onNewSnapshot={this.onNewSnapshot}
+        onSnapshotStarted={() => this.props.startSnapshotFragment(this.props.id)}
       >
         <div className={`nteract-cell-outputs ${hidden ? "hidden" : ""} ${expanded ? "expanded" : ""}`}>
           {outputs.map((output, index) => (
@@ -74,7 +73,7 @@ export const makeMapStateToProps = (
   initialState: AppState,
   ownProps: ComponentProps
 ): ((state: AppState) => StateProps) => {
-  const mapStateToProps = (state: AppState): StateProps => {
+  const mapStateToProps = (state: CdbAppState): StateProps => {
     let outputs = Immutable.List();
     let hidden = false;
     let expanded = false;
@@ -91,7 +90,10 @@ export const makeMapStateToProps = (
       }
     }
 
-    return { outputs, hidden, expanded };
+    const snapshotRequestId = state.cdb.pendingSnapshotRequest?.requestId;
+    const currentCellOutputSnapshot = state.cdb.cellOutputSnapshots.get(id);
+
+    return { outputs, hidden, expanded, pendingSnapshotRequestId: snapshotRequestId, currentOutputSnapshotRequestId: currentCellOutputSnapshot?.requestId };
   };
   return mapStateToProps;
 };
@@ -99,15 +101,16 @@ export const makeMapStateToProps = (
 const makeMapDispatchToProps = () => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-      storeSnapshotFragment: (snapshot: SnapshotFragment) => {
-        return dispatch(
-          cdbActions.storeCellOutputSnapshot({ snapshot })
-        );
-      }
+      storeSnapshotFragment: (cellId: string, snapshot: SnapshotFragment) => dispatch(
+        cdbActions.storeCellOutputSnapshot({ cellId, snapshot })
+      ),
+      startSnapshotFragment: (cellId: string) => dispatch(
+        cdbActions.startCellOutputSnapshot({ cellId })
+      ),
     };
   };
   return mapDispatchToProps;
 };
 
 
-export default connect<StateProps, unknown, ComponentProps, AppState>(makeMapStateToProps, makeMapDispatchToProps)(IFrameOutputs);
+export default connect<StateProps, DispatchProps, ComponentProps, AppState>(makeMapStateToProps, makeMapDispatchToProps)(IFrameOutputs);
