@@ -1,5 +1,5 @@
 import { CellId } from "@nteract/commutable";
-import { AppState, ContentRef } from "@nteract/core";
+import { AppState } from "@nteract/core";
 import * as Immutable from "immutable";
 import { Notebook } from "../../../Common/Constants";
 
@@ -14,13 +14,13 @@ export interface CdbRecordProps {
   defaultExperience: string | undefined;
   kernelRestartDelayMs: number;
   hoveredCellId: CellId | undefined;
-  currentNotebookParentElements: Map<ContentRef, HTMLElement>;
   cellOutputSnapshots: Map<string, SnapshotFragment>;
   notebookSnapshot: { imageSrc: string; requestId: string };
   pendingSnapshotRequest: {
     requestId: string;
     viewport: DOMRect;
   };
+  notebookSnapshotError: string;
 }
 
 export type CdbRecord = Immutable.RecordOf<CdbRecordProps>;
@@ -34,8 +34,8 @@ export const makeCdbRecord = Immutable.Record<CdbRecordProps>({
   defaultExperience: undefined,
   kernelRestartDelayMs: Notebook.kernelRestartInitialDelayMs,
   hoveredCellId: undefined,
-  currentNotebookParentElements: new Map<ContentRef, HTMLElement>(),
   cellOutputSnapshots: new Map(),
   notebookSnapshot: undefined,
   pendingSnapshotRequest: undefined,
+  notebookSnapshotError: undefined,
 });

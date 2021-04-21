@@ -13,11 +13,13 @@ import { CodeOfConductComponent } from "../Controls/NotebookGallery/CodeOfConduc
 import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
-import { SnapshotFragment } from "../Notebook/NotebookComponent/types";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
-export interface OpenPublishPaneReturnType { onSnapshotImageSrcChange: (newImageSrc: string) => void }
+export interface OpenPublishPaneReturnType {
+  onSnapshotSuccess: (newImageSrc: string) => void;
+  onSnapshotError: (error: string) => void;
+}
 export class PublishNotebookPaneAdapter implements ReactAdapter {
   parameters: ko.Observable<number>;
   private isOpened: boolean;
@@ -33,8 +35,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private imageSrc: string;
   private snapshotImageSrc: string;
   private notebookObject: ImmutableNotebook;
-  private parentDomElement: HTMLElement;
-  private cellOutputSnapshots: SnapshotFragment[];
   private isCodeOfConductAccepted: boolean;
   private onTakeSnapshot: (viewport: DOMRect) => void;
 
@@ -69,8 +69,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       notebookAuthor: this.author,
       notebookCreatedDate: new Date().toISOString(),
       notebookObject: this.notebookObject,
-      notebookParentDomElement: this.parentDomElement,
-      cellOutputSnapshots: this.cellOutputSnapshots,
       snapshotImageSrc: this.snapshotImageSrc,
       onChangeName: (newValue: string) => (this.name = newValue),
       onChangeDescription: (newValue: string) => (this.description = newValue),
@@ -78,7 +76,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
       onError: this.createFormError,
       clearFormError: this.clearFormError,
-      onTakeSnapshot: (viewport: DOMRect) => this.onTakeSnapshot(viewport)
+      onTakeSnapshot: (viewport: DOMRect) => this.onTakeSnapshot(viewport),
     };
 
     return (
@@ -108,8 +106,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     name: string,
     author: string,
     notebookContent: string | ImmutableNotebook,
-    parentDomElement: HTMLElement,
-    cellOutputSnapshots: SnapshotFragment[],
     onTakeSnapshot: (viewport: DOMRect) => void
   ): Promise<OpenPublishPaneReturnType> {
     this.onTakeSnapshot = onTakeSnapshot;
@@ -137,18 +133,18 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       this.content = JSON.stringify(toJS(notebookContent));
       this.notebookObject = notebookContent;
     }
-    this.parentDomElement = parentDomElement;
-    this.cellOutputSnapshots = cellOutputSnapshots;
 
     this.isOpened = true;
     this.triggerRender();
 
     return {
-      onSnapshotImageSrcChange: (newImageSrc: string): void => {
+      onSnapshotSuccess: (newImageSrc: string): void => {
         this.snapshotImageSrc = newImageSrc;
         this.triggerRender();
-      }
-    }
+      },
+      onSnapshotError: (error: string): void =>
+        this.createFormError("Failed to take screen shot", error, "PublishNotebookPaneComponent/takeScreenshot"),
+    };
   }
 
   public close(): void {
@@ -255,7 +251,6 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     this.tags = undefined;
     this.imageSrc = undefined;
     this.notebookObject = undefined;
-    this.parentDomElement = undefined;
     this.isCodeOfConductAccepted = undefined;
   };
 }

@@ -1,10 +1,8 @@
 import { ImmutableNotebook } from "@nteract/commutable/src";
-import Html2Canvas from "html2canvas";
 import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
-import { SnapshotFragment } from "../Notebook/NotebookComponent/types";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import "./PublishNotebookPaneComponent.less";
 
@@ -15,8 +13,6 @@ export interface PublishNotebookPaneProps {
   notebookAuthor: string;
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
-  notebookParentDomElement?: HTMLElement;
-  cellOutputSnapshots?: SnapshotFragment[];
   snapshotImageSrc: string;
   onChangeName: (newValue: string) => void;
   onChangeDescription: (newValue: string) => void;
@@ -81,55 +77,6 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       };
     };
 
-    this.takeScreenshot = (target: HTMLElement, onError: (error: Error) => void): void => {
-      const updateImageSrcWithScreenshot = (canvasUrl: string): void => {
-        this.props.onChangeImageSrc(canvasUrl);
-        this.setState({ imageSrc: canvasUrl });
-      };
-
-      target.scrollIntoView();
-      Html2Canvas(target, {
-        useCORS: true,
-        allowTaint: true,
-        scale: 1,
-        logging: true,
-      })
-        .then((canvas) => {
-          //redraw canvas to fit Card Cover Image dimensions
-          const originalImageData = canvas.toDataURL();
-          const requiredHeight =
-            parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
-          canvas.height = requiredHeight;
-          const context = canvas.getContext("2d");
-          const image = new Image();
-          image.src = originalImageData;
-
-          image.onload = () => {
-            context.drawImage(image, 0, 0);
-
-            // draw cell outputs
-            if (this.props.cellOutputSnapshots) {
-              console.log(`found ${this.props.cellOutputSnapshots.length} snapshots`);
-              const parentRect = target.getBoundingClientRect();
-
-              this.props.cellOutputSnapshots.forEach(snapshot => {
-                context.drawImage(snapshot.image, snapshot.boundingClientRect.x - parentRect.x, snapshot.boundingClientRect.y - parentRect.y);
-              });
-            }
-
-            updateImageSrcWithScreenshot(canvas.toDataURL());
-
-            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
-            window.location.href = image2; // it will save locally
-
-          };
-
-        })
-        .catch((error) => {
-          onError(error);
-        });
-    };
-
     this.descriptionPara1 =
       "When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.";
 
@@ -164,7 +111,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
     const options: ImageTypes[] = [ImageTypes.CustomImage, ImageTypes.Url];
 
-    if (this.props.notebookParentDomElement) {
+    if (this.props.onTakeSnapshot) {
       options.push(ImageTypes.TakeScreenshot);
       if (this.props.notebookObject) {
         options.push(ImageTypes.UseFirstDisplayOutput);
@@ -182,7 +129,6 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
           try {
-            // await this.takeScreenshot(this.props.notebookParentDomElement, screenshotErrorHandler);
             this.props.onTakeSnapshot(undefined);
           } catch (error) {
             screenshotErrorHandler(error);
@@ -231,6 +177,17 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         this.setState({ notebookTags: newValue });
       },
     };
+  }
+
+  componentDidUpdate(prevProps: PublishNotebookPaneProps): void {
+    if (
+      this.state.type === ImageTypes.TakeScreenshot &&
+      this.props.snapshotImageSrc &&
+      prevProps.snapshotImageSrc !== this.props.snapshotImageSrc
+    ) {
+      this.setState({ imageSrc: this.props.snapshotImageSrc });
+      this.props.onChangeImageSrc(this.props.snapshotImageSrc);
+    }
   }
 
   private renderThumbnailSelectors(type: string) {

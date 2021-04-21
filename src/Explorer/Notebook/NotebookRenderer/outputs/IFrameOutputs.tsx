@@ -33,20 +33,6 @@ interface StateProps {
 
 type IFrameOutputProps = ComponentProps & StateProps & DispatchProps;
 export class IFrameOutputs extends React.PureComponent<IFrameOutputProps> {
-  private onNewSnapshot = (snapshot: SnapshotFragment): void => {
-    // console.log('height', snapshot.boundingClientRect.y);
-    this.props.storeSnapshotFragment(this.props.id, snapshot);
-
-    // const image2 = imgTemp.replace("image/png", "image/octet-stream");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
-    // window.location.href = image2; // it will save locally
-  }
-
-  // componentDidMount(): void {
-  //   setTimeout(() => {
-  //     this.setState({ snapshotTimestamp: new Date().getTime() });
-  //   }, 10000);
-  // }
-
   render(): JSX.Element {
     const { outputs, children, hidden, expanded } = this.props;
     return (
@@ -54,7 +40,7 @@ export class IFrameOutputs extends React.PureComponent<IFrameOutputProps> {
         style={{ border: "none", width: "100%" }}
         sandbox="allow-downloads allow-forms allow-pointer-lock allow-same-origin allow-scripts"
         snapshotRequestId={this.props.pendingSnapshotRequestId}
-        onNewSnapshot={this.onNewSnapshot}
+        onNewSnapshot={(snapshot) => this.props.storeSnapshotFragment(this.props.id, snapshot)}
         onSnapshotStarted={() => this.props.startSnapshotFragment(this.props.id)}
       >
         <div className={`nteract-cell-outputs ${hidden ? "hidden" : ""} ${expanded ? "expanded" : ""}`}>
@@ -93,7 +79,13 @@ export const makeMapStateToProps = (
     const snapshotRequestId = state.cdb.pendingSnapshotRequest?.requestId;
     const currentCellOutputSnapshot = state.cdb.cellOutputSnapshots.get(id);
 
-    return { outputs, hidden, expanded, pendingSnapshotRequestId: snapshotRequestId, currentOutputSnapshotRequestId: currentCellOutputSnapshot?.requestId };
+    return {
+      outputs,
+      hidden,
+      expanded,
+      pendingSnapshotRequestId: snapshotRequestId,
+      currentOutputSnapshotRequestId: currentCellOutputSnapshot?.requestId,
+    };
   };
   return mapStateToProps;
 };
@@ -101,16 +93,15 @@ export const makeMapStateToProps = (
 const makeMapDispatchToProps = () => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-      storeSnapshotFragment: (cellId: string, snapshot: SnapshotFragment) => dispatch(
-        cdbActions.storeCellOutputSnapshot({ cellId, snapshot })
-      ),
-      startSnapshotFragment: (cellId: string) => dispatch(
-        cdbActions.startCellOutputSnapshot({ cellId })
-      ),
+      storeSnapshotFragment: (cellId: string, snapshot: SnapshotFragment) =>
+        dispatch(cdbActions.storeCellOutputSnapshot({ cellId, snapshot })),
+      startSnapshotFragment: (cellId: string) => dispatch(cdbActions.startCellOutputSnapshot({ cellId })),
     };
   };
   return mapDispatchToProps;
 };
 
-
-export default connect<StateProps, DispatchProps, ComponentProps, AppState>(makeMapStateToProps, makeMapDispatchToProps)(IFrameOutputs);
+export default connect<StateProps, DispatchProps, ComponentProps, AppState>(
+  makeMapStateToProps,
+  makeMapDispatchToProps
+)(IFrameOutputs);

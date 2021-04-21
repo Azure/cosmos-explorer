@@ -59,11 +59,10 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
         image.src = originalImageData;
         image.onload = () => {
           context.drawImage(image, 0, 0);
-          console.log('Update snapshot image')
           this.props.onNewSnapshot({
             image,
             boundingClientRect: this.state.frame.getBoundingClientRect(),
-            requestId: this.props.snapshotRequestId
+            requestId: this.props.snapshotRequestId,
           });
         };
       })
@@ -74,8 +73,6 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
   }
 
   render(): JSX.Element {
-    // eslint-disable-next-line
-    console.log('SandboxFrame: render');
     return (
       <iframe
         ref={(ele) => this.setState({ frame: ele })}
@@ -94,9 +91,7 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
    * Wrap children under one node that can be snapshot
    */
   private renderChildren() {
-    return <div ref={this.topNodeRef}>
-      {this.props.children}
-    </div>
+    return <div ref={this.topNodeRef}>{this.props.children}</div>;
   }
 
   componentWillUnmount(): void {
@@ -105,9 +100,6 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
   }
 
   onFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {
-    // eslint-disable-next-line
-    console.log('onFrameLoad: start');
-
     const doc = (event.target as HTMLIFrameElement).contentDocument;
     copyStyles(document, doc);
 

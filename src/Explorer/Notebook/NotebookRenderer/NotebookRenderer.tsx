@@ -36,8 +36,8 @@ export interface NotebookRendererBaseProps {
 }
 
 interface NotebookRendererDispatchProps {
-  updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => void;
   storeNotebookSnapshot: (imageSrc: string, requestId: string) => void;
+  notebookSnapshotError: (error: string) => void;
 }
 
 interface StateProps {
@@ -84,7 +84,6 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
 
   componentDidMount() {
     loadTransform(this.props as any);
-    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
   /**
@@ -100,30 +99,20 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 
   componentDidUpdate() {
-    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
-
-    console.log('Notebook renderer before test',
-      this.props.pendingSnapshotRequest,
-      this.props.notebookSnapshot,
-      this.areSnapshotForAllOutputsPresent(),
-      this.props.cellOutputSnapshots,
-    );
     // Take a snapshot if there's a pending request and all the outputs are also saved
-    if (this.props.pendingSnapshotRequest &&
-      (!this.props.notebookSnapshot || this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
-      this.areSnapshotForAllOutputsPresent()) {
-      console.log('EXECUTING SNAPSHOT');
+    if (
+      this.props.pendingSnapshotRequest &&
+      (!this.props.notebookSnapshot ||
+        this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
+      this.areSnapshotForAllOutputsPresent()
+    ) {
       NotebookUtil.takeScreenshot(
         this.notebookRendererRef.current,
         [...this.props.cellOutputSnapshots.values()],
-        error => console.error(error),
-        (imageSrc: string) => this.props.storeNotebookSnapshot(imageSrc, this.props.pendingSnapshotRequest.requestId)
+        (error) => this.props.notebookSnapshotError(error.message),
+        (imageSrc) => this.props.storeNotebookSnapshot(imageSrc, this.props.pendingSnapshotRequest.requestId)
       );
     }
-  }
-
-  componentWillUnmount() {
-    this.props.updateNotebookParentDomElt(this.props.contentRef, undefined);
   }
 
   render(): JSX.Element {
@@ -153,13 +142,13 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                             outputs: userContext.features.sandboxNotebookOutputs
                               ? (props: any) => (
-                                <IFrameOutputs id={id} contentRef={contentRef}>
-                                  <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
-                                  <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
-                                  <KernelOutputError />
-                                  <StreamText />
-                                </IFrameOutputs>
-                              )
+                                  <IFrameOutputs id={id} contentRef={contentRef}>
+                                    <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
+                                    <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
+                                    <KernelOutputError />
+                                    <StreamText />
+                                  </IFrameOutputs>
+                                )
                               : undefined,
                           }}
                         </CodeCell>
@@ -220,21 +209,16 @@ export const makeMapStateToProps = (
 const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererBaseProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-      addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => dispatch(
-        actions.addTransform({
-          mediaType: transform.MIMETYPE,
-          component: transform,
-        })),
-      updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => dispatch(
-        cdbActions.UpdateNotebookParentDomElt({
-          contentRef,
-          parentElt,
-        })),
-      storeNotebookSnapshot: (imageSrc: string, requestId: string) => dispatch(
-        cdbActions.storeNotebookSnapshot({
-          imageSrc,
-          requestId,
-        }))
+      addTransform: (transform: React.ComponentType & { MIMETYPE: string }) =>
+        dispatch(
+          actions.addTransform({
+            mediaType: transform.MIMETYPE,
+            component: transform,
+          })
+        ),
+      storeNotebookSnapshot: (imageSrc: string, requestId: string) =>
+        dispatch(cdbActions.storeNotebookSnapshot({ imageSrc, requestId })),
+      notebookSnapshotError: (error: string) => dispatch(cdbActions.notebookSnapshotError({ error })),
     };
   };
   return mapDispatchToProps;

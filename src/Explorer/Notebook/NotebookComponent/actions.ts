@@ -86,25 +86,6 @@ export const traceNotebookTelemetry = (payload: {
   };
 };
 
-export const UPDATE_NOTEBOOK_PARENT_DOM_ELTS = "UPDATE_NOTEBOOK_PARENT_DOM_ELTS";
-export interface UpdateNotebookParentDomEltAction {
-  type: "UPDATE_NOTEBOOK_PARENT_DOM_ELTS";
-  payload: {
-    contentRef: ContentRef;
-    parentElt: HTMLElement;
-  };
-}
-
-export const UpdateNotebookParentDomElt = (payload: {
-  contentRef: ContentRef;
-  parentElt: HTMLElement;
-}): UpdateNotebookParentDomEltAction => {
-  return {
-    type: UPDATE_NOTEBOOK_PARENT_DOM_ELTS,
-    payload,
-  };
-};
-
 export const START_CELL_OUTPUT_SNAPSHOT = "START_CELL_OUTPUT_SNAPSHOT";
 export interface StartCellOutputSnapshotAction {
   type: "START_CELL_OUTPUT_SNAPSHOT";
@@ -170,6 +151,21 @@ export interface TakeNotebookSnapshotAction {
 export const takeNotebookSnapshot = (payload: { viewport: DOMRect; requestId: string }): TakeNotebookSnapshotAction => {
   return {
     type: TAKE_NOTEBOOK_SNAPSHOT,
+    payload,
+  };
+};
+
+export const NOTEBOOK_SNAPSHOT_ERROR = "NOTEBOOK_SNAPSHOT_ERROR";
+export interface NotebookSnapshotErrorAction {
+  type: "NOTEBOOK_SNAPSHOT_ERROR";
+  payload: {
+    error: string;
+  };
+}
+
+export const notebookSnapshotError = (payload: { error: string }): NotebookSnapshotErrorAction => {
+  return {
+    type: NOTEBOOK_SNAPSHOT_ERROR,
     payload,
   };
 };

@@ -489,22 +489,25 @@ export default class NotebookTabV2 extends TabsBase {
 
     // TODO get snapshots from somewhere better
     const notebookReduxStore = NotebookTabV2.clientManager.getStore();
-    const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
-
     notebookReduxStore.subscribe(() => {
+      const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
       // Change has been made, update the pane
-      if (onSnapshotImageSrcChangeFct && cdbState.notebookSnapshot) {
-        onSnapshotImageSrcChangeFct(cdbState.notebookSnapshot.imageSrc);
+      if (cdbState.notebookSnapshot && onSnapshotSuccessFct) {
+        onSnapshotSuccessFct(cdbState.notebookSnapshot.imageSrc);
+      }
+
+      if (cdbState.notebookSnapshotError && onSnapshotErrorFct) {
+        onSnapshotErrorFct(cdbState.notebookSnapshotError);
       }
     });
 
     const notebookContent = this.notebookComponentAdapter.getContent();
-    let onSnapshotImageSrcChangeFct: (newImageSrc: string) => void = undefined;
-    const { onSnapshotImageSrcChange } = await this.container.publishNotebook(
+    let onSnapshotSuccessFct: (newImageSrc: string) => void = undefined;
+    let onSnapshotErrorFct: (error: string) => void = undefined;
+
+    const { onSnapshotSuccess } = await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      this.notebookComponentAdapter.getNotebookParentElement(),
-      [...cdbState.cellOutputSnapshots.values()],
       (viewport: DOMRect) =>
         notebookReduxStore.dispatch(
           CdbActions.takeNotebookSnapshot({
@@ -513,7 +516,8 @@ export default class NotebookTabV2 extends TabsBase {
           })
         )
     );
-    onSnapshotImageSrcChangeFct = onSnapshotImageSrcChange;
+    onSnapshotSuccessFct = onSnapshotSuccess;
+    onSnapshotErrorFct = onSnapshotSuccess;
   };
 
   private copyNotebook = () => {

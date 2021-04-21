@@ -204,8 +204,8 @@ export class NotebookUtil {
 
           onSuccess(canvas.toDataURL());
 
-          const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
-          window.location.href = image2; // it will save locally
+          // const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+          // window.location.href = image2; // it will save locally
         };
       })
       .catch((error) => {
