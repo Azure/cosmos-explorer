@@ -540,7 +540,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
       "isPreferredApiMongoDB": [Function],
-      "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isRightPanelV2Enabled": [Function],

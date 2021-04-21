@@ -537,7 +537,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
       "isPreferredApiMongoDB": [Function],
-      "isPreferredApiTable": [Function],
       "isPublishNotebookPaneEnabled": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isRightPanelV2Enabled": [Function],

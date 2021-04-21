@@ -124,12 +124,6 @@ export default class Explorer {
    * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
    * */
   public isPreferredApiMongoDB: ko.Computed<boolean>;
-
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Tables"
-   * */
-  public isPreferredApiTable: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   /**
    * @deprecated
@@ -402,11 +396,6 @@ export default class Explorer {
       });
     });
 
-    this.isPreferredApiTable = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      return defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.Table.toLowerCase();
-    });
-
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
@@ -499,7 +488,7 @@ export default class Explorer {
     });
 
     this.addCollectionPane = new AddCollectionPane({
-      isPreferredApiTable: ko.computed(() => this.isPreferredApiTable()),
+      isPreferredApiTable: ko.computed(() => userContext.apiType === "Tables"),
       id: "addcollectionpane",
       visible: ko.observable<boolean>(false),
 
