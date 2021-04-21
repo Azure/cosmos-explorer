@@ -29,16 +29,7 @@ const onInit = async () => {
     (event) => {
       // Typescript definition for event is wrong. So read props by casting to <any>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data = (event as any).data;
-      const props: OutputsProps = {
-        id: data.id,
-        contentRef: data.contentRef,
-        hidden: data.hidden,
-        expanded: data.expanded,
-        outputs: data.outputs,
-        onMetadataChange: data.onMetadataChange,
-      };
-
+      const props = (event as any).data as OutputsProps;
       const outputs = (
         <div
           data-iframe-height
@@ -65,7 +56,7 @@ const onInit = async () => {
         </div>
       );
 
-      ReactDOM.render(outputs, document.getElementById("notebookOutput"));
+      ReactDOM.render(outputs, document.getElementById("cellOutput"));
     }
   );
 };

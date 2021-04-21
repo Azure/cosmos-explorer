@@ -152,9 +152,9 @@ module.exports = function (env = {}, argv = {}) {
       chunks: ["heatmap"],
     }),
     new HtmlWebpackPlugin({
-      filename: "notebookOutputViewer.html",
-      template: "src/NotebookOutputViewer/notebookOutputViewer.html",
-      chunks: ["notebookOutputViewer"],
+      filename: "cellOutputViewer.html",
+      template: "src/CellOutputViewer/cellOutputViewer.html",
+      chunks: ["cellOutputViewer"],
     }),
     new HtmlWebpackPlugin({
       filename: "notebookViewer.html",
@@ -176,9 +176,9 @@ module.exports = function (env = {}, argv = {}) {
       template: "src/SelfServe/selfServe.html",
       chunks: ["selfServe"],
     }),
-    new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/notebookOutputViewer/]),
+    new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/cellOutputViewer/]),
     new HTMLInlineCSSWebpackPlugin({
-      filter: (fileName) => fileName.includes("notebookOutputViewer"),
+      filter: (fileName) => fileName.includes("cellOutputViewer"),
     }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
@@ -201,7 +201,7 @@ module.exports = function (env = {}, argv = {}) {
       testExplorer: "./test/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
-      notebookOutputViewer: "./src/NotebookOutputViewer/NotebookOutputViewer.tsx",
+      cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
       galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
       selfServe: "./src/SelfServe/SelfServe.tsx",

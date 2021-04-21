@@ -7,7 +7,7 @@ import postRobot from "post-robot";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { OutputsProps } from "../../../../NotebookOutputViewer/NotebookOutputViewer";
+import { OutputsProps } from "../../../../CellOutputViewer/CellOutputViewer";
 
 // Adapted from https://github.com/nteract/nteract/blob/main/packages/stateful-components/src/outputs/index.tsx
 // to add support for sandboxing using <iframe>
@@ -39,7 +39,7 @@ export class SandboxOutputs extends React.PureComponent<ComponentProps & StatePr
         loading="lazy"
         heightCalculationMethod="taggedElement"
         onLoad={(event) => this.handleFrameLoad(event)}
-        src="./notebookOutputViewer.html"
+        src="./cellOutputViewer.html"
         style={{ height: "1px", width: "1px", minWidth: "100%", border: "none" }}
         sandbox="allow-downloads allow-popups allow-forms allow-pointer-lock allow-scripts allow-popups-to-escape-sandbox"
       />

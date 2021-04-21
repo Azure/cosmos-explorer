@@ -3,8 +3,7 @@ import { Media } from "@nteract/outputs";
 import { ContentRef } from "@nteract/types";
 import React, { Suspense } from "react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, no-null/no-null
-const NullTransform = (): any => null;
+const EmptyTransform = (): any => <></>;
 
 const displayOrder = [
   "application/vnd.jupyter.widget-view+json",
@@ -38,7 +37,7 @@ const displayOrder = [
 const transformsById = new Map<string, React.ComponentType<any>>([
   ["text/vnd.plotly.v1+html", React.lazy(() => import("@nteract/transform-plotly"))],
   ["application/vnd.plotly.v1+json", React.lazy(() => import("@nteract/transform-plotly"))],
-  ["application/geo+json", NullTransform], // TODO: The geojson transform will likely need some work because of the basemap URL(s)
+  ["application/geo+json", EmptyTransform], // TODO: The geojson transform will likely need some work because of the basemap URL(s)
   ["application/x-nteract-model-debug+json", React.lazy(() => import("@nteract/transform-model-debug"))],
   ["application/vnd.dataresource+json", React.lazy(() => import("@nteract/data-explorer"))],
   ["application/vnd.jupyter.widget-view+json", React.lazy(() => import("./transforms/WidgetDisplay"))],
@@ -76,8 +75,7 @@ export const TransformMedia = (props: TransformMediaProps): JSX.Element => {
 
   // If we had no valid result, return an empty output
   if (!mediaType || !data) {
-    // eslint-disable-next-line no-null/no-null
-    return null;
+    return <></>;
   }
 
   return (
@@ -99,7 +97,7 @@ const getMediaInfo = (props: TransformMediaProps) => {
   if (!output || !(output_type === "display_data" || output_type === "execute_result")) {
     console.warn("connected transform media managed to get a non media bundle output");
     return {
-      Media: NullTransform,
+      Media: EmptyTransform,
     };
   }
 
@@ -124,7 +122,7 @@ const getMediaInfo = (props: TransformMediaProps) => {
   }
 
   return {
-    Media: NullTransform,
+    Media: EmptyTransform,
     mediaType,
     output,
   };
