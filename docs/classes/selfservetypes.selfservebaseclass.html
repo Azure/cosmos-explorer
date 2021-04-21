@@ -94,12 +94,6 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="selfservetypes.selfservebaseclass.html#onsave" class="tsd-kind-icon">on<wbr>Save</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
-							<h3>Methods</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="selfservetypes.selfservebaseclass.html#toselfservedescriptor" class="tsd-kind-icon">to<wbr>Self<wbr>Serve<wbr>Descriptor</a></li>
-							</ul>
-						</section>
 					</div>
 				</section>
 			</section>
@@ -127,10 +121,18 @@
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> initialize</h3>
 					<div class="tsd-signature tsd-kind-icon">initialize<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeTypes.ts#L76">SelfServeTypes.ts:76</a></li>
-						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Sets default values for the properties of the Self Serve Class. Typically, you can make rest calls here
+							to fetch the initial values for the properties. This is also called after the onSave callback, to reinitialize the defaults.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>returns</dt>
+							<dd><p>Map of propertyName =&gt; <a href="../interfaces/selfservetypes.smartuiinput.html"><code>SmartUiInput</code></a> which will become the current state of the UI.</p>
+							</dd>
+						</dl>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -152,10 +154,13 @@
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> on<wbr>Refresh</h3>
 					<div class="tsd-signature tsd-kind-icon">on<wbr>Refresh<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/selfservetypes.refreshresult.html" class="tsd-signature-type" data-tsd-kind="Interface">RefreshResult</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeTypes.ts#L81">SelfServeTypes.ts:81</a></li>
-						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Callback that is triggered when the refresh button is clicked. Here, You should perform the your rest API
+							call to check if the update action is completed.</p>
+						</div>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -177,10 +182,21 @@
 					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> on<wbr>Save</h3>
 					<div class="tsd-signature tsd-kind-icon">on<wbr>Save<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>currentValues<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span>, baselineValues<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReadonlyMap</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/selfservetypes.onsaveresult.html" class="tsd-signature-type" data-tsd-kind="Interface">OnSaveResult</a><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeTypes.ts#L77">SelfServeTypes.ts:77</a></li>
-						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Callback that is triggerred when the submit button is clicked. You should perform your rest API
+							calls here using the data from the different inputs passed as a Map to this callback function.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>param</dt>
+							<dd><p>The map of propertyName =&gt; <a href="../interfaces/selfservetypes.smartuiinput.html"><code>SmartUiInput</code></a> corresponding to the current state of the UI</p>
+							</dd>
+							<dt>param</dt>
+							<dd><p>The map of propertyName =&gt; <a href="../interfaces/selfservetypes.smartuiinput.html"><code>SmartUiInput</code></a> corresponding to the initial state of the UI</p>
+							</dd>
+						</dl>
+					</div>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
@@ -205,26 +221,6 @@
 							</li>
 						</ul>
 					</div>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="toselfservedescriptor" class="tsd-anchor"></a>
-					<h3>to<wbr>Self<wbr>Serve<wbr>Descriptor</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Self<wbr>Serve<wbr>Descriptor<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SelfServeDescriptor</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeTypes.ts#L83">SelfServeTypes.ts:83</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">SelfServeDescriptor</span></h4>
-						</li>
-					</ul>
 				</section>
 			</section>
 		</div>
@@ -273,9 +269,6 @@
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="selfservetypes.selfservebaseclass.html#onsave" class="tsd-kind-icon">on<wbr>Save</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="selfservetypes.selfservebaseclass.html#toselfservedescriptor" class="tsd-kind-icon">to<wbr>Self<wbr>Serve<wbr>Descriptor</a>
-							</li>
 						</ul>
 					</li>
 				</ul>
@@ -307,6 +300,9 @@
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="../modules/selfservetypes.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a>
 					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/selfservetypes.html#onchangecallback" class="tsd-kind-icon">On<wbr>Change<wbr>Callback</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -320,7 +316,6 @@
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
 				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>

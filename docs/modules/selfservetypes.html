@@ -99,6 +99,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="selfservetypes.html#choiceitem" class="tsd-kind-icon">Choice<wbr>Item</a></li>
 								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="selfservetypes.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a></li>
+								<li class="tsd-kind-type-alias tsd-parent-kind-module"><a href="selfservetypes.html#onchangecallback" class="tsd-kind-icon">On<wbr>Change<wbr>Callback</a></li>
 							</ul>
 						</section>
 					</div>
@@ -111,18 +112,25 @@
 					<h3>Choice<wbr>Item</h3>
 					<div class="tsd-signature tsd-kind-icon">Choice<wbr>Item<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>labelTKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeTypes.ts#L114">SelfServeTypes.ts:114</a></li>
-						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
 							<li class="tsd-parameter">
 								<h5>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>key to uniquely identify the dropdown choice item</p>
+									</div>
+								</div>
 							</li>
 							<li class="tsd-parameter">
 								<h5>labelTKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Translation key corresponding to the label of the dropdown choice item</p>
+									</div>
+								</div>
 							</li>
 						</ul>
 					</div>
@@ -132,10 +140,65 @@
 					<h3>Input<wbr>Type</h3>
 					<div class="tsd-signature tsd-kind-icon">Input<wbr>Type<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><a href="selfservetypes.html#choiceitem" class="tsd-signature-type" data-tsd-kind="Type alias">ChoiceItem</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/selfservetypes.description.html" class="tsd-signature-type" data-tsd-kind="Interface">Description</a></div>
 					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeTypes.ts#L116">SelfServeTypes.ts:116</a></li>
-						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
+					<a name="onchangecallback" class="tsd-anchor"></a>
+					<h3>On<wbr>Change<wbr>Callback</h3>
+					<div class="tsd-signature tsd-kind-icon">On<wbr>Change<wbr>Callback<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>newValue<span class="tsd-signature-symbol">: </span><a href="selfservetypes.html#inputtype" class="tsd-signature-type" data-tsd-kind="Type alias">InputType</a>, currentState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span>, baselineValues<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReadonlyMap</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Function that dictates how the overall UI should transform when the UI element corresponding to a property, say prop1, is changed.
+								The callback can be used to
+								a) Change the value (and reflect it in the UI) for another property, say prop2
+								b) Change the visibility for prop2 in the UI
+								c) Disable or enable the UI element corresponding to prop2
+							depending on logic based on the newValue of prop1, the currentValues Map and baselineValues Map.</p>
+						</div>
+						<dl class="tsd-comment-tags">
+							<dt>param</dt>
+							<dd><p>The newValue that the property needs to be set to, after the change in the UI element corresponding to this property.</p>
+							</dd>
+							<dt>param</dt>
+							<dd><p>The map of propertyName =&gt; <a href="../interfaces/selfservetypes.smartuiinput.html"><code>SmartUiInput</code></a> corresponding to the current state of the UI.</p>
+							</dd>
+							<dt>param</dt>
+							<dd><p>The map of propertyName =&gt; <a href="../interfaces/selfservetypes.smartuiinput.html"><code>SmartUiInput</code></a> corresponding to the initial state of the UI.</p>
+							</dd>
+							<dt>returns</dt>
+							<dd><p>A new Map of propertyName =&gt; <a href="../interfaces/selfservetypes.smartuiinput.html"><code>SmartUiInput</code></a> corresponding to the new state of the overall UI</p>
+							</dd>
+						</dl>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>newValue<span class="tsd-signature-symbol">: </span><a href="selfservetypes.html#inputtype" class="tsd-signature-type" data-tsd-kind="Type alias">InputType</a>, currentState<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span>, baselineValues<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ReadonlyMap</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>newValue: <a href="selfservetypes.html#inputtype" class="tsd-signature-type" data-tsd-kind="Type alias">InputType</a></h5>
+											</li>
+											<li>
+												<h5>currentState: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span></h5>
+											</li>
+											<li>
+												<h5>baselineValues: <span class="tsd-signature-type">ReadonlyMap</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="../interfaces/selfservetypes.smartuiinput.html" class="tsd-signature-type" data-tsd-kind="Interface">SmartUiInput</a><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -196,6 +259,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
 						<a href="selfservetypes.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="selfservetypes.html#onchangecallback" class="tsd-kind-icon">On<wbr>Change<wbr>Callback</a>
 					</li>
 				</ul>
 			</nav>

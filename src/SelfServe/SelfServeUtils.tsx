@@ -15,9 +15,12 @@ import {
   RefreshParams,
   SelfServeDescriptor,
   SmartUiInput,
-  StringInput
+  StringInput,
 } from "./SelfServeTypes";
 
+/**
+ * The type used to identify the Self Serve Class
+ */
 export enum SelfServeType {
   // Unsupported self serve type passed as feature flag
   invalid = "invalid",
@@ -26,6 +29,9 @@ export enum SelfServeType {
   sqlx = "sqlx",
 }
 
+/**
+ * Portal Blade types
+ */
 export enum BladeType {
   SqlKeys = "keys",
   MongoKeys = "mongoDbKeys",
@@ -34,6 +40,9 @@ export enum BladeType {
   TableKeys = "tableKeys",
 }
 
+/**
+ * Generate the URL corresponding to the portal blade for the current Azure Cosmos DB account
+ */
 export const generateBladeLink = (blade: BladeType): string => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroupName = userContext.resourceGroup;

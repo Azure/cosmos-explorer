@@ -37,7 +37,8 @@
     "out": "docs",
     "excludeInternal": true,
     "name": "SelfServeModel",
-    "readme": "./src/SelfServe/Documentation/README.md"
+    "readme": "./src/SelfServe/Documentation/README.md",
+    "disableSources": true
   },
   "include": [
     "./src/**/*",
