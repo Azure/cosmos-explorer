@@ -198,7 +198,6 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
   }
 };
 
-/**@internal */
 export const generateBladeLink = (blade: BladeType): string => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroupName = userContext.resourceGroup;
