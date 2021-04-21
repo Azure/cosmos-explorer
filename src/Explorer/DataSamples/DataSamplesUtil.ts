@@ -1,10 +1,6 @@
 import * as ViewModels from "../../Contracts/ViewModels";
-<<<<<<< HEAD
-import { logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-=======
 import { userContext } from "../../UserContext";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
->>>>>>> master
+import { logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
