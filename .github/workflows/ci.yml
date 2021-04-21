@@ -156,13 +156,7 @@ jobs:
       - name: ${{ matrix['test-file'] }}
         run: |
           # Run tests up to three times
-          n=0
-          until [ "$n" -ge 3 ]
-          do
-            npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }}  && break
-            n=$((n+1)) 
-            sleep 1
-          done
+          for i in $(seq 1 3); do npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }} && s=0 && break || s=$? && sleep 15; done; (exit $s)
         shell: bash
       - uses: actions/upload-artifact@v2
         if: failure()
