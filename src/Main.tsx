@@ -240,9 +240,6 @@ const App: React.FunctionComponent = () => {
       <KOCommentIfStart if="isPublishNotebookPaneEnabled" />
       <div data-bind="react: publishNotebookPaneAdapter" />
       <KOCommentEnd />
-      <KOCommentIfStart if="isCopyNotebookPaneEnabled" />
-      <div data-bind="react: copyNotebookPaneAdapter" />
-      <KOCommentEnd />
       {showDialog && <Dialog {...dialogProps} />}
     </div>
   );
