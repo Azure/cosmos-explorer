@@ -13,15 +13,15 @@ import {
 import Explorer from "../../Explorer";
 import QueryTab from "../../Tabs/QueryTab";
 
-interface BrowseQueriesPanelProps {
+interface BrowseQueriesPaneProps {
   explorer: Explorer;
   closePanel: () => void;
 }
 
-export const BrowseQueriesPanel: FunctionComponent<BrowseQueriesPanelProps> = ({
+export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
   explorer,
   closePanel,
-}: BrowseQueriesPanelProps): JSX.Element => {
+}: BrowseQueriesPaneProps): JSX.Element => {
   const loadSavedQuery = (savedQuery: Query): void => {
     const selectedCollection: Collection = explorer && explorer.findSelectedCollection();
     if (!selectedCollection) {

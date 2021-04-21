@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import React from "react";
 import Explorer from "../../Explorer";
-import { LoadQueryPanel } from "./index";
+import { LoadQueryPane } from "./LoadQueryPane";
 
 describe("Load Query Pane", () => {
   it("should render Default properly", () => {
@@ -11,7 +11,7 @@ describe("Load Query Pane", () => {
       closePanel: (): void => undefined,
     };
 
-    const wrapper = shallow(<LoadQueryPanel {...props} />);
+    const wrapper = shallow(<LoadQueryPane {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });

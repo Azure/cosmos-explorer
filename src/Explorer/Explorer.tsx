@@ -50,24 +50,24 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { BrowseQueriesPanel } from "./Panes/BrowseQueriesPanel";
+import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
-import { DeleteCollectionConfirmationPanel } from "./Panes/DeleteCollectionConfirmationPanel";
+import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
-import { ExecuteSprocParamsPanel } from "./Panes/ExecuteSprocParamsPanel";
+import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import GraphStylingPane from "./Panes/GraphStylingPane";
-import { LoadQueryPanel } from "./Panes/LoadQueryPanel";
+import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import NewVertexPane from "./Panes/NewVertexPane";
-import { SaveQueryPanel } from "./Panes/SaveQueryPanel";
-import { SettingsPane } from "./Panes/SettingsPane";
+import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
+import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
-import { UploadFilePane } from "./Panes/UploadFilePane";
-import { UploadItemsPane } from "./Panes/UploadItemsPane";
+import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
+import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
@@ -2179,7 +2179,7 @@ export default class Explorer {
     let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
     this.openSidePanel(
       "Delete " + collectionName,
-      <DeleteCollectionConfirmationPanel
+      <DeleteCollectionConfirmationPane
         explorer={this}
         collectionName={collectionName}
         closePanel={this.closeSidePanel}
@@ -2210,7 +2210,7 @@ export default class Explorer {
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     this.openSidePanel(
       "Input parameters",
-      <ExecuteSprocParamsPanel
+      <ExecuteSprocParamsPane
         explorer={this}
         storedProcedure={storedProcedure}
         closePanel={() => this.closeSidePanel()}
@@ -2231,15 +2231,15 @@ export default class Explorer {
   }
 
   public openBrowseQueriesPanel(): void {
-    this.openSidePanel("Open Saved Queries", <BrowseQueriesPanel explorer={this} closePanel={this.closeSidePanel} />);
+    this.openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this} closePanel={this.closeSidePanel} />);
   }
 
   public openLoadQueryPanel(): void {
-    this.openSidePanel("Load Query", <LoadQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+    this.openSidePanel("Load Query", <LoadQueryPane explorer={this} closePanel={() => this.closeSidePanel()} />);
   }
 
   public openSaveQueryPanel(): void {
-    this.openSidePanel("Save Query", <SaveQueryPanel explorer={this} closePanel={() => this.closeSidePanel()} />);
+    this.openSidePanel("Save Query", <SaveQueryPane explorer={this} closePanel={() => this.closeSidePanel()} />);
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {

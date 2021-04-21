@@ -4,7 +4,7 @@ import React from "react";
 import { QueriesClient } from "../../../Common/QueriesClient";
 import { Query } from "../../../Contracts/DataModels";
 import Explorer from "../../Explorer";
-import { BrowseQueriesPanel } from "./index";
+import { BrowseQueriesPane } from "./BrowseQueriesPane";
 
 describe("Browse queries panel", () => {
   const fakeExplorer = {} as Explorer;
@@ -19,12 +19,12 @@ describe("Browse queries panel", () => {
   };
 
   it("Should render Default properly", () => {
-    const wrapper = mount(<BrowseQueriesPanel {...props} />);
+    const wrapper = mount(<BrowseQueriesPane {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 
   it("Should show empty view when query is empty []", () => {
-    const wrapper = mount(<BrowseQueriesPanel {...props} />);
+    const wrapper = mount(<BrowseQueriesPane {...props} />);
     expect(wrapper.exists("#emptyQueryBanner")).toBe(true);
   });
 });
