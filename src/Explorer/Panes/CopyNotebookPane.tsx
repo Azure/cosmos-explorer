@@ -6,7 +6,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import Explorer from "../Explorer";
 import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
-import { IDropdownOption } from "office-ui-fabric-react";
+import { IDropdownOption } from "@fluentui/react";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { HttpStatusCodes } from "../../Common/Constants";
 import * as GitHubUtils from "../../Utils/GitHubUtils";

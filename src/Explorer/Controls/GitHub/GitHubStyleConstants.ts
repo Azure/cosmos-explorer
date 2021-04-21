@@ -4,7 +4,7 @@ import {
   ICheckboxStyles,
   IDropdownStyles,
   IDropdownStyleProps,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 
 export const ButtonsFooterStyle: React.CSSProperties = {
   padding: 14,

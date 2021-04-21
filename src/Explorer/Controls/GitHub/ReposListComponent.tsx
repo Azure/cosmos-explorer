@@ -16,7 +16,7 @@ import {
   ResponsiveMode,
   SelectionMode,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import * as React from "react";
 import { IGitHubBranch, IGitHubPageInfo } from "../../../GitHub/GitHubClient";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";

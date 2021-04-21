@@ -39,7 +39,7 @@ exports[`Load Query Pane should render Default properly 1`] = `
           className="customFileUpload"
           htmlFor="importQueryInputId"
         >
-          <StyledImageBase
+          <Image
             alt="upload files"
             className="fileIcon"
             height={20}

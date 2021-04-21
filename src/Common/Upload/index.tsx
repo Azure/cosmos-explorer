@@ -1,4 +1,4 @@
-import { Image, Stack, TextField } from "office-ui-fabric-react";
+import { Image, Stack, TextField } from "@fluentui/react";
 import React, { ChangeEvent, FunctionComponent, KeyboardEvent, useRef, useState } from "react";
 import FolderIcon from "../../../images/folder_16x16.svg";
 import * as Constants from "../../Common/Constants";

@@ -1,4 +1,4 @@
-import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "office-ui-fabric-react";
+import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
 import { configContext, Platform } from "../../../../ConfigContext";

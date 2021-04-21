@@ -514,7 +514,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           "borderColor": "#f3f2f1",
                           "color": "#a19f9d",
                           "cursor": "default",
-                          "pointerEvents": "none",
                           "selectors": Object {
                             ":focus": Object {
                               "outline": 0,
@@ -774,6 +773,35 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             "backgroundColor": "Window",
                             "border": "1px solid GrayText",
                             "color": "GrayText",
+                          },
+                        },
+                      },
+                      "splitButtonMenuFocused": Object {
+                        "outline": "transparent",
+                        "position": "relative",
+                        "selectors": Object {
+                          ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                            "border": "1px solid #ffffff",
+                            "bottom": 3,
+                            "content": "\\"\\"",
+                            "left": 3,
+                            "outline": "1px solid #605e5c",
+                            "position": "absolute",
+                            "right": 3,
+                            "selectors": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "border": "none",
+                                "bottom": -2,
+                                "left": -2,
+                                "right": -2,
+                                "top": -2,
+                              },
+                            },
+                            "top": 3,
+                            "zIndex": 1,
+                          },
+                          "::-moz-focus-inner": Object {
+                            "border": "0",
                           },
                         },
                       },
@@ -1062,7 +1090,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Close pane"
-                    className="ms-Button ms-Button--icon closePaneBtn root-40"
+                    className="ms-Button ms-Button--icon closePaneBtn root-85"
                     data-is-focusable={true}
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -1075,18 +1103,17 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-41"
+                      className="ms-Button-flexContainer flexContainer-86"
                       data-automationid="splitbuttonprimary"
                     >
                       <Component
-                        className="ms-Button-icon icon-43"
+                        className="ms-Button-icon icon-88"
                         iconName="Cancel"
                       >
                         <i
                           aria-hidden={true}
-                          className="ms-Icon root-37 css-48 ms-Button-icon icon-43"
+                          className="ms-Icon root-37 css-93 ms-Button-icon icon-88"
                           data-icon-name="Cancel"
-                          role="presentation"
                           style={
                             Object {
                               "fontFamily": "\\"FabricMDL2Icons\\"",
@@ -1429,7 +1456,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     }
                   >
                     <label
-                      className="ms-Label root-49"
+                      className="ms-Label root-94"
                     >
                       Partition key value
                     </label>
@@ -1439,9 +1466,9 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   horizontal={true}
                 >
                   <div
-                    className="ms-Stack css-50"
+                    className="ms-Stack css-95"
                   >
-                    <StyledWithResponsiveMode
+                    <Dropdown
                       key=".0:$.0"
                       label="Key"
                       onChange={[Function]}
@@ -1466,7 +1493,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         }
                       }
                     >
-                      <WithResponsiveMode
+                      <DropdownBase
                         label="Key"
                         onChange={[Function]}
                         options={
@@ -1757,7 +1784,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           }
                         }
                       >
-                        <DropdownBase
+                        <DropdownInternal
+                          hoisted={
+                            Object {
+                              "rootRef": [Function],
+                              "selectedIndices": Array [
+                                0,
+                              ],
+                              "setSelectedIndices": [Function],
+                            }
+                          }
                           label="Key"
                           onChange={[Function]}
                           options={
@@ -2336,347 +2372,342 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-                                  className="ms-Label ms-Dropdown-label root-67"
+                                  className="ms-Label ms-Dropdown-label root-112"
                                   id="Dropdown3-label"
                                 >
                                   Key
                                 </label>
                               </LabelBase>
                             </StyledLabelBase>
-                            <Component>
-                              <div
-                                aria-expanded="false"
-                                aria-haspopup="listbox"
-                                aria-labelledby="Dropdown3-label Dropdown3-option"
-                                className="ms-Dropdown dropdown-51"
-                                data-is-focusable={true}
-                                id="Dropdown3"
-                                onBlur={[Function]}
-                                onChange={[Function]}
-                                onClick={[Function]}
-                                onFocus={[Function]}
-                                onKeyDown={[Function]}
-                                onKeyUp={[Function]}
-                                onMouseDown={[Function]}
-                                role="listbox"
-                                tabIndex={0}
+                            <div
+                              aria-expanded="false"
+                              aria-haspopup="listbox"
+                              aria-labelledby="Dropdown3-label Dropdown3-option"
+                              className="ms-Dropdown dropdown-96"
+                              data-is-focusable={true}
+                              data-ktp-target={true}
+                              id="Dropdown3"
+                              onBlur={[Function]}
+                              onChange={[Function]}
+                              onClick={[Function]}
+                              onFocus={[Function]}
+                              onKeyDown={[Function]}
+                              onKeyUp={[Function]}
+                              onMouseDown={[Function]}
+                              role="combobox"
+                              tabIndex={0}
+                            >
+                              <span
+                                aria-atomic={true}
+                                aria-invalid={false}
+                                aria-live="polite"
+                                className="ms-Dropdown-title title-131"
+                                id="Dropdown3-option"
                               >
-                                <span
-                                  aria-atomic={true}
-                                  aria-invalid={false}
-                                  aria-live="polite"
-                                  aria-posinset={1}
-                                  aria-selected={true}
-                                  aria-setsize={2}
-                                  className="ms-Dropdown-title title-52"
-                                  id="Dropdown3-option"
-                                  role="option"
+                                String
+                              </span>
+                              <span
+                                className="ms-Dropdown-caretDownWrapper caretDownWrapper-98"
+                              >
+                                <StyledIconBase
+                                  aria-hidden={true}
+                                  className="ms-Dropdown-caretDown caretDown-99"
+                                  iconName="ChevronDown"
                                 >
-                                  String
-                                </span>
-                                <span
-                                  className="ms-Dropdown-caretDownWrapper caretDownWrapper-53"
-                                >
-                                  <StyledIconBase
+                                  <IconBase
                                     aria-hidden={true}
-                                    className="ms-Dropdown-caretDown caretDown-54"
+                                    className="ms-Dropdown-caretDown caretDown-99"
                                     iconName="ChevronDown"
-                                  >
-                                    <IconBase
-                                      aria-hidden={true}
-                                      className="ms-Dropdown-caretDown caretDown-54"
-                                      iconName="ChevronDown"
-                                      styles={[Function]}
-                                      theme={
-                                        Object {
-                                          "disableGlobalClassNames": false,
-                                          "effects": Object {
-                                            "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
-                                            "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                                            "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
-                                            "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                                            "roundedCorner2": "2px",
-                                            "roundedCorner4": "4px",
-                                            "roundedCorner6": "6px",
+                                    styles={[Function]}
+                                    theme={
+                                      Object {
+                                        "disableGlobalClassNames": false,
+                                        "effects": Object {
+                                          "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+                                          "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                                          "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+                                          "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                                          "roundedCorner2": "2px",
+                                          "roundedCorner4": "4px",
+                                          "roundedCorner6": "6px",
+                                        },
+                                        "fonts": Object {
+                                          "large": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "18px",
+                                            "fontWeight": 400,
                                           },
-                                          "fonts": Object {
-                                            "large": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "18px",
-                                              "fontWeight": 400,
-                                            },
-                                            "medium": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "14px",
-                                              "fontWeight": 400,
-                                            },
-                                            "mediumPlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "16px",
-                                              "fontWeight": 400,
-                                            },
-                                            "mega": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "68px",
-                                              "fontWeight": 600,
-                                            },
-                                            "small": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "12px",
-                                              "fontWeight": 400,
-                                            },
-                                            "smallPlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "12px",
-                                              "fontWeight": 400,
-                                            },
-                                            "superLarge": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "42px",
-                                              "fontWeight": 600,
-                                            },
-                                            "tiny": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "10px",
-                                              "fontWeight": 400,
-                                            },
-                                            "xLarge": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "20px",
-                                              "fontWeight": 600,
-                                            },
-                                            "xLargePlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "24px",
-                                              "fontWeight": 600,
-                                            },
-                                            "xSmall": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "10px",
-                                              "fontWeight": 400,
-                                            },
-                                            "xxLarge": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "28px",
-                                              "fontWeight": 600,
-                                            },
-                                            "xxLargePlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "32px",
-                                              "fontWeight": 600,
-                                            },
+                                          "medium": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "14px",
+                                            "fontWeight": 400,
                                           },
-                                          "isInverted": false,
-                                          "palette": Object {
-                                            "accent": "#0078d4",
-                                            "black": "#000000",
-                                            "blackTranslucent40": "rgba(0,0,0,.4)",
-                                            "blue": "#0078d4",
-                                            "blueDark": "#002050",
-                                            "blueLight": "#00bcf2",
-                                            "blueMid": "#00188f",
-                                            "green": "#107c10",
-                                            "greenDark": "#004b1c",
-                                            "greenLight": "#bad80a",
-                                            "magenta": "#b4009e",
-                                            "magentaDark": "#5c005c",
-                                            "magentaLight": "#e3008c",
-                                            "neutralDark": "#201f1e",
-                                            "neutralLight": "#edebe9",
-                                            "neutralLighter": "#f3f2f1",
-                                            "neutralLighterAlt": "#faf9f8",
-                                            "neutralPrimary": "#323130",
-                                            "neutralPrimaryAlt": "#3b3a39",
-                                            "neutralQuaternary": "#d2d0ce",
-                                            "neutralQuaternaryAlt": "#e1dfdd",
-                                            "neutralSecondary": "#605e5c",
-                                            "neutralSecondaryAlt": "#8a8886",
-                                            "neutralTertiary": "#a19f9d",
-                                            "neutralTertiaryAlt": "#c8c6c4",
-                                            "orange": "#d83b01",
-                                            "orangeLight": "#ea4300",
-                                            "orangeLighter": "#ff8c00",
-                                            "purple": "#5c2d91",
-                                            "purpleDark": "#32145a",
-                                            "purpleLight": "#b4a0ff",
-                                            "red": "#e81123",
-                                            "redDark": "#a4262c",
-                                            "teal": "#008272",
-                                            "tealDark": "#004b50",
-                                            "tealLight": "#00b294",
-                                            "themeDark": "#005a9e",
-                                            "themeDarkAlt": "#106ebe",
-                                            "themeDarker": "#004578",
-                                            "themeLight": "#c7e0f4",
-                                            "themeLighter": "#deecf9",
-                                            "themeLighterAlt": "#eff6fc",
-                                            "themePrimary": "#0078d4",
-                                            "themeSecondary": "#2b88d8",
-                                            "themeTertiary": "#71afe5",
-                                            "white": "#ffffff",
-                                            "whiteTranslucent40": "rgba(255,255,255,.4)",
-                                            "yellow": "#ffb900",
-                                            "yellowDark": "#d29200",
-                                            "yellowLight": "#fff100",
+                                          "mediumPlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "16px",
+                                            "fontWeight": 400,
                                           },
-                                          "rtl": undefined,
-                                          "semanticColors": Object {
-                                            "accentButtonBackground": "#0078d4",
-                                            "accentButtonText": "#ffffff",
-                                            "actionLink": "#323130",
-                                            "actionLinkHovered": "#201f1e",
-                                            "blockingBackground": "#FDE7E9",
-                                            "blockingIcon": "#FDE7E9",
-                                            "bodyBackground": "#ffffff",
-                                            "bodyBackgroundChecked": "#edebe9",
-                                            "bodyBackgroundHovered": "#f3f2f1",
-                                            "bodyDivider": "#edebe9",
-                                            "bodyFrameBackground": "#ffffff",
-                                            "bodyFrameDivider": "#edebe9",
-                                            "bodyStandoutBackground": "#faf9f8",
-                                            "bodySubtext": "#605e5c",
-                                            "bodyText": "#323130",
-                                            "bodyTextChecked": "#000000",
-                                            "buttonBackground": "#ffffff",
-                                            "buttonBackgroundChecked": "#c8c6c4",
-                                            "buttonBackgroundCheckedHovered": "#edebe9",
-                                            "buttonBackgroundDisabled": "#f3f2f1",
-                                            "buttonBackgroundHovered": "#f3f2f1",
-                                            "buttonBackgroundPressed": "#edebe9",
-                                            "buttonBorder": "#8a8886",
-                                            "buttonBorderDisabled": "#f3f2f1",
-                                            "buttonText": "#323130",
-                                            "buttonTextChecked": "#201f1e",
-                                            "buttonTextCheckedHovered": "#000000",
-                                            "buttonTextDisabled": "#a19f9d",
-                                            "buttonTextHovered": "#201f1e",
-                                            "buttonTextPressed": "#201f1e",
-                                            "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                                            "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                                            "cardStandoutBackground": "#ffffff",
-                                            "defaultStateBackground": "#faf9f8",
-                                            "disabledBackground": "#f3f2f1",
-                                            "disabledBodySubtext": "#c8c6c4",
-                                            "disabledBodyText": "#a19f9d",
-                                            "disabledBorder": "#c8c6c4",
-                                            "disabledSubtext": "#d2d0ce",
-                                            "disabledText": "#a19f9d",
-                                            "errorBackground": "#FDE7E9",
-                                            "errorIcon": "#A80000",
-                                            "errorText": "#a4262c",
-                                            "focusBorder": "#605e5c",
-                                            "infoBackground": "#f3f2f1",
-                                            "infoIcon": "#605e5c",
-                                            "inputBackground": "#ffffff",
-                                            "inputBackgroundChecked": "#0078d4",
-                                            "inputBackgroundCheckedHovered": "#005a9e",
-                                            "inputBorder": "#605e5c",
-                                            "inputBorderHovered": "#323130",
-                                            "inputFocusBorderAlt": "#0078d4",
-                                            "inputForegroundChecked": "#ffffff",
-                                            "inputIcon": "#0078d4",
-                                            "inputIconDisabled": "#a19f9d",
-                                            "inputIconHovered": "#005a9e",
-                                            "inputPlaceholderBackgroundChecked": "#deecf9",
-                                            "inputPlaceholderText": "#605e5c",
-                                            "inputText": "#323130",
-                                            "inputTextHovered": "#201f1e",
-                                            "link": "#0078d4",
-                                            "linkHovered": "#004578",
-                                            "listBackground": "#ffffff",
-                                            "listHeaderBackgroundHovered": "#f3f2f1",
-                                            "listHeaderBackgroundPressed": "#edebe9",
-                                            "listItemBackgroundChecked": "#edebe9",
-                                            "listItemBackgroundCheckedHovered": "#e1dfdd",
-                                            "listItemBackgroundHovered": "#f3f2f1",
-                                            "listText": "#323130",
-                                            "listTextColor": "#323130",
-                                            "menuBackground": "#ffffff",
-                                            "menuDivider": "#c8c6c4",
-                                            "menuHeader": "#0078d4",
-                                            "menuIcon": "#0078d4",
-                                            "menuItemBackgroundChecked": "#edebe9",
-                                            "menuItemBackgroundHovered": "#f3f2f1",
-                                            "menuItemBackgroundPressed": "#edebe9",
-                                            "menuItemText": "#323130",
-                                            "menuItemTextHovered": "#201f1e",
-                                            "messageLink": "#005A9E",
-                                            "messageLinkHovered": "#004578",
-                                            "messageText": "#323130",
-                                            "primaryButtonBackground": "#0078d4",
-                                            "primaryButtonBackgroundDisabled": "#f3f2f1",
-                                            "primaryButtonBackgroundHovered": "#106ebe",
-                                            "primaryButtonBackgroundPressed": "#005a9e",
-                                            "primaryButtonBorder": "transparent",
-                                            "primaryButtonText": "#ffffff",
-                                            "primaryButtonTextDisabled": "#d2d0ce",
-                                            "primaryButtonTextHovered": "#ffffff",
-                                            "primaryButtonTextPressed": "#ffffff",
-                                            "severeWarningBackground": "#FED9CC",
-                                            "severeWarningIcon": "#D83B01",
-                                            "smallInputBorder": "#605e5c",
-                                            "successBackground": "#DFF6DD",
-                                            "successIcon": "#107C10",
-                                            "successText": "#107C10",
-                                            "variantBorder": "#edebe9",
-                                            "variantBorderHovered": "#a19f9d",
-                                            "warningBackground": "#FFF4CE",
-                                            "warningHighlight": "#ffb900",
-                                            "warningIcon": "#797775",
-                                            "warningText": "#323130",
+                                          "mega": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "68px",
+                                            "fontWeight": 600,
                                           },
-                                          "spacing": Object {
-                                            "l1": "20px",
-                                            "l2": "32px",
-                                            "m": "16px",
-                                            "s1": "8px",
-                                            "s2": "4px",
+                                          "small": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "12px",
+                                            "fontWeight": 400,
                                           },
-                                        }
+                                          "smallPlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "12px",
+                                            "fontWeight": 400,
+                                          },
+                                          "superLarge": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "42px",
+                                            "fontWeight": 600,
+                                          },
+                                          "tiny": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "10px",
+                                            "fontWeight": 400,
+                                          },
+                                          "xLarge": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "20px",
+                                            "fontWeight": 600,
+                                          },
+                                          "xLargePlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "24px",
+                                            "fontWeight": 600,
+                                          },
+                                          "xSmall": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "10px",
+                                            "fontWeight": 400,
+                                          },
+                                          "xxLarge": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "28px",
+                                            "fontWeight": 600,
+                                          },
+                                          "xxLargePlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "32px",
+                                            "fontWeight": 600,
+                                          },
+                                        },
+                                        "isInverted": false,
+                                        "palette": Object {
+                                          "accent": "#0078d4",
+                                          "black": "#000000",
+                                          "blackTranslucent40": "rgba(0,0,0,.4)",
+                                          "blue": "#0078d4",
+                                          "blueDark": "#002050",
+                                          "blueLight": "#00bcf2",
+                                          "blueMid": "#00188f",
+                                          "green": "#107c10",
+                                          "greenDark": "#004b1c",
+                                          "greenLight": "#bad80a",
+                                          "magenta": "#b4009e",
+                                          "magentaDark": "#5c005c",
+                                          "magentaLight": "#e3008c",
+                                          "neutralDark": "#201f1e",
+                                          "neutralLight": "#edebe9",
+                                          "neutralLighter": "#f3f2f1",
+                                          "neutralLighterAlt": "#faf9f8",
+                                          "neutralPrimary": "#323130",
+                                          "neutralPrimaryAlt": "#3b3a39",
+                                          "neutralQuaternary": "#d2d0ce",
+                                          "neutralQuaternaryAlt": "#e1dfdd",
+                                          "neutralSecondary": "#605e5c",
+                                          "neutralSecondaryAlt": "#8a8886",
+                                          "neutralTertiary": "#a19f9d",
+                                          "neutralTertiaryAlt": "#c8c6c4",
+                                          "orange": "#d83b01",
+                                          "orangeLight": "#ea4300",
+                                          "orangeLighter": "#ff8c00",
+                                          "purple": "#5c2d91",
+                                          "purpleDark": "#32145a",
+                                          "purpleLight": "#b4a0ff",
+                                          "red": "#e81123",
+                                          "redDark": "#a4262c",
+                                          "teal": "#008272",
+                                          "tealDark": "#004b50",
+                                          "tealLight": "#00b294",
+                                          "themeDark": "#005a9e",
+                                          "themeDarkAlt": "#106ebe",
+                                          "themeDarker": "#004578",
+                                          "themeLight": "#c7e0f4",
+                                          "themeLighter": "#deecf9",
+                                          "themeLighterAlt": "#eff6fc",
+                                          "themePrimary": "#0078d4",
+                                          "themeSecondary": "#2b88d8",
+                                          "themeTertiary": "#71afe5",
+                                          "white": "#ffffff",
+                                          "whiteTranslucent40": "rgba(255,255,255,.4)",
+                                          "yellow": "#ffb900",
+                                          "yellowDark": "#d29200",
+                                          "yellowLight": "#fff100",
+                                        },
+                                        "rtl": undefined,
+                                        "semanticColors": Object {
+                                          "accentButtonBackground": "#0078d4",
+                                          "accentButtonText": "#ffffff",
+                                          "actionLink": "#323130",
+                                          "actionLinkHovered": "#201f1e",
+                                          "blockingBackground": "#FDE7E9",
+                                          "blockingIcon": "#FDE7E9",
+                                          "bodyBackground": "#ffffff",
+                                          "bodyBackgroundChecked": "#edebe9",
+                                          "bodyBackgroundHovered": "#f3f2f1",
+                                          "bodyDivider": "#edebe9",
+                                          "bodyFrameBackground": "#ffffff",
+                                          "bodyFrameDivider": "#edebe9",
+                                          "bodyStandoutBackground": "#faf9f8",
+                                          "bodySubtext": "#605e5c",
+                                          "bodyText": "#323130",
+                                          "bodyTextChecked": "#000000",
+                                          "buttonBackground": "#ffffff",
+                                          "buttonBackgroundChecked": "#c8c6c4",
+                                          "buttonBackgroundCheckedHovered": "#edebe9",
+                                          "buttonBackgroundDisabled": "#f3f2f1",
+                                          "buttonBackgroundHovered": "#f3f2f1",
+                                          "buttonBackgroundPressed": "#edebe9",
+                                          "buttonBorder": "#8a8886",
+                                          "buttonBorderDisabled": "#f3f2f1",
+                                          "buttonText": "#323130",
+                                          "buttonTextChecked": "#201f1e",
+                                          "buttonTextCheckedHovered": "#000000",
+                                          "buttonTextDisabled": "#a19f9d",
+                                          "buttonTextHovered": "#201f1e",
+                                          "buttonTextPressed": "#201f1e",
+                                          "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                                          "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                                          "cardStandoutBackground": "#ffffff",
+                                          "defaultStateBackground": "#faf9f8",
+                                          "disabledBackground": "#f3f2f1",
+                                          "disabledBodySubtext": "#c8c6c4",
+                                          "disabledBodyText": "#a19f9d",
+                                          "disabledBorder": "#c8c6c4",
+                                          "disabledSubtext": "#d2d0ce",
+                                          "disabledText": "#a19f9d",
+                                          "errorBackground": "#FDE7E9",
+                                          "errorIcon": "#A80000",
+                                          "errorText": "#a4262c",
+                                          "focusBorder": "#605e5c",
+                                          "infoBackground": "#f3f2f1",
+                                          "infoIcon": "#605e5c",
+                                          "inputBackground": "#ffffff",
+                                          "inputBackgroundChecked": "#0078d4",
+                                          "inputBackgroundCheckedHovered": "#005a9e",
+                                          "inputBorder": "#605e5c",
+                                          "inputBorderHovered": "#323130",
+                                          "inputFocusBorderAlt": "#0078d4",
+                                          "inputForegroundChecked": "#ffffff",
+                                          "inputIcon": "#0078d4",
+                                          "inputIconDisabled": "#a19f9d",
+                                          "inputIconHovered": "#005a9e",
+                                          "inputPlaceholderBackgroundChecked": "#deecf9",
+                                          "inputPlaceholderText": "#605e5c",
+                                          "inputText": "#323130",
+                                          "inputTextHovered": "#201f1e",
+                                          "link": "#0078d4",
+                                          "linkHovered": "#004578",
+                                          "listBackground": "#ffffff",
+                                          "listHeaderBackgroundHovered": "#f3f2f1",
+                                          "listHeaderBackgroundPressed": "#edebe9",
+                                          "listItemBackgroundChecked": "#edebe9",
+                                          "listItemBackgroundCheckedHovered": "#e1dfdd",
+                                          "listItemBackgroundHovered": "#f3f2f1",
+                                          "listText": "#323130",
+                                          "listTextColor": "#323130",
+                                          "menuBackground": "#ffffff",
+                                          "menuDivider": "#c8c6c4",
+                                          "menuHeader": "#0078d4",
+                                          "menuIcon": "#0078d4",
+                                          "menuItemBackgroundChecked": "#edebe9",
+                                          "menuItemBackgroundHovered": "#f3f2f1",
+                                          "menuItemBackgroundPressed": "#edebe9",
+                                          "menuItemText": "#323130",
+                                          "menuItemTextHovered": "#201f1e",
+                                          "messageLink": "#005A9E",
+                                          "messageLinkHovered": "#004578",
+                                          "messageText": "#323130",
+                                          "primaryButtonBackground": "#0078d4",
+                                          "primaryButtonBackgroundDisabled": "#f3f2f1",
+                                          "primaryButtonBackgroundHovered": "#106ebe",
+                                          "primaryButtonBackgroundPressed": "#005a9e",
+                                          "primaryButtonBorder": "transparent",
+                                          "primaryButtonText": "#ffffff",
+                                          "primaryButtonTextDisabled": "#d2d0ce",
+                                          "primaryButtonTextHovered": "#ffffff",
+                                          "primaryButtonTextPressed": "#ffffff",
+                                          "severeWarningBackground": "#FED9CC",
+                                          "severeWarningIcon": "#D83B01",
+                                          "smallInputBorder": "#605e5c",
+                                          "successBackground": "#DFF6DD",
+                                          "successIcon": "#107C10",
+                                          "successText": "#107C10",
+                                          "variantBorder": "#edebe9",
+                                          "variantBorderHovered": "#a19f9d",
+                                          "warningBackground": "#FFF4CE",
+                                          "warningHighlight": "#ffb900",
+                                          "warningIcon": "#797775",
+                                          "warningText": "#323130",
+                                        },
+                                        "spacing": Object {
+                                          "l1": "20px",
+                                          "l2": "32px",
+                                          "m": "16px",
+                                          "s1": "8px",
+                                          "s2": "4px",
+                                        },
                                       }
+                                    }
+                                  >
+                                    <i
+                                      aria-hidden={true}
+                                      className="ms-Dropdown-caretDown caretDown-113"
+                                      data-icon-name="ChevronDown"
                                     >
-                                      <i
-                                        aria-hidden={true}
-                                        className="ms-Dropdown-caretDown caretDown-68"
-                                        data-icon-name="ChevronDown"
-                                      >
-                                        
-                                      </i>
-                                    </IconBase>
-                                  </StyledIconBase>
-                                </span>
-                              </div>
-                            </Component>
+                                      
+                                    </i>
+                                  </IconBase>
+                                </StyledIconBase>
+                              </span>
+                            </div>
                           </div>
-                        </DropdownBase>
-                      </WithResponsiveMode>
-                    </StyledWithResponsiveMode>
+                        </DropdownInternal>
+                      </DropdownBase>
+                    </Dropdown>
                     <StyledTextFieldBase
                       autoFocus={true}
                       id="confirmCollectionId"
@@ -2686,7 +2717,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     >
                       <TextFieldBase
                         autoFocus={true}
-                        canRevealPassword={false}
                         deferredValidationTime={200}
                         id="confirmCollectionId"
                         label="Value"
@@ -2969,7 +2999,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         validateOnLoad={true}
                       >
                         <div
-                          className="ms-TextField root-70"
+                          className="ms-TextField root-115"
                         >
                           <div
                             className="ms-TextField-wrapper"
@@ -3258,7 +3288,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-                                  className="ms-Label root-49"
+                                  className="ms-Label root-94"
                                   htmlFor="confirmCollectionId"
                                   id="TextFieldLabel6"
                                 >
@@ -3267,13 +3297,13 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               </LabelBase>
                             </StyledLabelBase>
                             <div
-                              className="ms-TextField-fieldGroup fieldGroup-71"
+                              className="ms-TextField-fieldGroup fieldGroup-116"
                             >
                               <input
                                 aria-invalid={false}
                                 aria-labelledby="TextFieldLabel6"
                                 autoFocus={true}
-                                className="ms-TextField-field field-72"
+                                className="ms-TextField-field field-117"
                                 id="confirmCollectionId"
                                 onBlur={[Function]}
                                 onChange={[Function]}
@@ -3581,7 +3611,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     }
                   >
                     <label
-                      className="ms-Label root-49"
+                      className="ms-Label root-94"
                     >
                       Enter input parameters (if any)
                     </label>
@@ -3591,9 +3621,9 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   horizontal={true}
                 >
                   <div
-                    className="ms-Stack css-50"
+                    className="ms-Stack css-95"
                   >
-                    <StyledWithResponsiveMode
+                    <Dropdown
                       key=".0:$.0"
                       label="Key"
                       onChange={[Function]}
@@ -3618,7 +3648,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         }
                       }
                     >
-                      <WithResponsiveMode
+                      <DropdownBase
                         label="Key"
                         onChange={[Function]}
                         options={
@@ -3909,7 +3939,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           }
                         }
                       >
-                        <DropdownBase
+                        <DropdownInternal
+                          hoisted={
+                            Object {
+                              "rootRef": [Function],
+                              "selectedIndices": Array [
+                                0,
+                              ],
+                              "setSelectedIndices": [Function],
+                            }
+                          }
                           label="Key"
                           onChange={[Function]}
                           options={
@@ -4488,347 +4527,342 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-                                  className="ms-Label ms-Dropdown-label root-67"
+                                  className="ms-Label ms-Dropdown-label root-112"
                                   id="Dropdown7-label"
                                 >
                                   Key
                                 </label>
                               </LabelBase>
                             </StyledLabelBase>
-                            <Component>
-                              <div
-                                aria-expanded="false"
-                                aria-haspopup="listbox"
-                                aria-labelledby="Dropdown7-label Dropdown7-option"
-                                className="ms-Dropdown dropdown-51"
-                                data-is-focusable={true}
-                                id="Dropdown7"
-                                onBlur={[Function]}
-                                onChange={[Function]}
-                                onClick={[Function]}
-                                onFocus={[Function]}
-                                onKeyDown={[Function]}
-                                onKeyUp={[Function]}
-                                onMouseDown={[Function]}
-                                role="listbox"
-                                tabIndex={0}
+                            <div
+                              aria-expanded="false"
+                              aria-haspopup="listbox"
+                              aria-labelledby="Dropdown7-label Dropdown7-option"
+                              className="ms-Dropdown dropdown-96"
+                              data-is-focusable={true}
+                              data-ktp-target={true}
+                              id="Dropdown7"
+                              onBlur={[Function]}
+                              onChange={[Function]}
+                              onClick={[Function]}
+                              onFocus={[Function]}
+                              onKeyDown={[Function]}
+                              onKeyUp={[Function]}
+                              onMouseDown={[Function]}
+                              role="combobox"
+                              tabIndex={0}
+                            >
+                              <span
+                                aria-atomic={true}
+                                aria-invalid={false}
+                                aria-live="polite"
+                                className="ms-Dropdown-title title-131"
+                                id="Dropdown7-option"
                               >
-                                <span
-                                  aria-atomic={true}
-                                  aria-invalid={false}
-                                  aria-live="polite"
-                                  aria-posinset={1}
-                                  aria-selected={true}
-                                  aria-setsize={2}
-                                  className="ms-Dropdown-title title-52"
-                                  id="Dropdown7-option"
-                                  role="option"
+                                String
+                              </span>
+                              <span
+                                className="ms-Dropdown-caretDownWrapper caretDownWrapper-98"
+                              >
+                                <StyledIconBase
+                                  aria-hidden={true}
+                                  className="ms-Dropdown-caretDown caretDown-99"
+                                  iconName="ChevronDown"
                                 >
-                                  String
-                                </span>
-                                <span
-                                  className="ms-Dropdown-caretDownWrapper caretDownWrapper-53"
-                                >
-                                  <StyledIconBase
+                                  <IconBase
                                     aria-hidden={true}
-                                    className="ms-Dropdown-caretDown caretDown-54"
+                                    className="ms-Dropdown-caretDown caretDown-99"
                                     iconName="ChevronDown"
-                                  >
-                                    <IconBase
-                                      aria-hidden={true}
-                                      className="ms-Dropdown-caretDown caretDown-54"
-                                      iconName="ChevronDown"
-                                      styles={[Function]}
-                                      theme={
-                                        Object {
-                                          "disableGlobalClassNames": false,
-                                          "effects": Object {
-                                            "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
-                                            "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                                            "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
-                                            "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                                            "roundedCorner2": "2px",
-                                            "roundedCorner4": "4px",
-                                            "roundedCorner6": "6px",
+                                    styles={[Function]}
+                                    theme={
+                                      Object {
+                                        "disableGlobalClassNames": false,
+                                        "effects": Object {
+                                          "elevation16": "0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108)",
+                                          "elevation4": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                                          "elevation64": "0 25.6px 57.6px 0 rgba(0, 0, 0, 0.22), 0 4.8px 14.4px 0 rgba(0, 0, 0, 0.18)",
+                                          "elevation8": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                                          "roundedCorner2": "2px",
+                                          "roundedCorner4": "4px",
+                                          "roundedCorner6": "6px",
+                                        },
+                                        "fonts": Object {
+                                          "large": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "18px",
+                                            "fontWeight": 400,
                                           },
-                                          "fonts": Object {
-                                            "large": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "18px",
-                                              "fontWeight": 400,
-                                            },
-                                            "medium": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "14px",
-                                              "fontWeight": 400,
-                                            },
-                                            "mediumPlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "16px",
-                                              "fontWeight": 400,
-                                            },
-                                            "mega": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "68px",
-                                              "fontWeight": 600,
-                                            },
-                                            "small": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "12px",
-                                              "fontWeight": 400,
-                                            },
-                                            "smallPlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "12px",
-                                              "fontWeight": 400,
-                                            },
-                                            "superLarge": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "42px",
-                                              "fontWeight": 600,
-                                            },
-                                            "tiny": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "10px",
-                                              "fontWeight": 400,
-                                            },
-                                            "xLarge": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "20px",
-                                              "fontWeight": 600,
-                                            },
-                                            "xLargePlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "24px",
-                                              "fontWeight": 600,
-                                            },
-                                            "xSmall": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "10px",
-                                              "fontWeight": 400,
-                                            },
-                                            "xxLarge": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "28px",
-                                              "fontWeight": 600,
-                                            },
-                                            "xxLargePlus": Object {
-                                              "MozOsxFontSmoothing": "grayscale",
-                                              "WebkitFontSmoothing": "antialiased",
-                                              "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
-                                              "fontSize": "32px",
-                                              "fontWeight": 600,
-                                            },
+                                          "medium": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "14px",
+                                            "fontWeight": 400,
                                           },
-                                          "isInverted": false,
-                                          "palette": Object {
-                                            "accent": "#0078d4",
-                                            "black": "#000000",
-                                            "blackTranslucent40": "rgba(0,0,0,.4)",
-                                            "blue": "#0078d4",
-                                            "blueDark": "#002050",
-                                            "blueLight": "#00bcf2",
-                                            "blueMid": "#00188f",
-                                            "green": "#107c10",
-                                            "greenDark": "#004b1c",
-                                            "greenLight": "#bad80a",
-                                            "magenta": "#b4009e",
-                                            "magentaDark": "#5c005c",
-                                            "magentaLight": "#e3008c",
-                                            "neutralDark": "#201f1e",
-                                            "neutralLight": "#edebe9",
-                                            "neutralLighter": "#f3f2f1",
-                                            "neutralLighterAlt": "#faf9f8",
-                                            "neutralPrimary": "#323130",
-                                            "neutralPrimaryAlt": "#3b3a39",
-                                            "neutralQuaternary": "#d2d0ce",
-                                            "neutralQuaternaryAlt": "#e1dfdd",
-                                            "neutralSecondary": "#605e5c",
-                                            "neutralSecondaryAlt": "#8a8886",
-                                            "neutralTertiary": "#a19f9d",
-                                            "neutralTertiaryAlt": "#c8c6c4",
-                                            "orange": "#d83b01",
-                                            "orangeLight": "#ea4300",
-                                            "orangeLighter": "#ff8c00",
-                                            "purple": "#5c2d91",
-                                            "purpleDark": "#32145a",
-                                            "purpleLight": "#b4a0ff",
-                                            "red": "#e81123",
-                                            "redDark": "#a4262c",
-                                            "teal": "#008272",
-                                            "tealDark": "#004b50",
-                                            "tealLight": "#00b294",
-                                            "themeDark": "#005a9e",
-                                            "themeDarkAlt": "#106ebe",
-                                            "themeDarker": "#004578",
-                                            "themeLight": "#c7e0f4",
-                                            "themeLighter": "#deecf9",
-                                            "themeLighterAlt": "#eff6fc",
-                                            "themePrimary": "#0078d4",
-                                            "themeSecondary": "#2b88d8",
-                                            "themeTertiary": "#71afe5",
-                                            "white": "#ffffff",
-                                            "whiteTranslucent40": "rgba(255,255,255,.4)",
-                                            "yellow": "#ffb900",
-                                            "yellowDark": "#d29200",
-                                            "yellowLight": "#fff100",
+                                          "mediumPlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "16px",
+                                            "fontWeight": 400,
                                           },
-                                          "rtl": undefined,
-                                          "semanticColors": Object {
-                                            "accentButtonBackground": "#0078d4",
-                                            "accentButtonText": "#ffffff",
-                                            "actionLink": "#323130",
-                                            "actionLinkHovered": "#201f1e",
-                                            "blockingBackground": "#FDE7E9",
-                                            "blockingIcon": "#FDE7E9",
-                                            "bodyBackground": "#ffffff",
-                                            "bodyBackgroundChecked": "#edebe9",
-                                            "bodyBackgroundHovered": "#f3f2f1",
-                                            "bodyDivider": "#edebe9",
-                                            "bodyFrameBackground": "#ffffff",
-                                            "bodyFrameDivider": "#edebe9",
-                                            "bodyStandoutBackground": "#faf9f8",
-                                            "bodySubtext": "#605e5c",
-                                            "bodyText": "#323130",
-                                            "bodyTextChecked": "#000000",
-                                            "buttonBackground": "#ffffff",
-                                            "buttonBackgroundChecked": "#c8c6c4",
-                                            "buttonBackgroundCheckedHovered": "#edebe9",
-                                            "buttonBackgroundDisabled": "#f3f2f1",
-                                            "buttonBackgroundHovered": "#f3f2f1",
-                                            "buttonBackgroundPressed": "#edebe9",
-                                            "buttonBorder": "#8a8886",
-                                            "buttonBorderDisabled": "#f3f2f1",
-                                            "buttonText": "#323130",
-                                            "buttonTextChecked": "#201f1e",
-                                            "buttonTextCheckedHovered": "#000000",
-                                            "buttonTextDisabled": "#a19f9d",
-                                            "buttonTextHovered": "#201f1e",
-                                            "buttonTextPressed": "#201f1e",
-                                            "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
-                                            "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
-                                            "cardStandoutBackground": "#ffffff",
-                                            "defaultStateBackground": "#faf9f8",
-                                            "disabledBackground": "#f3f2f1",
-                                            "disabledBodySubtext": "#c8c6c4",
-                                            "disabledBodyText": "#a19f9d",
-                                            "disabledBorder": "#c8c6c4",
-                                            "disabledSubtext": "#d2d0ce",
-                                            "disabledText": "#a19f9d",
-                                            "errorBackground": "#FDE7E9",
-                                            "errorIcon": "#A80000",
-                                            "errorText": "#a4262c",
-                                            "focusBorder": "#605e5c",
-                                            "infoBackground": "#f3f2f1",
-                                            "infoIcon": "#605e5c",
-                                            "inputBackground": "#ffffff",
-                                            "inputBackgroundChecked": "#0078d4",
-                                            "inputBackgroundCheckedHovered": "#005a9e",
-                                            "inputBorder": "#605e5c",
-                                            "inputBorderHovered": "#323130",
-                                            "inputFocusBorderAlt": "#0078d4",
-                                            "inputForegroundChecked": "#ffffff",
-                                            "inputIcon": "#0078d4",
-                                            "inputIconDisabled": "#a19f9d",
-                                            "inputIconHovered": "#005a9e",
-                                            "inputPlaceholderBackgroundChecked": "#deecf9",
-                                            "inputPlaceholderText": "#605e5c",
-                                            "inputText": "#323130",
-                                            "inputTextHovered": "#201f1e",
-                                            "link": "#0078d4",
-                                            "linkHovered": "#004578",
-                                            "listBackground": "#ffffff",
-                                            "listHeaderBackgroundHovered": "#f3f2f1",
-                                            "listHeaderBackgroundPressed": "#edebe9",
-                                            "listItemBackgroundChecked": "#edebe9",
-                                            "listItemBackgroundCheckedHovered": "#e1dfdd",
-                                            "listItemBackgroundHovered": "#f3f2f1",
-                                            "listText": "#323130",
-                                            "listTextColor": "#323130",
-                                            "menuBackground": "#ffffff",
-                                            "menuDivider": "#c8c6c4",
-                                            "menuHeader": "#0078d4",
-                                            "menuIcon": "#0078d4",
-                                            "menuItemBackgroundChecked": "#edebe9",
-                                            "menuItemBackgroundHovered": "#f3f2f1",
-                                            "menuItemBackgroundPressed": "#edebe9",
-                                            "menuItemText": "#323130",
-                                            "menuItemTextHovered": "#201f1e",
-                                            "messageLink": "#005A9E",
-                                            "messageLinkHovered": "#004578",
-                                            "messageText": "#323130",
-                                            "primaryButtonBackground": "#0078d4",
-                                            "primaryButtonBackgroundDisabled": "#f3f2f1",
-                                            "primaryButtonBackgroundHovered": "#106ebe",
-                                            "primaryButtonBackgroundPressed": "#005a9e",
-                                            "primaryButtonBorder": "transparent",
-                                            "primaryButtonText": "#ffffff",
-                                            "primaryButtonTextDisabled": "#d2d0ce",
-                                            "primaryButtonTextHovered": "#ffffff",
-                                            "primaryButtonTextPressed": "#ffffff",
-                                            "severeWarningBackground": "#FED9CC",
-                                            "severeWarningIcon": "#D83B01",
-                                            "smallInputBorder": "#605e5c",
-                                            "successBackground": "#DFF6DD",
-                                            "successIcon": "#107C10",
-                                            "successText": "#107C10",
-                                            "variantBorder": "#edebe9",
-                                            "variantBorderHovered": "#a19f9d",
-                                            "warningBackground": "#FFF4CE",
-                                            "warningHighlight": "#ffb900",
-                                            "warningIcon": "#797775",
-                                            "warningText": "#323130",
+                                          "mega": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "68px",
+                                            "fontWeight": 600,
                                           },
-                                          "spacing": Object {
-                                            "l1": "20px",
-                                            "l2": "32px",
-                                            "m": "16px",
-                                            "s1": "8px",
-                                            "s2": "4px",
+                                          "small": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "12px",
+                                            "fontWeight": 400,
                                           },
-                                        }
+                                          "smallPlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "12px",
+                                            "fontWeight": 400,
+                                          },
+                                          "superLarge": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "42px",
+                                            "fontWeight": 600,
+                                          },
+                                          "tiny": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "10px",
+                                            "fontWeight": 400,
+                                          },
+                                          "xLarge": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "20px",
+                                            "fontWeight": 600,
+                                          },
+                                          "xLargePlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "24px",
+                                            "fontWeight": 600,
+                                          },
+                                          "xSmall": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "10px",
+                                            "fontWeight": 400,
+                                          },
+                                          "xxLarge": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "28px",
+                                            "fontWeight": 600,
+                                          },
+                                          "xxLargePlus": Object {
+                                            "MozOsxFontSmoothing": "grayscale",
+                                            "WebkitFontSmoothing": "antialiased",
+                                            "fontFamily": "'Segoe UI', 'Segoe UI Web (West European)', 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif",
+                                            "fontSize": "32px",
+                                            "fontWeight": 600,
+                                          },
+                                        },
+                                        "isInverted": false,
+                                        "palette": Object {
+                                          "accent": "#0078d4",
+                                          "black": "#000000",
+                                          "blackTranslucent40": "rgba(0,0,0,.4)",
+                                          "blue": "#0078d4",
+                                          "blueDark": "#002050",
+                                          "blueLight": "#00bcf2",
+                                          "blueMid": "#00188f",
+                                          "green": "#107c10",
+                                          "greenDark": "#004b1c",
+                                          "greenLight": "#bad80a",
+                                          "magenta": "#b4009e",
+                                          "magentaDark": "#5c005c",
+                                          "magentaLight": "#e3008c",
+                                          "neutralDark": "#201f1e",
+                                          "neutralLight": "#edebe9",
+                                          "neutralLighter": "#f3f2f1",
+                                          "neutralLighterAlt": "#faf9f8",
+                                          "neutralPrimary": "#323130",
+                                          "neutralPrimaryAlt": "#3b3a39",
+                                          "neutralQuaternary": "#d2d0ce",
+                                          "neutralQuaternaryAlt": "#e1dfdd",
+                                          "neutralSecondary": "#605e5c",
+                                          "neutralSecondaryAlt": "#8a8886",
+                                          "neutralTertiary": "#a19f9d",
+                                          "neutralTertiaryAlt": "#c8c6c4",
+                                          "orange": "#d83b01",
+                                          "orangeLight": "#ea4300",
+                                          "orangeLighter": "#ff8c00",
+                                          "purple": "#5c2d91",
+                                          "purpleDark": "#32145a",
+                                          "purpleLight": "#b4a0ff",
+                                          "red": "#e81123",
+                                          "redDark": "#a4262c",
+                                          "teal": "#008272",
+                                          "tealDark": "#004b50",
+                                          "tealLight": "#00b294",
+                                          "themeDark": "#005a9e",
+                                          "themeDarkAlt": "#106ebe",
+                                          "themeDarker": "#004578",
+                                          "themeLight": "#c7e0f4",
+                                          "themeLighter": "#deecf9",
+                                          "themeLighterAlt": "#eff6fc",
+                                          "themePrimary": "#0078d4",
+                                          "themeSecondary": "#2b88d8",
+                                          "themeTertiary": "#71afe5",
+                                          "white": "#ffffff",
+                                          "whiteTranslucent40": "rgba(255,255,255,.4)",
+                                          "yellow": "#ffb900",
+                                          "yellowDark": "#d29200",
+                                          "yellowLight": "#fff100",
+                                        },
+                                        "rtl": undefined,
+                                        "semanticColors": Object {
+                                          "accentButtonBackground": "#0078d4",
+                                          "accentButtonText": "#ffffff",
+                                          "actionLink": "#323130",
+                                          "actionLinkHovered": "#201f1e",
+                                          "blockingBackground": "#FDE7E9",
+                                          "blockingIcon": "#FDE7E9",
+                                          "bodyBackground": "#ffffff",
+                                          "bodyBackgroundChecked": "#edebe9",
+                                          "bodyBackgroundHovered": "#f3f2f1",
+                                          "bodyDivider": "#edebe9",
+                                          "bodyFrameBackground": "#ffffff",
+                                          "bodyFrameDivider": "#edebe9",
+                                          "bodyStandoutBackground": "#faf9f8",
+                                          "bodySubtext": "#605e5c",
+                                          "bodyText": "#323130",
+                                          "bodyTextChecked": "#000000",
+                                          "buttonBackground": "#ffffff",
+                                          "buttonBackgroundChecked": "#c8c6c4",
+                                          "buttonBackgroundCheckedHovered": "#edebe9",
+                                          "buttonBackgroundDisabled": "#f3f2f1",
+                                          "buttonBackgroundHovered": "#f3f2f1",
+                                          "buttonBackgroundPressed": "#edebe9",
+                                          "buttonBorder": "#8a8886",
+                                          "buttonBorderDisabled": "#f3f2f1",
+                                          "buttonText": "#323130",
+                                          "buttonTextChecked": "#201f1e",
+                                          "buttonTextCheckedHovered": "#000000",
+                                          "buttonTextDisabled": "#a19f9d",
+                                          "buttonTextHovered": "#201f1e",
+                                          "buttonTextPressed": "#201f1e",
+                                          "cardShadow": "0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108)",
+                                          "cardShadowHovered": "0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108)",
+                                          "cardStandoutBackground": "#ffffff",
+                                          "defaultStateBackground": "#faf9f8",
+                                          "disabledBackground": "#f3f2f1",
+                                          "disabledBodySubtext": "#c8c6c4",
+                                          "disabledBodyText": "#a19f9d",
+                                          "disabledBorder": "#c8c6c4",
+                                          "disabledSubtext": "#d2d0ce",
+                                          "disabledText": "#a19f9d",
+                                          "errorBackground": "#FDE7E9",
+                                          "errorIcon": "#A80000",
+                                          "errorText": "#a4262c",
+                                          "focusBorder": "#605e5c",
+                                          "infoBackground": "#f3f2f1",
+                                          "infoIcon": "#605e5c",
+                                          "inputBackground": "#ffffff",
+                                          "inputBackgroundChecked": "#0078d4",
+                                          "inputBackgroundCheckedHovered": "#005a9e",
+                                          "inputBorder": "#605e5c",
+                                          "inputBorderHovered": "#323130",
+                                          "inputFocusBorderAlt": "#0078d4",
+                                          "inputForegroundChecked": "#ffffff",
+                                          "inputIcon": "#0078d4",
+                                          "inputIconDisabled": "#a19f9d",
+                                          "inputIconHovered": "#005a9e",
+                                          "inputPlaceholderBackgroundChecked": "#deecf9",
+                                          "inputPlaceholderText": "#605e5c",
+                                          "inputText": "#323130",
+                                          "inputTextHovered": "#201f1e",
+                                          "link": "#0078d4",
+                                          "linkHovered": "#004578",
+                                          "listBackground": "#ffffff",
+                                          "listHeaderBackgroundHovered": "#f3f2f1",
+                                          "listHeaderBackgroundPressed": "#edebe9",
+                                          "listItemBackgroundChecked": "#edebe9",
+                                          "listItemBackgroundCheckedHovered": "#e1dfdd",
+                                          "listItemBackgroundHovered": "#f3f2f1",
+                                          "listText": "#323130",
+                                          "listTextColor": "#323130",
+                                          "menuBackground": "#ffffff",
+                                          "menuDivider": "#c8c6c4",
+                                          "menuHeader": "#0078d4",
+                                          "menuIcon": "#0078d4",
+                                          "menuItemBackgroundChecked": "#edebe9",
+                                          "menuItemBackgroundHovered": "#f3f2f1",
+                                          "menuItemBackgroundPressed": "#edebe9",
+                                          "menuItemText": "#323130",
+                                          "menuItemTextHovered": "#201f1e",
+                                          "messageLink": "#005A9E",
+                                          "messageLinkHovered": "#004578",
+                                          "messageText": "#323130",
+                                          "primaryButtonBackground": "#0078d4",
+                                          "primaryButtonBackgroundDisabled": "#f3f2f1",
+                                          "primaryButtonBackgroundHovered": "#106ebe",
+                                          "primaryButtonBackgroundPressed": "#005a9e",
+                                          "primaryButtonBorder": "transparent",
+                                          "primaryButtonText": "#ffffff",
+                                          "primaryButtonTextDisabled": "#d2d0ce",
+                                          "primaryButtonTextHovered": "#ffffff",
+                                          "primaryButtonTextPressed": "#ffffff",
+                                          "severeWarningBackground": "#FED9CC",
+                                          "severeWarningIcon": "#D83B01",
+                                          "smallInputBorder": "#605e5c",
+                                          "successBackground": "#DFF6DD",
+                                          "successIcon": "#107C10",
+                                          "successText": "#107C10",
+                                          "variantBorder": "#edebe9",
+                                          "variantBorderHovered": "#a19f9d",
+                                          "warningBackground": "#FFF4CE",
+                                          "warningHighlight": "#ffb900",
+                                          "warningIcon": "#797775",
+                                          "warningText": "#323130",
+                                        },
+                                        "spacing": Object {
+                                          "l1": "20px",
+                                          "l2": "32px",
+                                          "m": "16px",
+                                          "s1": "8px",
+                                          "s2": "4px",
+                                        },
                                       }
+                                    }
+                                  >
+                                    <i
+                                      aria-hidden={true}
+                                      className="ms-Dropdown-caretDown caretDown-113"
+                                      data-icon-name="ChevronDown"
                                     >
-                                      <i
-                                        aria-hidden={true}
-                                        className="ms-Dropdown-caretDown caretDown-68"
-                                        data-icon-name="ChevronDown"
-                                      >
-                                        
-                                      </i>
-                                    </IconBase>
-                                  </StyledIconBase>
-                                </span>
-                              </div>
-                            </Component>
+                                      
+                                    </i>
+                                  </IconBase>
+                                </StyledIconBase>
+                              </span>
+                            </div>
                           </div>
-                        </DropdownBase>
-                      </WithResponsiveMode>
-                    </StyledWithResponsiveMode>
+                        </DropdownInternal>
+                      </DropdownBase>
+                    </Dropdown>
                     <StyledTextFieldBase
                       autoFocus={true}
                       id="confirmCollectionId"
@@ -4839,7 +4873,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     >
                       <TextFieldBase
                         autoFocus={true}
-                        canRevealPassword={false}
                         deferredValidationTime={200}
                         id="confirmCollectionId"
                         label="Param"
@@ -5123,7 +5156,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         value=""
                       >
                         <div
-                          className="ms-TextField root-70"
+                          className="ms-TextField root-115"
                         >
                           <div
                             className="ms-TextField-wrapper"
@@ -5412,7 +5445,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-                                  className="ms-Label root-49"
+                                  className="ms-Label root-94"
                                   htmlFor="confirmCollectionId"
                                   id="TextFieldLabel10"
                                 >
@@ -5421,13 +5454,13 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               </LabelBase>
                             </StyledLabelBase>
                             <div
-                              className="ms-TextField-fieldGroup fieldGroup-71"
+                              className="ms-TextField-fieldGroup fieldGroup-116"
                             >
                               <input
                                 aria-invalid={false}
                                 aria-labelledby="TextFieldLabel10"
                                 autoFocus={true}
-                                className="ms-TextField-field field-72"
+                                className="ms-TextField-field field-117"
                                 id="confirmCollectionId"
                                 onBlur={[Function]}
                                 onChange={[Function]}
@@ -5456,7 +5489,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         height={30}
                         id="deleteparam"
                         onClick={[Function]}
-                        shouldFadeIn={true}
                         src=""
                         styles={[Function]}
                         theme={
@@ -5735,7 +5767,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         width={20}
                       >
                         <div
-                          className="ms-Image addRemoveIconLabel root-81"
+                          className="ms-Image addRemoveIconLabel root-126"
                           style={
                             Object {
                               "height": 30,
@@ -5745,7 +5777,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <img
                             alt="Delete param"
-                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-82"
+                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-127"
                             id="deleteparam"
                             key="fabricImage"
                             onClick={[Function]}
@@ -5771,7 +5803,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         height={30}
                         id="addparam"
                         onClick={[Function]}
-                        shouldFadeIn={true}
                         src=""
                         styles={[Function]}
                         theme={
@@ -6050,7 +6081,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         width={20}
                       >
                         <div
-                          className="ms-Image addRemoveIconLabel root-81"
+                          className="ms-Image addRemoveIconLabel root-126"
                           style={
                             Object {
                               "height": 30,
@@ -6060,7 +6091,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <img
                             alt="Add param"
-                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-82"
+                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-127"
                             id="addparam"
                             key="fabricImage"
                             onClick={[Function]}
@@ -6079,7 +6110,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 onClick={[Function]}
               >
                 <div
-                  className="ms-Stack css-50"
+                  className="ms-Stack css-95"
                   onClick={[Function]}
                 >
                   <StyledImageBase
@@ -6092,7 +6123,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     <ImageBase
                       alt="Add param"
                       height={30}
-                      shouldFadeIn={true}
                       src=""
                       styles={[Function]}
                       theme={
@@ -6371,7 +6401,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       width={20}
                     >
                       <div
-                        className="ms-Image root-81"
+                        className="ms-Image root-126"
                         style={
                           Object {
                             "height": 30,
@@ -6381,7 +6411,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       >
                         <img
                           alt="Add param"
-                          className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-82"
+                          className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-127"
                           key="fabricImage"
                           onError={[Function]}
                           onLoad={[Function]}
@@ -6395,7 +6425,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     key=".0:$.1"
                   >
                     <span
-                      className="addNewParamStyle css-83"
+                      className="addNewParamStyle css-128"
                     >
                       Add New Param
                     </span>
@@ -7477,7 +7507,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 "borderColor": "#f3f2f1",
                                 "color": "#a19f9d",
                                 "cursor": "default",
-                                "pointerEvents": "none",
                                 "selectors": Object {
                                   ":focus": Object {
                                     "outline": 0,
@@ -7824,6 +7853,35 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 },
                               },
                             },
+                            "splitButtonMenuFocused": Object {
+                              "outline": "transparent",
+                              "position": "relative",
+                              "selectors": Object {
+                                ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                                  "border": "1px solid #ffffff",
+                                  "bottom": 3,
+                                  "content": "\\"\\"",
+                                  "left": 3,
+                                  "outline": "1px solid #605e5c",
+                                  "position": "absolute",
+                                  "right": 3,
+                                  "selectors": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                      "border": "none",
+                                      "bottom": -2,
+                                      "left": -2,
+                                      "right": -2,
+                                      "top": -2,
+                                    },
+                                  },
+                                  "top": 3,
+                                  "zIndex": 1,
+                                },
+                                "::-moz-focus-inner": Object {
+                                  "border": "0",
+                                },
+                              },
+                            },
                             "splitButtonMenuIcon": Object {
                               "color": "#ffffff",
                             },
@@ -8121,7 +8179,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-84"
+                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-129"
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -8139,14 +8197,14 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           type="button"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-41"
+                            className="ms-Button-flexContainer flexContainer-86"
                             data-automationid="splitbuttonprimary"
                           >
                             <span
-                              className="ms-Button-textContainer textContainer-42"
+                              className="ms-Button-textContainer textContainer-87"
                             >
                               <span
-                                className="ms-Button-label label-85"
+                                className="ms-Button-label label-130"
                                 id="id__11"
                                 key="id__11"
                               >

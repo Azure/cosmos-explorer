@@ -1,5 +1,5 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import { initializeIcons } from "office-ui-fabric-react";
+import { useBoolean } from "@fluentui/react-hooks";
+import { initializeIcons } from "@fluentui/react";
 import * as React from "react";
 import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";

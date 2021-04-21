@@ -1062,7 +1062,6 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                           "borderColor": "#f3f2f1",
                           "color": "#a19f9d",
                           "cursor": "default",
-                          "pointerEvents": "none",
                           "selectors": Object {
                             ":focus": Object {
                               "outline": 0,
@@ -1409,6 +1408,35 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                           },
                         },
                       },
+                      "splitButtonMenuFocused": Object {
+                        "outline": "transparent",
+                        "position": "relative",
+                        "selectors": Object {
+                          ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                            "border": "1px solid #ffffff",
+                            "bottom": 3,
+                            "content": "\\"\\"",
+                            "left": 3,
+                            "outline": "1px solid #605e5c",
+                            "position": "absolute",
+                            "right": 3,
+                            "selectors": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "border": "none",
+                                "bottom": -2,
+                                "left": -2,
+                                "right": -2,
+                                "top": -2,
+                              },
+                            },
+                            "top": 3,
+                            "zIndex": 1,
+                          },
+                          "::-moz-focus-inner": Object {
+                            "border": "0",
+                          },
+                        },
+                      },
                       "splitButtonMenuIcon": Object {
                         "color": "#ffffff",
                       },
@@ -1704,7 +1732,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Complete setup"
-                    className="ms-Button ms-Button--primary btncreatecoll1 btnSetupQueries root-40"
+                    className="ms-Button ms-Button--primary btncreatecoll1 btnSetupQueries root-85"
                     data-is-focusable={true}
                     id="completeSetupBtn"
                     onClick={[Function]}
@@ -1716,14 +1744,14 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-41"
+                      className="ms-Button-flexContainer flexContainer-86"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-42"
+                        className="ms-Button-textContainer textContainer-87"
                       >
                         <span
-                          className="ms-Button-label label-44"
+                          className="ms-Button-label label-89"
                           id="id__0"
                           key="id__0"
                         >

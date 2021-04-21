@@ -7,7 +7,7 @@ exports[`SettingsComponent renders 1`] = `
   <div
     className="settingsV2TabsContainer"
   >
-    <StyledPivotBase
+    <StyledPivot
       onLinkClick={[Function]}
       selectedKey="ScaleTab"
     >
@@ -3010,7 +3010,7 @@ exports[`SettingsComponent renders 1`] = `
           shouldDiscardIndexingPolicy={false}
         />
       </PivotItem>
-    </StyledPivotBase>
+    </StyledPivot>
   </div>
 </div>
 `;

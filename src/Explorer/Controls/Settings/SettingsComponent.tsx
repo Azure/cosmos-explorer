@@ -1,4 +1,4 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "office-ui-fabric-react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";

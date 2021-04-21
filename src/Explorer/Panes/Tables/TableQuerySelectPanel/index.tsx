@@ -1,4 +1,4 @@
-import { Checkbox, Text } from "office-ui-fabric-react";
+import { Checkbox, Text } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";

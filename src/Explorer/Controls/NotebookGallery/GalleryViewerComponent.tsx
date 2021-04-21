@@ -19,7 +19,7 @@ import {
   SpinnerSize,
   Stack,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import * as React from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { handleError } from "../../../Common/ErrorHandlingUtils";

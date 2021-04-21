@@ -1,5 +1,5 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import { PrimaryButton } from "office-ui-fabric-react";
+import { PrimaryButton } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, KeyboardEvent, useState } from "react";
 import { Areas, NormalizedEventKey } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";

@@ -3,8 +3,8 @@
  * If the component signals a change through the callback passed in the properties, it must render the React component when appropriate
  * and update any knockout observables passed from the parent.
  */
+import { CommandBar, ICommandBarItemProps } from "@fluentui/react";
 import * as ko from "knockout";
-import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import { StyleConstants } from "../../../Common/Constants";
