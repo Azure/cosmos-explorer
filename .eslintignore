@@ -126,10 +126,8 @@ src/Explorer/Panes/GraphStylingPane.ts
 src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
-src/Explorer/Panes/SetupNotebooksPane.ts
 src/Explorer/Panes/StringInputPane.ts
 src/Explorer/Panes/SwitchDirectoryPane.ts
-src/Explorer/Panes/Tables/AddTableEntityPane.ts
 src/Explorer/Panes/Tables/EditTableEntityPane.ts
 src/Explorer/Panes/Tables/EntityPropertyViewModel.ts
 src/Explorer/Panes/Tables/TableEntityPane.ts

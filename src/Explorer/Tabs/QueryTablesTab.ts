@@ -146,8 +146,7 @@ export default class QueryTablesTab extends TabsBase {
   };
 
   public onAddEntityClick = (): Q.Promise<any> => {
-    this.container.addTableEntityPane.tableViewModel = this.tableEntityListViewModel();
-    this.container.addTableEntityPane.open();
+    this.container.openAddTableEntityPanel(this, this.tableEntityListViewModel());
     return null;
   };
 
