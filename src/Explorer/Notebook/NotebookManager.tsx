@@ -20,7 +20,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
-import { CopyNotebookPane } from "../Panes/CopyNotebookPane";
+import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";

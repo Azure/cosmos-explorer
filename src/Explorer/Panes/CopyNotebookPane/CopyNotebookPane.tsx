@@ -9,7 +9,10 @@ import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUti
 import Explorer from "../../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../../Notebook/NotebookContentItem";
 import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
 
 interface Location {
