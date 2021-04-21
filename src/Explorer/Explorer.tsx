@@ -282,19 +282,15 @@ export default class Explorer {
         );
         Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
-            //Commented by Swapnil to force enable notebooks
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
                   userContext.features.enableNotebooks)
             );
-            this.isNotebookEnabled(false);
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
               dataExplorerArea: Constants.Areas.Notebook,
             });
-            // Added by Swapnil to force enable notebooks
-            // this._openSetupNotebooksPaneForQuickstart();
 
             if (this.isNotebookEnabled()) {
               await this.initNotebooks(this.databaseAccount());
