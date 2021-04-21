@@ -34,7 +34,7 @@
       "./src/SelfServe/SelfServeTypes.ts",
       "./src/SelfServe/SelfServeUtils.tsx"
     ],
-    "out": "docs"
+    "out": "selfServeDocs"
   },
   "include": [
     "./src/**/*",

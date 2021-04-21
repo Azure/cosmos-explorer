@@ -15,9 +15,10 @@ import {
   RefreshParams,
   SelfServeDescriptor,
   SmartUiInput,
-  StringInput,
+  StringInput
 } from "./SelfServeTypes";
 
+/**@internal */
 export enum SelfServeType {
   // No self serve type passed, launch explorer
   none = "none",
@@ -36,6 +37,7 @@ export enum BladeType {
   TableKeys = "tableKeys",
 }
 
+/**@internal */
 export interface DecoratorProperties {
   id: string;
   info?: (() => Promise<Info>) | Info;
@@ -61,6 +63,7 @@ export interface DecoratorProperties {
   ) => Map<string, SmartUiInput>;
 }
 
+/**@internal */
 const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   name: T,
   value: K,
@@ -69,10 +72,12 @@ const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProper
   fieldObject[name] = value;
 };
 
+/**@internal */
 const getValue = <T extends keyof DecoratorProperties>(name: T, fieldObject: DecoratorProperties): unknown => {
   return fieldObject[name];
 };
 
+/**@internal */
 export const addPropertyToMap = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   target: unknown,
   propertyName: string,
@@ -87,6 +92,7 @@ export const addPropertyToMap = <T extends keyof DecoratorProperties, K extends 
   Reflect.defineMetadata(className, context, target);
 };
 
+/**@internal */
 export const updateContextWithDecorator = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   context: Map<string, DecoratorProperties>,
   propertyName: string,
@@ -110,12 +116,14 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
   context.set(propertyName, propertyObject);
 };
 
+/**@internal */
 export const buildSmartUiDescriptor = (className: string, target: unknown): void => {
   const context = Reflect.getMetadata(className, target) as Map<string, DecoratorProperties>;
   const smartUiDescriptor = mapToSmartUiDescriptor(context);
   Reflect.defineMetadata(className, smartUiDescriptor, target);
 };
 
+/**@internal */
 export const mapToSmartUiDescriptor = (context: Map<string, DecoratorProperties>): SelfServeDescriptor => {
   const inputNames: string[] = [];
   const root = context.get("root");
@@ -139,6 +147,7 @@ export const mapToSmartUiDescriptor = (context: Map<string, DecoratorProperties>
   return smartUiDescriptor;
 };
 
+/**@internal */
 const addToDescriptor = (
   context: Map<string, DecoratorProperties>,
   root: Node,
@@ -157,6 +166,7 @@ const addToDescriptor = (
   root.children.push(element);
 };
 
+/**@internal */
 const getInput = (value: DecoratorProperties): AnyDisplay => {
   switch (value.type) {
     case "number":
@@ -188,6 +198,7 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
   }
 };
 
+/**@internal */
 export const generateBladeLink = (blade: BladeType): string => {
   const subscriptionId = userContext.subscriptionId;
   const resourceGroupName = userContext.resourceGroup;
