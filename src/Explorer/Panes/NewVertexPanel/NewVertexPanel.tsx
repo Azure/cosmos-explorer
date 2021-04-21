@@ -6,15 +6,10 @@ import { NewVertexComponent } from "../../Graph/NewVertexComponent/NewVertexComp
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
-
 export interface INewVertexPanelProps {
   explorer: Explorer;
   partitionKeyPropertyProp: string;
-  onSubmit: (
-    result: ViewModels.NewVertexData,
-    handleErrorScenario: (errorMsg: string) => void,
-    handleSuccessScenario: () => void
-  ) => void;
+  onSubmit: (result: ViewModels.NewVertexData, onError: (errorMsg: string) => void, onSuccess: () => void) => void;
   openNotificationConsole: () => void;
 }
 
@@ -36,17 +31,17 @@ export const NewVertexPanel: FunctionComponent<INewVertexPanelProps> = ({
     setShowErrorDetails(false);
     if (onSubmit !== undefined) {
       setLoadingTrue();
-      onSubmit(newVertexDataValue, handleErrorScenario, handleSuccessScenario);
+      onSubmit(newVertexDataValue, onError, onSuccess);
     }
   };
 
-  const handleErrorScenario = (errorMsg: string) => {
+  const onError = (errorMsg: string) => {
     setErrorMessage(errorMsg);
     setShowErrorDetails(true);
     setLoadingFalse();
   };
 
-  const handleSuccessScenario = () => {
+  const onSuccess = () => {
     setLoadingFalse();
     explorer.closeSidePanel();
   };

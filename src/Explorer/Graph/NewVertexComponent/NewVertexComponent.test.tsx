@@ -1,20 +1,27 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { mount, ReactWrapper } from "enzyme";
 import React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { NewVertexComponent } from "./NewVertexComponent";
 
 describe("New Vertex Component", () => {
-  let wrapper: ReactWrapper;
-
   beforeEach(() => {
     const fakeNewVertexData: ViewModels.NewVertexData = {
       label: "",
-      properties: [],
+      properties: [
+        {
+          key: "test1",
+          values: [
+            {
+              value: "",
+              type: "string",
+            },
+          ],
+        },
+      ],
     };
     const props = {
       newVertexDataProp: fakeNewVertexData,
-      partitionKeyPropertyProp: "",
+      partitionKeyPropertyProp: "test1",
       onChangeProp: (): void => undefined,
     };
 
@@ -32,12 +39,11 @@ describe("New Vertex Component", () => {
       onChangeProp: (): void => undefined,
     };
 
-    wrapper = mount(<NewVertexComponent {...props} />);
-    expect(wrapper).toMatchSnapshot();
+    const { asFragment } = render(<NewVertexComponent {...props} />);
+    expect(asFragment).toMatchSnapshot();
   });
 
   it("should render Add property button", () => {
-    // const span = wrapper.find("span").first();
     const span = screen.getByText("Add Property");
     expect(span).toBeDefined();
   });

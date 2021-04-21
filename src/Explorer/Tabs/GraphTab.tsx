@@ -142,16 +142,16 @@ export default class GraphTab extends TabsBase {
         openNotificationConsole={() => this.collection.container.expandConsole()}
         onSubmit={(
           result: ViewModels.NewVertexData,
-          handleErrorScenario: (errorMessage: string) => void,
-          handleSuccessScenario: () => void
+          onError: (errorMessage: string) => void,
+          onSuccess: () => void
         ): void => {
           this.graphAccessor.addVertex(result).then(
             () => {
-              handleSuccessScenario();
+              onSuccess();
               this.contextualPane.cancel();
             },
             (error: GraphExplorerError) => {
-              handleErrorScenario(error.title);
+              onError(error.title);
             }
           );
         }}

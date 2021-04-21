@@ -1,11 +1,11 @@
 import { Dropdown, IDropdownOption, Stack, TextField } from "office-ui-fabric-react";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { FunctionComponent, useRef, useState } from "react";
 import AddIcon from "../../../../images/Add-property.svg";
 import DeleteIcon from "../../../../images/delete.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { GremlinPropertyValueType, InputPropertyValueTypeString, NewVertexData } from "../../../Contracts/ViewModels";
 import { EditorNodePropertiesComponent } from "../GraphExplorerComponent/EditorNodePropertiesComponent";
-
+import "./NewVertexComponent.less";
 export interface INewVertexComponentProps {
   newVertexDataProp: NewVertexData;
   partitionKeyPropertyProp: string;
@@ -18,20 +18,26 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
   onChangeProp,
 }: INewVertexComponentProps): JSX.Element => {
   const DEFAULT_PROPERTY_TYPE = "string";
-  const [newVertexData, setNewVertexData] = useState<NewVertexData>(newVertexDataProp || { label: "", properties: [] });
-  const propertyTypes: string[] = EditorNodePropertiesComponent.VERTEX_PROPERTY_TYPES;
+  const [newVertexData, setNewVertexData] = useState<NewVertexData>(
+    newVertexDataProp || {
+      label: "",
+      properties: [
+        {
+          key: partitionKeyPropertyProp,
+          values: [{ value: "", type: DEFAULT_PROPERTY_TYPE }],
+        },
+      ],
+    }
+  );
 
-  useEffect(() => {
-    addNewVertexProperty(partitionKeyPropertyProp);
-    //eslint-disable-next-line
-  }, []);
-  useEffect(() => {
-    onChangeProp(newVertexData);
-  });
+  const propertyTypes: string[] = EditorNodePropertiesComponent.VERTEX_PROPERTY_TYPES;
+  const input = useRef(undefined);
 
   const onAddNewProperty = () => {
     addNewVertexProperty();
-    document.getElementById("propertyKeyNewVertexPane").focus();
+    setTimeout(() => {
+      input.current.focus();
+    }, 100);
   };
 
   const onAddNewPropertyKeyPress = (event: React.KeyboardEvent) => {
@@ -41,7 +47,8 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
     }
   };
 
-  const addNewVertexProperty = (key?: string) => {
+  const addNewVertexProperty = () => {
+    let key: string;
     const ap = newVertexData.properties;
     if (ap.length === 0) {
       key = partitionKeyPropertyProp;
@@ -54,6 +61,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
       ...prevData,
       properties: ap,
     }));
+    onChangeProp(newVertexData);
   };
 
   const removeNewVertexProperty = (event?: React.MouseEvent<HTMLDivElement>, index?: number) => {
@@ -63,6 +71,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
       ...prevData,
       properties: ap,
     }));
+    onChangeProp(newVertexData);
     document.getElementById("addProperyNewVertexBtn").focus();
   };
 
@@ -78,18 +87,21 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
       ...prevData,
       label: event.target.value,
     }));
+    onChangeProp(newVertexData);
   };
 
   const onKeyChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newState = { ...newVertexData };
     newState.properties[index].key = event.target.value;
     setNewVertexData(newState);
+    onChangeProp(newVertexData);
   };
 
   const onValueChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const newState = { ...newVertexData };
     newState.properties[index].values[0].value = event.target.value as GremlinPropertyValueType;
     setNewVertexData(newState);
+    onChangeProp(newVertexData);
   };
 
   const onTypeChange = (option: string, index: number) => {
@@ -97,6 +109,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
     if (newState.properties[index]) {
       newState.properties[index].values[0].type = option as InputPropertyValueTypeString;
       setNewVertexData(newState);
+      onChangeProp(newVertexData);
     }
   };
 
@@ -130,6 +143,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
                     className="edgeInput"
                     type="text"
                     id="propertyKeyNewVertexPane"
+                    componentRef={input}
                     placeholder="Key"
                     autoComplete="off"
                     aria-label={`Enter value for propery ${index + 1}`}
