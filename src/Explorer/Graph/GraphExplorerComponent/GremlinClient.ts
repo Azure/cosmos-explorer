@@ -3,11 +3,10 @@
  */
 
 import * as Q from "q";
-import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { HashMap } from "../../../Common/HashMap";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
+import { HashMap } from "../../../Common/HashMap";
+import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
+import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
 
 export interface GremlinClientParameters {
   endpoint: string;
@@ -77,9 +76,7 @@ export class GremlinClient {
           this.abortPendingRequest(requestId, errorMessage, result.requestCharge);
         }
       },
-      infoCallback: (msg: string) => {
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
-      },
+      infoCallback: logConsoleInfo,
     });
   }
 

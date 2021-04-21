@@ -36,6 +36,7 @@ import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationU
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
@@ -43,7 +44,7 @@ import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandBut
 import { DialogProps, TextFieldProps } from "./Controls/Dialog";
 import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { ConsoleData, ConsoleDataType } from "./Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
@@ -736,8 +737,7 @@ export default class Explorer {
 
       onPrimaryButtonClick: async () => {
         const startTime = TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
-        const logId = NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.InProgress,
+        const clearInProgressMessage = logConsoleProgress(
           "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account."
         );
         this.isSynapseLinkUpdating(true);
@@ -755,19 +755,13 @@ export default class Explorer {
               },
             }
           );
-          NotificationConsoleUtils.clearInProgressMessageWithId(logId);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            "Enabled Azure Synapse Link for this account"
-          );
+          clearInProgressMessage();
+          logConsoleInfo("Enabled Azure Synapse Link for this account");
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
           this.databaseAccount(databaseAccount);
         } catch (error) {
-          NotificationConsoleUtils.clearInProgressMessageWithId(logId);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`
-          );
+          clearInProgressMessage();
+          logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
           TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, {}, startTime);
         } finally {
           this.isSynapseLinkUpdating(false);
@@ -894,10 +888,7 @@ export default class Explorer {
           },
           startKey
         );
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Error while refreshing databases: ${errorMessage}`
-        );
+        logConsoleError(`Error while refreshing databases: ${errorMessage}`);
       }
     );
 
@@ -1118,20 +1109,20 @@ export default class Explorer {
 
   private _resetNotebookWorkspace = async () => {
     this._closeModalDialog();
-    const id = NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, "Resetting notebook workspace");
+    const clearInProgressMessage = logConsoleProgress("Resetting notebook workspace");
     try {
       await this.notebookManager?.notebookClient.resetWorkspace();
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Successfully reset notebook workspace");
+      logConsoleInfo("Successfully reset notebook workspace");
       TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
     } catch (error) {
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to reset notebook workspace: ${error}`);
+      logConsoleError(`Failed to reset notebook workspace: ${error}`);
       TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, {
         error: getErrorMessage(error),
         errorStack: getErrorStack(error),
       });
       throw error;
     } finally {
-      NotificationConsoleUtils.clearInProgressMessageWithId(id);
+      clearInProgressMessage();
     }
   };
 
@@ -1688,11 +1679,7 @@ export default class Explorer {
         clearMessage();
       },
       (error: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Could not download notebook ${getErrorMessage(error)}`
-        );
-
+        logConsoleError(`Could not download notebook ${getErrorMessage(error)}`);
         clearMessage();
       }
     );
@@ -1844,15 +1831,8 @@ export default class Explorer {
     }
 
     return this.notebookManager?.notebookContentClient.deleteContentItem(item).then(
-      () => {
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully deleted: ${item.path}`);
-      },
-      (reason: any) => {
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Failed to delete "${item.path}": ${JSON.stringify(reason)}`
-        );
-      }
+      () => logConsoleInfo(`Successfully deleted: ${item.path}`),
+      (reason: any) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
     );
   }
 
@@ -1868,11 +1848,7 @@ export default class Explorer {
 
     parent = parent || this.resourceTree.myNotebooksContentRoot;
 
-    const notificationProgressId = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      `Creating new notebook in ${parent.path}`
-    );
-
+    const clearInProgressMessage = logConsoleProgress(`Creating new notebook in ${parent.path}`);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateNewNotebook, {
       dataExplorerArea: Constants.Areas.Notebook,
     });
@@ -1880,7 +1856,7 @@ export default class Explorer {
     this.notebookManager?.notebookContentClient
       .createNewNotebookFile(parent)
       .then((newFile: NotebookContentItem) => {
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully created: ${newFile.name}`);
+        logConsoleInfo(`Successfully created: ${newFile.name}`);
         TelemetryProcessor.traceSuccess(
           Action.CreateNewNotebook,
           {
@@ -1893,7 +1869,7 @@ export default class Explorer {
       .then(() => this.resourceTree.triggerRender())
       .catch((error: any) => {
         const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
+        logConsoleError(errorMessage);
         TelemetryProcessor.traceFailure(
           Action.CreateNewNotebook,
           {
@@ -1904,7 +1880,7 @@ export default class Explorer {
           startKey
         );
       })
-      .finally(() => NotificationConsoleUtils.clearInProgressMessageWithId(notificationProgressId));
+      .finally(clearInProgressMessage);
   }
 
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
