@@ -13,7 +13,7 @@ import "../Explorer/Notebook/NotebookRenderer/base.css";
 import "../Explorer/Notebook/NotebookRenderer/default.css";
 import { TransformMedia } from "./TransformMedia";
 
-export interface OutputsProps {
+export interface CellOutputViewerProps {
   id: string;
   contentRef: ContentRef;
   hidden: boolean;
@@ -32,7 +32,7 @@ const onInit = async () => {
     (event) => {
       // Typescript definition for event is wrong. So read props by casting to <any>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const props = (event as any).data as OutputsProps;
+      const props = (event as any).data as CellOutputViewerProps;
       const outputs = (
         <div
           data-iframe-height

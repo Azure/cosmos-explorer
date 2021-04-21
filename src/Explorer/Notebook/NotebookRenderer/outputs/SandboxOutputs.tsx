@@ -7,7 +7,7 @@ import postRobot from "post-robot";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { OutputsProps } from "../../../../CellOutputViewer/CellOutputViewer";
+import { CellOutputViewerProps } from "../../../../CellOutputViewer/CellOutputViewer";
 
 // Adapted from https://github.com/nteract/nteract/blob/main/packages/stateful-components/src/outputs/index.tsx
 // to add support for sandboxing using <iframe>
@@ -56,7 +56,7 @@ export class SandboxOutputs extends React.PureComponent<ComponentProps & StatePr
       return;
     }
 
-    const props: OutputsProps = {
+    const props: CellOutputViewerProps = {
       id: this.props.id,
       contentRef: this.props.contentRef,
       hidden: this.props.hidden,
