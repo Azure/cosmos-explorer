@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Delete Collection Confirmation Pane submit() should call delete collection 1`] = `
-<DeleteCollectionConfirmationPanel
+<DeleteCollectionConfirmationPane
   closePanel={[Function]}
   collectionName="container"
   explorer={
@@ -3627,5 +3627,5 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
       </div>
     </div>
   </GenericRightPaneComponent>
-</DeleteCollectionConfirmationPanel>
+</DeleteCollectionConfirmationPane>
 `;

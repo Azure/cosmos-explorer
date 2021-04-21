@@ -1,12 +1,15 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "office-ui-fabric-react";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
-import { Upload } from "../../../Common/Upload";
+import { Upload } from "../../../Common/Upload/Upload";
 import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
 export interface UploadItemsPaneProps {
   explorer: Explorer;

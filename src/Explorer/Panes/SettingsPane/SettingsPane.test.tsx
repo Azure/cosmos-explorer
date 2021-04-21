@@ -1,9 +1,9 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { SettingsPane } from ".";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+import { SettingsPane } from "./SettingsPane";
 const props = {
   explorer: new Explorer(),
   closePanel: (): void => undefined,

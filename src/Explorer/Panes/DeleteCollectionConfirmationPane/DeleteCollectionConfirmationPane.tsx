@@ -11,18 +11,21 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 import { userContext } from "../../../UserContext";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
-export interface DeleteCollectionConfirmationPanelProps {
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+export interface DeleteCollectionConfirmationPaneProps {
   explorer: Explorer;
   collectionName: string;
   closePanel: () => void;
 }
 
-export const DeleteCollectionConfirmationPanel: FunctionComponent<DeleteCollectionConfirmationPanelProps> = ({
+export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectionConfirmationPaneProps> = ({
   explorer,
   closePanel,
   collectionName,
-}: DeleteCollectionConfirmationPanelProps) => {
+}: DeleteCollectionConfirmationPaneProps) => {
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
   const [formError, setFormError] = useState<string>("");

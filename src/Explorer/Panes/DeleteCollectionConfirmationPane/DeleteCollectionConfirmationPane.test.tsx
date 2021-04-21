@@ -3,7 +3,6 @@ jest.mock("../../../Shared/Telemetry/TelemetryProcessor");
 import { mount, ReactWrapper, shallow } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
-import { DeleteCollectionConfirmationPanel } from ".";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { ApiKind, DatabaseAccount } from "../../../Contracts/DataModels";
@@ -13,6 +12,7 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+import { DeleteCollectionConfirmationPane } from "./DeleteCollectionConfirmationPane";
 
 describe("Delete Collection Confirmation Pane", () => {
   describe("Explorer.isLastCollection()", () => {
@@ -65,7 +65,7 @@ describe("Delete Collection Confirmation Pane", () => {
         closePanel: (): void => undefined,
         collectionName: "container",
       };
-      const wrapper = shallow(<DeleteCollectionConfirmationPanel {...props} />);
+      const wrapper = shallow(<DeleteCollectionConfirmationPane {...props} />);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
 
       props.explorer.isLastCollection = () => true;
@@ -119,7 +119,7 @@ describe("Delete Collection Confirmation Pane", () => {
         closePanel: (): void => undefined,
         collectionName: "container",
       };
-      wrapper = mount(<DeleteCollectionConfirmationPanel {...props} />);
+      wrapper = mount(<DeleteCollectionConfirmationPane {...props} />);
     });
 
     it("should call delete collection", () => {

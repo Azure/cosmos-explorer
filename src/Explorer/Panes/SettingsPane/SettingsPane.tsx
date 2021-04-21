@@ -1,14 +1,17 @@
 import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "office-ui-fabric-react";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
-import { Tooltip } from "../../../Common/Tooltip";
+import { Tooltip } from "../../../Common/Tooltip/Tooltip";
 import { configContext } from "../../../ConfigContext";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
 export interface SettingsPaneProps {
   explorer: Explorer;

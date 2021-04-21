@@ -3,22 +3,25 @@ import { IImageProps, Image, ImageFit, Stack, TextField } from "office-ui-fabric
 import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
+import { Collection } from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import QueryTab from "../../Tabs/QueryTab";
-import { Collection } from "..//../../Contracts/ViewModels";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
-interface LoadQueryPanelProps {
+interface LoadQueryPaneProps {
   explorer: Explorer;
   closePanel: () => void;
 }
 
-export const LoadQueryPanel: FunctionComponent<LoadQueryPanelProps> = ({
+export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
   explorer,
   closePanel,
-}: LoadQueryPanelProps): JSX.Element => {
+}: LoadQueryPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
