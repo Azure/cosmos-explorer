@@ -1,5 +1,4 @@
 import {
-  DatePicker,
   Dropdown,
   IDropdownOption,
   IDropdownStyles,
@@ -11,10 +10,11 @@ import {
   TooltipHost,
 } from "office-ui-fabric-react";
 import React, { FunctionComponent } from "react";
-import DeleteIcon from "../../../images/delete.svg";
-import EditIcon from "../../../images/Edit_entity.svg";
-import { CassandraType, TableType } from "../../Explorer/Tables/Constants";
-import { userContext } from "../../UserContext";
+import DeleteIcon from "../../images/delete.svg";
+import EditIcon from "../../images/Edit_entity.svg";
+import { CassandraType, TableType } from "../Explorer/Tables/Constants";
+import { userContext } from "../UserContext";
+import { EntityValue } from "./EntityValue";
 
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 
@@ -71,7 +71,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
 
   const sectionStackTokens: IStackTokens = { childrenGap: 12 };
 
-  const getEntityValue = (): string => {
+  const getEntityValueType = (): string => {
     const { Int, Smallint, Tinyint } = CassandraType;
     const { Double, Int32, Int64 } = TableType;
 
@@ -86,43 +86,6 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
       return "number";
     }
     return "string";
-  };
-
-  const renderEntityValue = (): JSX.Element => {
-    if (isEntityTypeDate) {
-      return (
-        <>
-          <DatePicker
-            className="addEntityDatePicker"
-            placeholder={entityValuePlaceholder}
-            value={entityValue && new Date(entityValue)}
-            ariaLabel={entityValuePlaceholder}
-            onSelectDate={onSelectDate}
-          />
-          <TextField
-            label={entityValueLabel && entityValueLabel}
-            id="entityTimeId"
-            autoFocus
-            type="time"
-            value={entityTimeValue}
-            onChange={onEntityTimeValueChange}
-          />
-        </>
-      );
-    }
-
-    return (
-      <TextField
-        label={entityValueLabel && entityValueLabel}
-        className="addEntityTextField"
-        id="entityValueId"
-        autoFocus
-        type={getEntityValue()}
-        placeholder={entityValuePlaceholder}
-        value={typeof entityValue === "string" && entityValue}
-        onChange={onEntityValueChange}
-      />
-    );
   };
 
   return (
@@ -147,7 +110,17 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           id="entityTypeId"
           styles={dropdownStyles}
         />
-        {renderEntityValue()}
+        <EntityValue
+          entityValueLabel={entityValueLabel}
+          entityValueType={getEntityValueType()}
+          entityValuePlaceholder={entityValuePlaceholder}
+          entityValue={entityValue}
+          isEntityTypeDate={isEntityTypeDate}
+          entityTimeValue={entityTimeValue}
+          onEntityValueChange={onEntityValueChange}
+          onSelectDate={onSelectDate}
+          onEntityTimeValueChange={onEntityTimeValueChange}
+        />
         <TooltipHost content="Edit property" id="editTooltip">
           <Image {...imageProps} src={EditIcon} alt="editEntity" id="editEntity" onClick={onEditEntity} />
         </TooltipHost>
