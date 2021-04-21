@@ -15,7 +15,7 @@ test("SQL CRUD", async () => {
   });
 
   // Create new database and collection
-  await explorer.click('[data-test="New Collection"]');
+  await explorer.click('[data-test="New asdasdas"]');
   await explorer.click('[data-test="addCollection-newDatabaseId"]');
   await explorer.fill('[data-test="addCollection-newDatabaseId"]', databaseId);
   await explorer.click('[data-test="addCollection-collectionId"]');
