@@ -10,7 +10,7 @@ describe("Browse queries panel", () => {
   const fakeExplorer = {} as Explorer;
   fakeExplorer.canSaveQueries = ko.computed<boolean>(() => true);
   const fakeClientQuery = {} as QueriesClient;
-  const fakeQueryData = {} as Query[];
+  const fakeQueryData = [] as Query[];
   fakeClientQuery.getQueries = async () => fakeQueryData;
   fakeExplorer.queriesClient = fakeClientQuery;
   const props = {
