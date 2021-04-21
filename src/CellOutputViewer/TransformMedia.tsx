@@ -3,7 +3,7 @@ import { Media } from "@nteract/outputs";
 import { ContentRef } from "@nteract/types";
 import React, { Suspense } from "react";
 
-const EmptyTransform = (): any => <></>;
+const EmptyTransform = (): JSX.Element => <></>;
 
 const displayOrder = [
   "application/vnd.jupyter.widget-view+json",
