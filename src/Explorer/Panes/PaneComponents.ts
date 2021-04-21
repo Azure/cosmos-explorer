@@ -3,7 +3,6 @@ import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
-import SetupNotebooksPaneTemplate from "./SetupNotebooksPane.html";
 import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
@@ -72,15 +71,6 @@ export class StringInputPaneComponent {
     return {
       viewModel: PaneComponent,
       template: StringInputPaneTemplate,
-    };
-  }
-}
-
-export class SetupNotebooksPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: SetupNotebooksPaneTemplate,
     };
   }
 }
