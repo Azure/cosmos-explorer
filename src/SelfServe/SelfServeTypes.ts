@@ -13,6 +13,7 @@ interface BaseInput {
   placeholderTKey?: (() => Promise<string>) | string;
 }
 
+/**@internal */
 export interface NumberInput extends BaseInput {
   min: (() => Promise<number>) | number;
   max: (() => Promise<number>) | number;
@@ -21,25 +22,30 @@ export interface NumberInput extends BaseInput {
   uiType: NumberUiType;
 }
 
+/**@internal */
 export interface BooleanInput extends BaseInput {
   trueLabelTKey: (() => Promise<string>) | string;
   falseLabelTKey: (() => Promise<string>) | string;
   defaultValue?: boolean;
 }
 
+/**@internal */
 export interface StringInput extends BaseInput {
   defaultValue?: string;
 }
 
+/**@internal */
 export interface ChoiceInput extends BaseInput {
   choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   defaultKey?: string;
 }
 
+/**@internal */
 export interface DescriptionDisplay extends BaseInput {
   description: (() => Promise<Description>) | Description;
 }
 
+/**@internal */
 export interface Node {
   id: string;
   info?: (() => Promise<Info>) | Info;
@@ -47,6 +53,7 @@ export interface Node {
   children?: Node[];
 }
 
+/**@internal */
 export interface SelfServeDescriptor {
   root: Node;
   initialize?: () => Promise<Map<string, SmartUiInput>>;
@@ -59,7 +66,11 @@ export interface SelfServeDescriptor {
   refreshParams?: RefreshParams;
 }
 
+/**@internal */
 export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
+
+/**@internal */
+export type InputTypeValue = "number" | "string" | "boolean" | "object";
 
 export abstract class SelfServeBaseClass {
   public abstract initialize: () => Promise<Map<string, SmartUiInput>>;
@@ -94,8 +105,6 @@ export abstract class SelfServeBaseClass {
     return selfServeDescriptor;
   }
 }
-
-export type InputTypeValue = "number" | "string" | "boolean" | "object";
 
 export enum NumberUiType {
   Spinner = "Spinner",

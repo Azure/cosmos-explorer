@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>RefreshParams | SelfServeModel</title>
+	<title>SelfServeType | SelfServeModel</title>
 	<meta name="description" content="Documentation for SelfServeModel">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -55,49 +55,63 @@
 					<a href="../modules.html">SelfServeModel</a>
 				</li>
 				<li>
-					<a href="../modules/selfservetypes.html">SelfServeTypes</a>
+					<a href="../modules/selfserveutils.html">SelfServeUtils</a>
 				</li>
 				<li>
-					<a href="selfservetypes.refreshparams.html">RefreshParams</a>
+					<a href="selfserveutils.selfservetype.html">SelfServeType</a>
 				</li>
 			</ul>
-			<h1>Interface RefreshParams</h1>
+			<h1>Enumeration SelfServeType</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">RefreshParams</span>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="selfservetypes.refreshparams.html#retryintervalinms" class="tsd-kind-icon">retry<wbr>Interval<wbr>InMs</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="selfserveutils.selfservetype.html#example" class="tsd-kind-icon">example</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="selfserveutils.selfservetype.html#invalid" class="tsd-kind-icon">invalid</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="selfserveutils.selfservetype.html#sqlx" class="tsd-kind-icon">sqlx</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="retryintervalinms" class="tsd-anchor"></a>
-					<h3>retry<wbr>Interval<wbr>InMs</h3>
-					<div class="tsd-signature tsd-kind-icon">retry<wbr>Interval<wbr>InMs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="example" class="tsd-anchor"></a>
+					<h3>example</h3>
+					<div class="tsd-signature tsd-kind-icon">example<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;example&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeTypes.ts#L171">SelfServeTypes.ts:171</a></li>
+							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeUtils.tsx#L25">SelfServeUtils.tsx:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="invalid" class="tsd-anchor"></a>
+					<h3>invalid</h3>
+					<div class="tsd-signature tsd-kind-icon">invalid<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;invalid&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeUtils.tsx#L23">SelfServeUtils.tsx:23</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="sqlx" class="tsd-anchor"></a>
+					<h3>sqlx</h3>
+					<div class="tsd-signature tsd-kind-icon">sqlx<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;sqlx&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Azure/cosmos-explorer/blob/442aa4df/src/SelfServe/SelfServeUtils.tsx#L26">SelfServeUtils.tsx:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -115,10 +129,10 @@
 					<li class=" tsd-kind-module">
 						<a href="../modules/selfservetelemetryprocessor.html">Self<wbr>Serve<wbr>Telemetry<wbr>Processor</a>
 					</li>
-					<li class="current tsd-kind-module">
+					<li class=" tsd-kind-module">
 						<a href="../modules/selfservetypes.html">Self<wbr>Serve<wbr>Types</a>
 					</li>
-					<li class=" tsd-kind-module">
+					<li class="current tsd-kind-module">
 						<a href="../modules/selfserveutils.html">Self<wbr>Serve<wbr>Utils</a>
 					</li>
 				</ul>
@@ -126,49 +140,28 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/selfservetypes.descriptiontype.html" class="tsd-kind-icon">Description<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/selfservetypes.numberuitype.html" class="tsd-kind-icon">Number<wbr>UiType</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/selfservetypes.selfservebaseclass.html" class="tsd-kind-icon">Self<wbr>Serve<wbr>Base<wbr>Class</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.description.html" class="tsd-kind-icon">Description</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.info.html" class="tsd-kind-icon">Info</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.onsaveresult.html" class="tsd-kind-icon">On<wbr>Save<wbr>Result</a>
+						<a href="selfserveutils.bladetype.html" class="tsd-kind-icon">Blade<wbr>Type</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.refreshparams.html" class="tsd-kind-icon">Refresh<wbr>Params</a>
+					<li class="current tsd-kind-enum tsd-parent-kind-module">
+						<a href="selfserveutils.selfservetype.html" class="tsd-kind-icon">Self<wbr>Serve<wbr>Type</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="selfservetypes.refreshparams.html#retryintervalinms" class="tsd-kind-icon">retry<wbr>Interval<wbr>InMs</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="selfserveutils.selfservetype.html#example" class="tsd-kind-icon">example</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="selfserveutils.selfservetype.html#invalid" class="tsd-kind-icon">invalid</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="selfserveutils.selfservetype.html#sqlx" class="tsd-kind-icon">sqlx</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.refreshresult.html" class="tsd-kind-icon">Refresh<wbr>Result</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.selfservetelemetrymessage.html" class="tsd-kind-icon">Self<wbr>Serve<wbr>Telemetry<wbr>Message</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.smartuiinput.html" class="tsd-kind-icon">Smart<wbr>UiInput</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/selfservetypes.html#choiceitem" class="tsd-kind-icon">Choice<wbr>Item</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/selfservetypes.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/selfserveutils.html#generatebladelink" class="tsd-kind-icon">generate<wbr>Blade<wbr>Link</a>
 					</li>
 				</ul>
 			</nav>
@@ -184,11 +177,10 @@
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>

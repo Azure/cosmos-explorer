@@ -34,7 +34,10 @@
       "./src/SelfServe/SelfServeTypes.ts",
       "./src/SelfServe/SelfServeUtils.tsx"
     ],
-    "out": "docs"
+    "out": "docs",
+    "excludeInternal": true,
+    "name": "SelfServeModel",
+    "readme": "./src/SelfServe/Documentation/README.md"
   },
   "include": [
     "./src/**/*",

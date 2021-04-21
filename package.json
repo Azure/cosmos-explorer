@@ -192,7 +192,7 @@
     "watch": "npm run start",
     "wait-for-server": "wait-on -t 240000 -i 5000 -v https-get://0.0.0.0:1234/",
     "build:ase": "gulp build:ase",
-    "selfServeDocs": "typedoc --excludeInternal --readme src/SelfServe/Documentation/README.md --name SelfServeModel",
+    "selfServeDocs": "typedoc",
     "compile": "tsc",
     "compile:contracts": "tsc -p ./tsconfig.contracts.json",
     "compile:strict": "tsc -p ./tsconfig.strict.json",

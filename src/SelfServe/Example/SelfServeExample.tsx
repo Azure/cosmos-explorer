@@ -9,7 +9,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import {
   getMaxCollectionThroughput,
@@ -19,7 +19,7 @@ import {
   initialize,
   onRefreshSelfServeExample,
   Regions,
-  update,
+  update
 } from "./SelfServeExample.rp";
 
 const regionDropdownItems: ChoiceItem[] = [
@@ -72,23 +72,6 @@ const validate = (
     throw new Error("RegionsAndAccountNameValidationError");
   }
 };
-
-/*
-  This is an example self serve class that auto generates UI components for your feature.
-
-  Each self serve class
-    - Needs to extends the SelfServeBase class.
-    - Needs to have the @IsDisplayable() decorator to tell the compiler that UI needs to be generated from this class.
-    - Needs to define an onSave() function, a callback for when the submit button is clicked.
-    - Needs to define an initialize() function, to set default values for the inputs.
-    - Needs to define an onRefresh() function, a callback for when the refresh button is clicked.
-
-  You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
-  and plumb in similar feature flags for your own self serve class.
-
-  All string to be used should be present in the "src/Localization" folder, in the language specific json files. The 
-  corresponding key should be given as the value for the fields like "label", the error message etc.
-*/
 
 /*
   @IsDisplayable()

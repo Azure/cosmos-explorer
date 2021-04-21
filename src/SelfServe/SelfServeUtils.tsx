@@ -18,10 +18,7 @@ import {
   StringInput
 } from "./SelfServeTypes";
 
-/**@internal */
 export enum SelfServeType {
-  // No self serve type passed, launch explorer
-  none = "none",
   // Unsupported self serve type passed as feature flag
   invalid = "invalid",
   // Add your self serve types here
@@ -36,6 +33,13 @@ export enum BladeType {
   GremlinKeys = "keys",
   TableKeys = "tableKeys",
 }
+
+export const generateBladeLink = (blade: BladeType): string => {
+  const subscriptionId = userContext.subscriptionId;
+  const resourceGroupName = userContext.resourceGroup;
+  const databaseAccountName = userContext.databaseAccount.name;
+  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
+};
 
 /**@internal */
 export interface DecoratorProperties {
@@ -196,11 +200,4 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
       }
       return value as ChoiceInput;
   }
-};
-
-export const generateBladeLink = (blade: BladeType): string => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroupName = userContext.resourceGroup;
-  const databaseAccountName = userContext.databaseAccount.name;
-  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };
