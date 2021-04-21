@@ -1,11 +1,11 @@
-import { ITextFieldProps, Stack, Text, TextField, Dropdown, IDropdownProps } from "office-ui-fabric-react";
+import { ImmutableNotebook } from "@nteract/commutable/src";
+import Html2Canvas from "html2canvas";
+import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
-import "./PublishNotebookPaneComponent.less";
-import Html2Canvas from "html2canvas";
-import { ImmutableNotebook } from "@nteract/commutable/src";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
+import "./PublishNotebookPaneComponent.less";
 
 export interface PublishNotebookPaneProps {
   notebookName: string;
@@ -40,6 +40,10 @@ enum ImageTypes {
 
 export class PublishNotebookPaneComponent extends React.Component<PublishNotebookPaneProps, PublishNotebookPaneState> {
   private static readonly maxImageSizeInMib = 1.5;
+  public static readonly CARD_WIDTH = 256;
+  private static readonly cardImageHeight = 144;
+  private static readonly cardHeightToWidthRatio =
+    PublishNotebookPaneComponent.cardImageHeight / PublishNotebookPaneComponent.CARD_WIDTH;
   private descriptionPara1: string;
   private descriptionPara2: string;
   private nameProps: ITextFieldProps;
@@ -94,7 +98,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
           //redraw canvas to fit Card Cover Image dimensions
           const originalImageData = canvas.toDataURL();
           const requiredHeight =
-            parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+            parseInt(canvas.style.width.split("px")[0]) * PublishNotebookPaneComponent.cardHeightToWidthRatio;
           canvas.height = requiredHeight;
           const context = canvas.getContext("2d");
           const image = new Image();
