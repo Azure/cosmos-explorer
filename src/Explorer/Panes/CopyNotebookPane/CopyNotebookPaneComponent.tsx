@@ -1,18 +1,18 @@
-import * as GitHubUtils from "../../Utils/GitHubUtils";
-import * as React from "react";
-import { IPinnedRepo } from "../../Juno/JunoClient";
-import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import {
-  Stack,
-  Label,
-  Text,
   Dropdown,
-  IDropdownProps,
   IDropdownOption,
-  SelectableOptionMenuItemType,
+  IDropdownProps,
   IRenderFunction,
   ISelectableOption,
+  Label,
+  SelectableOptionMenuItemType,
+  Stack,
+  Text,
 } from "office-ui-fabric-react";
+import React, { FormEvent, FunctionComponent } from "react";
+import { IPinnedRepo } from "../../../Juno/JunoClient";
+import * as GitHubUtils from "../../../Utils/GitHubUtils";
+import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
 
 interface Location {
   type: "MyNotebooks" | "GitHub";
@@ -26,46 +26,25 @@ interface Location {
 export interface CopyNotebookPaneProps {
   name: string;
   pinnedRepos: IPinnedRepo[];
-  onDropDownChange: (_: React.FormEvent<HTMLDivElement>, option?: IDropdownOption) => void;
+  onDropDownChange: (_: FormEvent<HTMLDivElement>, option?: IDropdownOption) => void;
 }
 
-export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneProps> {
-  private static readonly BranchNameWhiteSpace = "   ";
+export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps> = ({
+  name,
+  pinnedRepos,
+  onDropDownChange,
+}: CopyNotebookPaneProps) => {
+  const BranchNameWhiteSpace = "   ";
 
-  public render(): JSX.Element {
-    const dropDownProps: IDropdownProps = {
-      label: "Location",
-      ariaLabel: "Location",
-      placeholder: "Select an option",
-      onRenderTitle: this.onRenderDropDownTitle,
-      onRenderOption: this.onRenderDropDownOption,
-      options: this.getDropDownOptions(),
-      onChange: this.props.onDropDownChange,
-    };
-
-    return (
-      <div className="paneMainContent">
-        <Stack tokens={{ childrenGap: 10 }}>
-          <Stack.Item>
-            <Label htmlFor="notebookName">Name</Label>
-            <Text id="notebookName">{this.props.name}</Text>
-          </Stack.Item>
-
-          <Dropdown {...dropDownProps} />
-        </Stack>
-      </div>
-    );
-  }
-
-  private onRenderDropDownTitle: IRenderFunction<IDropdownOption[]> = (options: IDropdownOption[]): JSX.Element => {
+  const onRenderDropDownTitle: IRenderFunction<IDropdownOption[]> = (options: IDropdownOption[]): JSX.Element => {
     return <span>{options.length && options[0].title}</span>;
   };
 
-  private onRenderDropDownOption: IRenderFunction<ISelectableOption> = (option: ISelectableOption): JSX.Element => {
+  const onRenderDropDownOption: IRenderFunction<ISelectableOption> = (option: ISelectableOption): JSX.Element => {
     return <span style={{ whiteSpace: "pre-wrap" }}>{option.text}</span>;
   };
 
-  private getDropDownOptions = (): IDropdownOption[] => {
+  const getDropDownOptions = (): IDropdownOption[] => {
     const options: IDropdownOption[] = [];
 
     options.push({
@@ -77,7 +56,7 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
       } as Location,
     });
 
-    if (this.props.pinnedRepos && this.props.pinnedRepos.length > 0) {
+    if (pinnedRepos && pinnedRepos.length > 0) {
       options.push({
         key: "GitHub-Header-Divider",
         text: undefined,
@@ -90,7 +69,7 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
         itemType: SelectableOptionMenuItemType.Header,
       });
 
-      this.props.pinnedRepos.forEach((pinnedRepo) => {
+      pinnedRepos.forEach((pinnedRepo) => {
         const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
         options.push({
           key: `GitHub-Repo-${repoFullName}`,
@@ -101,7 +80,7 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
         pinnedRepo.branches.forEach((branch) =>
           options.push({
             key: `GitHub-Repo-${repoFullName}-${branch.name}`,
-            text: `${CopyNotebookPaneComponent.BranchNameWhiteSpace}${branch.name}`,
+            text: `${BranchNameWhiteSpace}${branch.name}`,
             title: `${repoFullName} - ${branch.name}`,
             data: {
               type: "GitHub",
@@ -116,4 +95,26 @@ export class CopyNotebookPaneComponent extends React.Component<CopyNotebookPaneP
 
     return options;
   };
-}
+  const dropDownProps: IDropdownProps = {
+    label: "Location",
+    ariaLabel: "Location",
+    placeholder: "Select an option",
+    onRenderTitle: onRenderDropDownTitle,
+    onRenderOption: onRenderDropDownOption,
+    options: getDropDownOptions(),
+    onChange: onDropDownChange,
+  };
+
+  return (
+    <div className="paneMainContent">
+      <Stack tokens={{ childrenGap: 10 }}>
+        <Stack.Item>
+          <Label htmlFor="notebookName">Name</Label>
+          <Text id="notebookName">{name}</Text>
+        </Stack.Item>
+
+        <Dropdown {...dropDownProps} />
+      </Stack>
+    </div>
+  );
+};
