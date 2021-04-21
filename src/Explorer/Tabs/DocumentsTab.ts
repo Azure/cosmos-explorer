@@ -22,11 +22,10 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import DocumentId from "../Tree/DocumentId";
 import template from "./DocumentsTab.html";
@@ -726,7 +725,7 @@ export default class DocumentsTab extends TabsBase {
         (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
+          logConsoleError(errorMessage);
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(
               Action.Tab,

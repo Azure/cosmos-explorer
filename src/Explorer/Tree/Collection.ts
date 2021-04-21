@@ -1065,7 +1065,7 @@ export default class Collection implements ViewModels.Collection {
    * Top-level method that will open the correct tab type depending on account API
    */
   public openTab(): void {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       this.onTableEntitiesClick();
       return;
     } else if (userContext.apiType === "Cassandra") {
@@ -1086,7 +1086,7 @@ export default class Collection implements ViewModels.Collection {
    * Get correct collection label depending on account API
    */
   public getLabel(): string {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       return "Entities";
     } else if (userContext.apiType === "Cassandra") {
       return "Rows";
