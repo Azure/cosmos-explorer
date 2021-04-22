@@ -2026,7 +2026,10 @@ export default class Explorer {
   public onNewCollectionClicked(): void {
     if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
-    } else  {
+    } else if (userContext.features.enableKOPanel) {
+      this.addCollectionPane.open(this.selectedDatabaseId());
+      document.getElementById("linkAddCollection").focus();
+    } else {
       this.openAddCollectionPanel();
     }
   }

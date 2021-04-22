@@ -74,7 +74,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
         {this.state.isAutoscaleSelected && (
           <Stack className="throughputInputSpacing">
             <Text variant="small">
-              Provision maximum RU/s required by this resource. Estimate your required RU/s with&nbsp;
+              Estimate your required RU/s with&nbsp;
               <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
                 capacity calculator
               </Link>
@@ -271,10 +271,20 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
     ? PricingUtils.getAutoscalePricePerRu(serverId, multiplier) * multiplier
     : PricingUtils.getPricePerRu(serverId) * multiplier;
 
+  const iconWithEstimatedCostDisclaimer: JSX.Element = (
+    <TooltipHost
+      directionalHint={DirectionalHint.bottomLeftEdge}
+      content={PricingUtils.estimatedCostDisclaimer}
+      styles={{ root: { verticalAlign: "bottom" } }}
+    >
+      <Icon iconName="InfoSolid" className="panelInfoIcon" />
+    </TooltipHost>
+  );
+
   if (isAutoscale) {
     return (
       <Text variant="small">
-        Estimated monthly cost ({currency}):{" "}
+        Estimated monthly cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
         <b>
           {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice / 10)} -{" "}
           {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)}{" "}
@@ -287,7 +297,7 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
 
   return (
     <Text variant="small">
-      Cost ({currency}):{" "}
+      Estimated cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
       <b>
         {currencySign + PricingUtils.calculateEstimateNumber(hourlyPrice)} hourly /{" "}
         {currencySign + PricingUtils.calculateEstimateNumber(dailyPrice)} daily /{" "}
@@ -295,8 +305,6 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
       </b>
       ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits}RU/s,{" "}
       {currencySign + pricePerRu}/RU)
-      <br />
-      <em>{PricingUtils.estimatedCostDisclaimer}</em>
     </Text>
   );
 };
