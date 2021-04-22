@@ -1,13 +1,13 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
-
+import { KeyCodes } from "../../../Common/Constants";
+import { userContext } from "../../../UserContext";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { getQuotedCqlIdentifier } from "../CqlUtilities";
+import * as DataTableUtilities from "../DataTable/DataTableUtilities";
+import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
 import QueryBuilderViewModel from "./QueryBuilderViewModel";
 import QueryClauseViewModel from "./QueryClauseViewModel";
-import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import * as DataTableUtilities from "../DataTable/DataTableUtilities";
-import { KeyCodes } from "../../../Common/Constants";
-import { getQuotedCqlIdentifier } from "../CqlUtilities";
 
 export default class QueryViewModel {
   public topValueLimitMessage: string = "Please input a number between 0 and 1000.";
@@ -47,7 +47,7 @@ export default class QueryViewModel {
     this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel();
 
     this.queryTextIsReadOnly = ko.computed<boolean>(() => {
-      return !this.queryTablesTab.container.isPreferredApiCassandra();
+      return userContext.apiType !== "Cassandra";
     });
     let initialOptions = this._tableEntityListViewModel.headers;
     this.columnOptions = ko.observableArray<string>(initialOptions);
@@ -127,7 +127,7 @@ export default class QueryViewModel {
   private setFilter = (): string => {
     var queryString = this.isEditorActive()
       ? this.queryText()
-      : this.queryTablesTab.container.isPreferredApiCassandra()
+      : userContext.apiType === "Cassandra"
       ? this.queryBuilderViewModel().getCqlFilterFromClauses()
       : this.queryBuilderViewModel().getODataFilterFromClauses();
     var filter = queryString;
@@ -160,7 +160,7 @@ export default class QueryViewModel {
 
   public runQuery = (): DataTables.DataTable => {
     var filter = this.setFilter();
-    if (filter && !this.queryTablesTab.container.isPreferredApiCassandra()) {
+    if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
     }
     var top = this.topValue();
@@ -198,8 +198,7 @@ export default class QueryViewModel {
   };
 
   public selectQueryOptions(): Promise<any> {
-    this.queryTablesTab.container.querySelectPane.queryViewModel = this;
-    this.queryTablesTab.container.querySelectPane.open();
+    this.queryTablesTab.container.openTableSelectQueryPanel(this);
     return null;
   }
 

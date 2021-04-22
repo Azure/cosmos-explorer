@@ -127,13 +127,13 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
     this.partitionKey.extend({ rateLimit: 100 });
     this.partitionKeyPattern = ko.pureComputed(() => {
-      if (this.container && this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "^/[^/]*";
       }
       return ".*";
     });
     this.partitionKeyTitle = ko.pureComputed(() => {
-      if (this.container && this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "May not use composite partition key";
       }
       return "";
@@ -331,7 +331,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
       if (currentCollections >= maxCollections) {
         let typeOfContainer = "collection";
-        if (this.container.isPreferredApiGraph() || this.container.isPreferredApiTable()) {
+        if (userContext.apiType === "Gremlin" || userContext.apiType === "Tables") {
           typeOfContainer = "container";
         }
 
@@ -368,7 +368,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "e.g., address.zipCode";
       }
 
-      if (this.container && !!this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "Gremlin") {
         return "e.g., /address";
       }
 
@@ -384,21 +384,15 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.uniqueKeysVisible = ko.pureComputed<boolean>(() => {
-      if (
-        this.container == null ||
-        !!this.container.isPreferredApiMongoDB() ||
-        !!this.container.isPreferredApiTable() ||
-        !!this.container.isPreferredApiCassandra() ||
-        !!this.container.isPreferredApiGraph()
-      ) {
-        return false;
+      if (userContext.apiType === "SQL") {
+        return true;
       }
 
-      return true;
+      return false;
     });
 
     this.partitionKeyVisible = ko.computed<boolean>(() => {
-      if (this.container == null || !!this.container.isPreferredApiTable()) {
+      if (this.container == null || userContext.apiType === "Tables") {
         return false;
       }
 
@@ -591,7 +585,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return false;
       }
 
-      if (this.container.isPreferredApiDocumentDB()) {
+      if (userContext.apiType === "SQL") {
         return true;
       }
 
@@ -599,7 +593,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return true;
       }
 
-      if (this.container.isPreferredApiCassandra() && this.container.hasStorageAnalyticsAfecFeature()) {
+      if (userContext.apiType === "Cassandra" && this.container.hasStorageAnalyticsAfecFeature()) {
         return true;
       }
 
@@ -763,7 +757,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return;
     }
 
-    if (!!this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
       this.databaseId(SharedConstants.CollectionCreation.TablesAPIDefaultDatabase);
       this.partitionKey("/'$pk'");
@@ -923,8 +917,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.databaseId("");
     this.partitionKey("");
     this.throughputSpendAck(false);
-    this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
-    this.isSharedAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    if (!this.container.isServerlessEnabled()) {
+      this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+      this.isSharedAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
+    }
     this.autoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
     this.sharedAutoPilotThroughput(AutoPilotUtils.minAutoPilotThroughput);
 
@@ -958,7 +954,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   }
 
   public isNonTableApi = (): boolean => {
-    return !this.container.isPreferredApiTable();
+    return userContext.apiType !== "Tables";
   };
 
   public isUnlimitedStorageSelected = (): boolean => {
@@ -1011,7 +1007,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
       return false;
     }
 
-    if (this.container.isPreferredApiGraph() && (this.partitionKey() === "/id" || this.partitionKey() === "/label")) {
+    if (userContext.apiType === "Gremlin" && (this.partitionKey() === "/id" || this.partitionKey() === "/label")) {
       this.formErrors("/id and /label as partition keys are not allowed for graph.");
       return false;
     }
@@ -1032,7 +1028,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
 
   private _setFocus() {
     // Autofocus is enabled on AddCollectionPane based on the preferred API
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       const focusTableId = document.getElementById("containerId");
       focusTableId && focusTableId.focus();
       return;

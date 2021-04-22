@@ -21,11 +21,10 @@ import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/Telemetr
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
@@ -62,11 +61,7 @@ export default class NotebookTabV2 extends TabsBase {
     }
 
     this.notebookPath = ko.observable(options.notebookContentItem.path);
-
-    this.container.notebookServerInfo.subscribe((newValue: DataModels.NotebookWorkspaceConnectionInfo) => {
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "New notebook server info received.");
-    });
-
+    this.container.notebookServerInfo.subscribe(() => logConsoleInfo("New notebook server info received."));
     this.notebookComponentAdapter = new NotebookComponentAdapter({
       contentItem: options.notebookContentItem,
       notebooksBasePath: this.container.getNotebookBasePath(),
@@ -88,7 +83,6 @@ export default class NotebookTabV2 extends TabsBase {
   public onCloseTabButtonClick(): Q.Promise<any> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
-      this.isActive(false);
       super.onCloseTabButtonClick();
     };
 

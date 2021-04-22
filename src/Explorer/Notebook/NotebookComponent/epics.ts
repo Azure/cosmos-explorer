@@ -1,52 +1,49 @@
-import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer, from } from "rxjs";
-import { webSocket } from "rxjs/webSocket";
-import { StateObservable } from "redux-observable";
-import { ofType } from "redux-observable";
 import {
-  mergeMap,
-  tap,
-  retryWhen,
-  delayWhen,
-  map,
-  switchMap,
-  take,
-  filter,
-  catchError,
-  first,
-  concatMap,
-  timeout,
-} from "rxjs/operators";
-import {
-  AppState,
-  ServerConfig as JupyterServerConfig,
-  JupyterHostRecordProps,
-  RemoteKernelProps,
-  castToSessionId,
-  createKernelRef,
-  KernelRef,
-  ContentRef,
-  KernelInfo,
   actions,
+  AppState,
+  castToSessionId,
+  ContentRef,
+  createKernelRef,
+  JupyterHostRecordProps,
+  KernelInfo,
+  KernelRef,
+  RemoteKernelProps,
   selectors,
+  ServerConfig as JupyterServerConfig,
 } from "@nteract/core";
-import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
-import { sessions, kernels } from "rx-jupyter";
+import { Channels, childOf, createMessage, JupyterMessage, message, ofMessageType } from "@nteract/messaging";
 import { RecordOf } from "immutable";
 import { AnyAction } from "redux";
-
+import { ofType, StateObservable } from "redux-observable";
+import { kernels, sessions } from "rx-jupyter";
+import { concat, EMPTY, from, merge, Observable, Observer, of, Subject, Subscriber, timer } from "rxjs";
+import {
+  catchError,
+  concatMap,
+  delayWhen,
+  filter,
+  first,
+  map,
+  mergeMap,
+  retryWhen,
+  switchMap,
+  take,
+  tap,
+  timeout,
+} from "rxjs/operators";
+import { webSocket } from "rxjs/webSocket";
 import * as Constants from "../../../Common/Constants";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as CdbActions from "./actions";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { Areas } from "../../../Common/Constants";
 import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { CdbAppState } from "./types";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
-import * as TextFile from "./contents/file/text-file";
-import { NotebookUtil } from "../NotebookUtil";
+import { logConsoleError, logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
-import { Areas } from "../../../Common/Constants";
+import { NotebookUtil } from "../NotebookUtil";
+import * as CdbActions from "./actions";
+import * as TextFile from "./contents/file/text-file";
+import { CdbAppState } from "./types";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
@@ -311,7 +308,7 @@ export const launchWebSocketKernelEpic = (
         if (currentKernelspecs) {
           kernelSpecToLaunch = currentKernelspecs.defaultKernelName;
           const msg = `No kernelspec name specified to launch, using default kernel: ${kernelSpecToLaunch}`;
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
+          logConsoleInfo(msg);
           logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
         } else {
           return of(
@@ -337,7 +334,7 @@ export const launchWebSocketKernelEpic = (
           kernelSpecToLaunch = currentKernelspecs.defaultKernelName;
           msg += ` Using default kernel: ${kernelSpecToLaunch}`;
         }
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
+        logConsoleInfo(msg);
         logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
       }
 
@@ -634,7 +631,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
         case actions.RESTART_KERNEL_SUCCESSFUL: {
           const title = "Kernel restart";
           const msg = "Kernel successfully restarted";
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
+          logConsoleInfo(msg);
           logFailureToTelemetry(state$.value, title, msg);
           break;
         }
@@ -645,7 +642,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
         case actions.SAVE_FAILED: {
           const title = "Save failure";
           const msg = `Failed to save notebook: ${(action as actions.SaveFailed).payload.error}`;
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+          logConsoleError(msg);
           logFailureToTelemetry(state$.value, title, msg);
           break;
         }
@@ -654,7 +651,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
           const filepath = selectors.filepath(state$.value, { contentRef: typedAction.payload.contentRef });
           const title = "Fetching content failure";
           const msg = `Failed to fetch notebook content: ${filepath}, error: ${typedAction.payload.error}`;
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+          logConsoleError(msg);
           logFailureToTelemetry(state$.value, title, msg);
           break;
         }
@@ -679,7 +676,7 @@ const handleKernelConnectionLostEpic = (
       const state = state$.value;
 
       const msg = "Notebook was disconnected from kernel";
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+      logConsoleError(msg);
       logFailureToTelemetry(state, "Error", "Kernel connection error");
 
       const host = selectors.currentHost(state);
@@ -692,7 +689,7 @@ const handleKernelConnectionLostEpic = (
       if (delayMs > Constants.Notebook.kernelRestartMaxDelayMs) {
         const msg =
           "Restarted kernel too many times. Please reload the page to enable Data Explorer to restart the kernel automatically.";
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+        logConsoleError(msg);
         logFailureToTelemetry(state, "Kernel restart error", msg);
 
         const explorer = window.dataExplorer;
@@ -810,7 +807,7 @@ const closeUnsupportedMimetypesEpic = (
         );
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
         explorer.showOkModalDialog("File cannot be rendered", msg);
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+        logConsoleError(msg);
       }
       return EMPTY;
     })
@@ -838,7 +835,7 @@ const closeContentFailedToFetchEpic = (
         );
         const msg = `Failed to load file: ${filepath}.`;
         explorer.showOkModalDialog("Failure to load", msg);
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+        logConsoleError(msg);
       }
       return EMPTY;
     })
