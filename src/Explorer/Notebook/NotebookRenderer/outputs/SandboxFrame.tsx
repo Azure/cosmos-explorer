@@ -1,14 +1,14 @@
-import Html2Canvas from "html2canvas";
 import React from "react";
 import ReactDOM from "react-dom";
 import { copyStyles } from "../../../../Utils/StyleUtils";
-import { GalleryCardComponent } from "../../../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import { SnapshotFragment } from "../../NotebookComponent/types";
+import { NotebookUtil } from "../../NotebookUtil";
 
 interface SandboxFrameProps {
   style: React.CSSProperties;
   sandbox: string;
   onNewSnapshot: (snapshot: SnapshotFragment) => void;
+  onError: (error: Error) => void;
   snapshotRequestId: string;
 }
 
@@ -38,50 +38,17 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
       return;
     }
 
-    const target = this.topNodeRef.current;
-    console.log('snapshotting', target);
-    // target.scrollIntoView();
-    Html2Canvas(target, {
-      useCORS: true,
-      allowTaint: true,
-      scale: 1,
-      logging: true,
-    })
-      .then((canvas) => {
-        console.log('canvas', canvas);
-        //redraw canvas to fit Card Cover Image dimensions
-        const originalImageData = canvas.toDataURL();
-        const requiredHeight =
-          parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
-        if (originalImageData === "data:,") {
-          // Empty output
-          this.props.onNewSnapshot({
-            image: undefined,
-            boundingClientRect: this.state.frame.getBoundingClientRect(),
-            requestId: this.props.snapshotRequestId,
-          });
-          console.log('onNewSnapshot2')
-          return;
-        }
-        canvas.height = requiredHeight;
-        const context = canvas.getContext("2d");
-        const image = new Image();
-        image.src = originalImageData;
-        image.onload = () => {
-          console.log('image loaded')
-          context.drawImage(image, 0, 0);
-          this.props.onNewSnapshot({
-            image,
-            boundingClientRect: this.state.frame.getBoundingClientRect(),
-            requestId: this.props.snapshotRequestId,
-          });
-          console.log('onNewSnapshot')
-        };
-      })
-      .catch((error) => {
-        // TODO HANDLE ERROR
-        console.error(error);
-      });
+    NotebookUtil.takeScreenshot(
+      this.topNodeRef.current,
+      undefined,
+      undefined,
+      (imageSrc, image) => this.props.onNewSnapshot({
+        image,
+        boundingClientRect: this.state.frame.getBoundingClientRect(),
+        requestId: this.props.snapshotRequestId,
+      }),
+      this.props.onError
+    );
   }
 
   render(): JSX.Element {

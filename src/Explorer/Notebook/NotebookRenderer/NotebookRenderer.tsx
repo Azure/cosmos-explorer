@@ -43,7 +43,7 @@ interface NotebookRendererDispatchProps {
 interface StateProps {
   pendingSnapshotRequest: {
     requestId: string;
-    viewport: DOMRect;
+    aspectRatio: number;
   };
   cellOutputSnapshots: Map<string, SnapshotFragment>;
   notebookSnapshot: { imageSrc: string; requestId: string };
@@ -104,6 +104,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     ) {
       NotebookUtil.takeScreenshot(
         this.notebookRendererRef.current,
+        this.props.pendingSnapshotRequest.aspectRatio,
         [...this.props.cellOutputSnapshots.values()],
         (imageSrc) => this.props.storeNotebookSnapshot(imageSrc, this.props.pendingSnapshotRequest.requestId),
         (error) => this.props.notebookSnapshotError(error.message)

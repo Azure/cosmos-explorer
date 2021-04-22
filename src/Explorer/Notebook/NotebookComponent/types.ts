@@ -18,7 +18,7 @@ export interface CdbRecordProps {
   notebookSnapshot: { imageSrc: string; requestId: string };
   pendingSnapshotRequest: {
     requestId: string;
-    viewport: DOMRect;
+    aspectRatio: number;
   };
   notebookSnapshotError: string;
 }

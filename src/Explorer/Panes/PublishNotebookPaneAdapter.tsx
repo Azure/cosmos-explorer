@@ -36,7 +36,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
   private snapshotImageSrc: string;
   private notebookObject: ImmutableNotebook;
   private isCodeOfConductAccepted: boolean;
-  private onTakeSnapshot: (viewport: DOMRect) => void;
+  private onTakeSnapshot: (aspectRatio: number) => void;
 
   constructor(private container: Explorer, private junoClient: JunoClient) {
     this.parameters = ko.observable(Date.now());
@@ -76,7 +76,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
       onChangeImageSrc: (newValue: string) => (this.imageSrc = newValue),
       onError: this.createFormError,
       clearFormError: this.clearFormError,
-      onTakeSnapshot: (viewport: DOMRect) => this.onTakeSnapshot(viewport),
+      onTakeSnapshot: (aspectRatio: number) => this.onTakeSnapshot(aspectRatio),
     };
 
     return (
@@ -106,7 +106,7 @@ export class PublishNotebookPaneAdapter implements ReactAdapter {
     name: string,
     author: string,
     notebookContent: string | ImmutableNotebook,
-    onTakeSnapshot: (viewport: DOMRect) => void
+    onTakeSnapshot: (aspectRatio: number) => void
   ): Promise<OpenPublishPaneReturnType> {
     this.onTakeSnapshot = onTakeSnapshot;
 

@@ -1480,7 +1480,7 @@ export default class Explorer {
   public async publishNotebook(
     name: string,
     content: string | unknown,
-    onTakeSnapshot?: (viewport: DOMRect) => void
+    onTakeSnapshot?: (aspectRatio: number) => void
   ): Promise<OpenPublishPaneReturnType> {
     let result;
 

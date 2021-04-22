@@ -123,7 +123,7 @@ export default class NotebookManager {
   public async openPublishNotebookPane(
     name: string,
     content: string | ImmutableNotebook,
-    onTakeSnapshot: (viewport: DOMRect) => void
+    onTakeSnapshot: (aspectRatio: number) => void
   ): Promise<OpenPublishPaneReturnType> {
     return await this.publishNotebookPaneAdapter.open(name, getFullName(), content, onTakeSnapshot);
   }

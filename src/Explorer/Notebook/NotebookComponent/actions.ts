@@ -128,12 +128,15 @@ export const TAKE_NOTEBOOK_SNAPSHOT = "TAKE_NOTEBOOK_SNAPSHOT";
 export interface TakeNotebookSnapshotAction {
   type: "TAKE_NOTEBOOK_SNAPSHOT";
   payload: {
-    viewport: DOMRect;
+    aspectRatio: number;
     requestId: string;
   };
 }
 
-export const takeNotebookSnapshot = (payload: { viewport: DOMRect; requestId: string }): TakeNotebookSnapshotAction => {
+export const takeNotebookSnapshot = (payload: {
+  aspectRatio: number;
+  requestId: string;
+}): TakeNotebookSnapshotAction => {
   return {
     type: TAKE_NOTEBOOK_SNAPSHOT,
     payload,

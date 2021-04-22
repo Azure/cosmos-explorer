@@ -20,7 +20,7 @@ export interface PublishNotebookPaneProps {
   onChangeImageSrc: (newValue: string) => void;
   onError: (formError: string, formErrorDetail: string, area: string) => void;
   clearFormError: () => void;
-  onTakeSnapshot: (viewport: DOMRect) => void;
+  onTakeSnapshot: (aspectRatio: number) => void;
 }
 
 interface PublishNotebookPaneState {
@@ -129,7 +129,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
           try {
-            this.props.onTakeSnapshot(undefined);
+            this.props.onTakeSnapshot(GalleryCardComponent.cardHeightToWidthRatio);
           } catch (error) {
             screenshotErrorHandler(error);
           }

@@ -3,7 +3,6 @@ import Html2Canvas from "html2canvas";
 import path from "path";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as StringUtils from "../../Utils/StringUtils";
-import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import { SnapshotFragment } from "./NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 
@@ -166,8 +165,9 @@ export class NotebookUtil {
 
   public static takeScreenshot = (
     target: HTMLElement,
+    aspectRatio: number,
     subSnaphosts: SnapshotFragment[],
-    onSuccess: (imageSrc: string) => void,
+    onSuccess: (imageSrc: string, image: HTMLImageElement) => void,
     onError: (error: Error) => void
   ): void => {
     target.scrollIntoView();
@@ -178,11 +178,19 @@ export class NotebookUtil {
       logging: true,
     })
       .then((canvas) => {
-        //redraw canvas to fit Card Cover Image dimensions
+        //redraw canvas to fit aspect ratio
         const originalImageData = canvas.toDataURL();
-        const requiredHeight =
-          parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
-        canvas.height = requiredHeight;
+        if (aspectRatio) {
+          const requiredHeight = parseInt(canvas.style.width.split("px")[0]) * aspectRatio;
+          canvas.height = requiredHeight;
+        }
+
+        if (originalImageData === "data:,") {
+          // Empty output
+          onSuccess(undefined, undefined);
+          return;
+        }
+
         const context = canvas.getContext("2d");
         const image = new Image();
         image.src = originalImageData;
@@ -204,10 +212,12 @@ export class NotebookUtil {
             });
           }
 
-          onSuccess(canvas.toDataURL());
+          onSuccess(canvas.toDataURL(), image);
 
-          const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
-          window.location.href = image2; // it will save locally
+          if (aspectRatio) {
+            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+            window.location.href = image2; // it will save locally
+          }
         };
       })
       .catch((error) => {

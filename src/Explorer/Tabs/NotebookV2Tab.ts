@@ -508,10 +508,10 @@ export default class NotebookTabV2 extends TabsBase {
     const { onSnapshotSuccess } = await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      (viewport: DOMRect) =>
+      (aspectRatio: number) =>
         notebookReduxStore.dispatch(
           CdbActions.takeNotebookSnapshot({
-            viewport,
+            aspectRatio,
             requestId: new Date().getTime().toString(),
           })
         )
