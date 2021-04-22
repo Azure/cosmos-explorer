@@ -64,7 +64,6 @@ import { SettingsPane } from "./Panes/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
-import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
 import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
 import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane";
@@ -180,7 +179,6 @@ export default class Explorer {
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
-  public editTableEntityPane: EditTableEntityPane;
   public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
@@ -516,13 +514,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.editTableEntityPane = new EditTableEntityPane({
-      id: "edittableentitypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.newVertexPane = new NewVertexPane({
       id: "newvertexpane",
       visible: ko.observable<boolean>(false),
@@ -556,7 +547,6 @@ export default class Explorer {
       this.addDatabasePane,
       this.addCollectionPane,
       this.graphStylingPane,
-      this.editTableEntityPane,
       this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.stringInputPane,
@@ -628,7 +618,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.editTableEntityPane.title("Edit Table Entity");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -642,7 +631,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.editTableEntityPane.title("Edit Table Row");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }

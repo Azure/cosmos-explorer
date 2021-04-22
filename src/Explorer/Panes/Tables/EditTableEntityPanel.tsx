@@ -200,7 +200,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
     return displayValue;
   };
 
-  const submit = (event: React.FormEvent<HTMLInputElement>): void => {
+  const submit = async (event: React.FormEvent<HTMLInputElement>): Promise<void> => {
     if (!isValidEntities(entities)) {
       return undefined;
     }
@@ -208,22 +208,17 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
     const tableDataClient = userContext.apiType === "Cassandra" ? cassandraApiClient : explorer.tableDataClient;
     const originalDocumentData = userContext.apiType === "Cassandra" ? originalDocument[0] : originalDocument;
-    tableDataClient
-      .updateDocument(queryTablesTab.collection, originalDocumentData, entity)
-      .then((newEntity: Entities.ITableEntity) => {
-        return tableEntityListViewModel
-          .updateCachedEntity(newEntity)
-          .then(() => {
-            if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
-              tableEntityListViewModel.redrawTableThrottled();
-            }
-          })
-          .then(() => {
-            // Selecting updated entity
-            tableEntityListViewModel.selected.removeAll();
-            tableEntityListViewModel.selected.push(newEntity);
-          });
-      });
+    const newEntity: Entities.ITableEntity = await tableDataClient.updateDocument(
+      queryTablesTab.collection,
+      originalDocumentData,
+      entity
+    );
+    await tableEntityListViewModel.updateCachedEntity(newEntity);
+    if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
+      tableEntityListViewModel.redrawTableThrottled();
+    }
+    tableEntityListViewModel.selected.removeAll();
+    tableEntityListViewModel.selected.push(newEntity);
     closePanel();
   };
 
