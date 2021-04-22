@@ -189,7 +189,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 {!this.isServerlessAccount() && (
                   <Stack horizontal>
                     <Checkbox
-                      label={`Share throughput across ${this.getCollectionName().toLocaleLowerCase()}s`}
+                      label={`Share throughput across ${AddCollectionPanel.getCollectionName().toLocaleLowerCase()}s`}
                       checked={this.state.isSharedThroughputChecked}
                       styles={{
                         text: { fontSize: 12 },
@@ -233,14 +233,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 }
               />
             )}
-            <Separator />
+            <Separator className="panelSeparator" />
           </Stack>
 
           <Stack>
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
-                {`${this.getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
+                {`${AddCollectionPanel.getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
@@ -260,10 +260,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               autoComplete="off"
               pattern="[^/?#\\]*[^/?# \\]"
               title="May not end with space nor contain characters '\' '/' '#' '?'"
-              placeholder={`e.g., ${this.getCollectionName()}1`}
+              placeholder={`e.g., ${AddCollectionPanel.getCollectionName()}1`}
               size={40}
               className="panelTextField"
-              aria-label={`${this.getCollectionName()} id`}
+              aria-label={`${AddCollectionPanel.getCollectionName()} id`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
@@ -394,9 +394,17 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
                 title={userContext.apiType === "Gremlin" ? "May not use composite partition key" : ""}
                 value={this.state.partitionKey}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  this.setState({ partitionKey: event.target.value })
-                }
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  if (
+                    userContext.apiType !== "Mongo" &&
+                    this.state.partitionKey === "" &&
+                    !event.target.value.startsWith("/")
+                  ) {
+                    this.setState({ partitionKey: "/" + event.target.value });
+                  } else {
+                    this.setState({ partitionKey: event.target.value });
+                  }
+                }}
               />
             </Stack>
           )}
@@ -404,7 +412,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           {!this.isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
             <Stack horizontal verticalAlign="center">
               <Checkbox
-                label={`Provision dedicated throughput for this ${this.getCollectionName()}`}
+                label={`Provision dedicated throughput for this ${AddCollectionPanel.getCollectionName().toLocaleLowerCase()}`}
                 checked={this.state.enableDedicatedThroughput}
                 styles={{
                   text: { fontSize: 12 },
@@ -510,12 +518,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <CollapsibleSectionComponent
               title="Advanced"
               isExpandedByDefault={false}
-              onExpand={() => this.scrollToAdvancedSection()}
-              onClick={() => TelemetryProcessor.traceOpen(Action.OpenAddCollectionPaneAdvancedSection)}
+              onExpand={() => {
+                TelemetryProcessor.traceOpen(Action.ExpandAddCollectionPaneAdvancedSection);
+                this.scrollToAdvancedSection();
+              }}
             >
-              <Stack className="panelGroupSpacing">
+              <Stack className="panelGroupSpacing" id="collapsibleSectionContent">
                 {this.props.explorer.isEnableMongoCapabilityPresent() && (
-                  <Stack>
+                  <Stack className="panelGroupSpacing">
                     <Stack horizontal>
                       <span className="mandatoryStar">*&nbsp;</span>
                       <Text className="panelTextBold" variant="small">
@@ -637,14 +647,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     );
   }
 
-  private getDatabaseOptions(): IDropdownOption[] {
-    return this.props.explorer?.databases()?.map((database) => ({
-      key: database.id(),
-      text: database.id(),
-    }));
-  }
-
-  private getCollectionName(): string {
+  public static getCollectionName(): string {
     switch (userContext.apiType) {
       case "SQL":
         return "Container";
@@ -658,6 +661,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       default:
         throw new Error(`Unsupported default experience type: ${userContext.apiType}`);
     }
+  }
+
+  private getDatabaseOptions(): IDropdownOption[] {
+    return this.props.explorer?.databases()?.map((database) => ({
+      key: database.id(),
+      text: database.id(),
+    }));
   }
 
   private getPartitionKeyName(): string {

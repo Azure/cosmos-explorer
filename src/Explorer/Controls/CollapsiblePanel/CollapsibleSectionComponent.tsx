@@ -6,7 +6,6 @@ export interface CollapsibleSectionProps {
   title: string;
   isExpandedByDefault: boolean;
   onExpand?: () => void;
-  onClick?: () => void;
 }
 
 export interface CollapsibleSectionState {
@@ -23,7 +22,6 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
 
   private toggleCollapsed = (): void => {
     this.setState({ isExpanded: !this.state.isExpanded });
-    this.props.onClick();
   };
 
   public componentDidUpdate(): void {

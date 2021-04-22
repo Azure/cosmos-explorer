@@ -2179,7 +2179,7 @@ export default class Explorer {
   public async openAddCollectionPanel(): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
-      "New Collection",
+      `New ${AddCollectionPanel.getCollectionName()}`,
       <AddCollectionPanel
         explorer={this}
         closePanel={() => this.closeSidePanel()}

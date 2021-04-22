@@ -115,7 +115,7 @@ export enum Action {
   NotebooksGalleryFavoritesCount,
   NotebooksGalleryPublishedCount,
   SelfServe,
-  OpenAddCollectionPaneAdvancedSection,
+  ExpandAddCollectionPaneAdvancedSection,
 }
 
 export const ActionModifiers = {
