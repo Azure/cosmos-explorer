@@ -1,0 +1,97 @@
+@import "../../../../less/Common/Constants";
+
+.newVertexComponent {
+  padding: @LargeSpace 20px 20px 0px;
+  width: 400px;
+
+  .newVertexForm {
+    width: 100%;
+    .flex-display();
+    .flex-direction();
+
+    .newVertexFormRow {
+      .flex-display();
+      .flex-direction(@direction: row);
+      padding: 4px 5px;
+
+      label {
+        padding: 0px;
+      }
+
+      .valueCol {
+        flex-grow: 1;
+        padding-right: 5px;
+      }
+
+      .rightPaneAddPropertyBtnPadding {
+        padding-top: 14px;
+      }
+
+      .edgeLabel {
+        padding-right: 41px;
+      }
+    }
+  }
+
+  .actionCol {
+    min-width: 30px;
+    padding: 0px 4px;
+  }
+
+  .labelCol {
+    width: 72px;
+    min-width: 72px;
+
+    input {
+      max-width: 65px;
+      padding-left: 4px;
+    }
+  }
+
+  .edgeInput {
+    width: 100%;
+    padding-left: 4px;
+  }
+
+  .typeSelect {
+    height: 23px;
+    width: 70px;
+  }
+
+  .rightPaneTrashIcon {
+    padding: 4px 1px 0px 4px;
+    height: 100%;
+  }
+
+  .rightPaneTrashIconImg {
+    vertical-align: top;
+  }
+
+  .rightPaneAddPropertyBtn {
+    padding: 7px 7px 8px 8px;
+    margin-left: -8px;
+  }
+
+  .rightPaneBtns {
+    cursor: pointer;
+
+    &:hover {
+      background-color: @BaseLow;
+    }
+
+    &:active {
+      background-color: @AccentMediumLow;
+    }
+  }
+
+  .rightPaneAddPropertyImg {
+    margin-right: 5px;
+    margin-bottom: 4px;
+  }
+
+  .contentScroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: nowrap;
+  }
+}

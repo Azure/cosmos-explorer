@@ -59,7 +59,6 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
-import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
@@ -175,7 +174,6 @@ export default class Explorer {
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
   public editTableEntityPane: EditTableEntityPane;
-  public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -509,13 +507,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.newVertexPane = new NewVertexPane({
-      id: "newvertexpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -543,7 +534,6 @@ export default class Explorer {
       this.addCollectionPane,
       this.graphStylingPane,
       this.editTableEntityPane,
-      this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.stringInputPane,
     ];
