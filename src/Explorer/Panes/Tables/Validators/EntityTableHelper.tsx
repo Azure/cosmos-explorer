@@ -62,7 +62,6 @@ export const backImageProps: IImageProps = {
   height: 16,
   className: "backImageIcon",
 };
-
 /* Labels */
 export const attributeNameLabel = "Property Name";
 export const dataTypeLabel = "Type";

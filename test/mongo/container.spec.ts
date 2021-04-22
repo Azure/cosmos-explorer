@@ -1,11 +1,11 @@
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { safeClick } from "../utils/safeClick";
-import { generateUniqueName } from "../utils/shared";
+import { generateDatabaseNameWithTimestamp, generateUniqueName } from "../utils/shared";
 jest.setTimeout(240000);
 
-test("SQL CRUD", async () => {
-  const databaseId = generateUniqueName("db");
+test("Mongo CRUD", async () => {
+  const databaseId = generateDatabaseNameWithTimestamp();
   const containerId = generateUniqueName("container");
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner");

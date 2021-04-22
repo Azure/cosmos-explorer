@@ -147,7 +147,7 @@ export class TabRouteHandler {
       );
       collection &&
         collection.container &&
-        (collection.container.isPreferredApiTable() || userContext.apiType === "Cassandra") &&
+        (userContext.apiType === "Tables" || userContext.apiType === "Cassandra") &&
         collection.onTableEntitiesClick();
     });
   }
