@@ -7,15 +7,49 @@ import * as Utilities from "../../../Tables/Utilities";
 export const defaultStringPlaceHolder = "Enter identifier value.";
 
 // Dropdown options
+const { String, Boolean, Binary, DateTime, Double, Guid, Int32, Int64 } = TableConstants.TableType;
 export const options = [
-  { key: TableConstants.TableType.String, text: TableConstants.TableType.String },
-  { key: TableConstants.TableType.Boolean, text: TableConstants.TableType.Boolean },
-  { key: TableConstants.TableType.Binary, text: TableConstants.TableType.Binary, disabled: true },
-  { key: TableConstants.TableType.DateTime, text: TableConstants.TableType.DateTime },
-  { key: TableConstants.TableType.Double, text: TableConstants.TableType.Double },
-  { key: TableConstants.TableType.Guid, text: TableConstants.TableType.Guid },
-  { key: TableConstants.TableType.Int32, text: TableConstants.TableType.Int32 },
-  { key: TableConstants.TableType.Int64, text: TableConstants.TableType.Int64 },
+  { key: String, text: String },
+  { key: Boolean, text: Boolean },
+  { key: Binary, text: Binary, disabled: true },
+  { key: DateTime, text: DateTime },
+  { key: Double, text: Double },
+  { key: Guid, text: Guid },
+  { key: Int32, text: Int32 },
+  { key: Int64, text: Int64 },
+];
+
+const {
+  Text,
+  Ascii,
+  Bigint,
+  Blob,
+  Decimal,
+  Float,
+  Int,
+  Uuid,
+  Varchar,
+  Varint,
+  Inet,
+  Smallint,
+  Tinyint,
+} = TableConstants.CassandraType;
+export const cassandraOptions = [
+  { key: Text, text: Text },
+  { key: Ascii, text: Ascii },
+  { key: Bigint, text: Bigint },
+  { key: Blob, text: Blob },
+  { key: Boolean, text: Boolean },
+  { key: Decimal, text: Decimal },
+  { key: Double, text: Double },
+  { key: Float, text: Float },
+  { key: Int, text: Int },
+  { key: Uuid, text: Uuid },
+  { key: Varchar, text: Varchar },
+  { key: Varint, text: Varint },
+  { key: Inet, text: Inet },
+  { key: Smallint, text: Smallint },
+  { key: Tinyint, text: Tinyint },
 ];
 
 export const imageProps: IImageProps = {
@@ -163,6 +197,27 @@ export const getFormattedTime = (displayValue: string): string => {
   const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes();
   const hours = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours();
   return `${hours}:${minutes}`;
+};
+
+export const getCassandraDefaultEntities = (
+  headers: string[],
+  entityTypes: { [key: string]: string }
+): EntityRowType[] => {
+  const defaultEntities: EntityRowType[] = [];
+  headers.forEach((header: string) => {
+    const entityRow = {
+      property: header,
+      type: entityTypes[header],
+      value: "",
+      isPropertyTypeDisable: true,
+      isDeleteOptionVisible: true,
+      id: 1,
+      entityValuePlaceholder: defaultStringPlaceHolder,
+      isEntityTypeDate: entityTypes[header] === "DateTime",
+    };
+    defaultEntities.push(entityRow);
+  });
+  return defaultEntities;
 };
 
 // Type of entity row

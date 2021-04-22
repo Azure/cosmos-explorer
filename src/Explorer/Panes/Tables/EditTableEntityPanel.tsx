@@ -11,22 +11,24 @@ import {
 } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
-import AddPropertyIcon from "../../../../../images/Add-property.svg";
-import RevertBackIcon from "../../../../../images/RevertBack.svg";
-import { TableEntity } from "../../../../Common/TableEntity";
-import { userContext } from "../../../../UserContext";
-import Explorer from "../../../Explorer";
-import * as TableConstants from "../../../Tables/Constants";
-import * as DataTableUtilities from "../../../Tables/DataTable/DataTableUtilities";
-import TableEntityListViewModel from "../../../Tables/DataTable/TableEntityListViewModel";
-import * as Entities from "../../../Tables/Entities";
-import * as TableEntityProcessor from "../../../Tables/TableEntityProcessor";
-import QueryTablesTab from "../../../Tabs/QueryTablesTab";
-import { PanelContainerComponent } from "../../PanelContainerComponent";
+import AddPropertyIcon from "../../../../images/Add-property.svg";
+import RevertBackIcon from "../../../../images/RevertBack.svg";
+import { TableEntity } from "../../../Common/TableEntity";
+import { userContext } from "../../../UserContext";
+import Explorer from "../../Explorer";
+import * as TableConstants from "../../Tables/Constants";
+import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
+import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
+import * as Entities from "../../Tables/Entities";
+import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
+import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { PanelContainerComponent } from "../PanelContainerComponent";
 import {
   attributeNameLabel,
   attributeValueLabel,
   backImageProps,
+  cassandraOptions,
   columnProps,
   dataTypeLabel,
   defaultStringPlaceHolder,
@@ -38,13 +40,14 @@ import {
   imageProps,
   isValidEntities,
   options,
-} from "../Validators/EntityTableHelper";
+} from "./Validators/EntityTableHelper";
 
 interface EditTableEntityPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   queryTablesTab: QueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
+  cassandraApiClient: CassandraAPIDataClient;
 }
 
 interface EntityRowType {
@@ -65,11 +68,14 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   closePanel,
   queryTablesTab,
   tableEntityListViewModel,
+  cassandraApiClient,
 }: EditTableEntityPanelProps): JSX.Element => {
   const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
   const [originalDocument, setOriginalDocument] = useState<Entities.ITableEntity>({});
+  const [entityAttributeProperty, setEntityAttributeProperty] = useState<string>("");
+
   const [
     isEntityValuePanelOpen,
     { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
@@ -121,12 +127,12 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
               property: key,
               type: entityAttributeType,
               value: displayValue,
-              isPropertyTypeDisable: nonEditableType,
+              isPropertyTypeDisable: !nonEditableType,
               isDeleteOptionVisible: isDisable,
               id: displayedAttributes.length,
               entityValuePlaceholder: defaultStringPlaceHolder,
               isEntityTypeDate: entityAttributeType === "DateTime",
-              isEntityValueDisable: isDisable,
+              isEntityValueDisable: !isDisable,
               entityTimeValue: time,
             });
           } else {
@@ -153,18 +159,6 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
           }
         }
       });
-    if (userContext.apiType === "Cassandra") {
-      // (<CassandraAPIDataClient>this.container.tableDataClient)
-      // .getTableSchema(this.tableViewModel.queryTablesTab.collection)
-      //   .then((properties: CassandraTableKey[]) => {
-      //     properties &&
-      //     properties.forEach((property) => {
-      //       if (!_.contains(keys, property.property)) {
-      //         this.insertAttribute(property.property, property.type);
-      //       }
-      //     });
-      //   });
-    }
     return displayedAttributes;
   };
 
@@ -212,8 +206,10 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
     }
     event.preventDefault();
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
-    explorer.tableDataClient
-      .updateDocument(queryTablesTab.collection, originalDocument, entity)
+    const tableDataClient = userContext.apiType === "Cassandra" ? cassandraApiClient : explorer.tableDataClient;
+    const originalDocumentData = userContext.apiType === "Cassandra" ? originalDocument[0] : originalDocument;
+    tableDataClient
+      .updateDocument(queryTablesTab.collection, originalDocumentData, entity)
       .then((newEntity: Entities.ITableEntity) => {
         return tableEntityListViewModel
           .updateCachedEntity(newEntity)
@@ -311,8 +307,9 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
 
   // Open edit entity value modal
   const editEntity = (rowEndex: number): void => {
-    const entityAttributeValue = entities[rowEndex] && entities[rowEndex].value;
-    setEntityAttributeValue(entityAttributeValue);
+    const entityAttribute: EntityRowType = entities[rowEndex] && entities[rowEndex];
+    setEntityAttributeValue(entityAttribute.value);
+    setEntityAttributeProperty(entityAttribute.property);
     setSelectedRow(rowEndex);
     setIsEntityValuePanelTrue();
   };
@@ -330,7 +327,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
                   entityTypeLabel={index === 0 && dataTypeLabel}
                   entityPropertyLabel={index === 0 && attributeNameLabel}
                   entityValueLabel={index === 0 && attributeValueLabel}
-                  options={options}
+                  options={userContext.apiType === "Cassandra" ? cassandraOptions : options}
                   isPropertyTypeDisable={entity.isPropertyTypeDisable}
                   entityProperty={entity.property}
                   selectedKey={entity.type}
@@ -386,10 +383,9 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   const onRenderNavigationContent: IRenderFunction<IPanelProps> = () => (
     <Stack horizontal {...columnProps}>
       <Image {...backImageProps} src={RevertBackIcon} alt="back" onClick={() => setIsEntityValuePanelFalse()} />
-      <Label>PartitionKey</Label>
+      <Label>{entityAttributeProperty}</Label>
     </Stack>
   );
-
   if (isEntityValuePanelOpen) {
     return (
       <PanelContainerComponent

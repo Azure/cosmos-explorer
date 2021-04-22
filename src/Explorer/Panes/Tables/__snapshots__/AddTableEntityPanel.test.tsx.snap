@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
-<EditTableEntityPanel
+exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
+<AddTableEntityPanel
+  cassandraApiClient={Object {}}
   closePanel={[Function]}
   explorer={Object {}}
   queryTablesTab={Object {}}
@@ -9,13 +10,12 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
     Object {
       "headers": Array [],
       "items": [Function],
-      "selected": [Function],
     }
   }
 >
   <PanelContainerComponent
     closePanel={[Function]}
-    headerText="Edit Table Entity"
+    headerText="Add Table Row"
     isConsoleExpanded={false}
     isOpen={true}
     panelContent={
@@ -56,7 +56,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                 className="genericPaneSubmitBtn"
                 onClick={[Function]}
                 type="submit"
-                value="Update Entity"
+                value="Add Entity"
               />
             </div>
           </div>
@@ -69,7 +69,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
       closeButtonAriaLabel="Close"
       customWidth="700px"
       headerClassName="panelHeader"
-      headerText="Edit Table Entity"
+      headerText="Add Table Row"
       isLightDismiss={true}
       isOpen={true}
       onDismiss={[Function]}
@@ -105,7 +105,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
         customWidth="700px"
         hasCloseButton={true}
         headerClassName="panelHeader"
-        headerText="Edit Table Entity"
+        headerText="Add Table Row"
         isBlocking={true}
         isHiddenOnDismiss={false}
         isLightDismiss={true}
@@ -1002,7 +1002,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                       id="Panel0-headerText"
                                       role="heading"
                                     >
-                                      Edit Table Entity
+                                      Add Table Row
                                     </div>
                                   </div>
                                   <button
@@ -1078,7 +1078,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                             <input
                                               class="genericPaneSubmitBtn"
                                               type="submit"
-                                              value="Update Entity"
+                                              value="Add Entity"
                                             />
                                           </div>
                                         </div>
@@ -1845,7 +1845,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                           id="Panel0-headerText"
                                           role="heading"
                                         >
-                                          Edit Table Entity
+                                          Add Table Row
                                         </div>
                                       </div>
                                       <CustomizedIconButton
@@ -3304,7 +3304,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                                   className="genericPaneSubmitBtn"
                                                   onClick={[Function]}
                                                   type="submit"
-                                                  value="Update Entity"
+                                                  value="Add Entity"
                                                 />
                                               </div>
                                             </div>
@@ -3378,7 +3378,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                             id="Panel0-headerText"
                                             role="heading"
                                           >
-                                            Edit Table Entity
+                                            Add Table Row
                                           </div>
                                         </div>
                                         <button
@@ -3454,7 +3454,7 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
                                                   <input
                                                     class="genericPaneSubmitBtn"
                                                     type="submit"
-                                                    value="Update Entity"
+                                                    value="Add Entity"
                                                   />
                                                 </div>
                                               </div>
@@ -3486,5 +3486,5 @@ exports[`Excute Edit Table Entity Pane should render Default properly 1`] = `
       </PanelBase>
     </StyledPanelBase>
   </PanelContainerComponent>
-</EditTableEntityPanel>
+</AddTableEntityPanel>
 `;

@@ -445,7 +445,7 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
   return {
     iconSrc: EnableNotebooksIcon,
     iconAlt: label,
-    onCommandClick: () => container.setupNotebooksPane.openWithTitleAndDescription(label, description),
+    onCommandClick: () => container.openSetupNotebooksPanel(label, description),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: !container.isNotebooksEnabledForAccount(),
@@ -482,7 +482,7 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
-        container.setupNotebooksPane.openWithTitleAndDescription(title, description);
+        container.openSetupNotebooksPanel(title, description);
       }
     },
     commandButtonLabel: label,
@@ -508,7 +508,7 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
-        container.setupNotebooksPane.openWithTitleAndDescription(title, description);
+        container.openSetupNotebooksPanel(title, description);
       }
     },
     commandButtonLabel: label,
