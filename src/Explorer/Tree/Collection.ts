@@ -553,7 +553,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoSchema`,
-        isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       })

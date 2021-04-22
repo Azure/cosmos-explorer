@@ -167,7 +167,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: kernelLabel,
-        onCommandClick: () => { },
+        onCommandClick: () => {},
         commandButtonLabel: null,
         hasPopup: false,
         disabled: availableKernels.length < 1,
@@ -177,16 +177,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
         dropdownWidth: 100,
         children: availableKernels.map(
           (kernel: KernelSpecsDisplay) =>
-          ({
-            iconSrc: null,
-            iconAlt: kernel.displayName,
-            onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
-            commandButtonLabel: kernel.displayName,
-            dropdownItemKey: kernel.name,
-            hasPopup: false,
-            disabled: false,
-            ariaLabel: kernel.displayName,
-          } as CommandButtonComponentProps)
+            ({
+              iconSrc: null,
+              iconAlt: kernel.displayName,
+              onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
+              commandButtonLabel: kernel.displayName,
+              dropdownItemKey: kernel.name,
+              hasPopup: false,
+              disabled: false,
+              ariaLabel: kernel.displayName,
+            } as CommandButtonComponentProps)
         ),
         ariaLabel: kernelLabel,
       },
@@ -277,7 +277,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: null,
-        onCommandClick: () => { },
+        onCommandClick: () => {},
         commandButtonLabel: null,
         ariaLabel: cellTypeLabel,
         hasPopup: false,
@@ -365,7 +365,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
         iconSrc: null,
         iconAlt: workspaceLabel,
         ariaLabel: workspaceLabel,
-        onCommandClick: () => { },
+        onCommandClick: () => {},
         commandButtonLabel: null,
         hasPopup: false,
         disabled: this.container.arcadiaWorkspaces.length < 1,
