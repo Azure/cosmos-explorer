@@ -1,6 +1,6 @@
 import { CellId } from "@nteract/commutable";
 import { CellType } from "@nteract/commutable/src";
-import { actions, ContentRef } from "@nteract/core";
+import { actions, ContentRef, selectors } from "@nteract/core";
 import { KernelOutputError, StreamText } from "@nteract/outputs";
 import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
@@ -47,6 +47,7 @@ interface StateProps {
   };
   cellOutputSnapshots: Map<string, SnapshotFragment>;
   notebookSnapshot: { imageSrc: string; requestId: string };
+  nbCodeCells: number;
 }
 
 type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatchProps & StateProps;
@@ -90,12 +91,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
    * @return true if there is a snapshot for each cell output
    */
   private areSnapshotForAllOutputsPresent(): boolean {
-    for (let [key, value] of this.props.cellOutputSnapshots) {
-      if (!value) {
-        return false;
-      }
-    }
-    return true;
+    return this.props.cellOutputSnapshots.size === this.props.nbCodeCells;
   }
 
   componentDidUpdate() {
@@ -109,8 +105,8 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
       NotebookUtil.takeScreenshot(
         this.notebookRendererRef.current,
         [...this.props.cellOutputSnapshots.values()],
-        (error) => this.props.notebookSnapshotError(error.message),
-        (imageSrc) => this.props.storeNotebookSnapshot(imageSrc, this.props.pendingSnapshotRequest.requestId)
+        (imageSrc) => this.props.storeNotebookSnapshot(imageSrc, this.props.pendingSnapshotRequest.requestId),
+        (error) => this.props.notebookSnapshotError(error.message)
       );
     }
   }
@@ -142,13 +138,13 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                             outputs: userContext.features.sandboxNotebookOutputs
                               ? (props: any) => (
-                                  <IFrameOutputs id={id} contentRef={contentRef}>
-                                    <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
-                                    <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
-                                    <KernelOutputError />
-                                    <StreamText />
-                                  </IFrameOutputs>
-                                )
+                                <IFrameOutputs id={id} contentRef={contentRef}>
+                                  <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
+                                  <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
+                                  <KernelOutputError />
+                                  <StreamText />
+                                </IFrameOutputs>
+                              )
                               : undefined,
                           }}
                         </CodeCell>
@@ -200,8 +196,17 @@ export const makeMapStateToProps = (
   ownProps: NotebookRendererProps
 ): ((state: CdbAppState) => StateProps) => {
   const mapStateToProps = (state: CdbAppState): StateProps => {
+    const { contentRef } = ownProps;
+    const model = selectors.model(state, { contentRef });
+
+    let nbCodeCells;
+    if (model && model.type === "notebook") {
+      const { cellMap } = model.notebook;
+      nbCodeCells = [...cellMap.values()].reduce((accumulator, currentValue) =>
+        accumulator + (currentValue.cell_type === "code" ? 1 : 0), 0);
+    }
     const { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot } = state.cdb;
-    return { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot };
+    return { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot, nbCodeCells };
   };
   return mapStateToProps;
 };

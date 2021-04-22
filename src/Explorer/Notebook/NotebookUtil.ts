@@ -166,9 +166,9 @@ export class NotebookUtil {
 
   public static takeScreenshot = (
     target: HTMLElement,
-    subImages: SnapshotFragment[],
-    onError: (error: Error) => void,
-    onSuccess: (imageSrc: string) => void
+    subSnaphosts: SnapshotFragment[],
+    onSuccess: (imageSrc: string) => void,
+    onError: (error: Error) => void
   ): void => {
     target.scrollIntoView();
     Html2Canvas(target, {
@@ -191,21 +191,23 @@ export class NotebookUtil {
           context.drawImage(image, 0, 0);
 
           // draw sub images
-          if (subImages) {
+          if (subSnaphosts) {
             const parentRect = target.getBoundingClientRect();
-            subImages.forEach((snapshot) => {
-              context.drawImage(
-                snapshot.image,
-                snapshot.boundingClientRect.x - parentRect.x,
-                snapshot.boundingClientRect.y - parentRect.y
-              );
+            subSnaphosts.forEach((snapshot) => {
+              if (snapshot.image) {
+                context.drawImage(
+                  snapshot.image,
+                  snapshot.boundingClientRect.x - parentRect.x,
+                  snapshot.boundingClientRect.y - parentRect.y
+                );
+              }
             });
           }
 
           onSuccess(canvas.toDataURL());
 
-          // const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
-          // window.location.href = image2; // it will save locally
+          const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+          window.location.href = image2; // it will save locally
         };
       })
       .catch((error) => {

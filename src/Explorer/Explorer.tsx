@@ -1482,7 +1482,7 @@ export default class Explorer {
     content: string | unknown,
     onTakeSnapshot?: (viewport: DOMRect) => void
   ): Promise<OpenPublishPaneReturnType> {
-    let result = undefined;
+    let result;
 
     if (this.notebookManager) {
       result = await this.notebookManager.openPublishNotebookPane(name, content, onTakeSnapshot);

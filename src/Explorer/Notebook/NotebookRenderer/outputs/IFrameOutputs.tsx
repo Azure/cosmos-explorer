@@ -19,7 +19,6 @@ interface ComponentProps {
 
 interface DispatchProps {
   storeSnapshotFragment: (cellId: string, snapshotFragment: SnapshotFragment) => void;
-  startSnapshotFragment: (cellId: string) => void;
 }
 interface StateProps {
   hidden: boolean;
@@ -41,7 +40,6 @@ export class IFrameOutputs extends React.PureComponent<IFrameOutputProps> {
         sandbox="allow-downloads allow-forms allow-pointer-lock allow-same-origin allow-scripts"
         snapshotRequestId={this.props.pendingSnapshotRequestId}
         onNewSnapshot={(snapshot) => this.props.storeSnapshotFragment(this.props.id, snapshot)}
-        onSnapshotStarted={() => this.props.startSnapshotFragment(this.props.id)}
       >
         <div className={`nteract-cell-outputs ${hidden ? "hidden" : ""} ${expanded ? "expanded" : ""}`}>
           {outputs.map((output, index) => (
@@ -95,7 +93,6 @@ const makeMapDispatchToProps = () => {
     return {
       storeSnapshotFragment: (cellId: string, snapshot: SnapshotFragment) =>
         dispatch(cdbActions.storeCellOutputSnapshot({ cellId, snapshot })),
-      startSnapshotFragment: (cellId: string) => dispatch(cdbActions.startCellOutputSnapshot({ cellId })),
     };
   };
   return mapDispatchToProps;

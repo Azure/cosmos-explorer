@@ -502,8 +502,8 @@ export default class NotebookTabV2 extends TabsBase {
     });
 
     const notebookContent = this.notebookComponentAdapter.getContent();
-    let onSnapshotSuccessFct: (newImageSrc: string) => void = undefined;
-    let onSnapshotErrorFct: (error: string) => void = undefined;
+    let onSnapshotSuccessFct: (newImageSrc: string) => void;
+    let onSnapshotErrorFct: (error: string) => void;
 
     const { onSnapshotSuccess } = await this.container.publishNotebook(
       notebookContent.name,

@@ -70,13 +70,6 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       return state.set("hoveredCellId", typedAction.payload.cellId);
     }
 
-    case cdbActions.START_CELL_OUTPUT_SNAPSHOT: {
-      const typedAction = action as cdbActions.StartCellOutputSnapshotAction;
-      state.cellOutputSnapshots.set(typedAction.payload.cellId, undefined);
-      // TODO Simpler datastructure to instantiate new Map?
-      return state.set("cellOutputSnapshots", new Map(state.cellOutputSnapshots.entries()));
-    }
-
     case cdbActions.STORE_CELL_OUTPUT_SNAPSHOT: {
       const typedAction = action as cdbActions.StoreCellOutputSnapshotAction;
       state.cellOutputSnapshots.set(typedAction.payload.cellId, typedAction.payload.snapshot);

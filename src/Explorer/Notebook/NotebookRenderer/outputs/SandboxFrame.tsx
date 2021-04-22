@@ -8,7 +8,6 @@ import { SnapshotFragment } from "../../NotebookComponent/types";
 interface SandboxFrameProps {
   style: React.CSSProperties;
   sandbox: string;
-  onSnapshotStarted: () => void;
   onNewSnapshot: (snapshot: SnapshotFragment) => void;
   snapshotRequestId: string;
 }
@@ -39,8 +38,8 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
       return;
     }
 
-    this.props.onSnapshotStarted();
     const target = this.topNodeRef.current;
+    console.log('snapshotting', target);
     // target.scrollIntoView();
     Html2Canvas(target, {
       useCORS: true,
@@ -49,21 +48,34 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
       logging: true,
     })
       .then((canvas) => {
+        console.log('canvas', canvas);
         //redraw canvas to fit Card Cover Image dimensions
         const originalImageData = canvas.toDataURL();
         const requiredHeight =
           parseInt(canvas.style.width.split("px")[0]) * GalleryCardComponent.cardHeightToWidthRatio;
+        if (originalImageData === "data:,") {
+          // Empty output
+          this.props.onNewSnapshot({
+            image: undefined,
+            boundingClientRect: this.state.frame.getBoundingClientRect(),
+            requestId: this.props.snapshotRequestId,
+          });
+          console.log('onNewSnapshot2')
+          return;
+        }
         canvas.height = requiredHeight;
         const context = canvas.getContext("2d");
         const image = new Image();
         image.src = originalImageData;
         image.onload = () => {
+          console.log('image loaded')
           context.drawImage(image, 0, 0);
           this.props.onNewSnapshot({
             image,
             boundingClientRect: this.state.frame.getBoundingClientRect(),
             requestId: this.props.snapshotRequestId,
           });
+          console.log('onNewSnapshot')
         };
       })
       .catch((error) => {

@@ -86,21 +86,6 @@ export const traceNotebookTelemetry = (payload: {
   };
 };
 
-export const START_CELL_OUTPUT_SNAPSHOT = "START_CELL_OUTPUT_SNAPSHOT";
-export interface StartCellOutputSnapshotAction {
-  type: "START_CELL_OUTPUT_SNAPSHOT";
-  payload: {
-    cellId: string;
-  };
-}
-
-export const startCellOutputSnapshot = (payload: { cellId: string }): StartCellOutputSnapshotAction => {
-  return {
-    type: START_CELL_OUTPUT_SNAPSHOT,
-    payload,
-  };
-};
-
 export const STORE_CELL_OUTPUT_SNAPSHOT = "STORE_CELL_OUTPUT_SNAPSHOT";
 export interface StoreCellOutputSnapshotAction {
   type: "STORE_CELL_OUTPUT_SNAPSHOT";
