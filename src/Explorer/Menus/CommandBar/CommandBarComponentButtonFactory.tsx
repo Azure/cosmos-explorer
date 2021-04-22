@@ -47,7 +47,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     buttons.push(addSynapseLink);
   }
 
-  if (!container.isPreferredApiTable()) {
+  if (userContext.apiType !== "Tables") {
     newCollectionBtn.children = [createNewCollectionGroup(container)];
     const newDatabaseBtn = createNewDatabase(container);
     newCollectionBtn.children.push(newDatabaseBtn);
