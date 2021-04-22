@@ -5,11 +5,11 @@ import { Provider } from "react-redux";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import {
   NotebookComponentBootstrapper,
-  NotebookComponentBootstrapperOptions,
+  NotebookComponentBootstrapperOptions
 } from "../NotebookComponent/NotebookComponentBootstrapper";
-import MongoSchemaComponent from "./MongoSchemaComponent";
+import SchemaAnalyzerComponent from "./SchemaAnalyzerComponent";
 
-export class MongoSchemaComponentAdapter extends NotebookComponentBootstrapper implements ReactAdapter {
+export class SchemaAnalyzerComponentAdapter extends NotebookComponentBootstrapper implements ReactAdapter {
   public parameters: unknown;
   private kernelRef: KernelRef;
 
@@ -48,8 +48,8 @@ export class MongoSchemaComponentAdapter extends NotebookComponentBootstrapper i
       };
 
       const model: IContent<"notebook"> = {
-        name: "mongo-schema-component-notebook.ipynb",
-        path: "mongo-schema-component-notebook.ipynb",
+        name: "schema-analyzer-component-notebook.ipynb",
+        path: "schema-analyzer-component-notebook.ipynb",
         type: "notebook",
         writable: true,
         created: "",
@@ -81,7 +81,7 @@ export class MongoSchemaComponentAdapter extends NotebookComponentBootstrapper i
 
     return (
       <Provider store={this.getStore()}>
-        <MongoSchemaComponent {...props} />;
+        <SchemaAnalyzerComponent {...props} />;
       </Provider>
     );
   }

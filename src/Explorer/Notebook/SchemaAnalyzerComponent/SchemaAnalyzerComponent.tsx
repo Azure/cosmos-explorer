@@ -9,16 +9,16 @@ import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import loadTransform from "../NotebookComponent/loadTransform";
-import "./MongoSchemaComponent.less";
+import "./SchemaAnalyzerComponent.less";
 
-interface MongoSchemaComponentPureProps {
+interface SchemaAnalyzerComponentPureProps {
   contentRef: ContentRef;
   kernelRef: KernelRef;
   databaseId: string;
   collectionId: string;
 }
 
-interface MongoSchemaComponentDispatchProps {
+interface SchemaAnalyzerComponentDispatchProps {
   runCell: (contentRef: ContentRef, cellId: string) => void;
   addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => void;
   updateCell: (text: string, id: string, contentRef: ContentRef) => void;
@@ -26,16 +26,21 @@ interface MongoSchemaComponentDispatchProps {
 
 type OutputType = "rich" | "json";
 
-interface MongoSchemaComponentState {
+interface SchemaAnalyzerComponentState {
   outputType: OutputType;
   filter?: string;
   isFiltering: boolean;
 }
 
-type MongoSchemaComponentProps = MongoSchemaComponentPureProps & StateProps & MongoSchemaComponentDispatchProps;
+type SchemaAnalyzerComponentProps = SchemaAnalyzerComponentPureProps &
+  StateProps &
+  SchemaAnalyzerComponentDispatchProps;
 
-export class MongoSchemaComponent extends React.Component<MongoSchemaComponentProps, MongoSchemaComponentState> {
-  constructor(props: MongoSchemaComponentProps) {
+export class SchemaAnalyzerComponent extends React.Component<
+  SchemaAnalyzerComponentProps,
+  SchemaAnalyzerComponentState
+> {
+  constructor(props: SchemaAnalyzerComponentProps) {
     super(props);
     this.state = {
       outputType: "rich",
@@ -86,7 +91,7 @@ export class MongoSchemaComponent extends React.Component<MongoSchemaComponentPr
     const showSchemaOutput = isKernelIdle && outputs.size > 0;
 
     return (
-      <Stack className="mongoSchemaComponent" horizontalAlign="center" tokens={{ childrenGap: 20, padding: 20 }}>
+      <Stack className="schemaAnalyzerComponent" horizontalAlign="center" tokens={{ childrenGap: 20, padding: 20 }}>
         <Stack.Item grow styles={{ root: { display: "contents" } }}>
           <Stack horizontal tokens={{ childrenGap: 20 }} styles={{ root: { width: "100%" } }}>
             <Stack.Item grow align="end">
@@ -110,7 +115,7 @@ export class MongoSchemaComponent extends React.Component<MongoSchemaComponentPr
 
         {showSchemaOutput ? (
           outputs.map((output, index) => (
-            <Card className="mongoSchemaCard" key={index}>
+            <Card className="schemaAnalyzerCard" key={index}>
               <Card.Item tokens={{ padding: 10 }}>
                 <Output output={output}>
                   <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
@@ -230,4 +235,4 @@ const makeMapDispatchToProps = () => {
   return mapDispatchToProps;
 };
 
-export default connect(makeMapStateToProps, makeMapDispatchToProps)(MongoSchemaComponent);
+export default connect(makeMapStateToProps, makeMapDispatchToProps)(SchemaAnalyzerComponent);

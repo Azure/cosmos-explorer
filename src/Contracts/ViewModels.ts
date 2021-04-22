@@ -141,7 +141,7 @@ export interface Collection extends CollectionBase {
   onTableEntitiesClick(): void;
   onGraphDocumentsClick(): void;
   onMongoDBDocumentsClick(): void;
-  onMongoDBSchemaClick(): void;
+  onSchemaAnalyzerClick(): void;
   openTab(): void;
 
   onSettingsClick: () => Promise<void>;
@@ -367,7 +367,7 @@ export enum CollectionTabKind {
   Schema = 19,
   CollectionSettingsV2 = 20,
   DatabaseSettingsV2 = 21,
-  MongoSchema = 22,
+  SchemaAnalyzer = 22,
 }
 
 export enum TerminalKind {

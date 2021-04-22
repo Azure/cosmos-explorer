@@ -80,10 +80,10 @@ function openCollectionTab(
         }
 
         if (
-          action.tabKind === ActionContracts.TabKind.MongoSchema ||
-          (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.MongoSchema]
+          action.tabKind === ActionContracts.TabKind.SchemaAnalyzer ||
+          (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SchemaAnalyzer]
         ) {
-          collection.onMongoDBSchemaClick();
+          collection.onSchemaAnalyzerClick();
           break;
         }
 

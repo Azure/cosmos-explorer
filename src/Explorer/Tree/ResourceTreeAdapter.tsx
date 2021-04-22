@@ -273,12 +273,14 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaTab) {
+    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
       children.push({
         label: "Schema (Preview)",
-        onClick: collection.onMongoDBSchemaClick.bind(collection),
+        onClick: collection.onSchemaAnalyzerClick.bind(collection),
         isSelected: () =>
-          this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.MongoSchema]),
+          this.isDataNodeSelected(collection.databaseId, collection.id(), [
+            ViewModels.CollectionTabKind.SchemaAnalyzer,
+          ]),
       });
     }
 

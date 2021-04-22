@@ -60,9 +60,9 @@ export class TabRouteHandler {
     );
 
     this._tabRouter.addRoute(
-      `${Constants.HashRoutePrefixes.collections}/mongoSchema`,
+      `${Constants.HashRoutePrefixes.collections}/schemaAnalyzer`,
       (db_id: string, coll_id: string) => {
-        this._openMongoSchemaTabForResource(db_id, coll_id);
+        this._openSchemaAnalyzerTabForResource(db_id, coll_id);
       }
     );
 
@@ -182,7 +182,7 @@ export class TabRouteHandler {
     });
   }
 
-  private _openMongoSchemaTabForResource(databaseId: string, collectionId: string): void {
+  private _openSchemaAnalyzerTabForResource(databaseId: string, collectionId: string): void {
     this._executeActionHelper(() => {
       const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
         databaseId,
@@ -191,7 +191,7 @@ export class TabRouteHandler {
       collection &&
         collection.container &&
         collection.container.isPreferredApiMongoDB() &&
-        collection.onMongoDBSchemaClick();
+        collection.onSchemaAnalyzerClick();
     });
   }
 

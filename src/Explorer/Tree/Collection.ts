@@ -26,10 +26,10 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
 import MongoQueryTab from "../Tabs/MongoQueryTab";
-import MongoSchemaTab from "../Tabs/MongoSchemaTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
+import SchemaAnalyzerTab from "../Tabs/SchemaAnalyzerTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
@@ -515,9 +515,9 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onMongoDBSchemaClick = () => {
+  public onSchemaAnalyzerClick = () => {
     this.container.selectedNode(this);
-    this.selectedSubnodeKind(ViewModels.CollectionTabKind.MongoSchema);
+    this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Mongo Schema node",
       databaseName: this.databaseId,
@@ -527,7 +527,7 @@ export default class Collection implements ViewModels.Collection {
 
     for (const tab of this.container.tabsManager.openedTabs()) {
       if (
-        tab instanceof MongoSchemaTab &&
+        tab instanceof SchemaAnalyzerTab &&
         tab.collection?.databaseId === this.databaseId &&
         tab.collection?.id() === this.id()
       ) {
@@ -543,16 +543,16 @@ export default class Collection implements ViewModels.Collection {
     });
     this.documentIds([]);
     this.container.tabsManager.activateNewTab(
-      new MongoSchemaTab({
+      new SchemaAnalyzerTab({
         account: userContext.databaseAccount,
         masterKey: userContext.masterKey || "",
         container: this.container,
-        tabKind: ViewModels.CollectionTabKind.MongoSchema,
+        tabKind: ViewModels.CollectionTabKind.SchemaAnalyzer,
         title: "Schema",
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoSchema`,
+        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/schemaAnalyzer`,
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       })
