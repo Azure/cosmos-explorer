@@ -5,7 +5,7 @@ import { Provider } from "react-redux";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import {
   NotebookComponentBootstrapper,
-  NotebookComponentBootstrapperOptions
+  NotebookComponentBootstrapperOptions,
 } from "../NotebookComponent/NotebookComponentBootstrapper";
 import SchemaAnalyzerComponent from "./SchemaAnalyzerComponent";
 
