@@ -15,6 +15,8 @@ Each team owns what they know best, a win-win!
 
 ## Getting Started
 
+Clone the cosmos-explorer repo and run
+
 - `npm install`
 - `npm run build`
 
@@ -137,7 +139,7 @@ This file will contains keys and the corresponding strings (in english). These k
 The Portal team will be adding localization files in other languages for the feature.
 
 ```
-Content of NewFeature.json
+Content of Localization/en/NewFeature.json
 ```
 ```json
 {
