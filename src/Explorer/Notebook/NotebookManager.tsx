@@ -2,8 +2,8 @@
  * Contains all notebook related stuff meant to be dynamically loaded by explorer
  */
 
-import { ImmutableNotebook } from "@nteract/commutable";
-import { IContentProvider } from "@nteract/core";
+import type { ImmutableNotebook } from "@nteract/commutable";
+import type { IContentProvider } from "@nteract/core";
 import ko from "knockout";
 import React from "react";
 import { contents } from "rx-jupyter";
@@ -27,6 +27,10 @@ import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
+
+type NotebookPaneContent = string | ImmutableNotebook;
+
+export type { NotebookPaneContent };
 
 export interface NotebookManagerOptions {
   container: Explorer;
@@ -116,7 +120,7 @@ export default class NotebookManager {
 
   public async openPublishNotebookPane(
     name: string,
-    content: string | ImmutableNotebook,
+    content: NotebookPaneContent,
     parentDomElement: HTMLElement
   ): Promise<void> {
     await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement);

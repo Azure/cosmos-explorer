@@ -47,6 +47,8 @@ import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarCompone
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
+import type NotebookManager from "./Notebook/NotebookManager";
+import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
@@ -201,7 +203,7 @@ export default class Explorer {
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
-  public notebookManager?: any; // This is dynamically loaded
+  public notebookManager?: NotebookManager;
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
@@ -634,10 +636,10 @@ export default class Explorer {
     this.isNotebookEnabled = ko.observable(false);
     this.isNotebookEnabled.subscribe(async () => {
       if (!this.notebookManager) {
-        const notebookManagerModule = await import(
-          /* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager"
-        );
-        this.notebookManager = new notebookManagerModule.default();
+        const NotebookManager = await (
+          await import(/* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager")
+        ).default;
+        this.notebookManager = new NotebookManager();
         this.notebookManager.initialize({
           container: this,
           notebookBasePath: this.notebookBasePath,
@@ -1422,7 +1424,11 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
+  public async publishNotebook(
+    name: string,
+    content: NotebookPaneContent,
+    parentDomElement?: HTMLElement
+  ): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
