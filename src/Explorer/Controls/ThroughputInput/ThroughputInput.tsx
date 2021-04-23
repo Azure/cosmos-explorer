@@ -3,6 +3,7 @@ import React from "react";
 import * as Constants from "../../../Common/Constants";
 import * as SharedConstants from "../../../Shared/Constants";
 import { userContext } from "../../../UserContext";
+import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 
@@ -82,7 +83,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
             </Text>
 
             <Stack horizontal>
-              <Text variant="small" style={{ lineHeight: "20px" }}>
+              <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
                 Max RU/s
               </Text>
               <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={this.getAutoScaleTooltip()}>
@@ -101,11 +102,11 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
               min={AutoPilotUtils.minAutoPilotThroughput}
               value={this.state.throughput.toString()}
               aria-label="Max request units per second"
-              required={true}
             />
 
             <Text variant="small">
-              Your {this.props.isDatabase ? "database" : "container"} throughput will automatically scale from{" "}
+              Your {this.props.isDatabase ? "database" : getCollectionName(true)} throughput will automatically scale
+              from{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.state.throughput)} RU/s (10% of max RU/s) -{" "}
                 {this.state.throughput} RU/s
@@ -197,10 +198,8 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
   }
 
   private getAutoScaleTooltip(): string {
-    return `After the first ${AutoPilotUtils.getStorageBasedOnUserInput(
-      this.state.throughput
-    )} GB of data stored, the max
-    RU/s will be automatically upgraded based on the new storage value.`;
+    const collectionName = getCollectionName(true);
+    return `Set the max RU/s to the highest RU/s you want your ${collectionName} to scale to. The ${collectionName} will scale between 10% of max RU/s to the max RU/s based on usage.`;
   }
 
   private getCostAcknowledgeText(): string {

@@ -24,6 +24,7 @@ import { CollectionCreation, IndexingPolicies } from "../../Shared/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { getCollectionName } from "../../Utils/APITypeUtils";
 import { getUpsellMessage } from "../../Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
@@ -58,6 +59,7 @@ export interface AddCollectionPanelState {
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
+  private collectionName: string;
   private newDatabaseThroughput: number;
   private isNewDatabaseAutoscale: boolean;
   private collectionThroughput: number;
@@ -101,13 +103,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         {!this.state.errorMessage && this.isFreeTierAccount() && (
           <PanelInfoErrorComponent
-            message={getUpsellMessage(
-              userContext.portalEnv,
-              true,
-              this.props.explorer.isFirstResourceCreated(),
-              userContext.defaultExperience,
-              true
-            )}
+            message={getUpsellMessage(userContext.portalEnv, true, this.props.explorer.isFirstResourceCreated(), true)}
             messageType="info"
             showErrorDetails={false}
             openNotificationConsole={this.props.openNotificationConsole}
@@ -125,7 +121,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content="A database is analogous to a namespace. It is the unit of management for a set of containers."
+                content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
+                  true,
+                  true
+                )}.`}
               >
                 <Icon iconName="InfoSolid" className="panelInfoIcon" />
               </TooltipHost>
@@ -189,7 +188,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 {!this.isServerlessAccount() && (
                   <Stack horizontal>
                     <Checkbox
-                      label={`Share throughput across ${AddCollectionPanel.getCollectionName().toLocaleLowerCase()}s`}
+                      label={`Share throughput across ${getCollectionName(true, true)}`}
                       checked={this.state.isSharedThroughputChecked}
                       styles={{
                         text: { fontSize: 12 },
@@ -202,7 +201,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     />
                     <TooltipHost
                       directionalHint={DirectionalHint.bottomLeftEdge}
-                      content="Provisioned throughput at the database level will be shared across all containers within the database."
+                      content={`Provisioned throughput at the database level will be shared across all ${getCollectionName(
+                        true,
+                        true
+                      )} within the database.`}
                     >
                       <Icon iconName="InfoSolid" className="panelInfoIcon" />
                     </TooltipHost>
@@ -240,11 +242,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
-                {`${AddCollectionPanel.getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
+                {`${getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content="Unique identifier for the container and used for id-based routing through REST and all SDKs."
+                content={`Unique identifier for the ${getCollectionName(
+                  true
+                )} and used for id-based routing through REST and all SDKs.`}
               >
                 <Icon iconName="InfoSolid" className="panelInfoIcon" />
               </TooltipHost>
@@ -252,7 +256,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
             <input
               name="collectionId"
-              id="containerId"
+              id="collectionId"
               data-test="addCollection-collectionId"
               type="text"
               aria-required
@@ -260,10 +264,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               autoComplete="off"
               pattern="[^/?#\\]*[^/?# \\]"
               title="May not end with space nor contain characters '\' '/' '#' '?'"
-              placeholder={`e.g., ${AddCollectionPanel.getCollectionName()}1`}
+              placeholder={`e.g., ${getCollectionName()}1`}
               size={40}
               className="panelTextField"
-              aria-label={`${AddCollectionPanel.getCollectionName()} id`}
+              aria-label={`${getCollectionName()} id`}
               value={this.state.collectionId}
               onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                 this.setState({ collectionId: event.target.value })
@@ -326,7 +330,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   </Text>
                   <TooltipHost
                     directionalHint={DirectionalHint.bottomLeftEdge}
-                    content="Unique identifier for the container and used for id-based routing through REST and all SDKs."
+                    content={`Unique identifier for the ${getCollectionName(
+                      true
+                    )} and used for id-based routing through REST and all SDKs.`}
                   >
                     <Icon iconName="InfoSolid" className="panelInfoIcon" />
                   </TooltipHost>
@@ -373,9 +379,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </Text>
                 <TooltipHost
                   directionalHint={DirectionalHint.bottomLeftEdge}
-                  content={`The ${this.getPartitionKeyName()} is used to automatically partition data among
-              multiple servers for scalability. Choose a JSON property name that has a wide range of values and is
-              likely to have evenly distributed access patterns.`}
+                  content={this.getPartitionKeyTooltipText()}
                 >
                   <Icon iconName="InfoSolid" className="panelInfoIcon" />
                 </TooltipHost>
@@ -412,7 +416,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           {!this.isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
             <Stack horizontal verticalAlign="center">
               <Checkbox
-                label={`Provision dedicated throughput for this ${AddCollectionPanel.getCollectionName().toLocaleLowerCase()}`}
+                label={`Provision dedicated throughput for this ${getCollectionName(true)}`}
                 checked={this.state.enableDedicatedThroughput}
                 styles={{
                   text: { fontSize: 12 },
@@ -425,10 +429,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               />
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content="You can optionally provision dedicated throughput for a container within a database that has throughput
-                  provisioned. This dedicated throughput amount will not be shared with other containers in the database and
+                content={`You can optionally provision dedicated throughput for a ${getCollectionName(
+                  true
+                )} within a database that has throughput
+                  provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
+                    true
+                  )}s in the database and
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
-                  billed in addition to the throughput amount you provisioned at the database level."
+                  billed in addition to the throughput amount you provisioned at the database level.`}
               >
                 <Icon iconName="InfoSolid" className="panelInfoIcon" />
               </TooltipHost>
@@ -578,7 +586,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       </Text>
                       <TooltipHost
                         directionalHint={DirectionalHint.bottomLeftEdge}
-                        content="Enable analytical store capability to perform near real-time analytics on your operational data, without impacting the performance of transactional workloads. Learn more"
+                        content={this.getAnalyticalStorageTooltipContent()}
                       >
                         <Icon iconName="InfoSolid" className="panelInfoIcon" />
                       </TooltipHost>
@@ -619,8 +627,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     {!this.isSynapseLinkEnabled() && (
                       <Stack className="panelGroupSpacing">
                         <Text variant="small">
-                          Azure Synapse Link is required for creating an analytical store container. Enable Synapse Link
-                          for this Cosmos DB account.{" "}
+                          Azure Synapse Link is required for creating an analytical store {getCollectionName(true)}.
+                          Enable Synapse Link for this Cosmos DB account.{" "}
                           <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
                             Learn more
                           </Link>
@@ -647,22 +655,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     );
   }
 
-  public static getCollectionName(): string {
-    switch (userContext.apiType) {
-      case "SQL":
-        return "Container";
-      case "Mongo":
-        return "Collection";
-      case "Cassandra":
-      case "Tables":
-        return "Table";
-      case "Gremlin":
-        return "Graph";
-      default:
-        throw new Error(`Unsupported default experience type: ${userContext.apiType}`);
-    }
-  }
-
   private getDatabaseOptions(): IDropdownOption[] {
     return this.props.explorer?.databases()?.map((database) => ({
       key: database.id(),
@@ -670,8 +662,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }));
   }
 
-  private getPartitionKeyName(): string {
-    return userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
+  private getPartitionKeyName(isLowerCase?: boolean): string {
+    const partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
+
+    return isLowerCase ? partitionKeyName.toLocaleLowerCase() : partitionKeyName;
   }
 
   private getPartitionKeyPlaceHolder(): string {
@@ -778,6 +772,30 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return this.state.enableIndexing
       ? "All properties in your documents will be indexed by default for flexible and efficient queries."
       : "Indexing will be turned off. Recommended if you don't need to run queries or only have key value operations.";
+  }
+
+  private getPartitionKeyTooltipText(): string {
+    let tooltipText = `The ${this.getPartitionKeyName(
+      true
+    )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
+
+    if (userContext.apiType === "SQL") {
+      tooltipText += " For small read-heavy workloads or write-heavy workloads of any size, id is often a good choice.";
+    }
+
+    return tooltipText;
+  }
+
+  private getAnalyticalStorageTooltipContent(): JSX.Element {
+    return (
+      <Text variant="small">
+        Enable analytical store capability to perform near real-time analytics on your operational data, without
+        impacting the performance of transactional workloads.{" "}
+        <Link target="_blank" href="https://aka.ms/analytical-store-overview">
+          Learn more
+        </Link>
+      </Text>
+    );
   }
 
   private shouldShowCollectionThroughputInput(): boolean {

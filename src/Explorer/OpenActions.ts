@@ -133,7 +133,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.AddCollection]
   ) {
     explorer.closeAllPanes();
-    explorer.addCollectionPane.open();
+    explorer.onNewCollectionClicked();
   } else if (
     action.paneKind === ActionContracts.PaneKind.CassandraAddCollection ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.CassandraAddCollection]
