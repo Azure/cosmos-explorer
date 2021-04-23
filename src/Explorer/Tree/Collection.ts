@@ -18,6 +18,7 @@ import { UploadDetailsRecord } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
@@ -28,6 +29,7 @@ import MongoQueryTab from "../Tabs/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
+import SchemaAnalyzerTab from "../Tabs/SchemaAnalyzerTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
@@ -300,7 +302,6 @@ export default class Collection implements ViewModels.Collection {
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
@@ -348,7 +349,6 @@ export default class Collection implements ViewModels.Collection {
         conflictIds: ko.observableArray<ConflictId>([]),
         tabKind: ViewModels.CollectionTabKind.Conflicts,
         title: "Conflicts",
-        isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Conflicts`,
@@ -373,7 +373,7 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    if (this.container.isPreferredApiCassandra() && !this.cassandraKeys) {
+    if (userContext.apiType === "Cassandra" && !this.cassandraKeys) {
       (<CassandraAPIDataClient>this.container.tableDataClient).getTableKeys(this).then((keys: CassandraTableKeys) => {
         this.cassandraKeys = keys;
       });
@@ -390,7 +390,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.documentIds([]);
       let title = `Entities`;
-      if (this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType === "Cassandra") {
         title = `Rows`;
       }
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -405,12 +405,9 @@ export default class Collection implements ViewModels.Collection {
         tabKind: ViewModels.CollectionTabKind.QueryTables,
         title: title,
         tabPath: "",
-
         collection: this,
-
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/entities`,
-        isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
@@ -462,7 +459,6 @@ export default class Collection implements ViewModels.Collection {
         collectionPartitionKeyProperty: this.partitionKeyProperty,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
         collectionId: this.id(),
-        isActive: ko.observable(false),
         databaseId: this.databaseId,
         isTabsContentExpanded: this.container.isTabsContentExpanded,
         onLoadStartKey: startKey,
@@ -512,12 +508,55 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
-        isActive: ko.observable(false),
         onLoadStartKey: startKey,
         onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
       this.container.tabsManager.activateNewTab(mongoDocumentsTab);
     }
+  };
+
+  public onSchemaAnalyzerClick = () => {
+    this.container.selectedNode(this);
+    this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
+    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
+      description: "Mongo Schema node",
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.ResourceTree,
+    });
+
+    for (const tab of this.container.tabsManager.openedTabs()) {
+      if (
+        tab instanceof SchemaAnalyzerTab &&
+        tab.collection?.databaseId === this.databaseId &&
+        tab.collection?.id() === this.id()
+      ) {
+        return this.container.tabsManager.activateTab(tab);
+      }
+    }
+
+    const startKey = TelemetryProcessor.traceStart(Action.Tab, {
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: "Schema",
+    });
+    this.documentIds([]);
+    this.container.tabsManager.activateNewTab(
+      new SchemaAnalyzerTab({
+        account: userContext.databaseAccount,
+        masterKey: userContext.masterKey || "",
+        container: this.container,
+        tabKind: ViewModels.CollectionTabKind.SchemaAnalyzer,
+        title: "Schema",
+        tabPath: "",
+        collection: this,
+        node: this,
+        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/schemaAnalyzer`,
+        onLoadStartKey: startKey,
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
+      })
+    );
   };
 
   public onSettingsClick = async (): Promise<void> => {
@@ -555,7 +594,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
-      isActive: ko.observable(false),
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     };
 
@@ -598,7 +636,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
-      isActive: ko.observable(false),
       queryText: queryText,
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
@@ -628,7 +665,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
-      isActive: ko.observable(false),
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
@@ -660,7 +696,6 @@ export default class Collection implements ViewModels.Collection {
       collectionPartitionKeyProperty: this.partitionKeyProperty,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
       collectionId: this.id(),
-      isActive: ko.observable(false),
       databaseId: this.databaseId,
       isTabsContentExpanded: this.container.isTabsContentExpanded,
       onLoadStartKey: startKey,
@@ -679,7 +714,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      isActive: ko.observable(false),
       onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
@@ -1031,21 +1065,36 @@ export default class Collection implements ViewModels.Collection {
     try {
       const parsedContent = JSON.parse(documentContent);
       if (Array.isArray(parsedContent)) {
-        const chunkSize = 50; // 100 is the max # of bulk operations the SDK currently accepts but usually results in throttles on 400RU collections
+        const chunkSize = 100; // 100 is the max # of bulk operations the SDK currently accepts
         const chunkedContent = Array.from({ length: Math.ceil(parsedContent.length / chunkSize) }, (_, index) =>
           parsedContent.slice(index * chunkSize, index * chunkSize + chunkSize)
         );
         for (const chunk of chunkedContent) {
-          const responses = await bulkCreateDocument(this, chunk);
-          for (const response of responses) {
-            if (response.statusCode === 201) {
-              record.numSucceeded++;
-            } else if (response.statusCode === 429) {
-              record.numThrottled++;
-            } else {
-              record.numFailed++;
-              record.errors = [...record.errors, `${response.statusCode} ${response.resourceBody}`];
+          let retryAttempts = 0;
+          let chunkComplete = false;
+          let documentsToAttempt = chunk;
+          while (retryAttempts < 10 && !chunkComplete) {
+            const responses = await bulkCreateDocument(this, documentsToAttempt);
+            const attemptedDocuments = [...documentsToAttempt];
+            documentsToAttempt = [];
+            responses.forEach((response, index) => {
+              if (response.statusCode === 201) {
+                record.numSucceeded++;
+              } else if (response.statusCode === 429) {
+                documentsToAttempt.push(attemptedDocuments[index]);
+              } else {
+                record.numFailed++;
+              }
+            });
+            if (documentsToAttempt.length === 0) {
+              chunkComplete = true;
+              break;
             }
+            logConsoleInfo(
+              `${documentsToAttempt.length} document creations were throttled. Waiting ${retryAttempts} seconds and retrying throttled documents`
+            );
+            retryAttempts++;
+            await sleep(retryAttempts);
           }
         }
       } else {
@@ -1065,13 +1114,13 @@ export default class Collection implements ViewModels.Collection {
    * Top-level method that will open the correct tab type depending on account API
    */
   public openTab(): void {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       this.onGraphDocumentsClick();
       return;
     } else if (this.container.isPreferredApiMongoDB()) {
@@ -1086,11 +1135,11 @@ export default class Collection implements ViewModels.Collection {
    * Get correct collection label depending on account API
    */
   public getLabel(): string {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       return "Entities";
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       return "Rows";
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       return "Graph";
     } else if (this.container.isPreferredApiMongoDB()) {
       return "Documents";
@@ -1144,4 +1193,8 @@ export default class Collection implements ViewModels.Collection {
       }
     }
   }
+}
+
+function sleep(seconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }

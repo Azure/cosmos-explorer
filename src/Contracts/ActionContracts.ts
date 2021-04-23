@@ -4,6 +4,7 @@
 export enum TabKind {
   SQLDocuments,
   MongoDocuments,
+  SchemaAnalyzer,
   TableEntities,
   Graph,
   SQLQuery,

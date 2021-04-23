@@ -11,7 +11,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import Explorer from "../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
-import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
+import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPane/CopyNotebookPaneComponent";
 import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
 interface Location {

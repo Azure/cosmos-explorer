@@ -20,10 +20,6 @@ export interface RightPaneFormProps {
   children?: ReactNode;
 }
 
-export interface GenericRightPaneState {
-  panelHeight: number;
-}
-
 export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   container,
   formError,

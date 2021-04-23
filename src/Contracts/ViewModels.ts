@@ -141,6 +141,7 @@ export interface Collection extends CollectionBase {
   onTableEntitiesClick(): void;
   onGraphDocumentsClick(): void;
   onMongoDBDocumentsClick(): void;
+  onSchemaAnalyzerClick(): void;
   openTab(): void;
 
   onSettingsClick: () => Promise<void>;
@@ -276,7 +277,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  isActive: ko.Observable<boolean>;
   hashLocation: string;
   onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
   isTabsContentExpanded?: ko.Observable<boolean>;
@@ -367,6 +367,7 @@ export enum CollectionTabKind {
   Schema = 19,
   CollectionSettingsV2 = 20,
   DatabaseSettingsV2 = 21,
+  SchemaAnalyzer = 22,
 }
 
 export enum TerminalKind {
