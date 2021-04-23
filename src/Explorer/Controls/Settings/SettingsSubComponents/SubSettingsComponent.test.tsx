@@ -1,6 +1,7 @@
 import { shallow } from "enzyme";
-import ko from "knockout";
 import React from "react";
+import { DatabaseAccount } from "../../../../Contracts/DataModels";
+import { updateUserContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import { ChangeFeedPolicyState, GeospatialConfigType, TtlOff, TtlOn, TtlOnNoDefault, TtlType } from "../SettingsUtils";
 import { collection, container } from "../TestUtils";
@@ -104,8 +105,13 @@ describe("SubSettingsComponent", () => {
 
   it("partitionKey not visible", () => {
     const newContainer = new Explorer();
-
-    newContainer.isPreferredApiCassandra = ko.computed(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableCassandra" }],
+        },
+      } as DatabaseAccount,
+    });
     const props = { ...baseProps, container: newContainer };
     const subSettingsComponent = new SubSettingsComponent(props);
     expect(subSettingsComponent.getPartitionKeyVisible()).toEqual(false);

@@ -73,7 +73,7 @@ export class ContainerSampleGenerator {
     }
     const promises: Q.Promise<any>[] = [];
 
-    if (this.container.isPreferredApiGraph()) {
+    if (userContext.apiType === "Gremlin") {
       // For Gremlin, all queries are executed sequentially, because some queries might be dependent on other queries
       // (e.g. adding edge requires vertices to be present)
       const queries: string[] = this.sampleDataFile.data;

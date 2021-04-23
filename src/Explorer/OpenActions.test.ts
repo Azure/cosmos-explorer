@@ -1,10 +1,10 @@
 import * as ko from "knockout";
-import { handleOpenAction } from "./OpenActions";
-import * as ViewModels from "../Contracts/ViewModels";
 import { ActionContracts } from "../Contracts/ExplorerContracts";
+import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "./Explorer";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import { handleOpenAction } from "./OpenActions";
 import AddCollectionPane from "./Panes/AddCollectionPane";
+import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 
 describe("OpenActions", () => {
   describe("handleOpenAction", () => {
@@ -33,6 +33,7 @@ describe("OpenActions", () => {
       collection.expandCollection = jest.fn();
       collection.onDocumentDBDocumentsClick = jest.fn();
       collection.onMongoDBDocumentsClick = jest.fn();
+      collection.onSchemaAnalyzerClick = jest.fn();
       collection.onTableEntitiesClick = jest.fn();
       collection.onGraphDocumentsClick = jest.fn();
       collection.onNewQueryClick = jest.fn();
