@@ -7,7 +7,7 @@ import { TextFieldProps } from "../Explorer/Controls/Dialog";
 import {
   GalleryTab,
   GalleryViewerComponent,
-  SortBy
+  SortBy,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
