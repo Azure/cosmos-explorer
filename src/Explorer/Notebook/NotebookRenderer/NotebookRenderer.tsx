@@ -14,7 +14,7 @@ import { Dispatch } from "redux";
 import { userContext } from "../../../UserContext";
 import * as cdbActions from "../NotebookComponent/actions";
 import loadTransform from "../NotebookComponent/loadTransform";
-import { CdbAppState, SnapshotFragment } from "../NotebookComponent/types";
+import { CdbAppState, SnapshotFragment, SnapshotRequest } from "../NotebookComponent/types";
 import { NotebookUtil } from "../NotebookUtil";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
@@ -41,10 +41,7 @@ interface NotebookRendererDispatchProps {
 }
 
 interface StateProps {
-  pendingSnapshotRequest: {
-    requestId: string;
-    aspectRatio: number;
-  };
+  pendingSnapshotRequest: SnapshotRequest;
   cellOutputSnapshots: Map<string, SnapshotFragment>;
   notebookSnapshot: { imageSrc: string; requestId: string };
   nbCodeCells: number;
@@ -87,20 +84,13 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     loadTransform(this.props as any);
   }
 
-  /**
-   * @return true if there is a snapshot for each cell output
-   */
-  private areSnapshotForAllOutputsPresent(): boolean {
-    return this.props.cellOutputSnapshots.size === this.props.nbCodeCells;
-  }
-
   componentDidUpdate() {
     // Take a snapshot if there's a pending request and all the outputs are also saved
     if (
-      this.props.pendingSnapshotRequest &&
+      this.props.pendingSnapshotRequest?.type === "notebook" &&
       (!this.props.notebookSnapshot ||
         this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
-      this.areSnapshotForAllOutputsPresent()
+      this.props.cellOutputSnapshots.size === this.props.nbCodeCells
     ) {
       NotebookUtil.takeScreenshot(
         this.notebookRendererRef.current,

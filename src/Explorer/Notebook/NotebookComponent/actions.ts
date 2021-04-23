@@ -1,7 +1,7 @@
 import { CellId } from "@nteract/commutable";
 import { ContentRef } from "@nteract/core";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import { SnapshotFragment } from "./types";
+import { SnapshotFragment, SnapshotRequest } from "./types";
 
 export const CLOSE_NOTEBOOK = "CLOSE_NOTEBOOK";
 export interface CloseNotebookAction {
@@ -127,16 +127,10 @@ export const storeNotebookSnapshot = (payload: {
 export const TAKE_NOTEBOOK_SNAPSHOT = "TAKE_NOTEBOOK_SNAPSHOT";
 export interface TakeNotebookSnapshotAction {
   type: "TAKE_NOTEBOOK_SNAPSHOT";
-  payload: {
-    aspectRatio: number;
-    requestId: string;
-  };
+  payload: SnapshotRequest;
 }
 
-export const takeNotebookSnapshot = (payload: {
-  aspectRatio: number;
-  requestId: string;
-}): TakeNotebookSnapshotAction => {
+export const takeNotebookSnapshot = (payload: SnapshotRequest): TakeNotebookSnapshotAction => {
   return {
     type: TAKE_NOTEBOOK_SNAPSHOT,
     payload,

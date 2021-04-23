@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { copyStyles } from "../../../../Utils/StyleUtils";
-import { SnapshotFragment } from "../../NotebookComponent/types";
+import { SnapshotFragment, SnapshotRequest } from "../../NotebookComponent/types";
 import { NotebookUtil } from "../../NotebookUtil";
 
 interface SandboxFrameProps {
@@ -9,7 +9,7 @@ interface SandboxFrameProps {
   sandbox: string;
   onNewSnapshot: (snapshot: SnapshotFragment) => void;
   onError: (error: Error) => void;
-  snapshotRequestId: string;
+  snapshotRequest: SnapshotRequest;
 }
 
 interface SandboxFrameState {
@@ -34,18 +34,18 @@ export class SandboxFrame extends React.PureComponent<SandboxFrameProps, Sandbox
   }
 
   componentDidUpdate(prevProps: SandboxFrameProps): void {
-    if (!this.props.snapshotRequestId || prevProps.snapshotRequestId === this.props.snapshotRequestId) {
+    if (!this.props.snapshotRequest || prevProps.snapshotRequest?.requestId === this.props.snapshotRequest.requestId) {
       return;
     }
 
     NotebookUtil.takeScreenshot(
       this.topNodeRef.current,
-      undefined,
+      this.props.snapshotRequest.aspectRatio,
       undefined,
       (imageSrc, image) => this.props.onNewSnapshot({
         image,
         boundingClientRect: this.state.frame.getBoundingClientRect(),
-        requestId: this.props.snapshotRequestId,
+        requestId: this.props.snapshotRequest.requestId,
       }),
       this.props.onError
     );

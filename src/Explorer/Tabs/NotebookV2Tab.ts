@@ -29,7 +29,7 @@ import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsol
 import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
-import { CdbAppState } from "../Notebook/NotebookComponent/types";
+import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import template from "./NotebookV2Tab.html";
 import TabsBase from "./TabsBase";
@@ -505,19 +505,13 @@ export default class NotebookTabV2 extends TabsBase {
     let onSnapshotSuccessFct: (newImageSrc: string) => void;
     let onSnapshotErrorFct: (error: string) => void;
 
-    const { onSnapshotSuccess } = await this.container.publishNotebook(
+    const { onSnapshotSuccess, onSnapshotError } = await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      (aspectRatio: number) =>
-        notebookReduxStore.dispatch(
-          CdbActions.takeNotebookSnapshot({
-            aspectRatio,
-            requestId: new Date().getTime().toString(),
-          })
-        )
+      (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request))
     );
     onSnapshotSuccessFct = onSnapshotSuccess;
-    onSnapshotErrorFct = onSnapshotSuccess;
+    onSnapshotErrorFct = onSnapshotError;
   };
 
   private copyNotebook = () => {

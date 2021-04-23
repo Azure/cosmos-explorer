@@ -9,6 +9,12 @@ export interface SnapshotFragment {
   requestId: string;
 }
 
+export interface SnapshotRequest {
+  requestId: string;
+  aspectRatio: number;
+  type: "notebook" | "celloutput";
+  cellId: string; // if type is "celloutput"
+}
 export interface CdbRecordProps {
   databaseAccountName: string | undefined;
   defaultExperience: string | undefined;
@@ -16,10 +22,7 @@ export interface CdbRecordProps {
   hoveredCellId: CellId | undefined;
   cellOutputSnapshots: Map<string, SnapshotFragment>;
   notebookSnapshot: { imageSrc: string; requestId: string };
-  pendingSnapshotRequest: {
-    requestId: string;
-    aspectRatio: number;
-  };
+  pendingSnapshotRequest: SnapshotRequest;
   notebookSnapshotError: string;
 }
 

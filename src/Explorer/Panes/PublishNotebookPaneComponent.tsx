@@ -3,6 +3,7 @@ import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } fro
 import * as React from "react";
 import { GalleryCardComponent } from "../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
+import { SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import "./PublishNotebookPaneComponent.less";
 
@@ -20,7 +21,7 @@ export interface PublishNotebookPaneProps {
   onChangeImageSrc: (newValue: string) => void;
   onError: (formError: string, formErrorDetail: string, area: string) => void;
   clearFormError: () => void;
-  onTakeSnapshot: (aspectRatio: number) => void;
+  onTakeSnapshot: (request: SnapshotRequest) => void;
 }
 
 interface PublishNotebookPaneState {
@@ -95,12 +96,12 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
       },
     };
 
-    const screenshotErrorHandler = (error: Error) => {
-      const formError = "Failed to take screen shot";
-      const formErrorDetail = `${error}`;
-      const area = "PublishNotebookPaneComponent/takeScreenshot";
-      this.props.onError(formError, formErrorDetail, area);
-    };
+    // const screenshotErrorHandler = (error: Error) => {
+    //   const formError = "Failed to take screen shot";
+    //   const formErrorDetail = `${error}`;
+    //   const area = "PublishNotebookPaneComponent/takeScreenshot";
+    //   this.props.onError(formError, formErrorDetail, area);
+    // };
 
     const firstOutputErrorHandler = (error: Error) => {
       const formError = "Failed to capture first output";
@@ -128,14 +129,28 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
         this.props.onChangeImageSrc(undefined);
         this.props.clearFormError();
         if (options.text === ImageTypes.TakeScreenshot) {
-          try {
-            this.props.onTakeSnapshot(GalleryCardComponent.cardHeightToWidthRatio);
-          } catch (error) {
-            screenshotErrorHandler(error);
-          }
+          // try {
+          this.props.onTakeSnapshot({
+            aspectRatio: GalleryCardComponent.cardHeightToWidthRatio,
+            requestId: new Date().getTime().toString(),
+            type: "notebook",
+            cellId: undefined,
+          });
+          // } catch (error) {
+          //   screenshotErrorHandler(error);
+          // }
         } else if (options.text === ImageTypes.UseFirstDisplayOutput) {
           try {
-            await this.takeScreenshot(this.findFirstOutput(), firstOutputErrorHandler);
+            // await this.takeScreenshot(this.findFirstOutput(), firstOutputErrorHandler);
+
+            // First id of first code cell with display
+            const cellId = NotebookUtil.findFirstCodeCellWithDisplay(this.props.notebookObject);
+            this.props.onTakeSnapshot({
+              aspectRatio: GalleryCardComponent.cardHeightToWidthRatio,
+              requestId: new Date().getTime().toString(),
+              type: "celloutput",
+              cellId,
+            });
           } catch (error) {
             firstOutputErrorHandler(error);
           }
@@ -181,7 +196,7 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
 
   componentDidUpdate(prevProps: PublishNotebookPaneProps): void {
     if (
-      this.state.type === ImageTypes.TakeScreenshot &&
+      (this.state.type === ImageTypes.TakeScreenshot || this.state.type === ImageTypes.UseFirstDisplayOutput) &&
       this.props.snapshotImageSrc &&
       prevProps.snapshotImageSrc !== this.props.snapshotImageSrc
     ) {
@@ -227,13 +242,13 @@ export class PublishNotebookPaneComponent extends React.Component<PublishNoteboo
     }
   }
 
-  private findFirstOutput(): HTMLElement {
-    const indexOfFirstCodeCellWithDisplay = NotebookUtil.findFirstCodeCellWithDisplay(this.props.notebookObject);
-    const cellOutputDomElements = this.props.notebookParentDomElement.querySelectorAll<HTMLElement>(
-      ".nteract-cell-outputs"
-    );
-    return cellOutputDomElements[indexOfFirstCodeCellWithDisplay];
-  }
+  // private findFirstOutput(): HTMLElement {
+  //   const indexOfFirstCodeCellWithDisplay = NotebookUtil.findFirstCodeCellWithDisplay(this.props.notebookObject);
+  //   const cellOutputDomElements = this.props.notebookParentDomElement.querySelectorAll<HTMLElement>(
+  //     ".nteract-cell-outputs"
+  //   );
+  //   return cellOutputDomElements[indexOfFirstCodeCellWithDisplay];
+  // }
 
   public render(): JSX.Element {
     return (

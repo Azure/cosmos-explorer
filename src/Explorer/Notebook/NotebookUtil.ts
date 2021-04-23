@@ -143,8 +143,7 @@ export class NotebookUtil {
     return `${basePath}${newName}`;
   }
 
-  public static findFirstCodeCellWithDisplay(notebookObject: ImmutableNotebook): number {
-    let codeCellIndex = 0;
+  public static findFirstCodeCellWithDisplay(notebookObject: ImmutableNotebook): string {
     for (let i = 0; i < notebookObject.cellOrder.size; i++) {
       const cellId = notebookObject.cellOrder.get(i);
       if (cellId) {
@@ -154,9 +153,8 @@ export class NotebookUtil {
             (output) => output.output_type === "display_data" || output.output_type === "execute_result"
           );
           if (displayOutput) {
-            return codeCellIndex;
+            return cellId;
           }
-          codeCellIndex++;
         }
       }
     }
@@ -168,7 +166,8 @@ export class NotebookUtil {
     aspectRatio: number,
     subSnaphosts: SnapshotFragment[],
     onSuccess: (imageSrc: string, image: HTMLImageElement) => void,
-    onError: (error: Error) => void
+    onError: (error: Error) => void,
+    downloadFile?: boolean
   ): void => {
     target.scrollIntoView();
     Html2Canvas(target, {
@@ -180,9 +179,9 @@ export class NotebookUtil {
       .then((canvas) => {
         //redraw canvas to fit aspect ratio
         const originalImageData = canvas.toDataURL();
+        const width = parseInt(canvas.style.width.split("px")[0]);
         if (aspectRatio) {
-          const requiredHeight = parseInt(canvas.style.width.split("px")[0]) * aspectRatio;
-          canvas.height = requiredHeight;
+          canvas.height = width * aspectRatio;
         }
 
         if (originalImageData === "data:,") {
@@ -194,7 +193,7 @@ export class NotebookUtil {
         const context = canvas.getContext("2d");
         const image = new Image();
         image.src = originalImageData;
-
+        console.log(canvas);
         image.onload = () => {
           context.drawImage(image, 0, 0);
 
@@ -214,7 +213,7 @@ export class NotebookUtil {
 
           onSuccess(canvas.toDataURL(), image);
 
-          if (aspectRatio) {
+          if (downloadFile) {
             const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
             window.location.href = image2; // it will save locally
           }

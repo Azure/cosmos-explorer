@@ -24,6 +24,7 @@ import { GitHubReposPane } from "../Panes/GitHubReposPane";
 import { OpenPublishPaneReturnType, PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
+import { SnapshotRequest } from "./NotebookComponent/types";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
 
@@ -123,7 +124,7 @@ export default class NotebookManager {
   public async openPublishNotebookPane(
     name: string,
     content: string | ImmutableNotebook,
-    onTakeSnapshot: (aspectRatio: number) => void
+    onTakeSnapshot: (request: SnapshotRequest) => void
   ): Promise<OpenPublishPaneReturnType> {
     return await this.publishNotebookPaneAdapter.open(name, getFullName(), content, onTakeSnapshot);
   }
