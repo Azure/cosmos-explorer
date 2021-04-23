@@ -1,37 +1,36 @@
+import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as Q from "q";
 import * as React from "react";
-import * as LeftPane from "./LeftPaneComponent";
-import { MiddlePaneComponent } from "./MiddlePaneComponent";
-import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
-import * as NodeProperties from "./NodePropertiesComponent";
-import * as D3ForceGraph from "./D3ForceGraph";
-import { GraphVizComponentProps } from "./GraphVizComponent";
-import * as GraphData from "./GraphData";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import * as GraphUtil from "./GraphUtil";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import * as GremlinClient from "./GremlinClient";
-import * as StorageUtility from "../../../Shared/StorageUtility";
-import { ArraysByKeyCache } from "./ArraysByKeyCache";
-import { EdgeInfoCache } from "./EdgeInfoCache";
-import * as TabComponent from "../../Controls/Tabs/TabComponent";
-import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
-import { QueryContainerComponent } from "./QueryContainerComponent";
-import { GraphConfig } from "../../Tabs/GraphTab";
-import { EditorReact } from "../../Controls/Editor/EditorReact";
 import LoadGraphIcon from "../../../../images/LoadGraph.png";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as Constants from "../../../Common/Constants";
-import { InputProperty } from "../../../Contracts/ViewModels";
-import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
+import * as Constants from "../../../Common/Constants";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
-import { FeedOptions } from "@azure/cosmos";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { InputProperty } from "../../../Contracts/ViewModels";
+import * as StorageUtility from "../../../Shared/StorageUtility";
+import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
+import { EditorReact } from "../../Controls/Editor/EditorReact";
+import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
+import * as TabComponent from "../../Controls/Tabs/TabComponent";
+import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
+import { GraphConfig } from "../../Tabs/GraphTab";
+import { ArraysByKeyCache } from "./ArraysByKeyCache";
+import * as D3ForceGraph from "./D3ForceGraph";
+import { EdgeInfoCache } from "./EdgeInfoCache";
+import * as GraphData from "./GraphData";
+import * as GraphUtil from "./GraphUtil";
+import { GraphVizComponentProps } from "./GraphVizComponent";
+import * as GremlinClient from "./GremlinClient";
+import * as LeftPane from "./LeftPaneComponent";
+import { MiddlePaneComponent } from "./MiddlePaneComponent";
+import * as NodeProperties from "./NodePropertiesComponent";
+import { QueryContainerComponent } from "./QueryContainerComponent";
 
 export interface GraphAccessor {
   applyFilter: () => void;
@@ -697,13 +696,13 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @param cmd
    */
   public submitToBackend(cmd: string): Q.Promise<GremlinClient.GremlinRequestResult> {
-    const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${cmd}`);
+    const clearConsoleProgress = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${cmd}`);
     this.setExecuteCounter(this.executeCounter + 1);
 
     return this.gremlinClient.execute(cmd).then(
       (result: GremlinClient.GremlinRequestResult) => {
         this.setExecuteCounter(this.executeCounter - 1);
-        GraphExplorer.clearConsoleProgress(id);
+        clearConsoleProgress();
         if (result.isIncomplete) {
           const msg = `The query results are too large and only partial results are displayed for: ${cmd}`;
           GraphExplorer.reportToConsole(ConsoleDataType.Error, msg);
@@ -718,7 +717,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       (err: string) => {
         this.setExecuteCounter(this.executeCounter - 1);
         GraphExplorer.reportToConsole(ConsoleDataType.Error, `Gremlin query failed: ${cmd}`, err);
-        GraphExplorer.clearConsoleProgress(id);
+        clearConsoleProgress();
         throw err;
       }
     );
@@ -1083,13 +1082,26 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @param errorData additional errors
    * @return id
    */
-  public static reportToConsole(type: ConsoleDataType, msg: string, ...errorData: any[]): string {
+  public static reportToConsole(type: ConsoleDataType.InProgress, msg: string, ...errorData: any[]): () => void;
+  public static reportToConsole(type: ConsoleDataType.Info, msg: string, ...errorData: any[]): void;
+  public static reportToConsole(type: ConsoleDataType.Error, msg: string, ...errorData: any[]): void;
+  public static reportToConsole(type: ConsoleDataType, msg: string, ...errorData: any[]): void | (() => void) {
     let errorDataStr: string = "";
     if (errorData && errorData.length > 0) {
       console.error(msg, errorData);
       errorDataStr = ": " + JSON.stringify(errorData);
     }
-    return NotificationConsoleUtils.logConsoleMessage(type, `${msg}${errorDataStr}`);
+
+    const consoleMessage = `${msg}${errorDataStr}`;
+
+    switch (type) {
+      case ConsoleDataType.Error:
+        return logConsoleError(consoleMessage);
+      case ConsoleDataType.Info:
+        return logConsoleInfo(consoleMessage);
+      case ConsoleDataType.InProgress:
+        return logConsoleProgress(consoleMessage);
+    }
   }
 
   private setNodePropertiesViewMode(viewMode: NodeProperties.Mode) {
@@ -1368,7 +1380,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     let { id } = d;
     if (typeof id !== "string") {
       const error = `Vertex id is not a string: ${JSON.stringify(id)}.`;
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+      logConsoleError(error);
       throw new Error(error);
     }
 
@@ -1380,7 +1392,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           pk = pk[0]["_value"];
         } else {
           const error = `Vertex pk is not a string nor a non-empty array: ${JSON.stringify(pk)}.`;
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, error);
+          logConsoleError(error);
           throw new Error(error);
         }
       }
@@ -1767,7 +1779,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const queryInfoStr = `${this.currentDocDBQueryInfo.query} (${this.currentDocDBQueryInfo.index + 1}-${
       this.currentDocDBQueryInfo.index + GraphExplorer.ROOT_LIST_PAGE_SIZE
     })`;
-    const id = GraphExplorer.reportToConsole(ConsoleDataType.InProgress, `Executing: ${queryInfoStr}`);
+    const clearConsoleProgress = GraphExplorer.reportToConsole(
+      ConsoleDataType.InProgress,
+      `Executing: ${queryInfoStr}`
+    );
 
     try {
       const results: ViewModels.QueryResults = await queryDocumentsPage(
@@ -1776,7 +1791,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         this.currentDocDBQueryInfo.index
       );
 
-      GraphExplorer.clearConsoleProgress(id);
+      clearConsoleProgress();
       this.currentDocDBQueryInfo.index = results.lastItemIndex + 1;
       this.setState({ hasMoreRoots: results.hasMoreResults });
       RU = results.requestCharge.toString();
@@ -1793,7 +1808,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
       return { requestCharge: RU };
     } catch (error) {
-      GraphExplorer.clearConsoleProgress(id);
+      clearConsoleProgress();
       const errorMsg = `Failed to query: ${this.currentDocDBQueryInfo.query}. Reason:${getErrorMessage(error)}`;
       GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
       this.setState({
@@ -2002,9 +2017,5 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         <p>or</p>
       </React.Fragment>
     );
-  }
-
-  private static clearConsoleProgress(id: string) {
-    NotificationConsoleUtils.clearInProgressMessageWithId(id);
   }
 }

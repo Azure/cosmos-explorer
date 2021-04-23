@@ -6,7 +6,10 @@ import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import NotebookV2Tab from "../../Tabs/NotebookV2Tab";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
 export interface StringInputPanelProps {
   explorer: Explorer;
@@ -41,7 +44,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   const submit = () => {
-    console.log("stringInput", stringInput);
     if (stringInput === "") {
       const errorMessage = "Please  " + inputLabel;
       setFormErrors(errorMessage);
