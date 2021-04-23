@@ -39,12 +39,10 @@ import "./Explorer/Controls/ThroughputInput/ThroughputInput.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
-import "./Explorer/Graph/NewVertexComponent/newVertexComponent.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import "./Explorer/Panes/GraphNewVertexPane.less";
 import "./Explorer/Panes/PanelComponent.less";
 import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
@@ -232,21 +230,15 @@ const App: React.FunctionComponent = () => {
       />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
-      <div data-bind='component: { name: "graph-new-vertex-pane", params: { data: newVertexPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
-      <div data-bind='component: { name: "table-add-entity-pane", params: { data: addTableEntityPane} }' />
       <div data-bind='component: { name: "table-edit-entity-pane", params: { data: editTableEntityPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
       <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
-      <div data-bind='component: { name: "setup-notebooks-pane", params: { data: setupNotebooksPane} }' />
       <KOCommentIfStart if="isGitHubPaneEnabled" />
       <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
       <KOCommentEnd />
       <KOCommentIfStart if="isPublishNotebookPaneEnabled" />
       <div data-bind="react: publishNotebookPaneAdapter" />
-      <KOCommentEnd />
-      <KOCommentIfStart if="isCopyNotebookPaneEnabled" />
-      <div data-bind="react: copyNotebookPaneAdapter" />
       <KOCommentEnd />
       {showDialog && <Dialog {...dialogProps} />}
     </div>

@@ -1,24 +1,22 @@
-﻿import * as ko from "knockout";
-import Q from "q";
-import { schemeCategory10 } from "d3-scale-chromatic";
-import { selectAll, select } from "d3-selection";
-import { zoom, zoomIdentity } from "d3-zoom";
-import { scaleOrdinal } from "d3-scale";
-import { forceSimulation, forceLink, forceCollide, forceManyBody } from "d3-force";
-import { interpolateNumber, interpolate } from "d3-interpolate";
+﻿import { BaseType } from "d3";
 import { map as d3Map } from "d3-collection";
-import { drag, D3DragEvent } from "d3-drag";
-
+import { D3DragEvent, drag } from "d3-drag";
+import { forceCollide, forceLink, forceManyBody, forceSimulation } from "d3-force";
+import { interpolate, interpolateNumber } from "d3-interpolate";
+import { scaleOrdinal } from "d3-scale";
+import { schemeCategory10 } from "d3-scale-chromatic";
+import { select, selectAll } from "d3-selection";
+import { zoom, zoomIdentity } from "d3-zoom";
+import * as ko from "knockout";
+import Q from "q";
 import _ from "underscore";
-import { NeighborType } from "../../../Contracts/ViewModels";
-import { GraphData, D3Node, D3Link } from "./GraphData";
-import { HashMap } from "../../../Common/HashMap";
-import { BaseType } from "d3";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { GraphConfig } from "../../Tabs/GraphTab";
-import { GraphExplorer } from "./GraphExplorer";
 import * as Constants from "../../../Common/Constants";
+import { HashMap } from "../../../Common/HashMap";
+import { NeighborType } from "../../../Contracts/ViewModels";
+import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
+import { GraphConfig } from "../../Tabs/GraphTab";
+import { D3Link, D3Node, GraphData } from "./GraphData";
+import { GraphExplorer } from "./GraphExplorer";
 
 export interface D3GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -1005,7 +1003,7 @@ export class D3ForceGraph implements GraphRenderer {
    */
   private loadNeighbors(v: D3Node, pageAction: PAGE_ACTION) {
     if (!this.graphDataWrapper.hasVertexId(v.id)) {
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Clicked node not in graph data. id: ${v.id}`);
+      logConsoleError(`Clicked node not in graph data. id: ${v.id}`);
       return;
     }
 
