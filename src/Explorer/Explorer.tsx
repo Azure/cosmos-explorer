@@ -74,7 +74,6 @@ import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./
 import type { GalleryTabOptions } from "./Tabs/GalleryTab";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
-import TabsBase from "./Tabs/TabsBase";
 import { TabsManager } from "./Tabs/TabsManager";
 import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
@@ -166,7 +165,6 @@ export default class Explorer {
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
-  public notebookViewerTab: any;
   public tabsManager: TabsManager;
 
   // Contextual panes
@@ -1963,36 +1961,25 @@ export default class Explorer {
   public async openNotebookViewer(notebookUrl: string) {
     const title = path.basename(notebookUrl);
     const hashLocation = notebookUrl;
+    const NotebookViewerTab = await (
+      await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab")
+    ).default;
 
-    if (!this.notebookViewerTab) {
-      this.notebookViewerTab = await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab");
-    }
-
-    const notebookViewerTabModule = this.notebookViewerTab;
-
-    let isNotebookViewerOpen = (tab: TabsBase) => {
-      const notebookViewerTab = tab as typeof notebookViewerTabModule.default;
-      return notebookViewerTab.notebookUrl === notebookUrl;
-    };
-
-    const notebookViewerTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2, (tab) => {
-      return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
+    const notebookViewerTab = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2).find((tab) => {
+      return tab.hashLocation() == hashLocation && tab instanceof NotebookViewerTab && tab.notebookUrl === notebookUrl;
     });
-    let notebookViewerTab = notebookViewerTabs && notebookViewerTabs[0];
 
     if (notebookViewerTab) {
       this.tabsManager.activateNewTab(notebookViewerTab);
     } else {
-      notebookViewerTab = new this.notebookViewerTab.default({
+      const notebookViewerTab = new NotebookViewerTab({
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookViewer,
         node: null,
         title: title,
         tabPath: title,
-        documentClientUtility: null,
         collection: null,
         hashLocation: hashLocation,
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
