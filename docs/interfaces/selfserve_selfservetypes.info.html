@@ -3,8 +3,8 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>RefreshResult | SelfServeModel</title>
-	<meta name="description" content="Documentation for SelfServeModel">
+	<title>Info | cosmos-explorer</title>
+	<meta name="description" content="Documentation for cosmos-explorer">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
 	<script async src="../assets/js/search.js" id="search-script"></script>
@@ -23,7 +23,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">SelfServeModel</a>
+					<a href="../index.html" class="title">cosmos-explorer</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -52,27 +52,34 @@
 		<div class="container">
 			<ul class="tsd-breadcrumb">
 				<li>
-					<a href="../modules.html">SelfServeModel</a>
+					<a href="../modules.html">cosmos-explorer</a>
 				</li>
 				<li>
-					<a href="../modules/selfservetypes.html">SelfServeTypes</a>
+					<a href="../modules/selfserve_selfservetypes.html">SelfServe/SelfServeTypes</a>
 				</li>
 				<li>
-					<a href="selfservetypes.refreshresult.html">RefreshResult</a>
+					<a href="selfserve_selfservetypes.info.html">Info</a>
 				</li>
 			</ul>
-			<h1>Interface RefreshResult</h1>
+			<h1>Interface Info</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Data to be shown within the info bubble of the property.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">RefreshResult</span>
+						<span class="target">Info</span>
 					</li>
 				</ul>
 			</section>
@@ -83,8 +90,8 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="selfservetypes.refreshresult.html#isupdateinprogress" class="tsd-kind-icon">is<wbr>Update<wbr>InProgress</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="selfservetypes.refreshresult.html#updateinprogressmessagetkey" class="tsd-kind-icon">update<wbr>InProgress<wbr>MessageTKey</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="selfserve_selfservetypes.info.html#link" class="tsd-kind-icon">link</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="selfserve_selfservetypes.info.html#messagetkey" class="tsd-kind-icon">messageTKey</a></li>
 							</ul>
 						</section>
 					</div>
@@ -93,27 +100,47 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="isupdateinprogress" class="tsd-anchor"></a>
-					<h3>is<wbr>Update<wbr>InProgress</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Update<wbr>InProgress<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="link" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> link</h3>
+					<div class="tsd-signature tsd-kind-icon">link<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span>href<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">; </span>textTKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>Indicate if the update is still ongoing</p>
+							<p>Optional link to be shown within the info bubble, after the text.</p>
 						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>href<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>The URL of the link</p>
+									</div>
+								</div>
+							</li>
+							<li class="tsd-parameter">
+								<h5>textTKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+								<div class="tsd-comment tsd-typography">
+									<div class="lead">
+										<p>Translation key corresponding to the text of the link.</p>
+									</div>
+								</div>
+							</li>
+						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="updateinprogressmessagetkey" class="tsd-anchor"></a>
-					<h3>update<wbr>InProgress<wbr>MessageTKey</h3>
-					<div class="tsd-signature tsd-kind-icon">update<wbr>InProgress<wbr>MessageTKey<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="messagetkey" class="tsd-anchor"></a>
+					<h3>messageTKey</h3>
+					<div class="tsd-signature tsd-kind-icon">messageTKey<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>The translation key corresponding to the message that will be shown on the UI if the update is still ongoing.
-							Will be shown only if <a href="selfservetypes.refreshresult.html#isupdateinprogress"><code>isUpdateInProgress</code></a> is true.</p>
+							<p>Translation key corresponding to the text to be shown within the info bubble.</p>
 						</div>
 					</div>
 				</section>
@@ -126,77 +153,80 @@
 						<a href="../modules.html">Modules</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/decorators.html">Decorators</a>
+						<a href="../modules/selfserve.html">Self<wbr>Serve</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/selfservetelemetryprocessor.html">Self<wbr>Serve<wbr>Telemetry<wbr>Processor</a>
+						<a href="../modules/selfserve_decorators.html">Self<wbr>Serve/<wbr>Decorators</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../modules/selfserve_selfservetelemetryprocessor.html">Self<wbr>Serve/<wbr>Self<wbr>Serve<wbr>Telemetry<wbr>Processor</a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/selfservetypes.html">Self<wbr>Serve<wbr>Types</a>
+						<a href="../modules/selfserve_selfservetypes.html">Self<wbr>Serve/<wbr>Self<wbr>Serve<wbr>Types</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="../modules/selfserveutils.html">Self<wbr>Serve<wbr>Utils</a>
+						<a href="../modules/selfserve_selfserveutils.html">Self<wbr>Serve/<wbr>Self<wbr>Serve<wbr>Utils</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/selfservetypes.descriptiontype.html" class="tsd-kind-icon">Description<wbr>Type</a>
+						<a href="../enums/selfserve_selfservetypes.descriptiontype.html" class="tsd-kind-icon">Description<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-enum tsd-parent-kind-module">
-						<a href="../enums/selfservetypes.numberuitype.html" class="tsd-kind-icon">Number<wbr>UiType</a>
+						<a href="../enums/selfserve_selfservetypes.numberuitype.html" class="tsd-kind-icon">Number<wbr>UiType</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/selfservetypes.selfservebaseclass.html" class="tsd-kind-icon">Self<wbr>Serve<wbr>Base<wbr>Class</a>
+						<a href="../classes/selfserve_selfservetypes.selfservebaseclass.html" class="tsd-kind-icon">Self<wbr>Serve<wbr>Base<wbr>Class</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.description.html" class="tsd-kind-icon">Description</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.info.html" class="tsd-kind-icon">Info</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.onsaveresult.html" class="tsd-kind-icon">On<wbr>Save<wbr>Result</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.refreshparams.html" class="tsd-kind-icon">Refresh<wbr>Params</a>
+						<a href="selfserve_selfservetypes.description.html" class="tsd-kind-icon">Description</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.refreshresult.html" class="tsd-kind-icon">Refresh<wbr>Result</a>
+						<a href="selfserve_selfservetypes.info.html" class="tsd-kind-icon">Info</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="selfservetypes.refreshresult.html#isupdateinprogress" class="tsd-kind-icon">is<wbr>Update<wbr>InProgress</a>
+								<a href="selfserve_selfservetypes.info.html#link" class="tsd-kind-icon">link</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="selfservetypes.refreshresult.html#updateinprogressmessagetkey" class="tsd-kind-icon">update<wbr>InProgress<wbr>MessageTKey</a>
+								<a href="selfserve_selfservetypes.info.html#messagetkey" class="tsd-kind-icon">messageTKey</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.selfservetelemetrymessage.html" class="tsd-kind-icon">Self<wbr>Serve<wbr>Telemetry<wbr>Message</a>
+						<a href="selfserve_selfservetypes.onsaveresult.html" class="tsd-kind-icon">On<wbr>Save<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="selfservetypes.smartuiinput.html" class="tsd-kind-icon">Smart<wbr>UiInput</a>
+						<a href="selfserve_selfservetypes.refreshparams.html" class="tsd-kind-icon">Refresh<wbr>Params</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="selfserve_selfservetypes.refreshresult.html" class="tsd-kind-icon">Refresh<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="selfserve_selfservetypes.selfservetelemetrymessage.html" class="tsd-kind-icon">Self<wbr>Serve<wbr>Telemetry<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="selfserve_selfservetypes.smartuiinput.html" class="tsd-kind-icon">Smart<wbr>UiInput</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/selfservetypes.html#choiceitem" class="tsd-kind-icon">Choice<wbr>Item</a>
+						<a href="../modules/selfserve_selfservetypes.html#choiceitem" class="tsd-kind-icon">Choice<wbr>Item</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/selfservetypes.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a>
+						<a href="../modules/selfserve_selfservetypes.html#inputtype" class="tsd-kind-icon">Input<wbr>Type</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/selfservetypes.html#onchangecallback" class="tsd-kind-icon">On<wbr>Change<wbr>Callback</a>
+						<a href="../modules/selfserve_selfservetypes.html#onchangecallback" class="tsd-kind-icon">On<wbr>Change<wbr>Callback</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/selfservetypes.html#initializecallback" class="tsd-kind-icon">initialize<wbr>Callback</a>
+						<a href="../modules/selfserve_selfservetypes.html#initializecallback" class="tsd-kind-icon">initialize<wbr>Callback</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
-						<a href="../modules/selfservetypes.html#onsavecallback" class="tsd-kind-icon">on<wbr>Save<wbr>Callback</a>
+						<a href="../modules/selfserve_selfservetypes.html#onsavecallback" class="tsd-kind-icon">on<wbr>Save<wbr>Callback</a>
 					</li>
 				</ul>
 			</nav>

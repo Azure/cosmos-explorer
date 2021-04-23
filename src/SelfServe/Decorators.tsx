@@ -1,3 +1,7 @@
+/**
+ * @module SelfServe/Decorators
+ */
+
 import { ChoiceItem, Description, Info, NumberUiType, OnChangeCallback, RefreshParams } from "./SelfServeTypes";
 import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties } from "./SelfServeUtils";
 

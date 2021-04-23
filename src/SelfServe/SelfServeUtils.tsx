@@ -1,3 +1,7 @@
+/**
+ * @module SelfServe/SelfServeUtils
+ */
+
 import "reflect-metadata";
 import { userContext } from "../UserContext";
 import {

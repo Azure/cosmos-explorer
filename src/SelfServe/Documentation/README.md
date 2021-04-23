@@ -28,7 +28,7 @@ Run `npm start` to start the development server and automatically rebuild on cha
 
 ### Local Development
 
-Update [SelfServeType](./enums/selfserveutils.selfservetype.html) to add your feature.
+Update [SelfServeType](../enums/selfserve_selfserveutils.selfservetype.html) to add your feature.
 
 Add the feature flag `feature.dataExplorerSource=https://localhost:1234/selfServe.html?selfServeType%3D<SELF_SERVE_TYPE>` to open up the your feature's UI in the data explorer blade of the portal.
 
@@ -50,17 +50,17 @@ SELF_SERVE_CLASS_NAME.tsx
 #### Description
 This file will contain the actual code that is transalted into the UI component by the Self Serve framework.
 * Each Self Serve class
-  * Needs to extends the [SelfServeBase](./classes/selfservetypes.selfservebaseclass.html) class.
-  * Needs to have the [@IsDisplayable()](./modules/decorators.html#isdisplayable) decorator to tell the compiler that UI needs to be generated from this class.
-  * Needs to define an [onSave()](./classes/selfservetypes.selfservebaseclass.html#onsave) function, a callback for when the save button is clicked.
-  * Needs to define an [initialize()](./classes/selfservetypes.selfservebaseclass.html#initialize) function, to set default values for the inputs.
-  * Needs to define an [onRefresh()](./classes/selfservetypes.selfservebaseclass.html#onrefresh) function, a callback for when the refresh button is clicked.
-  * Can have an optional [@RefreshOptions()](./modules/decorators.html#refreshoptions) decorator that determines how often the auto refresh of the UI component should take place.
+  * Needs to extends the [SelfServeBase](../classes/selfserve_selfservetypes.selfservebaseclass.html) class.
+  * Needs to have the [@IsDisplayable()](./selfserve_decorators.html#isdisplayable) decorator to tell the compiler that UI needs to be generated from this class.
+  * Needs to define an [onSave()](../classes/selfserve_selfservetypes.selfservebaseclass.html#onsave) function, a callback for when the save button is clicked.
+  * Needs to define an [initialize()](../classes/selfserve_selfservetypes.selfservebaseclass.html#initialize) function, to set default values for the inputs.
+  * Needs to define an [onRefresh()](../classes/selfserve_selfservetypes.selfservebaseclass.html#onrefresh) function, a callback for when the refresh button is clicked.
+  * Can have an optional [@RefreshOptions()](./selfserve_decorators.html#refreshoptions) decorator that determines how often the auto refresh of the UI component should take place.
 
 * Each property of the Self Serve class
-  * Having a [@Values()](./modules/decorators.html#values) decorator will be translated into an UI element.
-  * Decorated with [@Values()](./modules/decorators.html#values) can have an optional [@PropertyInfo()](modules/decorators.html#propertyinfo) decorator that describes it's info bubble.
-  * Can have an optional [@OnChange()](modules/decorators.html#onchange) decorator that dictates the effects of the change of the UI element tied to this property.
+  * Having a [@Values()](./selfserve_decorators.html#values) decorator will be translated into an UI element.
+  * Decorated with [@Values()](./selfserve_decorators.html#values) can have an optional [@PropertyInfo()](./selfserve_decorators.html#propertyinfo) decorator that describes it's info bubble.
+  * Can have an optional [@OnChange()](./selfserve_decorators.html#onchange) decorator that dictates the effects of the change of the UI element tied to this property.
 
 ```ts
 @IsDisplayable()
@@ -152,7 +152,7 @@ Content of Localization/en/NewFeature.json
 
 ### 4. Update SelfServeType
 
-Once you have written your Self Serve Class, add a corresponding type to [SelfServeType](./enums/selfserveutils.selfservetype.html)
+Once you have written your Self Serve Class, add a corresponding type to [SelfServeType](../enums/selfserve_selfserveutils.selfservetype.html)
 
 ```ts
 export enum SelfServeType {
@@ -194,4 +194,4 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
 ```
 
 ## Telemetry
-You can add telemetry for your feature using the functions in [SelfServeTelemetryProcessor](./modules/selfservetelemetryprocessor.html)
+You can add telemetry for your feature using the functions in [SelfServeTelemetryProcessor](./selfserve_selfservetelemetryprocessor.html)
