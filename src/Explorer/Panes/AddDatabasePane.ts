@@ -62,21 +62,21 @@ export default class AddDatabasePane extends ContextualPaneBase {
     this.databaseCreateNewShared = ko.observable<boolean>(this.getSharedThroughputDefault());
 
     this.databaseIdLabel = ko.computed<string>(() =>
-      this.container.isPreferredApiCassandra() ? "Keyspace id" : "Database id"
+      userContext.apiType === "Cassandra" ? "Keyspace id" : "Database id"
     );
 
     this.databaseIdPlaceHolder = ko.computed<string>(() =>
-      this.container.isPreferredApiCassandra() ? "Type a new keyspace id" : "Type a new database id"
+      userContext.apiType === "Cassandra" ? "Type a new keyspace id" : "Type a new database id"
     );
 
     this.databaseIdTooltipText = ko.computed<string>(() => {
-      const isCassandraAccount: boolean = this.container.isPreferredApiCassandra();
+      const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
       return `A ${isCassandraAccount ? "keyspace" : "database"} is a logical container of one or more ${
         isCassandraAccount ? "tables" : "collections"
       }`;
     });
     this.databaseLevelThroughputTooltipText = ko.computed<string>(() => {
-      const isCassandraAccount: boolean = this.container.isPreferredApiCassandra();
+      const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
       const databaseLabel: string = isCassandraAccount ? "keyspace" : "database";
       const collectionsLabel: string = isCassandraAccount ? "tables" : "collections";
       return `Provisioned throughput at the ${databaseLabel} level will be shared across all ${collectionsLabel} within the ${databaseLabel}.`;

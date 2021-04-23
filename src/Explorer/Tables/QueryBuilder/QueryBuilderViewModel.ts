@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import { KeyCodes } from "../../../Common/Constants";
+import { userContext } from "../../../UserContext";
 import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
@@ -70,7 +71,7 @@ export default class QueryBuilderViewModel {
   private scrollEventListener: boolean;
 
   constructor(queryViewModel: QueryViewModel, tableEntityListViewModel: TableEntityListViewModel) {
-    if (tableEntityListViewModel.queryTablesTab.container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       this.edmTypes([
         Constants.CassandraType.Text,
         Constants.CassandraType.Ascii,

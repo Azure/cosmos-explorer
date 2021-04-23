@@ -73,7 +73,13 @@ describe("Add Collection Pane", () => {
     });
 
     it("should be true for any non-graph API with /id or /label partition key", () => {
-      updateUserContext({});
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableCassandra" }],
+          },
+        } as DatabaseAccount,
+      });
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
 
       addCollectionPane.partitionKey("/id");

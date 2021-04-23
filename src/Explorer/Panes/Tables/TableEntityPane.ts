@@ -1,15 +1,16 @@
 import * as ko from "knockout";
 import _ from "underscore";
-import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
-import * as Entities from "../../Tables/Entities";
-import EntityPropertyViewModel from "./EntityPropertyViewModel";
+import { KeyCodes } from "../../../Common/Constants";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { userContext } from "../../../UserContext";
 import * as TableConstants from "../../Tables/Constants";
+import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
+import * as Entities from "../../Tables/Entities";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import * as Utilities from "../../Tables/Utilities";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { KeyCodes } from "../../../Common/Constants";
 import { ContextualPaneBase } from "../ContextualPaneBase";
+import EntityPropertyViewModel from "./EntityPropertyViewModel";
 
 // Class with variables and functions that are common to both adding and editing entities
 export default abstract class TableEntityPane extends ContextualPaneBase {
@@ -52,31 +53,29 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
-    this.container.isPreferredApiCassandra.subscribe((isCassandra) => {
-      if (isCassandra) {
-        this.edmTypes([
-          TableConstants.CassandraType.Text,
-          TableConstants.CassandraType.Ascii,
-          TableConstants.CassandraType.Bigint,
-          TableConstants.CassandraType.Blob,
-          TableConstants.CassandraType.Boolean,
-          TableConstants.CassandraType.Decimal,
-          TableConstants.CassandraType.Double,
-          TableConstants.CassandraType.Float,
-          TableConstants.CassandraType.Int,
-          TableConstants.CassandraType.Uuid,
-          TableConstants.CassandraType.Varchar,
-          TableConstants.CassandraType.Varint,
-          TableConstants.CassandraType.Inet,
-          TableConstants.CassandraType.Smallint,
-          TableConstants.CassandraType.Tinyint,
-        ]);
-      }
-    });
+    if (userContext.apiType === "Cassandra") {
+      this.edmTypes([
+        TableConstants.CassandraType.Text,
+        TableConstants.CassandraType.Ascii,
+        TableConstants.CassandraType.Bigint,
+        TableConstants.CassandraType.Blob,
+        TableConstants.CassandraType.Boolean,
+        TableConstants.CassandraType.Decimal,
+        TableConstants.CassandraType.Double,
+        TableConstants.CassandraType.Float,
+        TableConstants.CassandraType.Int,
+        TableConstants.CassandraType.Uuid,
+        TableConstants.CassandraType.Varchar,
+        TableConstants.CassandraType.Varint,
+        TableConstants.CassandraType.Inet,
+        TableConstants.CassandraType.Smallint,
+        TableConstants.CassandraType.Tinyint,
+      ]);
+    }
 
     this.canAdd = ko.computed<boolean>(() => {
       // Cassandra can't add since the schema can't be changed once created
-      if (this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType === "Cassandra") {
         return false;
       }
       // Adding '2' to the maximum to take into account PartitionKey and RowKey
@@ -163,7 +162,7 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
 
   public insertAttribute = (name?: string, type?: string): void => {
     let entityProperty: EntityPropertyViewModel;
-    if (!!name && !!type && this.container.isPreferredApiCassandra()) {
+    if (!!name && !!type && userContext.apiType === "Cassandra") {
       // TODO figure out validation story for blob and Inet so we can allow adding/editing them
       const nonEditableType: boolean =
         type === TableConstants.CassandraType.Blob || type === TableConstants.CassandraType.Inet;
@@ -253,8 +252,7 @@ export default abstract class TableEntityPane extends ContextualPaneBase {
           key !== TableEntityProcessor.keyProperties.etag &&
           key !== TableEntityProcessor.keyProperties.resourceId &&
           key !== TableEntityProcessor.keyProperties.self &&
-          (!viewModel.queryTablesTab.container.isPreferredApiCassandra() ||
-            key !== TableConstants.EntityKeyNames.RowKey)
+          (userContext.apiType !== "Cassandra" || key !== TableConstants.EntityKeyNames.RowKey)
         ) {
           newHeaders.push(key);
         }
