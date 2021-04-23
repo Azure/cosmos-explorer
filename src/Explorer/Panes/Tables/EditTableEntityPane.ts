@@ -69,7 +69,7 @@ export default class EditTableEntityPane extends TableEntityPane {
 
   public open() {
     this.displayedAttributes(this.constructDisplayedAttributes(this.originEntity));
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       this.originalDocument = TableEntityProcessor.convertEntitiesToDocuments(
         [<Entities.ITableEntityForTablesAPI>this.originEntity],
         this.tableViewModel.queryTablesTab.collection

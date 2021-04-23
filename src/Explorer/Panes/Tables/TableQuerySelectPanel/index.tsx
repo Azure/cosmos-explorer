@@ -4,7 +4,10 @@ import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import * as Constants from "../../../Tables/Constants";
 import QueryViewModel from "../../../Tables/QueryBuilder/QueryViewModel";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../../GenericRightPaneComponent/GenericRightPaneComponent";
 
 interface TableQuerySelectPanelProps {
   explorer: Explorer;
