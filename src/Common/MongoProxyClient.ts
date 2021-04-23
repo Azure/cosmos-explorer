@@ -5,10 +5,9 @@ import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { userContext } from "../UserContext";
-import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
@@ -348,10 +347,7 @@ export function getEndpoint(): string {
 async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
   const errorMessage = await response.text();
   // Log the error where the user can see it
-  NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.Error,
-    `Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`
-  );
+  logConsoleError(`Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`);
   if (response.status === HttpStatusCodes.Forbidden) {
     sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
     return;

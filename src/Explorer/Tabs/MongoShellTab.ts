@@ -7,9 +7,8 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { isInvalidParentFrameOrigin, isReadyMessage } from "../../Utils/MessageValidation";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import template from "./MongoShellTab.html";
 import TabsBase from "./TabsBase";
 
@@ -183,13 +182,11 @@ export default class MongoShellTab extends TabsBase {
 
     switch (logType) {
       case LogType.Information:
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, dataToLog);
-        break;
+        return logConsoleInfo(dataToLog);
       case LogType.Warning:
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, dataToLog);
-        break;
+        return logConsoleError(dataToLog);
       case LogType.InProgress:
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.InProgress, dataToLog);
+        return logConsoleProgress(dataToLog);
     }
   }
 }
