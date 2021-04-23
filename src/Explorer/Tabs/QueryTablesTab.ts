@@ -1,21 +1,21 @@
 import * as ko from "knockout";
 import Q from "q";
-import * as ViewModels from "../../Contracts/ViewModels";
-import TabsBase from "./TabsBase";
-import TableEntityListViewModel from "../Tables/DataTable/TableEntityListViewModel";
-import QueryViewModel from "../Tables/QueryBuilder/QueryViewModel";
-import TableCommands from "../Tables/DataTable/TableCommands";
-import { TableDataClient } from "../Tables/TableDataClient";
-
+import AddEntityIcon from "../../../images/AddEntity.svg";
+import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
+import EditEntityIcon from "../../../images/Edit-entity.svg";
+import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import QueryBuilderIcon from "../../../images/Query-Builder.svg";
 import QueryTextIcon from "../../../images/Query-Text.svg";
-import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
-import AddEntityIcon from "../../../images/AddEntity.svg";
-import EditEntityIcon from "../../../images/Edit-entity.svg";
-import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
-import Explorer from "../Explorer";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../Explorer";
+import TableCommands from "../Tables/DataTable/TableCommands";
+import TableEntityListViewModel from "../Tables/DataTable/TableEntityListViewModel";
+import QueryViewModel from "../Tables/QueryBuilder/QueryViewModel";
+import { TableDataClient } from "../Tables/TableDataClient";
 import template from "./QueryTablesTab.html";
+import TabsBase from "./TabsBase";
 
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
@@ -47,7 +47,7 @@ export default class QueryTablesTab extends TabsBase {
     this.tableEntityListViewModel().queryTablesTab = this;
     this.queryViewModel(new QueryViewModel(this));
     const sampleQuerySubscription = this.tableEntityListViewModel().items.subscribe(() => {
-      if (this.tableEntityListViewModel().items().length > 0 && this.container.isPreferredApiTable()) {
+      if (this.tableEntityListViewModel().items().length > 0 && userContext.apiType === "Tables") {
         this.queryViewModel().queryBuilderViewModel().setExample();
       }
       sampleQuerySubscription.dispose();
@@ -146,8 +146,7 @@ export default class QueryTablesTab extends TabsBase {
   };
 
   public onAddEntityClick = (): Q.Promise<any> => {
-    this.container.addTableEntityPane.tableViewModel = this.tableEntityListViewModel();
-    this.container.addTableEntityPane.open();
+    this.container.openAddTableEntityPanel(this, this.tableEntityListViewModel());
     return null;
   };
 
@@ -176,7 +175,7 @@ export default class QueryTablesTab extends TabsBase {
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     if (this.queryBuilderButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "CQL Query Builder" : "Query Builder";
+      const label = userContext.apiType === "Cassandra" ? "CQL Query Builder" : "Query Builder";
       buttons.push({
         iconSrc: QueryBuilderIcon,
         iconAlt: label,
@@ -190,7 +189,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.queryTextButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "CQL Query Text" : "Query Text";
+      const label = userContext.apiType === "Cassandra" ? "CQL Query Text" : "Query Text";
       buttons.push({
         iconSrc: QueryTextIcon,
         iconAlt: label,
@@ -217,7 +216,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.addEntityButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "Add Row" : "Add Entity";
+      const label = userContext.apiType === "Cassandra" ? "Add Row" : "Add Entity";
       buttons.push({
         iconSrc: AddEntityIcon,
         iconAlt: label,
@@ -230,7 +229,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.editEntityButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "Edit Row" : "Edit Entity";
+      const label = userContext.apiType === "Cassandra" ? "Edit Row" : "Edit Entity";
       buttons.push({
         iconSrc: EditEntityIcon,
         iconAlt: label,
@@ -243,7 +242,7 @@ export default class QueryTablesTab extends TabsBase {
     }
 
     if (this.deleteEntityButton.visible()) {
-      const label = this.container.isPreferredApiCassandra() ? "Delete Rows" : "Delete Entities";
+      const label = userContext.apiType === "Cassandra" ? "Delete Rows" : "Delete Entities";
       buttons.push({
         iconSrc: DeleteEntitiesIcon,
         iconAlt: label,

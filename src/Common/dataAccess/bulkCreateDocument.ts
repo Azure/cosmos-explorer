@@ -22,9 +22,12 @@ export const bulkCreateDocument = async (
       );
 
     const successCount = response.filter((r) => r.statusCode === 201).length;
+    const throttledCount = response.filter((r) => r.statusCode === 429).length;
 
     logConsoleInfo(
-      `${documents.length} operations completed for container ${collection.id()}. ${successCount} operations succeeded`
+      `${
+        documents.length
+      } operations completed for container ${collection.id()}. ${successCount} operations succeeded. ${throttledCount} operations throttled`
     );
     return response;
   } catch (error) {

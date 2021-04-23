@@ -253,7 +253,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
    * @param container
    */
   private static showScriptNodes(container: Explorer): boolean {
-    return userContext.apiType === "SQL" || container.isPreferredApiGraph();
+    return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   }
 
   private buildCollectionNode(database: ViewModels.Database, collection: ViewModels.Collection): TreeNode {
@@ -273,7 +273,18 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (!this.container.isPreferredApiCassandra() || !this.container.isServerlessEnabled()) {
+    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
+      children.push({
+        label: "Schema (Preview)",
+        onClick: collection.onSchemaAnalyzerClick.bind(collection),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.databaseId, collection.id(), [
+            ViewModels.CollectionTabKind.SchemaAnalyzer,
+          ]),
+      });
+    }
+
+    if (userContext.apiType !== "Cassandra" || !this.container.isServerlessEnabled()) {
       children.push({
         label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
