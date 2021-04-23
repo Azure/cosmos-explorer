@@ -1,9 +1,8 @@
 import * as ko from "knockout";
 import Q from "q";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { ContextualPaneBase } from "./ContextualPaneBase";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 
 export interface StringInputPaneOpenOptions {
   paneTitle: string;
@@ -39,19 +38,13 @@ export class StringInputPane extends ContextualPaneBase {
     this.formErrors("");
     this.formErrorsDetails("");
 
-    const id: string = NotificationConsoleUtils.logConsoleMessage(
-      ConsoleDataType.InProgress,
-      `${this.openOptions.inProgressMessage} ${this.stringInput()}`
-    );
+    const clearInProgressMessage = logConsoleProgress(`${this.openOptions.inProgressMessage} ${this.stringInput()}`);
     this.isExecuting(true);
     this.openOptions
       .onSubmit(this.stringInput())
       .then(
         (value: any) => {
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Info,
-            `${this.openOptions.successMessage}: ${this.stringInput()}`
-          );
+          logConsoleInfo(`${this.openOptions.successMessage}: ${this.stringInput()}`);
           this.close();
           this.paneDeferred.resolve(value);
         },
@@ -70,16 +63,13 @@ export class StringInputPane extends ContextualPaneBase {
 
           this.formErrors(this.openOptions.errorMessage);
           this.formErrorsDetails(`${this.openOptions.errorMessage}: ${error}`);
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `${this.openOptions.errorMessage} ${this.stringInput()}: ${error}`
-          );
+          logConsoleError(`${this.openOptions.errorMessage} ${this.stringInput()}: ${error}`);
           this.paneDeferred.reject(error);
         }
       )
       .finally(() => {
         this.isExecuting(false);
-        NotificationConsoleUtils.clearInProgressMessageWithId(id);
+        clearInProgressMessage();
       });
   }
 

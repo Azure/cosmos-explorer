@@ -273,6 +273,17 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
+    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
+      children.push({
+        label: "Schema (Preview)",
+        onClick: collection.onSchemaAnalyzerClick.bind(collection),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.databaseId, collection.id(), [
+            ViewModels.CollectionTabKind.SchemaAnalyzer,
+          ]),
+      });
+    }
+
     if (userContext.apiType !== "Cassandra" || !this.container.isServerlessEnabled()) {
       children.push({
         label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",

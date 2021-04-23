@@ -14,7 +14,10 @@ import { GalleryTab } from "../Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer";
 import * as FileSystemUtil from "../Notebook/FileSystemUtil";
 import { SnapshotRequest } from "../Notebook/NotebookComponent/types";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "./GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps
+} from "./GenericRightPaneComponent/GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
 export interface OpenPublishPaneReturnType {

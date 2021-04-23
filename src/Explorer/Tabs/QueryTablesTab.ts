@@ -47,7 +47,7 @@ export default class QueryTablesTab extends TabsBase {
     this.tableEntityListViewModel().queryTablesTab = this;
     this.queryViewModel(new QueryViewModel(this));
     const sampleQuerySubscription = this.tableEntityListViewModel().items.subscribe(() => {
-      if (this.tableEntityListViewModel().items().length > 0 && this.container.isPreferredApiTable()) {
+      if (this.tableEntityListViewModel().items().length > 0 && userContext.apiType === "Tables") {
         this.queryViewModel().queryBuilderViewModel().setExample();
       }
       sampleQuerySubscription.dispose();
@@ -146,8 +146,7 @@ export default class QueryTablesTab extends TabsBase {
   };
 
   public onAddEntityClick = (): Q.Promise<any> => {
-    this.container.addTableEntityPane.tableViewModel = this.tableEntityListViewModel();
-    this.container.addTableEntityPane.open();
+    this.container.openAddTableEntityPanel(this, this.tableEntityListViewModel());
     return null;
   };
 

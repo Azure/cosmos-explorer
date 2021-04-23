@@ -1,11 +1,9 @@
 import { CellId } from "@nteract/commutable";
 import { CellType } from "@nteract/commutable/src";
 import { actions, ContentRef, selectors } from "@nteract/core";
-import { KernelOutputError, StreamText } from "@nteract/outputs";
 import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
-import TransformMedia from "@nteract/stateful-components/lib/outputs/transform-media";
 import * as React from "react";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -25,7 +23,7 @@ import KeyboardShortcuts from "./decorators/kbd-shortcuts";
 import "./default.css";
 import MarkdownCell from "./markdown-cell";
 import "./NotebookRenderer.less";
-import IFrameOutputs from "./outputs/IFrameOutputs";
+import SandboxOutputs from "./outputs/SandboxOutputs";
 import Prompt from "./Prompt";
 import { promptContent } from "./PromptContent";
 import StatusBar from "./StatusBar";
@@ -81,7 +79,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 
   componentDidMount() {
-    loadTransform(this.props as any);
+    if (!userContext.features.sandboxNotebookOutputs) {
+      loadTransform(this.props as any);
+    }
   }
 
   componentDidUpdate() {
@@ -128,14 +128,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                             ),
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                             outputs: userContext.features.sandboxNotebookOutputs
-                              ? (props: any) => (
-                                <IFrameOutputs id={id} contentRef={contentRef}>
-                                  <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
-                                  <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
-                                  <KernelOutputError />
-                                  <StreamText />
-                                </IFrameOutputs>
-                              )
+                              ? () => <SandboxOutputs id={id} contentRef={contentRef} />
                               : undefined,
                           }}
                         </CodeCell>
