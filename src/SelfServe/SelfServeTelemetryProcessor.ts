@@ -1,3 +1,7 @@
+/**
+ * @module SelfServe/SelfServeTelemetryProcessor
+ */
+
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { trace, traceCancel, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";

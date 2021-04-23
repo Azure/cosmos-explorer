@@ -29,15 +29,15 @@
   },
   "typedocOptions": {
     "entryPoints": [
+      "./src/SelfServe/Documentation/Documentation.ts",
       "./src/SelfServe/Decorators.tsx",
-      "./src/SelfServe/SelfServeTelemetryProcessor.ts",
       "./src/SelfServe/SelfServeTypes.ts",
-      "./src/SelfServe/SelfServeUtils.tsx"
+      "./src/SelfServe/SelfServeUtils.tsx",
+      "./src/SelfServe/SelfServeTelemetryProcessor.ts"
     ],
     "out": "docs",
     "excludeInternal": true,
-    "name": "SelfServeModel",
-    "readme": "./src/SelfServe/Documentation/README.md",
+    "includes": "./src/SelfServe/Documentation",
     "disableSources": true
   },
   "include": [

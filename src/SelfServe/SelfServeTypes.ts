@@ -1,3 +1,7 @@
+/**
+ * @module SelfServe/SelfServeTypes
+ */
+
 import { TelemetryData } from "../Shared/Telemetry/TelemetryProcessor";
 
 interface BaseInput {
@@ -88,9 +92,6 @@ export type onSaveCallback =
     baselineValues: ReadonlyMap<string, SmartUiInput>
   ) => Promise<OnSaveResult>;
 
-/**
- * The SelfServe base class
- */
 export abstract class SelfServeBaseClass {
   /**
    * Sets default values for the properties of the Self Serve Class. Typically, you can make rest calls here
