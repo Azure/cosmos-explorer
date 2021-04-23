@@ -8,7 +8,7 @@ import { DatabaseAccount } from "../../Contracts/DataModels";
 import { JunoClient, IGalleryItem } from "../../Juno/JunoClient";
 import template from "./GalleryTab.html";
 
-interface GalleryTabOptions extends ViewModels.TabOptions {
+export interface GalleryTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
   container: Explorer;
   junoClient: JunoClient;

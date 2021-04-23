@@ -42,7 +42,7 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { DialogProps, TextFieldProps } from "./Controls/Dialog";
-import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
+import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
@@ -71,6 +71,7 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
+import type { GalleryTabOptions } from "./Tabs/GalleryTab";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
 import TabsBase from "./Tabs/TabsBase";
@@ -165,7 +166,6 @@ export default class Explorer {
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
-  public galleryTab: any;
   public notebookViewerTab: any;
   public tabsManager: TabsManager;
 
@@ -1922,50 +1922,41 @@ export default class Explorer {
   }
 
   public async openGallery(
-    selectedTab?: GalleryTab,
+    selectedTab?: GalleryTabKind,
     notebookUrl?: string,
     galleryItem?: IGalleryItem,
     isFavorite?: boolean
   ) {
-    let title: string = "Gallery";
-    let hashLocation: string = "gallery";
+    const title = "Gallery";
+    const hashLocation = "gallery";
+    const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
 
-    const galleryTabOptions: any = {
-      // GalleryTabOptions
+    const galleryTabOptions: GalleryTabOptions = {
       account: userContext.databaseAccount,
       container: this,
       junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTab.PublicGallery,
+      selectedTab: selectedTab || GalleryTabKind.PublicGallery,
       notebookUrl,
       galleryItem,
       isFavorite,
-      // TabOptions
       tabKind: ViewModels.CollectionTabKind.Gallery,
       title: title,
       tabPath: title,
-      documentClientUtility: null,
-      isActive: ko.observable(false),
       hashLocation: hashLocation,
       onUpdateTabsButtons: this.onUpdateTabsButtons,
       isTabsContentExpanded: ko.observable(true),
       onLoadStartKey: null,
     };
 
-    const galleryTabs = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Gallery,
-      (tab) => tab.hashLocation() == hashLocation
-    );
-    let galleryTab = galleryTabs && galleryTabs[0];
+    const galleryTab = this.tabsManager
+      .getTabs(ViewModels.CollectionTabKind.Gallery)
+      .find((tab) => tab.hashLocation() == hashLocation);
 
-    if (galleryTab) {
+    if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
-      (galleryTab as any).reset(galleryTabOptions);
+      galleryTab.reset(galleryTabOptions);
     } else {
-      if (!this.galleryTab) {
-        this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
-      }
-      const newTab = new this.galleryTab.default(galleryTabOptions);
-      this.tabsManager.activateNewTab(newTab);
+      this.tabsManager.activateNewTab(new GalleryTab(galleryTabOptions));
     }
   }
 
