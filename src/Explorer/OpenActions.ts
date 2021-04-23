@@ -80,6 +80,14 @@ function openCollectionTab(
         }
 
         if (
+          action.tabKind === ActionContracts.TabKind.SchemaAnalyzer ||
+          (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SchemaAnalyzer]
+        ) {
+          collection.onSchemaAnalyzerClick();
+          break;
+        }
+
+        if (
           action.tabKind === ActionContracts.TabKind.TableEntities ||
           (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.TableEntities]
         ) {

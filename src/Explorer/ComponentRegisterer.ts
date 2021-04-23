@@ -17,6 +17,7 @@ import NotebookTabV2 from "./Tabs/NotebookV2Tab";
 import NotebookViewerTab from "./Tabs/NotebookViewerTab";
 import QueryTab from "./Tabs/QueryTab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
+import SchemaAnalyzerTab from "./Tabs/SchemaAnalyzerTab";
 import { DatabaseSettingsTabV2, SettingsTabV2 } from "./Tabs/SettingsTabV2";
 import StoredProcedureTab from "./Tabs/StoredProcedureTab";
 import TerminalTab from "./Tabs/TerminalTab";
@@ -49,6 +50,7 @@ ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponent
   GalleryTab,
   NotebookViewerTab,
   DatabaseSettingsTabV2,
+  SchemaAnalyzerTab,
 ].forEach(({ component: { name, template } }) => ko.components.register(name, { template }));
 
 // Panes
