@@ -1,10 +1,8 @@
 import { SchemaAnalyzerComponentAdapter } from "../Notebook/SchemaAnalyzerComponent/SchemaAnalyzerComponentAdapter";
 import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
-import template from "./SchemaAnalyzerTab.html";
 
 export default class SchemaAnalyzerTab extends NotebookTabBase {
-  public static readonly component = { name: "schema-analyzer-tab", template };
-
+  public readonly html = '<div data-bind="react:schemaAnalyzerComponentAdapter" style="height: 100%"></div>';
   private schemaAnalyzerComponentAdapter: SchemaAnalyzerComponentAdapter;
 
   constructor(options: NotebookTabBaseOptions) {
