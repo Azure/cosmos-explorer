@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Settings Pane should render Default properly 1`] = `
-<GenericRightPaneComponent
+<RightPaneForm
   container={
     Explorer {
       "_closeModalDialog": [Function],
@@ -748,11 +748,11 @@ exports[`Settings Pane should render Default properly 1`] = `
       </div>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;
 
 exports[`Settings Pane should render Gremlin properly 1`] = `
-<GenericRightPaneComponent
+<RightPaneForm
   container={
     Explorer {
       "_closeModalDialog": [Function],
@@ -1424,5 +1424,5 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       </div>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;
