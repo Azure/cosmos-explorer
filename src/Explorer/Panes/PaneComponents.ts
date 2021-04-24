@@ -65,7 +65,6 @@ export class CassandraAddCollectionPaneComponent {
   }
 }
 
-
 export class GitHubReposPaneComponent {
   constructor() {
     return {
