@@ -8,21 +8,6 @@ import { JsonEditorComponent } from "./Controls/JsonEditor/JsonEditorComponent";
 import { ThroughputInputComponentAutoPilotV3 } from "./Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3";
 import { GraphStyleComponent } from "./Graph/GraphStyleComponent/GraphStyleComponent";
 import * as PaneComponents from "./Panes/PaneComponents";
-import ConflictsTab from "./Tabs/ConflictsTab";
-import DocumentsTab from "./Tabs/DocumentsTab";
-import GalleryTab from "./Tabs/GalleryTab";
-import GraphTab from "./Tabs/GraphTab";
-import MongoShellTab from "./Tabs/MongoShellTab";
-import NotebookTabV2 from "./Tabs/NotebookV2Tab";
-import NotebookViewerTab from "./Tabs/NotebookViewerTab";
-import QueryTab from "./Tabs/QueryTab";
-import QueryTablesTab from "./Tabs/QueryTablesTab";
-import SchemaAnalyzerTab from "./Tabs/SchemaAnalyzerTab";
-import { DatabaseSettingsTabV2, SettingsTabV2 } from "./Tabs/SettingsTabV2";
-import StoredProcedureTab from "./Tabs/StoredProcedureTab";
-import TerminalTab from "./Tabs/TerminalTab";
-import TriggerTab from "./Tabs/TriggerTab";
-import UserDefinedFunctionTab from "./Tabs/UserDefinedFunctionTab";
 
 ko.components.register("input-typeahead", new InputTypeaheadComponent());
 ko.components.register("error-display", new ErrorDisplayComponent());
@@ -32,26 +17,6 @@ ko.components.register("json-editor", new JsonEditorComponent());
 ko.components.register("diff-editor", new DiffEditorComponent());
 ko.components.register("dynamic-list", DynamicListComponent);
 ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponentAutoPilotV3);
-
-// Collection Tabs
-[
-  DocumentsTab,
-  StoredProcedureTab,
-  TriggerTab,
-  UserDefinedFunctionTab,
-  SettingsTabV2,
-  QueryTab,
-  QueryTablesTab,
-  GraphTab,
-  MongoShellTab,
-  ConflictsTab,
-  NotebookTabV2,
-  TerminalTab,
-  GalleryTab,
-  NotebookViewerTab,
-  DatabaseSettingsTabV2,
-  SchemaAnalyzerTab,
-].forEach(({ component: { name, template } }) => ko.components.register(name, { template }));
 
 // Panes
 ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());

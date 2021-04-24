@@ -13,7 +13,7 @@ import template from "./MongoShellTab.html";
 import TabsBase from "./TabsBase";
 
 export default class MongoShellTab extends TabsBase {
-  public static readonly component = { name: "mongo-shell-tab", template };
+  public readonly html = template;
   public url: ko.Computed<string>;
   private _container: Explorer;
   private _runtimeEndpoint: string;

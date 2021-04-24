@@ -31,7 +31,7 @@ import template from "./DocumentsTab.html";
 import TabsBase from "./TabsBase";
 
 export default class DocumentsTab extends TabsBase {
-  public static readonly component = { name: "documents-tab", template };
+  public readonly html = template;
   public selectedDocumentId: ko.Observable<DocumentId>;
   public selectedDocumentContent: ViewModels.Editable<string>;
   public initialDocumentContent: ko.Observable<string>;
