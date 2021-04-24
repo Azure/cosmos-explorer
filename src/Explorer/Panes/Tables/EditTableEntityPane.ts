@@ -1,14 +1,15 @@
 import * as ko from "knockout";
 import _ from "underscore";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { CassandraTableKey, CassandraAPIDataClient } from "../../Tables/TableDataClient";
-import * as Entities from "../../Tables/Entities";
-import TableEntityPane from "./TableEntityPane";
-import * as Utilities from "../../Tables/Utilities";
-import * as TableConstants from "../../Tables/Constants";
-import EntityPropertyViewModel from "./EntityPropertyViewModel";
-import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
+import { userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+import * as TableConstants from "../../Tables/Constants";
+import * as Entities from "../../Tables/Entities";
+import { CassandraAPIDataClient, CassandraTableKey } from "../../Tables/TableDataClient";
+import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
+import * as Utilities from "../../Tables/Utilities";
+import EntityPropertyViewModel from "./EntityPropertyViewModel";
+import TableEntityPane from "./TableEntityPane";
 
 export default class EditTableEntityPane extends TableEntityPane {
   container: Explorer;
@@ -21,11 +22,9 @@ export default class EditTableEntityPane extends TableEntityPane {
   constructor(options: ViewModels.PaneOptions) {
     super(options);
     this.submitButtonText("Update Entity");
-    this.container.isPreferredApiCassandra.subscribe((isCassandra) => {
-      if (isCassandra) {
-        this.submitButtonText("Update Row");
-      }
-    });
+    if (userContext.apiType === "Cassandra") {
+      this.submitButtonText("Update Row");
+    }
     this.scrollId = ko.observable<string>("editEntityScroll");
   }
 
@@ -44,7 +43,7 @@ export default class EditTableEntityPane extends TableEntityPane {
             property !== TableEntityProcessor.keyProperties.etag &&
             property !== TableEntityProcessor.keyProperties.resourceId &&
             property !== TableEntityProcessor.keyProperties.self &&
-            (!this.container.isPreferredApiCassandra() || property !== TableConstants.EntityKeyNames.RowKey)
+            (userContext.apiType !== "Cassandra" || property !== TableConstants.EntityKeyNames.RowKey)
           ) {
             numberOfProperties++;
           }
@@ -70,7 +69,7 @@ export default class EditTableEntityPane extends TableEntityPane {
 
   public open() {
     this.displayedAttributes(this.constructDisplayedAttributes(this.originEntity));
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       this.originalDocument = TableEntityProcessor.convertEntitiesToDocuments(
         [<Entities.ITableEntityForTablesAPI>this.originEntity],
         this.tableViewModel.queryTablesTab.collection
@@ -93,9 +92,9 @@ export default class EditTableEntityPane extends TableEntityPane {
           key !== TableEntityProcessor.keyProperties.etag &&
           key !== TableEntityProcessor.keyProperties.resourceId &&
           key !== TableEntityProcessor.keyProperties.self &&
-          (!this.container.isPreferredApiCassandra() || key !== TableConstants.EntityKeyNames.RowKey)
+          (userContext.apiType !== "Cassandra" || key !== TableConstants.EntityKeyNames.RowKey)
         ) {
-          if (this.container.isPreferredApiCassandra()) {
+          if (userContext.apiType === "Cassandra") {
             const cassandraKeys = this.tableViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys
               .concat(this.tableViewModel.queryTablesTab.collection.cassandraKeys.clusteringKeys)
               .map((key) => key.property);
@@ -150,7 +149,7 @@ export default class EditTableEntityPane extends TableEntityPane {
           }
         }
       });
-    if (this.container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       (<CassandraAPIDataClient>this.container.tableDataClient)
         .getTableSchema(this.tableViewModel.queryTablesTab.collection)
         .then((properties: CassandraTableKey[]) => {
@@ -169,10 +168,7 @@ export default class EditTableEntityPane extends TableEntityPane {
     var updatedEntity: any = {};
     displayedAttributes &&
       displayedAttributes.forEach((attribute: EntityPropertyViewModel) => {
-        if (
-          attribute.name() &&
-          (!this.tableViewModel.queryTablesTab.container.isPreferredApiCassandra() || attribute.value() !== "")
-        ) {
+        if (attribute.name() && (userContext.apiType !== "Cassandra" || attribute.value() !== "")) {
           var value = attribute.getPropertyValue();
           var type = attribute.type();
           if (type === TableConstants.TableType.Int64) {

@@ -1,20 +1,19 @@
-import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import * as NotificationConsoleUtils from "./NotificationConsoleUtils";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import {
-  GalleryTab,
-  SortBy,
-  GalleryViewerComponent,
-} from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
-import Explorer from "../Explorer/Explorer";
-import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
-import { TextFieldProps } from "../Explorer/Controls/Dialog";
-import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
-import { HttpStatusCodes } from "../Common/Constants";
-import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { Notebook } from "@nteract/commutable";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
+import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
+import { HttpStatusCodes } from "../Common/Constants";
+import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
+import { TextFieldProps } from "../Explorer/Controls/Dialog";
+import {
+  GalleryTab,
+  GalleryViewerComponent,
+  SortBy,
+} from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
+import Explorer from "../Explorer/Explorer";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
+import { logConsoleInfo, logConsoleProgress } from "./NotificationConsoleUtils";
 
 const defaultSelectedAbuseCategory = "Other";
 const abuseCategories: IChoiceGroupOption[] = [
@@ -228,11 +227,7 @@ export function downloadItem(
     `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
     "Download",
     async () => {
-      const notificationId = NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.InProgress,
-        `Downloading ${name} to My Notebooks`
-      );
-
+      const clearInProgressMessage = logConsoleProgress(`Downloading ${name} to My Notebooks`);
       const startKey = traceStart(Action.NotebooksGalleryDownload, {
         notebookId: data.id,
         downloadCount: data.downloads,
@@ -249,10 +244,7 @@ export function downloadItem(
         removeNotebookViewerLink(notebook, data.newCellId);
 
         await container.importAndOpenContent(data.name, JSON.stringify(notebook));
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Info,
-          `Successfully downloaded ${name} to My Notebooks`
-        );
+        logConsoleInfo(`Successfully downloaded ${name} to My Notebooks`);
 
         const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
         if (increaseDownloadResponse.data) {
@@ -279,7 +271,7 @@ export function downloadItem(
         handleError(error, "GalleryUtils/downloadItem", `Failed to download ${data.name}`);
       }
 
-      NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
+      clearInProgressMessage();
     },
     "Cancel",
     undefined
@@ -405,11 +397,7 @@ export function deleteItem(
           beforeDelete();
         }
         const name = data.name;
-        const notificationId = NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.InProgress,
-          `Removing ${name} from gallery`
-        );
-
+        const clearInProgressMessage = logConsoleProgress(`Removing ${name} from gallery`);
         const startKey = traceStart(Action.NotebooksGalleryDelete, { notebookId: data.id });
 
         try {
@@ -420,7 +408,7 @@ export function deleteItem(
 
           traceSuccess(Action.NotebooksGalleryDelete, { notebookId: data.id }, startKey);
 
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, `Successfully removed ${name} from gallery`);
+          logConsoleInfo(`Successfully removed ${name} from gallery`);
           onComplete(response.data);
         } catch (error) {
           traceFailure(
@@ -436,7 +424,7 @@ export function deleteItem(
           }
         }
 
-        NotificationConsoleUtils.clearInProgressMessageWithId(notificationId);
+        clearInProgressMessage();
       },
       "Cancel",
       undefined

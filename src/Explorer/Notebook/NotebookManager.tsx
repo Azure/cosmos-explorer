@@ -3,7 +3,7 @@
  */
 
 import { ImmutableNotebook } from "@nteract/commutable";
-import { IContentProvider } from "@nteract/core";
+import type { IContentProvider } from "@nteract/core";
 import ko from "knockout";
 import React from "react";
 import { contents } from "rx-jupyter";
@@ -20,13 +20,17 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
-import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
+import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
+
+type NotebookPaneContent = string | ImmutableNotebook;
+
+export type { NotebookPaneContent };
 
 export interface NotebookManagerOptions {
   container: Explorer;
@@ -49,7 +53,6 @@ export default class NotebookManager {
   private gitHubClient: GitHubClient;
 
   public gitHubReposPane: ContextualPaneBase;
-  public copyNotebookPaneAdapter: CopyNotebookPaneAdapter;
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
@@ -87,12 +90,6 @@ export default class NotebookManager {
       this.notebookContentProvider
     );
 
-    this.copyNotebookPaneAdapter = new CopyNotebookPaneAdapter(
-      this.params.container,
-      this.junoClient,
-      this.gitHubOAuthService
-    );
-
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
       this.gitHubClient.setToken(token?.access_token);
 
@@ -120,7 +117,7 @@ export default class NotebookManager {
 
   public async openPublishNotebookPane(
     name: string,
-    content: string | ImmutableNotebook,
+    content: NotebookPaneContent,
     parentDomElement: HTMLElement
   ): Promise<void> {
     const explorer = this.params.container;
@@ -140,7 +137,18 @@ export default class NotebookManager {
   }
 
   public openCopyNotebookPane(name: string, content: string): void {
-    this.copyNotebookPaneAdapter.open(name, content);
+    const { container } = this.params;
+    container.openSidePanel(
+      "Copy Notebook",
+      <CopyNotebookPane
+        container={container}
+        closePanel={container.closeSidePanel}
+        junoClient={this.junoClient}
+        gitHubOAuthService={this.gitHubOAuthService}
+        name={name}
+        content={content}
+      />
+    );
   }
 
   // Octokit's error handler uses any

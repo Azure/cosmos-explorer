@@ -10,7 +10,10 @@ import { CodeOfConductComponent } from "../../Controls/NotebookGallery/CodeOfCon
 import { GalleryTab } from "../../Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
 export interface PublishNotebookPaneAProps {
