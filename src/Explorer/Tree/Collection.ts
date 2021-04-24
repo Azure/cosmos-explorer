@@ -29,7 +29,6 @@ import MongoQueryTab from "../Tabs/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
 import QueryTab from "../Tabs/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
-import SchemaAnalyzerTab from "../Tabs/SchemaAnalyzerTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
@@ -515,9 +514,10 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onSchemaAnalyzerClick = () => {
+  public onSchemaAnalyzerClick = async () => {
     this.container.selectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
+    const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Mongo Schema node",
       databaseName: this.databaseId,
