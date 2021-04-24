@@ -53,7 +53,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { AddDatabasePanel } from "./Panes/AddDatabasePanelF/AddDatabasePanelF";
+import { AddDatabasePanelF } from "./Panes/AddDatabasePanelF/AddDatabasePanelF";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
@@ -2163,10 +2163,20 @@ export default class Explorer {
     );
   }
   public openAddDatabasePane(): void {
-    this.openSidePanel(
-      "Add Database",
-      <AddDatabasePanel explorer={this} openNotificationConsole={this.expandConsole} closePanel={this.closeSidePanel} />
-    );
+    let isEnable = true;
+    if (isEnable) {
+      this.addDatabasePane.open();
+      document.getElementById("linkAddDatabase").focus();
+    } else {
+      this.openSidePanel(
+        "Add Database",
+        <AddDatabasePanelF
+          explorer={this}
+          openNotificationConsole={this.expandConsole}
+          closePanel={this.closeSidePanel}
+        />
+      );
+    }
   }
 
   public openBrowseQueriesPanel(): void {

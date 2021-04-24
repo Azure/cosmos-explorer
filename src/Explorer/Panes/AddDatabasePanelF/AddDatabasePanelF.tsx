@@ -27,7 +27,7 @@ export interface AddDatabasePaneProps {
   openNotificationConsole: () => void;
 }
 
-export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
+export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
   explorer: container,
   closePanel,
   openNotificationConsole,
@@ -258,7 +258,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     container,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
-    id: "copynotebookpane",
+    id: "add-database-inputs",
     isExecuting,
     title,
     submitButtonText: "OK",

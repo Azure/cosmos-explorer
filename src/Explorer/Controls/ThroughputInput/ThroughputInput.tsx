@@ -44,7 +44,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     if (isAutoscaleSelected) {
       return AutoPilotUtils.getAutoPilotHeaderText();
     }
-
     const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
     const maxRU: string = userContext.isTryCosmosDBSubscription
       ? Constants.TryCosmosExperience.maxRU.toLocaleString()
