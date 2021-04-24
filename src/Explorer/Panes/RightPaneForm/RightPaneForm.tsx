@@ -83,7 +83,7 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   };
 
   return (
-    <div tabIndex={-1} onKeyDown={onKeyDown}>
+    <>
       <div className="contextual-pane-out" onClick={onClose}></div>
       <div className="contextual-pane" id={id} style={{ height: panelHeight }} onKeyDown={onKeyDown}>
         <div className="panelContentWrapper">
@@ -96,6 +96,6 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
         </div>
         {isExecuting && <PanelLoadingScreen />}
       </div>
-    </div>
+    </>
   );
 };
