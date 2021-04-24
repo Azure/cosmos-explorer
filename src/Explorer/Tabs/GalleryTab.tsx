@@ -7,7 +7,7 @@ import { GalleryTab as GalleryViewerTab, SortBy } from "../Controls/NotebookGall
 import Explorer from "../Explorer";
 import TabsBase from "./TabsBase";
 
-interface GalleryTabOptions extends ViewModels.TabOptions {
+export interface GalleryTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
   container: Explorer;
   junoClient: JunoClient;
