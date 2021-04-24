@@ -514,6 +514,51 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
+  public onSchemaAnalyzerClick = async () => {
+    this.container.selectedNode(this);
+    this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
+    const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
+    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
+      description: "Mongo Schema node",
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.ResourceTree,
+    });
+
+    for (const tab of this.container.tabsManager.openedTabs()) {
+      if (
+        tab instanceof SchemaAnalyzerTab &&
+        tab.collection?.databaseId === this.databaseId &&
+        tab.collection?.id() === this.id()
+      ) {
+        return this.container.tabsManager.activateTab(tab);
+      }
+    }
+
+    const startKey = TelemetryProcessor.traceStart(Action.Tab, {
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: "Schema",
+    });
+    this.documentIds([]);
+    this.container.tabsManager.activateNewTab(
+      new SchemaAnalyzerTab({
+        account: userContext.databaseAccount,
+        masterKey: userContext.masterKey || "",
+        container: this.container,
+        tabKind: ViewModels.CollectionTabKind.SchemaAnalyzer,
+        title: "Schema",
+        tabPath: "",
+        collection: this,
+        node: this,
+        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/schemaAnalyzer`,
+        onLoadStartKey: startKey,
+        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
+      })
+    );
+  };
+
   public onSettingsClick = async (): Promise<void> => {
     this.container.selectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
@@ -1069,7 +1114,7 @@ export default class Collection implements ViewModels.Collection {
    * Top-level method that will open the correct tab type depending on account API
    */
   public openTab(): void {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       this.onTableEntitiesClick();
       return;
     } else if (userContext.apiType === "Cassandra") {
@@ -1090,7 +1135,7 @@ export default class Collection implements ViewModels.Collection {
    * Get correct collection label depending on account API
    */
   public getLabel(): string {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       return "Entities";
     } else if (userContext.apiType === "Cassandra") {
       return "Rows";

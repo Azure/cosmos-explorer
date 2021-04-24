@@ -1,5 +1,5 @@
+import { IPanelProps, IRenderFunction, Panel, PanelType } from "office-ui-fabric-react";
 import * as React from "react";
-import { Panel, PanelType } from "office-ui-fabric-react";
 
 export interface PanelContainerProps {
   headerText: string;
@@ -7,6 +7,8 @@ export interface PanelContainerProps {
   isConsoleExpanded: boolean;
   isOpen: boolean;
   closePanel: () => void;
+  panelWidth?: string;
+  onRenderNavigationContent?: IRenderFunction<IPanelProps>;
 }
 
 export interface PanelContainerState {
@@ -46,8 +48,9 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         isLightDismiss
         type={PanelType.custom}
         closeButtonAriaLabel="Close"
-        customWidth="440px"
+        customWidth={this.props.panelWidth ? this.props.panelWidth : "440px"}
         headerClassName="panelHeader"
+        onRenderNavigationContent={this.props.onRenderNavigationContent}
         styles={{
           navigation: { borderBottom: "1px solid #cccccc" },
           content: { padding: 0, height: "100%" },
