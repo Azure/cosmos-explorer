@@ -1,12 +1,11 @@
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { IGalleryItem, JunoClient } from "../../Juno/JunoClient";
 import { GalleryAndNotebookViewerComponentProps } from "../Controls/NotebookGallery/GalleryAndNotebookViewerComponent";
 import { GalleryAndNotebookViewerComponentAdapter } from "../Controls/NotebookGallery/GalleryAndNotebookViewerComponentAdapter";
 import { GalleryTab as GalleryViewerTab, SortBy } from "../Controls/NotebookGallery/GalleryViewerComponent";
-import TabsBase from "./TabsBase";
 import Explorer from "../Explorer";
-import { DatabaseAccount } from "../../Contracts/DataModels";
-import { JunoClient, IGalleryItem } from "../../Juno/JunoClient";
-import template from "./GalleryTab.html";
+import TabsBase from "./TabsBase";
 
 interface GalleryTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
@@ -22,7 +21,7 @@ interface GalleryTabOptions extends ViewModels.TabOptions {
  * Notebook gallery tab
  */
 export default class GalleryTab extends TabsBase {
-  public static readonly component = { name: "gallery-tab", template };
+  public readonly html = '<div style="height: 100%" data-bind="react:galleryAndNotebookViewerComponentAdapter"></div>';
   private container: Explorer;
   private galleryAndNotebookViewerComponentProps: GalleryAndNotebookViewerComponentProps;
   public galleryAndNotebookViewerComponentAdapter: GalleryAndNotebookViewerComponentAdapter;

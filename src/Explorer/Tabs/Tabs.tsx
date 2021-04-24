@@ -103,11 +103,8 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
       ko.applyBindings(tab, element);
       const ctx = ko.contextFor(element).createChildContext(tab);
       ko.applyBindingsToDescendants(ctx, element);
-      return () => ko.cleanNode(element);
-    }
-
-    if ("render" in tab) {
       tab.isTemplateReady(true);
+      return () => ko.cleanNode(element);
     }
   }, [ref, tab]);
 
@@ -115,5 +112,5 @@ function TabPane({ tab, active }: { tab: Tab; active: boolean }) {
     return <div {...attrs}>{tab.render()}</div>;
   }
 
-  return <div {...attrs} ref={ref} data-bind="html: constructor.component.template" />;
+  return <div {...attrs} ref={ref} data-bind="html:html" />;
 }
