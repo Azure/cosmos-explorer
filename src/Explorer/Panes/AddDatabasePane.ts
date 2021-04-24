@@ -71,8 +71,9 @@ export default class AddDatabasePane extends ContextualPaneBase {
 
     this.databaseIdTooltipText = ko.computed<string>(() => {
       const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
-      return `A ${isCassandraAccount ? "keyspace" : "database"} is a logical container of one or more ${isCassandraAccount ? "tables" : "collections"
-        }`;
+      return `A ${isCassandraAccount ? "keyspace" : "database"} is a logical container of one or more ${
+        isCassandraAccount ? "tables" : "collections"
+      }`;
     });
     this.databaseLevelThroughputTooltipText = ko.computed<string>(() => {
       const isCassandraAccount: boolean = userContext.apiType === "Cassandra";

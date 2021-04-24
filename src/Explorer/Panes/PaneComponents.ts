@@ -7,7 +7,6 @@ import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 
-
 export class PaneComponent {
   constructor(data: any) {
     return data.data;

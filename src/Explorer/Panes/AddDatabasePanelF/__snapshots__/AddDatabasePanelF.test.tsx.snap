@@ -614,7 +614,7 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
     }
   }
   formError=""
-  id="copynotebookpane"
+  id="add-database-inputs"
   isExecuting={false}
   onClose={[Function]}
   onSubmit={[Function]}
