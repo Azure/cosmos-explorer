@@ -1,5 +1,6 @@
 import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 import * as Constants from "../Shared/Constants";
+import { userContext } from "../UserContext";
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 
 interface ComputeRUUsagePriceHourlyArgs {
@@ -262,7 +263,7 @@ export function getUpsellMessage(
   serverId = "default",
   isFreeTier = false,
   isFirstResourceCreated = false,
-  defaultExperience: string,
+  defaultExperience: typeof userContext.apiType,
   isCollection: boolean
 ): string {
   if (isFreeTier) {

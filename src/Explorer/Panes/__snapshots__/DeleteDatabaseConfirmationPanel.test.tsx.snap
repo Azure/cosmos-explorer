@@ -419,7 +419,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       },
       "databaseAccount": [Function],
       "databases": [Function],
-      "defaultExperience": [Function],
       "deleteCollectionText": [Function],
       "deleteDatabaseText": [Function],
       "graphStylingPane": GraphStylingPane {

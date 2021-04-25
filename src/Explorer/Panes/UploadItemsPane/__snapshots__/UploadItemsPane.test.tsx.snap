@@ -418,7 +418,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       },
       "databaseAccount": [Function],
       "databases": [Function],
-      "defaultExperience": [Function],
       "deleteCollectionText": [Function],
       "deleteDatabaseText": [Function],
       "graphStylingPane": GraphStylingPane {
