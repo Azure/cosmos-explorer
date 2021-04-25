@@ -25,7 +25,7 @@ enum ToggleState {
 }
 
 export default class QueryTab extends TabsBase implements ViewModels.WaitsForTemplate {
-  public static readonly component = { name: "query-tab", template };
+  public readonly html = template;
   public queryEditorId: string;
   public executeQueryButton: ViewModels.Button;
   public fetchNextPageButton: ViewModels.Button;

@@ -42,11 +42,13 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { DialogProps, TextFieldProps } from "./Controls/Dialog";
-import { GalleryTab } from "./Controls/NotebookGallery/GalleryViewerComponent";
+import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
+import type NotebookManager from "./Notebook/NotebookManager";
+import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
@@ -59,22 +61,21 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
-import NewVertexPane from "./Panes/NewVertexPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
-import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
+import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
 import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
+import type { GalleryTabOptions } from "./Tabs/GalleryTab";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
-import TabsBase from "./Tabs/TabsBase";
 import { TabsManager } from "./Tabs/TabsManager";
 import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
@@ -161,16 +162,12 @@ export default class Explorer {
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
-  public galleryTab: any;
-  public notebookViewerTab: any;
   public tabsManager: TabsManager;
 
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
-  public editTableEntityPane: EditTableEntityPane;
-  public newVertexPane: NewVertexPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public stringInputPane: StringInputPane;
   public gitHubReposPane: ContextualPaneBase;
@@ -200,7 +197,7 @@ export default class Explorer {
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
-  public notebookManager?: any; // This is dynamically loaded
+  public notebookManager?: NotebookManager;
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
@@ -476,20 +473,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.editTableEntityPane = new EditTableEntityPane({
-      id: "edittableentitypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.newVertexPane = new NewVertexPane({
-      id: "newvertexpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -516,8 +499,6 @@ export default class Explorer {
       this.addDatabasePane,
       this.addCollectionPane,
       this.graphStylingPane,
-      this.editTableEntityPane,
-      this.newVertexPane,
       this.cassandraAddCollectionPane,
       this.stringInputPane,
     ];
@@ -588,7 +569,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.editTableEntityPane.title("Edit Table Entity");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -602,7 +582,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.editTableEntityPane.title("Edit Table Row");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -620,10 +599,10 @@ export default class Explorer {
     this.isNotebookEnabled = ko.observable(false);
     this.isNotebookEnabled.subscribe(async () => {
       if (!this.notebookManager) {
-        const notebookManagerModule = await import(
-          /* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager"
-        );
-        this.notebookManager = new notebookManagerModule.default();
+        const NotebookManager = await (
+          await import(/* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager")
+        ).default;
+        this.notebookManager = new NotebookManager();
         this.notebookManager.initialize({
           container: this,
           notebookBasePath: this.notebookBasePath,
@@ -1408,7 +1387,11 @@ export default class Explorer {
     return Promise.resolve(false);
   }
 
-  public async publishNotebook(name: string, content: string | unknown, parentDomElement?: HTMLElement): Promise<void> {
+  public async publishNotebook(
+    name: string,
+    content: NotebookPaneContent,
+    parentDomElement?: HTMLElement
+  ): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
       this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
@@ -1906,86 +1889,66 @@ export default class Explorer {
   }
 
   public async openGallery(
-    selectedTab?: GalleryTab,
+    selectedTab?: GalleryTabKind,
     notebookUrl?: string,
     galleryItem?: IGalleryItem,
     isFavorite?: boolean
   ) {
-    let title: string = "Gallery";
-    let hashLocation: string = "gallery";
+    const title = "Gallery";
+    const hashLocation = "gallery";
+    const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
 
-    const galleryTabOptions: any = {
-      // GalleryTabOptions
+    const galleryTabOptions: GalleryTabOptions = {
       account: userContext.databaseAccount,
       container: this,
       junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTab.PublicGallery,
+      selectedTab: selectedTab || GalleryTabKind.PublicGallery,
       notebookUrl,
       galleryItem,
       isFavorite,
-      // TabOptions
       tabKind: ViewModels.CollectionTabKind.Gallery,
       title: title,
       tabPath: title,
-      documentClientUtility: null,
-      isActive: ko.observable(false),
       hashLocation: hashLocation,
       onUpdateTabsButtons: this.onUpdateTabsButtons,
       isTabsContentExpanded: ko.observable(true),
       onLoadStartKey: null,
     };
 
-    const galleryTabs = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Gallery,
-      (tab) => tab.hashLocation() == hashLocation
-    );
-    let galleryTab = galleryTabs && galleryTabs[0];
+    const galleryTab = this.tabsManager
+      .getTabs(ViewModels.CollectionTabKind.Gallery)
+      .find((tab) => tab.hashLocation() == hashLocation);
 
-    if (galleryTab) {
+    if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
-      (galleryTab as any).reset(galleryTabOptions);
+      galleryTab.reset(galleryTabOptions);
     } else {
-      if (!this.galleryTab) {
-        this.galleryTab = await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab");
-      }
-      const newTab = new this.galleryTab.default(galleryTabOptions);
-      this.tabsManager.activateNewTab(newTab);
+      this.tabsManager.activateNewTab(new GalleryTab(galleryTabOptions));
     }
   }
 
   public async openNotebookViewer(notebookUrl: string) {
     const title = path.basename(notebookUrl);
     const hashLocation = notebookUrl;
+    const NotebookViewerTab = await (
+      await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab")
+    ).default;
 
-    if (!this.notebookViewerTab) {
-      this.notebookViewerTab = await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab");
-    }
-
-    const notebookViewerTabModule = this.notebookViewerTab;
-
-    let isNotebookViewerOpen = (tab: TabsBase) => {
-      const notebookViewerTab = tab as typeof notebookViewerTabModule.default;
-      return notebookViewerTab.notebookUrl === notebookUrl;
-    };
-
-    const notebookViewerTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2, (tab) => {
-      return tab.hashLocation() == hashLocation && isNotebookViewerOpen(tab);
+    const notebookViewerTab = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2).find((tab) => {
+      return tab.hashLocation() == hashLocation && tab instanceof NotebookViewerTab && tab.notebookUrl === notebookUrl;
     });
-    let notebookViewerTab = notebookViewerTabs && notebookViewerTabs[0];
 
     if (notebookViewerTab) {
       this.tabsManager.activateNewTab(notebookViewerTab);
     } else {
-      notebookViewerTab = new this.notebookViewerTab.default({
+      const notebookViewerTab = new NotebookViewerTab({
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookViewer,
         node: null,
         title: title,
         tabPath: title,
-        documentClientUtility: null,
         collection: null,
         hashLocation: hashLocation,
-        isActive: ko.observable(false),
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         onUpdateTabsButtons: this.onUpdateTabsButtons,
@@ -2207,6 +2170,19 @@ export default class Explorer {
         openNotificationConsole={() => this.expandConsole()}
         panelTitle={title}
         panelDescription={description}
+      />
+    );
+  }
+
+  public openEditTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
+    this.openSidePanel(
+      "Edit Table Entity",
+      <EditTableEntityPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        queryTablesTab={queryTablesTab}
+        tableEntityListViewModel={tableEntityListViewModel}
+        cassandraApiClient={new CassandraAPIDataClient()}
       />
     );
   }
