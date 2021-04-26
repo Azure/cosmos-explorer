@@ -63,9 +63,9 @@ import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
-import { StringInputPane } from "./Panes/StringInputPane";
+import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
-import EditTableEntityPane from "./Panes/Tables/EditTableEntityPane";
+import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
 import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
@@ -172,9 +172,7 @@ export default class Explorer {
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
-  public editTableEntityPane: EditTableEntityPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public stringInputPane: StringInputPane;
   public gitHubReposPane: ContextualPaneBase;
 
   // features
@@ -498,22 +496,8 @@ export default class Explorer {
       container: this,
     });
 
-    this.editTableEntityPane = new EditTableEntityPane({
-      id: "edittableentitypane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.stringInputPane = new StringInputPane({
-      id: "stringinputpane",
       visible: ko.observable<boolean>(false),
 
       container: this,
@@ -531,9 +515,7 @@ export default class Explorer {
       this.addDatabasePane,
       this.addCollectionPane,
       this.graphStylingPane,
-      this.editTableEntityPane,
       this.cassandraAddCollectionPane,
-      this.stringInputPane,
     ];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
@@ -602,7 +584,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.editTableEntityPane.title("Edit Table Entity");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
@@ -616,7 +597,6 @@ export default class Explorer {
         this.addCollectionPane.collectionIdTitle("Table id");
         this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
-        this.editTableEntityPane.title("Edit Table Row");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -1541,7 +1521,7 @@ export default class Explorer {
     return true;
   }
 
-  public renameNotebook(notebookFile: NotebookContentItem): Q.Promise<NotebookContentItem> {
+  public renameNotebook(notebookFile: NotebookContentItem): void {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
       handleError(error, "Explorer/renameNotebook");
@@ -1557,57 +1537,59 @@ export default class Explorer {
     );
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
-      return Q.reject();
+    } else {
+      this.openSidePanel(
+        "",
+        <StringInputPane
+          explorer={this}
+          closePanel={() => {
+            this.closeSidePanel();
+            this.resourceTree.triggerRender();
+          }}
+          inputLabel="Enter new notebook name"
+          submitButtonLabel="Rename"
+          errorMessage="Could not rename notebook"
+          inProgressMessage="Renaming notebook to"
+          successMessage="Renamed notebook to"
+          paneTitle="Rename Notebook"
+          defaultInput={FileSystemUtil.stripExtension(notebookFile.name, "ipynb")}
+          onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
+            this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
+          }
+          notebookFile={notebookFile}
+        />
+      );
     }
-
-    const originalPath = notebookFile.path;
-    const result = this.stringInputPane
-      .openWithOptions<NotebookContentItem>({
-        errorMessage: "Could not rename notebook",
-        inProgressMessage: "Renaming notebook to",
-        successMessage: "Renamed notebook to",
-        inputLabel: "Enter new notebook name",
-        paneTitle: "Rename Notebook",
-        submitButtonLabel: "Rename",
-        defaultInput: FileSystemUtil.stripExtension(notebookFile.name, "ipynb"),
-        onSubmit: (input: string) => this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input),
-      })
-      .then((newNotebookFile) => {
-        const notebookTabs = this.tabsManager.getTabs(
-          ViewModels.CollectionTabKind.NotebookV2,
-          (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
-        );
-        notebookTabs.forEach((tab) => {
-          tab.tabTitle(newNotebookFile.name);
-          tab.tabPath(newNotebookFile.path);
-          (tab as NotebookV2Tab).notebookPath(newNotebookFile.path);
-        });
-
-        return newNotebookFile;
-      });
-    result.then(() => this.resourceTree.triggerRender());
-    return result;
   }
 
-  public onCreateDirectory(parent: NotebookContentItem): Q.Promise<NotebookContentItem> {
+  public onCreateDirectory(parent: NotebookContentItem): void {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
       handleError(error, "Explorer/onCreateDirectory");
       throw new Error(error);
     }
 
-    const result = this.stringInputPane.openWithOptions<NotebookContentItem>({
-      errorMessage: "Could not create directory ",
-      inProgressMessage: "Creating directory ",
-      successMessage: "Created directory ",
-      inputLabel: "Enter new directory name",
-      paneTitle: "Create new directory",
-      submitButtonLabel: "Create",
-      defaultInput: "",
-      onSubmit: (input: string) => this.notebookManager?.notebookContentClient.createDirectory(parent, input),
-    });
-    result.then(() => this.resourceTree.triggerRender());
-    return result;
+    this.openSidePanel(
+      "",
+      <StringInputPane
+        explorer={this}
+        closePanel={() => {
+          this.closeSidePanel();
+          this.resourceTree.triggerRender();
+        }}
+        errorMessage="Could not create directory "
+        inProgressMessage="Creating directory "
+        successMessage="Created directory "
+        inputLabel="Enter new directory name"
+        paneTitle="Create new directory"
+        submitButtonLabel="Create"
+        defaultInput=""
+        onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
+          this.notebookManager?.notebookContentClient.createDirectory(notebookFile, input)
+        }
+        notebookFile={parent}
+      />
+    );
   }
 
   public readFile(notebookFile: NotebookContentItem): Promise<string> {
@@ -2204,6 +2186,19 @@ export default class Explorer {
         openNotificationConsole={() => this.expandConsole()}
         panelTitle={title}
         panelDescription={description}
+      />
+    );
+  }
+
+  public openEditTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
+    this.openSidePanel(
+      "Edit Table Entity",
+      <EditTableEntityPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        queryTablesTab={queryTablesTab}
+        tableEntityListViewModel={tableEntityListViewModel}
+        cassandraApiClient={new CassandraAPIDataClient()}
       />
     );
   }
