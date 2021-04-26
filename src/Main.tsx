@@ -230,9 +230,7 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
-      <div data-bind='component: { name: "table-edit-entity-pane", params: { data: editTableEntityPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
       <KOCommentIfStart if="isGitHubPaneEnabled" />
       <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
       <KOCommentEnd />
