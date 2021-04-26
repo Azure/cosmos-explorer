@@ -2,7 +2,7 @@ import { ChoiceGroup, IChoiceGroupOption, Label, TextField } from "office-ui-fab
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { HashMap } from "../../../Common/HashMap";
-import { Tooltip } from "../../../Common/Tooltip";
+import { Tooltip } from "../../../Common/Tooltip/Tooltip";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as AddCollectionUtility from "../../../Shared/AddCollectionUtility";
@@ -14,7 +14,10 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput";
 import Explorer from "../../Explorer";
-import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
+import {
+  GenericRightPaneComponent,
+  GenericRightPaneProps,
+} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
 export interface CassandraAddCollectionPaneFProps {
   explorer: Explorer;

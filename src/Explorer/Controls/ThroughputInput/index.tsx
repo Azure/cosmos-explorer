@@ -12,7 +12,7 @@ import {
 } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
-import { Tooltip } from "../../../Common/Tooltip";
+import { Tooltip } from "../../../Common/Tooltip/Tooltip";
 import * as SharedConstants from "../../../Shared/Constants";
 import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";

@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { CassandraAddCollectionPaneF } from ".";
 import Explorer from "../../Explorer";
+import { CassandraAddCollectionPaneF } from "./CassandraAddCollectionPaneF";
 const props = {
   explorer: new Explorer(),
   closePanel: (): void => undefined,
