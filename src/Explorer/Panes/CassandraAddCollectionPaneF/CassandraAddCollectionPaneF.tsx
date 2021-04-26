@@ -12,7 +12,7 @@ import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcesso
 import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
-import { ThroughputInput } from "../../Controls/ThroughputInput";
+import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import {
   GenericRightPaneComponent,

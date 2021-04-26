@@ -26,7 +26,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getUpsellMessage } from "../../Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
-import { ThroughputInput } from "../Controls/ThroughputInput";
+import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../Explorer";
 import { PanelFooterComponent } from "./PanelFooterComponent";
 import { PanelInfoErrorComponent } from "./PanelInfoErrorComponent";

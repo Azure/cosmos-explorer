@@ -18,7 +18,7 @@ import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 import { CostEstimateText } from "./CostEstimateText";
-import "./styles.less";
+import "./ThroughputInput.less";
 
 export interface ThroughputInputProps {
   isDatabase: boolean;

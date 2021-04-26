@@ -1,6 +1,6 @@
 import { mount, ReactWrapper } from "enzyme";
 import React from "react";
-import { ThroughputInput } from ".";
+import { ThroughputInput } from "./ThroughputInput";
 const props = {
   isDatabase: false,
   showFreeTierExceedThroughputTooltip: true,
