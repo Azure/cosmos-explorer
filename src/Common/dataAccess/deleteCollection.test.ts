@@ -1,13 +1,13 @@
 jest.mock("../../Utils/arm/request");
 jest.mock("../MessageHandler");
 jest.mock("../CosmosClient");
-import { deleteCollection } from "./deleteCollection";
-import { armRequest } from "../../Utils/arm/request";
 import { AuthType } from "../../AuthType";
-import { client } from "../CosmosClient";
-import { updateUserContext } from "../../UserContext";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { updateUserContext } from "../../UserContext";
+import { armRequest } from "../../Utils/arm/request";
+import { client } from "../CosmosClient";
+import { deleteCollection } from "./deleteCollection";
 
 describe("deleteCollection", () => {
   beforeAll(() => {
@@ -15,7 +15,7 @@ describe("deleteCollection", () => {
       databaseAccount: {
         name: "test",
       } as DatabaseAccount,
-      defaultExperience: DefaultAccountExperienceType.DocumentDB,
+      apiType: DefaultAccountExperienceType.DocumentDB,
     });
   });
 

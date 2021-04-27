@@ -24,7 +24,7 @@ export async function createUserDefinedFunction(
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+      userContext.apiType === DefaultAccountExperienceType.DocumentDB
     ) {
       try {
         const getResponse = await getSqlUserDefinedFunction(

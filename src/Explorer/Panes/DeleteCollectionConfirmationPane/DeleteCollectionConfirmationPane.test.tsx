@@ -107,7 +107,7 @@ describe("Delete Collection Confirmation Pane", () => {
           },
           id: "testDatabaseAccountId",
         } as DatabaseAccount,
-        defaultExperience: DefaultAccountExperienceType.DocumentDB,
+        apiType: DefaultAccountExperienceType.DocumentDB,
       });
       (deleteCollection as jest.Mock).mockResolvedValue(undefined);
       (TelemetryProcessor.trace as jest.Mock).mockReturnValue(undefined);

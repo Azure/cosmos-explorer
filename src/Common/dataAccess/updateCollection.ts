@@ -41,7 +41,7 @@ export async function updateCollection(
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+      userContext.apiType !== DefaultAccountExperienceType.Table
     ) {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {
@@ -71,7 +71,7 @@ async function updateCollectionWithARM(
   const subscriptionId = userContext.subscriptionId;
   const resourceGroup = userContext.resourceGroup;
   const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const defaultExperience = userContext.apiType;
 
   switch (defaultExperience) {
     case DefaultAccountExperienceType.DocumentDB:

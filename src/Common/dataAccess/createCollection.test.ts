@@ -22,7 +22,7 @@ describe("createCollection", () => {
       databaseAccount: {
         name: "test",
       } as DatabaseAccount,
-      defaultExperience: DefaultAccountExperienceType.DocumentDB,
+      apiType: DefaultAccountExperienceType.DocumentDB,
     });
   });
 

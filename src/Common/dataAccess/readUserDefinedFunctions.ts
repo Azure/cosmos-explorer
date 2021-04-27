@@ -1,11 +1,11 @@
+import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
-import { client } from "../CosmosClient";
-import { handleError } from "../ErrorHandlingUtils";
+import { userContext } from "../../UserContext";
 import { listSqlUserDefinedFunctions } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function readUserDefinedFunctions(
   databaseId: string,
@@ -16,7 +16,7 @@ export async function readUserDefinedFunctions(
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+      userContext.apiType === DefaultAccountExperienceType.DocumentDB
     ) {
       const rpResponse = await listSqlUserDefinedFunctions(
         userContext.subscriptionId,

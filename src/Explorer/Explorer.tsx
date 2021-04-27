@@ -26,12 +26,11 @@ import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProvi
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
-import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -381,16 +380,16 @@ export default class Explorer {
       direction: SplitterDirection.Vertical,
     });
     this.defaultExperience = ko.observable<string>();
-    this.databaseAccount.subscribe((databaseAccount) => {
-      const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-        databaseAccount
-      );
-      this.defaultExperience(defaultExperience);
-      // TODO. Remove this entirely
-      updateUserContext({
-        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-      });
-    });
+    // this.databaseAccount.subscribe((databaseAccount) => {
+    //   const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
+    //     databaseAccount
+    //   );
+    //   this.defaultExperience(defaultExperience);
+    //   // TODO. Remove this entirely
+    //   updateUserContext({
+    //     apiType: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
+    //   });
+    // });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
@@ -2090,7 +2089,7 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
+    let collectionName = PricingUtils.getCollectionName(userContext.apiType);
     this.openSidePanel(
       "Delete " + collectionName,
       <DeleteCollectionConfirmationPane

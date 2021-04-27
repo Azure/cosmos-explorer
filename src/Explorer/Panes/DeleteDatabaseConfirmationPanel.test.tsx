@@ -68,7 +68,7 @@ describe("Delete Database Confirmation Pane", () => {
           },
           id: "testDatabaseAccountId",
         } as DatabaseAccount,
-        defaultExperience: DefaultAccountExperienceType.DocumentDB,
+        apiType: DefaultAccountExperienceType.DocumentDB,
       });
       (deleteDatabase as jest.Mock).mockResolvedValue(undefined);
       (TelemetryProcessor.trace as jest.Mock).mockReturnValue(undefined);

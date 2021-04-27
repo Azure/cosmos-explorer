@@ -39,7 +39,7 @@ export class ResourceTreeContextMenuButtonFactory {
       },
     ];
 
-    if (userContext.defaultExperience !== DefaultAccountExperienceType.Table) {
+    if (userContext.apiType !== DefaultAccountExperienceType.Table) {
       items.push({
         iconSrc: DeleteDatabaseIcon,
         onClick: () => container.openDeleteDatabaseConfirmationPane(),

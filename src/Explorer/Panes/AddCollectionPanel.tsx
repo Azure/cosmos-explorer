@@ -68,16 +68,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     super(props);
 
     this.state = {
-      createNewDatabase: userContext.defaultExperience !== DefaultAccountExperienceType.Table,
+      createNewDatabase: userContext.apiType !== DefaultAccountExperienceType.Table,
       newDatabaseId: "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
       selectedDatabaseId:
-        userContext.defaultExperience === DefaultAccountExperienceType.Table
+        userContext.apiType === DefaultAccountExperienceType.Table
           ? CollectionCreation.TablesAPIDefaultDatabase
           : undefined,
       collectionId: "",
       enableIndexing: true,
-      isSharded: userContext.defaultExperience !== DefaultAccountExperienceType.Table,
+      isSharded: userContext.apiType !== DefaultAccountExperienceType.Table,
       partitionKey: "",
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: true,
@@ -108,7 +108,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               userContext.portalEnv,
               true,
               this.props.explorer.isFirstResourceCreated(),
-              userContext.defaultExperience,
+              userContext.apiType,
               true
             )}
             messageType="info"
@@ -120,7 +120,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         )}
 
         <div className="panelMainContent">
-          <Stack hidden={userContext.defaultExperience === DefaultAccountExperienceType.Table}>
+          <Stack hidden={userContext.apiType === DefaultAccountExperienceType.Table}>
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
@@ -317,7 +317,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {userContext.defaultExperience === DefaultAccountExperienceType.MongoDB &&
+          {userContext.apiType === DefaultAccountExperienceType.MongoDB &&
             (!this.state.isSharedThroughputChecked ||
               this.props.explorer.isFixedCollectionWithSharedThroughputSupported()) && (
               <Stack>
@@ -393,9 +393,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 className="panelTextField"
                 placeholder={this.getPartitionKeyPlaceHolder()}
                 aria-label={this.getPartitionKeyName()}
-                pattern={userContext.defaultExperience === DefaultAccountExperienceType.Graph ? "^/[^/]*" : ".*"}
+                pattern={userContext.apiType === DefaultAccountExperienceType.Graph ? "^/[^/]*" : ".*"}
                 title={
-                  userContext.defaultExperience === DefaultAccountExperienceType.Graph
+                  userContext.apiType === DefaultAccountExperienceType.Graph
                     ? "May not use composite partition key"
                     : ""
                 }
@@ -447,7 +447,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             />
           )}
 
-          {userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB && (
+          {userContext.apiType === DefaultAccountExperienceType.DocumentDB && (
             <Stack>
               <Stack horizontal>
                 <Text className="panelTextBold" variant="small">
@@ -471,7 +471,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         type="text"
                         autoComplete="off"
                         placeholder={
-                          userContext.defaultExperience === DefaultAccountExperienceType.MongoDB
+                          userContext.apiType === DefaultAccountExperienceType.MongoDB
                             ? "Comma separated paths e.g. firstName,address.zipCode"
                             : "Comma separated paths e.g. /firstName,/address/zipCode"
                         }
@@ -545,7 +545,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </Stack>
               )}
 
-              {userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB && (
+              {userContext.apiType === DefaultAccountExperienceType.DocumentDB && (
                 <Stack className="panelGroupSpacing">
                   <Stack horizontal verticalAlign="start">
                     <Checkbox
@@ -657,7 +657,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getCollectionName(): string {
-    switch (userContext.defaultExperience) {
+    switch (userContext.apiType) {
       case DefaultAccountExperienceType.DocumentDB:
         return "Container";
       case DefaultAccountExperienceType.MongoDB:
@@ -668,16 +668,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       case DefaultAccountExperienceType.Graph:
         return "Graph";
       default:
-        throw new Error(`Unsupported default experience type: ${userContext.defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${userContext.apiType}`);
     }
   }
 
   private getPartitionKeyName(): string {
-    return userContext.defaultExperience === DefaultAccountExperienceType.MongoDB ? "Shard key" : "Partition key";
+    return userContext.apiType === DefaultAccountExperienceType.MongoDB ? "Shard key" : "Partition key";
   }
 
   private getPartitionKeyPlaceHolder(): string {
-    switch (userContext.defaultExperience) {
+    switch (userContext.apiType) {
       case DefaultAccountExperienceType.MongoDB:
         return "e.g., address.zipCode";
       case DefaultAccountExperienceType.Graph:
@@ -817,7 +817,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    switch (userContext.defaultExperience) {
+    switch (userContext.apiType) {
       case DefaultAccountExperienceType.DocumentDB:
       case DefaultAccountExperienceType.MongoDB:
         return true;
@@ -855,7 +855,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         const validPaths: string[] = uniqueKey.split(",")?.filter((path) => path?.length > 0);
         const trimmedPaths: string[] = validPaths?.map((path) => path.trim());
         if (trimmedPaths?.length > 0) {
-          if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
+          if (userContext.apiType === DefaultAccountExperienceType.MongoDB) {
             trimmedPaths.map((path) => {
               const transformedPath = path.split(".").join("/");
               if (transformedPath[0] !== "/") {
@@ -888,7 +888,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     if (
-      userContext.defaultExperience === DefaultAccountExperienceType.Graph &&
+      userContext.apiType === DefaultAccountExperienceType.Graph &&
       (this.state.partitionKey === "/id" || this.state.partitionKey === "/label")
     ) {
       this.setState({ errorMessage: "/id and /label as partition keys are not allowed for graph." });
@@ -924,7 +924,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     let databaseId = this.state.createNewDatabase ? this.state.newDatabaseId.trim() : this.state.selectedDatabaseId;
     let partitionKeyString = this.state.partitionKey.trim();
 
-    if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+    if (userContext.apiType === DefaultAccountExperienceType.Table) {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
       databaseId = CollectionCreation.TablesAPIDefaultDatabase;
       partitionKeyString = "/'$pk'";

@@ -1,15 +1,15 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Offer, ReadCollectionOfferParams } from "../../Contracts/DataModels";
-import { handleError } from "../ErrorHandlingUtils";
-import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { userContext } from "../../UserContext";
 import { getCassandraTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinGraphThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { getTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
-import { userContext } from "../../UserContext";
 
 export const readCollectionOffer = async (params: ReadCollectionOfferParams): Promise<Offer> => {
   const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
@@ -18,7 +18,7 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
+      userContext.apiType !== DefaultAccountExperienceType.Table
     ) {
       return await readCollectionOfferWithARM(params.databaseId, params.collectionId);
     }
@@ -36,7 +36,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
   const subscriptionId = userContext.subscriptionId;
   const resourceGroup = userContext.resourceGroup;
   const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const defaultExperience = userContext.apiType;
 
   let rpResponse;
   try {

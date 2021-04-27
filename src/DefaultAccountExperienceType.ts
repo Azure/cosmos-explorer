@@ -1,8 +1,8 @@
 export enum DefaultAccountExperienceType {
-  DocumentDB = "DocumentDB",
-  Graph = "Graph",
-  MongoDB = "MongoDB",
-  Table = "Table",
+  DocumentDB = "SQL",
+  Graph = "Gremlin",
+  MongoDB = "Mongo",
+  Table = "Tables",
   Cassandra = "Cassandra",
-  ApiForMongoDB = "Azure Cosmos DB for MongoDB API",
+  ApiForMongoDB = "Mongo",
 }

@@ -1,15 +1,15 @@
+import { Resource, TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { Resource, TriggerDefinition } from "@azure/cosmos";
+import { userContext } from "../../UserContext";
+import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   SqlTriggerCreateUpdateParameters,
   SqlTriggerResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
-import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function createTrigger(
   databaseId: string,
@@ -21,7 +21,7 @@ export async function createTrigger(
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+      userContext.apiType === DefaultAccountExperienceType.DocumentDB
     ) {
       try {
         const getResponse = await getSqlTrigger(

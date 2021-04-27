@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { client } from "../CosmosClient";
-import { deleteSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
+import { deleteSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function deleteTrigger(databaseId: string, collectionId: string, triggerId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting trigger ${triggerId}`);
@@ -12,7 +12,7 @@ export async function deleteTrigger(databaseId: string, collectionId: string, tr
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+      userContext.apiType === DefaultAccountExperienceType.DocumentDB
     ) {
       await deleteSqlTrigger(
         userContext.subscriptionId,

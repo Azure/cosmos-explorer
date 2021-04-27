@@ -1,18 +1,18 @@
+import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
-import {
-  SqlUserDefinedFunctionCreateUpdateParameters,
-  SqlUserDefinedFunctionResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
+import { userContext } from "../../UserContext";
 import {
   createUpdateSqlUserDefinedFunction,
   getSqlUserDefinedFunction,
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
+import {
+  SqlUserDefinedFunctionCreateUpdateParameters,
+  SqlUserDefinedFunctionResource,
+} from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateUserDefinedFunction(
   databaseId: string,
@@ -24,7 +24,7 @@ export async function updateUserDefinedFunction(
     if (
       userContext.authType === AuthType.AAD &&
       !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
+      userContext.apiType === DefaultAccountExperienceType.DocumentDB
     ) {
       const getResponse = await getSqlUserDefinedFunction(
         userContext.subscriptionId,
