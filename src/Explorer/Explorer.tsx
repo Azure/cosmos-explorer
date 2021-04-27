@@ -73,7 +73,6 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
-import type { GalleryTabOptions } from "./Tabs/GalleryTab";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
 import { TabsManager } from "./Tabs/TabsManager";
@@ -1916,33 +1915,35 @@ export default class Explorer {
     const title = "Gallery";
     const hashLocation = "gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
-
-    const galleryTabOptions: GalleryTabOptions = {
-      account: userContext.databaseAccount,
-      container: this,
-      junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTabKind.PublicGallery,
-      notebookUrl,
-      galleryItem,
-      isFavorite,
-      tabKind: ViewModels.CollectionTabKind.Gallery,
-      title: title,
-      tabPath: title,
-      hashLocation: hashLocation,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-    };
-
     const galleryTab = this.tabsManager
       .getTabs(ViewModels.CollectionTabKind.Gallery)
       .find((tab) => tab.hashLocation() == hashLocation);
 
     if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
-      galleryTab.reset(galleryTabOptions);
     } else {
-      this.tabsManager.activateNewTab(new GalleryTab(galleryTabOptions));
+      this.tabsManager.activateNewTab(
+        new GalleryTab(
+          {
+            tabKind: ViewModels.CollectionTabKind.Gallery,
+            title: title,
+            tabPath: title,
+            hashLocation: hashLocation,
+            onUpdateTabsButtons: this.onUpdateTabsButtons,
+            onLoadStartKey: null,
+            isTabsContentExpanded: ko.observable(true),
+          },
+          {
+            account: userContext.databaseAccount,
+            container: this,
+            junoClient: this.notebookManager?.junoClient,
+            selectedTab: selectedTab || GalleryTabKind.PublicGallery,
+            notebookUrl,
+            galleryItem,
+            isFavorite,
+          }
+        )
+      );
     }
   }
 
