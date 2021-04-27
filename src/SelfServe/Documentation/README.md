@@ -6,12 +6,12 @@ What this means for the feature team
 - Can concentrate just on the logic behind showing, hiding and disabling UI components 
 - Need not worry about specifics of the UI language
 - Can own the REST API calls made as part of the feature, which may change in the future
-- Quicker turn around time for feature bugs, which they own and have deeper knowledge of
+- Quicker turn around time for feature development and bugs, which they own and have deeper knowledge of
 
 What this means for the UI team
-- Lesser feature development time, since they only own the framework and not the feature itself
-
-Each team owns what they know best, a win-win!
+- No need to ramp up on the intricacies of every feature which required UI changes
+- Own only the framework and not the feature itself
+- More bandwidth to prioritize inhouse features as well
 
 ## Getting Started
 
