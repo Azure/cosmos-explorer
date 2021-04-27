@@ -1869,7 +1869,7 @@ export default class Explorer {
     return this.notebookBasePath();
   }
 
-  public openNotebookTerminal(kind: ViewModels.TerminalKind, collection?: ViewModels.Collection) {
+  public openNotebookTerminal(kind: ViewModels.TerminalKind) {
     let title: string;
     let hashLocation: string;
 
@@ -1880,10 +1880,8 @@ export default class Explorer {
         break;
 
       case ViewModels.TerminalKind.Mongo:
-        const collectionName = collection?.id()
-        const subTitle = collectionName ? ` - ${collectionName}` : ""
-        title = `Mongo Shell${subTitle}`;
-        hashLocation = `mongo-shell${subTitle}`;
+        title = `Mongo Shell`;
+        hashLocation = `mongo-shell`;
         break;
 
       case ViewModels.TerminalKind.Cassandra:
@@ -1907,10 +1905,10 @@ export default class Explorer {
       const newTab = new TerminalTab({
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Terminal,
+        node: null,
         title: title,
         tabPath: title,
-        collection: collection,
-        node: collection,
+        collection: null,
         hashLocation: hashLocation,
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
