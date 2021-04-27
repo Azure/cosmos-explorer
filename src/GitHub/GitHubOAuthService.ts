@@ -1,24 +1,25 @@
 import ko from "knockout";
+import postRobot from "post-robot";
 import { HttpStatusCodes } from "../Common/Constants";
 import { handleError } from "../Common/ErrorHandlingUtils";
 import { configContext } from "../ConfigContext";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
 import { JunoClient } from "../Juno/JunoClient";
-import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 import { logConsoleInfo } from "../Utils/NotificationConsoleUtils";
 import { GitHubConnectorMsgType, IGitHubConnectorParams } from "./GitHubConnector";
 
-window.addEventListener("message", (event: MessageEvent) => {
-  if (isInvalidParentFrameOrigin(event)) {
-    return;
-  }
-
-  const msg = event.data;
-  if (msg.type === GitHubConnectorMsgType) {
-    const params = msg.data as IGitHubConnectorParams;
+postRobot.on(
+  GitHubConnectorMsgType,
+  {
+    domain: window.location.origin,
+  },
+  (event) => {
+    // Typescript definition for event is wrong. So read params by casting to <any>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params = (event as any).data as IGitHubConnectorParams;
     window.dataExplorer.notebookManager?.gitHubOAuthService.finishOAuth(params);
   }
-});
+);
 
 export interface IGitHubOAuthToken {
   // API properties
