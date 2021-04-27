@@ -274,8 +274,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  userContext.features.enableNotebooks)
+              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
@@ -296,7 +296,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
+              userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
@@ -1855,7 +1855,7 @@ export default class Explorer {
     return this.notebookBasePath();
   }
 
-  public openNotebookTerminal(kind: ViewModels.TerminalKind) {
+  public openNotebookTerminal(kind: ViewModels.TerminalKind, collection?: ViewModels.Collection) {
     let title: string;
     let hashLocation: string;
 
@@ -1866,8 +1866,10 @@ export default class Explorer {
         break;
 
       case ViewModels.TerminalKind.Mongo:
-        title = "Mongo Shell";
-        hashLocation = "mongo-shell";
+        const collectionName = collection?.id()
+        const subTitle = collectionName ? ` - ${collectionName}` : ""
+        title = `Mongo Shell${subTitle}`;
+        hashLocation = `mongo-shell${subTitle}`;
         break;
 
       case ViewModels.TerminalKind.Cassandra:
@@ -1891,10 +1893,10 @@ export default class Explorer {
       const newTab = new TerminalTab({
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.Terminal,
-        node: null,
         title: title,
         tabPath: title,
-        collection: null,
+        collection: collection,
+        node: collection,
         hashLocation: hashLocation,
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
