@@ -9,6 +9,7 @@ import * as PricingUtils from "../../../Utils/PricingUtils";
 
 export interface ThroughputInputProps {
   isDatabase: boolean;
+  isSharded: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
@@ -19,6 +20,7 @@ export interface ThroughputInputState {
   isAutoscaleSelected: boolean;
   throughput: number;
   isCostAcknowledged: boolean;
+  throughputError: string;
 }
 
 export class ThroughputInput extends React.Component<ThroughputInputProps, ThroughputInputState> {
@@ -29,6 +31,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
       isAutoscaleSelected: true,
       throughput: AutoPilotUtils.minAutoPilotThroughput,
       isCostAcknowledged: false,
+      throughputError: undefined,
     };
 
     this.props.setThroughputValue(AutoPilotUtils.minAutoPilotThroughput);
@@ -84,7 +87,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
 
             <Stack horizontal>
               <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
-                Max RU/s
+                {this.props.isDatabase ? "Database" : getCollectionName()} max RU/s
               </Text>
               <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={this.getAutoScaleTooltip()}>
                 <Icon iconName="InfoSolid" className="panelInfoIcon" />
@@ -102,6 +105,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
               min={AutoPilotUtils.minAutoPilotThroughput}
               value={this.state.throughput.toString()}
               aria-label="Max request units per second"
+              errorMessage={this.state.throughputError}
             />
 
             <Text variant="small">
@@ -148,6 +152,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
                 value={this.state.throughput.toString()}
                 aria-label="Max request units per second"
                 required={true}
+                errorMessage={this.state.throughputError}
               />
             </TooltipHost>
           </Stack>
@@ -157,6 +162,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
 
         {this.state.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && (
           <Stack horizontal verticalAlign="start">
+            <span className="mandatoryStar">*&nbsp;</span>
             <Checkbox
               checked={this.state.isCostAcknowledged}
               styles={{
@@ -178,23 +184,30 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
   }
 
   private getThroughputLabelText(): string {
+    let throughputHeaderText: string;
     if (this.state.isAutoscaleSelected) {
-      return AutoPilotUtils.getAutoPilotHeaderText();
+      throughputHeaderText = AutoPilotUtils.getAutoPilotHeaderText().toLocaleLowerCase();
+    } else {
+      const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
+      const maxRU: string = userContext.isTryCosmosDBSubscription
+        ? Constants.TryCosmosExperience.maxRU.toLocaleString()
+        : "unlimited";
+      throughputHeaderText = `throughput (${minRU} - ${maxRU} RU/s)`;
     }
 
-    const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
-    const maxRU: string = userContext.isTryCosmosDBSubscription
-      ? Constants.TryCosmosExperience.maxRU.toLocaleString()
-      : "unlimited";
-    return this.state.isAutoscaleSelected
-      ? AutoPilotUtils.getAutoPilotHeaderText()
-      : `Throughput (${minRU} - ${maxRU} RU/s)`;
+    return `${this.props.isDatabase ? "Database" : getCollectionName()} ${throughputHeaderText}`;
   }
 
   private onThroughputValueChange(newInput: string): void {
     const newThroughput = parseInt(newInput);
     this.setState({ throughput: newThroughput });
     this.props.setThroughputValue(newThroughput);
+
+    if (!this.props.isSharded && newThroughput > 10000) {
+      this.setState({ throughputError: "Unsharded collections support up to 10,000 RUs" });
+    } else {
+      this.setState({ throughputError: undefined });
+    }
   }
 
   private getAutoScaleTooltip(): string {

@@ -201,7 +201,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     />
                     <TooltipHost
                       directionalHint={DirectionalHint.bottomLeftEdge}
-                      content={`Provisioned throughput at the database level will be shared across all ${getCollectionName(
+                      content={`Throughput configured at the database level will be shared across all ${getCollectionName(
                         true,
                         true
                       )} within the database.`}
@@ -217,6 +217,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
                     }
                     isDatabase={true}
+                    isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
                     onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
@@ -326,13 +327,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 <Stack horizontal>
                   <span className="mandatoryStar">*&nbsp;</span>
                   <Text className="panelTextBold" variant="small">
-                    Sharding options
+                    Sharding
                   </Text>
                   <TooltipHost
                     directionalHint={DirectionalHint.bottomLeftEdge}
-                    content={`Unique identifier for the ${getCollectionName(
-                      true
-                    )} and used for id-based routing through REST and all SDKs.`}
+                    content={
+                      "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
+                    }
                   >
                     <Icon iconName="InfoSolid" className="panelInfoIcon" />
                   </TooltipHost>
@@ -449,6 +450,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
               }
               isDatabase={false}
+              isSharded={this.state.isSharded}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {
@@ -541,8 +543,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       </Text>
                       <TooltipHost
                         directionalHint={DirectionalHint.bottomLeftEdge}
-                        content="By default, only the field _id is indexed. Creating a wildcard index on all fields will quickly optimize
-              query performance and is recommended during development."
+                        content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
                       >
                         <Icon iconName="InfoSolid" className="panelInfoIcon" />
                       </TooltipHost>
@@ -775,6 +776,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getPartitionKeyTooltipText(): string {
+    if (userContext.apiType === "Mongo") {
+      return "The shard key (field) is used to split your data across many replica sets (shards) to achieve unlimited scalability. It’s critical to choose a field that will evenly distribute your data.";
+    }
+
     let tooltipText = `The ${this.getPartitionKeyName(
       true
     )} is used to automatically distribute data across partitions for scalability. Choose a property in your JSON document that has a wide range of values and evenly distributes request volume.`;
@@ -900,6 +905,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         ? "Please acknowledge the estimated monthly spend."
         : "Please acknowledge the estimated daily spend.";
       this.setState({ errorMessage });
+      return false;
+    }
+
+    if (throughput > CollectionCreation.MaxRUPerPartition && !this.state.isSharded) {
+      this.setState({ errorMessage: "Unsharded collections support up to 10,000 RUs" });
       return false;
     }
 
