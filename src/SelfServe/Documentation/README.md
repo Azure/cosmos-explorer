@@ -1,17 +1,16 @@
 # Self Serve Model
 
-The Self Serve Model allows you to write classes that auto generate UI components for your feature. The idea is to allow developers, who aren't very familiar with writing UI, to develop and own UI components for their features by just writing simpler TypeScript classes. 
+The Self Serve Model allows you to write classes that auto generate UI components for your feature. The idea is to allow developers from other feature teams, who may not be familiar with writing UI, to develop and own UX components. This is accomplished by just writing simpler TypeScript classes for their features. 
 
 What this means for the feature team 
 - Can concentrate just on the logic behind showing, hiding and disabling UI components 
-- Need not worry about specifics of the UI language
-- Can own the REST API calls made as part of the feature, which may change in the future
-- Quicker turn around time for feature development and bugs, which they own and have deeper knowledge of
+- Need not worry about specifics of the UI language or UX requirements (Accessibility, Localization, Themes, etc.)
+- Can own the REST API calls made as part of the feature, which can change in the future
+- Quicker turn around time for development and bug fixes since they have deeper knowledge of the feature
 
 What this means for the UI team
-- No need to ramp up on the intricacies of every feature which required UI changes
-- Own only the framework and not the feature itself
-- More bandwidth to prioritize inhouse features as well
+- No need to ramp up on the intricacies of every feature which requires UI changes
+- Own only the framework and not every feature, giving more bandwidth to prioritize inhouse features as well
 
 ## Getting Started
 
