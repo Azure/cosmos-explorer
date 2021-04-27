@@ -1,4 +1,6 @@
 // CSS Dependencies
+//@ts-nocheck
+
 import "bootstrap/dist/css/bootstrap.css";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React, { useState } from "react";
@@ -14,8 +16,6 @@ import "../externals/jquery.typeahead.min.js";
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import "../images/favicon.ico";
 import hdeConnectImage from "../images/HdeConnectCosmosDB.svg";
-import arrowLeftImg from "../images/imgarrowlefticon.svg";
-import refreshImg from "../images/refresh-cosmos.svg";
 import "../less/documentDB.less";
 import "../less/forms.less";
 import "../less/infobox.less";
@@ -27,7 +27,8 @@ import "../less/TableStyles/EntityEditor.less";
 import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
-import { AuthType } from "./AuthType";
+import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
+import { ResourceTree } from "./Common/ResourceTree";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
@@ -56,7 +57,7 @@ import { useTabs } from "./hooks/useTabs";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
 import "./Shared/appInsights";
-import { userContext } from "./UserContext";
+
 
 initializeIcons();
 
@@ -65,6 +66,7 @@ const App: React.FunctionComponent = () => {
   const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
+  const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(false)
 
   const [dialogProps, setDialogProps] = useState<DialogProps>();
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -94,6 +96,18 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
+  const toggleLeftPaneExpanded = () => {
+    setIsLeftPaneExpanded(!isLeftPaneExpanded);
+    if (isLeftPaneExpanded) {
+      document.getElementById("expandToggleLeftPaneButton").focus();
+      splitter.expandLeft();
+    } else {
+      document.getElementById("collapseToggleLeftPaneButton").focus();
+      splitter.collapseLeft();
+    }
+  }
+
+
   if (!explorer) {
     return <LoadingExplorer />;
   }
@@ -109,93 +123,16 @@ const App: React.FunctionComponent = () => {
           <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
             <div className="collectionsTreeWithSplitter">
               {/* Collections Tree Expanded - Start */}
-              <div
-                id="main"
-                className="main"
-                data-bind="
-                      visible: isLeftPaneExpanded()"
-              >
-                {/* Collections Window - - Start */}
-                <div id="mainslide" className="flexContainer">
-                  {/* Collections Window Title/Command Bar - Start */}
-                  <div className="collectiontitle">
-                    <div className="coltitle">
-                      <span className="titlepadcol" data-bind="text: collectionTitle" />
-                      <div className="float-right">
-                        <span
-                          className="padimgcolrefresh"
-                          data-test="refreshTree"
-                          role="button"
-                          data-bind="
-                                          click: onRefreshResourcesClick, clickBubble: false, event: { keypress: onRefreshDatabasesKeyPress }"
-                          tabIndex={0}
-                          aria-label="Refresh tree"
-                          title="Refresh tree"
-                        >
-                          <img className="refreshcol" src={refreshImg} data-bind="attr: { alt: refreshTreeTitle }" />
-                        </span>
-                        <span
-                          className="padimgcolrefresh1"
-                          id="expandToggleLeftPaneButton"
-                          role="button"
-                          data-bind="
-                                          click: toggleLeftPaneExpanded, event: { keypress: toggleLeftPaneExpandedKeyPress }"
-                          tabIndex={0}
-                          aria-label="Collapse Tree"
-                          title="Collapse Tree"
-                        >
-                          <img className="refreshcol1" src={arrowLeftImg} alt="Hide" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  {userContext.authType === AuthType.ResourceToken ? (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
-                  ) : (
-                    <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
-                  )}
-                </div>
-                {/*  Collections Window - End */}
-              </div>
+              <ResourceTree
+                toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                isLeftPaneExpanded={isLeftPaneExpanded}
+              />
               {/* Collections Tree Expanded - End */}
               {/* Collections Tree Collapsed - Start */}
-              <div
-                id="mini"
-                className="mini toggle-mini"
-                data-bind="visible: !isLeftPaneExpanded()
-                      attr: { style: { width: collapsedResourceTreeWidth }}"
-              >
-                <div className="main-nav nav">
-                  <ul className="nav">
-                    <li
-                      className="resourceTreeCollapse"
-                      id="collapseToggleLeftPaneButton"
-                      role="button"
-                      data-bind="event: { keypress: toggleLeftPaneExpandedKeyPress }"
-                      tabIndex={0}
-                      aria-label="Expand Tree"
-                    >
-                      <span
-                        className="leftarrowCollapsed"
-                        data-bind="
-                                      click: toggleLeftPaneExpanded"
-                      >
-                        <img className="arrowCollapsed" src={arrowLeftImg} alt="Expand" />
-                      </span>
-                      <span
-                        className="collectionCollapsed"
-                        data-bind="
-                                      click: toggleLeftPaneExpanded"
-                      >
-                        <span
-                          data-bind="
-                                          text: collectionTitle"
-                        />
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <CollapsedResourceTree
+                toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                isLeftPaneExpanded={isLeftPaneExpanded}
+              />
               {/* Collections Tree Collapsed - End */}
             </div>
             {/* Splitter - Start */}
