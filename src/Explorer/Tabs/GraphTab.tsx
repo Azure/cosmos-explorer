@@ -265,7 +265,7 @@ export default class GraphTab extends TabsBase {
    * Make sure graph config values are not undefined
    */
   private setDefaultGraphConfigValues() {
-    // Assign default values if null
+    // Assign default values if undefined
     if (
       this.graphConfigUiData.nodeCaptionChoice() === undefined &&
       this.graphConfigUiData.nodeProperties().length > 1
