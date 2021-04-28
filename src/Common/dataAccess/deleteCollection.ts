@@ -1,5 +1,4 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
@@ -34,15 +33,15 @@ function deleteCollectionWithARM(databaseId: string, collectionId: string): Prom
   const defaultExperience = userContext.apiType;
 
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       return deleteSqlContainer(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return deleteMongoDBCollection(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return deleteCassandraTable(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return deleteGremlinGraph(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       return deleteTable(subscriptionId, resourceGroup, accountName, collectionId);
     default:
       throw new Error(`Unsupported default experience type: ${defaultExperience}`);

@@ -1,5 +1,4 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { deleteSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -9,11 +8,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function deleteTrigger(databaseId: string, collectionId: string, triggerId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting trigger ${triggerId}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       await deleteSqlTrigger(
         userContext.subscriptionId,
         userContext.resourceGroup,

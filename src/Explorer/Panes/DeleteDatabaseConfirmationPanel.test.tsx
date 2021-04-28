@@ -7,7 +7,6 @@ import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import { ApiKind, DatabaseAccount } from "../../Contracts/DataModels";
 import { Collection, Database } from "../../Contracts/ViewModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../UserContext";
@@ -68,7 +67,7 @@ describe("Delete Database Confirmation Pane", () => {
           },
           id: "testDatabaseAccountId",
         } as DatabaseAccount,
-        apiType: DefaultAccountExperienceType.DocumentDB,
+        apiType: "SQL",
       });
       (deleteDatabase as jest.Mock).mockResolvedValue(undefined);
       (TelemetryProcessor.trace as jest.Mock).mockReturnValue(undefined);

@@ -7,7 +7,6 @@ import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { ApiKind, DatabaseAccount } from "../../../Contracts/DataModels";
 import { Collection, Database, TreeNode } from "../../../Contracts/ViewModels";
-import { DefaultAccountExperienceType } from "../../../DefaultAccountExperienceType";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../../UserContext";
@@ -107,7 +106,7 @@ describe("Delete Collection Confirmation Pane", () => {
           },
           id: "testDatabaseAccountId",
         } as DatabaseAccount,
-        apiType: DefaultAccountExperienceType.DocumentDB,
+        apiType: "SQL",
       });
       (deleteCollection as jest.Mock).mockResolvedValue(undefined);
       (TelemetryProcessor.trace as jest.Mock).mockReturnValue(undefined);

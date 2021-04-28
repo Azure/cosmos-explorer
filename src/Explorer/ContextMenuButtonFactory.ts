@@ -10,7 +10,6 @@ import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
 import * as ViewModels from "../Contracts/ViewModels";
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 import { userContext } from "../UserContext";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
@@ -39,7 +38,7 @@ export class ResourceTreeContextMenuButtonFactory {
       },
     ];
 
-    if (userContext.apiType !== DefaultAccountExperienceType.Table) {
+    if (userContext.apiType !== "Tables") {
       items.push({
         iconSrc: DeleteDatabaseIcon,
         onClick: () => container.openDeleteDatabaseConfirmationPane(),

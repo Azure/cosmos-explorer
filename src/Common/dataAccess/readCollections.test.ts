@@ -2,7 +2,6 @@ jest.mock("../../Utils/arm/request");
 jest.mock("../CosmosClient");
 import { AuthType } from "../../AuthType";
 import { DatabaseAccount } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { updateUserContext } from "../../UserContext";
 import { armRequest } from "../../Utils/arm/request";
 import { client } from "../CosmosClient";
@@ -14,7 +13,7 @@ describe("readCollections", () => {
       databaseAccount: {
         name: "test",
       } as DatabaseAccount,
-      apiType: DefaultAccountExperienceType.DocumentDB,
+      apiType: "SQL",
     });
   });
 

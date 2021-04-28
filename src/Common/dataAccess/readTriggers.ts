@@ -1,6 +1,5 @@
 import { Resource, TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { listSqlTriggers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -13,11 +12,7 @@ export async function readTriggers(
 ): Promise<(TriggerDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying triggers for container ${collectionId}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       const rpResponse = await listSqlTriggers(
         userContext.subscriptionId,
         userContext.resourceGroup,

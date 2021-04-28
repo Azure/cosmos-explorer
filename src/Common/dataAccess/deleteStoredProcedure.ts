@@ -1,5 +1,4 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { deleteSqlStoredProcedure } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -13,11 +12,7 @@ export async function deleteStoredProcedure(
 ): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting stored procedure ${storedProcedureId}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       await deleteSqlStoredProcedure(
         userContext.subscriptionId,
         userContext.resourceGroup,

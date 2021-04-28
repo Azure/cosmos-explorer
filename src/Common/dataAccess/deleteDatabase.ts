@@ -1,5 +1,4 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
@@ -13,7 +12,7 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting database ${databaseId}`);
 
   try {
-    if (userContext.apiType === DefaultAccountExperienceType.Table) {
+    if (userContext.apiType === "Tables") {
       throw new Error("Deleting database resources is not allowed for tables accounts");
     }
     if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
@@ -37,13 +36,13 @@ function deleteDatabaseWithARM(databaseId: string): Promise<void> {
   const defaultExperience = userContext.apiType;
 
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       return deleteSqlDatabase(subscriptionId, resourceGroup, accountName, databaseId);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return deleteMongoDBDatabase(subscriptionId, resourceGroup, accountName, databaseId);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return deleteCassandraKeyspace(subscriptionId, resourceGroup, accountName, databaseId);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return deleteGremlinDatabase(subscriptionId, resourceGroup, accountName, databaseId);
     default:
       throw new Error(`Unsupported default experience type: ${defaultExperience}`);

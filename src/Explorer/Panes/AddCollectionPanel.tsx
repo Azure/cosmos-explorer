@@ -19,7 +19,6 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { CollectionCreation, IndexingPolicies } from "../../Shared/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -68,16 +67,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     super(props);
 
     this.state = {
-      createNewDatabase: userContext.apiType !== DefaultAccountExperienceType.Table,
+      createNewDatabase: userContext.apiType !== "Tables",
       newDatabaseId: "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
-      selectedDatabaseId:
-        userContext.apiType === DefaultAccountExperienceType.Table
-          ? CollectionCreation.TablesAPIDefaultDatabase
-          : undefined,
+      selectedDatabaseId: userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : undefined,
       collectionId: "",
       enableIndexing: true,
-      isSharded: userContext.apiType !== DefaultAccountExperienceType.Table,
+      isSharded: userContext.apiType !== "Tables",
       partitionKey: "",
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: true,
@@ -120,7 +116,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         )}
 
         <div className="panelMainContent">
-          <Stack hidden={userContext.apiType === DefaultAccountExperienceType.Table}>
+          <Stack hidden={userContext.apiType === "Tables"}>
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
@@ -317,7 +313,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {userContext.apiType === DefaultAccountExperienceType.MongoDB &&
+          {userContext.apiType === "Mongo" &&
             (!this.state.isSharedThroughputChecked ||
               this.props.explorer.isFixedCollectionWithSharedThroughputSupported()) && (
               <Stack>
@@ -393,12 +389,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 className="panelTextField"
                 placeholder={this.getPartitionKeyPlaceHolder()}
                 aria-label={this.getPartitionKeyName()}
-                pattern={userContext.apiType === DefaultAccountExperienceType.Graph ? "^/[^/]*" : ".*"}
-                title={
-                  userContext.apiType === DefaultAccountExperienceType.Graph
-                    ? "May not use composite partition key"
-                    : ""
-                }
+                pattern={userContext.apiType === "Gremlin" ? "^/[^/]*" : ".*"}
+                title={userContext.apiType === "Gremlin" ? "May not use composite partition key" : ""}
                 value={this.state.partitionKey}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                   this.setState({ partitionKey: event.target.value })
@@ -447,7 +439,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             />
           )}
 
-          {userContext.apiType === DefaultAccountExperienceType.DocumentDB && (
+          {userContext.apiType === "SQL" && (
             <Stack>
               <Stack horizontal>
                 <Text className="panelTextBold" variant="small">
@@ -471,7 +463,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         type="text"
                         autoComplete="off"
                         placeholder={
-                          userContext.apiType === DefaultAccountExperienceType.MongoDB
+                          userContext.apiType === "Mongo"
                             ? "Comma separated paths e.g. firstName,address.zipCode"
                             : "Comma separated paths e.g. /firstName,/address/zipCode"
                         }
@@ -545,7 +537,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </Stack>
               )}
 
-              {userContext.apiType === DefaultAccountExperienceType.DocumentDB && (
+              {userContext.apiType === "SQL" && (
                 <Stack className="panelGroupSpacing">
                   <Stack horizontal verticalAlign="start">
                     <Checkbox
@@ -658,14 +650,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
   private getCollectionName(): string {
     switch (userContext.apiType) {
-      case DefaultAccountExperienceType.DocumentDB:
+      case "SQL":
         return "Container";
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         return "Collection";
-      case DefaultAccountExperienceType.Cassandra:
-      case DefaultAccountExperienceType.Table:
+      case "Cassandra":
+      case "Tables":
         return "Table";
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         return "Graph";
       default:
         throw new Error(`Unsupported default experience type: ${userContext.apiType}`);
@@ -673,14 +665,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getPartitionKeyName(): string {
-    return userContext.apiType === DefaultAccountExperienceType.MongoDB ? "Shard key" : "Partition key";
+    return userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
   }
 
   private getPartitionKeyPlaceHolder(): string {
     switch (userContext.apiType) {
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         return "e.g., address.zipCode";
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         return "e.g., /address";
       default:
         return "e.g., /address/zipCode";
@@ -818,10 +810,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     switch (userContext.apiType) {
-      case DefaultAccountExperienceType.DocumentDB:
-      case DefaultAccountExperienceType.MongoDB:
+      case "SQL":
+      case "Mongo":
         return true;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         return this.props.explorer.hasStorageAnalyticsAfecFeature();
       default:
         return false;
@@ -855,7 +847,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
         const validPaths: string[] = uniqueKey.split(",")?.filter((path) => path?.length > 0);
         const trimmedPaths: string[] = validPaths?.map((path) => path.trim());
         if (trimmedPaths?.length > 0) {
-          if (userContext.apiType === DefaultAccountExperienceType.MongoDB) {
+          if (userContext.apiType === "Mongo") {
             trimmedPaths.map((path) => {
               const transformedPath = path.split(".").join("/");
               if (transformedPath[0] !== "/") {
@@ -888,7 +880,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     if (
-      userContext.apiType === DefaultAccountExperienceType.Graph &&
+      userContext.apiType === "Gremlin" &&
       (this.state.partitionKey === "/id" || this.state.partitionKey === "/label")
     ) {
       this.setState({ errorMessage: "/id and /label as partition keys are not allowed for graph." });
@@ -924,7 +916,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     let databaseId = this.state.createNewDatabase ? this.state.newDatabaseId.trim() : this.state.selectedDatabaseId;
     let partitionKeyString = this.state.partitionKey.trim();
 
-    if (userContext.apiType === DefaultAccountExperienceType.Table) {
+    if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
       databaseId = CollectionCreation.TablesAPIDefaultDatabase;
       partitionKeyString = "/'$pk'";

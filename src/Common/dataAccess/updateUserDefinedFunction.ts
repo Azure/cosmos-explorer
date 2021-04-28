@@ -1,6 +1,5 @@
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateSqlUserDefinedFunction,
@@ -21,11 +20,7 @@ export async function updateUserDefinedFunction(
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating user defined function ${userDefinedFunction.id}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       const getResponse = await getSqlUserDefinedFunction(
         userContext.subscriptionId,
         userContext.resourceGroup,

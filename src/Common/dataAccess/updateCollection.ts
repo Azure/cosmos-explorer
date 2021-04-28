@@ -2,7 +2,6 @@ import { ContainerDefinition } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
@@ -38,11 +37,7 @@ export async function updateCollection(
   const clearMessage = logConsoleProgress(`Updating container ${collectionId}`);
 
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {
       const sdkResponse = await client()
@@ -74,15 +69,15 @@ async function updateCollectionWithARM(
   const defaultExperience = userContext.apiType;
 
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       return updateSqlContainer(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return updateCassandraTable(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return updateGremlinGraph(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       return updateTable(collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return updateMongoDBCollection(
         databaseId,
         collectionId,

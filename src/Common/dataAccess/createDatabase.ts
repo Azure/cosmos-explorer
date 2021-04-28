@@ -2,7 +2,6 @@ import { DatabaseResponse } from "@azure/cosmos";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraKeyspace,
@@ -31,7 +30,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function createDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
   const clearMessage = logConsoleProgress(`Creating a new database ${params.databaseId}`);
   try {
-    if (userContext.apiType === DefaultAccountExperienceType.Table) {
+    if (userContext.apiType === "Tables") {
       throw new Error("Creating database resources is not allowed for tables accounts");
     }
     const database: DataModels.Database = await (userContext.authType === AuthType.AAD && !userContext.useSDKOperations
@@ -51,13 +50,13 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
 async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
   const defaultExperience = userContext.apiType;
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       return createSqlDatabase(params);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return createMongoDatabase(params);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return createCassandraKeyspace(params);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return createGremlineDatabase(params);
     default:
       throw new Error(`Unsupported default experience type: ${defaultExperience}`);

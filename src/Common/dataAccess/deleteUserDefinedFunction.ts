@@ -1,5 +1,4 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { deleteSqlUserDefinedFunction } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -9,11 +8,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function deleteUserDefinedFunction(databaseId: string, collectionId: string, id: string): Promise<void> {
   const clearMessage = logConsoleProgress(`Deleting user defined function ${id}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       await deleteSqlUserDefinedFunction(
         userContext.subscriptionId,
         userContext.resourceGroup,

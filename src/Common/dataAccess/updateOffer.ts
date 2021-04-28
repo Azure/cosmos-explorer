@@ -2,7 +2,6 @@ import { OfferDefinition } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   migrateCassandraKeyspaceToAutoscale,
@@ -61,7 +60,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
     if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
       if (params.collectionId) {
         updatedOffer = await updateCollectionOfferWithARM(params);
-      } else if (userContext.apiType === DefaultAccountExperienceType.Table) {
+      } else if (userContext.apiType === "Tables") {
         // update table's database offer with SDK since RP doesn't support it
         updatedOffer = await updateOfferWithSDK(params);
       } else {
@@ -83,19 +82,19 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
 const updateCollectionOfferWithARM = async (params: UpdateOfferParams): Promise<Offer> => {
   try {
     switch (userContext.apiType) {
-      case DefaultAccountExperienceType.DocumentDB:
+      case "SQL":
         await updateSqlContainerOffer(params);
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         await updateMongoCollectionOffer(params);
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         await updateCassandraTableOffer(params);
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         await updateGremlinGraphOffer(params);
         break;
-      case DefaultAccountExperienceType.Table:
+      case "Tables":
         await updateTableOffer(params);
         break;
       default:
@@ -117,16 +116,16 @@ const updateCollectionOfferWithARM = async (params: UpdateOfferParams): Promise<
 const updateDatabaseOfferWithARM = async (params: UpdateOfferParams): Promise<Offer> => {
   try {
     switch (userContext.apiType) {
-      case DefaultAccountExperienceType.DocumentDB:
+      case "SQL":
         await updateSqlDatabaseOffer(params);
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         await updateMongoDatabaseOffer(params);
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         await updateCassandraKeyspaceOffer(params);
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         await updateGremlinDatabaseOffer(params);
         break;
       default:

@@ -1,6 +1,5 @@
 import { AuthType } from "../../AuthType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
@@ -14,11 +13,7 @@ export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promis
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
 
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       return await readDatabaseOfferWithARM(params.databaseId);
     }
 
@@ -40,16 +35,16 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
   let rpResponse;
   try {
     switch (defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
+      case "SQL":
         rpResponse = await getSqlDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         rpResponse = await getMongoDBDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         rpResponse = await getCassandraKeyspaceThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         rpResponse = await getGremlinDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
       default:

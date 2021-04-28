@@ -1,6 +1,5 @@
 import { Resource, TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
@@ -18,11 +17,7 @@ export async function createTrigger(
 ): Promise<TriggerDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       try {
         const getResponse = await getSqlTrigger(
           userContext.subscriptionId,

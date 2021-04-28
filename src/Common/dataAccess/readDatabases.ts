@@ -1,6 +1,5 @@
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { listGremlinDatabases } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
@@ -14,11 +13,7 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
   let databases: DataModels.Database[];
   const clearMessage = logConsoleProgress(`Querying databases`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       databases = await readDatabasesWithARM();
     } else {
       const sdkResponse = await client().databases.readAll().fetchAll();
@@ -40,16 +35,16 @@ async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
   const defaultExperience = userContext.apiType;
 
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       rpResponse = await listSqlDatabases(subscriptionId, resourceGroup, accountName);
       break;
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       rpResponse = await listMongoDBDatabases(subscriptionId, resourceGroup, accountName);
       break;
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       rpResponse = await listCassandraKeyspaces(subscriptionId, resourceGroup, accountName);
       break;
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       rpResponse = await listGremlinDatabases(subscriptionId, resourceGroup, accountName);
       break;
     default:

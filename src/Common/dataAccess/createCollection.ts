@@ -4,7 +4,6 @@ import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/Contai
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -46,7 +45,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
         await createDatabase(createDatabaseParams);
       }
       collection = await createCollectionWithARM(params);
-    } else if (userContext.apiType === DefaultAccountExperienceType.MongoDB) {
+    } else if (userContext.apiType === "Mongo") {
       collection = await createMongoCollectionWithProxy(params);
     } else {
       collection = await createCollectionWithSDK(params);
@@ -65,15 +64,15 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   const defaultExperience = userContext.apiType;
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       return createSqlContainer(params);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return createMongoCollection(params);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return createCassandraTable(params);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return createGraph(params);
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       return createTable(params);
     default:
       throw new Error(`Unsupported default experience type: ${defaultExperience}`);

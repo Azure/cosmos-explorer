@@ -1,6 +1,5 @@
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { listSqlUserDefinedFunctions } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -13,11 +12,7 @@ export async function readUserDefinedFunctions(
 ): Promise<(UserDefinedFunctionDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying user defined functions for container ${collectionId}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.apiType === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       const rpResponse = await listSqlUserDefinedFunctions(
         userContext.subscriptionId,
         userContext.resourceGroup,
