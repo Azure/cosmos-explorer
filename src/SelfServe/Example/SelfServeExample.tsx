@@ -1,4 +1,5 @@
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
+import { selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
@@ -18,9 +19,9 @@ import {
   getMinDatabaseThroughput,
   initialize,
   onRefreshSelfServeExample,
-  Regions,
   update,
 } from "./SelfServeExample.rp";
+import { AccountProps, Regions } from "./SelfServeExample.types";
 
 const regionDropdownItems: ChoiceItem[] = [
   { labelTKey: "NorthCentralUS", key: Regions.NorthCentralUS },
@@ -97,7 +98,13 @@ export default class SelfServeExample extends SelfServeBaseClass {
     let dbThroughput = currentValues.get("dbThroughput")?.value as number;
     dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
     try {
-      await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
+      const accountProps: AccountProps = { regions, enableLogging, accountName, collectionThroughput, dbThroughput };
+      const telemetryData = { ...accountProps, selfServeClassName: SelfServeExample.name };
+
+      const onSaveTimeStamp = selfServeTraceStart(telemetryData);
+      await update(accountProps);
+      selfServeTraceSuccess(telemetryData, onSaveTimeStamp);
+
       if (currentValues.get("regions") === baselineValues.get("regions")) {
         return {
           operationStatusUrl: undefined,
@@ -181,9 +188,9 @@ export default class SelfServeExample extends SelfServeBaseClass {
   @PropertyInfo(regionDropdownInfo)
 
   /*
-            In this example, the onRegionsChange function sets the enableLogging property to false (and disables
-            the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for 
-            any other value of "regions"
+    In this example, the onRegionsChange function sets the enableLogging property to false (and disables
+    the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for 
+    any other value of "regions"
   */
   @OnChange(onRegionsChange)
   @Values({ labelTKey: "Regions", choices: regionDropdownItems, placeholderTKey: "RegionsPlaceholder" })
