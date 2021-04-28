@@ -1,15 +1,16 @@
 // Manages all the redux logic for the notebook nteract code
 // TODO: Merge with NotebookClient?
-import { NotebookWorkspaceConnectionInfo } from "../../Contracts/DataModels";
-import * as Constants from "../../Common/Constants";
-import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
-
 // Vendor modules
 import {
   actions,
   AppState,
+  ContentRecord,
   createHostRef,
   createKernelspecsRef,
+  HostRecord,
+  HostRef,
+  IContentProvider,
+  KernelspecsRef,
   makeAppRecord,
   makeCommsRecord,
   makeContentsRecord,
@@ -19,23 +20,20 @@ import {
   makeJupyterHostRecord,
   makeStateRecord,
   makeTransformsRecord,
-  ContentRecord,
-  HostRecord,
-  HostRef,
-  KernelspecsRef,
-  IContentProvider,
 } from "@nteract/core";
+import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
 import { Media } from "@nteract/outputs";
 import TransformVDOM from "@nteract/transform-vdom";
 import * as Immutable from "immutable";
-import { Store, AnyAction, MiddlewareAPI, Middleware, Dispatch } from "redux";
-
-import configureStore from "./NotebookComponent/store";
-
 import { Notification } from "react-notification-system";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { AnyAction, Dispatch, Middleware, MiddlewareAPI, Store } from "redux";
+import * as Constants from "../../Common/Constants";
+import { NotebookWorkspaceConnectionInfo } from "../../Contracts/DataModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import configureStore from "./NotebookComponent/store";
+import { CdbAppState, makeCdbRecord } from "./NotebookComponent/types";
 
 export type KernelSpecsDisplay = { name: string; displayName: string };
 
@@ -125,60 +123,62 @@ export class NotebookClientV2 {
           contents: makeContentsRecord({
             byRef: Immutable.Map<string, ContentRecord>(),
           }),
-          transforms: makeTransformsRecord({
-            displayOrder: Immutable.List([
-              "application/vnd.jupyter.widget-view+json",
-              "application/vnd.vega.v5+json",
-              "application/vnd.vega.v4+json",
-              "application/vnd.vega.v3+json",
-              "application/vnd.vega.v2+json",
-              "application/vnd.vegalite.v3+json",
-              "application/vnd.vegalite.v2+json",
-              "application/vnd.vegalite.v1+json",
-              "application/geo+json",
-              "application/vnd.plotly.v1+json",
-              "text/vnd.plotly.v1+html",
-              "application/x-nteract-model-debug+json",
-              "application/vnd.dataresource+json",
-              "application/vdom.v1+json",
-              "application/json",
-              "application/javascript",
-              "text/html",
-              "text/markdown",
-              "text/latex",
-              "image/svg+xml",
-              "image/gif",
-              "image/png",
-              "image/jpeg",
-              "text/plain",
-            ]),
-            byId: Immutable.Map({
-              "text/vnd.plotly.v1+html": NullTransform,
-              "application/vnd.plotly.v1+json": NullTransform,
-              "application/geo+json": NullTransform,
-              "application/x-nteract-model-debug+json": NullTransform,
-              "application/vnd.dataresource+json": NullTransform,
-              "application/vnd.jupyter.widget-view+json": NullTransform,
-              "application/vnd.vegalite.v1+json": NullTransform,
-              "application/vnd.vegalite.v2+json": NullTransform,
-              "application/vnd.vegalite.v3+json": NullTransform,
-              "application/vnd.vega.v2+json": NullTransform,
-              "application/vnd.vega.v3+json": NullTransform,
-              "application/vnd.vega.v4+json": NullTransform,
-              "application/vnd.vega.v5+json": NullTransform,
-              "application/vdom.v1+json": TransformVDOM,
-              "application/json": Media.Json,
-              "application/javascript": Media.JavaScript,
-              "text/html": Media.HTML,
-              "text/markdown": Media.Markdown,
-              "text/latex": Media.LaTeX,
-              "image/svg+xml": Media.SVG,
-              "image/gif": Media.Image,
-              "image/png": Media.Image,
-              "image/jpeg": Media.Image,
-              "text/plain": Media.Plain,
-            }),
-          }),
+          transforms: userContext.features.sandboxNotebookOutputs
+            ? undefined
+            : makeTransformsRecord({
+                displayOrder: Immutable.List([
+                  "application/vnd.jupyter.widget-view+json",
+                  "application/vnd.vega.v5+json",
+                  "application/vnd.vega.v4+json",
+                  "application/vnd.vega.v3+json",
+                  "application/vnd.vega.v2+json",
+                  "application/vnd.vegalite.v3+json",
+                  "application/vnd.vegalite.v2+json",
+                  "application/vnd.vegalite.v1+json",
+                  "application/geo+json",
+                  "application/vnd.plotly.v1+json",
+                  "text/vnd.plotly.v1+html",
+                  "application/x-nteract-model-debug+json",
+                  "application/vnd.dataresource+json",
+                  "application/vdom.v1+json",
+                  "application/json",
+                  "application/javascript",
+                  "text/html",
+                  "text/markdown",
+                  "text/latex",
+                  "image/svg+xml",
+                  "image/gif",
+                  "image/png",
+                  "image/jpeg",
+                  "text/plain",
+                ]),
+                byId: Immutable.Map({
+                  "text/vnd.plotly.v1+html": NullTransform,
+                  "application/vnd.plotly.v1+json": NullTransform,
+                  "application/geo+json": NullTransform,
+                  "application/x-nteract-model-debug+json": NullTransform,
+                  "application/vnd.dataresource+json": NullTransform,
+                  "application/vnd.jupyter.widget-view+json": NullTransform,
+                  "application/vnd.vegalite.v1+json": NullTransform,
+                  "application/vnd.vegalite.v2+json": NullTransform,
+                  "application/vnd.vegalite.v3+json": NullTransform,
+                  "application/vnd.vega.v2+json": NullTransform,
+                  "application/vnd.vega.v3+json": NullTransform,
+                  "application/vnd.vega.v4+json": NullTransform,
+                  "application/vnd.vega.v5+json": NullTransform,
+                  "application/vdom.v1+json": TransformVDOM,
+                  "application/json": Media.Json,
+                  "application/javascript": Media.JavaScript,
+                  "text/html": Media.HTML,
+                  "text/markdown": Media.Markdown,
+                  "text/latex": Media.LaTeX,
+                  "image/svg+xml": Media.SVG,
+                  "image/gif": Media.Image,
+                  "image/png": Media.Image,
+                  "image/jpeg": Media.Image,
+                  "text/plain": Media.Plain,
+                }),
+              }),
         }),
       }),
       cdb: makeCdbRecord({
@@ -200,10 +200,11 @@ export class NotebookClientV2 {
         case actions.FETCH_KERNELSPECS_FULFILLED: {
           const payload = ((action as unknown) as actions.FetchKernelspecsFulfilled).payload;
           const defaultKernelName = payload.defaultKernelName;
-          this.kernelSpecsForDisplay = Object.keys(payload.kernelspecs)
-            .map((name) => ({
-              name,
-              displayName: payload.kernelspecs[name].displayName,
+          this.kernelSpecsForDisplay = Object.values(payload.kernelspecs)
+            .filter((spec) => !spec.metadata?.hasOwnProperty("hidden"))
+            .map((spec) => ({
+              name: spec.name,
+              displayName: spec.displayName,
             }))
             .sort((a: KernelSpecsDisplay, b: KernelSpecsDisplay) => {
               // Put default at the top, otherwise lexicographically compare

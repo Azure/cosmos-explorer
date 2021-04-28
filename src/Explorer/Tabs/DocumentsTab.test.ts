@@ -1,10 +1,11 @@
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "../../Common/Constants";
-import DocumentsTab from "./DocumentsTab";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { updateUserContext } from "../../UserContext";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import DocumentsTab from "./DocumentsTab";
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {
@@ -16,8 +17,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -27,7 +26,6 @@ describe("Documents tab", () => {
 
   describe("showPartitionKey", () => {
     const explorer = new Explorer();
-
     const mongoExplorer = new Explorer();
     mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
 
@@ -89,8 +87,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -106,8 +102,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -123,8 +117,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -132,6 +124,9 @@ describe("Documents tab", () => {
     });
 
     it("should be false for Mongo accounts with system partitionKey", () => {
+      updateUserContext({
+        apiType: "Mongo",
+      });
       const documentsTab = new DocumentsTab({
         collection: mongoCollectionWithSystemPartitionKey,
         partitionKey: null,
@@ -140,8 +135,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
@@ -157,8 +150,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
         onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 

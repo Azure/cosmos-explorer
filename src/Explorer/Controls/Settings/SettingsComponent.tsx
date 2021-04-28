@@ -6,7 +6,7 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
 import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -136,15 +136,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.container = this.collection?.container;
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
-      this.shouldShowIndexingPolicyEditor =
-        this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
+      this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
-        this.container.isPreferredApiMongoDB() &&
-        (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
+        userContext.apiType === "Mongo" && (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
     } else {
       this.database = this.props.settingsTab.database;
       this.container = this.database?.container;
@@ -236,7 +234,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public loadMongoIndexes = async (): Promise<void> => {
     if (
-      this.container.isPreferredApiMongoDB() &&
+      userContext.apiType === "Mongo" &&
       this.container.isEnableMongoCapabilityPresent() &&
       this.container.databaseAccount()
     ) {
@@ -299,7 +297,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.state.wasAutopilotOriginallySet !== this.state.isAutoPilotSelected;
 
   public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
-    this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
+    this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
     this.container?.databaseAccount &&
@@ -782,12 +780,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
       try {
         const newMongoIndexes = this.getMongoIndexesToSave();
-        const newMongoCollection: MongoDBCollectionResource = {
+        const newMongoCollection = {
           ...this.mongoDBCollectionResource,
           indexes: newMongoIndexes,
         };
 
-        this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
+        this.mongoDBCollectionResource = await updateCollection(
           this.collection.databaseId,
           this.collection.id(),
           newMongoCollection
@@ -1002,7 +1000,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />,
       });
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       const mongoIndexTabContext = this.getMongoIndexTabContent(mongoIndexingPolicyComponentProps);
       if (mongoIndexTabContext) {
         tabs.push({

@@ -55,7 +55,7 @@ export class ResourceTreeContextMenuButtonFactory {
     selectedCollection: ViewModels.Collection
   ): TreeNodeMenuItem[] {
     const items: TreeNodeMenuItem[] = [];
-    if (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) {
+    if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null),
@@ -63,7 +63,7 @@ export class ResourceTreeContextMenuButtonFactory {
       });
     }
 
-    if (container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null),
@@ -80,7 +80,7 @@ export class ResourceTreeContextMenuButtonFactory {
       });
     }
 
-    if (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) {
+    if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
       items.push({
         iconSrc: AddStoredProcedureIcon,
         onClick: () => {
@@ -123,7 +123,7 @@ export class ResourceTreeContextMenuButtonFactory {
     container: Explorer,
     storedProcedure: StoredProcedure
   ): TreeNodeMenuItem[] {
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       return [];
     }
 
@@ -137,7 +137,7 @@ export class ResourceTreeContextMenuButtonFactory {
   }
 
   public static createTriggerContextMenuItems(container: Explorer, trigger: Trigger): TreeNodeMenuItem[] {
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       return [];
     }
 
@@ -154,7 +154,7 @@ export class ResourceTreeContextMenuButtonFactory {
     container: Explorer,
     userDefinedFunction: UserDefinedFunction
   ): TreeNodeMenuItem[] {
-    if (container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       return [];
     }
 

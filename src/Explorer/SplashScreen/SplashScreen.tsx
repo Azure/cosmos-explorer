@@ -50,10 +50,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.subscriptions = [];
   }
 
-  public shouldComponentUpdate() {
-    return this.container.tabsManager.openedTabs.length === 0;
-  }
-
   public componentWillUnmount() {
     while (this.subscriptions.length) {
       this.subscriptions.pop().dispose();
@@ -62,7 +58,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      this.container.tabsManager.openedTabs.subscribe(() => this.setState({})),
       this.container.selectedNode.subscribe(() => this.setState({})),
       this.container.isNotebookEnabled.subscribe(() => this.setState({}))
     );
@@ -80,7 +75,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
 
-    return (
+    const formContainer = (jsx: JSX.Element) => (
+      <div className="connectExplorerContainer">
+        <form className="connectExplorerFormContainer">{jsx}</form>
+      </div>
+    );
+
+    return formContainer(
       <div className="splashScreenContainer">
         <div className="splashScreen">
           <div className="title">
@@ -226,7 +227,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     }
 
     if (!this.container.isDatabaseNodeOrNoneSelected()) {
-      if (this.container.isPreferredApiDocumentDB() || this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
@@ -236,7 +237,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           title: "New SQL Query",
           description: null,
         });
-      } else if (this.container.isPreferredApiMongoDB()) {
+      } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
@@ -255,7 +256,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         onClick: () => this.container.openBrowseQueriesPanel(),
       });
 
-      if (!this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType !== "Cassandra") {
         items.push({
           iconSrc: NewStoredProcedureIcon,
           title: "New Stored Procedure",

@@ -1,75 +1,53 @@
 import * as ko from "knockout";
-import Q from "q";
 import * as Constants from "../../Common/Constants";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import { RouteHandler } from "../../RouteHandlers/RouteHandler";
-import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as ThemeUtility from "../../Common/ThemeUtility";
-import Explorer from "../Explorer";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { RouteHandler } from "../../RouteHandlers/RouteHandler";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../Explorer";
+import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
+import { TabsManager } from "./TabsManager";
 
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
-  public static readonly component = { name: "tab", template: "" };
+  private static id = 0;
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;
   public database: ViewModels.Database;
   public rid: string;
-  public hasFocus: ko.Observable<boolean>;
-  public isActive: ko.Observable<boolean>;
-  public isMouseOver: ko.Observable<boolean>;
-  public tabId: string;
+  public tabId = `tab${TabsBase.id++}`;
   public tabKind: ViewModels.CollectionTabKind;
   public tabTitle: ko.Observable<string>;
   public tabPath: ko.Observable<string>;
-  public closeButtonTabIndex: ko.Computed<number>;
-  public errorDetailsTabIndex: ko.Computed<number>;
   public hashLocation: ko.Observable<string>;
-  public isExecutionError: ko.Observable<boolean>;
-  public isExecuting: ko.Observable<boolean>;
+  public isExecutionError = ko.observable(false);
+  public isExecuting = ko.observable(false);
   public pendingNotification?: ko.Observable<DataModels.Notification>;
-
+  public manager?: TabsManager;
   protected _theme: string;
   public onLoadStartKey: number;
 
   constructor(options: ViewModels.TabOptions) {
     super();
-    const id = new Date().getTime().toString();
-
     this._theme = ThemeUtility.getMonacoTheme(options.theme);
     this.node = options.node;
     this.collection = options.collection;
     this.database = options.database;
     this.rid = options.rid || (this.collection && this.collection.rid) || "";
-    this.hasFocus = ko.observable<boolean>(false);
-    this.isActive = options.isActive || ko.observable<boolean>(false);
-    this.isMouseOver = ko.observable<boolean>(false);
-    this.tabId = `tab${id}`;
     this.tabKind = options.tabKind;
     this.tabTitle = ko.observable<string>(options.title);
     this.tabPath =
-      (options.tabPath && ko.observable<string>(options.tabPath)) ||
+      ko.observable(options.tabPath ?? "") ||
       (this.collection &&
         ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${this.tabTitle()}`));
-    this.closeButtonTabIndex = ko.computed<number>(() => (this.isActive() ? 0 : null));
-    this.errorDetailsTabIndex = ko.computed<number>(() => (this.isActive() ? 0 : null));
-    this.isExecutionError = ko.observable<boolean>(false);
-    this.isExecuting = ko.observable<boolean>(false);
     this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
     this.onLoadStartKey = options.onLoadStartKey;
     this.hashLocation = ko.observable<string>(options.hashLocation || "");
     this.hashLocation.subscribe((newLocation: string) => this.updateGlobalHash(newLocation));
-
-    this.isActive.subscribe((isActive: boolean) => {
-      if (isActive) {
-        this.onActivate();
-      }
-    });
-
     this.closeTabButton = {
       enabled: ko.computed<boolean>(() => {
         return true;
@@ -82,12 +60,9 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onCloseTabButtonClick(): void {
-    const explorer = this.getContainer();
-    explorer.tabsManager.closeTab(this.tabId, explorer);
-
+    this.manager?.closeTab(this);
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
       tabName: this.constructor.name,
-
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       tabId: this.tabId,
@@ -95,7 +70,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onTabClick(): void {
-    this.getContainer().tabsManager.activateTab(this);
+    this.manager?.activateTab(this);
   }
 
   protected updateSelectedNode(): void {
@@ -127,24 +102,19 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return this.onSpaceOrEnterKeyPress(event, () => this.onCloseTabButtonClick());
   };
 
+  /** @deprecated this is no longer observable, bind to comparisons with manager.activeTab() instead */
+  public isActive() {
+    return this === this.manager?.activeTab();
+  }
+
   public onActivate(): void {
     this.updateSelectedNode();
-    if (!!this.collection) {
-      this.collection.selectedSubnodeKind(this.tabKind);
-    }
-
-    if (!!this.database) {
-      this.database.selectedSubnodeKind(this.tabKind);
-    }
-
-    this.hasFocus(true);
+    this.collection?.selectedSubnodeKind(this.tabKind);
+    this.database?.selectedSubnodeKind(this.tabKind);
     this.updateGlobalHash(this.hashLocation());
-
     this.updateNavbarWithTabsButtons();
-
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Open, {
       tabName: this.constructor.name,
-
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
       tabId: this.tabId,
@@ -152,13 +122,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
-    if (this.collection && this.collection.container) {
-      this.collection.container.expandConsole();
-    }
-
-    if (this.database && this.database.container) {
-      this.database.container.expandConsole();
-    }
+    this.collection?.container?.expandConsole();
+    this.database?.container?.expandConsole();
     return false;
   };
 
@@ -171,9 +136,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return true;
   };
 
-  public refresh(): Q.Promise<any> {
+  public refresh() {
     location.reload();
-    return Q();
   }
 
   public getContainer(): Explorer {
@@ -201,9 +165,4 @@ export default class TabsBase extends WaitsForTemplateViewModel {
       this.getContainer().onUpdateTabsButtons(this.getTabsButtons());
     }
   };
-}
-
-interface EditorPosition {
-  line: number;
-  column: number;
 }

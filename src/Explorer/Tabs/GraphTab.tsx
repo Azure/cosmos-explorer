@@ -8,19 +8,18 @@ import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
 import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
+import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import GraphStylingPane from "../Panes/GraphStylingPane";
-import { GraphStylingPanel } from "../Panes/GraphStylingPanel";
-import NewVertexPane from "../Panes/NewVertexPane";
-import template from "./GraphTab.html";
+import { GraphStylingPanel } from "../Panes/GraphStylingPanel/GraphStylingPanel";
+import { NewVertexPanel } from "../Panes/NewVertexPanel/NewVertexPanel";
 import TabsBase from "./TabsBase";
-
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };
 }
 
 export interface GraphConfig {
   nodeColor: ko.Observable<string>;
-  nodeColorKey: ko.Observable<string>; // map property to node color. Takes precedence over nodeColor unless null
+  nodeColorKey: ko.Observable<string>; // map property to node color. Takes precedence over nodeColor unless undefined
   linkColor: ko.Observable<string>;
   showNeighborType: ko.Observable<ViewModels.NeighborType>;
   nodeCaption: ko.Observable<string>;
@@ -50,9 +49,9 @@ interface GraphTabOptions extends ViewModels.TabOptions {
   collectionPartitionKeyProperty: string;
 }
 
-export interface GraphParams {
-  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
-}
+// export interface GraphParams {
+//   // openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+// }
 
 interface GraphTabStates {
   isChange: boolean;
@@ -65,7 +64,8 @@ export default interface GraphTab extends TabsBase, React.Component<GraphTabProp
 
 // export default class GraphTab extends React.Component<GraphTabProps, GraphTabStates> {
 export default class GraphTab extends TabsBase {
-  public static readonly component = { name: "graph-tab", template };
+  public readonly html =
+    '<div class="graphExplorerContainer" role="tabpanel" data-bind="react:graphExplorerAdapter, attr: {id: tabId}"></div>';
   // Graph default configuration
   public static readonly DEFAULT_NODE_CAPTION = "id";
   private static readonly LINK_COLOR = "#aaa";
@@ -83,18 +83,15 @@ export default class GraphTab extends TabsBase {
   private igraphConfigUiData: ViewModels.IGraphConfigUiData;
   private isFilterQueryLoading: ko.Observable<boolean>;
   private isValidQuery: ko.Observable<boolean>;
-  private newVertexPane: NewVertexPane;
   private graphStylingPane: GraphStylingPane;
   private collectionPartitionKeyProperty: string;
-  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
-  public options: GraphTabOptions;
+  private contextualPane: ContextualPaneBase;
 
-  constructor(options: GraphTabOptions, params?: GraphParams) {
+  constructor(options: GraphTabOptions) {
     super(options);
     this.state = {
       isChange: false,
     };
-    this.newVertexPane = options.collection && options.collection.container.newVertexPane;
     this.graphStylingPane = options.collection && options.collection.container.graphStylingPane;
     this.collectionPartitionKeyProperty = options.collectionPartitionKeyProperty;
 
@@ -103,7 +100,8 @@ export default class GraphTab extends TabsBase {
     this.isGraphDisplayed = ko.observable(false);
     this.graphAccessor = undefined;
     this.graphConfig = GraphTab.createGraphConfig();
-    this.openSidePanel = params?.openSidePanel;
+    // // this.openSidePanel = params?.openSidePanel;
+    // this.igraphConfig = GraphTab.createGraphConfig();
     this.igraphConfigUiData = this.createIGraphConfigUiData();
 
     // TODO Merge this with this.graphConfig
@@ -141,8 +139,8 @@ export default class GraphTab extends TabsBase {
         }
       },
       resourceId: options.account.id,
-      igraphConfig: this.igraphConfig,
-      igraphConfigUiData: this.igraphConfigUiData,
+      // igraphConfig: this.igraphConfig,
+      // igraphConfigUiData: this.igraphConfigUiData,
     });
 
     this.isFilterQueryLoading = ko.observable(false);
@@ -175,33 +173,30 @@ export default class GraphTab extends TabsBase {
 
   /* Command bar */
   private showNewVertexEditor(): void {
-    this.newVertexPane.open();
-    this.newVertexPane.setPartitionKeyProperty(this.collectionPartitionKeyProperty);
-    // TODO Must update GraphExplorer properties
-    this.newVertexPane.subscribeOnSubmitCreate((result: ViewModels.NewVertexData) => {
-      this.newVertexPane.formErrors(undefined);
-      this.newVertexPane.formErrorsDetails(undefined);
-      this.graphAccessor.addVertex(result).then(
-        () => {
-          this.newVertexPane.cancel();
-        },
-        (error: GraphExplorerError) => {
-          this.newVertexPane.formErrors(error.title);
-          if (error.details) {
-            this.newVertexPane.formErrorsDetails(error.details);
-          }
-        }
-      );
-    });
+    this.collection.container.openSidePanel(
+      "New Vertex",
+      <NewVertexPanel
+        explorer={this.collection.container}
+        partitionKeyPropertyProp={this.collectionPartitionKeyProperty}
+        openNotificationConsole={() => this.collection.container.expandConsole()}
+        onSubmit={(
+          result: ViewModels.NewVertexData,
+          onError: (errorMessage: string) => void,
+          onSuccess: () => void
+        ): void => {
+          this.graphAccessor.addVertex(result).then(
+            () => {
+              onSuccess();
+              this.contextualPane.cancel();
+            },
+            (error: GraphExplorerError) => {
+              onError(error.title);
+            }
+          );
+        }}
+      />
+    );
   }
-
-  setValues = () : void  => {
-    //eslint-disable-next-line
-    console.log("setValues > ", this.setState);
-    // this.setState({ isChange: true });
-    // this.graphExplorerAdapter.callGraphExplorer(this.state.isChange);
-  };
-
   public openStyling(): void {
     this.setDefaultGraphConfigValues();
     // Update the styling pane with this instance
@@ -215,6 +210,7 @@ export default class GraphTab extends TabsBase {
             explorer={this.collection.container}
             closePanel={this.collection.container.closeSidePanel}
             config={this.igraphConfigUiData}
+            openNotificationConsole={this.collection.container.expandConsole}
           />
         );
   }
@@ -245,6 +241,13 @@ export default class GraphTab extends TabsBase {
     };
   }
 
+  setValues = (): void => {
+    //eslint-disable-next-line
+    console.log("setValues > ", this.setState);
+    // this.setState({ isChange: true });
+    // this.graphExplorerAdapter.callGraphExplorer(this.state.isChange);
+  };
+
   public createIGraphConfigUiData(): ViewModels.IGraphConfigUiData {
     return {
       showNeighborType: ViewModels.NeighborType.BOTH,
@@ -259,11 +262,14 @@ export default class GraphTab extends TabsBase {
   }
 
   /**
-   * Make sure graph config values are not null
+   * Make sure graph config values are not undefined
    */
   private setDefaultGraphConfigValues() {
     // Assign default values if null
-    if (this.graphConfigUiData.nodeCaptionChoice() === undefined && this.graphConfigUiData.nodeProperties().length > 1) {
+    if (
+      this.graphConfigUiData.nodeCaptionChoice() === undefined &&
+      this.graphConfigUiData.nodeProperties().length > 1
+    ) {
       this.graphConfigUiData.nodeCaptionChoice(this.graphConfigUiData.nodeProperties()[0]);
     }
     if (

@@ -5,6 +5,7 @@ import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import ScriptTabBase from "../Explorer/Tabs/ScriptTabBase";
 import TabsBase from "../Explorer/Tabs/TabsBase";
+import { userContext } from "../UserContext";
 
 export class TabRouteHandler {
   private _tabRouter: any;
@@ -55,6 +56,13 @@ export class TabRouteHandler {
       `${Constants.HashRoutePrefixes.collections}/mongoDocuments`,
       (db_id: string, coll_id: string) => {
         this._openMongoDocumentsTabForResource(db_id, coll_id);
+      }
+    );
+
+    this._tabRouter.addRoute(
+      `${Constants.HashRoutePrefixes.collections}/schemaAnalyzer`,
+      (db_id: string, coll_id: string) => {
+        this._openSchemaAnalyzerTabForResource(db_id, coll_id);
       }
     );
 
@@ -134,10 +142,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiDocumentDB() &&
-        collection.onDocumentDBDocumentsClick();
+      userContext.apiType === "SQL" && collection.onDocumentDBDocumentsClick();
     });
   }
 
@@ -149,7 +154,7 @@ export class TabRouteHandler {
       );
       collection &&
         collection.container &&
-        (collection.container.isPreferredApiTable() || collection.container.isPreferredApiCassandra()) &&
+        (userContext.apiType === "Tables" || userContext.apiType === "Cassandra") &&
         collection.onTableEntitiesClick();
     });
   }
@@ -160,10 +165,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiGraph() &&
-        collection.onGraphDocumentsClick();
+      userContext.apiType === "Gremlin" && collection.onGraphDocumentsClick();
     });
   }
 
@@ -173,10 +175,17 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiMongoDB() &&
-        collection.onMongoDBDocumentsClick();
+      userContext.apiType === "Mongo" && collection.onMongoDBDocumentsClick();
+    });
+  }
+
+  private _openSchemaAnalyzerTabForResource(databaseId: string, collectionId: string): void {
+    this._executeActionHelper(() => {
+      const collection: ViewModels.Collection = this._findAndExpandMatchingCollectionForResource(
+        databaseId,
+        collectionId
+      );
+      collection && userContext.apiType === "Mongo" && collection.onSchemaAnalyzerClick();
     });
   }
 
@@ -213,10 +222,7 @@ export class TabRouteHandler {
       if (!!matchingTab) {
         matchingTab.onTabClick();
       } else {
-        collection &&
-          collection.container &&
-          collection.container.isPreferredApiMongoDB() &&
-          collection.onNewMongoQueryClick(collection, null);
+        userContext.apiType === "Mongo" && collection.onNewMongoQueryClick(collection, null);
       }
     });
   }
@@ -235,10 +241,7 @@ export class TabRouteHandler {
       if (!!matchingTab) {
         matchingTab.onTabClick();
       } else {
-        collection &&
-          collection.container &&
-          collection.container.isPreferredApiMongoDB() &&
-          collection.onNewMongoShellClick();
+        userContext.apiType === "Mongo" && collection.onNewMongoShellClick();
       }
     });
   }

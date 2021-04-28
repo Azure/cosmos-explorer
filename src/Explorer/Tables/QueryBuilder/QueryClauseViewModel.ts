@@ -1,9 +1,10 @@
 import * as ko from "knockout";
 import _ from "underscore";
+import { userContext } from "../../../UserContext";
 import * as QueryBuilderConstants from "../Constants";
-import QueryBuilderViewModel from "./QueryBuilderViewModel";
-import ClauseGroup from "./ClauseGroup";
 import * as Utilities from "../Utilities";
+import ClauseGroup from "./ClauseGroup";
+import QueryBuilderViewModel from "./QueryBuilderViewModel";
 
 export default class QueryClauseViewModel {
   public checkedForGrouping: ko.Observable<boolean>;
@@ -68,7 +69,7 @@ export default class QueryClauseViewModel {
     this.getValueType();
 
     this.isOperaterEditable = ko.pureComputed<boolean>(() => {
-      const isPreferredApiCassandra = this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.container.isPreferredApiCassandra();
+      const isPreferredApiCassandra = userContext.apiType === "Cassandra";
       const cassandraKeys = isPreferredApiCassandra
         ? this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection.cassandraKeys.partitionKeys.map(
             (key) => key.property
@@ -84,7 +85,7 @@ export default class QueryClauseViewModel {
         this.field() !== "Timestamp" &&
         this.field() !== "PartitionKey" &&
         this.field() !== "RowKey" &&
-        !this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.container.isPreferredApiCassandra()
+        userContext.apiType !== "Cassandra"
     );
 
     this.and_or.subscribe((value) => {
@@ -170,7 +171,7 @@ export default class QueryClauseViewModel {
       this.type(QueryBuilderConstants.TableType.String);
     } else {
       this.resetFromTimestamp();
-      if (this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.container.isPreferredApiCassandra()) {
+      if (userContext.apiType === "Cassandra") {
         const cassandraSchema = this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection
           .cassandraSchema;
         for (let i = 0, len = cassandraSchema.length; i < len; i++) {

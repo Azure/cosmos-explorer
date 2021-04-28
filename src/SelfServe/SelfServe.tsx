@@ -41,13 +41,15 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
   switch (selfServeType) {
     case SelfServeType.example: {
       const SelfServeExample = await import(/* webpackChunkName: "SelfServeExample" */ "./Example/SelfServeExample");
-      await loadTranslations("SelfServeExample");
-      return new SelfServeExample.default().toSelfServeDescriptor();
+      const selfServeExample = new SelfServeExample.default();
+      await loadTranslations(selfServeExample.constructor.name);
+      return selfServeExample.toSelfServeDescriptor();
     }
     case SelfServeType.sqlx: {
       const SqlX = await import(/* webpackChunkName: "SqlX" */ "./SqlX/SqlX");
-      await loadTranslations("SqlX");
-      return new SqlX.default().toSelfServeDescriptor();
+      const sqlX = new SqlX.default();
+      await loadTranslations(sqlX.constructor.name);
+      return sqlX.toSelfServeDescriptor();
     }
     default:
       return undefined;
@@ -109,6 +111,16 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
     subscriptionId: inputs.subscriptionId,
   });
 
+  if (i18n.isInitialized) {
+    await displaySelfServeComponent(selfServeType);
+  } else {
+    i18n.on("initialized", async () => {
+      await displaySelfServeComponent(selfServeType);
+    });
+  }
+};
+
+const displaySelfServeComponent = async (selfServeType: SelfServeType): Promise<void> => {
   const descriptor = await getDescriptor(selfServeType);
   ReactDOM.render(renderComponent(descriptor), document.getElementById("selfServeContent"));
 };
