@@ -5,7 +5,6 @@ src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
 src/Bindings/ReactBindingHandler.ts
-src/Common/ArrayHashMap.ts
 src/Common/Constants.ts
 src/Common/CosmosClient.test.ts
 src/Common/CosmosClient.ts
@@ -13,15 +12,12 @@ src/Common/DataAccessUtilityBase.test.ts
 src/Common/DataAccessUtilityBase.ts
 src/Common/EditableUtility.ts
 src/Common/HashMap.test.ts
-src/Common/HashMap.ts
 src/Common/Logger.test.ts
 src/Common/MessageHandler.test.ts
 src/Common/MessageHandler.ts
 src/Common/MongoProxyClient.test.ts
 src/Common/MongoUtility.ts
 src/Common/NotificationsClientBase.ts
-src/Common/ObjectCache.test.ts
-src/Common/ObjectCache.ts
 src/Common/QueriesClient.ts
 src/Common/Splitter.ts
 src/Config.ts
@@ -125,7 +121,7 @@ src/Explorer/Panes/GraphStylingPane.ts
 # src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
-src/Explorer/Panes/StringInputPane.ts
+src/Explorer/Panes/SetupNotebooksPane.ts
 src/Explorer/Panes/SwitchDirectoryPane.ts
 src/Explorer/Panes/Tables/EditTableEntityPane.ts
 src/Explorer/Panes/Tables/EntityPropertyViewModel.ts

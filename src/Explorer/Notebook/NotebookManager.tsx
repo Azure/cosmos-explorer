@@ -2,7 +2,7 @@
  * Contains all notebook related stuff meant to be dynamically loaded by explorer
  */
 
-import type { ImmutableNotebook } from "@nteract/commutable";
+import { ImmutableNotebook } from "@nteract/commutable";
 import type { IContentProvider } from "@nteract/core";
 import ko from "knockout";
 import React from "react";
@@ -22,7 +22,7 @@ import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
-import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
+import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { NotebookContainerClient } from "./NotebookContainerClient";
@@ -53,7 +53,6 @@ export default class NotebookManager {
   private gitHubClient: GitHubClient;
 
   public gitHubReposPane: ContextualPaneBase;
-  public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
@@ -91,8 +90,6 @@ export default class NotebookManager {
       this.notebookContentProvider
     );
 
-    this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
-
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
       this.gitHubClient.setToken(token?.access_token);
 
@@ -123,7 +120,20 @@ export default class NotebookManager {
     content: NotebookPaneContent,
     parentDomElement: HTMLElement
   ): Promise<void> {
-    await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement);
+    const explorer = this.params.container;
+    explorer.openSidePanel(
+      "New Collection",
+      <PublishNotebookPane
+        explorer={this.params.container}
+        junoClient={this.junoClient}
+        closePanel={this.params.container.closeSidePanel}
+        openNotificationConsole={this.params.container.expandConsole}
+        name={name}
+        author={getFullName()}
+        notebookContent={content}
+        parentDomElement={parentDomElement}
+      />
+    );
   }
 
   public openCopyNotebookPane(name: string, content: string): void {
