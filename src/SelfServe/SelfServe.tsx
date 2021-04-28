@@ -87,7 +87,7 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
   }
 
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const selfServeTypeText = inputs.selfServeType || urlSearchParams.get("selfServeType");
+  const selfServeTypeText = urlSearchParams.get("selfServeType") || inputs.selfServeType;
   const selfServeType = SelfServeType[selfServeTypeText?.toLowerCase() as keyof typeof SelfServeType];
   if (
     !inputs.subscriptionId ||
