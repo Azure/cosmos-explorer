@@ -70,7 +70,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createEnableNotebooksButton(container));
     }
 
-    if (container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
@@ -97,7 +97,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     }
 
     const isSupportedOpenQueryApi =
-      userContext.apiType === "SQL" || container.isPreferredApiMongoDB() || userContext.apiType === "Gremlin";
+      userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Gremlin";
     const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
@@ -133,7 +133,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
 export function createContextCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  if (!container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()) {
+  if (!container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
     const label = "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
@@ -145,7 +145,7 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB(),
+      disabled: container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
     };
     buttons.push(newMongoShellBtn);
   }
