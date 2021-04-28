@@ -84,21 +84,26 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     }
   }
 
-  componentDidUpdate() {
+  async componentDidUpdate() {
     // Take a snapshot if there's a pending request and all the outputs are also saved
     if (
-      this.props.pendingSnapshotRequest?.type === "notebook" &&
+      this.props.pendingSnapshotRequest &&
+      this.props.pendingSnapshotRequest.type === "notebook" &&
       (!this.props.notebookSnapshot ||
         this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
       this.props.cellOutputSnapshots.size === this.props.nbCodeCells
     ) {
-      NotebookUtil.takeScreenshot(
-        this.notebookRendererRef.current,
-        this.props.pendingSnapshotRequest.aspectRatio,
-        [...this.props.cellOutputSnapshots.values()],
-        (imageSrc) => this.props.storeNotebookSnapshot(imageSrc, this.props.pendingSnapshotRequest.requestId),
-        (error) => this.props.notebookSnapshotError(error.message)
-      );
+      console.log('About to take whole notebook snapshot');
+      try {
+        const result = await NotebookUtil.takeScreenshot(
+          this.notebookRendererRef.current,
+          this.props.pendingSnapshotRequest.aspectRatio,
+          [...this.props.cellOutputSnapshots.values()]
+        );
+        this.props.storeNotebookSnapshot(result.imageSrc, this.props.pendingSnapshotRequest.requestId);
+      } catch (error) {
+        this.props.notebookSnapshotError(error.message);
+      }
     }
   }
 
@@ -186,8 +191,10 @@ export const makeMapStateToProps = (
     let nbCodeCells;
     if (model && model.type === "notebook") {
       const { cellMap } = model.notebook;
-      nbCodeCells = [...cellMap.values()].reduce((accumulator, currentValue) =>
-        accumulator + (currentValue.cell_type === "code" ? 1 : 0), 0);
+      nbCodeCells = [...cellMap.values()].reduce(
+        (accumulator, currentValue) => accumulator + (currentValue.cell_type === "code" ? 1 : 0),
+        0
+      );
     }
     const { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot } = state.cdb;
     return { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot, nbCodeCells };

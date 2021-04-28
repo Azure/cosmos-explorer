@@ -1,4 +1,5 @@
 import { ImmutableCodeCell, ImmutableNotebook } from "@nteract/commutable";
+import domtoimage from "dom-to-image";
 import Html2Canvas from "html2canvas";
 import path from "path";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
@@ -161,22 +162,28 @@ export class NotebookUtil {
     throw new Error("Output does not exist for any of the cells.");
   }
 
-  public static takeScreenshot = (
+  /**
+   * @deprecated
+   * Use takeScreenshot instead
+   * */
+  public static takeScreenshotHtml2Canvas = (
     target: HTMLElement,
     aspectRatio: number,
     subSnaphosts: SnapshotFragment[],
-    onSuccess: (imageSrc: string, image: HTMLImageElement) => void,
-    onError: (error: Error) => void,
     downloadFile?: boolean
-  ): void => {
-    target.scrollIntoView();
-    Html2Canvas(target, {
-      useCORS: true,
-      allowTaint: true,
-      scale: 1,
-      logging: true,
-    })
-      .then((canvas) => {
+  ): Promise<{ image: HTMLImageElement }> => {
+    console.log("Taking snapshot");
+    return new Promise(async (resolve, reject) => {
+      try {
+        // target.scrollIntoView();
+        const canvas = await Html2Canvas(target, {
+          useCORS: true,
+          allowTaint: true,
+          scale: 1,
+          logging: true,
+        });
+
+        console.log("snapshotted!");
         //redraw canvas to fit aspect ratio
         const originalImageData = canvas.toDataURL();
         const width = parseInt(canvas.style.width.split("px")[0]);
@@ -186,7 +193,7 @@ export class NotebookUtil {
 
         if (originalImageData === "data:,") {
           // Empty output
-          onSuccess(undefined, undefined);
+          resolve({ image: undefined });
           return;
         }
 
@@ -195,6 +202,10 @@ export class NotebookUtil {
         image.src = originalImageData;
         console.log(canvas);
         image.onload = () => {
+          if (!context) {
+            reject(new Error("No context to draw on"));
+            return;
+          }
           context.drawImage(image, 0, 0);
 
           // draw sub images
@@ -211,16 +222,77 @@ export class NotebookUtil {
             });
           }
 
-          onSuccess(canvas.toDataURL(), image);
+          resolve({ image });
 
           if (downloadFile) {
             const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
             window.location.href = image2; // it will save locally
           }
         };
-      })
-      .catch((error) => {
-        onError(error);
-      });
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    });
+  };
+
+  public static takeScreenshot = (
+    target: HTMLElement,
+    aspectRatio: number,
+    subSnaphosts: SnapshotFragment[],
+    downloadFile?: boolean
+  ): Promise<{ imageSrc: string }> => {
+    console.log("Taking snapshot");
+    return new Promise(async (resolve, reject) => {
+      // target.scrollIntoView();
+      try {
+        const filter = (node: HTMLElement): boolean => {
+          const excludedList = ["IMG", "CANVAS"];
+          return !excludedList.includes(node.tagName);
+        };
+
+        const originalImageData = await domtoimage.toPng(target, { filter });
+        console.log("snapshotted!");
+        if (originalImageData === "data:,") {
+          // Empty output
+          resolve({ imageSrc: undefined });
+          return;
+        }
+
+        const baseImage = new Image();
+        baseImage.src = originalImageData;
+        baseImage.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = baseImage.width;
+          canvas.height = aspectRatio !== undefined ? baseImage.width * aspectRatio : baseImage.width;
+
+          const context = canvas.getContext("2d");
+          context.drawImage(baseImage, 0, 0);
+
+          // draw sub images
+          if (subSnaphosts) {
+            const parentRect = target.getBoundingClientRect();
+            subSnaphosts.forEach((snapshot) => {
+              if (snapshot.image) {
+                context.drawImage(
+                  snapshot.image,
+                  snapshot.boundingClientRect.x - parentRect.x,
+                  snapshot.boundingClientRect.y - parentRect.y
+                );
+              }
+            });
+          }
+
+          resolve({ imageSrc: canvas.toDataURL() });
+
+          if (downloadFile) {
+            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+            window.location.href = image2; // it will save locally
+          }
+        };
+      } catch (error) {
+        console.log("Error in snapshot", error);
+        reject(error);
+      }
+    });
   };
 }

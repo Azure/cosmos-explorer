@@ -9,10 +9,16 @@ import postRobot from "post-robot";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import "../../externals/iframeResizer.contentWindow.min.js"; // Required for iFrameResizer to work
+import { SnapshotRequest } from "../Explorer/Notebook/NotebookComponent/types";
 import "../Explorer/Notebook/NotebookRenderer/base.css";
 import "../Explorer/Notebook/NotebookRenderer/default.css";
+import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { TransformMedia } from "./TransformMedia";
 
+export interface SnapshotResponse {
+  imageSrc: string;
+  requestId: string;
+}
 export interface CellOutputViewerProps {
   id: string;
   contentRef: ContentRef;
@@ -35,6 +41,7 @@ const onInit = async () => {
       const props = (event as any).data as CellOutputViewerProps;
       const outputs = (
         <div
+          id="output-container"
           data-iframe-height
           className={`nteract-cell-outputs ${props.hidden ? "hidden" : ""} ${props.expanded ? "expanded" : ""}`}
         >
@@ -60,6 +67,45 @@ const onInit = async () => {
       );
 
       ReactDOM.render(outputs, document.getElementById("cellOutput"));
+    }
+  );
+
+  postRobot.on(
+    "snapshotRequest",
+    {
+      window: window.parent,
+      domain: window.location.origin,
+    },
+    async (event): Promise<SnapshotResponse> => {
+      const topNode = document.getElementById("cellOutput");
+      if (!topNode) {
+        const errorMsg = "No top node to snapshot";
+        return Promise.reject(errorMsg);
+      }
+
+      const outputContainer = document.getElementById("output-container");
+      if (!outputContainer) {
+        const errorMsg = "Cell container not found";
+        return Promise.reject(errorMsg);
+      }
+
+      // Typescript definition for event is wrong. So read props by casting to <any>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const snapshotRequest = (event as any).data as SnapshotRequest;
+
+      console.log("snapshot request received", snapshotRequest, window.scrollY);
+
+      const result = await NotebookUtil.takeScreenshot(
+        topNode,
+        snapshotRequest.aspectRatio,
+        undefined
+      );
+      console.log("snapshot executed", result.imageSrc?.length);
+
+      return {
+        imageSrc: result.imageSrc,
+        requestId: snapshotRequest.requestId,
+      };
     }
   );
 };
