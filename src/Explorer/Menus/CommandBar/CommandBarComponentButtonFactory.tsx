@@ -134,13 +134,18 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()) {
-    const label = "Open Mongo Shell";
+    const label = container.isNotebookEnabled() ? "Open Mongo Shell" : "New Shell";
+
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+        if (container.isNotebookEnabled()) {
+          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+        } else {
+          selectedCollection && selectedCollection.onNewMongoShellClick();
+        }
       },
       commandButtonLabel: label,
       ariaLabel: label,

@@ -74,9 +74,13 @@ export class ResourceTreeContextMenuButtonFactory {
         iconSrc: HostedTerminalIcon,
         onClick: () => {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          if (container.isNotebookEnabled()) {
+            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          } else {
+            selectedCollection && selectedCollection.onNewMongoShellClick();
+          }
         },
-        label: "Open Mongo Shell",
+        label: container.isNotebookEnabled() ? "Open Mongo Shell" : "New Shell",
       });
     }
 
