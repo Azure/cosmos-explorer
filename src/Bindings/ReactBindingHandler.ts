@@ -22,13 +22,7 @@ export interface ReactAdapter {
 export class Registerer {
   public static register(): void {
     ko.bindingHandlers.react = {
-      init: (
-        element: any,
-        wrappedValueAccessor: () => any,
-        allBindings?: ko.AllBindings,
-        viewModel?: any,
-        bindingContext?: ko.BindingContext
-      ) => {
+      init: (element: any, wrappedValueAccessor: () => any) => {
         const adapter: ReactAdapter = wrappedValueAccessor();
 
         if (adapter.setElement) {

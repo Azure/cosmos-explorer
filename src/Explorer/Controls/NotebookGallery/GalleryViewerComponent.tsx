@@ -34,6 +34,7 @@ import { CodeOfConductComponent } from "./CodeOfConductComponent";
 import "./GalleryViewerComponent.less";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
 
+const CARD_WIDTH = 256;
 export interface GalleryViewerComponentProps {
   container?: Explorer;
   junoClient: JunoClient;
@@ -643,7 +644,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
     if (itemIndex === 0) {
-      this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH) || this.columnCount;
+      this.columnCount = Math.floor(visibleRect.width / CARD_WIDTH) || this.columnCount;
       this.rowCount = GalleryViewerComponent.rowsPerPage;
     }
 
