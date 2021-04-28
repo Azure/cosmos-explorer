@@ -44,7 +44,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     buttons.push(addSynapseLink);
   }
 
-  if (!container.isPreferredApiTable()) {
+  if (userContext.apiType !== "Tables") {
     newCollectionBtn.children = [createNewCollectionGroup(container)];
     const newDatabaseBtn = createNewDatabase(container);
     newCollectionBtn.children.push(newDatabaseBtn);
@@ -67,7 +67,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createEnableNotebooksButton(container));
     }
 
-    if (container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
@@ -94,7 +94,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     }
 
     const isSupportedOpenQueryApi =
-      userContext.apiType === "SQL" || container.isPreferredApiMongoDB() || userContext.apiType === "Gremlin";
+      userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Gremlin";
     const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
@@ -130,7 +130,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
 export function createContextCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  if (!container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()) {
+  if (!container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
     const label = "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
@@ -142,7 +142,7 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB(),
+      disabled: container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
     };
     buttons.push(newMongoShellBtn);
   }
@@ -442,7 +442,7 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
   return {
     iconSrc: EnableNotebooksIcon,
     iconAlt: label,
-    onCommandClick: () => container.setupNotebooksPane.openWithTitleAndDescription(label, description),
+    onCommandClick: () => container.openSetupNotebooksPanel(label, description),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: !container.isNotebooksEnabledForAccount(),
@@ -479,7 +479,7 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
-        container.setupNotebooksPane.openWithTitleAndDescription(title, description);
+        container.openSetupNotebooksPanel(title, description);
       }
     },
     commandButtonLabel: label,
@@ -505,7 +505,7 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
-        container.setupNotebooksPane.openWithTitleAndDescription(title, description);
+        container.openSetupNotebooksPanel(title, description);
       }
     },
     commandButtonLabel: label,

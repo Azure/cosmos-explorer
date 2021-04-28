@@ -73,7 +73,7 @@ export class Splitter {
     $(this.leftSide).resizable(splitterOptions);
   }
 
-  private onResizeStart: JQueryUI.ResizableEvent = (e: Event, ui: JQueryUI.ResizableUIParams) => {
+  private onResizeStart: JQueryUI.ResizableEvent = () => {
     if (this.direction === SplitterDirection.Vertical) {
       $(".ui-resizable-helper").height("100%");
     } else {
@@ -82,9 +82,7 @@ export class Splitter {
     $("iframe").css("pointer-events", "none");
   };
 
-  private onResizeStop: JQueryUI.ResizableEvent = (e: Event, ui: JQueryUI.ResizableUIParams) => {
-    $("iframe").css("pointer-events", "auto");
-  };
+  private onResizeStop: JQueryUI.ResizableEvent = () => $("iframe").css("pointer-events", "auto");
 
   public collapseLeft() {
     this.lastX = $(this.splitter).position().left;

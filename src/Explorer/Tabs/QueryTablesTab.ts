@@ -19,7 +19,7 @@ import TabsBase from "./TabsBase";
 
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
-  public static readonly component = { name: "tables-query-tab", template };
+  public readonly html = template;
   public collection: ViewModels.Collection;
   public tableEntityListViewModel = ko.observable<TableEntityListViewModel>();
   public queryViewModel = ko.observable<QueryViewModel>();
@@ -47,7 +47,7 @@ export default class QueryTablesTab extends TabsBase {
     this.tableEntityListViewModel().queryTablesTab = this;
     this.queryViewModel(new QueryViewModel(this));
     const sampleQuerySubscription = this.tableEntityListViewModel().items.subscribe(() => {
-      if (this.tableEntityListViewModel().items().length > 0 && this.container.isPreferredApiTable()) {
+      if (this.tableEntityListViewModel().items().length > 0 && userContext.apiType === "Tables") {
         this.queryViewModel().queryBuilderViewModel().setExample();
       }
       sampleQuerySubscription.dispose();
@@ -146,13 +146,12 @@ export default class QueryTablesTab extends TabsBase {
   };
 
   public onAddEntityClick = (): Q.Promise<any> => {
-    this.container.addTableEntityPane.tableViewModel = this.tableEntityListViewModel();
-    this.container.addTableEntityPane.open();
+    this.container.openAddTableEntityPanel(this, this.tableEntityListViewModel());
     return null;
   };
 
   public onEditEntityClick = (): Q.Promise<any> => {
-    this.tableCommands.editEntityCommand(this.tableEntityListViewModel());
+    this.container.openEditTableEntityPanel(this, this.tableEntityListViewModel());
     return null;
   };
 

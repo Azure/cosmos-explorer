@@ -21,7 +21,7 @@ interface UserContext {
   readonly quotaId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
-  readonly apiType?: ApiType;
+  apiType?: ApiType;
   readonly isTryCosmosDBSubscription?: boolean;
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
@@ -47,8 +47,10 @@ const userContext: UserContext = {
 };
 
 function updateUserContext(newContext: Partial<UserContext>): void {
+  if (newContext.databaseAccount) {
+    newContext.apiType = apiType(newContext.databaseAccount);
+  }
   Object.assign(userContext, newContext);
-  Object.assign(userContext, { apiType: apiType(userContext.databaseAccount) });
 }
 
 function apiType(account: DatabaseAccount | undefined): ApiType {
