@@ -430,7 +430,6 @@ exports[`Settings Pane should render Default properly 1`] = `
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isGitHubPaneEnabled": [Function],
       "isHostedDataExplorerEnabled": [Function],
-      "isLeftPaneExpanded": [Function],
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
@@ -497,7 +496,6 @@ exports[`Settings Pane should render Default properly 1`] = `
         "activeTab": [Function],
         "openedTabs": [Function],
       },
-      "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
   formError=""
@@ -1068,7 +1066,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isGitHubPaneEnabled": [Function],
       "isHostedDataExplorerEnabled": [Function],
-      "isLeftPaneExpanded": [Function],
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
@@ -1135,7 +1132,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
         "activeTab": [Function],
         "openedTabs": [Function],
       },
-      "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
   formError=""

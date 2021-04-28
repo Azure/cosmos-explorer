@@ -14,10 +14,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
   isLeftPaneExpanded,
 }: ResourceTreeProps): JSX.Element => {
   return (
-    <div
-      id="main"
-      className={isLeftPaneExpanded ? "main" : "hiddenMain"}
-    >
+    <div id="main" className={isLeftPaneExpanded ? "main" : "hiddenMain"}>
       {/* Collections Window - - Start */}
       <div id="mainslide" className="flexContainer">
         {/* Collections Window Title/Command Bar - Start */}
@@ -34,7 +31,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
                 aria-label="Refresh tree"
                 title="Refresh tree"
               >
-                <img className="refreshcol" src={refreshImg} data-bind="attr: { alt: refreshTreeTitle }" />
+                <img className="refreshcol" src={refreshImg} alt="Refresh tree" />
               </span>
               <span
                 className="padimgcolrefresh1"
