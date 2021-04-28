@@ -9,7 +9,7 @@ import { HttpHeaders, TerminalQueryParams } from "../Common/Constants";
 
 const getUrlVars = (): { [key: string]: string } => {
   const vars: { [key: string]: string } = {};
-  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value): string => {
+  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_m, key, value): string => {
     vars[key] = decodeURIComponent(value);
     return value;
   });

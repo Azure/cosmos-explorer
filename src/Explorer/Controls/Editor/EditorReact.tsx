@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as monaco from "monaco-editor";
+import { loadMonaco, monaco } from "../../LazyMonaco";
 
 export interface EditorReactProps {
   language: string;
@@ -61,7 +61,7 @@ export class EditorReact extends React.Component<EditorReactProps> {
   /**
    * Create the monaco editor and attach to DOM
    */
-  private createEditor(createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
+  private async createEditor(createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
     const options: monaco.editor.IEditorConstructionOptions = {
       value: this.props.content,
       language: this.props.language,
@@ -74,6 +74,7 @@ export class EditorReact extends React.Component<EditorReactProps> {
     };
 
     this.rootNode.innerHTML = "";
+    const monaco = await loadMonaco();
     createCallback(monaco.editor.create(this.rootNode, options));
   }
 

@@ -19,7 +19,7 @@ import TabsBase from "./TabsBase";
 
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
-  public static readonly component = { name: "tables-query-tab", template };
+  public readonly html = template;
   public collection: ViewModels.Collection;
   public tableEntityListViewModel = ko.observable<TableEntityListViewModel>();
   public queryViewModel = ko.observable<QueryViewModel>();
@@ -151,7 +151,7 @@ export default class QueryTablesTab extends TabsBase {
   };
 
   public onEditEntityClick = (): Q.Promise<any> => {
-    this.tableCommands.editEntityCommand(this.tableEntityListViewModel());
+    this.container.openEditTableEntityPanel(this, this.tableEntityListViewModel());
     return null;
   };
 

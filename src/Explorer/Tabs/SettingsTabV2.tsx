@@ -1,18 +1,17 @@
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import TabsBase from "./TabsBase";
-import { SettingsComponentAdapter } from "../Controls/Settings/SettingsComponentAdapter";
-import { SettingsComponentProps } from "../Controls/Settings/SettingsComponent";
-import { traceFailure } from "../../Shared/Telemetry/TelemetryProcessor";
 import ko from "knockout";
 import * as Constants from "../../Common/Constants";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import template from "./SettingsTabV2.html";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { Action } from "../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure } from "../../Shared/Telemetry/TelemetryProcessor";
+import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import { SettingsComponentProps } from "../Controls/Settings/SettingsComponent";
+import { SettingsComponentAdapter } from "../Controls/Settings/SettingsComponentAdapter";
+import TabsBase from "./TabsBase";
 
 export class SettingsTabV2 extends TabsBase {
-  public static readonly component = { name: "collection-settings-tab-v2", template };
+  public readonly html = '<div style="height: 100%" data-bind="react:settingsComponentAdapter"></div>';
   public settingsComponentAdapter: SettingsComponentAdapter;
 
   constructor(options: ViewModels.TabOptions) {
@@ -89,7 +88,6 @@ export class CollectionSettingsTabV2 extends SettingsTabV2 {
 }
 
 export class DatabaseSettingsTabV2 extends SettingsTabV2 {
-  public static readonly component = { name: "database-settings-tab-v2", template };
   private notificationRead: ko.Observable<boolean>;
   private notification: DataModels.Notification;
 

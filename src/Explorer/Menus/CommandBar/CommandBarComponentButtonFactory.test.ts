@@ -23,7 +23,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
@@ -67,7 +66,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
@@ -128,6 +126,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
+      mockExplorer.addDatabaseText = ko.observable("mockText");
       mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
@@ -143,16 +142,25 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
+    afterAll(() => {
+      updateUserContext({
+        apiType: "SQL",
+      });
+    });
+
     beforeEach(() => {
-      mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => true);
+      updateUserContext({
+        apiType: "Mongo",
+      });
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
     });
 
     it("Mongo Api not available - button should be hidden", () => {
-      mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
-
+      updateUserContext({
+        apiType: "SQL",
+      });
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeUndefined();
@@ -222,7 +230,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);
 
@@ -321,7 +328,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
 
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isSparkEnabled = ko.observable(true);

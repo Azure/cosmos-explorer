@@ -4,7 +4,6 @@
 
 import * as Q from "q";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
-import { HashMap } from "../../../Common/HashMap";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import { GremlinSimpleClient, Result } from "./GremlinSimpleClient";
 
@@ -30,7 +29,7 @@ interface PendingResultData {
 
 export class GremlinClient {
   public client: GremlinSimpleClient;
-  public pendingResults: HashMap<PendingResultData>; // public for testing purposes
+  public pendingResults: Map<string, PendingResultData>; // public for testing purposes
   private maxResultSize: number;
   private static readonly PENDING_REQUEST_TIMEOUT_MS = 6 /* minutes */ * 60 /* seconds */ * 1000 /* ms */;
   private static readonly TIMEOUT_ERROR_MSG = `Pending request timed out (${GremlinClient.PENDING_REQUEST_TIMEOUT_MS} ms)`;
@@ -38,7 +37,7 @@ export class GremlinClient {
 
   public initialize(params: GremlinClientParameters) {
     this.destroy();
-    this.pendingResults = new HashMap();
+    this.pendingResults = new Map();
     this.maxResultSize = params.maxResultSize;
 
     this.client = new GremlinSimpleClient({
@@ -68,9 +67,9 @@ export class GremlinClient {
 
           // Fail all pending requests if no request id (fatal)
           if (!requestId) {
-            this.pendingResults.keys().forEach((reqId: string) => {
+            for (const reqId of this.pendingResults.keys()) {
               this.abortPendingRequest(reqId, errorMessage, null);
-            });
+            }
           }
         } else {
           this.abortPendingRequest(requestId, errorMessage, result.requestCharge);
