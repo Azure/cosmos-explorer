@@ -140,7 +140,7 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        container.openNotebookTerminal(ViewModels.TerminalKind.Mongo, selectedCollection)
+        container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       },
       commandButtonLabel: label,
       ariaLabel: label,
