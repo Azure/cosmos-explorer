@@ -6,13 +6,17 @@ export interface HostedExplorerChildFrame extends Window {
   hostedConfig: HostedConfig;
 }
 
-export interface AAD {
+interface AADTokenAuth {
+  aadToken: string;
+}
+
+export interface AAD extends AADTokenAuth {
   authType: AuthType.AAD;
   databaseAccount: DatabaseAccount;
   authorizationToken: string;
 }
 
-export interface ConnectionString {
+export interface ConnectionString extends AADTokenAuth {
   authType: AuthType.ConnectionString;
   // Connection string uses still use encrypted token for Cassandra/Mongo APIs as they us the portal backend proxy
   encryptedToken: string;
@@ -21,13 +25,13 @@ export interface ConnectionString {
   masterKey?: string;
 }
 
-export interface EncryptedToken {
+export interface EncryptedToken extends AADTokenAuth {
   authType: AuthType.EncryptedToken;
   encryptedToken: string;
   encryptedTokenMetadata: AccessInputMetadata;
 }
 
-export interface ResourceToken {
+export interface ResourceToken extends AADTokenAuth {
   authType: AuthType.ResourceToken;
   resourceToken: string;
 }

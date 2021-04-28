@@ -1,11 +1,11 @@
-import "@jupyterlab/terminal/style/index.css";
-import "./index.css";
 import { ServerConnection } from "@jupyterlab/services";
-import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
+import "@jupyterlab/terminal/style/index.css";
+import { HttpHeaders, TerminalQueryParams } from "../Common/Constants";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../UserContext";
-import { HttpHeaders, TerminalQueryParams } from "../Common/Constants";
+import "./index.css";
+import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
 
 const getUrlVars = (): { [key: string]: string } => {
   const vars: { [key: string]: string } = {};
@@ -50,7 +50,7 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
 const main = async (): Promise<void> => {
   const urlVars = getUrlVars();
 
-  // Initialize userContext. Currently only subscrptionId is required by TelemetryProcessor
+  // Initialize userContext. Currently only subscriptionId is required by TelemetryProcessor
   updateUserContext({
     subscriptionId: urlVars[TerminalQueryParams.SubscriptionId],
   });

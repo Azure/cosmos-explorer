@@ -1,7 +1,6 @@
 import { useBoolean } from "@uifabric/react-hooks";
 import { Account, Configuration, UserAgentApplication } from "msal";
 import * as React from "react";
-import { updateUserContext } from "../UserContext";
 
 const config: Configuration = {
   cache: {
@@ -26,6 +25,7 @@ interface ReturnType {
   isLoggedIn: boolean;
   graphToken: string;
   armToken: string;
+  aadToken: string;
   login: () => void;
   logout: () => void;
   tenantId: string;
@@ -41,6 +41,7 @@ export function useAADAuth(): ReturnType {
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
+  const [aadToken, setAadToken] = React.useState<string>();
 
   const login = React.useCallback(async () => {
     const response = await msal.loginPopup();
@@ -82,9 +83,15 @@ export function useAADAuth(): ReturnType {
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"],
         }),
-      ]).then(([graphTokenResponse, armTokenResponse]) => {
+        msal.acquireTokenSilent({
+          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
+          forceRefresh: true,
+          scopes: ['https://cosmos.azure.com//.default'],
+        })
+      ]).then(([graphTokenResponse, armTokenResponse, aadTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);
         setArmToken(armTokenResponse.accessToken);
+        setAadToken(aadTokenResponse.accessToken)
       });
     }
   }, [account, tenantId]);
@@ -95,25 +102,9 @@ export function useAADAuth(): ReturnType {
     isLoggedIn,
     graphToken,
     armToken,
+    aadToken,
     login,
     logout,
     switchTenant,
   };
-}
-
-export function fetchDatabaseAADToken(endpoint: string, tenantId: string, aadToken: string, setAADToken: React.Dispatch<React.SetStateAction<string>>) {
-
-  msal.acquireTokenSilent({
-    // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-    forceRefresh: true,
-    authority: `https://login.microsoftonline.com/${tenantId}`,
-    scopes: [`${endpoint}/.default`],
-  }).then(({ accessToken }) => {
-    setAADToken(accessToken)
-    console.log({ accessToken })
-    updateUserContext({ endpoint, aadToken: accessToken })
-  })
-
-  console.log({ aadToken })
-  return aadToken;
 }

@@ -7,7 +7,6 @@ import * as React from "react";
 import { FunctionComponent, useEffect, useState } from "react";
 import { StyleConstants } from "../../../Common/Constants";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { fetchDatabaseAADToken } from "../../../hooks/useAADAuth";
 import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { SwitchAccount } from "./SwitchAccount";
@@ -82,13 +81,6 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
       setDatabaseAccount(selectedAccount);
     }
   }, [selectedAccount]);
-
-  useEffect(() => {
-    if (selectedAccount) {
-      const endpoint = selectedAccount.properties.documentEndpoint
-      fetchDatabaseAADToken(endpoint, tenantId, aadToken, setAADToken)
-    }
-  }, [selectedAccount])
 
   const buttonText = selectedAccount?.name || "Select a Database Account";
 
