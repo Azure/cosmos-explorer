@@ -152,7 +152,7 @@ export function traceMark(
 function decorateData(data: TelemetryData = {}, actionModifier?: string) {
   return {
     databaseAccountName: userContext.databaseAccount?.name,
-    defaultExperience: userContext.defaultExperience,
+    defaultExperience: userContext.apiType,
     authType: userContext.authType,
     subscriptionId: userContext.subscriptionId,
     platform: configContext.platform,

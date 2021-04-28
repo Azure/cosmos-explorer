@@ -25,12 +25,11 @@ import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProvi
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
-import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -113,12 +112,6 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
-   * */
-  public isPreferredApiMongoDB: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   /**
    * @deprecated
@@ -373,15 +366,6 @@ export default class Explorer {
       bounds: splitterBounds,
       direction: SplitterDirection.Vertical,
     });
-    this.databaseAccount.subscribe((databaseAccount) => {
-      const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-        databaseAccount
-      );
-      // TODO. Remove this entirely
-      updateUserContext({
-        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-      });
-    });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
@@ -402,27 +386,6 @@ export default class Explorer {
           (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
-
-    this.isPreferredApiMongoDB = ko.computed(() => {
-      const defaultExperience = userContext.apiType || "";
-      if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.MongoDB.toLowerCase()) {
-        return true;
-      }
-
-      if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.ApiForMongoDB.toLowerCase()) {
-        return true;
-      }
-
-      if (
-        this.databaseAccount &&
-        this.databaseAccount() &&
-        this.databaseAccount().kind.toLowerCase() === Constants.AccountKind.MongoDB
-      ) {
-        return true;
-      }
-
-      return false;
-    });
 
     this.isEnableMongoCapabilityPresent = ko.computed(() => {
       const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
@@ -2082,7 +2045,7 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
+    let collectionName = PricingUtils.getCollectionName(userContext.apiType);
     this.openSidePanel(
       "Delete " + collectionName,
       <DeleteCollectionConfirmationPane

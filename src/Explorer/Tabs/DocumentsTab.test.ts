@@ -26,7 +26,6 @@ describe("Documents tab", () => {
 
   describe("showPartitionKey", () => {
     const explorer = new Explorer();
-
     const mongoExplorer = new Explorer();
     updateUserContext({
       databaseAccount: {
@@ -131,6 +130,9 @@ describe("Documents tab", () => {
     });
 
     it("should be false for Mongo accounts with system partitionKey", () => {
+      updateUserContext({
+        apiType: "Mongo",
+      });
       const documentsTab = new DocumentsTab({
         collection: mongoCollectionWithSystemPartitionKey,
         partitionKey: null,

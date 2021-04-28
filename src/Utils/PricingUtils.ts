@@ -1,4 +1,3 @@
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 import * as Constants from "../Shared/Constants";
 import { userContext } from "../UserContext";
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
@@ -285,14 +284,14 @@ export function getUpsellMessage(
 
 export function getCollectionName(defaultExperience: string): string {
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       return "container";
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return "collection";
-    case DefaultAccountExperienceType.Table:
-    case DefaultAccountExperienceType.Cassandra:
+    case "Tables":
+    case "Cassandra":
       return "table";
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return "graph";
     default:
       throw Error("unknown API type");

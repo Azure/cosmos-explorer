@@ -403,7 +403,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       },
       "databaseAccount": [Function],
       "databases": [Function],
-      "defaultExperience": [Function],
       "deleteCollectionText": [Function],
       "deleteDatabaseText": [Function],
       "graphStylingPane": GraphStylingPane {
@@ -437,7 +436,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
-      "isPreferredApiMongoDB": [Function],
       "isPublishNotebookPaneEnabled": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isRightPanelV2Enabled": [Function],
@@ -918,7 +916,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         },
         "databaseAccount": [Function],
         "databases": [Function],
-        "defaultExperience": [Function],
         "deleteCollectionText": [Function],
         "deleteDatabaseText": [Function],
         "graphStylingPane": GraphStylingPane {
@@ -952,7 +949,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         "isMongoIndexingEnabled": [Function],
         "isNotebookEnabled": [Function],
         "isNotebooksEnabledForAccount": [Function],
-        "isPreferredApiMongoDB": [Function],
         "isPublishNotebookPaneEnabled": [Function],
         "isResourceTokenCollectionNodeSelected": [Function],
         "isRightPanelV2Enabled": [Function],
