@@ -179,9 +179,6 @@ const App: React.FunctionComponent = () => {
       <KOCommentIfStart if="isGitHubPaneEnabled" />
       <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
       <KOCommentEnd />
-      <KOCommentIfStart if="isPublishNotebookPaneEnabled" />
-      <div data-bind="react: publishNotebookPaneAdapter" />
-      <KOCommentEnd />
       {showDialog && <Dialog {...dialogProps} />}
     </div>
   );
