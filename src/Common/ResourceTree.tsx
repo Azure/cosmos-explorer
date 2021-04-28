@@ -4,7 +4,6 @@ import refreshImg from "../../images/refresh-cosmos.svg";
 import { AuthType } from "../AuthType";
 import { userContext } from "../UserContext";
 
-
 export interface ResourceTreeProps {
   toggleLeftPaneExpanded: () => void;
   isLeftPaneExpanded: boolean;
@@ -12,13 +11,12 @@ export interface ResourceTreeProps {
 
 export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
   toggleLeftPaneExpanded,
-  isLeftPaneExpanded
+  isLeftPaneExpanded,
 }: ResourceTreeProps): JSX.Element => {
   return (
     <div
       id="main"
       className={isLeftPaneExpanded ? "main" : "hiddenMain"}
-    // data-bind="visible: isLeftPaneExpanded()"
     >
       {/* Collections Window - - Start */}
       <div id="mainslide" className="flexContainer">
@@ -43,7 +41,6 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
                 id="expandToggleLeftPaneButton"
                 role="button"
                 onClick={toggleLeftPaneExpanded}
-                // data-bind="click: toggleLeftPaneExpanded, event: { keypress: toggleLeftPaneExpandedKeyPress }"
                 tabIndex={0}
                 aria-label="Collapse Tree"
                 title="Collapse Tree"
@@ -60,5 +57,6 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
         )}
       </div>
       {/*  Collections Window - End */}
-    </div>);
+    </div>
+  );
 };

@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 
-
 export interface CollapsedResourceTreeProps {
   toggleLeftPaneExpanded: () => void;
   isLeftPaneExpanded: boolean;
@@ -9,15 +8,15 @@ export interface CollapsedResourceTreeProps {
 
 export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps> = ({
   toggleLeftPaneExpanded,
-  isLeftPaneExpanded
+  isLeftPaneExpanded,
 }: CollapsedResourceTreeProps): JSX.Element => {
   return (
     <div
       id="mini"
       // className="mini toggle-mini"
       className={!isLeftPaneExpanded ? "mini toggle-mini" : "hiddenMain"}
-    // data-bind="visible: !isLeftPaneExpanded()
-    //     attr: { style: { width: collapsedResourceTreeWidth }}"
+      // data-bind="visible: !isLeftPaneExpanded()
+      //     attr: { style: { width: collapsedResourceTreeWidth }}"
     >
       <div className="main-nav nav">
         <ul className="nav">
@@ -40,14 +39,12 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
               className="collectionCollapsed"
               // data-bind="click: toggleLeftPaneExpanded"
               onClick={toggleLeftPaneExpanded}
-
             >
-              <span
-                data-bind="text: collectionTitle"
-              />
+              <span data-bind="text: collectionTitle" />
             </span>
           </li>
         </ul>
       </div>
     </div>
+  );
 };

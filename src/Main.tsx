@@ -1,6 +1,4 @@
 // CSS Dependencies
-//@ts-nocheck
-
 import "bootstrap/dist/css/bootstrap.css";
 import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React, { useState } from "react";
@@ -28,7 +26,9 @@ import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
 import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
+import { ExplorerMetrics } from "./Common/Constants";
 import { ResourceTree } from "./Common/ResourceTree";
+import { Splitter, SplitterBounds, SplitterDirection } from "./Common/Splitter";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
@@ -58,7 +58,6 @@ import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 
-
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
@@ -66,7 +65,7 @@ const App: React.FunctionComponent = () => {
   const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
-  const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(false)
+  const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
 
   const [dialogProps, setDialogProps] = useState<DialogProps>();
   const [showDialog, setShowDialog] = useState<boolean>(false);
@@ -96,6 +95,18 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
+  const splitterBounds: SplitterBounds = {
+    min: ExplorerMetrics.SplitterMinWidth,
+    max: ExplorerMetrics.SplitterMaxWidth,
+  };
+
+  const splitter = new Splitter({
+    splitterId: "h_splitter1",
+    leftId: "resourcetree",
+    bounds: splitterBounds,
+    direction: SplitterDirection.Vertical,
+  });
+
   const toggleLeftPaneExpanded = () => {
     setIsLeftPaneExpanded(!isLeftPaneExpanded);
     if (isLeftPaneExpanded) {
@@ -105,8 +116,7 @@ const App: React.FunctionComponent = () => {
       document.getElementById("collapseToggleLeftPaneButton").focus();
       splitter.collapseLeft();
     }
-  }
-
+  };
 
   if (!explorer) {
     return <LoadingExplorer />;
@@ -123,10 +133,7 @@ const App: React.FunctionComponent = () => {
           <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
             <div className="collectionsTreeWithSplitter">
               {/* Collections Tree Expanded - Start */}
-              <ResourceTree
-                toggleLeftPaneExpanded={toggleLeftPaneExpanded}
-                isLeftPaneExpanded={isLeftPaneExpanded}
-              />
+              <ResourceTree toggleLeftPaneExpanded={toggleLeftPaneExpanded} isLeftPaneExpanded={isLeftPaneExpanded} />
               {/* Collections Tree Expanded - End */}
               {/* Collections Tree Collapsed - Start */}
               <CollapsedResourceTree
