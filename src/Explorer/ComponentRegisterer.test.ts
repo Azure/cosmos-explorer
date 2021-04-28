@@ -28,10 +28,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("graph-styling-pane")).toBe(true);
   });
 
-  it("should register string-input-pane component", () => {
-    expect(ko.components.isRegistered("string-input-pane")).toBe(true);
-  });
-
   it("should register dynamic-list component", () => {
     expect(ko.components.isRegistered("dynamic-list")).toBe(true);
   });

@@ -199,9 +199,7 @@ exports[`SettingsComponent renders 1`] = `
                     "keyspaceHasSharedOffer": [Function],
                     "keyspaceId": [Function],
                     "keyspaceIds": [Function],
-                    "keyspaceOffers": HashMap {
-                      "container": Object {},
-                    },
+                    "keyspaceOffers": Map {},
                     "keyspaceThroughput": [Function],
                     "maxThroughputRU": [Function],
                     "minThroughputRU": [Function],
@@ -222,20 +220,6 @@ exports[`SettingsComponent renders 1`] = `
                     "throughputSpendAckVisible": [Function],
                     "title": [Function],
                     "userTableQuery": [Function],
-                    "visible": [Function],
-                  },
-                  StringInputPane {
-                    "container": [Circular],
-                    "firstFieldHasFocus": [Function],
-                    "formErrors": [Function],
-                    "formErrorsDetails": [Function],
-                    "id": "stringinputpane",
-                    "inputLabel": [Function],
-                    "isExecuting": [Function],
-                    "isTemplateReady": [Function],
-                    "stringInput": [Function],
-                    "submitButtonLabel": [Function],
-                    "title": [Function],
                     "visible": [Function],
                   },
                 ],
@@ -392,9 +376,7 @@ exports[`SettingsComponent renders 1`] = `
                   "keyspaceHasSharedOffer": [Function],
                   "keyspaceId": [Function],
                   "keyspaceIds": [Function],
-                  "keyspaceOffers": HashMap {
-                    "container": Object {},
-                  },
+                  "keyspaceOffers": Map {},
                   "keyspaceThroughput": [Function],
                   "maxThroughputRU": [Function],
                   "minThroughputRU": [Function],
@@ -507,21 +489,9 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
-                  "databaseCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsDatabaseIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
+                  "databaseCollectionIdMap": Map {},
+                  "koSubsCollectionIdMap": Map {},
+                  "koSubsDatabaseIdMap": Map {},
                   "parameters": [Function],
                 },
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
@@ -546,20 +516,6 @@ exports[`SettingsComponent renders 1`] = `
                   "onResizeStart": [Function],
                   "onResizeStop": [Function],
                   "splitterId": "h_splitter1",
-                },
-                "stringInputPane": StringInputPane {
-                  "container": [Circular],
-                  "firstFieldHasFocus": [Function],
-                  "formErrors": [Function],
-                  "formErrorsDetails": [Function],
-                  "id": "stringinputpane",
-                  "inputLabel": [Function],
-                  "isExecuting": [Function],
-                  "isTemplateReady": [Function],
-                  "stringInput": [Function],
-                  "submitButtonLabel": [Function],
-                  "title": [Function],
-                  "visible": [Function],
                 },
                 "tabsManager": TabsManager {
                   "activeTab": [Function],
@@ -758,9 +714,7 @@ exports[`SettingsComponent renders 1`] = `
                   "keyspaceHasSharedOffer": [Function],
                   "keyspaceId": [Function],
                   "keyspaceIds": [Function],
-                  "keyspaceOffers": HashMap {
-                    "container": Object {},
-                  },
+                  "keyspaceOffers": Map {},
                   "keyspaceThroughput": [Function],
                   "maxThroughputRU": [Function],
                   "minThroughputRU": [Function],
@@ -781,20 +735,6 @@ exports[`SettingsComponent renders 1`] = `
                   "throughputSpendAckVisible": [Function],
                   "title": [Function],
                   "userTableQuery": [Function],
-                  "visible": [Function],
-                },
-                StringInputPane {
-                  "container": [Circular],
-                  "firstFieldHasFocus": [Function],
-                  "formErrors": [Function],
-                  "formErrorsDetails": [Function],
-                  "id": "stringinputpane",
-                  "inputLabel": [Function],
-                  "isExecuting": [Function],
-                  "isTemplateReady": [Function],
-                  "stringInput": [Function],
-                  "submitButtonLabel": [Function],
-                  "title": [Function],
                   "visible": [Function],
                 },
               ],
@@ -951,9 +891,7 @@ exports[`SettingsComponent renders 1`] = `
                 "keyspaceHasSharedOffer": [Function],
                 "keyspaceId": [Function],
                 "keyspaceIds": [Function],
-                "keyspaceOffers": HashMap {
-                  "container": Object {},
-                },
+                "keyspaceOffers": Map {},
                 "keyspaceThroughput": [Function],
                 "maxThroughputRU": [Function],
                 "minThroughputRU": [Function],
@@ -1066,21 +1004,9 @@ exports[`SettingsComponent renders 1`] = `
               "resourceTree": ResourceTreeAdapter {
                 "container": [Circular],
                 "copyNotebook": [Function],
-                "databaseCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsDatabaseIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
+                "databaseCollectionIdMap": Map {},
+                "koSubsCollectionIdMap": Map {},
+                "koSubsDatabaseIdMap": Map {},
                 "parameters": [Function],
               },
               "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
@@ -1105,20 +1031,6 @@ exports[`SettingsComponent renders 1`] = `
                 "onResizeStart": [Function],
                 "onResizeStop": [Function],
                 "splitterId": "h_splitter1",
-              },
-              "stringInputPane": StringInputPane {
-                "container": [Circular],
-                "firstFieldHasFocus": [Function],
-                "formErrors": [Function],
-                "formErrorsDetails": [Function],
-                "id": "stringinputpane",
-                "inputLabel": [Function],
-                "isExecuting": [Function],
-                "isTemplateReady": [Function],
-                "stringInput": [Function],
-                "submitButtonLabel": [Function],
-                "title": [Function],
-                "visible": [Function],
               },
               "tabsManager": TabsManager {
                 "activeTab": [Function],
@@ -1330,9 +1242,7 @@ exports[`SettingsComponent renders 1`] = `
                     "keyspaceHasSharedOffer": [Function],
                     "keyspaceId": [Function],
                     "keyspaceIds": [Function],
-                    "keyspaceOffers": HashMap {
-                      "container": Object {},
-                    },
+                    "keyspaceOffers": Map {},
                     "keyspaceThroughput": [Function],
                     "maxThroughputRU": [Function],
                     "minThroughputRU": [Function],
@@ -1353,20 +1263,6 @@ exports[`SettingsComponent renders 1`] = `
                     "throughputSpendAckVisible": [Function],
                     "title": [Function],
                     "userTableQuery": [Function],
-                    "visible": [Function],
-                  },
-                  StringInputPane {
-                    "container": [Circular],
-                    "firstFieldHasFocus": [Function],
-                    "formErrors": [Function],
-                    "formErrorsDetails": [Function],
-                    "id": "stringinputpane",
-                    "inputLabel": [Function],
-                    "isExecuting": [Function],
-                    "isTemplateReady": [Function],
-                    "stringInput": [Function],
-                    "submitButtonLabel": [Function],
-                    "title": [Function],
                     "visible": [Function],
                   },
                 ],
@@ -1523,9 +1419,7 @@ exports[`SettingsComponent renders 1`] = `
                   "keyspaceHasSharedOffer": [Function],
                   "keyspaceId": [Function],
                   "keyspaceIds": [Function],
-                  "keyspaceOffers": HashMap {
-                    "container": Object {},
-                  },
+                  "keyspaceOffers": Map {},
                   "keyspaceThroughput": [Function],
                   "maxThroughputRU": [Function],
                   "minThroughputRU": [Function],
@@ -1638,21 +1532,9 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
-                  "databaseCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsCollectionIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
-                  "koSubsDatabaseIdMap": ArrayHashMap {
-                    "store": HashMap {
-                      "container": Object {},
-                    },
-                  },
+                  "databaseCollectionIdMap": Map {},
+                  "koSubsCollectionIdMap": Map {},
+                  "koSubsDatabaseIdMap": Map {},
                   "parameters": [Function],
                 },
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
@@ -1677,20 +1559,6 @@ exports[`SettingsComponent renders 1`] = `
                   "onResizeStart": [Function],
                   "onResizeStop": [Function],
                   "splitterId": "h_splitter1",
-                },
-                "stringInputPane": StringInputPane {
-                  "container": [Circular],
-                  "firstFieldHasFocus": [Function],
-                  "formErrors": [Function],
-                  "formErrorsDetails": [Function],
-                  "id": "stringinputpane",
-                  "inputLabel": [Function],
-                  "isExecuting": [Function],
-                  "isTemplateReady": [Function],
-                  "stringInput": [Function],
-                  "submitButtonLabel": [Function],
-                  "title": [Function],
-                  "visible": [Function],
                 },
                 "tabsManager": TabsManager {
                   "activeTab": [Function],
@@ -1889,9 +1757,7 @@ exports[`SettingsComponent renders 1`] = `
                   "keyspaceHasSharedOffer": [Function],
                   "keyspaceId": [Function],
                   "keyspaceIds": [Function],
-                  "keyspaceOffers": HashMap {
-                    "container": Object {},
-                  },
+                  "keyspaceOffers": Map {},
                   "keyspaceThroughput": [Function],
                   "maxThroughputRU": [Function],
                   "minThroughputRU": [Function],
@@ -1912,20 +1778,6 @@ exports[`SettingsComponent renders 1`] = `
                   "throughputSpendAckVisible": [Function],
                   "title": [Function],
                   "userTableQuery": [Function],
-                  "visible": [Function],
-                },
-                StringInputPane {
-                  "container": [Circular],
-                  "firstFieldHasFocus": [Function],
-                  "formErrors": [Function],
-                  "formErrorsDetails": [Function],
-                  "id": "stringinputpane",
-                  "inputLabel": [Function],
-                  "isExecuting": [Function],
-                  "isTemplateReady": [Function],
-                  "stringInput": [Function],
-                  "submitButtonLabel": [Function],
-                  "title": [Function],
                   "visible": [Function],
                 },
               ],
@@ -2082,9 +1934,7 @@ exports[`SettingsComponent renders 1`] = `
                 "keyspaceHasSharedOffer": [Function],
                 "keyspaceId": [Function],
                 "keyspaceIds": [Function],
-                "keyspaceOffers": HashMap {
-                  "container": Object {},
-                },
+                "keyspaceOffers": Map {},
                 "keyspaceThroughput": [Function],
                 "maxThroughputRU": [Function],
                 "minThroughputRU": [Function],
@@ -2197,21 +2047,9 @@ exports[`SettingsComponent renders 1`] = `
               "resourceTree": ResourceTreeAdapter {
                 "container": [Circular],
                 "copyNotebook": [Function],
-                "databaseCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsCollectionIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
-                "koSubsDatabaseIdMap": ArrayHashMap {
-                  "store": HashMap {
-                    "container": Object {},
-                  },
-                },
+                "databaseCollectionIdMap": Map {},
+                "koSubsCollectionIdMap": Map {},
+                "koSubsDatabaseIdMap": Map {},
                 "parameters": [Function],
               },
               "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
@@ -2236,20 +2074,6 @@ exports[`SettingsComponent renders 1`] = `
                 "onResizeStart": [Function],
                 "onResizeStop": [Function],
                 "splitterId": "h_splitter1",
-              },
-              "stringInputPane": StringInputPane {
-                "container": [Circular],
-                "firstFieldHasFocus": [Function],
-                "formErrors": [Function],
-                "formErrorsDetails": [Function],
-                "id": "stringinputpane",
-                "inputLabel": [Function],
-                "isExecuting": [Function],
-                "isTemplateReady": [Function],
-                "stringInput": [Function],
-                "submitButtonLabel": [Function],
-                "title": [Function],
-                "visible": [Function],
               },
               "tabsManager": TabsManager {
                 "activeTab": [Function],
