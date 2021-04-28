@@ -282,7 +282,7 @@ export function getUpsellMessage(
   }
 }
 
-export function getCollectionName(defaultExperience: string): string {
+export function getCollectionName(defaultExperience: typeof userContext.apiType): string {
   switch (defaultExperience) {
     case "SQL":
       return "container";

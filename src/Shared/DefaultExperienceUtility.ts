@@ -1,6 +1,7 @@
 import * as _ from "underscore";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
+import { userContext } from "../UserContext";
 
 export class DefaultExperienceUtility {
   public static getDefaultExperienceFromDatabaseAccount(databaseAccount: DataModels.DatabaseAccount): string | null {
@@ -15,22 +16,21 @@ export class DefaultExperienceUtility {
     return DefaultExperienceUtility._getDefaultExperience(kind, capabilities);
   }
 
-  public static getApiKindFromDefaultExperience(defaultExperience: string): DataModels.ApiKind {
+  public static getApiKindFromDefaultExperience(defaultExperience: typeof userContext.apiType): DataModels.ApiKind {
     if (!defaultExperience) {
       return DataModels.ApiKind.SQL;
     }
 
     switch (defaultExperience) {
-      case Constants.DefaultAccountExperience.DocumentDB:
+      case "SQL":
         return DataModels.ApiKind.SQL;
-      case Constants.DefaultAccountExperience.MongoDB:
-      case Constants.DefaultAccountExperience.ApiForMongoDB:
+      case "Mongo":
         return DataModels.ApiKind.MongoDB;
-      case Constants.DefaultAccountExperience.Table:
+      case "Tables":
         return DataModels.ApiKind.Table;
-      case Constants.DefaultAccountExperience.Cassandra:
+      case "Cassandra":
         return DataModels.ApiKind.Cassandra;
-      case Constants.DefaultAccountExperience.Graph:
+      case "Gremlin":
         return DataModels.ApiKind.Graph;
       default:
         return DataModels.ApiKind.SQL;

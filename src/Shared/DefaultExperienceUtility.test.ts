@@ -1,6 +1,6 @@
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
-import * as ViewModels from "../Contracts/ViewModels";
+import { userContext } from "../UserContext";
 import { DefaultExperienceUtility } from "./DefaultExperienceUtility";
 
 describe("Default Experience Utility", () => {
@@ -38,31 +38,29 @@ describe("Default Experience Utility", () => {
   });
 
   describe("getApiKindFromDefaultExperience()", () => {
-    function runScenario(defaultExperience: string, expectedApiKind: number): void {
+    function runScenario(defaultExperience: typeof userContext.apiType, expectedApiKind: number): void {
       const resolvedApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
       expect(resolvedApiKind).toEqual(expectedApiKind);
     }
 
     describe("On SQL", () => {
-      it("should return SQL", () => runScenario(Constants.DefaultAccountExperience.DocumentDB, DataModels.ApiKind.SQL));
+      it("should return SQL", () => runScenario("SQL", DataModels.ApiKind.SQL));
     });
 
     describe("On MongoDB", () => {
-      it("should return MongoDB", () =>
-        runScenario(Constants.DefaultAccountExperience.MongoDB, DataModels.ApiKind.MongoDB));
+      it("should return MongoDB", () => runScenario("Mongo", DataModels.ApiKind.MongoDB));
     });
 
     describe("On Table", () => {
-      it("should return Table", () => runScenario(Constants.DefaultAccountExperience.Table, DataModels.ApiKind.Table));
+      it("should return Table", () => runScenario("Tables", DataModels.ApiKind.Table));
     });
 
     describe("On Cassandra", () => {
-      it("should return Cassandra", () =>
-        runScenario(Constants.DefaultAccountExperience.Cassandra, DataModels.ApiKind.Cassandra));
+      it("should return Cassandra", () => runScenario("Cassandra", DataModels.ApiKind.Cassandra));
     });
 
     describe("On Graph", () => {
-      it("should return Graph", () => runScenario(Constants.DefaultAccountExperience.Graph, DataModels.ApiKind.Graph));
+      it("should return Graph", () => runScenario("Gremlin", DataModels.ApiKind.Graph));
     });
 
     describe("On null", () => {
