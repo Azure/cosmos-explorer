@@ -1,6 +1,5 @@
-import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 import * as Constants from "../Shared/Constants";
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
+import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 
 interface ComputeRUUsagePriceHourlyArgs {
   serverId: string;
@@ -282,16 +281,16 @@ export function getUpsellMessage(
   }
 }
 
-function getCollectionName(defaultExperience: string): string {
+export function getCollectionName(defaultExperience: string): string {
   switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+    case "SQL":
       return "container";
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return "collection";
-    case DefaultAccountExperienceType.Table:
-    case DefaultAccountExperienceType.Cassandra:
+    case "Tables":
+    case "Cassandra":
       return "table";
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return "graph";
     default:
       throw Error("unknown API type");

@@ -1,37 +1,31 @@
-import * as React from "react";
-import "./base.css";
-import "./default.css";
-
-import { RawCell, Cells, CodeCell, MarkdownCell } from "@nteract/stateful-components";
+import { CellId } from "@nteract/commutable";
+import { CellType } from "@nteract/commutable/src";
+import { actions, ContentRef } from "@nteract/core";
+import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
-
-import Prompt from "./Prompt";
-import { promptContent } from "./PromptContent";
-
-import { AzureTheme } from "./AzureTheme";
+import * as React from "react";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { actions, ContentRef } from "@nteract/core";
-import { CellId } from "@nteract/commutable";
-import loadTransform from "../NotebookComponent/loadTransform";
-import DraggableCell from "./decorators/draggable";
-import CellCreator from "./decorators/CellCreator";
-import KeyboardShortcuts from "./decorators/kbd-shortcuts";
-
-import CellToolbar from "./Toolbar";
-import StatusBar from "./StatusBar";
-
-import HijackScroll from "./decorators/hijack-scroll";
-import { CellType } from "@nteract/commutable/src";
-
-import "./NotebookRenderer.less";
-import HoverableCell from "./decorators/HoverableCell";
-import CellLabeler from "./decorators/CellLabeler";
+import { userContext } from "../../../UserContext";
 import * as cdbActions from "../NotebookComponent/actions";
+import loadTransform from "../NotebookComponent/loadTransform";
+import { AzureTheme } from "./AzureTheme";
+import "./base.css";
+import CellCreator from "./decorators/CellCreator";
+import CellLabeler from "./decorators/CellLabeler";
+import HoverableCell from "./decorators/HoverableCell";
+import KeyboardShortcuts from "./decorators/kbd-shortcuts";
+import "./default.css";
+import MarkdownCell from "./markdown-cell";
+import "./NotebookRenderer.less";
+import SandboxOutputs from "./outputs/SandboxOutputs";
+import Prompt from "./Prompt";
+import { promptContent } from "./PromptContent";
+import StatusBar from "./StatusBar";
+import CellToolbar from "./Toolbar";
 
 export interface NotebookRendererBaseProps {
   contentRef: any;
@@ -75,7 +69,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 
   componentDidMount() {
-    loadTransform(this.props as any);
+    if (!userContext.features.sandboxNotebookOutputs) {
+      loadTransform(this.props as any);
+    }
     this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
@@ -112,6 +108,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                               </Prompt>
                             ),
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
+                            outputs: userContext.features.sandboxNotebookOutputs
+                              ? () => <SandboxOutputs id={id} contentRef={contentRef} />
+                              : undefined,
                           }}
                         </CodeCell>
                       ),

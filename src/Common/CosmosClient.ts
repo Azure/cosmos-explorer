@@ -80,7 +80,10 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
   }
 }
 
+let _client: Cosmos.CosmosClient;
+
 export function client(): Cosmos.CosmosClient {
+  if (_client) return _client;
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
@@ -94,5 +97,6 @@ export function client(): Cosmos.CosmosClient {
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
-  return new Cosmos.CosmosClient(options);
+  _client = new Cosmos.CosmosClient(options);
+  return _client;
 }

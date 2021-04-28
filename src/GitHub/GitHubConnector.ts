@@ -1,3 +1,5 @@
+import postRobot from "post-robot";
+
 export interface IGitHubConnectorParams {
   state: string;
   code: string;
@@ -6,25 +8,26 @@ export interface IGitHubConnectorParams {
 export const GitHubConnectorMsgType = "GitHubConnectorMsgType";
 
 export class GitHubConnector {
-  public start(params: URLSearchParams, window: Window & typeof globalThis) {
-    window.postMessage(
+  public async start(params: URLSearchParams, window: Window & typeof globalThis): Promise<void> {
+    await postRobot.send(
+      window,
+      GitHubConnectorMsgType,
       {
-        type: GitHubConnectorMsgType,
-        data: {
-          state: params.get("state"),
-          code: params.get("code"),
-        } as IGitHubConnectorParams,
-      },
-      window.location.origin
+        state: params.get("state"),
+        code: params.get("code"),
+      } as IGitHubConnectorParams,
+      {
+        domain: window.location.origin,
+      }
     );
   }
 }
 
 var connector = new GitHubConnector();
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
   const openerWindow = window.opener;
   if (openerWindow) {
-    connector.start(new URLSearchParams(document.location.search), openerWindow);
+    await connector.start(new URLSearchParams(document.location.search), openerWindow);
     window.close();
   }
 });

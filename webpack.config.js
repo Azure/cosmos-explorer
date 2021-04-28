@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 require("dotenv/config");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const InlineChunkHtmlPlugin = require("react-dev-utils/InlineChunkHtmlPlugin");
+const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
 const { EnvironmentPlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -81,7 +85,8 @@ const typescriptRule = {
   exclude: /node_modules/,
 };
 
-module.exports = function (env = {}, argv = {}) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+module.exports = function (_env = {}, argv = {}) {
   const mode = argv.mode || "development";
   const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
   const envVars = {
@@ -150,6 +155,11 @@ module.exports = function (env = {}, argv = {}) {
       chunks: ["heatmap"],
     }),
     new HtmlWebpackPlugin({
+      filename: "cellOutputViewer.html",
+      template: "src/CellOutputViewer/cellOutputViewer.html",
+      chunks: ["cellOutputViewer"],
+    }),
+    new HtmlWebpackPlugin({
       filename: "notebookViewer.html",
       template: "src/NotebookViewer/notebookViewer.html",
       chunks: ["notebookViewer"],
@@ -168,6 +178,10 @@ module.exports = function (env = {}, argv = {}) {
       filename: "selfServe.html",
       template: "src/SelfServe/selfServe.html",
       chunks: ["selfServe"],
+    }),
+    new InlineChunkHtmlPlugin(HtmlWebpackPlugin, [/cellOutputViewer/]),
+    new HTMLInlineCSSWebpackPlugin({
+      filter: (fileName) => fileName.includes("cellOutputViewer"),
     }),
     new MonacoWebpackPlugin(),
     new CopyWebpackPlugin({
@@ -190,6 +204,7 @@ module.exports = function (env = {}, argv = {}) {
       testExplorer: "./test/testExplorer/TestExplorer.ts",
       heatmap: "./src/Controls/Heatmap/Heatmap.ts",
       terminal: "./src/Terminal/index.ts",
+      cellOutputViewer: "./src/CellOutputViewer/CellOutputViewer.tsx",
       notebookViewer: "./src/NotebookViewer/NotebookViewer.tsx",
       galleryViewer: "./src/GalleryViewer/GalleryViewer.tsx",
       selfServe: "./src/SelfServe/SelfServe.tsx",
@@ -199,6 +214,7 @@ module.exports = function (env = {}, argv = {}) {
       util: true,
       tls: "empty",
       net: "empty",
+      fs: "empty",
     },
     output: {
       chunkFilename: "[name].[chunkhash:6].js",
@@ -233,6 +249,7 @@ module.exports = function (env = {}, argv = {}) {
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
       hot: false,
+      disableHostCheck: true,
       inline: !isCI,
       liveReload: !isCI,
       https: true,
@@ -251,7 +268,7 @@ module.exports = function (env = {}, argv = {}) {
           target: "https://main.documentdb.ext.azure.com",
           changeOrigin: true,
           logLevel: "debug",
-          bypass: function (req, res, proxyOptions) {
+          bypass: (req, res) => {
             if (req.method === "OPTIONS") {
               res.statusCode = 200;
               res.send();
@@ -291,8 +308,5 @@ module.exports = function (env = {}, argv = {}) {
       },
     },
     stats: "minimal",
-    node: {
-      fs: "empty",
-    },
   };
 };

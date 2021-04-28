@@ -1,7 +1,6 @@
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
-import { DefaultAccountExperienceType } from "./DefaultAccountExperienceType";
 import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
 import { CollectionCreation } from "./Shared/Constants";
 
@@ -17,12 +16,11 @@ interface UserContext {
   readonly authorizationToken?: string;
   readonly resourceToken?: string;
   readonly useSDKOperations: boolean;
-  readonly defaultExperience?: DefaultAccountExperienceType;
   readonly subscriptionType?: SubscriptionType;
   readonly quotaId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
-  readonly apiType?: ApiType;
+  apiType?: ApiType;
   readonly isTryCosmosDBSubscription?: boolean;
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
@@ -37,6 +35,7 @@ const features = extractFeatures();
 const { enableSDKoperations: useSDKOperations } = features;
 
 const userContext: UserContext = {
+  apiType: "SQL",
   hasWriteAccess: true,
   isTryCosmosDBSubscription: false,
   portalEnv: "prod",
@@ -47,8 +46,10 @@ const userContext: UserContext = {
 };
 
 function updateUserContext(newContext: Partial<UserContext>): void {
+  if (newContext.databaseAccount) {
+    newContext.apiType = apiType(newContext.databaseAccount);
+  }
   Object.assign(userContext, newContext);
-  Object.assign(userContext, { apiType: apiType(userContext.databaseAccount) });
 }
 
 function apiType(account: DatabaseAccount | undefined): ApiType {

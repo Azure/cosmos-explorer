@@ -1,4 +1,5 @@
 import Q from "q";
+import { userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import * as Entities from "../Entities";
 import * as DataTableUtilities from "./DataTableUtilities";
@@ -57,10 +58,6 @@ export default class TableCommands {
     var entityToUpdate: Entities.ITableEntity = viewModel.selected()[0];
     var originalNumberOfProperties = entityToUpdate ? 0 : Object.keys(entityToUpdate).length - 1; // .metadata is always a property for etag
 
-    this._container.editTableEntityPane.originEntity = entityToUpdate;
-    this._container.editTableEntityPane.tableViewModel = viewModel;
-    this._container.editTableEntityPane.originalNumberOfProperties = originalNumberOfProperties;
-    this._container.editTableEntityPane.open();
     return null;
   }
 
@@ -73,7 +70,7 @@ export default class TableCommands {
     }
     var entitiesToDelete: Entities.ITableEntity[] = viewModel.selected();
     let deleteMessage: string = "Are you sure you want to delete the selected entities?";
-    if (viewModel.queryTablesTab.container.isPreferredApiCassandra()) {
+    if (userContext.apiType === "Cassandra") {
       deleteMessage = "Are you sure you want to delete the selected rows?";
     }
     if (window.confirm(deleteMessage)) {

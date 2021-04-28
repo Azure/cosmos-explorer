@@ -1,25 +1,25 @@
 import ko from "knockout";
+import postRobot from "post-robot";
 import { HttpStatusCodes } from "../Common/Constants";
+import { handleError } from "../Common/ErrorHandlingUtils";
 import { configContext } from "../ConfigContext";
 import { AuthorizeAccessComponent } from "../Explorer/Controls/GitHub/AuthorizeAccessComponent";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { JunoClient } from "../Juno/JunoClient";
-import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
-import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
+import { logConsoleInfo } from "../Utils/NotificationConsoleUtils";
 import { GitHubConnectorMsgType, IGitHubConnectorParams } from "./GitHubConnector";
-import { handleError } from "../Common/ErrorHandlingUtils";
 
-window.addEventListener("message", (event: MessageEvent) => {
-  if (isInvalidParentFrameOrigin(event)) {
-    return;
-  }
-
-  const msg = event.data;
-  if (msg.type === GitHubConnectorMsgType) {
-    const params = msg.data as IGitHubConnectorParams;
+postRobot.on(
+  GitHubConnectorMsgType,
+  {
+    domain: window.location.origin,
+  },
+  (event) => {
+    // Typescript definition for event is wrong. So read params by casting to <any>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params = (event as any).data as IGitHubConnectorParams;
     window.dataExplorer.notebookManager?.gitHubOAuthService.finishOAuth(params);
   }
-});
+);
 
 export interface IGitHubOAuthToken {
   // API properties
@@ -70,7 +70,7 @@ export class GitHubOAuthService {
       const response = await this.junoClient.getGitHubToken(params.code);
 
       if (response.status === HttpStatusCodes.OK && !response.data.error) {
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "Successfully connected to GitHub");
+        logConsoleInfo("Successfully connected to GitHub");
         this.token(response.data);
       } else {
         let errorMsg = response.data.error;
@@ -80,7 +80,7 @@ export class GitHubOAuthService {
         throw new Error(errorMsg);
       }
     } catch (error) {
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Failed to connect to GitHub: ${error}`);
+      logConsoleInfo(`Failed to connect to GitHub: ${error}`);
       this.token({ error });
     }
   }

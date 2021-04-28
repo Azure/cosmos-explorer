@@ -26,7 +26,7 @@ export async function fetchDatabaseAccounts(subscriptionId: string, accessToken:
     nextLink = result.nextLink;
     accounts = [...accounts, ...result.value];
   }
-  return accounts;
+  return accounts.sort((a, b) => a.name.localeCompare(b.name));
 }
 
 export function useDatabaseAccounts(subscriptionId: string, armToken: string): DatabaseAccount[] | undefined {

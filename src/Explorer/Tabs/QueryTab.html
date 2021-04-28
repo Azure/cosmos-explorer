@@ -1,11 +1,4 @@
-﻿<div
-  class="tab-pane"
-  data-bind="setTemplateReady: true,
-    attr:{
-        id: tabId
-    }"
-  role="tabpanel"
->
+﻿<div class="tab-pane" data-bind="attr:{id: tabId}" role="tabpanel">
   <div class="tabPaneContentContainer">
     <div class="mongoQueryHelper" data-bind="visible: isPreferredApiMongoDB && sqlQueryEditorContent().length === 0">
       Start by writing a Mongo query, for example: <strong>{'id':'foo'}</strong> or <strong>{ }</strong> to get all the

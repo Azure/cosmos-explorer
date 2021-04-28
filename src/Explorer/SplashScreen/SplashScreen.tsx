@@ -227,7 +227,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     }
 
     if (!this.container.isDatabaseNodeOrNoneSelected()) {
-      if (this.container.isPreferredApiDocumentDB() || this.container.isPreferredApiGraph()) {
+      if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
@@ -237,7 +237,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           title: "New SQL Query",
           description: null,
         });
-      } else if (this.container.isPreferredApiMongoDB()) {
+      } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
@@ -256,7 +256,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         onClick: () => this.container.openBrowseQueriesPanel(),
       });
 
-      if (!this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType !== "Cassandra") {
         items.push({
           iconSrc: NewStoredProcedureIcon,
           title: "New Stored Procedure",

@@ -1,15 +1,14 @@
 /**
  * Notebook container related stuff
  */
-import * as DataModels from "../../Contracts/DataModels";
 import * as Constants from "../../Common/Constants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as Logger from "../../Common/Logger";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import * as DataModels from "../../Contracts/DataModels";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export class NotebookContainerClient {
-  private reconnectingNotificationId: string;
+  private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
 
   constructor(
@@ -61,9 +60,9 @@ export class NotebookContainerClient {
         },
       });
       if (response.ok) {
-        if (this.reconnectingNotificationId) {
-          NotificationConsoleUtils.clearInProgressMessageWithId(this.reconnectingNotificationId);
-          this.reconnectingNotificationId = "";
+        if (this.clearReconnectionAttemptMessage) {
+          this.clearReconnectionAttemptMessage();
+          this.clearReconnectionAttemptMessage = undefined;
         }
         const memoryUsageInfo = await response.json();
         if (memoryUsageInfo) {
@@ -76,9 +75,8 @@ export class NotebookContainerClient {
       return undefined;
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/getMemoryUsage");
-      if (!this.reconnectingNotificationId) {
-        this.reconnectingNotificationId = NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.InProgress,
+      if (!this.clearReconnectionAttemptMessage) {
+        this.clearReconnectionAttemptMessage = logConsoleProgress(
           "Connection lost with Notebook server. Attempting to reconnect..."
         );
       }

@@ -1,16 +1,16 @@
 // TODO: Renable this rule for the file or turn it off everywhere
 /* eslint-disable react/display-name */
 
+import { StyleConstants } from "../../../Common/Constants";
+import { FunctionComponent, useState, useEffect } from "react";
+import * as React from "react";
 import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import { IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
-import * as React from "react";
-import { FunctionComponent, useEffect, useState } from "react";
-import { StyleConstants } from "../../../Common/Constants";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
-import { SwitchAccount } from "./SwitchAccount";
+import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
 import { SwitchSubscription } from "./SwitchSubscription";
+import { SwitchAccount } from "./SwitchAccount";
 
 const buttonStyles: IButtonStyles = {
   root: {
@@ -58,10 +58,6 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
   const [selectedAccountName, setSelectedAccountName] = useState<string>(() =>
     localStorage.getItem("cachedDatabaseAccountName")
   );
-  const cachedTenantId = localStorage.getItem("cachedTenantId");
-  const [tenantId] = React.useState<string>(cachedTenantId);
-  const [aadToken, setAADToken] = React.useState<string>();
-
   const selectedAccount = accounts?.find((account) => account.name === selectedAccountName);
 
   useEffect(() => {
