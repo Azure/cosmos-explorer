@@ -6,8 +6,8 @@
  * - calling render()
  */
 
+import LeftArrowIcon from "images/imgarrowlefticon.svg";
 import * as React from "react";
-import LeftArrowIcon from "../../../../images/imgarrowlefticon.svg";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
 
 export interface CollapsiblePanelProps {

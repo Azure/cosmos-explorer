@@ -15,7 +15,7 @@
     <!-- Add collection form  -- End -->
     <!-- Loader - Start -->
     <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
-      <img class="dataExplorerLoader" src="/LoadingIndicator_3Squares.gif" />
+      <img class="dataExplorerLoader" src="/images/LoadingIndicator_3Squares.gif" />
     </div>
     <!-- Loader - End -->
   </div>
@@ -33,7 +33,7 @@
       data-bind="click: cancel, event: { keypress: onCloseKeyPress }"
       tabindex="0"
     >
-      <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+      <img src="/images/close-black.svg" title="Close" alt="Close" />
     </div>
   </div>
   <!-- Add collection header - End -->
@@ -41,7 +41,7 @@
   <!-- Add collection errors - Start -->
   <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: formErrors() && formErrors() !== ''">
     <div class="warningErrorContent">
-      <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error" /></span>
+      <span><img class="paneErrorIcon" src="/images/error_red.svg" alt="Error" /></span>
       <span class="warningErrorDetailsLinkContainer">
         <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
         <a
@@ -57,7 +57,7 @@
   </div>
   <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: formWarnings() && formWarnings() !== ''">
     <div class="warningErrorContent">
-      <span><img class="paneErrorIcon" src="/warning.svg" alt="Warning" /></span>
+      <span><img class="paneErrorIcon" src="/images/warning.svg" alt="Warning" /></span>
       <span class="warningErrorDetailsLinkContainer">
         <span class="formErrors" data-bind="text: formWarnings, attr: { title: formWarnings }"></span>
       </span>
@@ -72,7 +72,7 @@
     data-bind="visible: showUpsellMessage && showUpsellMessage() && formErrors && !formErrors()"
   >
     <div class="infoBoxContent">
-      <span><img class="infoBoxIcon" src="/info_color.svg" alt="Promo" /></span>
+      <span><img class="infoBoxIcon" src="/images/info_color.svg" alt="Promo" /></span>
       <span class="infoBoxDetails">
         <span class="infoBoxMessage" data-bind="text: upsellMessage, attr: { title: upsellMessage }"></span>
         <a
@@ -95,7 +95,7 @@
         <span class="mandatoryStar">*</span>
         <span class="addCollectionLabel">Database id</span>
         <span class="infoTooltip" role="tooltip" tabindex="0">
-          <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+          <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
           <span class="tooltiptext infoTooltipWidth"
             >A database is analogous to a namespace. It is the unit of management for a set of containers.</span
           >
@@ -181,7 +181,7 @@
         />
         <span class="databaseProvisionText" for="databaseSharedThroughput">Provision database throughput</span>
         <span class="infoTooltip" role="tooltip" tabindex="0">
-          <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+          <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
           <span class="tooltiptext provisionDatabaseThroughput"
             >Provisioned throughput at the database level will be shared across all containers within the
             database.</span
@@ -228,7 +228,7 @@
         <span class="mandatoryStar">*</span>
         <span class="addCollectionLabel" data-bind="text: collectionIdTitle"></span>
         <span class="infoTooltip" role="tooltip" tabindex="0">
-          <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+          <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
           <span class="tooltiptext infoTooltipWidth"
             >Unique identifier for the container and used for id-based routing through REST and all SDKs</span
           >
@@ -302,7 +302,7 @@
       <span class="mandatoryStar">*</span>
       <span class="addCollectionLabel">Storage capacity</span>
       <span class="infoTooltip" role="tooltip" tabindex="0">
-        <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+        <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
         <span class="tooltiptext infoTooltipWidth"
           >This is the maximum storage size of the container. Storage is billed per GB based on consumption.</span
         >
@@ -336,7 +336,7 @@
             <span class="mandatoryStar">*</span>
             <span class="addCollectionLabel" data-bind="text: partitionKeyName"></span>
             <span class="infoTooltip" role="tooltip" tabindex="0">
-              <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+              <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
               <span class="tooltiptext infoTooltipWidth"
                 >The <span data-bind="text: partitionKeyName"></span> is used to automatically partition data among
                 multiple servers for scalability. Choose a JSON property name that has a wide range of values and is
@@ -396,7 +396,7 @@
           />
           <span for="collectionSharedThroughput" data-bind="text: collectionWithThroughputInSharedTitle"></span>
           <span class="leftAlignInfoTooltip" role="tooltip" tabindex="0">
-            <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+            <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
             <span class="tooltiptext sharedCollectionThroughputTooltipWidth"
               >You can optionally provision dedicated throughput for a container within a database that has throughput
               provisioned. This dedicated throughput amount will not be shared with other containers in the database and
@@ -456,7 +456,7 @@
           />
           <span>Create a Wildcard Index on all fields</span>
           <span class="infoTooltip" role="tooltip" tabindex="0">
-            <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+            <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
             <span class="tooltiptext mongoWildcardIndexTooltipWidth">
               By default, only the field _id is indexed. Creating a wildcard index on all fields will quickly optimize
               query performance and is recommended during development.
@@ -480,7 +480,7 @@
               tabindex="0"
               data-bind="event: { focus: function(data, event) { transferFocus('tooltip1', 'link1') } }"
             >
-              <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+              <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
               <span id="tooltip1" class="tooltiptext infoTooltipWidth" data-bind="event: { mouseout: onMouseOut }">
                 Enable analytical store capability to perform near real-time analytics on your operational data, without
                 impacting the performance of transactional workloads. Learn more
@@ -575,7 +575,7 @@
       <p class="uniqueKeys">
         <span class="addCollectionLabel">Unique keys</span>
         <span class="uniqueInfoTooltip" role="tooltip" tabindex="0">
-          <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+          <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
           <span class="uniqueTooltiptext infoTooltipWidth"
             >Unique keys provide developers with the ability to add a layer of data integrity to their database. By
             creating a unique key policy when a container is created, you ensure the uniqueness of one or more values

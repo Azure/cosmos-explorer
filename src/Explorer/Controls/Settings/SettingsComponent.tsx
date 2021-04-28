@@ -1,7 +1,7 @@
+import DiscardIcon from "images/discard.svg";
+import SaveIcon from "images/save-cosmos.svg";
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "office-ui-fabric-react";
 import * as React from "react";
-import DiscardIcon from "../../../../images/discard.svg";
-import SaveIcon from "../../../../images/save-cosmos.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";

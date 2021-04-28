@@ -1,8 +1,8 @@
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import LoadGraphIcon from "images/LoadGraph.png";
+import LoadingIndicatorIcon from "images/LoadingIndicator_3Squares.gif";
 import * as Q from "q";
 import * as React from "react";
-import LoadGraphIcon from "../../../../images/LoadGraph.png";
-import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
 import * as Constants from "../../../Common/Constants";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";

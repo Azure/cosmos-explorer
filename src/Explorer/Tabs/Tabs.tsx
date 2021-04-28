@@ -1,7 +1,7 @@
+import loadingIcon from "images/circular_loader_black_16x16.gif";
+import errorIcon from "images/close-black.svg";
 import ko from "knockout";
 import React, { useEffect, useRef, useState } from "react";
-import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
-import errorIcon from "../../../images/close-black.svg";
 import { useObservable } from "../../hooks/useObservable";
 import TabsBase from "./TabsBase";
 

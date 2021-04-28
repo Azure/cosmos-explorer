@@ -1,11 +1,11 @@
 import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
+import DeleteDocumentIcon from "images/DeleteDocument.svg";
+import DiscardIcon from "images/discard.svg";
+import NewDocumentIcon from "images/NewDocument.svg";
+import SaveIcon from "images/save-cosmos.svg";
+import UploadIcon from "images/Upload_16x16.svg";
 import * as ko from "knockout";
 import Q from "q";
-import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
-import DiscardIcon from "../../../images/discard.svg";
-import NewDocumentIcon from "../../../images/NewDocument.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
-import UploadIcon from "../../../images/Upload_16x16.svg";
 import * as Constants from "../../Common/Constants";
 import { DocumentsGridMetrics, KeyCodes } from "../../Common/Constants";
 import { createDocument } from "../../Common/dataAccess/createDocument";

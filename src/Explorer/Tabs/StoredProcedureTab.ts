@@ -1,8 +1,8 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
+import ExecuteQueryIcon from "images/ExecuteQuery.svg";
 import * as ko from "knockout";
 import Q from "q";
 import * as _ from "underscore";
-import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import * as Constants from "../../Common/Constants";
 import { createStoredProcedure } from "../../Common/dataAccess/createStoredProcedure";
 import { updateStoredProcedure } from "../../Common/dataAccess/updateStoredProcedure";

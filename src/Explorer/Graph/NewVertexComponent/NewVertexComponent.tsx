@@ -1,7 +1,7 @@
+import AddIcon from "images/Add-property.svg";
+import DeleteIcon from "images/delete.svg";
 import { Dropdown, IDropdownOption, Stack, TextField } from "office-ui-fabric-react";
 import React, { FunctionComponent, useRef, useState } from "react";
-import AddIcon from "../../../../images/Add-property.svg";
-import DeleteIcon from "../../../../images/delete.svg";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { GremlinPropertyValueType, InputPropertyValueTypeString, NewVertexData } from "../../../Contracts/ViewModels";
 import { EditorNodePropertiesComponent } from "../GraphExplorerComponent/EditorNodePropertiesComponent";

@@ -1,9 +1,9 @@
 import { ConflictDefinition, FeedOptions, QueryIterator, Resource } from "@azure/cosmos";
+import DeleteIcon from "images/delete.svg";
+import DiscardIcon from "images/discard.svg";
+import SaveIcon from "images/save-cosmos.svg";
 import * as ko from "knockout";
 import Q from "q";
-import DeleteIcon from "../../../images/delete.svg";
-import DiscardIcon from "../../../images/discard.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
 import { DocumentsGridMetrics, KeyCodes } from "../../Common/Constants";
 import { createDocument } from "../../Common/dataAccess/createDocument";

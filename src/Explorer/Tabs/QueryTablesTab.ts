@@ -1,11 +1,11 @@
+import AddEntityIcon from "images/AddEntity.svg";
+import DeleteEntitiesIcon from "images/DeleteEntities.svg";
+import EditEntityIcon from "images/Edit-entity.svg";
+import ExecuteQueryIcon from "images/ExecuteQuery.svg";
+import QueryBuilderIcon from "images/Query-Builder.svg";
+import QueryTextIcon from "images/Query-Text.svg";
 import * as ko from "knockout";
 import Q from "q";
-import AddEntityIcon from "../../../images/AddEntity.svg";
-import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
-import EditEntityIcon from "../../../images/Edit-entity.svg";
-import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
-import QueryBuilderIcon from "../../../images/Query-Builder.svg";
-import QueryTextIcon from "../../../images/Query-Text.svg";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";

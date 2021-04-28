@@ -4,22 +4,27 @@
  * The mode is controlled by the parent of this component
  */
 
+import CancelIcon from "images/cancel.svg";
+import CheckIcon from "images/check.svg";
+import DeleteIcon from "images/delete.svg";
+import EditIcon from "images/edit.svg";
 import * as React from "react";
-import { GraphHighlightedNodeData, EditedProperties, EditedEdges, PossibleVertex } from "./GraphExplorer";
-import { CollapsiblePanel } from "../../Controls/CollapsiblePanel/CollapsiblePanel";
-import { ReadOnlyNodePropertiesComponent } from "./ReadOnlyNodePropertiesComponent";
-import { EditorNodePropertiesComponent } from "./EditorNodePropertiesComponent";
-import { ReadOnlyNeighborsComponent } from "./ReadOnlyNeighborsComponent";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Item } from "../../Controls/InputTypeahead/InputTypeaheadComponent";
-import * as EditorNeighbors from "./EditorNeighborsComponent";
-import EditIcon from "../../../../images/edit.svg";
-import DeleteIcon from "../../../../images/delete.svg";
-import CheckIcon from "../../../../images/check.svg";
-import CancelIcon from "../../../../images/cancel.svg";
-import { GraphExplorer } from "./GraphExplorer";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
+import { CollapsiblePanel } from "../../Controls/CollapsiblePanel/CollapsiblePanel";
+import { Item } from "../../Controls/InputTypeahead/InputTypeaheadComponent";
+import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
+import * as EditorNeighbors from "./EditorNeighborsComponent";
+import { EditorNodePropertiesComponent } from "./EditorNodePropertiesComponent";
+import {
+  EditedEdges,
+  EditedProperties,
+  GraphExplorer,
+  GraphHighlightedNodeData,
+  PossibleVertex,
+} from "./GraphExplorer";
+import { ReadOnlyNeighborsComponent } from "./ReadOnlyNeighborsComponent";
+import { ReadOnlyNodePropertiesComponent } from "./ReadOnlyNodePropertiesComponent";
 
 export enum Mode {
   READONLY_PROP,

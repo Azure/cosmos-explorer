@@ -3,13 +3,13 @@
  * Read-only properties
  */
 
+import AddIcon from "images/Add-property.svg";
+import DeleteIcon from "images/delete.svg";
 import * as React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { EditedProperties } from "./GraphExplorer";
-import DeleteIcon from "../../../../images/delete.svg";
-import AddIcon from "../../../../images/Add-property.svg";
-import { ReadOnlyNodePropertiesComponent } from "./ReadOnlyNodePropertiesComponent";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
+import { EditedProperties } from "./GraphExplorer";
+import { ReadOnlyNodePropertiesComponent } from "./ReadOnlyNodePropertiesComponent";
 
 export interface EditorNodePropertiesComponentProps {
   editedProperties: EditedProperties;

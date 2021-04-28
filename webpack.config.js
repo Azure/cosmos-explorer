@@ -7,7 +7,7 @@ const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").def
 const { EnvironmentPlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
@@ -60,10 +60,11 @@ const htmlRule = {
     {
       loader: "html-loader",
       options: {
-        minify: false,
-        removeComments: false,
-        collapseWhitespace: false,
-        root: path.resolve(__dirname, "images"),
+        minimize: {
+          minify: false,
+          removeComments: false,
+          collapseWhitespace: false,
+        },
       },
     },
   ],
@@ -106,7 +107,7 @@ module.exports = function (env = {}, argv = {}) {
   }
 
   const plugins = [
-    new CleanWebpackPlugin(["dist"]),
+    new CleanWebpackPlugin(),
     new CreateFileWebpack({
       path: "./dist",
       fileName: "version.txt",
@@ -207,23 +208,26 @@ module.exports = function (env = {}, argv = {}) {
       selfServe: "./src/SelfServe/SelfServe.tsx",
       connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     },
-    node: {
-      util: true,
-      tls: "empty",
-      net: "empty",
-    },
+
     output: {
       chunkFilename: "[name].[chunkhash:6].js",
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist"),
     },
-    devtool: mode === "development" ? "cheap-eval-source-map" : "source-map",
+    devtool: mode === "development" ? "eval-source-map" : "source-map",
     plugins,
     module: {
       rules,
     },
     resolve: {
       extensions: [".tsx", ".ts", ".js"],
+      roots: [path.resolve("./src")],
+      modules: [".", "node_modules"],
+      fallback: {
+        fs: false,
+        crypto: false,
+        "crypto-browserify": require.resolve("crypto-browserify"), //if you want to use this module also don't forget npm i crypto-browserify
+      },
     },
     optimization: {
       minimize: mode === "production" ? true : false,
@@ -240,7 +244,6 @@ module.exports = function (env = {}, argv = {}) {
         }),
       ],
     },
-    watch: isCI || mode === "production" ? false : true,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {
@@ -304,8 +307,5 @@ module.exports = function (env = {}, argv = {}) {
       },
     },
     stats: "minimal",
-    node: {
-      fs: "empty",
-    },
   };
 };

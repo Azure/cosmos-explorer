@@ -3,13 +3,13 @@
  * Editor for neighbors (targets or sources)
  */
 
+import AddPropertyIcon from "images/Add-property.svg";
+import DeleteIcon from "images/delete.svg";
 import * as React from "react";
-import { NeighborVertexBasicInfo, EditedEdges, GraphNewEdgeData, PossibleVertex } from "./GraphExplorer";
-import * as GraphUtil from "./GraphUtil";
-import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
-import DeleteIcon from "../../../../images/delete.svg";
-import AddPropertyIcon from "../../../../images/Add-property.svg";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
+import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
+import { EditedEdges, GraphNewEdgeData, NeighborVertexBasicInfo, PossibleVertex } from "./GraphExplorer";
+import * as GraphUtil from "./GraphUtil";
 
 export interface EditorNeighborsComponentProps {
   isSource: boolean;

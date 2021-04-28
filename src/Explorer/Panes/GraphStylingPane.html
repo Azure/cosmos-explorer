@@ -14,7 +14,7 @@
             tabindex="0"
             data-bind="click: cancel, event: { keypress: onCloseKeyPress }"
           >
-            <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+            <img src="/images/close-black.svg" title="Close" alt="Close" />
           </div>
         </div>
         <!-- Graph Styling header - End -->
@@ -26,7 +26,7 @@
           data-bind="visible: formErrors() && formErrors() !== ''"
         >
           <div class="warningErrorContent">
-            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error" /></span>
+            <span><img class="paneErrorIcon" src="/images/error_red.svg" alt="Error" /></span>
             <span class="warningErrorDetailsLinkContainer">
               <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
               <a

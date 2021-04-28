@@ -1,17 +1,17 @@
 import { stringifyNotebook, toJS } from "@nteract/commutable";
+import ClearAllOutputsIcon from "images/notebook/Notebook-clear-all-outputs.svg";
+import CopyIcon from "images/notebook/Notebook-copy.svg";
+import CutIcon from "images/notebook/Notebook-cut.svg";
+import NewCellIcon from "images/notebook/Notebook-insert-cell.svg";
+import PasteIcon from "images/notebook/Notebook-paste.svg";
+import RestartIcon from "images/notebook/Notebook-restart.svg";
+import RunAllIcon from "images/notebook/Notebook-run-all.svg";
+import RunIcon from "images/notebook/Notebook-run.svg";
+import { default as InterruptKernelIcon, default as KillKernelIcon } from "images/notebook/Notebook-stop.svg";
+import SaveIcon from "images/save-cosmos.svg";
 import * as ko from "knockout";
 import * as Q from "q";
 import * as _ from "underscore";
-import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
-import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
-import CutIcon from "../../../images/notebook/Notebook-cut.svg";
-import NewCellIcon from "../../../images/notebook/Notebook-insert-cell.svg";
-import PasteIcon from "../../../images/notebook/Notebook-paste.svg";
-import RestartIcon from "../../../images/notebook/Notebook-restart.svg";
-import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
-import RunIcon from "../../../images/notebook/Notebook-run.svg";
-import { default as InterruptKernelIcon, default as KillKernelIcon } from "../../../images/notebook/Notebook-stop.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
 import { ArmApiVersions } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
@@ -166,7 +166,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: kernelLabel,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         hasPopup: false,
         disabled: availableKernels.length < 1,
@@ -176,16 +176,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
         dropdownWidth: 100,
         children: availableKernels.map(
           (kernel: KernelSpecsDisplay) =>
-            ({
-              iconSrc: null,
-              iconAlt: kernel.displayName,
-              onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
-              commandButtonLabel: kernel.displayName,
-              dropdownItemKey: kernel.name,
-              hasPopup: false,
-              disabled: false,
-              ariaLabel: kernel.displayName,
-            } as CommandButtonComponentProps)
+          ({
+            iconSrc: null,
+            iconAlt: kernel.displayName,
+            onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
+            commandButtonLabel: kernel.displayName,
+            dropdownItemKey: kernel.name,
+            hasPopup: false,
+            disabled: false,
+            ariaLabel: kernel.displayName,
+          } as CommandButtonComponentProps)
         ),
         ariaLabel: kernelLabel,
       },
@@ -276,7 +276,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: null,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         ariaLabel: cellTypeLabel,
         hasPopup: false,
@@ -364,7 +364,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
         iconSrc: null,
         iconAlt: workspaceLabel,
         ariaLabel: workspaceLabel,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         hasPopup: false,
         disabled: this.container.arcadiaWorkspaces.length < 1,

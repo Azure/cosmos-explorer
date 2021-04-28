@@ -1,4 +1,6 @@
 import { useBoolean } from "@uifabric/react-hooks";
+import AddPropertyIcon from "images/Add-property.svg";
+import RevertBackIcon from "images/RevertBack.svg";
 import {
   IDropdownOption,
   Image,
@@ -11,8 +13,6 @@ import {
 } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
-import AddPropertyIcon from "../../../../images/Add-property.svg";
-import RevertBackIcon from "../../../../images/RevertBack.svg";
 import { TableEntity } from "../../../Common/TableEntity";
 import { userContext } from "../../../UserContext";
 import Explorer from "../../Explorer";

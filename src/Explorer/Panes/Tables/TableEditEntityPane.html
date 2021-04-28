@@ -28,7 +28,7 @@
             data-bind="
                     click: cancel, event: { keydown: onCloseKeyPress }"
           >
-            <img src="../../../../images/close-black.svg" title="Close" alt="Close" />
+            <img src="/images/close-black.svg" title="Close" alt="Close" />
           </div>
         </div>
         <!-- Edit table entity header - End -->
@@ -105,7 +105,7 @@
                     data-bind="click: $parent.editAttribute.bind($data, $index()), visible: valueEditable, event: { keydown: $parent.onEditPropertyKeyDown.bind($data, $index()) }"
                     title="Edit property"
                   >
-                    <img class="entity-Editor-Cancel-Img" src="/Edit_entity.svg" alt="Edit attribute" />
+                    <img class="entity-Editor-Cancel-Img" src="/images/Edit_entity.svg" alt="Edit attribute" />
                   </span>
                   <span
                     class="entity-Edit-Cancel"
@@ -115,7 +115,7 @@
                     data-bind="click: $parent.removeAttribute.bind($data, $index()), visible: removable, event: { keydown: $parent.onDeletePropertyKeyDown.bind($data, $index()) }"
                     title="Delete property"
                   >
-                    <img class="entity-Editor-Cancel-Img" src="/delete.svg" alt="Remove attribute" />
+                    <img class="entity-Editor-Cancel-Img" src="/images/delete.svg" alt="Remove attribute" />
                   </span>
                 </div>
               </div>
@@ -131,7 +131,7 @@
                     data-bind="visible: canAdd, click: insertAttribute, event: { keydown: onAddPropertyKeyDown }"
                     autofocus
                   >
-                    <img class="addPropertyImg" src="/Add-property.svg" alt="Add attribute" />
+                    <img class="addPropertyImg" src="/images/Add-property.svg" alt="Add attribute" />
                     <span data-bind="text: addButtonLabel"> </span>
                   </span>
                 </div>
@@ -165,7 +165,7 @@
             data-bind="
                     click: $parent.finishEditingAttribute, event: { keydown: $parent.onBackButtonKeyDown }"
           >
-            <img src="/RevertBack.svg" alt="BackIcon" />
+            <img src="/images/RevertBack.svg" alt="BackIcon" />
           </span>
           <span class="edit-value-text" data-bind="text: name"></span>
         </div>

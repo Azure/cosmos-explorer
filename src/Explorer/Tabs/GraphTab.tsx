@@ -1,7 +1,7 @@
+import NewVertexIcon from "images/NewVertex.svg";
+import StyleIcon from "images/Style.svg";
 import * as ko from "knockout";
 import React from "react";
-import NewVertexIcon from "../../../images/NewVertex.svg";
-import StyleIcon from "../../../images/Style.svg";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";

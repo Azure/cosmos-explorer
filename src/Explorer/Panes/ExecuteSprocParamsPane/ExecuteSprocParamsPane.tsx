@@ -1,7 +1,7 @@
 import { useBoolean } from "@uifabric/react-hooks";
+import AddPropertyIcon from "images/Add-property.svg";
 import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
-import AddPropertyIcon from "../../../../images/Add-property.svg";
 import Explorer from "../../Explorer";
 import StoredProcedure from "../../Tree/StoredProcedure";
 import {

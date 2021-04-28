@@ -1,3 +1,5 @@
+import AddPropertyIcon from "images/Add-property.svg";
+import EntityCancelIcon from "images/Entity_cancel.svg";
 import {
   Dropdown,
   IDropdownOption,
@@ -9,8 +11,6 @@ import {
   TextField,
 } from "office-ui-fabric-react";
 import React, { FunctionComponent } from "react";
-import AddPropertyIcon from "../../../../images/Add-property.svg";
-import EntityCancelIcon from "../../../../images/Entity_cancel.svg";
 
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 const options = [

@@ -6,7 +6,7 @@
     </div>
     <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: maybeSubQuery">
       <div class="warningErrorContent">
-        <span><img class="paneErrorIcon" src="/info_color.svg" alt="Error" /></span>
+        <span><img class="paneErrorIcon" src="/images/info_color.svg" alt="Error" /></span>
         <span class="warningErrorDetailsLinkContainer">
           We have detected you may be using a subquery. Non-correlated subqueries are not currently supported.
           <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery"
@@ -31,7 +31,7 @@
       ></editor>
       <!-- Splitter - Start -->
       <div class="splitter ui-resizable-handle ui-resizable-s" data-bind="attr: { id: splitterId }">
-        <img class="queryEditorHorizontalSplitter" src="/HorizontalSplitter.svg" alt="Splitter" />
+        <img class="queryEditorHorizontalSplitter" src="/images/HorizontalSplitter.svg" alt="Splitter" />
       </div>
     </div>
     <!-- Splitter - End -->
@@ -62,7 +62,7 @@
         class="queryEditorWatermark"
         data-bind="visible: allResultsMetadata().length === 0 && !error() && !queryResults() && !isExecuting()"
       >
-        <p><img src="/RunQuery.png" alt="Execute Query Watermark" /></p>
+        <p><img src="/images/RunQuery.png" alt="Execute Query Watermark" /></p>
         <p class="queryEditorWatermarkText">Execute a query to see the results</p>
       </div>
       <div
@@ -145,7 +145,7 @@
                 <td>
                   <span title="Retrieved document count">Retrieved document count</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total number of retrieved documents</span>
                   </span>
                 </td>
@@ -155,7 +155,7 @@
                 <td>
                   <span title="Retrieved document size">Retrieved document size</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total size of retrieved documents in bytes</span>
                   </span>
                 </td>
@@ -168,7 +168,7 @@
                 <td>
                   <span title="Output document count">Output document count</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Number of output documents</span>
                   </span>
                 </td>
@@ -178,7 +178,7 @@
                 <td>
                   <span title="Output document size">Output document size</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total size of output documents in bytes</span>
                   </span>
                 </td>
@@ -191,7 +191,7 @@
                 <td>
                   <span title="Index hit document count">Index hit document count</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total number of documents matched by the filter</span>
                   </span>
                 </td>
@@ -201,7 +201,7 @@
                 <td>
                   <span title="Index lookup time">Index lookup time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Time spent in physical index layer</span>
                   </span>
                 </td>
@@ -213,7 +213,7 @@
                 <td>
                   <span title="Document load time">Document load time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Time spent in loading documents</span>
                   </span>
                 </td>
@@ -225,7 +225,7 @@
                 <td>
                   <span title="Query engine execution time">Query engine execution time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText queryEngineExeTimeInfo"
                       >Time spent by the query engine to execute the query expression (excludes other execution times
                       like load documents or write results)</span
@@ -243,7 +243,7 @@
                 <td>
                   <span title="System function execution time">System function execution time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total time spent executing system (built-in) functions</span>
                   </span>
                 </td>
@@ -258,7 +258,7 @@
                 <td>
                   <span title="User defined function execution time">User defined function execution time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Total time spent executing user-defined functions</span>
                   </span>
                 </td>
@@ -273,7 +273,7 @@
                 <td>
                   <span title="Document write time">Document write time</span>
                   <span class="queryMetricInfoTooltip" role="tooltip" tabindex="0">
-                    <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                    <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                     <span class="queryMetricTooltipText">Time spent to write query result set to response buffer</span>
                   </span>
                 </td>
@@ -300,7 +300,7 @@
               tabindex="0"
               data-bind="event: { click: onDownloadQueryMetricsCsvClick, keypress: onDownloadQueryMetricsCsvKeyPress }"
             >
-              <img class="downloadCsvImg" src="/DownloadQuery.svg" alt="download query metrics csv" />
+              <img class="downloadCsvImg" src="/images/DownloadQuery.svg" alt="download query metrics csv" />
               <span>Per-partition query metrics (CSV)</span>
             </a>
           </div>

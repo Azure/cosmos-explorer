@@ -1,8 +1,8 @@
+import DiscardIcon from "images/discard.svg";
+import SaveIcon from "images/save-cosmos.svg";
 import * as ko from "knockout";
 import * as monaco from "monaco-editor";
 import Q from "q";
-import DiscardIcon from "../../../images/discard.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
 import editable from "../../Common/EditableUtility";
 import * as DataModels from "../../Contracts/DataModels";

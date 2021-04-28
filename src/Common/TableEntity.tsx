@@ -1,3 +1,5 @@
+import DeleteIcon from "images/delete.svg";
+import EditIcon from "images/Edit_entity.svg";
 import {
   Dropdown,
   IDropdownOption,
@@ -10,8 +12,6 @@ import {
   TooltipHost,
 } from "office-ui-fabric-react";
 import React, { FunctionComponent } from "react";
-import DeleteIcon from "../../images/delete.svg";
-import EditIcon from "../../images/Edit_entity.svg";
 import { CassandraType, TableType } from "../Explorer/Tables/Constants";
 import { userContext } from "../UserContext";
 import { EntityValue } from "./EntityValue";

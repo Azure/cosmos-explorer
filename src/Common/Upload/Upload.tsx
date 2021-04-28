@@ -1,6 +1,6 @@
+import FolderIcon from "images/folder_16x16.svg";
 import { Image, Stack, TextField } from "office-ui-fabric-react";
 import React, { ChangeEvent, FunctionComponent, KeyboardEvent, useRef, useState } from "react";
-import FolderIcon from "../../../images/folder_16x16.svg";
 import * as Constants from "../Constants";
 import { Tooltip } from "../Tooltip/Tooltip";
 

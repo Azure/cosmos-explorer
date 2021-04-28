@@ -26,7 +26,7 @@
             data-bind="
                     click: cancel, event: { keypress: onCloseKeyPress }"
           >
-            <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+            <img src="/images/close-black.svg" title="Close" alt="Close" />
           </div>
         </div>
         <!-- Add Cassandra collection header - End -->
@@ -37,7 +37,7 @@
           data-bind="visible: formErrors() && formErrors() !== ''"
         >
           <div class="warningErrorContent">
-            <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error" /></span>
+            <span><img class="paneErrorIcon" src="/images/error_red.svg" alt="Error" /></span>
             <span class="warningErrorDetailsLinkContainer">
               <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
             </span>
@@ -49,7 +49,7 @@
             <p>
               <span class="mandatoryStar">*</span> Keyspace name
               <span class="infoTooltip" role="tooltip" tabindex="0">
-                <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                 <span class="tooltiptext infoTooltipWidth"
                   >Select an existing keyspace or enter a new keyspace id.</span
                 >
@@ -134,7 +134,7 @@
               />
               <span class="databaseProvisionText" for="keyspaceSharedThroughput">Provision keyspace throughput</span>
               <span class="infoTooltip" role="tooltip" tabindex="0">
-                <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+                <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
                 <span class="tooltiptext provisionDatabaseThroughput"
                   >Provisioned throughput at the keyspace level will be shared across unlimited number of tables within
                   the keyspace</span
@@ -213,7 +213,7 @@
             />
             <span for="tableSharedThroughput">Provision dedicated throughput for this table</span>
             <span class="leftAlignInfoTooltip" role="tooltip" tabindex="0">
-              <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+              <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
               <span class="tooltiptext sharedCollectionThroughputTooltipWidth"
                 >You can optionally provision dedicated throughput for a table within a keyspace that has throughput
                 provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and
@@ -265,7 +265,7 @@
       <!-- Add Cassandra collection form - End -->
       <!-- Loader - Start -->
       <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
-        <img class="dataExplorerLoader" src="/LoadingIndicator_3Squares.gif" alt="loading indicator" />
+        <img class="dataExplorerLoader" src="/images/LoadingIndicator_3Squares.gif" alt="loading indicator" />
       </div>
       <!-- Loader - End -->
     </div>

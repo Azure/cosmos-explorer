@@ -1,5 +1,5 @@
+import LoadingIndicator_3Squares from "images/LoadingIndicator_3Squares.gif";
 import React from "react";
-import LoadingIndicator_3Squares from "../../../images/LoadingIndicator_3Squares.gif";
 
 export const PanelLoadingScreen: React.FunctionComponent = () => (
   <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer">

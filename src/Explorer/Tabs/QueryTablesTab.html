@@ -9,7 +9,7 @@
     <!-- Tables Query Tab Errors - Start-->
     <div class="error-bar">
       <div class="error-message" aria-label="Error Message" data-bind="visible: hasQueryError">
-        <span><img class="entity-error-Img" src="/error_red.svg" /></span>
+        <span><img class="entity-error-Img" src="/images/error_red.svg" /></span>
         <span class="error-text" role="alert" data-bind="text: queryErrorMessage"></span>
       </div>
     </div>
@@ -44,7 +44,7 @@
                     type="button"
                     data-bind="enable: canGroupClauses, attr:{title: groupSelectedClauses}, click: groupClauses"
                   >
-                    <img class="and-or-svg" src="/And-Or.svg" alt="Group selected clauses" />
+                    <img class="and-or-svg" src="/images/And-Or.svg" alt="Group selected clauses" />
                   </button>
                 </th>
                 <th class="clause-table-cell header-background"><!-- Grouping indicator --></th>
@@ -79,7 +79,7 @@
               <img
                 class="addclauseProperty-Img"
                 style="margin-bottom: 5px"
-                src="/Add-property.svg"
+                src="/images/Add-property.svg"
                 alt="Add new clause"
               />
               <span style="margin-left: 5px" data-bind="text: addNewClauseLine"></span>
@@ -100,12 +100,12 @@
         >
           <!-- ko template: { ifnot: isExpanded} -->
           <div class="themed-images" type="text/html" id="ExpandChevronRight" data-bind="hasFocus: focusExpandIcon">
-            <img class="imgiconwidth expand-triangle expand-triangle-right" src="/Triangle-right.svg" alt="toggle" />
+            <img class="imgiconwidth expand-triangle expand-triangle-right" src="/images/Triangle-right.svg" alt="toggle" />
           </div>
           <!-- /ko -->
           <!-- ko template: { if: isExpanded} -->
           <div class="themed-images" type="text/html" id="ExpandChevronDown">
-            <img class="imgiconwidth expand-triangle" src="/Triangle-down.svg" alt="toggle" />
+            <img class="imgiconwidth expand-triangle" src="/images/Triangle-down.svg" alt="toggle" />
           </div>
           <!-- /ko -->
           <span>Advanced Options</span>
@@ -122,14 +122,14 @@
             aria-label="Show top results"
           />
           <div role="alert" aria-atomic="true" class="inline-div" data-bind="visible: isExceedingLimit">
-            <img class="advanced-options-icon" src="/QueryBuilder/StatusWarning_16x.png" />
+            <img class="advanced-options-icon" src="/images/QueryBuilder/StatusWarning_16x.png" />
             <span data-bind="text: topValueLimitMessage"></span>
           </div>
         </div>
         <div class="select">
           <span> Select fields for query: </span>
           <div data-bind="visible: isSelected">
-            <img class="advanced-options-icon" src="/QueryBuilder/QueryInformation_16x.png" />
+            <img class="advanced-options-icon" src="/images/QueryBuilder/QueryInformation_16x.png" />
             <span class="select-options-text" data-bind="text: selectMessage" />
           </div>
           <a
@@ -172,7 +172,7 @@
         tabindex="0"
         data-bind="click: $parent.addClauseIndex.bind($data, $index()), event: { keydown: $parent.onAddClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.insertNewFilterLine}"
       >
-        <img class="querybuilder-addpropertyImg" src="/Add-property.svg" alt="Add clause" />
+        <img class="querybuilder-addpropertyImg" src="/images/Add-property.svg" alt="Add clause" />
       </span>
       <span
         class="entity-Add-Cancel"

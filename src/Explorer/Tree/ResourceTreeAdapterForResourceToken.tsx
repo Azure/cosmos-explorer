@@ -1,13 +1,13 @@
+import CollectionIcon from "images/tree-collection.svg";
 import * as ko from "knockout";
-import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import * as React from "react";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
-import CollectionIcon from "../../../images/tree-collection.svg";
-import Explorer from "../Explorer";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
+import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
+import Explorer from "../Explorer";
+import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 
 export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public parameters: ko.Observable<number>;

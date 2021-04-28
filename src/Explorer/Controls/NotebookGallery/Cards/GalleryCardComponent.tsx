@@ -1,25 +1,25 @@
 import { Card } from "@uifabric/react-cards";
+import CosmosDBLogo from "images/CosmosDB-logo.svg";
 import {
+  BaseButton,
+  Button,
   FontWeights,
   Icon,
   IconButton,
   Image,
   ImageFit,
-  Persona,
-  Text,
   Link,
-  BaseButton,
-  Button,
   LinkBase,
+  Persona,
   Separator,
-  TooltipHost,
   Spinner,
   SpinnerSize,
+  Text,
+  TooltipHost,
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
 import * as FileSystemUtil from "../../../Notebook/FileSystemUtil";
-import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 
 export interface GalleryCardComponentProps {
   data: IGalleryItem;

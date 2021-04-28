@@ -19,8 +19,9 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": ["jest"]
+    "types": ["jest"],
+    "baseUrl": "src"
   },
-  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts"],
+  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts", "./**/*.ts", "./**/*.tsx"],
   "exclude": ["./src/**/__mocks__/**/*"]
 }

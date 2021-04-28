@@ -1,6 +1,7 @@
 /**
  * Wrapper around Notebook metadata
  */
+import CosmosDBLogo from "images/CosmosDB-logo.svg";
 import {
   FontWeights,
   Icon,
@@ -15,9 +16,8 @@ import {
 import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
-import "./NotebookViewerComponent.less";
-import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
 import { InfoComponent } from "../NotebookGallery/InfoComponent/InfoComponent";
+import "./NotebookViewerComponent.less";
 
 export interface NotebookMetadataComponentProps {
   data: IGalleryItem;

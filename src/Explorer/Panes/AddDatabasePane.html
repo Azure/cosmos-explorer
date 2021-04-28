@@ -15,7 +15,7 @@
     <!-- Add database form  -- End -->
     <!-- Loader - Start -->
     <div class="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" data-bind="visible: isExecuting">
-      <img class="dataExplorerLoader" src="/LoadingIndicator_3Squares.gif" />
+      <img class="dataExplorerLoader" src="/images/LoadingIndicator_3Squares.gif" />
     </div>
     <!-- Loader - End -->
   </div>
@@ -32,7 +32,7 @@
       data-bind="click: cancel, event: { keypress: onCloseKeyPress }"
       tabindex="0"
     >
-      <img src="../../../images/close-black.svg" title="Close" alt="Close" />
+      <img src="/images/close-black.svg" title="Close" alt="Close" />
     </div>
   </div>
   <!-- Add database header - End -->
@@ -40,7 +40,7 @@
   <!-- Add database errors - Start -->
   <div class="warningErrorContainer" aria-live="assertive" data-bind="visible: formErrors() && formErrors() !== ''">
     <div class="warningErrorContent">
-      <span><img class="paneErrorIcon" src="/error_red.svg" alt="Error" /></span>
+      <span><img class="paneErrorIcon" src="/images/error_red.svg" alt="Error" /></span>
       <span class="warningErrorDetailsLinkContainer">
         <span class="formErrors" data-bind="text: formErrors, attr: { title: formErrors }"></span>
         <a
@@ -63,7 +63,7 @@
     data-bind="visible: showUpsellMessage && showUpsellMessage() && formErrors && !formErrors()"
   >
     <div class="infoBoxContent">
-      <span><img class="infoBoxIcon" src="/info_color.svg" alt="Promo" /></span>
+      <span><img class="infoBoxIcon" src="/images/info_color.svg" alt="Promo" /></span>
       <span class="infoBoxDetails">
         <span class="infoBoxMessage" data-bind="text: upsellMessage, attr: { title: upsellMessage }"></span>
         <a
@@ -86,7 +86,7 @@
         <span class="mandatoryStar">*</span>
         <span data-bind="text: databaseIdLabel"></span>
         <span class="infoTooltip" role="tooltip" tabindex="0">
-          <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+          <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
           <span class="tooltiptext infoTooltipWidth" data-bind="text: databaseIdTooltipText"></span>
         </span>
       </p>
@@ -116,7 +116,7 @@
         />
         <span class="databaseProvisionText" for="databaseSharedThroughput">Provision throughput</span>
         <span class="infoTooltip" role="tooltip" tabindex="0">
-          <img class="infoImg" src="/info-bubble.svg" alt="More information" />
+          <img class="infoImg" src="/images/info-bubble.svg" alt="More information" />
           <span
             class="tooltiptext provisionDatabaseThroughput"
             data-bind="text: databaseLevelThroughputTooltipText"

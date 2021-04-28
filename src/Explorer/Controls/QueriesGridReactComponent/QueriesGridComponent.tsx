@@ -1,3 +1,4 @@
+import SaveQueryBannerIcon from "images/save_query_banner.png";
 import { IButtonProps, IconButton } from "office-ui-fabric-react/lib/Button";
 import { ContextualMenu, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
 import {
@@ -19,7 +20,6 @@ import {
 } from "office-ui-fabric-react/lib/utilities/selection/index";
 import * as React from "react";
 import * as _ from "underscore";
-import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
 import * as Constants from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";

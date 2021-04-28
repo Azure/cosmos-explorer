@@ -14,7 +14,7 @@ import {
   HeatmapData,
   LayoutSettings,
   PartitionTimeStampToData,
-  PortalTheme,
+  PortalTheme
 } from "./HeatmapDatatypes";
 
 export class Heatmap {

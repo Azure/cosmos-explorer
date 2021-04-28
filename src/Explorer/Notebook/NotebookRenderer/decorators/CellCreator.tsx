@@ -1,12 +1,11 @@
-import { actions, selectors, ContentRef, AppState } from "@nteract/core";
 import { CellType } from "@nteract/commutable";
+import { actions, AppState, ContentRef, selectors } from "@nteract/core";
+import AddCodeCellIcon from "images/notebook/add-code-cell.svg";
+import AddTextCellIcon from "images/notebook/add-text-cell.svg";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
 import styled from "styled-components";
-import AddCodeCellIcon from "../../../../../images/notebook/add-code-cell.svg";
-import AddTextCellIcon from "../../../../../images/notebook/add-text-cell.svg";
 
 interface ComponentProps {
   id: string;

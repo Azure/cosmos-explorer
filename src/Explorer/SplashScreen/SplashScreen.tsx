@@ -1,18 +1,18 @@
 /**
  * Accordion top class
  */
+import AddDatabaseIcon from "images/AddDatabase.svg";
+import NewQueryIcon from "images/AddSqlQuery_16x16.svg";
+import NewStoredProcedureIcon from "images/AddStoredProcedure.svg";
+import OpenQueryIcon from "images/BrowseQuery.svg";
+import NewContainerIcon from "images/Hero-new-container.svg";
+import NewNotebookIcon from "images/Hero-new-notebook.svg";
+import SampleIcon from "images/Hero-sample.svg";
+import NotebookIcon from "images/notebook/Notebook-resource.svg";
+import ScaleAndSettingsIcon from "images/Scale_15x15.svg";
+import CollectionIcon from "images/tree-collection.svg";
 import { Link } from "office-ui-fabric-react/lib/Link";
 import * as React from "react";
-import AddDatabaseIcon from "../../../images/AddDatabase.svg";
-import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
-import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
-import OpenQueryIcon from "../../../images/BrowseQuery.svg";
-import NewContainerIcon from "../../../images/Hero-new-container.svg";
-import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
-import SampleIcon from "../../../images/Hero-sample.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
-import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
-import CollectionIcon from "../../../images/tree-collection.svg";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
