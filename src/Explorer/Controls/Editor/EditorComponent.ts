@@ -1,7 +1,6 @@
+import { loadMonaco, monaco } from "../../LazyMonaco";
 import { JsonEditorParams, JsonEditorViewModel } from "../JsonEditor/JsonEditorComponent";
 import template from "./editor-component.html";
-import * as monaco from "monaco-editor";
-import { SqlCompletionItemProvider, ErrorMarkProvider } from "@azure/cosmos-language-service";
 
 /**
  * Helper class for ko component registration
@@ -49,15 +48,17 @@ class EditorViewModel extends JsonEditorViewModel {
     return this.params.contentType;
   }
 
-  protected registerCompletionItemProvider() {
-    let sqlCompletionItemProvider = new SqlCompletionItemProvider();
+  protected async registerCompletionItemProvider() {
     if (EditorViewModel.providerRegistered.indexOf("sql") < 0) {
-      monaco.languages.registerCompletionItemProvider("sql", sqlCompletionItemProvider);
+      const { SqlCompletionItemProvider } = await import("@azure/cosmos-language-service");
+      const monaco = await loadMonaco();
+      monaco.languages.registerCompletionItemProvider("sql", new SqlCompletionItemProvider());
       EditorViewModel.providerRegistered.push("sql");
     }
   }
 
-  protected getErrorMarkers(input: string): Q.Promise<monaco.editor.IMarkerData[]> {
+  protected async getErrorMarkers(input: string): Promise<monaco.editor.IMarkerData[]> {
+    const { ErrorMarkProvider } = await import("@azure/cosmos-language-service");
     return ErrorMarkProvider.getErrorMark(input);
   }
 }

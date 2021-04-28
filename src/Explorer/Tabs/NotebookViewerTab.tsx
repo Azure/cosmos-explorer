@@ -1,16 +1,15 @@
 import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import {
   NotebookViewerComponent,
   NotebookViewerComponentProps,
 } from "../Controls/NotebookViewer/NotebookViewerComponent";
-import TabsBase from "./TabsBase";
 import Explorer from "../Explorer";
-import { DatabaseAccount } from "../../Contracts/DataModels";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import template from "./NotebookViewerTab.html";
+import TabsBase from "./TabsBase";
 
 interface NotebookViewerTabOptions extends ViewModels.TabOptions {
   account: DatabaseAccount;
@@ -39,7 +38,7 @@ class NotebookViewerComponentAdapter implements ReactAdapter {
 }
 
 export default class NotebookViewerTab extends TabsBase {
-  public static readonly component = { name: "notebook-viewer-tab", template };
+  public readonly html = '<div style="height: 100%" data-bind="react:notebookViewerComponentAdapter"></div>';
   private container: Explorer;
   public notebookUrl: string;
 

@@ -3,16 +3,16 @@ import * as Constants from "../../Common/Constants";
 import { createTrigger } from "../../Common/dataAccess/createTrigger";
 import { updateTrigger } from "../../Common/dataAccess/updateTrigger";
 import editable from "../../Common/EditableUtility";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Trigger from "../Tree/Trigger";
 import ScriptTabBase from "./ScriptTabBase";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import template from "./TriggerTab.html";
 
 export default class TriggerTab extends ScriptTabBase {
-  public static readonly component = { name: "trigger-tab", template };
+  public readonly html = template;
   public collection: ViewModels.Collection;
   public node: Trigger;
   public triggerType: ViewModels.Editable<string>;

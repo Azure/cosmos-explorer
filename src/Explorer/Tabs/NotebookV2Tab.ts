@@ -29,14 +29,13 @@ import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/Notebook
 import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
-import template from "./NotebookV2Tab.html";
 
 export interface NotebookTabOptions extends NotebookTabBaseOptions {
   notebookContentItem: NotebookContentItem;
 }
 
 export default class NotebookTabV2 extends NotebookTabBase {
-  public static readonly component = { name: "notebookv2-tab", template };
+  public readonly html = '<div data-bind="react:notebookComponentAdapter" style="height: 100%"></div>';
   public notebookPath: ko.Observable<string>;
   private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;

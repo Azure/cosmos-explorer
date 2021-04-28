@@ -3,7 +3,7 @@
  */
 
 import { ImmutableNotebook } from "@nteract/commutable";
-import { IContentProvider } from "@nteract/core";
+import type { IContentProvider } from "@nteract/core";
 import ko from "knockout";
 import React from "react";
 import { contents } from "rx-jupyter";
@@ -22,12 +22,17 @@ import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
-import { OpenPublishPaneReturnType, PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
+import { OpenPublishPaneReturnType, PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { SnapshotRequest } from "./NotebookComponent/types";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
+
+type NotebookPaneContent = string | ImmutableNotebook;
+
+export type { NotebookPaneContent };
+
 export interface NotebookManagerOptions {
   container: Explorer;
   notebookBasePath: ko.Observable<string>;
@@ -49,7 +54,6 @@ export default class NotebookManager {
   private gitHubClient: GitHubClient;
 
   public gitHubReposPane: ContextualPaneBase;
-  public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
@@ -87,8 +91,6 @@ export default class NotebookManager {
       this.notebookContentProvider
     );
 
-    this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
-
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
       this.gitHubClient.setToken(token?.access_token);
 
@@ -116,10 +118,23 @@ export default class NotebookManager {
 
   public async openPublishNotebookPane(
     name: string,
-    content: string | ImmutableNotebook,
+    content: NotebookPaneContent,
     onTakeSnapshot: (request: SnapshotRequest) => void
   ): Promise<OpenPublishPaneReturnType> {
-    return await this.publishNotebookPaneAdapter.open(name, getFullName(), content, onTakeSnapshot);
+    const explorer = this.params.container;
+    explorer.openSidePanel(
+      "New Collection",
+      <PublishNotebookPane
+        explorer={this.params.container}
+        junoClient={this.junoClient}
+        closePanel={this.params.container.closeSidePanel}
+        openNotificationConsole={this.params.container.expandConsole}
+        name={name}
+        author={getFullName()}
+        notebookContent={content}
+        onTakeSnapshot={onTakeSnapshot}
+      />
+    );
   }
 
   public openCopyNotebookPane(name: string, content: string): void {
