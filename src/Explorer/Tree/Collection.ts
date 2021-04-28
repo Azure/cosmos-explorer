@@ -127,16 +127,12 @@ export default class Collection implements ViewModels.Collection {
         this.partitionKey.paths[0]) ||
       null;
 
-    if (!!container.isPreferredApiMongoDB() && this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
+    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
       this.partitionKeyProperty = this.partitionKeyProperty.replace(/["]+/g, "");
     }
 
     // TODO #10738269 : Add this logic in a derived class for Mongo
-    if (
-      !!container.isPreferredApiMongoDB() &&
-      this.partitionKeyProperty &&
-      this.partitionKeyProperty.indexOf("$v") > -1
-    ) {
+    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && this.partitionKeyProperty.indexOf("$v") > -1) {
       // From $v.shard.$v.key.$v > shard.key
       this.partitionKeyProperty = this.partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
       this.partitionKeyPropertyHeader = "/" + this.partitionKeyProperty;
@@ -1123,7 +1119,7 @@ export default class Collection implements ViewModels.Collection {
     } else if (userContext.apiType === "Gremlin") {
       this.onGraphDocumentsClick();
       return;
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       this.onMongoDBDocumentsClick();
       return;
     }
@@ -1141,7 +1137,7 @@ export default class Collection implements ViewModels.Collection {
       return "Rows";
     } else if (userContext.apiType === "Gremlin") {
       return "Graph";
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       return "Documents";
     }
 
