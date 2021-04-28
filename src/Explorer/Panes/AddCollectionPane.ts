@@ -724,6 +724,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     }
   }
 
+  private isMongo(): boolean {
+    return userContext.apiType === "Mongo";
+  }
+
   private _onDatabasesChange(newDatabaseIds: ViewModels.Database[]) {
     this.databaseIds(newDatabaseIds?.map((database: ViewModels.Database) => database.id()));
   }

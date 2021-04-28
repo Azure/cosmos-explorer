@@ -185,10 +185,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiMongoDB() &&
-        collection.onSchemaAnalyzerClick();
+      collection && userContext.apiType === "Mongo" && collection.onSchemaAnalyzerClick();
     });
   }
 
