@@ -32,7 +32,7 @@ Code changes need to be made only in the following files
 ### 1. JSON file for UI strings
 
 #### Naming Convention
-`Localization/en/<FEATURE_NAME.>json`\
+`Localization/en/<FEATURE_NAME>.json`\
 Please place your files only under "Localization/en" folder. If not, the UI strings will not be picked up by the framework.
 
 #### Example
@@ -71,7 +71,7 @@ You can learn more on how to define the class file [here](./selfserve.html#4-cla
 ### 2. Types file
 
 #### Naming Convention
-`<FEATURE_NAME.types.ts>`
+`<FEATURE_NAME>.types.ts`
 
 #### Example
 [SelfServeExample.types.ts](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/Example/SelfServeExample.types.ts)
