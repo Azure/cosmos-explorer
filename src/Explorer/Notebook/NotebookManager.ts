@@ -1,7 +1,6 @@
 /*
  * Contains all notebook related stuff meant to be dynamically loaded by explorer
  */
-
 import { ImmutableNotebook } from "@nteract/commutable";
 import { IContentProvider } from "@nteract/core";
 import ko from "knockout";
@@ -12,7 +11,6 @@ import * as Logger from "../../Common/Logger";
 import { MemoryUsageInfo } from "../../Contracts/DataModels";
 import { GitHubClient } from "../../GitHub/GitHubClient";
 import { GitHubContentProvider } from "../../GitHub/GitHubContentProvider";
-import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -21,10 +19,10 @@ import Explorer from "../Explorer";
 import { CopyNotebookPaneAdapter } from "../Panes/CopyNotebookPane";
 import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
+import { GitHubOAuthService } from "./../../GitHub/GitHubOAuthService";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
-
 export interface NotebookManagerOptions {
   container: Explorer;
   notebookBasePath: ko.Observable<string>;
@@ -47,7 +45,6 @@ export default class NotebookManager {
 
   public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
   public copyNotebookPaneAdapter: CopyNotebookPaneAdapter;
-
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
     this.junoClient = new JunoClient(this.params.container.databaseAccount);
@@ -87,8 +84,10 @@ export default class NotebookManager {
 
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
       this.gitHubClient.setToken(token?.access_token);
-
-      this.params.container.openGitHubReposPanel("Manager GitHub settings");
+      if (this?.gitHubOAuthService.isLoggedIn()) {
+        this.params.container.closeSidePanel();
+        this.params.container.openGitHubReposPanel("Manager GitHub settings", this.junoClient);
+      }
 
       this.params.refreshCommandBarButtons();
       this.params.refreshNotebookList();

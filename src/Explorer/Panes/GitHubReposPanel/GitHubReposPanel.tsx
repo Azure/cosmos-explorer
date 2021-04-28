@@ -1,5 +1,4 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React from "react";
 import { Areas, HttpStatusCodes } from "../../../Common/Constants";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { GitHubClient, IGitHubPageInfo, IGitHubRepo } from "../../../GitHub/GitHubClient";
@@ -14,7 +13,7 @@ import {
   GitHubReposComponentProps,
   RepoListItem,
 } from "../../Controls/GitHub/GitHubReposComponent";
-import { GitHubReposComponentAdapter } from "../../Controls/GitHub/GitHubReposComponentAdapter";
+import { ContentMainStyle } from "../../Controls/GitHub/GitHubStyleConstants";
 import { BranchesProps, PinnedReposProps, UnpinnedReposProps } from "../../Controls/GitHub/ReposListComponent";
 import Explorer from "../../Explorer";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
@@ -28,82 +27,93 @@ interface IGitHubReposPanelProps {
   openNotificationConsole: () => void;
 }
 
-export const GitHubReposPanel: FunctionComponent<IGitHubReposPanelProps> = ({
-  explorer,
-  closePanel,
-  gitHubClientProp,
-  junoClientProp,
-  openNotificationConsole,
-}: IGitHubReposPanelProps): JSX.Element => {
-  const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
+interface IGitHubReposPanelState {
+  showAuthorizationAcessState: boolean;
+  isExecuting: boolean;
+  errorMessage: string;
+  showErrorDetails: boolean;
+  gitHubReposState: GitHubReposComponentProps;
+}
+export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IGitHubReposPanelState> {
+  private static readonly PageSize = 30;
+  private isAddedRepo = false;
+  private gitHubClient: GitHubClient;
+  private junoClient: JunoClient;
 
-  const PageSize = 30;
+  private branchesProps: Record<string, BranchesProps>;
+  private pinnedReposProps: PinnedReposProps;
+  private unpinnedReposProps: UnpinnedReposProps;
 
-  const gitHubClient: GitHubClient = gitHubClientProp;
-  const junoClient: JunoClient = junoClientProp;
+  private allGitHubRepos: IGitHubRepo[];
+  private allGitHubReposLastPageInfo?: IGitHubPageInfo;
+  private pinnedReposUpdated: boolean;
 
-  const branchesProps: Record<string, BranchesProps> = {};
-  const pinnedReposProps: PinnedReposProps = {
-    repos: [],
-  };
-  const unpinnedReposProps: UnpinnedReposProps = {
-    repos: [],
-    hasMore: true,
-    isLoading: true,
-    loadMore: (): Promise<void> => loadMoreUnpinnedRepos(),
-  };
+  constructor(props: IGitHubReposPanelProps) {
+    super(props);
 
-  const getOAuthScope = (): string => {
-    return (
-      explorer.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope ||
-      AuthorizeAccessComponent.Scopes.Public.key
-    );
-  };
+    this.unpinnedReposProps = {
+      repos: [],
+      hasMore: true,
+      isLoading: true,
+      loadMore: (): Promise<void> => this.loadMoreUnpinnedRepos(),
+    };
+    this.branchesProps = {};
+    this.pinnedReposProps = {
+      repos: [],
+    };
 
-  const gitHubReposProps: GitHubReposComponentProps = {
-    showAuthorizeAccess: true,
-    authorizeAccessProps: {
-      scope: getOAuthScope(),
-      authorizeAccess: (scope): void => connectToGitHub(scope),
-    },
-    reposListProps: {
-      branchesProps: branchesProps,
-      pinnedReposProps: pinnedReposProps,
-      unpinnedReposProps: unpinnedReposProps,
-      pinRepo: (item): Promise<void> => pinRepo(item),
-      unpinRepo: (item): Promise<void> => unpinRepo(item),
-    },
-    addRepoProps: {
-      container: explorer,
-      getRepo: (owner, repo): Promise<IGitHubRepo> => getRepo(owner, repo),
-      pinRepo: (item): Promise<void> => pinRepo(item),
-    },
-    resetConnection: (): void => setup(true),
-    onOkClick: (): Promise<void> => submit(),
-    onCancelClick: (): void => closePanel(),
-  };
-  const gitHubReposAdapter: GitHubReposComponentAdapter = new GitHubReposComponentAdapter(gitHubReposProps);
-  const [allGitHubRepos, setAllGitHubRepos] = useState<IGitHubRepo[]>([]);
-  const [allGitHubReposLastPageInfo, setAllGitHubReposLastPageInfo] = useState<IGitHubPageInfo>(undefined);
-  const [pinnedReposUpdatedState, setPinnedReposUpdated] = useState(false);
-  useEffect(() => {
-    resetData();
-    setup();
-    //eslint-disable-next-line
-  }, []);
+    this.allGitHubRepos = [];
+    this.allGitHubReposLastPageInfo = undefined;
+    this.pinnedReposUpdated = false;
 
-  const submit = async (): Promise<void> => {
-    setErrorMessage("");
-    setShowErrorDetails(false);
+    this.state = {
+      showAuthorizationAcessState: true,
+      isExecuting: false,
+      errorMessage: "",
+      showErrorDetails: false,
+      gitHubReposState: {
+        showAuthorizeAccess: !this.props.explorer.notebookManager?.gitHubOAuthService.isLoggedIn(),
+        authorizeAccessProps: {
+          scope: this.getOAuthScope(),
+          authorizeAccess: (scope): void => this.connectToGitHub(scope),
+        },
+        reposListProps: {
+          branchesProps: this.branchesProps,
+          pinnedReposProps: this.pinnedReposProps,
+          unpinnedReposProps: this.unpinnedReposProps,
+          pinRepo: (item): Promise<void> => this.pinRepo(item),
+          unpinRepo: (item): Promise<void> => this.unpinRepo(item),
+        },
+        addRepoProps: {
+          container: this.props.explorer,
+          getRepo: (owner, repo): Promise<IGitHubRepo> => this.getRepo(owner, repo),
+          pinRepo: (item): Promise<void> => this.pinRepo(item),
+        },
+        resetConnection: (): void => this.setup(true),
+        onOkClick: (): Promise<void> => this.submit(),
+        onCancelClick: (): void => this.props.closePanel(),
+      },
+    };
+    this.gitHubClient = this.props.gitHubClientProp;
+    this.junoClient = this.props.junoClientProp;
+  }
 
-    const pinnedReposUpdated = pinnedReposUpdatedState;
-    const reposToPin: IPinnedRepo[] = pinnedReposProps.repos.map((repo) => JunoUtils.toPinnedRepo(repo));
+  componentDidMount(): void {
+    this.open();
+  }
+
+  public open(): void {
+    this.resetData();
+    this.setup();
+  }
+
+  public async submit(): Promise<void> {
+    const pinnedReposUpdated = this.pinnedReposUpdated;
+    const reposToPin: IPinnedRepo[] = this.pinnedReposProps.repos.map((repo) => JunoUtils.toPinnedRepo(repo));
 
     if (pinnedReposUpdated) {
       try {
-        const response = await junoClient.updatePinnedRepos(reposToPin);
+        const response = await this.junoClient.updatePinnedRepos(reposToPin);
         if (response.status !== HttpStatusCodes.OK) {
           throw new Error(`Received HTTP ${response.status} when saving pinned repos`);
         }
@@ -111,52 +121,55 @@ export const GitHubReposPanel: FunctionComponent<IGitHubReposPanelProps> = ({
         handleError(error, "GitHubReposPane/submit", "Failed to save pinned repos");
       }
     }
-  };
+  }
 
-  const resetData = (): void => {
-    gitHubReposProps.reposListProps.branchesProps = branchesProps;
+  public resetData(): void {
+    this.branchesProps = {};
 
-    pinnedReposProps.repos = [];
-    unpinnedReposProps.repos = [];
+    this.pinnedReposProps.repos = [];
+    this.unpinnedReposProps.repos = [];
+    this.allGitHubRepos = [];
+    this.allGitHubReposLastPageInfo = undefined;
 
-    setAllGitHubRepos([]);
-    setAllGitHubReposLastPageInfo(undefined);
+    this.pinnedReposUpdated = false;
+    this.unpinnedReposProps.hasMore = true;
+    this.unpinnedReposProps.isLoading = true;
+  }
 
-    setPinnedReposUpdated(false);
-    unpinnedReposProps.hasMore = true;
-    unpinnedReposProps.isLoading = true;
+  private getOAuthScope(): string {
+    return (
+      this.props.explorer.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope ||
+      AuthorizeAccessComponent.Scopes.Public.key
+    );
+  }
 
-    triggerRender();
-  };
+  private setup(forceShowConnectToGitHub = false): void {
+    forceShowConnectToGitHub || !this.props.explorer.notebookManager?.gitHubOAuthService.isLoggedIn()
+      ? this.setupForConnectToGitHub()
+      : this.setupForManageRepos();
+  }
 
-  const setup = (forceShowConnectToGitHub = false): void => {
-    forceShowConnectToGitHub || !explorer.notebookManager?.gitHubOAuthService.isLoggedIn()
-      ? setupForConnectToGitHub()
-      : setupForManageRepos();
-  };
+  private setupForConnectToGitHub(): void {
+    this.setState({
+      isExecuting: false,
+    });
+  }
 
-  const setupForConnectToGitHub = (): void => {
-    gitHubReposProps.showAuthorizeAccess = false;
-    gitHubReposProps.authorizeAccessProps.scope = getOAuthScope();
-    setLoadingFalse();
-    triggerRender();
-  };
-
-  const setupForManageRepos = async (): Promise<void> => {
-    gitHubReposProps.showAuthorizeAccess = true;
-    setLoadingFalse();
+  private async setupForManageRepos(): Promise<void> {
+    this.setState({
+      isExecuting: false,
+    });
     TelemetryProcessor.trace(Action.NotebooksGitHubManageRepo, ActionModifiers.Mark, {
       dataExplorerArea: Areas.Notebook,
     });
-    triggerRender();
 
-    refreshManageReposComponent();
-  };
+    this.refreshManageReposComponent();
+  }
 
-  const calculateUnpinnedRepos = (): RepoListItem[] => {
-    const unpinnedGitHubRepos = allGitHubRepos.filter(
+  private calculateUnpinnedRepos(): RepoListItem[] {
+    const unpinnedGitHubRepos = this.allGitHubRepos.filter(
       (gitHubRepo) =>
-        pinnedReposProps.repos.findIndex(
+        this.pinnedReposProps.repos.findIndex(
           (pinnedRepo) => pinnedRepo.key === GitHubUtils.toRepoFullName(gitHubRepo.owner, gitHubRepo.name)
         ) === -1
     );
@@ -165,117 +178,166 @@ export const GitHubReposPanel: FunctionComponent<IGitHubReposPanelProps> = ({
       repo: gitHubRepo,
       branches: [],
     }));
-  };
+  }
 
-  const loadMoreBranches = async (repo: IGitHubRepo): Promise<void> => {
-    const branchesPropsLoadMore = branchesProps[GitHubUtils.toRepoFullName(repo.owner, repo.name)];
-    branchesPropsLoadMore.hasMore = true;
-    branchesPropsLoadMore.isLoading = true;
-    triggerRender();
+  private async loadMoreBranches(repo: IGitHubRepo): Promise<void> {
+    const branchesProps = this.branchesProps[GitHubUtils.toRepoFullName(repo.owner, repo.name)];
+    branchesProps.hasMore = true;
+    branchesProps.isLoading = true;
 
     try {
-      const response = await gitHubClient.getBranchesAsync(
+      const response = await this.gitHubClient.getBranchesAsync(
         repo.owner,
         repo.name,
-        PageSize,
-        branchesPropsLoadMore.lastPageInfo?.endCursor
+        GitHubReposPanel.PageSize,
+        branchesProps.lastPageInfo?.endCursor
       );
+
       if (response.status !== HttpStatusCodes.OK) {
         throw new Error(`Received HTTP ${response.status} when fetching branches`);
       }
 
       if (response.data) {
-        branchesPropsLoadMore.branches = branchesPropsLoadMore.branches.concat(response.data);
-        branchesPropsLoadMore.lastPageInfo = response.pageInfo;
+        branchesProps.branches = branchesProps.branches.concat(response.data);
+        branchesProps.lastPageInfo = response.pageInfo;
       }
     } catch (error) {
       handleError(error, "GitHubReposPane/loadMoreBranches", "Failed to fetch branches");
     }
 
-    branchesPropsLoadMore.isLoading = false;
-    branchesPropsLoadMore.hasMore = branchesPropsLoadMore.lastPageInfo?.hasNextPage;
-    triggerRender();
-  };
+    branchesProps.isLoading = false;
+    branchesProps.hasMore = branchesProps.lastPageInfo?.hasNextPage;
+    this.setState({
+      gitHubReposState: {
+        ...this.state.gitHubReposState,
+        reposListProps: {
+          ...this.state.gitHubReposState.reposListProps,
+          branchesProps: {
+            ...this.state.gitHubReposState.reposListProps.branchesProps,
+            [GitHubUtils.toRepoFullName(repo.owner, repo.name)]: branchesProps,
+          },
+          pinnedReposProps: {
+            repos: this.pinnedReposProps.repos,
+          },
+          unpinnedReposProps: {
+            ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
+            repos: this.unpinnedReposProps.repos,
+          },
+        },
+      },
+    });
+  }
 
-  const loadMoreUnpinnedRepos = async (): Promise<void> => {
-    unpinnedReposProps.isLoading = true;
-    unpinnedReposProps.hasMore = true;
-    triggerRender();
+  private async loadMoreUnpinnedRepos(): Promise<void> {
+    this.unpinnedReposProps.isLoading = true;
+    this.unpinnedReposProps.hasMore = true;
 
     try {
-      const response = await gitHubClient.getReposAsync(PageSize, allGitHubReposLastPageInfo?.endCursor);
+      const response = await this.gitHubClient.getReposAsync(
+        GitHubReposPanel.PageSize,
+        this.allGitHubReposLastPageInfo?.endCursor
+      );
+
       if (response.status !== HttpStatusCodes.OK) {
         throw new Error(`Received HTTP ${response.status} when fetching unpinned repos`);
       }
 
       if (response.data) {
-        setAllGitHubRepos(allGitHubRepos.concat(response.data));
-        setAllGitHubReposLastPageInfo(response.pageInfo);
-        unpinnedReposProps.repos = calculateUnpinnedRepos();
+        this.allGitHubRepos = this.allGitHubRepos.concat(response.data);
+        this.allGitHubReposLastPageInfo = response.pageInfo;
+        this.unpinnedReposProps.repos = this.calculateUnpinnedRepos();
       }
     } catch (error) {
       handleError(error, "GitHubReposPane/loadMoreUnpinnedRepos", "Failed to fetch unpinned repos");
     }
 
-    unpinnedReposProps.isLoading = false;
-    unpinnedReposProps.hasMore = allGitHubReposLastPageInfo?.hasNextPage;
-    triggerRender();
-  };
+    this.unpinnedReposProps.isLoading = false;
+    this.unpinnedReposProps.hasMore = this.allGitHubReposLastPageInfo?.hasNextPage;
 
-  const getRepo = async (owner: string, repo: string): Promise<IGitHubRepo> => {
+    this.setState({
+      gitHubReposState: {
+        ...this.state.gitHubReposState,
+        reposListProps: {
+          ...this.state.gitHubReposState.reposListProps,
+          unpinnedReposProps: {
+            ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
+            isLoading: this.unpinnedReposProps.isLoading,
+            hasMore: this.unpinnedReposProps.hasMore,
+            repos: this.unpinnedReposProps.repos,
+          },
+        },
+      },
+    });
+  }
+
+  private async getRepo(owner: string, repo: string): Promise<IGitHubRepo> {
     try {
-      const response = await gitHubClient.getRepoAsync(owner, repo);
+      const response = await this.gitHubClient.getRepoAsync(owner, repo);
       if (response.status !== HttpStatusCodes.OK) {
         throw new Error(`Received HTTP ${response.status} when fetching repo`);
       }
-
+      this.isAddedRepo = true;
       return response.data;
     } catch (error) {
       handleError(error, "GitHubReposPane/getRepo", "Failed to fetch repo");
       return Promise.resolve(undefined);
     }
-  };
+  }
 
-  const pinRepo = async (item: RepoListItem): Promise<void> => {
-    setPinnedReposUpdated(true);
-    const initialReposLength = pinnedReposProps.repos.length;
+  private async pinRepo(item: RepoListItem): Promise<void> {
+    this.pinnedReposUpdated = true;
+    const initialReposLength = this.pinnedReposProps.repos.length;
 
-    const existingRepo = pinnedReposProps.repos.find((repo) => repo.key === item.key);
+    const existingRepo = this.pinnedReposProps.repos.find((repo) => repo.key === item.key);
     if (existingRepo) {
       existingRepo.branches = item.branches;
     } else {
-      pinnedReposProps.repos = [...pinnedReposProps.repos, item];
+      this.pinnedReposProps.repos = [...this.pinnedReposProps.repos, item];
     }
 
-    unpinnedReposProps.repos = calculateUnpinnedRepos();
-    triggerRender();
+    this.unpinnedReposProps.repos = this.calculateUnpinnedRepos();
 
-    if (pinnedReposProps.repos.length > initialReposLength) {
-      refreshBranchesForPinnedRepos();
+    if (this.pinnedReposProps.repos.length > initialReposLength) {
+      this.refreshBranchesForPinnedRepos();
     }
-  };
+  }
 
-  const unpinRepo = async (item: RepoListItem): Promise<void> => {
-    setPinnedReposUpdated(true);
-    pinnedReposProps.repos = pinnedReposProps.repos.filter((pinnedRepo) => pinnedRepo.key !== item.key);
-    unpinnedReposProps.repos = calculateUnpinnedRepos();
-    triggerRender();
-  };
+  private async unpinRepo(item: RepoListItem): Promise<void> {
+    this.pinnedReposUpdated = true;
+    this.pinnedReposProps.repos = this.pinnedReposProps.repos.filter((pinnedRepo) => pinnedRepo.key !== item.key);
+    this.unpinnedReposProps.repos = this.calculateUnpinnedRepos();
 
-  const refreshManageReposComponent = async (): Promise<void> => {
-    await refreshPinnedRepoListItems();
-    refreshBranchesForPinnedRepos();
-    refreshUnpinnedRepoListItems();
-  };
+    this.setState({
+      gitHubReposState: {
+        ...this.state.gitHubReposState,
+        reposListProps: {
+          ...this.state.gitHubReposState.reposListProps,
+          pinnedReposProps: {
+            repos: this.pinnedReposProps.repos,
+          },
+          unpinnedReposProps: {
+            ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
+            repos: this.unpinnedReposProps.repos,
+          },
+        },
+      },
+    });
+  }
 
-  const refreshPinnedRepoListItems = async (): Promise<void> => {
-    pinnedReposProps.repos = [];
-    triggerRender();
+  private async refreshManageReposComponent(): Promise<void> {
+    await this.refreshPinnedRepoListItems();
+    this.refreshBranchesForPinnedRepos();
+    this.refreshUnpinnedRepoListItems();
+  }
+
+  private async refreshPinnedRepoListItems(): Promise<void> {
+    this.pinnedReposProps.repos = [];
 
     try {
-      const response = await junoClient.getPinnedRepos(
-        explorer.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope
+      const response = await this.junoClient.getPinnedRepos(
+        this.props.explorer.notebookManager?.gitHubOAuthService.getTokenObservable()()?.scope
       );
+
       if (response.status !== HttpStatusCodes.OK && response.status !== HttpStatusCodes.NoContent) {
         throw new Error(`Received HTTP ${response.status} when fetching pinned repos`);
       }
@@ -290,63 +352,102 @@ export const GitHubReposPanel: FunctionComponent<IGitHubReposPanelProps> = ({
             } as RepoListItem)
         );
 
-        pinnedReposProps.repos = pinnedRepos;
-        triggerRender();
+        this.pinnedReposProps.repos = pinnedRepos;
       }
     } catch (error) {
       handleError(error, "GitHubReposPane/refreshPinnedReposListItems", "Failed to fetch pinned repos");
     }
-  };
+  }
 
-  const refreshBranchesForPinnedRepos = (): void => {
-    pinnedReposProps.repos.map((item) => {
-      if (!branchesProps[item.key]) {
-        branchesProps[item.key] = {
+  private refreshBranchesForPinnedRepos(): void {
+    this.pinnedReposProps.repos.map((item) => {
+      if (!this.branchesProps[item.key]) {
+        this.branchesProps[item.key] = {
           branches: [],
           lastPageInfo: undefined,
           hasMore: true,
           isLoading: true,
-          loadMore: (): Promise<void> => loadMoreBranches(item.repo),
+          loadMore: (): Promise<void> => this.loadMoreBranches(item.repo),
         };
-        loadMoreBranches(item.repo);
+        this.setState({
+          gitHubReposState: {
+            ...this.state.gitHubReposState,
+            reposListProps: {
+              ...this.state.gitHubReposState.reposListProps,
+              branchesProps: {
+                ...this.state.gitHubReposState.reposListProps.branchesProps,
+                [GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)]: this.branchesProps[item.key],
+              },
+              pinnedReposProps: {
+                repos: this.pinnedReposProps.repos,
+              },
+              unpinnedReposProps: {
+                ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
+                repos: this.unpinnedReposProps.repos,
+              },
+            },
+          },
+        });
+        this.loadMoreBranches(item.repo);
+      } else {
+        if (this.isAddedRepo === false) {
+          this.setState({
+            gitHubReposState: {
+              ...this.state.gitHubReposState,
+              reposListProps: {
+                ...this.state.gitHubReposState.reposListProps,
+                pinnedReposProps: {
+                  repos: this.pinnedReposProps.repos,
+                },
+                unpinnedReposProps: {
+                  ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
+                  repos: this.unpinnedReposProps.repos,
+                },
+              },
+            },
+          });
+        }
       }
     });
-  };
+    this.isAddedRepo = false;
+  }
 
-  const refreshUnpinnedRepoListItems = async (): Promise<void> => {
-    setAllGitHubRepos([]);
-    setAllGitHubReposLastPageInfo(undefined);
-    unpinnedReposProps.repos = [];
-    loadMoreUnpinnedRepos();
-  };
+  private async refreshUnpinnedRepoListItems(): Promise<void> {
+    this.allGitHubRepos = [];
+    this.allGitHubReposLastPageInfo = undefined;
+    this.unpinnedReposProps.repos = [];
 
-  const connectToGitHub = (scope: string): void => {
-    setLoadingTrue();
+    this.loadMoreUnpinnedRepos();
+  }
+
+  private connectToGitHub(scope: string): void {
+    this.setState({
+      isExecuting: true,
+    });
     TelemetryProcessor.trace(Action.NotebooksGitHubAuthorize, ActionModifiers.Mark, {
       dataExplorerArea: Areas.Notebook,
       scopesSelected: scope,
     });
-    explorer.notebookManager?.gitHubOAuthService.startOAuth(scope);
-  };
+    this.props.explorer.notebookManager?.gitHubOAuthService.startOAuth(scope);
+  }
 
-  const triggerRender = (): void => {
-    gitHubReposAdapter.triggerRender();
-  };
+  render(): JSX.Element {
+    return (
+      <form className="panelFormWrapper">
+        {this.state.errorMessage && (
+          <PanelInfoErrorComponent
+            message={this.state.errorMessage}
+            messageType="error"
+            showErrorDetails={this.state.showErrorDetails}
+            openNotificationConsole={this.props.openNotificationConsole}
+          />
+        )}
+        <div className="panelMainContent" style={ContentMainStyle}>
+          <GitHubReposComponent {...this.state.gitHubReposState} />
+        </div>
 
-  return (
-    <form className="panelFormWrapper">
-      {errorMessage && (
-        <PanelInfoErrorComponent
-          message={errorMessage}
-          messageType="error"
-          showErrorDetails={showErrorDetails}
-          openNotificationConsole={openNotificationConsole}
-        />
-      )}
-      <div className="panelMainContent">
-        <GitHubReposComponent {...gitHubReposProps} />
-      </div>
-      {isLoading && <PanelLoadingScreen />}
-    </form>
-  );
-};
+        {this.state.isExecuting && <PanelLoadingScreen />}
+      </form>
+    );
+  }
+}

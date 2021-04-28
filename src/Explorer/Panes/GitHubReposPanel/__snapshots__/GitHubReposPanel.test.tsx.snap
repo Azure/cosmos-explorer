@@ -6,6 +6,12 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
 >
   <div
     className="panelMainContent"
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+      }
+    }
   >
     <GitHubReposComponent
       addRepoProps={

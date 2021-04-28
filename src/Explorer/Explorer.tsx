@@ -2292,14 +2292,14 @@ export default class Explorer {
     );
   }
 
-  public openGitHubReposPanel(header: string): void {
+  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     this.openSidePanel(
       header,
       <GitHubReposPanel
         explorer={this}
         closePanel={this.closeSidePanel}
-        gitHubClientProp={this.gitHubClient}
-        junoClientProp={this.junoClient}
+        gitHubClientProp={this.notebookManager.gitHubClient}
+        junoClientProp={junoClient}
         openNotificationConsole={() => this.expandConsole()}
       />
     );
