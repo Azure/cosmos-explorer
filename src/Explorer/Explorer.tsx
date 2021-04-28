@@ -6,7 +6,6 @@ import React from "react";
 import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
-import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
@@ -174,7 +173,6 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public gitHubReposPane: ContextualPaneBase;
-  public publishNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGitHubPaneEnabled: ko.Observable<boolean>;
@@ -1410,7 +1408,6 @@ export default class Explorer {
   ): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
-      this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
   }

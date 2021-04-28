@@ -1,9 +1,9 @@
-jest.mock("../../../Juno/JunoClient");
+jest.mock("../../../../Juno/JunoClient");
 import { shallow } from "enzyme";
 import React from "react";
-import { CodeOfConductComponent, CodeOfConductComponentProps } from "./CodeOfConductComponent";
-import { JunoClient } from "../../../Juno/JunoClient";
-import { HttpStatusCodes } from "../../../Common/Constants";
+import { CodeOfConductComponent, CodeOfConductComponentProps } from ".";
+import { HttpStatusCodes } from "../../../../Common/Constants";
+import { JunoClient } from "../../../../Juno/JunoClient";
 
 describe("CodeOfConductComponent", () => {
   let codeOfConductProps: CodeOfConductComponentProps;
