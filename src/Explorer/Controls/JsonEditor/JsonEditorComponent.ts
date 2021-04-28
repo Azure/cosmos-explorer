@@ -1,6 +1,5 @@
-import Q from "q";
-import * as monaco from "monaco-editor";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { loadMonaco, monaco } from "../../LazyMonaco";
 import { WaitsForTemplateViewModel } from "../../WaitsForTemplateViewModel";
 import template from "./json-editor-component.html";
 
@@ -88,7 +87,7 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
   /**
    * Create the monaco editor and attach to DOM
    */
-  protected createEditor(content: string, createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
+  protected async createEditor(content: string, createCallback: (e: monaco.editor.IStandaloneCodeEditor) => void) {
     this.registerCompletionItemProvider();
     this.editorContainer = document.getElementById(this.getEditorId());
     const options: monaco.editor.IEditorConstructionOptions = {
@@ -102,6 +101,7 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
     };
 
     this.editorContainer.innerHTML = "";
+    const monaco = await loadMonaco();
     createCallback(monaco.editor.create(this.editorContainer, options));
   }
 
@@ -109,15 +109,16 @@ export class JsonEditorViewModel extends WaitsForTemplateViewModel {
   protected registerCompletionItemProvider() {}
 
   // Interface. Will be implemented in children editor view model such as EditorViewModel.
-  protected getErrorMarkers(input: string): Q.Promise<monaco.editor.IMarkerData[]> {
-    return Q.Promise(() => {});
+  protected async getErrorMarkers(_: string): Promise<monaco.editor.IMarkerData[]> {
+    return [];
   }
 
   protected getEditorLanguage(): string {
     return "json";
   }
 
-  protected configureEditor(editor: monaco.editor.IStandaloneCodeEditor) {
+  protected async configureEditor(editor: monaco.editor.IStandaloneCodeEditor) {
+    const monaco = await loadMonaco();
     this.editor = editor;
     const queryEditorModel = this.editor.getModel();
     if (!this.params.isReadOnly && this.params.updatedContent) {
