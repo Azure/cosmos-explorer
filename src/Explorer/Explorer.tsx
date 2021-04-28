@@ -6,7 +6,6 @@ import React from "react";
 import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
-import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
@@ -72,7 +71,6 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
-import type { GalleryTabOptions } from "./Tabs/GalleryTab";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
 import { TabsManager } from "./Tabs/TabsManager";
@@ -174,7 +172,6 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public gitHubReposPane: ContextualPaneBase;
-  public publishNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGitHubPaneEnabled: ko.Observable<boolean>;
@@ -1410,7 +1407,6 @@ export default class Explorer {
   ): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
-      this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
   }
@@ -1915,33 +1911,35 @@ export default class Explorer {
     const title = "Gallery";
     const hashLocation = "gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
-
-    const galleryTabOptions: GalleryTabOptions = {
-      account: userContext.databaseAccount,
-      container: this,
-      junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTabKind.PublicGallery,
-      notebookUrl,
-      galleryItem,
-      isFavorite,
-      tabKind: ViewModels.CollectionTabKind.Gallery,
-      title: title,
-      tabPath: title,
-      hashLocation: hashLocation,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-    };
-
     const galleryTab = this.tabsManager
       .getTabs(ViewModels.CollectionTabKind.Gallery)
       .find((tab) => tab.hashLocation() == hashLocation);
 
     if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
-      galleryTab.reset(galleryTabOptions);
     } else {
-      this.tabsManager.activateNewTab(new GalleryTab(galleryTabOptions));
+      this.tabsManager.activateNewTab(
+        new GalleryTab(
+          {
+            tabKind: ViewModels.CollectionTabKind.Gallery,
+            title: title,
+            tabPath: title,
+            hashLocation: hashLocation,
+            onUpdateTabsButtons: this.onUpdateTabsButtons,
+            onLoadStartKey: null,
+            isTabsContentExpanded: ko.observable(true),
+          },
+          {
+            account: userContext.databaseAccount,
+            container: this,
+            junoClient: this.notebookManager?.junoClient,
+            selectedTab: selectedTab || GalleryTabKind.PublicGallery,
+            notebookUrl,
+            galleryItem,
+            isFavorite,
+          }
+        )
+      );
     }
   }
 
