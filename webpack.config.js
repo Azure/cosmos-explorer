@@ -6,7 +6,7 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const InlineChunkHtmlPlugin = require("react-dev-utils/InlineChunkHtmlPlugin");
 const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").default;
-const { EnvironmentPlugin } = require("webpack");
+const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const { CleanWebpackPlugin } = require("clean-webpack-plugin");
@@ -116,7 +116,10 @@ module.exports = function (_env = {}, argv = {}) {
       fileName: "version.txt",
       content: `${gitSha.trim()} ${new Date().toUTCString()}`,
     }),
-    new CaseSensitivePathsPlugin(),
+    // new CaseSensitivePathsPlugin(),
+    new ProvidePlugin({
+      process: "process/browser",
+    }),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",
     }),
@@ -229,6 +232,9 @@ module.exports = function (_env = {}, argv = {}) {
         fs: false,
         crypto: false,
         "crypto-browserify": require.resolve("crypto-browserify"), //if you want to use this module also don't forget npm i crypto-browserify
+      },
+      alias: {
+        process: "process/browser",
       },
     },
     optimization: {
