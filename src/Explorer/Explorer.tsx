@@ -2023,14 +2023,14 @@ export default class Explorer {
     }
   }
 
-  public onNewCollectionClicked(): void {
+  public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
     } else if (userContext.features.enableKOPanel) {
       this.addCollectionPane.open(this.selectedDatabaseId());
       document.getElementById("linkAddCollection").focus();
     } else {
-      this.openAddCollectionPanel();
+      this.openAddCollectionPanel(databaseId);
     }
   }
 
@@ -2171,7 +2171,7 @@ export default class Explorer {
     );
   }
 
-  public async openAddCollectionPanel(): Promise<void> {
+  public async openAddCollectionPanel(databaseId?: string): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
       "New " + getCollectionName(),
@@ -2179,6 +2179,7 @@ export default class Explorer {
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+        databaseId={databaseId}
       />
     );
   }

@@ -37,6 +37,7 @@ export interface AddCollectionPanelProps {
   explorer: Explorer;
   closePanel: () => void;
   openNotificationConsole: () => void;
+  databaseId?: string;
 }
 
 export interface AddCollectionPanelState {
@@ -59,7 +60,6 @@ export interface AddCollectionPanelState {
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
-  private collectionName: string;
   private newDatabaseThroughput: number;
   private isNewDatabaseAutoscale: boolean;
   private collectionThroughput: number;
@@ -70,10 +70,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     super(props);
 
     this.state = {
-      createNewDatabase: userContext.apiType !== "Tables",
+      createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
       newDatabaseId: "",
       isSharedThroughputChecked: this.getSharedThroughputDefault(),
-      selectedDatabaseId: userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : undefined,
+      selectedDatabaseId:
+        userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : this.props.databaseId,
       collectionId: "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
@@ -126,7 +127,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   true
                 )}.`}
               >
-                <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" />
               </TooltipHost>
             </Stack>
 
@@ -202,7 +203,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         true
                       )} within the database.`}
                     >
-                      <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                      <Icon iconName="Info" className="panelInfoIcon" />
                     </TooltipHost>
                   </Stack>
                 )}
@@ -230,6 +231,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
                   this.setState({ selectedDatabaseId: database.key as string })
                 }
+                defaultSelectedKey={this.props.databaseId}
                 responsiveMode={999}
               />
             )}
@@ -248,7 +250,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   true
                 )} and used for id-based routing through REST and all SDKs.`}
               >
-                <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" />
               </TooltipHost>
             </Stack>
 
@@ -331,7 +333,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
                     }
                   >
-                    <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                    <Icon iconName="Info" className="panelInfoIcon" />
                   </TooltipHost>
                 </Stack>
 
@@ -378,7 +380,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   directionalHint={DirectionalHint.bottomLeftEdge}
                   content={this.getPartitionKeyTooltipText()}
                 >
-                  <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                  <Icon iconName="Info" className="panelInfoIcon" />
                 </TooltipHost>
               </Stack>
 
@@ -434,7 +436,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
-                <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" />
               </TooltipHost>
             </Stack>
           )}
@@ -466,7 +468,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       creating a unique key policy when a container is created, you ensure the uniqueness of one or more values
                       per partition key."
                 >
-                  <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                  <Icon iconName="Info" className="panelInfoIcon" />
                 </TooltipHost>
               </Stack>
 
@@ -540,7 +542,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         directionalHint={DirectionalHint.bottomLeftEdge}
                         content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
                       >
-                        <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                        <Icon iconName="Info" className="panelInfoIcon" />
                       </TooltipHost>
                     </Stack>
 
@@ -584,7 +586,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         directionalHint={DirectionalHint.bottomLeftEdge}
                         content={this.getAnalyticalStorageTooltipContent()}
                       >
-                        <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                        <Icon iconName="Info" className="panelInfoIcon" />
                       </TooltipHost>
                     </Stack>
 

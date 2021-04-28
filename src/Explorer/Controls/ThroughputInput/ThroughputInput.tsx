@@ -47,7 +47,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
             {this.getThroughputLabelText()}
           </Text>
           <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={PricingUtils.getRuToolTipText()}>
-            <Icon iconName="InfoSolid" className="panelInfoIcon" />
+            <Icon iconName="Info" className="panelInfoIcon" />
           </TooltipHost>
         </Stack>
 
@@ -90,7 +90,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
                 {this.props.isDatabase ? "Database" : getCollectionName()} max RU/s
               </Text>
               <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={this.getAutoScaleTooltip()}>
-                <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" />
               </TooltipHost>
             </Stack>
 
@@ -289,7 +289,7 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
       content={PricingUtils.estimatedCostDisclaimer}
       styles={{ root: { verticalAlign: "bottom" } }}
     >
-      <Icon iconName="InfoSolid" className="panelInfoIcon" />
+      <Icon iconName="Info" className="panelInfoIcon" />
     </TooltipHost>
   );
 

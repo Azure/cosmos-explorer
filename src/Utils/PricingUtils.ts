@@ -228,7 +228,7 @@ export function getEstimatedSpendHtml(
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly </b> ` +
     `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)` +
     `<p style='padding: 10px 0px 0px 0px;'>` +
-    `<em>${estimatedCostDisclaimer}</em></p>`
+    `<em>*${estimatedCostDisclaimer}</em></p>`
   );
 }
 
