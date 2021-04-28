@@ -140,7 +140,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 type="radio"
                 role="radio"
                 id="databaseCreateNew"
-                data-test="addCollection-createNewDatabase"
                 tabIndex={0}
                 onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
               />
@@ -154,8 +153,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 name="databaseType"
                 type="radio"
                 role="radio"
-                id="databaseUseExisting"
-                data-test="addCollection-existingDatabase"
                 tabIndex={0}
                 onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
               />
@@ -166,8 +163,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <Stack className="panelGroupSpacing">
                 <input
                   name="newDatabaseId"
-                  id="databaseId"
-                  data-test="addCollection-newDatabaseId"
+                  id="newDatabaseId"
                   aria-required
                   required
                   type="text"
@@ -177,7 +173,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   placeholder="Type a new database id"
                   size={40}
                   className="panelTextField"
-                  aria-label="Database id"
+                  aria-label="New database id"
                   autoFocus
                   value={this.state.newDatabaseId}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
@@ -234,6 +230,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 onChange={(event: React.FormEvent<HTMLDivElement>, database: IDropdownOption) =>
                   this.setState({ selectedDatabaseId: database.key as string })
                 }
+                responsiveMode={999}
               />
             )}
             <Separator className="panelSeparator" />
@@ -258,7 +255,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <input
               name="collectionId"
               id="collectionId"
-              data-test="addCollection-collectionId"
               type="text"
               aria-required
               required
@@ -389,7 +385,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <input
                 type="text"
                 id="addCollection-partitionKeyValue"
-                data-test="addCollection-partitionKeyValue"
                 aria-required
                 required
                 size={40}
