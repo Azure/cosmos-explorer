@@ -1,13 +1,13 @@
 import DiscardIcon from "images/discard.svg";
 import SaveIcon from "images/save-cosmos.svg";
 import * as ko from "knockout";
-import * as monaco from "monaco-editor";
 import Q from "q";
 import * as Constants from "../../Common/Constants";
 import editable from "../../Common/EditableUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { loadMonaco, monaco } from "../LazyMonaco";
 import TabsBase from "./TabsBase";
 
 export default abstract class ScriptTabBase extends TabsBase implements ViewModels.WaitsForTemplate {
@@ -299,38 +299,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     return !!value;
   }
 
-  private static _toSeverity(severity: string): monaco.MarkerSeverity {
-    switch (severity.toLowerCase()) {
-      case "error":
-        return monaco.MarkerSeverity.Error;
-      case "warning":
-        return monaco.MarkerSeverity.Warning;
-      case "info":
-        return monaco.MarkerSeverity.Info;
-      case "ignore":
-      default:
-        return monaco.MarkerSeverity.Hint;
-    }
-  }
-
-  private static _toEditorPosition(target: number, lines: string[]): ViewModels.EditorPosition {
-    let cursor: number = 0;
-    let previousCursor: number = 0;
-    let i: number = 0;
-    while (target > cursor + lines[i].length) {
-      cursor += lines[i].length + 2;
-      i++;
-    }
-
-    const editorPosition: ViewModels.EditorPosition = {
-      line: i + 1,
-      column: target - cursor + 1,
-    };
-
-    return editorPosition;
-  }
-
-  protected _createBodyEditor() {
+  protected async _createBodyEditor() {
     const id = this.editorId;
     const container = document.getElementById(id);
     const options = {
@@ -341,7 +310,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     };
 
     container.innerHTML = "";
-
+    const monaco = await loadMonaco();
     const editor = monaco.editor.create(container, options);
     this.editor(editor);
 
@@ -352,33 +321,5 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
   private _onBodyContentChange(e: monaco.editor.IModelContentChangedEvent) {
     const editorModel = this.editor().getModel();
     this.editorContent(editorModel.getValue());
-  }
-
-  private _setModelMarkers(errors: ViewModels.QueryError[]) {
-    const markers: monaco.editor.IMarkerData[] = errors.map((e) => this._toMarker(e));
-    const editorModel = this.editor().getModel();
-    monaco.editor.setModelMarkers(editorModel, this.tabId, markers);
-  }
-
-  private _resetModelMarkers() {
-    const queryEditorModel = this.editor().getModel();
-    monaco.editor.setModelMarkers(queryEditorModel, this.tabId, []);
-  }
-
-  private _toMarker(error: ViewModels.QueryError): monaco.editor.IMarkerData {
-    const editorModel = this.editor().getModel();
-    const lines: string[] = editorModel.getLinesContent();
-    const start: ViewModels.EditorPosition = ScriptTabBase._toEditorPosition(Number(error.start), lines);
-    const end: ViewModels.EditorPosition = ScriptTabBase._toEditorPosition(Number(error.end), lines);
-
-    return {
-      severity: ScriptTabBase._toSeverity(error.severity),
-      message: error.message,
-      startLineNumber: start.line,
-      startColumn: start.column,
-      endLineNumber: end.line,
-      endColumn: end.column,
-      code: error.code,
-    };
   }
 }

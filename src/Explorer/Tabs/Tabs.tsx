@@ -12,11 +12,15 @@ export const Tabs = ({ tabs, activeTab }: { tabs: readonly Tab[]; activeTab: Tab
     <div id="content" className="flexContainer hideOverflows">
       <div className="nav-tabs-margin">
         <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
-          {...tabs.map((tab) => <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />)}
+          {tabs.map((tab) => (
+            <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
+          ))}
         </ul>
       </div>
       <div className="tabPanesContainer">
-        {...tabs.map((tab) => <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />)}
+        {tabs.map((tab) => (
+          <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
+        ))}
       </div>
     </div>
   </div>

@@ -63,7 +63,7 @@ export class ResourceTreeContextMenuButtonFactory {
       });
     }
 
-    if (container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null),

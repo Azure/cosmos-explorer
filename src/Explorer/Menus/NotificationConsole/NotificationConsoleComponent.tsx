@@ -3,7 +3,7 @@
  */
 
 import LoaderIcon from "images/circular_loader_black_16x16.gif";
-import ClearIcon from "images/Clear.svg";
+import ClearIcon from "images/Clear-disabled.svg"; // need to revert hardikn
 import ErrorBlackIcon from "images/error_black.svg";
 import ErrorRedIcon from "images/error_red.svg";
 import infoBubbleIcon from "images/info-bubble-9x9.svg";

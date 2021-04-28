@@ -11,7 +11,6 @@ import {
   DropTargetConnector,
   DropTargetMonitor,
 } from "react-dnd";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import styled, { StyledComponent } from "styled-components";

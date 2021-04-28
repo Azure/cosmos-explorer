@@ -5,9 +5,9 @@
  */
 
 import CancelIcon from "images/cancel.svg";
-import CheckIcon from "images/check.svg";
+import CheckIcon from "images/check-disabled.svg"; // need to revert hardikn
 import DeleteIcon from "images/delete.svg";
-import EditIcon from "images/edit.svg";
+import EditIcon from "images/Edit_entity.svg";
 import * as React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";

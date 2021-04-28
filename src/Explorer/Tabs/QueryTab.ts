@@ -5,7 +5,6 @@ import * as Constants from "../../Common/Constants";
 import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../Common/dataAccess/queryDocumentsPage";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { HashMap } from "../../Common/HashMap";
 import * as HeadersUtility from "../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
@@ -47,7 +46,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   public splitter: Splitter;
   public isPreferredApiMongoDB: boolean;
 
-  public queryMetrics: ko.Observable<HashMap<DataModels.QueryMetrics>>;
+  public queryMetrics: ko.Observable<Map<string, DataModels.QueryMetrics>>;
   public aggregatedQueryMetrics: ko.Observable<DataModels.QueryMetrics>;
   public activityId: ko.Observable<string>;
   public roundTrips: ko.Observable<number>;
@@ -91,10 +90,8 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.isPreferredApiMongoDB = false;
     this.aggregatedQueryMetrics = ko.observable<DataModels.QueryMetrics>();
     this._resetAggregateQueryMetrics();
-    this.queryMetrics = ko.observable<HashMap<DataModels.QueryMetrics>>(new HashMap<DataModels.QueryMetrics>());
-    this.queryMetrics.subscribe((metrics: HashMap<DataModels.QueryMetrics>) =>
-      this.aggregatedQueryMetrics(this._aggregateQueryMetrics(metrics))
-    );
+    this.queryMetrics = ko.observable<Map<string, DataModels.QueryMetrics>>(new Map());
+    this.queryMetrics.subscribe((metrics) => this.aggregatedQueryMetrics(this._aggregateQueryMetrics(metrics)));
     this.isQueryMetricsEnabled = ko.computed<boolean>(() => {
       return userContext.apiType === "SQL" || false;
     });
@@ -364,13 +361,13 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.queryMetrics.valueHasMutated();
   }
 
-  private _aggregateQueryMetrics(metricsMap: HashMap<DataModels.QueryMetrics>): DataModels.QueryMetrics {
+  private _aggregateQueryMetrics(metricsMap: Map<string, DataModels.QueryMetrics>): DataModels.QueryMetrics {
     if (!metricsMap) {
       return null;
     }
 
     const aggregatedMetrics: DataModels.QueryMetrics = this.aggregatedQueryMetrics();
-    metricsMap.forEach((partitionKeyRangeId: string, queryMetrics: DataModels.QueryMetrics) => {
+    metricsMap.forEach((queryMetrics) => {
       if (queryMetrics) {
         aggregatedMetrics.documentLoadTime =
           queryMetrics.documentLoadTime &&
@@ -510,7 +507,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
       return null;
     }
 
-    const queryMetrics: HashMap<DataModels.QueryMetrics> = this.queryMetrics();
+    const queryMetrics = this.queryMetrics();
     let csvData: string = "";
     const columnHeaders: string =
       [
@@ -528,7 +525,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
         "Document write time (ms)",
       ].join(",") + "\n";
     csvData = csvData + columnHeaders;
-    queryMetrics.forEach((partitionKeyRangeId: string, queryMetric: DataModels.QueryMetrics) => {
+    queryMetrics.forEach((queryMetric, partitionKeyRangeId) => {
       const partitionKeyRangeData: string =
         [
           partitionKeyRangeId,

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-undef */
 require("dotenv/config");
 const path = require("path");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
@@ -84,7 +86,8 @@ const typescriptRule = {
   exclude: /node_modules/,
 };
 
-module.exports = function (env = {}, argv = {}) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+module.exports = function (_env = {}, argv = {}) {
   const mode = argv.mode || "development";
   const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
   const envVars = {
@@ -208,7 +211,6 @@ module.exports = function (env = {}, argv = {}) {
       selfServe: "./src/SelfServe/SelfServe.tsx",
       connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     },
-
     output: {
       chunkFilename: "[name].[chunkhash:6].js",
       filename: "[name].[chunkhash:6].js",
@@ -267,7 +269,7 @@ module.exports = function (env = {}, argv = {}) {
           target: "https://main.documentdb.ext.azure.com",
           changeOrigin: true,
           logLevel: "debug",
-          bypass: function (req, res, proxyOptions) {
+          bypass: (req, res) => {
             if (req.method === "OPTIONS") {
               res.statusCode = 200;
               res.send();
