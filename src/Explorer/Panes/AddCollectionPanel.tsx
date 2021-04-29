@@ -123,8 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`A database is analogous to a namespace. It is the unit of management for a set of ${getCollectionName(
-                  true,
-                  true
+                  { isLowerCase: true, isPlural: true }
                 )}.`}
               >
                 <Icon iconName="Info" className="panelInfoIcon" />
@@ -185,7 +184,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 {!this.isServerlessAccount() && (
                   <Stack horizontal>
                     <Checkbox
-                      label={`Share throughput across ${getCollectionName(true, true)}`}
+                      label={`Share throughput across ${getCollectionName({ isLowerCase: true, isPlural: true })}`}
                       checked={this.state.isSharedThroughputChecked}
                       styles={{
                         text: { fontSize: 12 },
@@ -199,8 +198,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     <TooltipHost
                       directionalHint={DirectionalHint.bottomLeftEdge}
                       content={`Throughput configured at the database level will be shared across all ${getCollectionName(
-                        true,
-                        true
+                        { isLowerCase: true, isPlural: true }
                       )} within the database.`}
                     >
                       <Icon iconName="Info" className="panelInfoIcon" />
@@ -246,9 +244,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content={`Unique identifier for the ${getCollectionName(
-                  true
-                )} and used for id-based routing through REST and all SDKs.`}
+                content={`Unique identifier for the ${getCollectionName({
+                  isLowerCase: true,
+                })} and used for id-based routing through REST and all SDKs.`}
               >
                 <Icon iconName="Info" className="panelInfoIcon" />
               </TooltipHost>
@@ -414,7 +412,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           {!this.isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
             <Stack horizontal verticalAlign="center">
               <Checkbox
-                label={`Provision dedicated throughput for this ${getCollectionName(true)}`}
+                label={`Provision dedicated throughput for this ${getCollectionName({ isLowerCase: true })}`}
                 checked={this.state.enableDedicatedThroughput}
                 styles={{
                   text: { fontSize: 12 },
@@ -427,12 +425,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               />
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
-                content={`You can optionally provision dedicated throughput for a ${getCollectionName(
-                  true
-                )} within a database that has throughput
-                  provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                    true
-                  )}s in the database and
+                content={`You can optionally provision dedicated throughput for a ${getCollectionName({
+                  isLowerCase: true,
+                })} within a database that has throughput
+                  provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName({
+                    isLowerCase: true,
+                    isPlural: true,
+                  })} in the database and
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
@@ -625,8 +624,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     {!this.isSynapseLinkEnabled() && (
                       <Stack className="panelGroupSpacing">
                         <Text variant="small">
-                          Azure Synapse Link is required for creating an analytical store {getCollectionName(true)}.
-                          Enable Synapse Link for this Cosmos DB account.{" "}
+                          Azure Synapse Link is required for creating an analytical store{" "}
+                          {getCollectionName({ isLowerCase: true })}. Enable Synapse Link for this Cosmos DB account.{" "}
                           <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
                             Learn more
                           </Link>

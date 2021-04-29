@@ -33,7 +33,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   const shouldRecordFeedback = (): boolean => {
     return explorer.isLastCollection() && !explorer.isSelectedDatabaseShared();
   };
-  const collectionName = getCollectionName(true);
+  const collectionName = getCollectionName({ isLowerCase: true });
   const paneTitle = "Delete " + collectionName;
   const submit = async (): Promise<void> => {
     const collection = explorer.findSelectedCollection();

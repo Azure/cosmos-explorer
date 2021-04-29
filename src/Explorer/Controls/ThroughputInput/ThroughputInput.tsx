@@ -109,8 +109,8 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
             />
 
             <Text variant="small">
-              Your {this.props.isDatabase ? "database" : getCollectionName(true)} throughput will automatically scale
-              from{" "}
+              Your {this.props.isDatabase ? "database" : getCollectionName({ isLowerCase: true })} throughput will
+              automatically scale from{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.state.throughput)} RU/s (10% of max RU/s) -{" "}
                 {this.state.throughput} RU/s
@@ -211,7 +211,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
   }
 
   private getAutoScaleTooltip(): string {
-    const collectionName = getCollectionName(true);
+    const collectionName = getCollectionName({ isLowerCase: true });
     return `Set the max RU/s to the highest RU/s you want your ${collectionName} to scale to. The ${collectionName} will scale between 10% of max RU/s to the max RU/s based on usage.`;
   }
 

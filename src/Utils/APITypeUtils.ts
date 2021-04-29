@@ -1,6 +1,11 @@
 import { userContext } from "../UserContext";
 
-export const getCollectionName = (isLowerCase?: boolean, isPlural?: boolean): string => {
+interface CollectionNameOptions {
+  isLowerCase?: boolean;
+  isPlural?: boolean;
+}
+
+export const getCollectionName = (options?: CollectionNameOptions): string => {
   let collectionName: string;
   switch (userContext.apiType) {
     case "SQL":
@@ -20,11 +25,11 @@ export const getCollectionName = (isLowerCase?: boolean, isPlural?: boolean): st
       throw new Error(`Unknown API type: ${userContext.apiType}`);
   }
 
-  if (isLowerCase) {
+  if (options?.isLowerCase) {
     collectionName = collectionName.toLocaleLowerCase();
   }
 
-  if (isPlural) {
+  if (options?.isPlural) {
     collectionName += "s";
   }
 

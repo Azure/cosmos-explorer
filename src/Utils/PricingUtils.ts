@@ -162,7 +162,7 @@ export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDat
     return "";
   }
 
-  const resource: string = isDatabaseThroughput ? "database" : getCollectionName(true);
+  const resource: string = isDatabaseThroughput ? "database" : getCollectionName({ isLowerCase: true });
   return `Your ${resource} throughput will automatically scale from <b>${AutoPilotUtils.getMinRUsBasedOnUserInput(
     maxAutoPilotThroughputSet
   )} RU/s (10% of max RU/s) - ${maxAutoPilotThroughputSet} RU/s</b> based on usage. <br /><br />After the first ${AutoPilotUtils.getStorageBasedOnUserInput(
@@ -265,7 +265,7 @@ export function getUpsellMessage(
   isCollection: boolean
 ): string {
   if (isFreeTier) {
-    const collectionName = getCollectionName(true);
+    const collectionName = getCollectionName({ isLowerCase: true });
     const resourceType = isCollection ? collectionName : "database";
     return isFirstResourceCreated
       ? `The free tier discount of 400 RU/s has already been applied to a database or ${collectionName} in this account. Billing will apply to this ${resourceType} after it is created.`
@@ -277,9 +277,9 @@ export function getUpsellMessage(
       price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
     }
 
-    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple ${getCollectionName(
-      true,
-      true
-    )} included`;
+    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple ${getCollectionName({
+      isLowerCase: true,
+      isPlural: true,
+    })} included`;
   }
 }
