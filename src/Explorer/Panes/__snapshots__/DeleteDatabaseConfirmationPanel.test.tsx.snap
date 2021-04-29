@@ -399,7 +399,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "parameters": [Function],
         "tabsButtons": Array [],
       },
-      "databaseAccount": [Function],
       "databases": [Function],
       "defaultExperience": [Function],
       "deleteCollectionText": [Function],

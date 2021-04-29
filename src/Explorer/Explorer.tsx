@@ -387,7 +387,10 @@ export default class Explorer {
     );
 
     this.isEnableMongoCapabilityPresent = ko.computed(() => {
-      const { capabilities } = userContext.databaseAccount?.properties;
+      const capabilities =
+        userContext?.databaseAccount &&
+        userContext.databaseAccount.properties &&
+        userContext.databaseAccount.properties.capabilities;
       if (!capabilities) {
         return false;
       }
