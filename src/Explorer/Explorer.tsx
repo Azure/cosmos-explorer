@@ -94,6 +94,8 @@ export interface ExplorerParams {
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
+  refreshSparkEnabledStateForAccount: () => void;
+  isSparkEnabledForAccount: boolean;
 }
 
 export default class Explorer {
@@ -186,7 +188,6 @@ export default class Explorer {
   public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSparkEnabled: ko.Observable<boolean>;
-  public isSparkEnabledForAccount: ko.Observable<boolean>;
   public arcadiaToken: ko.Observable<string>;
   public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
   public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
@@ -205,6 +206,10 @@ export default class Explorer {
     content: string;
   };
 
+  // Refresh spark
+  public refreshSparkEnabledStateForAccount: () => void;
+  public isSparkEnabledForAccount: boolean;
+
   // React adapters
   private commandBarComponentAdapter: CommandBarComponentAdapter;
 
@@ -218,6 +223,8 @@ export default class Explorer {
     this.closeSidePanel = params?.closeSidePanel;
     this.closeDialog = params?.closeDialog;
     this.openDialog = params?.openDialog;
+    this.refreshSparkEnabledStateForAccount = params?.refreshSparkEnabledStateForAccount;
+    this.isSparkEnabledForAccount = params?.isSparkEnabledForAccount;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -244,8 +251,7 @@ export default class Explorer {
     });
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
-    this.isSparkEnabledForAccount = ko.observable(false);
-    this.isSparkEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
+    // this.isSparkEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.hasStorageAnalyticsAfecFeature = ko.observable(false);
     this.hasStorageAnalyticsAfecFeature.subscribe((enabled: boolean) => this.refreshCommandBarButtons());
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
@@ -261,7 +267,7 @@ export default class Explorer {
         this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then((isRegistered) =>
           this.hasStorageAnalyticsAfecFeature(isRegistered)
         );
-        Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
+        Promise.all([this._refreshNotebooksEnabledStateForAccount(), this.refreshSparkEnabledStateForAccount()]).then(
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
@@ -284,7 +290,7 @@ export default class Explorer {
 
             this.isSparkEnabled(
               (this.isNotebookEnabled() &&
-                this.isSparkEnabledForAccount() &&
+                this.isSparkEnabledForAccount &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
                 userContext.features.enableSpark
@@ -372,16 +378,6 @@ export default class Explorer {
       direction: SplitterDirection.Vertical,
     });
     this.defaultExperience = ko.observable<string>();
-    // this.databaseAccount.subscribe((databaseAccount) => {
-    //   const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-    //     databaseAccount
-    //   );
-    //   this.defaultExperience(defaultExperience);
-    //   // TODO. Remove this entirely
-    //   updateUserContext({
-    //     apiType: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-    //   });
-    // });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
@@ -1658,35 +1654,6 @@ export default class Explorer {
       this.isNotebooksEnabledForAccount(false);
     }
   }
-
-  public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-    const subscriptionId = userContext.subscriptionId;
-    const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = userContext.authType;
-    if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-      // explorer is not aware of the database account yet
-      this.isSparkEnabledForAccount(false);
-      return;
-    }
-
-    const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
-    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
-    try {
-      const sparkNotebooksFeature: DataModels.AfecFeature = await resourceProviderClient.getAsync(
-        featureUri,
-        Constants.ArmApiVersions.armFeatures
-      );
-      const isEnabled =
-        (sparkNotebooksFeature &&
-          sparkNotebooksFeature.properties &&
-          sparkNotebooksFeature.properties.state === "Registered") ||
-        false;
-      this.isSparkEnabledForAccount(isEnabled);
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
-      this.isSparkEnabledForAccount(false);
-    }
-  };
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
     const subscriptionId = userContext.subscriptionId;

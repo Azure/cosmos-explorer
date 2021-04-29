@@ -28,6 +28,11 @@ import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
 import { AuthType } from "./AuthType";
+import { AfecFeatures, ArmApiVersions } from "./Common/Constants";
+import { getErrorMessage } from "./Common/ErrorHandlingUtils";
+import { logError } from "./Common/Logger";
+import { configContext } from "./ConfigContext";
+import { AfecFeature } from "./Contracts/DataModels";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
@@ -55,6 +60,7 @@ import { useSidePanel } from "./hooks/useSidePanel";
 import { useTabs } from "./hooks/useTabs";
 import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
+import { ResourceProviderClientFactory } from "./ResourceProvider/ResourceProviderClientFactory";
 import "./Shared/appInsights";
 import { userContext } from "./UserContext";
 
@@ -68,6 +74,36 @@ const App: React.FunctionComponent = () => {
 
   const [dialogProps, setDialogProps] = useState<DialogProps>();
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [isSparkEnabledForAccount, setIsSparkEnabledForAccount] = useState<boolean>(false);
+
+  const refreshSparkEnabledStateForAccount = async (): Promise<void> => {
+    const subscriptionId = userContext.subscriptionId;
+    const armEndpoint = configContext.ARM_ENDPOINT;
+    const authType = userContext.authType;
+    if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
+      // explorer is not aware of the database account yet
+      setIsSparkEnabledForAccount(false);
+      return;
+    }
+
+    const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${AfecFeatures.Spark}`;
+    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
+    try {
+      const sparkNotebooksFeature: AfecFeature = await resourceProviderClient.getAsync(
+        featureUri,
+        ArmApiVersions.armFeatures
+      );
+      const isEnabled =
+        (sparkNotebooksFeature &&
+          sparkNotebooksFeature.properties &&
+          sparkNotebooksFeature.properties.state === "Registered") ||
+        false;
+      setIsSparkEnabledForAccount(isEnabled);
+    } catch (error) {
+      logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
+      setIsSparkEnabledForAccount(false);
+    }
+  };
 
   const openDialog = (props: DialogProps) => {
     setDialogProps(props);
@@ -89,6 +125,8 @@ const App: React.FunctionComponent = () => {
     openDialog,
     closeDialog,
     tabsManager,
+    refreshSparkEnabledStateForAccount,
+    isSparkEnabledForAccount,
   };
 
   const config = useConfig();
