@@ -85,7 +85,7 @@ export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
     userContext.portalEnv,
     isFreeTierAccount,
     container.isFirstResourceCreated(),
-    userContext.defaultExperience,
+    userContext.apiType,
     false
   );
 
