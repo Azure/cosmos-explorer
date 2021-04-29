@@ -10,7 +10,6 @@ import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplo
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import GraphStylingPane from "../Panes/GraphStylingPane";
 import { NewVertexPanel } from "../Panes/NewVertexPanel/NewVertexPanel";
-import template from "./GraphTab.html";
 import TabsBase from "./TabsBase";
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -37,7 +36,8 @@ interface GraphTabOptions extends ViewModels.TabOptions {
 }
 
 export default class GraphTab extends TabsBase {
-  public static readonly component = { name: "graph-tab", template };
+  public readonly html =
+    '<div class="graphExplorerContainer" role="tabpanel" data-bind="react:graphExplorerAdapter, attr: {id: tabId}"></div>';
   // Graph default configuration
   public static readonly DEFAULT_NODE_CAPTION = "id";
   private static readonly LINK_COLOR = "#aaa";

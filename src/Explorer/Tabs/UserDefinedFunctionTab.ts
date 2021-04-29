@@ -2,16 +2,16 @@ import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as Constants from "../../Common/Constants";
 import { createUserDefinedFunction } from "../../Common/dataAccess/createUserDefinedFunction";
 import { updateUserDefinedFunction } from "../../Common/dataAccess/updateUserDefinedFunction";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import UserDefinedFunction from "../Tree/UserDefinedFunction";
 import ScriptTabBase from "./ScriptTabBase";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import template from "./UserDefinedFunctionTab.html";
 
 export default class UserDefinedFunctionTab extends ScriptTabBase {
-  public static readonly component = { name: "user-defined-function-tab", template };
+  public readonly html = template;
   public collection: ViewModels.Collection;
   public node: UserDefinedFunction;
   constructor(options: ViewModels.ScriptTabOption) {

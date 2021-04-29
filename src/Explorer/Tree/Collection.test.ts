@@ -31,9 +31,6 @@ describe("Collection", () => {
 
   function generateMockCollectionWithDataModel(data: DataModels.Collection): Collection {
     const mockContainer = {} as Explorer;
-    mockContainer.isPreferredApiMongoDB = ko.computed(() => {
-      return false;
-    });
 
     mockContainer.isDatabaseNodeOrNoneSelected = () => {
       return false;
