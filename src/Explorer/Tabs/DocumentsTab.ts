@@ -21,6 +21,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
@@ -31,7 +32,7 @@ import template from "./DocumentsTab.html";
 import TabsBase from "./TabsBase";
 
 export default class DocumentsTab extends TabsBase {
-  public static readonly component = { name: "documents-tab", template };
+  public readonly html = template;
   public selectedDocumentId: ko.Observable<DocumentId>;
   public selectedDocumentContent: ViewModels.Editable<string>;
   public initialDocumentContent: ko.Observable<string>;
@@ -71,9 +72,7 @@ export default class DocumentsTab extends TabsBase {
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
-    this.isPreferredApiMongoDB = !!this.collection
-      ? this.collection.container.isPreferredApiMongoDB()
-      : options.isPreferredApiMongoDB;
+    this.isPreferredApiMongoDB = userContext.apiType === "Mongo" || options.isPreferredApiMongoDB;
 
     this.idHeader = this.isPreferredApiMongoDB ? "_id" : "id";
 

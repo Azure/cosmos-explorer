@@ -17,7 +17,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -26,7 +26,6 @@ describe("Documents tab", () => {
 
   describe("showPartitionKey", () => {
     const explorer = new Explorer();
-
     const mongoExplorer = new Explorer();
     updateUserContext({
       databaseAccount: {
@@ -94,7 +93,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -109,7 +108,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -124,13 +123,16 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
     });
 
     it("should be false for Mongo accounts with system partitionKey", () => {
+      updateUserContext({
+        apiType: "Mongo",
+      });
       const documentsTab = new DocumentsTab({
         collection: mongoCollectionWithSystemPartitionKey,
         partitionKey: null,
@@ -139,7 +141,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -154,7 +156,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

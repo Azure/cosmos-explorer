@@ -11,7 +11,6 @@ import * as ko from "knockout";
 import Q from "q";
 import _ from "underscore";
 import * as Constants from "../../../Common/Constants";
-import { HashMap } from "../../../Common/HashMap";
 import { NeighborType } from "../../../Contracts/ViewModels";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import { GraphConfig } from "../../Tabs/GraphTab";
@@ -195,8 +194,8 @@ export class D3ForceGraph implements GraphRenderer {
    * Count edges and store in a hashmap: vertex id <--> number of links
    * @param linkSelection
    */
-  public static countEdges(links: D3Link[]): HashMap<number> {
-    const countMap = new HashMap<number>();
+  public static countEdges(links: D3Link[]): Map<string, number> {
+    const countMap = new Map<string, number>();
     links.forEach((l: D3Link) => {
       let val = countMap.get(l.inV) || 0;
       val += 1;
@@ -407,7 +406,7 @@ export class D3ForceGraph implements GraphRenderer {
     const rootId = graph.findRootNodeId();
 
     // Remember nodes current position
-    const posMap = new HashMap<Point2D>();
+    const posMap = new Map<string, Point2D>();
     this.simulation.nodes().forEach((d: D3Node) => {
       if (d.x == undefined || d.y == undefined) {
         return;
@@ -501,8 +500,8 @@ export class D3ForceGraph implements GraphRenderer {
     if (!nodes || nodes.length === 0) {
       return;
     }
-    const nodeFinalPositionMap = new HashMap<Point2D>();
 
+    const nodeFinalPositionMap = new Map<string, Point2D>();
     const viewCenter = this.viewCenter;
     const nonFixedNodes = _.filter(nodes, (node: D3Node) => {
       return !node._isFixedPosition && node.x === viewCenter.x && node.y === viewCenter.y;
@@ -559,7 +558,7 @@ export class D3ForceGraph implements GraphRenderer {
     newNodes.selectAll(".loadmore").attr("visibility", "hidden").transition().delay(600).attr("visibility", "visible");
   }
 
-  private restartSimulation(graph: GraphData<D3Node, D3Link>, posMap: HashMap<Point2D>) {
+  private restartSimulation(graph: GraphData<D3Node, D3Link>, posMap: Map<string, Point2D>) {
     if (!graph) {
       return;
     }
