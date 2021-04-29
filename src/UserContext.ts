@@ -27,7 +27,7 @@ interface UserContext {
   readonly hasWriteAccess: boolean;
 }
 
-type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
+export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
 const features = extractFeatures();

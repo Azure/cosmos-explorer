@@ -1,4 +1,3 @@
-import Q from "q";
 import * as Constants from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
@@ -21,8 +20,7 @@ export default class AuthHeadersUtil {
     const databaseAccount = userContext.databaseAccount;
     const subscriptionId: string = userContext.subscriptionId;
     const resourceGroup = userContext.resourceGroup;
-    const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount);
-    const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
+    const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType);
     const accountEndpoint = (databaseAccount && databaseAccount.properties.documentEndpoint) || "";
     const sid = subscriptionId || "";
     const rg = resourceGroup || "";
