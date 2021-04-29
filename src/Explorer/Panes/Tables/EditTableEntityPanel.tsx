@@ -328,7 +328,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
                   selectedKey={entity.type}
                   entityPropertyPlaceHolder={detailedHelp}
                   entityValuePlaceholder={entity.entityValuePlaceholder}
-                  entityValue={entity.value}
+                  entityValue={entity.value?.toString()}
                   isEntityTypeDate={entity.isEntityTypeDate}
                   entityTimeValue={entity.entityTimeValue}
                   isEntityValueDisable={entity.isEntityValueDisable}
