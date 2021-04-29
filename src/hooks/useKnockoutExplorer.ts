@@ -15,14 +15,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken,
+  ResourceToken
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata,
+  getDatabaseAccountPropertiesFromMetadata
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -124,7 +124,6 @@ function configureHostedWithConnectionString(config: ConnectionString, explorerP
     accessToken: encodeURIComponent(config.encryptedToken),
     databaseAccount,
     masterKey: config.masterKey,
-    aadToken: config.aadToken,
   });
   const explorer = new Explorer(explorerParams);
   explorer.configure({
@@ -151,7 +150,6 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
     authType: AuthType.ResourceToken,
     resourceToken: parsedResourceToken.resourceToken,
     endpoint: parsedResourceToken.accountEndpoint,
-    aadToken: config.aadToken,
   });
   const explorer = new Explorer(explorerParams);
   explorer.resourceTokenDatabaseId(parsedResourceToken.databaseId);
@@ -167,7 +165,6 @@ function configureHostedWithEncryptedToken(config: EncryptedToken, explorerParam
   updateUserContext({
     authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
-    aadToken: config.aadToken,
   });
   const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
     config.encryptedTokenMetadata.apiKind
