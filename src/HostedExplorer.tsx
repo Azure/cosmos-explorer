@@ -57,7 +57,6 @@ const App: React.FunctionComponent = () => {
           authType: AuthType.EncryptedToken,
           encryptedToken,
           encryptedTokenMetadata,
-          aadToken,
         };
       } else if (authType === AuthType.ConnectionString) {
         frameWindow.hostedConfig = {
@@ -65,13 +64,11 @@ const App: React.FunctionComponent = () => {
           encryptedToken,
           encryptedTokenMetadata,
           masterKey: extractMasterKeyfromConnectionString(connectionString),
-          aadToken,
         };
       } else if (authType === AuthType.ResourceToken) {
         frameWindow.hostedConfig = {
           authType: AuthType.ResourceToken,
           resourceToken: connectionString,
-          aadToken,
         };
       }
     }
