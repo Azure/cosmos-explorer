@@ -36,7 +36,6 @@
     "./src/Contracts/SelfServeContracts.ts",
     "./src/Contracts/SubscriptionType.ts",
     "./src/Contracts/Versions.ts",
-    "./src/DefaultAccountExperienceType.ts",
     "./src/Explorer/Controls/GitHub/GitHubStyleConstants.ts",
     "./src/Explorer/Controls/InputTypeahead/InputTypeahead.ts",
     "./src/Explorer/Controls/SmartUi/InputUtils.ts",
