@@ -506,7 +506,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           <CollapsibleSectionComponent title="Advanced" isExpandedByDefault={false}>
             <Stack className="panelGroupSpacing">
-              {this.props.explorer.isEnableMongoCapabilityPresent() && (
+              {userContext.apiType === "Mongo" && (
                 <Stack>
                   <Stack horizontal>
                     <span className="mandatoryStar">*&nbsp;</span>

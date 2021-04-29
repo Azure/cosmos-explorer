@@ -765,10 +765,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let partitionKeyVersion: number = this.largePartitionKey() ? 2 : undefined;
     let partitionKey: DataModels.PartitionKey = partitionKeyPath.trim()
       ? {
-          paths: [partitionKeyPath],
-          kind: Constants.BackendDefaults.partitionKeyKind,
-          version: partitionKeyVersion,
-        }
+        paths: [partitionKeyPath],
+        kind: Constants.BackendDefaults.partitionKeyKind,
+        version: partitionKeyVersion,
+      }
       : null;
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
 
@@ -805,7 +805,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let indexingPolicy: DataModels.IndexingPolicy;
     let createMongoWildcardIndex: boolean;
     // todo - remove mongo indexing policy ticket # 616274
-    if (userContext.apiType === "Mongo" && this.container.isEnableMongoCapabilityPresent()) {
+    if (userContext.apiType === "Mongo") {
       createMongoWildcardIndex = this.shouldCreateMongoWildcardIndex();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {

@@ -113,11 +113,6 @@ export default class Explorer {
    * */
   public defaultExperience: ko.Observable<string>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
-   * */
-  public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
@@ -376,7 +371,7 @@ export default class Explorer {
         return false;
       }
 
-      return this.isEnableMongoCapabilityPresent();
+      return userContext.apiType === "Mongo";
     });
 
     this.isServerlessEnabled = ko.computed(
@@ -385,24 +380,6 @@ export default class Explorer {
           (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
-
-    this.isEnableMongoCapabilityPresent = ko.computed(() => {
-      const capabilities =
-        userContext?.databaseAccount &&
-        userContext.databaseAccount.properties &&
-        userContext.databaseAccount.properties.capabilities;
-      if (!capabilities) {
-        return false;
-      }
-
-      for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-          return true;
-        }
-      }
-
-      return false;
-    });
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
