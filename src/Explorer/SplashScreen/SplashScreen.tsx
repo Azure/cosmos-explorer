@@ -237,7 +237,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           title: "New SQL Query",
           description: null,
         });
-      } else if (this.container.isPreferredApiMongoDB()) {
+      } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {

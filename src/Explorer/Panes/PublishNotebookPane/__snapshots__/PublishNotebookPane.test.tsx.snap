@@ -88,7 +88,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
           Object {
             "author": "CosmosDB",
             "created": "2020-07-17T00:00:00Z",
-            "description": "",
+            "description": "sample description",
             "downloads": undefined,
             "favorites": undefined,
             "gitSha": undefined,
@@ -99,12 +99,14 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
             "pendingScanJobIds": undefined,
             "policyViolations": undefined,
             "tags": Array [
-              "",
+              "tag1",
+              " tag2",
             ],
-            "thumbnailUrl": undefined,
+            "thumbnailUrl": "https://i.ytimg.com/vi/E_lByLdKeKY/maxresdefault.jpg",
             "views": undefined,
           }
         }
+        onClick={[Function]}
         showDelete={false}
         showDownload={false}
       />
