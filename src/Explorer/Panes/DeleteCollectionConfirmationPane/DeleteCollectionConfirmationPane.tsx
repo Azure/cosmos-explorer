@@ -73,7 +73,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
         const deleteFeedback = new DeleteFeedback(
           userContext.databaseAccount?.id,
           userContext.databaseAccount?.name,
-          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.defaultExperience),
+          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType),
           deleteCollectionFeedback
         );
 

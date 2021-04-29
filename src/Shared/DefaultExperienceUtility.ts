@@ -1,7 +1,6 @@
 import * as _ from "underscore";
 import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 
 export class DefaultExperienceUtility {
   public static getDefaultExperienceFromDatabaseAccount(databaseAccount: DataModels.DatabaseAccount): string | null {
@@ -57,25 +56,6 @@ export class DefaultExperienceUtility {
         return Constants.DefaultAccountExperience.Graph;
       default:
         return Constants.DefaultAccountExperience.Default;
-    }
-  }
-
-  public static mapDefaultExperienceStringToEnum(defaultExperience: string): DefaultAccountExperienceType {
-    switch (defaultExperience) {
-      case Constants.DefaultAccountExperience.DocumentDB:
-        return DefaultAccountExperienceType.DocumentDB;
-      case Constants.DefaultAccountExperience.Graph:
-        return DefaultAccountExperienceType.Graph;
-      case Constants.DefaultAccountExperience.MongoDB:
-        return DefaultAccountExperienceType.MongoDB;
-      case Constants.DefaultAccountExperience.Table:
-        return DefaultAccountExperienceType.Table;
-      case Constants.DefaultAccountExperience.Cassandra:
-        return DefaultAccountExperienceType.Cassandra;
-      case Constants.DefaultAccountExperience.ApiForMongoDB:
-        return DefaultAccountExperienceType.ApiForMongoDB;
-      default:
-        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
     }
   }
 

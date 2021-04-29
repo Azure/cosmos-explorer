@@ -94,7 +94,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         const deleteFeedback = new DeleteFeedback(
           userContext?.databaseAccount.id,
           userContext?.databaseAccount.name,
-          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.defaultExperience),
+          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType),
           databaseFeedbackInput
         );
 
