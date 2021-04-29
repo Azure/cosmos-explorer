@@ -17,7 +17,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -93,7 +93,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -108,7 +108,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -123,7 +123,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -141,7 +141,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -156,7 +156,7 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => { },
+        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
