@@ -2,19 +2,18 @@ import { ContainerDefinition } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
-  getCassandraTable,
+  getCassandraTable
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateGremlinGraph,
-  getGremlinGraph,
+  getGremlinGraph
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import {
   createUpdateMongoDBCollection,
-  getMongoDBCollection,
+  getMongoDBCollection
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
@@ -22,7 +21,7 @@ import {
   ExtendedResourceProperties,
   MongoDBCollectionCreateUpdateParameters,
   SqlContainerCreateUpdateParameters,
-  SqlContainerResource,
+  SqlContainerResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
@@ -38,11 +37,7 @@ export async function updateCollection(
   const clearMessage = logConsoleProgress(`Updating container ${collectionId}`);
 
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {
       const sdkResponse = await client()
@@ -68,19 +63,19 @@ async function updateCollectionWithARM(
   collectionId: string,
   newCollection: Partial<Collection>
 ): Promise<Collection> {
-  const { subscriptionId, resourceGroup, defaultExperience, databaseAccount } = userContext;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
   const accountName = databaseAccount.name;
 
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+  switch (apiType) {
+    case "SQL":
       return updateSqlContainer(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return updateCassandraTable(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return updateGremlinGraph(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       return updateTable(collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return updateMongoDBCollection(
         databaseId,
         collectionId,
@@ -90,7 +85,7 @@ async function updateCollectionWithARM(
         newCollection
       );
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }
 

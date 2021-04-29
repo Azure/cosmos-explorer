@@ -1,6 +1,5 @@
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
-import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -13,15 +12,15 @@ import template from "./MongoShellTab.html";
 import TabsBase from "./TabsBase";
 
 export default class MongoShellTab extends TabsBase {
-  public static readonly component = { name: "mongo-shell-tab", template };
+  public readonly html = template;
   public url: ko.Computed<string>;
   private _container: Explorer;
   private _runtimeEndpoint: string;
-  private _logTraces: HashMap<number>;
+  private _logTraces: Map<string, number>;
 
   constructor(options: ViewModels.TabOptions) {
     super(options);
-    this._logTraces = new HashMap<number>();
+    this._logTraces = new Map();
     this._container = options.collection.container;
     this.url = ko.computed<string>(() => {
       const { databaseAccount: account } = userContext;

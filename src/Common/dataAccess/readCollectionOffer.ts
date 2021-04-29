@@ -1,6 +1,5 @@
 import { AuthType } from "../../AuthType";
 import { Offer, ReadCollectionOfferParams } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import { getCassandraTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinGraphThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
@@ -15,11 +14,7 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
   const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
 
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       return await readCollectionOfferWithARM(params.databaseId, params.collectionId);
     }
 
@@ -33,13 +28,13 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
 };
 
 const readCollectionOfferWithARM = async (databaseId: string, collectionId: string): Promise<Offer> => {
-  const { subscriptionId, resourceGroup, defaultExperience, databaseAccount } = userContext;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
   const accountName = databaseAccount.name;
 
   let rpResponse;
   try {
-    switch (defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
+    switch (apiType) {
+      case "SQL":
         rpResponse = await getSqlContainerThroughput(
           subscriptionId,
           resourceGroup,
@@ -48,7 +43,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         rpResponse = await getMongoDBCollectionThroughput(
           subscriptionId,
           resourceGroup,
@@ -57,7 +52,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         rpResponse = await getCassandraTableThroughput(
           subscriptionId,
           resourceGroup,
@@ -66,7 +61,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         rpResponse = await getGremlinGraphThroughput(
           subscriptionId,
           resourceGroup,
@@ -75,11 +70,11 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.Table:
+      case "Tables":
         rpResponse = await getTableThroughput(subscriptionId, resourceGroup, accountName, collectionId);
         break;
       default:
-        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${apiType}`);
     }
   } catch (error) {
     if (error.code !== "NotFound") {

@@ -2,7 +2,6 @@ import { OfferDefinition } from "@azure/cosmos";
 import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { AuthType } from "../../AuthType";
 import { Offer, SDKOfferDefinition, UpdateOfferParams } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   migrateCassandraKeyspaceToAutoscale,
@@ -10,7 +9,7 @@ import {
   migrateCassandraTableToAutoscale,
   migrateCassandraTableToManualThroughput,
   updateCassandraKeyspaceThroughput,
-  updateCassandraTableThroughput,
+  updateCassandraTableThroughput
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   migrateGremlinDatabaseToAutoscale,
@@ -18,7 +17,7 @@ import {
   migrateGremlinGraphToAutoscale,
   migrateGremlinGraphToManualThroughput,
   updateGremlinDatabaseThroughput,
-  updateGremlinGraphThroughput,
+  updateGremlinGraphThroughput
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import {
   migrateMongoDBCollectionToAutoscale,
@@ -26,7 +25,7 @@ import {
   migrateMongoDBDatabaseToAutoscale,
   migrateMongoDBDatabaseToManualThroughput,
   updateMongoDBCollectionThroughput,
-  updateMongoDBDatabaseThroughput,
+  updateMongoDBDatabaseThroughput
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
   migrateSqlContainerToAutoscale,
@@ -34,12 +33,12 @@ import {
   migrateSqlDatabaseToAutoscale,
   migrateSqlDatabaseToManualThroughput,
   updateSqlContainerThroughput,
-  updateSqlDatabaseThroughput,
+  updateSqlDatabaseThroughput
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   migrateTableToAutoscale,
   migrateTableToManualThroughput,
-  updateTableThroughput,
+  updateTableThroughput
 } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -61,7 +60,7 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
     if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations) {
       if (params.collectionId) {
         updatedOffer = await updateCollectionOfferWithARM(params);
-      } else if (userContext.defaultExperience === DefaultAccountExperienceType.Table) {
+      } else if (userContext.apiType === "Tables") {
         // update table's database offer with SDK since RP doesn't support it
         updatedOffer = await updateOfferWithSDK(params);
       } else {
@@ -82,24 +81,24 @@ export const updateOffer = async (params: UpdateOfferParams): Promise<Offer> => 
 
 const updateCollectionOfferWithARM = async (params: UpdateOfferParams): Promise<Offer> => {
   try {
-    switch (userContext.defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
+    switch (userContext.apiType) {
+      case "SQL":
         await updateSqlContainerOffer(params);
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         await updateMongoCollectionOffer(params);
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         await updateCassandraTableOffer(params);
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         await updateGremlinGraphOffer(params);
         break;
-      case DefaultAccountExperienceType.Table:
+      case "Tables":
         await updateTableOffer(params);
         break;
       default:
-        throw new Error(`Unsupported default experience type: ${userContext.defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${userContext.apiType}`);
     }
   } catch (error) {
     if (error.code !== "MethodNotAllowed") {
@@ -116,21 +115,21 @@ const updateCollectionOfferWithARM = async (params: UpdateOfferParams): Promise<
 
 const updateDatabaseOfferWithARM = async (params: UpdateOfferParams): Promise<Offer> => {
   try {
-    switch (userContext.defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
+    switch (userContext.apiType) {
+      case "SQL":
         await updateSqlDatabaseOffer(params);
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         await updateMongoDatabaseOffer(params);
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         await updateCassandraKeyspaceOffer(params);
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         await updateGremlinDatabaseOffer(params);
         break;
       default:
-        throw new Error(`Unsupported default experience type: ${userContext.defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${userContext.apiType}`);
     }
   } catch (error) {
     if (error.code !== "MethodNotAllowed") {

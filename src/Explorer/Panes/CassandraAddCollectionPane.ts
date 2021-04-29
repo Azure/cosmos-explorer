@@ -2,7 +2,6 @@ import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { HashMap } from "../../Common/HashMap";
 import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -51,7 +50,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
   public ruToolTipText: ko.Computed<string>;
   public canConfigureThroughput: ko.PureComputed<boolean>;
 
-  private keyspaceOffers: HashMap<DataModels.Offer>;
+  private keyspaceOffers: Map<string, DataModels.Offer>;
 
   constructor(options: ViewModels.PaneOptions) {
     super(options);
@@ -60,7 +59,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.keyspaceCreateNew = ko.observable<boolean>(true);
     this.ruToolTipText = ko.pureComputed(() => PricingUtils.getRuToolTipText());
     this.canConfigureThroughput = ko.pureComputed(() => !this.container.isServerlessEnabled());
-    this.keyspaceOffers = new HashMap<DataModels.Offer>();
+    this.keyspaceOffers = new Map();
     this.keyspaceIds = ko.observableArray<string>();
     this.keyspaceHasSharedOffer = ko.observable<boolean>(false);
     this.keyspaceThroughput = ko.observable<number>();

@@ -208,7 +208,7 @@ export class QueriesClient {
   }
 
   private fetchQueriesQuery(): string {
-    if (this.container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       return QueriesClient.FetchMongoQuery;
     }
     return QueriesClient.FetchQuery;

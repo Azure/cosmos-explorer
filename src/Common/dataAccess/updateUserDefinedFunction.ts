@@ -1,14 +1,13 @@
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateSqlUserDefinedFunction,
-  getSqlUserDefinedFunction,
+  getSqlUserDefinedFunction
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   SqlUserDefinedFunctionCreateUpdateParameters,
-  SqlUserDefinedFunctionResource,
+  SqlUserDefinedFunctionResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
@@ -20,12 +19,12 @@ export async function updateUserDefinedFunction(
   userDefinedFunction: UserDefinedFunctionDefinition
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating user defined function ${userDefinedFunction.id}`);
-  const { authType, useSDKOperations, defaultExperience, subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
     if (
       authType === AuthType.AAD &&
       !useSDKOperations &&
-      defaultExperience === DefaultAccountExperienceType.DocumentDB
+      apiType === "SQL"
     ) {
       const getResponse = await getSqlUserDefinedFunction(
         subscriptionId,

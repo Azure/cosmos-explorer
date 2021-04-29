@@ -1,14 +1,13 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateSqlStoredProcedure,
-  getSqlStoredProcedure,
+  getSqlStoredProcedure
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   SqlStoredProcedureCreateUpdateParameters,
-  SqlStoredProcedureResource,
+  SqlStoredProcedureResource
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
@@ -24,7 +23,7 @@ export async function updateStoredProcedure(
     const {
       authType,
       useSDKOperations,
-      defaultExperience,
+      apiType,
       subscriptionId,
       resourceGroup,
       databaseAccount,
@@ -33,7 +32,7 @@ export async function updateStoredProcedure(
     if (
       authType === AuthType.AAD &&
       !useSDKOperations &&
-      defaultExperience === DefaultAccountExperienceType.DocumentDB
+      apiType === "SQL"
     ) {
       const getResponse = await getSqlStoredProcedure(
         subscriptionId,

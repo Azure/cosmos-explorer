@@ -22,7 +22,7 @@ enum ToggleState {
 }
 
 export default class StoredProcedureTab extends ScriptTabBase {
-  public static readonly component = { name: "stored-procedure-tab", template };
+  public readonly html = template;
   public collection: ViewModels.Collection;
   public node: StoredProcedure;
   public executeResultsEditorId: string;
