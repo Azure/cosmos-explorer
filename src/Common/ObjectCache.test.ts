@@ -7,7 +7,7 @@ describe("Object cache", () => {
     cache.set("b", 2);
     cache.set("c", 3);
     cache.set("d", 4);
-    expect(cache.size()).toBe(2);
+    expect(cache.size).toBe(2);
   });
 
   it("should remove first added element to keep size at limit", () => {

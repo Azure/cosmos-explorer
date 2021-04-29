@@ -1,9 +1,10 @@
+import * as monaco from "monaco-editor";
+import { MessageBar, MessageBarType, Stack } from "office-ui-fabric-react";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
-import * as monaco from "monaco-editor";
-import { isDirty, isIndexTransforming } from "../SettingsUtils";
-import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
+import { loadMonaco } from "../../../LazyMonaco";
 import { indexingPolicynUnsavedWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
+import { isDirty, isIndexTransforming } from "../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
 
 export interface IndexingPolicyComponentProps {
@@ -84,9 +85,9 @@ export class IndexingPolicyComponent extends React.Component<
     return false;
   };
 
-  private createIndexingPolicyEditor = (): void => {
+  private async createIndexingPolicyEditor(): Promise<void> {
     const value: string = JSON.stringify(this.props.indexingPolicyContent, undefined, 4);
-
+    const monaco = await loadMonaco();
     this.indexingPolicyEditor = monaco.editor.create(this.indexingPolicyDiv.current, {
       value: value,
       language: "json",
@@ -98,7 +99,7 @@ export class IndexingPolicyComponent extends React.Component<
       indexingPolicyEditorModel.onDidChangeContent(this.onEditorContentChange.bind(this));
       this.props.logIndexingPolicySuccessMessage();
     }
-  };
+  }
 
   private onEditorContentChange = (): void => {
     const indexingPolicyEditorModel = this.indexingPolicyEditor.getModel();

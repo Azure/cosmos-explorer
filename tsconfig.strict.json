@@ -4,7 +4,8 @@
     "noEmit": true,
     "strictNullChecks": true,
     "strict": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "files": [
     "./src/AuthType.ts",
@@ -14,7 +15,6 @@
     "./src/Common/DeleteFeedback.ts",
     "./src/Common/DocumentUtility.ts",
     "./src/Common/EnvironmentUtility.ts",
-    "./src/Common/HashMap.ts",
     "./src/Common/HeadersUtility.test.ts",
     "./src/Common/HeadersUtility.ts",
     "./src/Common/Logger.ts",
@@ -36,7 +36,6 @@
     "./src/Contracts/SelfServeContracts.ts",
     "./src/Contracts/SubscriptionType.ts",
     "./src/Contracts/Versions.ts",
-    "./src/DefaultAccountExperienceType.ts",
     "./src/Explorer/Controls/GitHub/GitHubStyleConstants.ts",
     "./src/Explorer/Controls/InputTypeahead/InputTypeahead.ts",
     "./src/Explorer/Controls/SmartUi/InputUtils.ts",
