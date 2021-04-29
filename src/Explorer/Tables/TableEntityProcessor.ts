@@ -176,18 +176,21 @@ export function convertEntityToNewDocument(entity: Entities.ITableEntityForTable
       property !== keyProperties.attachments &&
       property !== keyProperties.Id2
     ) {
+      let value;
       if (entity[property].$ === Constants.TableType.DateTime) {
         // Convert javascript date back to ticks with 20 zeros padding
-        document[property] = {
-          $t: (<any>DataTypes)[entity[property].$],
-          $v: DateTimeUtilities.convertJSDateToTicksWithPadding(entity[property]._),
-        };
+        value = DateTimeUtilities.convertJSDateToTicksWithPadding(entity[property]._);
+      } else if (entity[property].$ === Constants.TableType.Boolean) {
+        // Convert string to boolean
+        value = entity[property]._ === "true";
       } else {
-        document[property] = {
-          $t: (<any>DataTypes)[entity[property].$],
-          $v: entity[property]._,
-        };
+        value = entity[property]._;
       }
+
+      document[property] = {
+        $t: (<any>DataTypes)[entity[property].$],
+        $v: value,
+      };
     }
   }
   return document;
