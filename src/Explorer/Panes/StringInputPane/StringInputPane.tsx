@@ -1,4 +1,4 @@
-import { TextField } from "office-ui-fabric-react";
+import { TextField } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";

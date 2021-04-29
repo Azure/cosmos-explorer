@@ -1523,7 +1523,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           "borderColor": "#f3f2f1",
                           "color": "#a19f9d",
                           "cursor": "default",
-                          "pointerEvents": "none",
                           "selectors": Object {
                             ":focus": Object {
                               "outline": 0,
@@ -1783,6 +1782,35 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             "backgroundColor": "Window",
                             "border": "1px solid GrayText",
                             "color": "GrayText",
+                          },
+                        },
+                      },
+                      "splitButtonMenuFocused": Object {
+                        "outline": "transparent",
+                        "position": "relative",
+                        "selectors": Object {
+                          ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                            "border": "1px solid #ffffff",
+                            "bottom": 3,
+                            "content": "\\"\\"",
+                            "left": 3,
+                            "outline": "1px solid #605e5c",
+                            "position": "absolute",
+                            "right": 3,
+                            "selectors": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "border": "none",
+                                "bottom": -2,
+                                "left": -2,
+                                "right": -2,
+                                "top": -2,
+                              },
+                            },
+                            "top": 3,
+                            "zIndex": 1,
+                          },
+                          "::-moz-focus-inner": Object {
+                            "border": "0",
                           },
                         },
                       },
@@ -2071,7 +2099,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 >
                   <button
                     aria-label="Close pane"
-                    className="ms-Button ms-Button--icon closePaneBtn root-104"
+                    className="ms-Button ms-Button--icon closePaneBtn root-185"
                     data-is-focusable={true}
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -2084,18 +2112,17 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-105"
+                      className="ms-Button-flexContainer flexContainer-186"
                       data-automationid="splitbuttonprimary"
                     >
                       <Component
-                        className="ms-Button-icon icon-107"
+                        className="ms-Button-icon icon-188"
                         iconName="Cancel"
                       >
                         <i
                           aria-hidden={true}
-                          className="ms-Icon root-37 css-112 ms-Button-icon icon-107"
+                          className="ms-Icon root-37 css-193 ms-Button-icon icon-188"
                           data-icon-name="Cancel"
-                          role="presentation"
                           style={
                             Object {
                               "fontFamily": "\\"FabricMDL2Icons\\"",
@@ -2160,7 +2187,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
               <TextFieldBase
                 aria-label="Enter new directory name"
                 autoFocus={true}
-                canRevealPassword={false}
                 deferredValidationTime={200}
                 label="Enter new directory name"
                 name="collectionIdConfirmation"
@@ -2445,7 +2471,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 value=""
               >
                 <div
-                  className="ms-TextField is-required root-114"
+                  className="ms-TextField is-required root-195"
                 >
                   <div
                     className="ms-TextField-wrapper"
@@ -2736,7 +2762,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         }
                       >
                         <label
-                          className="ms-Label root-125"
+                          className="ms-Label root-206"
                           htmlFor="TextField3"
                           id="TextFieldLabel5"
                         >
@@ -2745,13 +2771,13 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       </LabelBase>
                     </StyledLabelBase>
                     <div
-                      className="ms-TextField-fieldGroup fieldGroup-115"
+                      className="ms-TextField-fieldGroup fieldGroup-196"
                     >
                       <input
                         aria-invalid={false}
                         aria-labelledby="TextFieldLabel5"
                         autoFocus={true}
-                        className="ms-TextField-field field-116"
+                        className="ms-TextField-field field-197"
                         id="TextField3"
                         name="collectionIdConfirmation"
                         onBlur={[Function]}
@@ -3841,7 +3867,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                                 "borderColor": "#f3f2f1",
                                 "color": "#a19f9d",
                                 "cursor": "default",
-                                "pointerEvents": "none",
                                 "selectors": Object {
                                   ":focus": Object {
                                     "outline": 0,
@@ -4188,6 +4213,35 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                                 },
                               },
                             },
+                            "splitButtonMenuFocused": Object {
+                              "outline": "transparent",
+                              "position": "relative",
+                              "selectors": Object {
+                                ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                                  "border": "1px solid #ffffff",
+                                  "bottom": 3,
+                                  "content": "\\"\\"",
+                                  "left": 3,
+                                  "outline": "1px solid #605e5c",
+                                  "position": "absolute",
+                                  "right": 3,
+                                  "selectors": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                      "border": "none",
+                                      "bottom": -2,
+                                      "left": -2,
+                                      "right": -2,
+                                      "top": -2,
+                                    },
+                                  },
+                                  "top": 3,
+                                  "zIndex": 1,
+                                },
+                                "::-moz-focus-inner": Object {
+                                  "border": "0",
+                                },
+                              },
+                            },
                             "splitButtonMenuIcon": Object {
                               "color": "#ffffff",
                             },
@@ -4485,7 +4539,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-126"
+                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-207"
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -4503,14 +4557,14 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           type="button"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-105"
+                            className="ms-Button-flexContainer flexContainer-186"
                             data-automationid="splitbuttonprimary"
                           >
                             <span
-                              className="ms-Button-textContainer textContainer-106"
+                              className="ms-Button-textContainer textContainer-187"
                             >
                               <span
-                                className="ms-Button-label label-127"
+                                className="ms-Button-label label-208"
                                 id="id__6"
                                 key="id__6"
                               >
