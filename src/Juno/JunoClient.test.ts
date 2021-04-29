@@ -136,7 +136,12 @@ describe("Gallery", () => {
   const originalSubscriptionId = userContext.subscriptionId;
 
   beforeAll(() => {
-    updateUserContext({ subscriptionId: sampleSubscriptionId });
+    updateUserContext({
+      databaseAccount: {
+        name: "name",
+      } as DatabaseAccount,
+      subscriptionId: sampleSubscriptionId,
+    });
   });
 
   afterEach(() => {
@@ -203,7 +208,6 @@ describe("Gallery", () => {
       status: HttpStatusCodes.OK,
       json: () => undefined as any,
     });
-
     const response = await junoClient.increaseNotebookViews(id);
 
     expect(response.status).toBe(HttpStatusCodes.OK);

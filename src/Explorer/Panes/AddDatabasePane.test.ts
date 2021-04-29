@@ -5,40 +5,41 @@ import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import AddDatabasePane from "./AddDatabasePane";
 
+const mockDatabaseAccount: DatabaseAccount = {
+  id: "mock",
+  kind: "DocumentDB",
+  location: "",
+  name: "mock",
+  properties: {
+    documentEndpoint: "",
+    cassandraEndpoint: "",
+    gremlinEndpoint: "",
+    tableEndpoint: "",
+    enableFreeTier: false,
+  },
+  type: undefined,
+  tags: [],
+};
+
+const mockFreeTierDatabaseAccount: DatabaseAccount = {
+  id: "mock",
+  kind: "DocumentDB",
+  location: "",
+  name: "mock",
+  properties: {
+    documentEndpoint: "",
+    cassandraEndpoint: "",
+    gremlinEndpoint: "",
+    tableEndpoint: "",
+    enableFreeTier: true,
+  },
+  type: undefined,
+  tags: [],
+};
+
 describe("Add Database Pane", () => {
   describe("getSharedThroughputDefault()", () => {
     let explorer: Explorer;
-    const mockDatabaseAccount: DatabaseAccount = {
-      id: "mock",
-      kind: "DocumentDB",
-      location: "",
-      name: "mock",
-      properties: {
-        documentEndpoint: "",
-        cassandraEndpoint: "",
-        gremlinEndpoint: "",
-        tableEndpoint: "",
-        enableFreeTier: false,
-      },
-      type: undefined,
-      tags: [],
-    };
-
-    const mockFreeTierDatabaseAccount: DatabaseAccount = {
-      id: "mock",
-      kind: "DocumentDB",
-      location: "",
-      name: "mock",
-      properties: {
-        documentEndpoint: "",
-        cassandraEndpoint: "",
-        gremlinEndpoint: "",
-        tableEndpoint: "",
-        enableFreeTier: true,
-      },
-      type: undefined,
-      tags: [],
-    };
 
     beforeEach(() => {
       explorer = new Explorer();

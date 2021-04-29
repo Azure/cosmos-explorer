@@ -13,11 +13,7 @@ export async function readUserDefinedFunctions(
   const clearMessage = logConsoleProgress(`Querying user defined functions for container ${collectionId}`);
   const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
-    if (
-      authType === AuthType.AAD &&
-      !useSDKOperations &&
-      apiType === "SQL"
-    ) {
+    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
       const rpResponse = await listSqlUserDefinedFunctions(
         subscriptionId,
         resourceGroup,

@@ -765,10 +765,10 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let partitionKeyVersion: number = this.largePartitionKey() ? 2 : undefined;
     let partitionKey: DataModels.PartitionKey = partitionKeyPath.trim()
       ? {
-        paths: [partitionKeyPath],
-        kind: Constants.BackendDefaults.partitionKeyKind,
-        version: partitionKeyVersion,
-      }
+          paths: [partitionKeyPath],
+          kind: Constants.BackendDefaults.partitionKeyKind,
+          version: partitionKeyVersion,
+        }
       : null;
     const autoPilot: DataModels.AutoPilotCreationSettings = this._getAutoPilot();
 

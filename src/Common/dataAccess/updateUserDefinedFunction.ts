@@ -3,11 +3,11 @@ import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateSqlUserDefinedFunction,
-  getSqlUserDefinedFunction
+  getSqlUserDefinedFunction,
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   SqlUserDefinedFunctionCreateUpdateParameters,
-  SqlUserDefinedFunctionResource
+  SqlUserDefinedFunctionResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
@@ -21,11 +21,7 @@ export async function updateUserDefinedFunction(
   const clearMessage = logConsoleProgress(`Updating user defined function ${userDefinedFunction.id}`);
   const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
-    if (
-      authType === AuthType.AAD &&
-      !useSDKOperations &&
-      apiType === "SQL"
-    ) {
+    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
       const getResponse = await getSqlUserDefinedFunction(
         subscriptionId,
         resourceGroup,

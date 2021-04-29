@@ -5,15 +5,15 @@ import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraKeyspace,
-  getCassandraKeyspace
+  getCassandraKeyspace,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateGremlinDatabase,
-  getGremlinDatabase
+  getGremlinDatabase,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import {
   createUpdateMongoDBDatabase,
-  getMongoDBDatabase
+  getMongoDBDatabase,
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
@@ -21,7 +21,7 @@ import {
   CreateUpdateOptions,
   GremlinDatabaseCreateUpdateParameters,
   MongoDBDatabaseCreateUpdateParameters,
-  SqlDatabaseCreateUpdateParameters
+  SqlDatabaseCreateUpdateParameters,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";

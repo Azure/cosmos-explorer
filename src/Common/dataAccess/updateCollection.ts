@@ -5,15 +5,15 @@ import { Collection } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
-  getCassandraTable
+  getCassandraTable,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   createUpdateGremlinGraph,
-  getGremlinGraph
+  getGremlinGraph,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import {
   createUpdateMongoDBCollection,
-  getMongoDBCollection
+  getMongoDBCollection,
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
@@ -21,7 +21,7 @@ import {
   ExtendedResourceProperties,
   MongoDBCollectionCreateUpdateParameters,
   SqlContainerCreateUpdateParameters,
-  SqlContainerResource
+  SqlContainerResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";

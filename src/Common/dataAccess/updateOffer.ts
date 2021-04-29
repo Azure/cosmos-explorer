@@ -9,7 +9,7 @@ import {
   migrateCassandraTableToAutoscale,
   migrateCassandraTableToManualThroughput,
   updateCassandraKeyspaceThroughput,
-  updateCassandraTableThroughput
+  updateCassandraTableThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
   migrateGremlinDatabaseToAutoscale,
@@ -17,7 +17,7 @@ import {
   migrateGremlinGraphToAutoscale,
   migrateGremlinGraphToManualThroughput,
   updateGremlinDatabaseThroughput,
-  updateGremlinGraphThroughput
+  updateGremlinGraphThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
 import {
   migrateMongoDBCollectionToAutoscale,
@@ -25,7 +25,7 @@ import {
   migrateMongoDBDatabaseToAutoscale,
   migrateMongoDBDatabaseToManualThroughput,
   updateMongoDBCollectionThroughput,
-  updateMongoDBDatabaseThroughput
+  updateMongoDBDatabaseThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
 import {
   migrateSqlContainerToAutoscale,
@@ -33,12 +33,12 @@ import {
   migrateSqlDatabaseToAutoscale,
   migrateSqlDatabaseToManualThroughput,
   updateSqlContainerThroughput,
-  updateSqlDatabaseThroughput
+  updateSqlDatabaseThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   migrateTableToAutoscale,
   migrateTableToManualThroughput,
-  updateTableThroughput
+  updateTableThroughput,
 } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";

@@ -3,11 +3,11 @@ import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import {
   createUpdateSqlStoredProcedure,
-  getSqlStoredProcedure
+  getSqlStoredProcedure,
 } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import {
   SqlStoredProcedureCreateUpdateParameters,
-  SqlStoredProcedureResource
+  SqlStoredProcedureResource,
 } from "../../Utils/arm/generatedClients/2020-04-01/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
@@ -20,20 +20,9 @@ export async function updateStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
-    const {
-      authType,
-      useSDKOperations,
-      apiType,
-      subscriptionId,
-      resourceGroup,
-      databaseAccount,
-    } = userContext;
+    const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
 
-    if (
-      authType === AuthType.AAD &&
-      !useSDKOperations &&
-      apiType === "SQL"
-    ) {
+    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
       const getResponse = await getSqlStoredProcedure(
         subscriptionId,
         resourceGroup,
