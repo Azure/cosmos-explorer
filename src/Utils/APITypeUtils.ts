@@ -1,11 +1,10 @@
 import { userContext } from "../UserContext";
 
-interface CollectionNameOptions {
-  isLowerCase?: boolean;
-  isPlural?: boolean;
-}
+export const getCollectionName = (isPlural?: boolean): string => {
+  const assertUnreachable = (apiType: never): never => {
+    throw new Error(`Unknown API type: ${apiType}`);
+  };
 
-export const getCollectionName = (options?: CollectionNameOptions): string => {
   let collectionName: string;
   switch (userContext.apiType) {
     case "SQL":
@@ -22,14 +21,10 @@ export const getCollectionName = (options?: CollectionNameOptions): string => {
       collectionName = "Graph";
       break;
     default:
-      throw new Error(`Unknown API type: ${userContext.apiType}`);
+      assertUnreachable(userContext.apiType);
   }
 
-  if (options?.isLowerCase) {
-    collectionName = collectionName.toLocaleLowerCase();
-  }
-
-  if (options?.isPlural) {
+  if (isPlural) {
     collectionName += "s";
   }
 
