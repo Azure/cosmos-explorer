@@ -28,6 +28,10 @@ import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
 import { AuthType } from "./AuthType";
+import { ArmResourceTypes, HttpHeaders } from "./Common/Constants";
+import { getErrorMessage } from "./Common/ErrorHandlingUtils";
+import { logError, logInfo } from "./Common/Logger";
+import { configContext } from "./ConfigContext";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
@@ -57,12 +61,14 @@ import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 import { userContext } from "./UserContext";
+import { getAuthorizationHeader } from "./Utils/AuthorizationUtils";
 
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
   const [isNotificationConsoleExpanded, setIsNotificationConsoleExpanded] = useState(false);
   const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
+  const [isNotebooksEnabledForAccount, setIsNotebooksEnabledForAccount] = useState(false);
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
 
@@ -80,6 +86,55 @@ const App: React.FunctionComponent = () => {
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
   const { tabs, activeTab, tabsManager } = useTabs();
 
+  const refreshNotebooksEnabledStateForAccount = async (): Promise<void> => {
+    const authType = userContext.authType;
+    if (
+      authType === AuthType.EncryptedToken ||
+      authType === AuthType.ResourceToken ||
+      authType === AuthType.MasterKey
+    ) {
+      setIsNotebooksEnabledForAccount(false);
+      return;
+    }
+
+    const databaseAccount = userContext.databaseAccount;
+    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
+    const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
+    const authorizationHeader = getAuthorizationHeader();
+
+    try {
+      const response = await fetch(disallowedLocationsUri, {
+        method: "POST",
+        body: JSON.stringify({
+          resourceTypes: [ArmResourceTypes.notebookWorkspaces],
+        }),
+        headers: {
+          [authorizationHeader.header]: authorizationHeader.token,
+          [HttpHeaders.contentType]: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch disallowed locations");
+      }
+
+      const disallowedLocations: string[] = await response.json();
+      if (!disallowedLocations) {
+        logInfo("No disallowed locations found", "Explorer/isNotebooksEnabledForAccount");
+        setIsNotebooksEnabledForAccount(true);
+        return;
+      }
+      const isAccountInAllowedLocation = !disallowedLocations.some(
+        (disallowedLocation) => disallowedLocation === databaseAccountLocation
+      );
+
+      setIsNotebooksEnabledForAccount(isAccountInAllowedLocation);
+    } catch (error) {
+      logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
+      setIsNotebooksEnabledForAccount(false);
+    }
+  };
+
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
     setNotificationConsoleData,
@@ -89,6 +144,8 @@ const App: React.FunctionComponent = () => {
     openDialog,
     closeDialog,
     tabsManager,
+    refreshNotebooksEnabledStateForAccount,
+    isNotebooksEnabledForAccount,
   };
 
   const config = useConfig();

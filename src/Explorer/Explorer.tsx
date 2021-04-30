@@ -30,7 +30,7 @@ import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants"
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
 import { userContext } from "../UserContext";
-import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { decryptJWTToken } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
@@ -94,6 +94,8 @@ export interface ExplorerParams {
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
+  refreshNotebooksEnabledStateForAccount: () => void;
+  isNotebooksEnabledForAccount: ko.Observable<boolean>;
 }
 
 export default class Explorer {
@@ -195,6 +197,7 @@ export default class Explorer {
   public notebookManager?: NotebookManager;
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
+  public refreshNotebooksEnabledStateForAccount: ExplorerParams["refreshNotebooksEnabledStateForAccount"];
 
   private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
@@ -218,6 +221,8 @@ export default class Explorer {
     this.closeSidePanel = params?.closeSidePanel;
     this.closeDialog = params?.closeDialog;
     this.openDialog = params?.openDialog;
+    this.refreshNotebooksEnabledStateForAccount = params?.refreshNotebooksEnabledStateForAccount;
+    this.isNotebooksEnabledForAccount = params?.isNotebooksEnabledForAccount;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -242,7 +247,6 @@ export default class Explorer {
         });
       }
     });
-    this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
     this.isSparkEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
@@ -261,7 +265,7 @@ export default class Explorer {
         this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then((isRegistered) =>
           this.hasStorageAnalyticsAfecFeature(isRegistered)
         );
-        Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
+        Promise.all([this.refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
@@ -1610,53 +1614,6 @@ export default class Explorer {
         clearMessage();
       }
     );
-  }
-
-  private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
-    const authType = userContext.authType;
-    if (
-      authType === AuthType.EncryptedToken ||
-      authType === AuthType.ResourceToken ||
-      authType === AuthType.MasterKey
-    ) {
-      this.isNotebooksEnabledForAccount(false);
-      return;
-    }
-
-    const databaseAccount = this.databaseAccount();
-    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
-    const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
-    const authorizationHeader = getAuthorizationHeader();
-    try {
-      const response = await fetch(disallowedLocationsUri, {
-        method: "POST",
-        body: JSON.stringify({
-          resourceTypes: [Constants.ArmResourceTypes.notebookWorkspaces],
-        }),
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [Constants.HttpHeaders.contentType]: "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch disallowed locations");
-      }
-
-      const disallowedLocations: string[] = await response.json();
-      if (!disallowedLocations) {
-        Logger.logInfo("No disallowed locations found", "Explorer/isNotebooksEnabledForAccount");
-        this.isNotebooksEnabledForAccount(true);
-        return;
-      }
-      const isAccountInAllowedLocation = !disallowedLocations.some(
-        (disallowedLocation) => disallowedLocation === databaseAccountLocation
-      );
-      this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
-      this.isNotebooksEnabledForAccount(false);
-    }
   }
 
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
