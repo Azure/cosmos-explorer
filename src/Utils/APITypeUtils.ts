@@ -1,10 +1,6 @@
 import { userContext } from "../UserContext";
 
 export const getCollectionName = (isPlural?: boolean): string => {
-  const assertUnreachable = (apiType: never): never => {
-    throw new Error(`Unknown API type: ${apiType}`);
-  };
-
   let collectionName: string;
   switch (userContext.apiType) {
     case "SQL":
@@ -20,8 +16,12 @@ export const getCollectionName = (isPlural?: boolean): string => {
     case "Gremlin":
       collectionName = "Graph";
       break;
-    default:
+    default: {
+      const assertUnreachable = (apiType: never): never => {
+        throw new Error(`Unknown API type: ${apiType}`);
+      };
       assertUnreachable(userContext.apiType);
+    }
   }
 
   if (isPlural) {
