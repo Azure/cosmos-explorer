@@ -101,7 +101,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     }
   };
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
     formError: formError,
     formErrorDetail: formError,
     id: "deleteCollectionpane",
@@ -110,6 +109,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     submitButtonText: "OK",
     onClose: closePanel,
     onSubmit: submit,
+    expandConsole: () => explorer.expandConsole(),
   };
   return (
     <GenericRightPaneComponent {...genericPaneProps}>

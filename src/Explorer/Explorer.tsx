@@ -2056,15 +2056,18 @@ export default class Explorer {
   }
 
   public openSettingPane(): void {
-    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+    this.openSidePanel(
+      "Settings",
+      <SettingsPane expandConsole={() => this.expandConsole()} closePanel={this.closeSidePanel} />
+    );
   }
 
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     this.openSidePanel(
       "Input parameters",
       <ExecuteSprocParamsPane
-        explorer={this}
         storedProcedure={storedProcedure}
+        expandConsole={() => this.expandConsole()}
         closePanel={() => this.closeSidePanel()}
       />
     );
@@ -2099,7 +2102,7 @@ export default class Explorer {
     this.openSidePanel(
       "Upload File",
       <UploadFilePane
-        explorer={this}
+        expandConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
