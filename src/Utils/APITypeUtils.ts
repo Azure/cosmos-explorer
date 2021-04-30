@@ -20,7 +20,7 @@ export const getCollectionName = (isPlural?: boolean): string => {
       const assertUnreachable = (apiType: never): never => {
         throw new Error(`Unknown API type: ${apiType}`);
       };
-      assertUnreachable(userContext.apiType);
+      return assertUnreachable(userContext.apiType);
     }
   }
 
