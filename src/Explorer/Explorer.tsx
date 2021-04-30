@@ -1867,8 +1867,8 @@ export default class Explorer {
         break;
 
       case ViewModels.TerminalKind.Mongo:
-        title = `Mongo Shell`;
-        hashLocation = `mongo-shell`;
+        title = "Mongo Shell";
+        hashLocation = "mongo-shell";
         break;
 
       case ViewModels.TerminalKind.Cassandra:
