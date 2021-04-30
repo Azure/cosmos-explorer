@@ -1109,7 +1109,6 @@ export default class Explorer {
       if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
-      console.log(inputs);
 
       const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
