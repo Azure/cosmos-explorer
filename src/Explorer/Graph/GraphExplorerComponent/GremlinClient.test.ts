@@ -1,7 +1,7 @@
 import * as sinon from "sinon";
-import { GremlinClient, GremlinClientParameters } from "./GremlinClient";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import * as Logger from "../../../Common/Logger";
+import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
+import { GremlinClient, GremlinClientParameters } from "./GremlinClient";
 
 describe("Gremlin Client", () => {
   const emptyParams: GremlinClientParameters = {
@@ -70,7 +70,7 @@ describe("Gremlin Client", () => {
     gremlinClient.execute("fake query");
     gremlinClient.execute("fake query");
     gremlinClient.execute("fake query");
-    expect(gremlinClient.pendingResults.size()).toBe(3);
+    expect(gremlinClient.pendingResults.size).toBe(3);
   });
 
   it("should clean up pending request ids after success", async () => {
@@ -89,7 +89,7 @@ describe("Gremlin Client", () => {
       return requestId;
     });
     await gremlinClient.execute("fake query");
-    expect(gremlinClient.pendingResults.size()).toBe(0);
+    expect(gremlinClient.pendingResults.size).toBe(0);
   });
 
   it("should log and display error out on unknown requestId", () => {
@@ -247,7 +247,7 @@ describe("Gremlin Client", () => {
     sinon.stub(gremlinClient.client, "executeGremlinQuery").callsFake((query: string): string => requestId);
     gremlinClient.execute("fake query").finally(() => {
       try {
-        expect(gremlinClient.pendingResults.size()).toBe(0);
+        expect(gremlinClient.pendingResults.size).toBe(0);
         done();
       } catch (e) {
         done(e);

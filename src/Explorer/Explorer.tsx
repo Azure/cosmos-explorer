@@ -6,7 +6,6 @@ import React from "react";
 import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
-import { ReactAdapter } from "../Bindings/ReactBindingHandler";
 import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
@@ -26,12 +25,11 @@ import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProvi
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
-import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -73,7 +71,6 @@ import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
-import type { GalleryTabOptions } from "./Tabs/GalleryTab";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
 import { TabsManager } from "./Tabs/TabsManager";
@@ -120,11 +117,6 @@ export default class Explorer {
    * Use userContext.apiType instead
    * */
   public defaultExperience: ko.Observable<string>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
-   * */
-  public isPreferredApiMongoDB: ko.Computed<boolean>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   /**
    * @deprecated
@@ -175,7 +167,6 @@ export default class Explorer {
   public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public gitHubReposPane: ContextualPaneBase;
-  public publishNotebookPaneAdapter: ReactAdapter;
 
   // features
   public isGitHubPaneEnabled: ko.Observable<boolean>;
@@ -381,16 +372,16 @@ export default class Explorer {
       direction: SplitterDirection.Vertical,
     });
     this.defaultExperience = ko.observable<string>();
-    this.databaseAccount.subscribe((databaseAccount) => {
-      const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-        databaseAccount
-      );
-      this.defaultExperience(defaultExperience);
-      // TODO. Remove this entirely
-      updateUserContext({
-        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-      });
-    });
+    // this.databaseAccount.subscribe((databaseAccount) => {
+    //   const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
+    //     databaseAccount
+    //   );
+    //   this.defaultExperience(defaultExperience);
+    //   // TODO. Remove this entirely
+    //   updateUserContext({
+    //     apiType: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
+    //   });
+    // });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
@@ -411,27 +402,6 @@ export default class Explorer {
           (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
-
-    this.isPreferredApiMongoDB = ko.computed(() => {
-      const defaultExperience = (this.defaultExperience && this.defaultExperience()) || "";
-      if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.MongoDB.toLowerCase()) {
-        return true;
-      }
-
-      if (defaultExperience.toLowerCase() === Constants.DefaultAccountExperience.ApiForMongoDB.toLowerCase()) {
-        return true;
-      }
-
-      if (
-        this.databaseAccount &&
-        this.databaseAccount() &&
-        this.databaseAccount().kind.toLowerCase() === Constants.AccountKind.MongoDB
-      ) {
-        return true;
-      }
-
-      return false;
-    });
 
     this.isEnableMongoCapabilityPresent = ko.computed(() => {
       const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
@@ -1412,7 +1382,6 @@ export default class Explorer {
   ): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
-      this.publishNotebookPaneAdapter = this.notebookManager.publishNotebookPaneAdapter;
       this.isPublishNotebookPaneEnabled(true);
     }
   }
@@ -1912,33 +1881,35 @@ export default class Explorer {
     const title = "Gallery";
     const hashLocation = "gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
-
-    const galleryTabOptions: GalleryTabOptions = {
-      account: userContext.databaseAccount,
-      container: this,
-      junoClient: this.notebookManager?.junoClient,
-      selectedTab: selectedTab || GalleryTabKind.PublicGallery,
-      notebookUrl,
-      galleryItem,
-      isFavorite,
-      tabKind: ViewModels.CollectionTabKind.Gallery,
-      title: title,
-      tabPath: title,
-      hashLocation: hashLocation,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
-      isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
-    };
-
     const galleryTab = this.tabsManager
       .getTabs(ViewModels.CollectionTabKind.Gallery)
       .find((tab) => tab.hashLocation() == hashLocation);
 
     if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
-      galleryTab.reset(galleryTabOptions);
     } else {
-      this.tabsManager.activateNewTab(new GalleryTab(galleryTabOptions));
+      this.tabsManager.activateNewTab(
+        new GalleryTab(
+          {
+            tabKind: ViewModels.CollectionTabKind.Gallery,
+            title: title,
+            tabPath: title,
+            hashLocation: hashLocation,
+            onUpdateTabsButtons: this.onUpdateTabsButtons,
+            onLoadStartKey: null,
+            isTabsContentExpanded: ko.observable(true),
+          },
+          {
+            account: userContext.databaseAccount,
+            container: this,
+            junoClient: this.notebookManager?.junoClient,
+            selectedTab: selectedTab || GalleryTabKind.PublicGallery,
+            notebookUrl,
+            galleryItem,
+            isFavorite,
+          }
+        )
+      );
     }
   }
 
@@ -2086,7 +2057,7 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
+    let collectionName = PricingUtils.getCollectionName(userContext.apiType);
     this.openSidePanel(
       "Delete " + collectionName,
       <DeleteCollectionConfirmationPane
@@ -2114,15 +2085,18 @@ export default class Explorer {
   }
 
   public openSettingPane(): void {
-    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+    this.openSidePanel(
+      "Settings",
+      <SettingsPane expandConsole={() => this.expandConsole()} closePanel={this.closeSidePanel} />
+    );
   }
 
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     this.openSidePanel(
       "Input parameters",
       <ExecuteSprocParamsPane
-        explorer={this}
         storedProcedure={storedProcedure}
+        expandConsole={() => this.expandConsole()}
         closePanel={() => this.closeSidePanel()}
       />
     );
@@ -2157,7 +2131,7 @@ export default class Explorer {
     this.openSidePanel(
       "Upload File",
       <UploadFilePane
-        explorer={this}
+        expandConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
       />
