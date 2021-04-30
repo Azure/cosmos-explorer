@@ -119,6 +119,9 @@ module.exports = function (_env = {}, argv = {}) {
     // new CaseSensitivePathsPlugin(),
     new ProvidePlugin({
       process: "process/browser",
+      React: "react",
+      $: "jquery",
+      jQuery: "jquery",
     }),
     new MiniCssExtractPlugin({
       filename: "[name].[contenthash].css",

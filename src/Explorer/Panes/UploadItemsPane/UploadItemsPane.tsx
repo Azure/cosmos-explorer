@@ -1,9 +1,9 @@
+import { Upload } from "Common/Upload/Upload";
+import { UploadDetailsRecord } from "Contracts/ViewModels";
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "office-ui-fabric-react";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
-import { Upload } from "../../../Common/Upload/Upload";
-import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
-import { userContext } from "../../../UserContext";
-import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
+import { userContext } from "UserContext";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
 import {

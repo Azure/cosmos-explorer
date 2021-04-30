@@ -1,7 +1,7 @@
+import { DatabaseAccount } from "Contracts/DataModels";
 import { shallow } from "enzyme";
 import React from "react";
-import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { updateUserContext } from "../../../UserContext";
+import { updateUserContext } from "UserContext";
 import Explorer from "../../Explorer";
 import { SettingsPane } from "./SettingsPane";
 const props = {
