@@ -70,17 +70,19 @@ export class ResourceTreeContextMenuButtonFactory {
         label: "New Query",
       });
 
+      const showMongoTerminal =
+        container.isNotebookEnabled() && !container.databaseAccount().properties.isVirtualNetworkFilterEnabled;
       items.push({
         iconSrc: HostedTerminalIcon,
         onClick: () => {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-          if (container.isNotebookEnabled()) {
+          if (showMongoTerminal) {
             container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
           } else {
             selectedCollection && selectedCollection.onNewMongoShellClick();
           }
         },
-        label: container.isNotebookEnabled() ? "Open Mongo Shell" : "New Shell",
+        label: showMongoTerminal ? "Open Mongo Shell" : "New Shell",
       });
     }
 

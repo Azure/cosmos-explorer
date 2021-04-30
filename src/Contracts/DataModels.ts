@@ -21,6 +21,7 @@ export interface DatabaseAccountExtendedProperties {
   writeLocations?: DatabaseAccountResponseLocation[];
   enableFreeTier?: boolean;
   enableAnalyticalStorage?: boolean;
+  isVirtualNetworkFilterEnabled?: boolean;
 }
 
 export interface DatabaseAccountResponseLocation {

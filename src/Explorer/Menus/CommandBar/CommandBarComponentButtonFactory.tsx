@@ -70,7 +70,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createEnableNotebooksButton(container));
     }
 
-    if (container.isPreferredApiMongoDB()) {
+    if (container.isPreferredApiMongoDB() && !container.databaseAccount().properties.isVirtualNetworkFilterEnabled) {
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
@@ -134,14 +134,15 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()) {
-    const label = container.isNotebookEnabled() ? "Open Mongo Shell" : "New Shell";
-
+    const showMongoTerminal =
+      container.isNotebookEnabled() && !container.databaseAccount().properties.isVirtualNetworkFilterEnabled;
+    const label = showMongoTerminal ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        if (container.isNotebookEnabled()) {
+        if (showMongoTerminal) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
