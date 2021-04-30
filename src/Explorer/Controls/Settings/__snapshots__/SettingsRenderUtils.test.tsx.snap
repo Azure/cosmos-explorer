@@ -150,7 +150,7 @@ exports[`SettingsUtils functions render 1`] = `
     </Text>
     <Text>
       <em>
-        *This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+        This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
       </em>
     </Text>
   </Stack>

@@ -16,15 +16,10 @@ test("Mongo CRUD", async () => {
 
   // Create new database and collection
   await explorer.click('[data-test="New Collection"]');
-  await explorer.click('[data-test="addCollection-newDatabaseId"]');
-  await explorer.fill('[data-test="addCollection-newDatabaseId"]', databaseId);
-  await explorer.click('[data-test="addCollection-collectionId"]');
-  await explorer.fill('[data-test="addCollection-collectionId"]', containerId);
-  await explorer.click('[data-test="addCollection-collectionId"]');
-  await explorer.fill('[data-test="addCollection-collectionId"]', containerId);
-  await explorer.click('[data-test="addCollection-partitionKeyValue"]');
-  await explorer.fill('[data-test="addCollection-partitionKeyValue"]', "/pk");
-  await explorer.click('[data-test="addCollection-createCollection"]');
+  await explorer.fill('[aria-label="New database id"]', databaseId);
+  await explorer.fill('[aria-label="Collection id"]', containerId);
+  await explorer.fill('[aria-label="Shard key"]', "/pk");
+  await explorer.click("#sidePanelOkButton");
   await safeClick(explorer, `.nodeItem >> text=${databaseId}`);
   await safeClick(explorer, `.nodeItem >> text=${containerId}`);
   // Create indexing policy

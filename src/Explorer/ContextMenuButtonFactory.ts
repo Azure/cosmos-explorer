@@ -29,11 +29,11 @@ export interface DatabaseContextMenuButtonParams {
  * New resource tree (in ReactJS)
  */
 export class ResourceTreeContextMenuButtonFactory {
-  public static createDatabaseContextMenu(container: Explorer): TreeNodeMenuItem[] {
+  public static createDatabaseContextMenu(container: Explorer, databaseId: string): TreeNodeMenuItem[] {
     const items: TreeNodeMenuItem[] = [
       {
         iconSrc: AddCollectionIcon,
-        onClick: () => container.onNewCollectionClicked(),
+        onClick: () => container.onNewCollectionClicked(databaseId),
         label: container.addCollectionText(),
       },
     ];

@@ -30,12 +30,12 @@ import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants"
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
 import { userContext } from "../UserContext";
+import { getCollectionName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -1950,14 +1950,14 @@ export default class Explorer {
     }
   }
 
-  public onNewCollectionClicked(): void {
+  public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
-    } else if (userContext.features.enableReactPane) {
-      this.openAddCollectionPanel();
-    } else {
+    } else if (userContext.features.enableKOPanel) {
       this.addCollectionPane.open(this.selectedDatabaseId());
       document.getElementById("linkAddCollection").focus();
+    } else {
+      this.openAddCollectionPanel(databaseId);
     }
   }
 
@@ -2061,14 +2061,9 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    let collectionName = PricingUtils.getCollectionName(userContext.apiType);
     this.openSidePanel(
-      "Delete " + collectionName,
-      <DeleteCollectionConfirmationPane
-        explorer={this}
-        collectionName={collectionName}
-        closePanel={this.closeSidePanel}
-      />
+      "Delete " + getCollectionName(),
+      <DeleteCollectionConfirmationPane explorer={this} closePanel={this.closeSidePanel} />
     );
   }
 
@@ -2106,14 +2101,15 @@ export default class Explorer {
     );
   }
 
-  public async openAddCollectionPanel(): Promise<void> {
+  public async openAddCollectionPanel(databaseId?: string): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
-      "New Collection",
+      "New " + getCollectionName(),
       <AddCollectionPanel
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+        databaseId={databaseId}
       />
     );
   }
