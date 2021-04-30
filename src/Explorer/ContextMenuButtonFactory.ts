@@ -70,7 +70,7 @@ export class ResourceTreeContextMenuButtonFactory {
       });
 
       const showMongoTerminal =
-        container.isNotebookEnabled() && userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled;
+        container.isNotebookEnabled() && !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled;
       items.push({
         iconSrc: HostedTerminalIcon,
         onClick: () => {
