@@ -143,7 +143,6 @@
         size="40"
         class="collid"
         data-bind="visible: databaseCreateNew, textInput: databaseId, hasFocus: firstFieldHasFocus"
-        aria-label="Database id"
         autofocus
       />
 
@@ -161,7 +160,6 @@
         size="40"
         class="collid"
         data-bind="visible: !databaseCreateNew(), textInput: databaseId, hasFocus: firstFieldHasFocus"
-        aria-label="Database id"
       />
 
       <datalist id="databasesList" data-bind="foreach: databaseIds" data-bind="visible: databaseCreateNew">
@@ -246,7 +244,7 @@
         placeholder="e.g., Container1"
         size="40"
         class="textfontclr collid"
-        data-bind="value: collectionId, attr: { 'aria-label': collectionIdTitle }"
+        data-bind="value: collectionId"
       />
     </div>
 
@@ -352,7 +350,6 @@
                                                 attr: {
                                                     placeholder: partitionKeyPlaceholder,
                                                     required: partitionKeyVisible(),
-                                                    'aria-label': partitionKeyName,
                                                     pattern: partitionKeyPattern,
                                                     title: partitionKeyTitle
                                                 }"

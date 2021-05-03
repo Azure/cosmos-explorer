@@ -525,7 +525,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       <Stack
         className="panelInfoErrorContainer"
         horizontal={true}
-        verticalAlign="start"
+        verticalAlign="center"
       >
         <div
           className="ms-Stack panelInfoErrorContainer css-140"
