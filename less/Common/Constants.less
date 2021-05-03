@@ -2,9 +2,26 @@
                                 FONTS
 /******************************************************************************/
 
-@font-face {
-  font-family: wf_segoe-ui_normal;
-  src: url("../../fonts/segoe-ui/west-european/normal/latest.woff");
+// @media screen and (min-color-index: 0) and(-webkit-min-device-pixel-ratio:0) {
+//   @media {
+//     /*
+//       Define here the CSS styles applied only to Safari browsers
+//       (any version and any device)
+//      */
+//     @font-face {
+//       font-family: wf_segoe-ui_normal;
+//       src: url("../../fonts/segoe-ui/west-european/normal/latest.woff");
+//     }
+//   }
+// }
+
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports (-webkit-appearance: none) {
+    @font-face {
+      font-family: wf_segoe-ui_normal;
+      src: url("../../fonts/segoe-ui/west-european/normal/latest.woff");
+    }
+  }
 }
 
 @DataExplorerFont: wf_segoe-ui_normal, "Segoe UI", "Segoe WP", Tahoma, Arial, sans-serif;
