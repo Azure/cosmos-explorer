@@ -37,7 +37,7 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
 
   const title = "Load Query";
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
+    expandConsole: () => explorer.expandConsole(),
     formError: formError,
     formErrorDetail: formErrorsDetails,
     id: "loadQueryPane",

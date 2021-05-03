@@ -2,10 +2,7 @@ import { DatabaseAccount } from "Contracts/DataModels";
 import { shallow } from "enzyme";
 import React from "react";
 import { updateUserContext } from "UserContext";
-import Explorer from "../../Explorer";
 import { SettingsPane } from "./SettingsPane";
-const props = {
-  explorer: new Explorer(),
   closePanel: (): void => undefined,
 };
 describe("Settings Pane", () => {

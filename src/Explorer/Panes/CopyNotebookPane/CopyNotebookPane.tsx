@@ -131,7 +131,6 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
   };
 
   const genericPaneProps: GenericRightPaneProps = {
-    container,
     formError,
     formErrorDetail,
     id: "copynotebookpane",
@@ -140,6 +139,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
     submitButtonText: "OK",
     onClose: closePanel,
     onSubmit: () => submit(),
+    expandConsole: () => container.expandConsole(),
   };
 
   const copyNotebookPaneProps: CopyNotebookPaneProps = {
