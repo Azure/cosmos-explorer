@@ -483,6 +483,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "selectedNode": [Function],
       "setInProgressConsoleDataIdToBeDeleted": undefined,
       "setIsNotificationConsoleExpanded": undefined,
+      "setNotebookSnapshot": undefined,
+      "setNotebookSnapshotError": undefined,
       "setNotificationConsoleData": undefined,
       "signInAad": [Function],
       "sparkClusterConnectionInfo": [Function],

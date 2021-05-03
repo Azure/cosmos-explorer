@@ -478,6 +478,8 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       "selectedNode": [Function],
       "setInProgressConsoleDataIdToBeDeleted": undefined,
       "setIsNotificationConsoleExpanded": undefined,
+      "setNotebookSnapshot": undefined,
+      "setNotebookSnapshotError": undefined,
       "setNotificationConsoleData": undefined,
       "signInAad": [Function],
       "sparkClusterConnectionInfo": [Function],
