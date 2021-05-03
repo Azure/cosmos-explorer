@@ -92,15 +92,7 @@ const onInit = async () => {
       // Typescript definition for event is wrong. So read props by casting to <any>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const snapshotRequest = (event as any).data as SnapshotRequest;
-
-      console.log("snapshot request received", snapshotRequest, window.scrollY);
-
-      const result = await NotebookUtil.takeScreenshot(
-        topNode,
-        snapshotRequest.aspectRatio,
-        undefined
-      );
-      console.log("snapshot executed", result.imageSrc?.length);
+      const result = await NotebookUtil.takeScreenshot(topNode, snapshotRequest.aspectRatio, undefined);
 
       return {
         imageSrc: result.imageSrc,

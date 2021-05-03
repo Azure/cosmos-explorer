@@ -18,6 +18,7 @@ describe("PublishNotebookPaneComponent", () => {
       setImageSrc: undefined,
       onError: undefined,
       clearFormError: undefined,
+      onTakeSnapshot: undefined,
     };
 
     const wrapper = shallow(<PublishNotebookPaneComponent {...props} />);

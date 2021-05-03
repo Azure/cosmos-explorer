@@ -171,7 +171,7 @@ export class NotebookUtil {
     aspectRatio: number,
     subSnaphosts: SnapshotFragment[],
     downloadFile?: boolean
-  ): Promise<{ image: HTMLImageElement }> => {
+  ): Promise<{ image: HTMLImageElement | undefined }> => {
     console.log("Taking snapshot");
     return new Promise(async (resolve, reject) => {
       try {
@@ -240,18 +240,16 @@ export class NotebookUtil {
     aspectRatio: number,
     subSnaphosts: SnapshotFragment[],
     downloadFile?: boolean
-  ): Promise<{ imageSrc: string }> => {
-    console.log("Taking snapshot");
+  ): Promise<{ imageSrc: string | undefined }> => {
     return new Promise(async (resolve, reject) => {
       // target.scrollIntoView();
       try {
-        const filter = (node: HTMLElement): boolean => {
+        const filter = (node: Node): boolean => {
           const excludedList = ["IMG", "CANVAS"];
-          return !excludedList.includes(node.tagName);
+          return !excludedList.includes((node as HTMLElement).tagName);
         };
 
         const originalImageData = await domtoimage.toPng(target, { filter });
-        console.log("snapshotted!");
         if (originalImageData === "data:,") {
           // Empty output
           resolve({ imageSrc: undefined });
@@ -266,6 +264,10 @@ export class NotebookUtil {
           canvas.height = aspectRatio !== undefined ? baseImage.width * aspectRatio : baseImage.width;
 
           const context = canvas.getContext("2d");
+          if (!context) {
+            reject("No Canvas to draw on");
+            return;
+          }
           context.drawImage(baseImage, 0, 0);
 
           // draw sub images
@@ -285,12 +287,11 @@ export class NotebookUtil {
           resolve({ imageSrc: canvas.toDataURL() });
 
           if (downloadFile) {
-            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
+            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
             window.location.href = image2; // it will save locally
           }
         };
       } catch (error) {
-        console.log("Error in snapshot", error);
         reject(error);
       }
     });

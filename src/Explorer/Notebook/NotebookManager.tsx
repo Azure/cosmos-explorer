@@ -22,7 +22,7 @@ import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPane } from "../Panes/GitHubReposPane";
-import { OpenPublishPaneReturnType, PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
+import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { SnapshotRequest } from "./NotebookComponent/types";
@@ -119,11 +119,12 @@ export default class NotebookManager {
   public async openPublishNotebookPane(
     name: string,
     content: NotebookPaneContent,
-    onTakeSnapshot: (request: SnapshotRequest) => void
-  ): Promise<OpenPublishPaneReturnType> {
+    onTakeSnapshot: (request: SnapshotRequest) => void,
+    onClosePanel: () => void
+  ): Promise<void> {
     const explorer = this.params.container;
     explorer.openSidePanel(
-      "New Collection",
+      "Publish Notebook",
       <PublishNotebookPane
         explorer={this.params.container}
         junoClient={this.junoClient}
@@ -133,7 +134,10 @@ export default class NotebookManager {
         author={getFullName()}
         notebookContent={content}
         onTakeSnapshot={onTakeSnapshot}
-      />
+        notebookSnapshot={/*this.params.container.notebookSnapshot*/ undefined}
+        notebookSnapshotError={/*this.params.container.notebookSnapshotError*/ undefined}
+      />,
+      onClosePanel
     );
   }
 

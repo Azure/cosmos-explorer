@@ -46,7 +46,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   setNotebookDescription,
   setNotebookTags,
   setImageSrc,
-  onTakeSnapshot
+  onTakeSnapshot,
 }: PublishNotebookPaneProps) => {
   const [type, setType] = useState<string>(ImageTypes.CustomImage);
   const CARD_WIDTH = 256;
@@ -64,9 +64,16 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   )}" to the gallery?`;
 
   const options: ImageTypes[] = [ImageTypes.CustomImage, ImageTypes.Url];
+  if (onTakeSnapshot) {
+    options.push(ImageTypes.TakeScreenshot);
+    if (notebookObject) {
+      options.push(ImageTypes.UseFirstDisplayOutput);
+    }
+  }
+
   const thumbnailSelectorProps: IDropdownProps = {
     label: "Cover image",
-    defaultSelectedKey: ImageTypes.CustomImage,
+    selectedKey: type,
     ariaLabel: "Cover image",
     options: options.map((value: string) => ({ text: value, key: value })),
     onChange: async (event, options) => {
@@ -111,13 +118,6 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
     const area = "PublishNotebookPaneComponent/UseFirstOutput";
     onError(formError, formErrorDetail, area);
   };
-
-  if (onTakeSnapshot) {
-    options.push(ImageTypes.TakeScreenshot);
-    if (notebookObject) {
-      options.push(ImageTypes.UseFirstDisplayOutput);
-    }
-  }
 
   const imageToBase64 = (file: File, updateImageSrc: (result: string) => void) => {
     const reader = new FileReader();

@@ -93,7 +93,6 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
         this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
       this.props.cellOutputSnapshots.size === this.props.nbCodeCells
     ) {
-      console.log('About to take whole notebook snapshot');
       try {
         const result = await NotebookUtil.takeScreenshot(
           this.notebookRendererRef.current,

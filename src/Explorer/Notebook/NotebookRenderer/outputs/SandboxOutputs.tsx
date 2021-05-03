@@ -86,10 +86,12 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
     this.sendPropsToFrame();
 
     if (this.props.pendingSnapshotRequest && prevProps.pendingSnapshotRequest !== this.props.pendingSnapshotRequest) {
-      console.log('About to take cell snapshot')
       try {
-        const { data } = (await postRobot.send(this.childWindow, "snapshotRequest", this.props.pendingSnapshotRequest)) as { data: SnapshotResponse };
-        console.log('SandboxOutput: received:', data);
+        const { data } = (await postRobot.send(
+          this.childWindow,
+          "snapshotRequest",
+          this.props.pendingSnapshotRequest
+        )) as { data: SnapshotResponse };
         if (this.props.pendingSnapshotRequest.type === "notebook") {
           if (data.imageSrc === undefined) {
             this.props.storeSnapshotFragment(this.props.id, {
@@ -102,18 +104,15 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
           const image = new Image();
           image.src = data.imageSrc;
           image.onload = () => {
-            console.log('storing fragment');
             this.props.storeSnapshotFragment(this.props.id, {
               image,
               boundingClientRect: this.boundingClientRect,
               requestId: data.requestId,
             });
-          }
+          };
         } else if (this.props.pendingSnapshotRequest.type === "celloutput") {
-          console.log('storing notebook snapshot');
           this.props.storeNotebookSnapshot(data.imageSrc, this.props.pendingSnapshotRequest.requestId);
         }
-
       } catch (error) {
         this.props.notebookSnapshotError(error.message);
       }

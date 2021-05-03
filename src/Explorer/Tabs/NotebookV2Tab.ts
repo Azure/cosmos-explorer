@@ -462,29 +462,20 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
     // TODO get snapshots from somewhere better
     const notebookReduxStore = NotebookTabV2.clientManager.getStore();
-    notebookReduxStore.subscribe(() => {
+    const unsubscribe = notebookReduxStore.subscribe(() => {
       const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
-      // Change has been made, update the pane
-      if (cdbState.notebookSnapshot && onSnapshotSuccessFct) {
-        onSnapshotSuccessFct(cdbState.notebookSnapshot.imageSrc);
-      }
-
-      if (cdbState.notebookSnapshotError && onSnapshotErrorFct) {
-        onSnapshotErrorFct(cdbState.notebookSnapshotError);
-      }
+      this.container.setNotebookSnapshot(cdbState.notebookSnapshot?.imageSrc);
+      this.container.setNotebookSnapshotError(cdbState.notebookSnapshotError);
     });
 
     const notebookContent = this.notebookComponentAdapter.getContent();
-    let onSnapshotSuccessFct: (newImageSrc: string) => void;
-    let onSnapshotErrorFct: (error: string) => void;
 
-    const { onSnapshotSuccess, onSnapshotError } = await this.container.publishNotebook(
+    await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request))
+      (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request)),
+      unsubscribe // callback called when side panel gets closed
     );
-    onSnapshotSuccessFct = onSnapshotSuccess;
-    onSnapshotErrorFct = onSnapshotError;
   };
 
   private copyNotebook = () => {

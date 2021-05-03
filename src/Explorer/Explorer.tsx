@@ -61,7 +61,6 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
-import { OpenPublishPaneReturnType } from "./Panes/PublishNotebookPane/PublishNotebookPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
@@ -92,11 +91,15 @@ export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
+  notebookSnapshot: string;
+  notebookSnapshotError: string;
+  setNotebookSnapshot: (imageSrc: string) => void;
+  setNotebookSnapshotError: (error: string) => void;
 }
 
 export default class Explorer {
@@ -141,7 +144,7 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
-  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   public closeSidePanel: () => void;
 
   // Resource Tree
@@ -199,6 +202,12 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
+  // Notebook snapshot
+  public notebookSnapshot: string;
+  public notebookSnapshotError: string;
+  public setNotebookSnapshot: (imageSrc: string) => void;
+  public setNotebookSnapshotError: (error: string) => void;
+
   private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
@@ -221,6 +230,10 @@ export default class Explorer {
     this.closeSidePanel = params?.closeSidePanel;
     this.closeDialog = params?.closeDialog;
     this.openDialog = params?.openDialog;
+    this.notebookSnapshot = params?.notebookSnapshot;
+    this.notebookSnapshotError = params?.notebookSnapshotError;
+    this.setNotebookSnapshot = params?.setNotebookSnapshot;
+    this.setNotebookSnapshotError = params?.setNotebookSnapshotError;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -268,8 +281,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                userContext.features.enableNotebooks)
+                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                  userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
@@ -290,7 +303,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-              userContext.features.enableSpark
+                userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
@@ -1380,15 +1393,13 @@ export default class Explorer {
   public async publishNotebook(
     name: string,
     content: NotebookPaneContent,
-    onTakeSnapshot?: (request: SnapshotRequest) => void
-  ): Promise<OpenPublishPaneReturnType> {
-    let result;
-
+    onTakeSnapshot: (request: SnapshotRequest) => void,
+    onClosePanel: () => void
+  ): Promise<void> {
     if (this.notebookManager) {
-      result = await this.notebookManager.openPublishNotebookPane(name, content, onTakeSnapshot);
+      await this.notebookManager.openPublishNotebookPane(name, content, onTakeSnapshot, onClosePanel);
       this.isPublishNotebookPaneEnabled(true);
     }
-    return result;
   }
 
   public copyNotebook(name: string, content: string): void {

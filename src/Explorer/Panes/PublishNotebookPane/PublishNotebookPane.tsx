@@ -13,14 +13,9 @@ import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
 import {
   GenericRightPaneComponent,
-  GenericRightPaneProps
+  GenericRightPaneProps,
 } from "../GenericRightPaneComponent/GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
-
-export interface OpenPublishPaneReturnType {
-  onSnapshotSuccess: (newImageSrc: string) => void;
-  onSnapshotError: (error: string) => void;
-}
 
 export interface PublishNotebookPaneAProps {
   explorer: Explorer;
@@ -31,6 +26,8 @@ export interface PublishNotebookPaneAProps {
   author: string;
   notebookContent: string | ImmutableNotebook;
   onTakeSnapshot: (request: SnapshotRequest) => void;
+  notebookSnapshot: string;
+  notebookSnapshotError: string;
 }
 export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> = ({
   explorer: container,
@@ -40,6 +37,8 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   author,
   notebookContent,
   onTakeSnapshot,
+  notebookSnapshot,
+  notebookSnapshotError,
 }: PublishNotebookPaneAProps): JSX.Element => {
   const [isCodeOfConductAccepted, setIsCodeOfConductAccepted] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
@@ -79,6 +78,14 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     }
     setContent(newContent);
   }, []);
+
+  useEffect(() => {
+    setImageSrc(notebookSnapshot);
+  }, [notebookSnapshot]);
+
+  useEffect(() => {
+    setFormError(notebookSnapshotError);
+  }, [notebookSnapshotError]);
 
   const submit = async (): Promise<void> => {
     const clearPublishingMessage = NotificationConsoleUtils.logConsoleProgress(`Publishing ${name} to gallery`);
@@ -190,7 +197,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     setNotebookDescription,
     setNotebookTags,
     setImageSrc,
-    onTakeSnapshot
+    onTakeSnapshot,
   };
   return (
     <GenericRightPaneComponent {...props}>
