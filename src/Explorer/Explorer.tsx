@@ -96,8 +96,6 @@ export interface ExplorerParams {
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
-  notebookSnapshot: string;
-  notebookSnapshotError: string;
   setNotebookSnapshot: (imageSrc: string) => void;
   setNotebookSnapshotError: (error: string) => void;
 }
@@ -203,8 +201,6 @@ export default class Explorer {
   public closeDialog: ExplorerParams["closeDialog"];
 
   // Notebook snapshot
-  public notebookSnapshot: string;
-  public notebookSnapshotError: string;
   public setNotebookSnapshot: (imageSrc: string) => void;
   public setNotebookSnapshotError: (error: string) => void;
 
@@ -230,8 +226,6 @@ export default class Explorer {
     this.closeSidePanel = params?.closeSidePanel;
     this.closeDialog = params?.closeDialog;
     this.openDialog = params?.openDialog;
-    this.notebookSnapshot = params?.notebookSnapshot;
-    this.notebookSnapshotError = params?.notebookSnapshotError;
     this.setNotebookSnapshot = params?.setNotebookSnapshot;
     this.setNotebookSnapshotError = params?.setNotebookSnapshotError;
 
@@ -281,8 +275,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
-                  userContext.features.enableNotebooks)
+              ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
@@ -303,7 +297,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
+              userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(

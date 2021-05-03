@@ -96,8 +96,6 @@ const App: React.FunctionComponent = () => {
     openDialog,
     closeDialog,
     tabsManager,
-    notebookSnapshot,
-    notebookSnapshotError,
     setNotebookSnapshot,
     setNotebookSnapshotError,
   };
@@ -239,6 +237,7 @@ const App: React.FunctionComponent = () => {
         closePanel={closeSidePanel}
         isConsoleExpanded={isNotificationConsoleExpanded}
         notebookSnapshot={notebookSnapshot}
+        notebookSnapshotError={notebookSnapshotError}
       />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />

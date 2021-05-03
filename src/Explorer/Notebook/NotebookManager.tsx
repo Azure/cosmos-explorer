@@ -134,8 +134,8 @@ export default class NotebookManager {
         author={getFullName()}
         notebookContent={content}
         onTakeSnapshot={onTakeSnapshot}
-        notebookSnapshot={/*this.params.container.notebookSnapshot*/ undefined}
-        notebookSnapshotError={/*this.params.container.notebookSnapshotError*/ undefined}
+        notebookSnapshot={undefined /* Updated by App in Main.tsx */}
+        notebookSnapshotError={undefined /* Updated by App in Main.tsx */}
       />,
       onClosePanel
     );

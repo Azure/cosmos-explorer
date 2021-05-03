@@ -10,6 +10,7 @@ export interface PanelContainerProps {
   panelWidth?: string;
   onRenderNavigationContent?: IRenderFunction<IPanelProps>;
   notebookSnapshot?: string;
+  notebookSnapshotError?: string;
 }
 
 export interface PanelContainerState {
@@ -61,7 +62,10 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
         }}
         style={{ height: this.getPanelHeight() }}
       >
-        {React.cloneElement(this.props.panelContent, { notebookSnapshot: this.props.notebookSnapshot })}
+        {React.cloneElement(this.props.panelContent, {
+          notebookSnapshot: this.props.notebookSnapshot,
+          notebookSnapshotError: this.props.notebookSnapshotError
+        })}
       </Panel>
     );
   }

@@ -80,13 +80,13 @@ const onInit = async () => {
       const topNode = document.getElementById("cellOutput");
       if (!topNode) {
         const errorMsg = "No top node to snapshot";
-        return Promise.reject(errorMsg);
+        return Promise.reject(new Error(errorMsg));
       }
 
       const outputContainer = document.getElementById("output-container");
       if (!outputContainer) {
         const errorMsg = "Cell container not found";
-        return Promise.reject(errorMsg);
+        return Promise.reject(new Error(errorMsg));
       }
 
       // Typescript definition for event is wrong. So read props by casting to <any>
