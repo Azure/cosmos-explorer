@@ -37,16 +37,15 @@
     "CannotSave": "Cannot save the changes to the Dedicated gateway resource at the moment.",
     "DedicatedGatewayEndpoint": "Dedicated gatewayEndpoint",
     "NoValue": "",
-    "SKUDetails": "SKU Details:",
     "CosmosD4Details": "General Purpose Cosmos Compute with 4 vCPUs, 16 GB Memory",
     "CosmosD8Details": "General Purpose Cosmos Compute with 8 vCPUs, 32 GB Memory",
     "CosmosD16Details": "General Purpose Cosmos Compute with 16 vCPUs, 64 GB Memory",
-    "CosmosD32Details": "General Purpose Cosmos Compute with 32 vCPUs, 128 GB Memory",
     "Cost": "Cost",
     "CostText": "Hourly cost of the dedicated gateway resource depends on the SKU selection, number of instances per region, and number of regions.",
     "ConnectionString": "Connection String",
     "ConnectionStringText": "To use the dedicated gateway, use the connection string shown in ",
     "KeysBlade": "the keys blade",
+    "NoChangesToExistingResource": "No changes were made to the existing resource. Saving will have no effect.",
     "WarningBannerOnUpdate": "Adding or modifying dedicated gateway instances may affect your bill.",
     "WarningBannerOnDelete": "After deprovisioning the dedicated gateway, you must update any applications using the old dedicated gateway connection string."
 }
