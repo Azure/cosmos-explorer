@@ -151,7 +151,10 @@ export class NotebookUtil {
         const cell = notebookObject.cellMap.get(cellId);
         if (cell?.cell_type === "code") {
           const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
-            (output) => output.output_type === "display_data" || output.output_type === "execute_result"
+            (output) =>
+              output.output_type === "display_data" ||
+              output.output_type === "execute_result" ||
+              output.output_type === "stream"
           );
           if (displayOutput) {
             return cellId;
