@@ -31,7 +31,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
 
   return (
     formError && (
-      <Stack className="panelInfoErrorContainer" horizontal verticalAlign="start">
+      <Stack className="panelInfoErrorContainer" horizontal verticalAlign="center">
         {icon}
         <span className="panelWarningErrorDetailsLinkContainer">
           <Text className="panelWarningErrorMessage" variant="small" data-testid="panelmessage">

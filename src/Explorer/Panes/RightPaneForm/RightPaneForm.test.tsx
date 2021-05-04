@@ -1,15 +1,15 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { mount, ReactWrapper } from "enzyme";
 import React from "react";
-import Explorer from "../../Explorer";
 import { RightPaneForm } from "./RightPaneForm";
 
 const onClose = jest.fn();
 const onSubmit = jest.fn();
+const expandConsole = jest.fn();
 
 const props = {
   closePanel: (): void => undefined,
-  container: new Explorer(),
+  expandConsole,
   formError: "",
   formErrorDetail: "",
   id: "loadQueryPane",

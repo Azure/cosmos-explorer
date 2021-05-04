@@ -3,10 +3,9 @@ import React, { FunctionComponent, ReactNode } from "react";
 import ErrorRedIcon from "../../../../images/error_red.svg";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
 import { KeyCodes } from "../../../Common/Constants";
-import Explorer from "../../Explorer";
 
 export interface GenericRightPaneProps {
-  container: Explorer;
+  expandConsole: () => void;
   formError: string;
   formErrorDetail: string;
   id: string;
@@ -20,7 +19,7 @@ export interface GenericRightPaneProps {
 }
 
 export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps> = ({
-  container,
+  expandConsole,
   formError,
   formErrorDetail,
   id,
@@ -68,7 +67,7 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
             <span className="formErrors" title={formError}>
               {formError}
             </span>
-            <a className="errorLink" role="link" hidden={!formErrorDetail} onClick={showErrorDetail}>
+            <a className="errorLink" role="link" hidden={!formErrorDetail} onClick={expandConsole}>
               More details
             </a>
           </span>
@@ -108,10 +107,6 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
       onClose();
       event.stopPropagation();
     }
-  };
-
-  const showErrorDetail = (): void => {
-    container.expandConsole();
   };
 
   return (

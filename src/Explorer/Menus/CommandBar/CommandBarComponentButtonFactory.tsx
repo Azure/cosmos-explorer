@@ -19,11 +19,8 @@ import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
-import { Areas } from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
@@ -537,14 +534,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () => {
-      if (!connectedToGitHub) {
-        TelemetryProcessor.trace(Action.NotebooksGitHubConnect, ActionModifiers.Mark, {
-          dataExplorerArea: Areas.Notebook,
-        });
-      }
-      container.gitHubReposPane.open();
-    },
+    onCommandClick: () => container.openGitHubReposPanel(label),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

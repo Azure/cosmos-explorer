@@ -3,6 +3,7 @@
 exports[`ThroughputInput Pane should render Default properly 1`] = `
 <ThroughputInput
   isDatabase={false}
+  isSharded={false}
   onCostAcknowledgeChange={[Function]}
   setIsAutoscale={[Function]}
   setThroughputValue={[Function]}
@@ -27,6 +28,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           key=".0:$.1"
           style={
             Object {
+              "fontWeight": 600,
               "lineHeight": "20px",
             }
           }
@@ -36,11 +38,12 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             className="css-41"
             style={
               Object {
+                "fontWeight": 600,
                 "lineHeight": "20px",
               }
             }
           >
-            Throughput (autoscale)
+            Container throughput (autoscale)
           </span>
         </Text>
         <Tooltip
@@ -1423,7 +1426,10 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         </Tooltip>
       </div>
     </Stack>
-    <Stack>
+    <Stack
+      horizontal={true}
+      verticalAlign="center"
+    >
       <div
         className="ms-Stack css-51"
       >
@@ -2426,7 +2432,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       className="throughputInputSpacing"
     >
       <div
-        className="ms-Stack throughputInputSpacing css-51"
+        className="ms-Stack throughputInputSpacing css-63"
       >
         <Text
           data-testid="ruDescription"
@@ -2437,7 +2443,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             className="css-41"
             data-testid="ruDescription"
           >
-            Provision maximum RU/s required by this resource. Estimate your required RU/s with 
+            Estimate your required RU/s with 
             <StyledLinkBase
               data-testid="ruDescription"
               href="https://cosmos.azure.com/capacitycalculator/"
@@ -2723,7 +2729,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 }
               >
                 <a
-                  className="ms-Link root-63"
+                  className="ms-Link root-64"
                   data-testid="ruDescription"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
@@ -2748,6 +2754,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               key=".0:$.0"
               style={
                 Object {
+                  "fontWeight": 600,
                   "lineHeight": "20px",
                 }
               }
@@ -2758,11 +2765,13 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 data-testid="maxRUDescription"
                 style={
                   Object {
+                    "fontWeight": 600,
                     "lineHeight": "20px",
                   }
                 }
               >
-                Max RU/s
+                Container
+                 Max RU/s
               </span>
             </Text>
             <Tooltip
@@ -2775,8 +2784,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       "gapSpace": 0,
                     }
                   }
-                  content="After the first 40 GB of data stored, the max
-    RU/s will be automatically upgraded based on the new storage value."
+                  content="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
                   id="tooltip8"
                   styles={
                     Object {
@@ -2792,8 +2800,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         "gapSpace": 0,
                       }
                     }
-                    content="After the first 40 GB of data stored, the max
-    RU/s will be automatically upgraded based on the new storage value."
+                    content="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
                     delay={1}
                     id="tooltip8"
                     styles={[Function]}
@@ -4149,6 +4156,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         </Stack>
         <StyledTextFieldBase
           aria-label="Max request units per second"
+          errorMessage=""
           key=".0:$.2"
           min={4000}
           onChange={[Function]}
@@ -4172,6 +4180,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             aria-label="Max request units per second"
             canRevealPassword={false}
             deferredValidationTime={200}
+            errorMessage=""
             min={4000}
             onChange={[Function]}
             required={true}
@@ -4456,17 +4465,17 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             value="4000"
           >
             <div
-              className="ms-TextField is-required root-65"
+              className="ms-TextField is-required root-66"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-66"
+                  className="ms-TextField-fieldGroup fieldGroup-67"
                 >
                   <input
                     aria-invalid={false}
-                    className="ms-TextField-field field-67"
+                    className="ms-TextField-field field-68"
                     id="TextField14"
                     min={4000}
                     onBlur={[Function]}

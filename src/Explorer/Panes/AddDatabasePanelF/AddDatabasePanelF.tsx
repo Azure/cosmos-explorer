@@ -15,11 +15,8 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface AddDatabasePaneProps {
   explorer: Explorer;
@@ -85,7 +82,6 @@ export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
     userContext.portalEnv,
     isFreeTierAccount,
     container.isFirstResourceCreated(),
-    userContext.apiType,
     false
   );
 
@@ -254,8 +250,8 @@ export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
     []
   );
 
-  const genericPaneProps: GenericRightPaneProps = {
-    container,
+  const genericPaneProps: RightPaneFormProps = {
+    expandConsole: container.expandConsole,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
     id: "add-database-inputs",
@@ -267,7 +263,7 @@ export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...genericPaneProps}>
       <form style={{ height: "100%" }}>
         <div className="paneContentContainer" role="dialog" aria-labelledby="databaseTitle">
           {showUpsellMessage && formErrors === "" && (
@@ -327,6 +323,7 @@ export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
                   <ThroughputInput
                     showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
                     isDatabase={true}
+                    isSharded={databaseCreateNewShared}
                     isAutoscaleSelected={isAutoPilotSelected}
                     throughput={throughput}
                     setThroughputValue={(throughput: number) => setThroughput(throughput)}
@@ -348,6 +345,6 @@ export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
           </div>
         </div>
       </form>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

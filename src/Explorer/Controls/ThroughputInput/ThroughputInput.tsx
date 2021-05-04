@@ -14,13 +14,15 @@ import * as Constants from "../../../Common/Constants";
 import { Tooltip } from "../../../Common/Tooltip/Tooltip";
 import * as SharedConstants from "../../../Shared/Constants";
 import { userContext } from "../../../UserContext";
+import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
-import { CostEstimateText } from "./CostEstimateText";
-import "./styles.less";
+import { CostEstimateText } from "./CostEstimateText/CostEstimateText";
+import "./ThroughputInput.less";
 
 export interface ThroughputInputProps {
   isDatabase: boolean;
+  isSharded: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
@@ -34,32 +36,40 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   showFreeTierExceedThroughputTooltip,
   setThroughputValue,
   setIsAutoscale,
+  isSharded,
   isAutoscaleSelected = true,
   throughput = AutoPilotUtils.minAutoPilotThroughput,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
-
+  const [throughputError, setThroughputError] = useState<string>("");
   const getThroughputLabelText = (): string => {
+    let throughputHeaderText: string;
     if (isAutoscaleSelected) {
-      return AutoPilotUtils.getAutoPilotHeaderText();
+      throughputHeaderText = AutoPilotUtils.getAutoPilotHeaderText().toLocaleLowerCase();
+    } else {
+      const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
+      const maxRU: string = userContext.isTryCosmosDBSubscription
+        ? Constants.TryCosmosExperience.maxRU.toLocaleString()
+        : "unlimited";
+      throughputHeaderText = `throughput (${minRU} - ${maxRU} RU/s)`;
     }
-    const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
-    const maxRU: string = userContext.isTryCosmosDBSubscription
-      ? Constants.TryCosmosExperience.maxRU.toLocaleString()
-      : "unlimited";
-    return isAutoscaleSelected ? AutoPilotUtils.getAutoPilotHeaderText() : `Throughput (${minRU} - ${maxRU} RU/s)`;
+    return `${isDatabase ? "Database" : getCollectionName()} ${throughputHeaderText}`;
   };
 
   const onThroughputValueChange = (newInput: string): void => {
     const newThroughput = parseInt(newInput);
     setThroughputValue(newThroughput);
-    setIsAutoscale(isAutoscaleSelected);
+    if (!isSharded && newThroughput > 10000) {
+      setThroughputError("Unsharded collections support up to 10,000 RUs");
+    } else {
+      setThroughputError("");
+    }
   };
 
   const getAutoScaleTooltip = (): string => {
-    return `After the first ${AutoPilotUtils.getStorageBasedOnUserInput(throughput)} GB of data stored, the max
-    RU/s will be automatically upgraded based on the new storage value.`;
+    const collectionName = getCollectionName().toLocaleLowerCase();
+    return `Set the max RU/s to the highest RU/s you want your ${collectionName} to scale to. The ${collectionName} will scale between 10% of max RU/s to the max RU/s based on usage.`;
   };
 
   const getCostAcknowledgeText = (): string => {
@@ -98,13 +108,13 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     <div className="throughputInputContainer throughputInputSpacing">
       <Stack horizontal>
         <span className="mandatoryStar">*&nbsp;</span>
-        <Text variant="small" style={{ lineHeight: "20px" }}>
+        <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
           {getThroughputLabelText()}
         </Text>
         <Tooltip>{PricingUtils.getRuToolTipText()}</Tooltip>
       </Stack>
 
-      <Stack>
+      <Stack horizontal verticalAlign="center">
         <ChoiceGroup
           selectedKey={"" + isAutoscaleSelected}
           options={optionList}
@@ -116,7 +126,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       {isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
           <Text variant="small" data-testid="ruDescription">
-            Provision maximum RU/s required by this resource. Estimate your required RU/s with&nbsp;
+            Estimate your required RU/s with&nbsp;
             <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" data-testid="ruDescription">
               capacity calculator
             </Link>
@@ -124,8 +134,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           </Text>
 
           <Stack horizontal>
-            <Text variant="small" style={{ lineHeight: "20px" }} data-testid="maxRUDescription">
-              Max RU/s
+            <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} data-testid="maxRUDescription">
+              {isDatabase ? "Database" : getCollectionName()} Max RU/s
             </Text>
             <Tooltip>{getAutoScaleTooltip()}</Tooltip>
           </Stack>
@@ -142,10 +152,12 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             value={throughput.toString()}
             aria-label="Max request units per second"
             required={true}
+            errorMessage={throughputError}
           />
 
           <Text variant="small">
-            Your {isDatabase ? "database" : "container"} throughput will automatically scale from{" "}
+            Your {isDatabase ? "database" : getCollectionName().toLocaleLowerCase()} throughput will automatically scale
+            from{" "}
             <b>
               {AutoPilotUtils.getMinRUsBasedOnUserInput(throughput)} RU/s (10% of max RU/s) - {throughput} RU/s
             </b>{" "}
@@ -186,6 +198,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
               value={throughput.toString()}
               aria-label="Max request units per second"
               required={true}
+              errorMessage={throughputError}
             />
           </TooltipHost>
         </Stack>

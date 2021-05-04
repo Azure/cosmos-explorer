@@ -4,6 +4,7 @@ import { ThroughputInput } from "./ThroughputInput";
 const props = {
   isDatabase: false,
   showFreeTierExceedThroughputTooltip: true,
+  isSharded: false,
   setThroughputValue: () => jest.fn(),
   setIsAutoscale: () => jest.fn(),
   onCostAcknowledgeChange: () => jest.fn(),
@@ -22,7 +23,7 @@ describe("ThroughputInput Pane", () => {
   it("test Autoscale Mode select", () => {
     wrapper.setProps({ isAutoscaleSelected: true });
     expect(wrapper.find('[data-testid="ruDescription"]').at(0).text()).toContain(
-      "Provision maximum RU/s required by this resource. Estimate your required RU/s with"
+      "Estimate your required RU/s with capacity calculator."
     );
     expect(wrapper.find('[data-testid="maxRUDescription"]').at(0).text()).toContain("Max RU/s");
   });

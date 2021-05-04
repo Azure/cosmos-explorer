@@ -1,6 +1,6 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { CostEstimateText } from ".";
+import { CostEstimateText } from "./CostEstimateText";
 const props = {
   requestUnits: 5,
   isAutoscale: false,

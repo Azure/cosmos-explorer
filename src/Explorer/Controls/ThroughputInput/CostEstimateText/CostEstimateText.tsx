@@ -1,8 +1,17 @@
 import { Text } from "office-ui-fabric-react";
 import React, { FunctionComponent } from "react";
+import { Tooltip } from "../../../../Common/Tooltip/Tooltip";
 import * as SharedConstants from "../../../../Shared/Constants";
 import { userContext } from "../../../../UserContext";
-import * as PricingUtils from "../../../../Utils/PricingUtils";
+import {
+  calculateEstimateNumber,
+  computeRUUsagePriceHourly,
+  getAutoscalePricePerRu,
+  getCurrencySign,
+  getMultimasterMultiplier,
+  getPriceCurrency,
+  getPricePerRu,
+} from "../../../../Utils/PricingUtils";
 
 interface CostEstimateTextProps {
   requestUnits: number;
@@ -13,15 +22,15 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
   requestUnits,
   isAutoscale,
 }: CostEstimateTextProps) => {
-  const databaseAccount = userContext.databaseAccount;
-  if (!databaseAccount || !databaseAccount.properties) {
+  const { databaseAccount } = userContext;
+  if (!databaseAccount?.properties) {
     return <></>;
   }
 
   const serverId: string = userContext.portalEnv;
   const numberOfRegions: number = databaseAccount.properties.readLocations?.length || 1;
   const multimasterEnabled: boolean = databaseAccount.properties.enableMultipleWriteLocations;
-  const hourlyPrice: number = PricingUtils.computeRUUsagePriceHourly({
+  const hourlyPrice: number = computeRUUsagePriceHourly({
     serverId,
     requestUnits,
     numberOfRegions,
@@ -30,20 +39,22 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
   });
   const dailyPrice: number = hourlyPrice * 24;
   const monthlyPrice: number = hourlyPrice * SharedConstants.hoursInAMonth;
-  const currency: string = PricingUtils.getPriceCurrency(serverId);
-  const currencySign: string = PricingUtils.getCurrencySign(serverId);
-  const multiplier = PricingUtils.getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
+  const currency: string = getPriceCurrency(serverId);
+  const currencySign: string = getCurrencySign(serverId);
+  const multiplier = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
   const pricePerRu = isAutoscale
-    ? PricingUtils.getAutoscalePricePerRu(serverId, multiplier) * multiplier
-    : PricingUtils.getPricePerRu(serverId) * multiplier;
+    ? getAutoscalePricePerRu(serverId, multiplier) * multiplier
+    : getPricePerRu(serverId) * multiplier;
+
+  const iconWithEstimatedCostDisclaimer: JSX.Element = <Tooltip>PricingUtils.estimatedCostDisclaimer</Tooltip>;
 
   if (isAutoscale) {
     return (
       <Text variant="small">
-        Estimated monthly cost ({currency}):{" "}
+        Estimated monthly cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
         <b>
-          {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice / 10)} -{" "}
-          {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)}{" "}
+          {currencySign + calculateEstimateNumber(monthlyPrice / 10)} -{" "}
+          {currencySign + calculateEstimateNumber(monthlyPrice)}{" "}
         </b>
         ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits / 10} - {requestUnits}{" "}
         RU/s, {currencySign + pricePerRu}/RU)
@@ -53,16 +64,14 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
 
   return (
     <Text variant="small">
-      Cost ({currency}):{" "}
+      Estimated cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
       <b>
-        {currencySign + PricingUtils.calculateEstimateNumber(hourlyPrice)} hourly /{" "}
-        {currencySign + PricingUtils.calculateEstimateNumber(dailyPrice)} daily /{" "}
-        {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)} monthly{" "}
+        {currencySign + calculateEstimateNumber(hourlyPrice)} hourly /{" "}
+        {currencySign + calculateEstimateNumber(dailyPrice)} daily /{" "}
+        {currencySign + calculateEstimateNumber(monthlyPrice)} monthly{" "}
       </b>
       ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits}RU/s,{" "}
       {currencySign + pricePerRu}/RU)
-      <br />
-      <em>{PricingUtils.estimatedCostDisclaimer}</em>
     </Text>
   );
 };

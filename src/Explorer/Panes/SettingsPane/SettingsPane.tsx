@@ -7,16 +7,15 @@ import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility"
 import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface SettingsPaneProps {
-  explorer: Explorer;
+  expandConsole: () => void;
   closePanel: () => void;
 }
 
 export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
-  explorer: container,
+  expandConsole,
   closePanel,
 }: SettingsPaneProps) => {
   const [formErrors, setFormErrors] = useState<string>("");
@@ -104,7 +103,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   };
 
   const genericPaneProps: RightPaneFormProps = {
-    container,
+    expandConsole,
     formError: formErrors,
     formErrorDetail: "",
     id: "settingspane",
