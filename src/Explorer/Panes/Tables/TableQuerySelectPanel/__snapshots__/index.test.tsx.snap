@@ -11,7 +11,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
   }
 >
   <GenericRightPaneComponent
-    container={Object {}}
+    expandConsole={[Function]}
     formError=""
     formErrorDetail=""
     id="querySelectPane"

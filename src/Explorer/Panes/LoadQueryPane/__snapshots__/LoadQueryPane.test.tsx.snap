@@ -2,7 +2,7 @@
 
 exports[`Load Query Pane should render Default properly 1`] = `
 <GenericRightPaneComponent
-  container={Object {}}
+  expandConsole={[Function]}
   formError=""
   formErrorDetail=""
   id="loadQueryPane"

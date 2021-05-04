@@ -5,6 +5,7 @@ import { accordionStackTokens } from "../Settings/SettingsRenderUtils";
 export interface CollapsibleSectionProps {
   title: string;
   isExpandedByDefault: boolean;
+  onExpand?: () => void;
 }
 
 export interface CollapsibleSectionState {
@@ -22,6 +23,12 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
   private toggleCollapsed = (): void => {
     this.setState({ isExpanded: !this.state.isExpanded });
   };
+
+  public componentDidUpdate(): void {
+    if (this.state.isExpanded && this.props.onExpand) {
+      this.props.onExpand();
+    }
+  }
 
   public render(): JSX.Element {
     return (

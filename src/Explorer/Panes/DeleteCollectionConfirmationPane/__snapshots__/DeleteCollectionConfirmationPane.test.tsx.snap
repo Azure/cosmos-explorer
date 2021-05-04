@@ -16,16 +16,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
   }
 >
   <GenericRightPaneComponent
-    container={
-      Object {
-        "findSelectedCollection": [Function],
-        "isLastCollection": [Function],
-        "isSelectedDatabaseShared": [Function],
-        "refreshAllDatabases": [Function],
-        "selectedCollectionId": [Function],
-        "selectedNode": [Function],
-      }
-    }
+    expandConsole={[Function]}
     formError=""
     formErrorDetail=""
     id="deleteCollectionpane"

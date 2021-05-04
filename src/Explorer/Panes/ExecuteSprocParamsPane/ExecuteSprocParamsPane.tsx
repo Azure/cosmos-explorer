@@ -2,7 +2,6 @@ import { useBoolean } from "@fluentui/react-hooks";
 import { IDropdownOption, IImageProps, Image, Stack, Text } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
-import Explorer from "../../Explorer";
 import StoredProcedure from "../../Tree/StoredProcedure";
 import {
   GenericRightPaneComponent,
@@ -11,7 +10,7 @@ import {
 import { InputParameter } from "./InputParameter";
 
 interface ExecuteSprocParamsPaneProps {
-  explorer: Explorer;
+  expandConsole: () => void;
   storedProcedure: StoredProcedure;
   closePanel: () => void;
 }
@@ -27,7 +26,7 @@ interface UnwrappedExecuteSprocParam {
 }
 
 export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
-  explorer,
+  expandConsole,
   storedProcedure,
   closePanel,
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
@@ -43,7 +42,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
   };
 
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
+    expandConsole,
     formError: formError,
     formErrorDetail: formErrorsDetails,
     id: "executesprocparamspane",
