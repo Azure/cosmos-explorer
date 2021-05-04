@@ -476,7 +476,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         userContext.portalEnv,
         this.isFreeTierAccount(),
         this.container.isFirstResourceCreated(),
-        userContext.apiType,
         true
       );
     });

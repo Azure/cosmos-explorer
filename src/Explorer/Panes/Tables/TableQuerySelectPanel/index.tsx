@@ -32,7 +32,6 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   const [isAvailableColumnChecked, setIsAvailableColumnChecked] = useState<boolean>(true);
 
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
     formError: "",
     formErrorDetail: "",
     id: "querySelectPane",
@@ -41,6 +40,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
     submitButtonText: "OK",
     onClose: () => closePanel(),
     onSubmit: () => submit(),
+    expandConsole: () => explorer.expandConsole(),
   };
 
   const submit = (): void => {

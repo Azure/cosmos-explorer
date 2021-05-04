@@ -415,7 +415,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       </Text>
       <Text>
         <em>
-          *This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+          This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
         </em>
       </Text>
     </Stack>
@@ -689,7 +689,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       </Text>
       <Text>
         <em>
-          *This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+          This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
         </em>
       </Text>
     </Stack>

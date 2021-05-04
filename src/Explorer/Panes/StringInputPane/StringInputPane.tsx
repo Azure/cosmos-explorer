@@ -92,7 +92,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
     }
   };
   const genericPaneProps: GenericRightPaneProps = {
-    container: container,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
     id: "stringInputPane",
@@ -101,6 +100,7 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
     submitButtonText: submitButtonLabel,
     onClose: closePanel,
     onSubmit: submit,
+    expandConsole: () => container.expandConsole(),
   };
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
