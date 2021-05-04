@@ -7,7 +7,7 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics } from "../Common/Constants";
+import { ExplorerMetrics, HttpStatusCodes } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
@@ -19,7 +19,9 @@ import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
-import { IGalleryItem } from "../Juno/JunoClient";
+import { GitHubClient } from "../GitHub/GitHubClient";
+import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
@@ -57,6 +59,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
+import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
@@ -166,10 +169,11 @@ export default class Explorer {
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public gitHubReposPane: ContextualPaneBase;
+  private gitHubClient: GitHubClient;
+  public gitHubOAuthService: GitHubOAuthService;
+  public junoClient: JunoClient;
 
   // features
-  public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
@@ -211,6 +215,8 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
+    this.gitHubClient = new GitHubClient(this.onGitHubClientError);
+    this.junoClient = new JunoClient();
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
@@ -317,7 +323,6 @@ export default class Explorer {
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
 
@@ -597,9 +602,6 @@ export default class Explorer {
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
           refreshNotebookList: () => this.refreshNotebookList(),
         });
-
-        this.gitHubReposPane = this.notebookManager.gitHubReposPane;
-        this.isGitHubPaneEnabled(true);
       }
 
       this.refreshCommandBarButtons();
@@ -646,6 +648,23 @@ export default class Explorer {
       });
     }
   }
+
+  private onGitHubClientError = (error: any): void => {
+    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
+
+    if (error.status === HttpStatusCodes.Unauthorized) {
+      this.gitHubOAuthService.resetToken();
+
+      this.showOkCancelModalDialog(
+        undefined,
+        "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
+        "Connect to GitHub",
+        () => this.openGitHubReposPanel("Connect to GitHub"),
+        "Cancel",
+        undefined
+      );
+    }
+  };
 
   public openEnableSynapseLinkDialog(): void {
     const addSynapseLinkDialogProps: DialogProps = {
@@ -2134,6 +2153,19 @@ export default class Explorer {
         expandConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
+      />
+    );
+  }
+
+  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
+    this.openSidePanel(
+      header,
+      <GitHubReposPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        gitHubClientProp={this.notebookManager.gitHubClient}
+        junoClientProp={junoClient}
+        openNotificationConsole={() => this.expandConsole()}
       />
     );
   }
