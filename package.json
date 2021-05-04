@@ -47,7 +47,7 @@
     "applicationinsights": "1.8.0",
     "bootstrap": "3.4.1",
     "canvas": "file:./canvas",
-    "clean-webpack-plugin": "0.1.19",
+    "clean-webpack-plugin": "3.0.0",
     "clipboard-copy": "4.0.1",
     "copy-webpack-plugin": "6.0.2",
     "crossroads": "0.12.2",
