@@ -9,14 +9,14 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -187,7 +187,7 @@ export default class SqlX extends SelfServeBaseClass {
             hidden: false,
           });
           return {
-            operationStatusUrl: undefined
+            operationStatusUrl: undefined,
           };
         } else {
           const sku = currentValues.get("sku")?.value as string;
