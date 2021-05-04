@@ -44,7 +44,13 @@ describe("Add Collection Pane", () => {
     });
 
     it("should be true if graph API and partition key is not /id nor /label", () => {
-      explorer.defaultExperience(Constants.DefaultAccountExperience.Graph.toLowerCase());
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableGremlin" }],
+          },
+        } as DatabaseAccount,
+      });
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       addCollectionPane.partitionKey("/blah");
       expect(addCollectionPane.isValid()).toBe(true);
@@ -58,7 +64,6 @@ describe("Add Collection Pane", () => {
           },
         } as DatabaseAccount,
       });
-
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       addCollectionPane.partitionKey("/id");
       expect(addCollectionPane.isValid()).toBe(false);
