@@ -7,7 +7,7 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics } from "../Common/Constants";
+import { ExplorerMetrics, HttpStatusCodes } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
@@ -19,24 +19,25 @@ import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
-import { IGalleryItem } from "../Juno/JunoClient";
+import { GitHubClient } from "../GitHub/GitHubClient";
+import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
-import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
+import { getCollectionName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -58,6 +59,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
+import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
@@ -166,10 +168,11 @@ export default class Explorer {
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public gitHubReposPane: ContextualPaneBase;
+  private gitHubClient: GitHubClient;
+  public gitHubOAuthService: GitHubOAuthService;
+  public junoClient: JunoClient;
 
   // features
-  public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isRightPanelV2Enabled: ko.Computed<boolean>;
@@ -211,6 +214,8 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
+    this.gitHubClient = new GitHubClient(this.onGitHubClientError);
+    this.junoClient = new JunoClient();
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
@@ -318,7 +323,6 @@ export default class Explorer {
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
 
@@ -372,16 +376,16 @@ export default class Explorer {
       direction: SplitterDirection.Vertical,
     });
     this.defaultExperience = ko.observable<string>();
-    this.databaseAccount.subscribe((databaseAccount) => {
-      const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-        databaseAccount
-      );
-      this.defaultExperience(defaultExperience);
-      // TODO. Remove this entirely
-      updateUserContext({
-        defaultExperience: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-      });
-    });
+    // this.databaseAccount.subscribe((databaseAccount) => {
+    //   const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
+    //     databaseAccount
+    //   );
+    //   this.defaultExperience(defaultExperience);
+    //   // TODO. Remove this entirely
+    //   updateUserContext({
+    //     apiType: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
+    //   });
+    // });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
@@ -597,9 +601,6 @@ export default class Explorer {
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
           refreshNotebookList: () => this.refreshNotebookList(),
         });
-
-        this.gitHubReposPane = this.notebookManager.gitHubReposPane;
-        this.isGitHubPaneEnabled(true);
       }
 
       this.refreshCommandBarButtons();
@@ -646,6 +647,23 @@ export default class Explorer {
       });
     }
   }
+
+  private onGitHubClientError = (error: any): void => {
+    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
+
+    if (error.status === HttpStatusCodes.Unauthorized) {
+      this.gitHubOAuthService.resetToken();
+
+      this.showOkCancelModalDialog(
+        undefined,
+        "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
+        "Connect to GitHub",
+        () => this.openGitHubReposPanel("Connect to GitHub"),
+        "Cancel",
+        undefined
+      );
+    }
+  };
 
   public openEnableSynapseLinkDialog(): void {
     const addSynapseLinkDialogProps: DialogProps = {
@@ -1930,14 +1948,14 @@ export default class Explorer {
     }
   }
 
-  public onNewCollectionClicked(): void {
+  public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
-    } else if (userContext.features.enableReactPane) {
-      this.openAddCollectionPanel();
-    } else {
+    } else if (userContext.features.enableKOPanel) {
       this.addCollectionPane.open(this.selectedDatabaseId());
       document.getElementById("linkAddCollection").focus();
+    } else {
+      this.openAddCollectionPanel(databaseId);
     }
   }
 
@@ -2041,14 +2059,9 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    let collectionName = PricingUtils.getCollectionName(userContext.defaultExperience);
     this.openSidePanel(
-      "Delete " + collectionName,
-      <DeleteCollectionConfirmationPane
-        explorer={this}
-        collectionName={collectionName}
-        closePanel={this.closeSidePanel}
-      />
+      "Delete " + getCollectionName(),
+      <DeleteCollectionConfirmationPane explorer={this} closePanel={this.closeSidePanel} />
     );
   }
 
@@ -2069,28 +2082,32 @@ export default class Explorer {
   }
 
   public openSettingPane(): void {
-    this.openSidePanel("Settings", <SettingsPane explorer={this} closePanel={this.closeSidePanel} />);
+    this.openSidePanel(
+      "Settings",
+      <SettingsPane expandConsole={() => this.expandConsole()} closePanel={this.closeSidePanel} />
+    );
   }
 
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     this.openSidePanel(
       "Input parameters",
       <ExecuteSprocParamsPane
-        explorer={this}
         storedProcedure={storedProcedure}
+        expandConsole={() => this.expandConsole()}
         closePanel={() => this.closeSidePanel()}
       />
     );
   }
 
-  public async openAddCollectionPanel(): Promise<void> {
+  public async openAddCollectionPanel(databaseId?: string): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
-      "New Collection",
+      "New " + getCollectionName(),
       <AddCollectionPanel
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+        databaseId={databaseId}
       />
     );
   }
@@ -2112,9 +2129,22 @@ export default class Explorer {
     this.openSidePanel(
       "Upload File",
       <UploadFilePane
-        explorer={this}
+        expandConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
+      />
+    );
+  }
+
+  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
+    this.openSidePanel(
+      header,
+      <GitHubReposPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        gitHubClientProp={this.notebookManager.gitHubClient}
+        junoClientProp={junoClient}
+        openNotificationConsole={() => this.expandConsole()}
       />
     );
   }

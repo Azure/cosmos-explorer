@@ -54,7 +54,6 @@ import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { useTabs } from "./hooks/useTabs";
-import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 
@@ -176,9 +175,6 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      <KOCommentIfStart if="isGitHubPaneEnabled" />
-      <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
-      <KOCommentEnd />
       {showDialog && <Dialog {...dialogProps} />}
     </div>
   );

@@ -3,11 +3,11 @@
 exports[`Excute Sproc Param Pane should render Default properly 1`] = `
 <ExecuteSprocParamsPane
   closePanel={[Function]}
-  explorer={Object {}}
+  expandConsole={[Function]}
   storedProcedure={Object {}}
 >
   <GenericRightPaneComponent
-    container={Object {}}
+    expandConsole={[Function]}
     formError=""
     formErrorDetail=""
     id="executesprocparamspane"
