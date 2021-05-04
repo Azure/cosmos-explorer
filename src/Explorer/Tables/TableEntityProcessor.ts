@@ -165,7 +165,7 @@ export function convertEntityToNewDocument(entity: Entities.ITableEntityForTable
     $id: entity.RowKey._,
     id: entity.RowKey._,
   };
-  for (var property in entity) {
+  for (const property in entity) {
     if (
       property !== Constants.EntityKeyNames.PartitionKey &&
       property !== Constants.EntityKeyNames.RowKey &&
@@ -176,18 +176,30 @@ export function convertEntityToNewDocument(entity: Entities.ITableEntityForTable
       property !== keyProperties.attachments &&
       property !== keyProperties.Id2
     ) {
-      if (entity[property].$ === Constants.TableType.DateTime) {
-        // Convert javascript date back to ticks with 20 zeros padding
-        document[property] = {
-          $t: (<any>DataTypes)[entity[property].$],
-          $v: DateTimeUtilities.convertJSDateToTicksWithPadding(entity[property]._),
-        };
-      } else {
-        document[property] = {
-          $t: (<any>DataTypes)[entity[property].$],
-          $v: entity[property]._,
-        };
+      const propertyValue = entity[property]._;
+      let parsedValue;
+      switch (entity[property].$) {
+        case Constants.TableType.DateTime:
+          parsedValue = DateTimeUtilities.convertJSDateToTicksWithPadding(propertyValue);
+          break;
+        case Constants.TableType.Boolean:
+          parsedValue = propertyValue.toLowerCase() === "true";
+          break;
+        case Constants.TableType.Int32:
+        case Constants.TableType.Int64:
+          parsedValue = parseInt(propertyValue, 10);
+          break;
+        case Constants.TableType.Double:
+          parsedValue = parseFloat(propertyValue);
+          break;
+        default:
+          parsedValue = propertyValue;
       }
+
+      document[property] = {
+        $t: (<any>DataTypes)[entity[property].$],
+        $v: parsedValue,
+      };
     }
   }
   return document;

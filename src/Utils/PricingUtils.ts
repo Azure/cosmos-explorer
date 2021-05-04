@@ -1,5 +1,5 @@
 import * as Constants from "../Shared/Constants";
-import { userContext } from "../UserContext";
+import { getCollectionName } from "../Utils/APITypeUtils";
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 
 interface ComputeRUUsagePriceHourlyArgs {
@@ -11,7 +11,7 @@ interface ComputeRUUsagePriceHourlyArgs {
 }
 
 export const estimatedCostDisclaimer =
-  "*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account";
+  "This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account";
 
 /**
  * Anything that is not a number should return 0
@@ -99,8 +99,8 @@ export function computeDisplayUsageString(usageInKB: number): string {
       usageInGB > 0.1
         ? usageInGB.toFixed(2) + " GB"
         : usageInMB > 0.1
-        ? usageInMB.toFixed(2) + " MB"
-        : usageInKB.toFixed(2) + " KB";
+          ? usageInMB.toFixed(2) + " MB"
+          : usageInKB.toFixed(2) + " KB";
   return displayUsageString;
 }
 
@@ -162,14 +162,13 @@ export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDat
     return "";
   }
 
-  const resource: string = isDatabaseThroughput ? "database" : "container";
+  const resource: string = isDatabaseThroughput ? "database" : getCollectionName().toLocaleLowerCase();
   return `Your ${resource} throughput will automatically scale from <b>${AutoPilotUtils.getMinRUsBasedOnUserInput(
     maxAutoPilotThroughputSet
   )} RU/s (10% of max RU/s) - ${maxAutoPilotThroughputSet} RU/s</b> based on usage. <br /><br />After the first ${AutoPilotUtils.getStorageBasedOnUserInput(
     maxAutoPilotThroughputSet
-  )} GB of data stored, the max RU/s will be automatically upgraded based on the new storage value. <a href='${
-    Constants.AutopilotDocumentation.Url
-  }' target='_blank' aria-label='Learn more about autoscale throughput'>Learn more</a>.`;
+  )} GB of data stored, the max RU/s will be automatically upgraded based on the new storage value. <a href='${Constants.AutopilotDocumentation.Url
+    }' target='_blank' aria-label='Learn more about autoscale throughput'>Learn more</a>.`;
 }
 
 export function getEstimatedAutoscaleSpendHtml(
@@ -196,8 +195,7 @@ export function getEstimatedAutoscaleSpendHtml(
     `Estimated monthly cost (${currency}): <b>` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice / 10)} - ` +
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} </b> ` +
-    `(${regions} ${regions === 1 ? "region" : "regions"}, ${
-      throughput / 10
+    `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput / 10
     } - ${throughput} RU/s, ${currencySign}${pricePerRu}/RU)`
   );
 }
@@ -228,7 +226,7 @@ export function getEstimatedSpendHtml(
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly </b> ` +
     `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)` +
     `<p style='padding: 10px 0px 0px 0px;'>` +
-    `<em>${estimatedCostDisclaimer}</em></p>`
+    `<em>*${estimatedCostDisclaimer}</em></p>`
   );
 }
 
@@ -251,22 +249,21 @@ export function getEstimatedSpendAcknowledgeString(
   const currencySign: string = getCurrencySign(serverId);
   return !isAutoscale
     ? `I acknowledge the estimated ${currencySign}${calculateEstimateNumber(
-        dailyPrice
-      )} daily cost for the throughput above.`
+      dailyPrice
+    )} daily cost for the throughput above.`
     : `I acknowledge the estimated ${currencySign}${calculateEstimateNumber(
-        monthlyPrice / 10
-      )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
+      monthlyPrice / 10
+    )} - ${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly cost for the throughput above.`;
 }
 
 export function getUpsellMessage(
   serverId = "default",
   isFreeTier = false,
   isFirstResourceCreated = false,
-  defaultExperience: typeof userContext.apiType,
   isCollection: boolean
 ): string {
   if (isFreeTier) {
-    const collectionName = getCollectionName(defaultExperience);
+    const collectionName = getCollectionName().toLocaleLowerCase();
     const resourceType = isCollection ? collectionName : "database";
     return isFirstResourceCreated
       ? `The free tier discount of 400 RU/s has already been applied to a database or ${collectionName} in this account. Billing will apply to this ${resourceType} after it is created.`
@@ -278,22 +275,8 @@ export function getUpsellMessage(
       price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
     }
 
-    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
-  }
-}
-
-export function getCollectionName(defaultExperience: typeof userContext.apiType): string {
-  switch (defaultExperience) {
-    case "SQL":
-      return "container";
-    case "Mongo":
-      return "collection";
-    case "Tables":
-    case "Cassandra":
-      return "table";
-    case "Gremlin":
-      return "graph";
-    default:
-      throw Error("unknown API type");
+    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple ${getCollectionName(
+      true
+    ).toLocaleLowerCase()} included`;
   }
 }

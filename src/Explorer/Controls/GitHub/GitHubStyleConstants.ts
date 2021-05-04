@@ -1,19 +1,21 @@
 import {
-  IStyleFunctionOrObject,
   ICheckboxStyleProps,
   ICheckboxStyles,
-  IDropdownStyles,
   IDropdownStyleProps,
+  IDropdownStyles,
+  IStyleFunctionOrObject,
 } from "office-ui-fabric-react";
 
 export const ButtonsFooterStyle: React.CSSProperties = {
-  padding: 14,
+  paddingTop: 14,
   height: "auto",
+  borderTop: "2px solid lightGray",
 };
 
 export const ContentFooterStyle: React.CSSProperties = {
-  padding: "10px 24px 10px 24px",
+  paddingTop: "10px",
   height: "auto",
+  borderTop: "2px solid lightGray",
 };
 
 export const ChildrenMargin = 10;
@@ -51,6 +53,11 @@ export const BranchesDropdownStyles: IStyleFunctionOrObject<IDropdownStyleProps,
 
 export const BranchesDropdownOptionContainerStyle: React.CSSProperties = {
   padding: 8,
+};
+
+export const ContentMainStyle: React.CSSProperties = {
+  display: "flex",
+  flexDirection: "column",
 };
 
 export const ReposListRepoColumnMinWidth = 192;
