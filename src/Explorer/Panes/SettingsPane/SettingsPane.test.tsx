@@ -2,10 +2,9 @@ import { shallow } from "enzyme";
 import React from "react";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { updateUserContext } from "../../../UserContext";
-import Explorer from "../../Explorer";
 import { SettingsPane } from "./SettingsPane";
 const props = {
-  explorer: new Explorer(),
+  expandConsole: (): void => undefined,
   closePanel: (): void => undefined,
 };
 describe("Settings Pane", () => {

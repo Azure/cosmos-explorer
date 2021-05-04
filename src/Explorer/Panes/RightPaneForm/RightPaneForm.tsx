@@ -1,13 +1,12 @@
 import { IconButton } from "office-ui-fabric-react/lib/Button";
 import React, { FunctionComponent, ReactNode } from "react";
 import { KeyCodes } from "../../../Common/Constants";
-import Explorer from "../../Explorer";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
 
 export interface RightPaneFormProps {
-  container: Explorer;
+  expandConsole: () => void;
   formError: string;
   formErrorDetail: string;
   id: string;
@@ -21,7 +20,7 @@ export interface RightPaneFormProps {
 }
 
 export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
-  container,
+  expandConsole,
   formError,
   formErrorDetail,
   id,
@@ -70,16 +69,12 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
     }
   };
 
-  const showErrorDetail = (): void => {
-    container.expandConsole();
-  };
-
   const panelInfoErrorProps: PanelInfoErrorProps = {
     messageType: "error",
     message: formError,
     formError: formError !== "",
     showErrorDetails: formErrorDetail !== "",
-    openNotificationConsole: showErrorDetail,
+    openNotificationConsole: expandConsole,
   };
 
   return (
