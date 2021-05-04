@@ -70,7 +70,11 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       buttons.push(createEnableNotebooksButton(container));
     }
 
-    if (userContext.apiType === "Mongo" && !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled) {
+    if (
+      userContext.apiType === "Mongo" &&
+      !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
+      container.isDatabaseNodeOrNoneSelected()
+    ) {
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
