@@ -37,7 +37,7 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
   };
   const telemetryData = { ...body, selfServeClassName: SqlX.name };
   const updateTimeStamp = selfServeTraceStart(telemetryData);
-  let armRequestResult = undefined;
+  let armRequestResult;
   try {
     armRequestResult = await armRequestWithoutPolling({
       host: configContext.ARM_ENDPOINT,
@@ -58,7 +58,7 @@ export const deleteDedicatedGatewayResource = async (): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const telemetryData = { selfServeClassName: SqlX.name };
   const deleteTimeStamp = selfServeTraceStart(telemetryData);
-  let armRequestResult = undefined;
+  let armRequestResult;
   try {
     armRequestResult = await armRequestWithoutPolling({
       host: configContext.ARM_ENDPOINT,
@@ -78,7 +78,7 @@ export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const telemetryData = { selfServeClassName: SqlX.name };
   const getResourceTimeStamp = selfServeTraceStart(telemetryData);
-  let armRequestResult = undefined;
+  let armRequestResult;
   try {
     armRequestResult = await armRequestWithoutPolling<SqlxServiceResource>({
       host: configContext.ARM_ENDPOINT,
