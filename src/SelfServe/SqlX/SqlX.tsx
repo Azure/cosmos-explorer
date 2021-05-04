@@ -9,14 +9,14 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -180,7 +180,7 @@ export default class SqlX extends SelfServeBaseClass {
           },
         };
       } else {
-        let operationStatusUrl = undefined;
+        let operationStatusUrl;
         if (baselineValues.get("instances")?.value === currentValues.get("instances")?.value) {
           currentValues.set("warningBanner", {
             value: { textTKey: "NoChangesToExistingResource" } as Description,
