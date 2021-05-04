@@ -1,5 +1,5 @@
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 import * as Constants from "../Shared/Constants";
+import { getCollectionName } from "../Utils/APITypeUtils";
 import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 
 interface ComputeRUUsagePriceHourlyArgs {
@@ -11,7 +11,7 @@ interface ComputeRUUsagePriceHourlyArgs {
 }
 
 export const estimatedCostDisclaimer =
-  "*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account";
+  "This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account";
 
 /**
  * Anything that is not a number should return 0
@@ -162,7 +162,7 @@ export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDat
     return "";
   }
 
-  const resource: string = isDatabaseThroughput ? "database" : "container";
+  const resource: string = isDatabaseThroughput ? "database" : getCollectionName().toLocaleLowerCase();
   return `Your ${resource} throughput will automatically scale from <b>${AutoPilotUtils.getMinRUsBasedOnUserInput(
     maxAutoPilotThroughputSet
   )} RU/s (10% of max RU/s) - ${maxAutoPilotThroughputSet} RU/s</b> based on usage. <br /><br />After the first ${AutoPilotUtils.getStorageBasedOnUserInput(
@@ -228,7 +228,7 @@ export function getEstimatedSpendHtml(
     `${currencySign}${calculateEstimateNumber(monthlyPrice)} monthly </b> ` +
     `(${regions} ${regions === 1 ? "region" : "regions"}, ${throughput}RU/s, ${currencySign}${pricePerRu}/RU)` +
     `<p style='padding: 10px 0px 0px 0px;'>` +
-    `<em>${estimatedCostDisclaimer}</em></p>`
+    `<em>*${estimatedCostDisclaimer}</em></p>`
   );
 }
 
@@ -262,11 +262,10 @@ export function getUpsellMessage(
   serverId = "default",
   isFreeTier = false,
   isFirstResourceCreated = false,
-  defaultExperience: string,
   isCollection: boolean
 ): string {
   if (isFreeTier) {
-    const collectionName = getCollectionName(defaultExperience);
+    const collectionName = getCollectionName().toLocaleLowerCase();
     const resourceType = isCollection ? collectionName : "database";
     return isFirstResourceCreated
       ? `The free tier discount of 400 RU/s has already been applied to a database or ${collectionName} in this account. Billing will apply to this ${resourceType} after it is created.`
@@ -278,22 +277,8 @@ export function getUpsellMessage(
       price = Constants.OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice;
     }
 
-    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple containers included`;
-  }
-}
-
-export function getCollectionName(defaultExperience: string): string {
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
-      return "container";
-    case DefaultAccountExperienceType.MongoDB:
-      return "collection";
-    case DefaultAccountExperienceType.Table:
-    case DefaultAccountExperienceType.Cassandra:
-      return "table";
-    case DefaultAccountExperienceType.Graph:
-      return "graph";
-    default:
-      throw Error("unknown API type");
+    return `Start at ${getCurrencySign(serverId)}${price}/mo per database, multiple ${getCollectionName(
+      true
+    ).toLocaleLowerCase()} included`;
   }
 }

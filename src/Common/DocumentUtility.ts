@@ -1,8 +1,7 @@
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 import { userContext } from "../UserContext";
 
 export const getEntityName = (): string => {
-  if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
+  if (userContext.apiType === "Mongo") {
     return "document";
   }
 
