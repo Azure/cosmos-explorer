@@ -2173,7 +2173,11 @@ export default class Explorer {
   public openCassandraAddCollectionPane(): void {
     this.openSidePanel(
       "Add Table",
-      <CassandraAddCollectionPaneF explorer={this} closePanel={() => this.closeSidePanel()} />
+      <CassandraAddCollectionPaneF
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        cassandraApiClient={new CassandraAPIDataClient()}
+      />
     );
   }
   public openAddTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
