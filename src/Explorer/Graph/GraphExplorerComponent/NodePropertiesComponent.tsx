@@ -5,7 +5,7 @@
  */
 
 import CancelIcon from "images/cancel.svg";
-import CheckIcon from "images/check-disabled.svg"; // need to revert hardikn
+import CheckIcon from "images/check1.svg";
 import DeleteIcon from "images/delete.svg";
 import EditIcon from "images/Edit_entity.svg";
 import * as React from "react";

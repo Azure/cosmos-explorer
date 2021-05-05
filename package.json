@@ -104,6 +104,7 @@
     "@babel/preset-env": "7.9.0",
     "@babel/preset-react": "7.9.4",
     "@babel/preset-typescript": "7.9.0",
+    "@svgr/webpack": "5.5.0",
     "@testing-library/react": "11.2.3",
     "@types/applicationinsights-js": "1.0.7",
     "@types/codemirror": "0.0.56",

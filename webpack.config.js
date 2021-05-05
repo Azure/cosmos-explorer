@@ -40,6 +40,10 @@ const lessRule = {
   exclude: [path.resolve(__dirname, "less/Common/Constants.less")],
 };
 
+const svgrRule = {
+  test: /\.svg$/,
+  use: ["@svgr/webpack"],
+};
 const imagesRule = {
   test: /\.(jpg|jpeg|png|gif|svg|pdf|ico)$/,
   loader: "file-loader",
@@ -89,7 +93,7 @@ const typescriptRule = {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 module.exports = function (_env = {}, argv = {}) {
   const mode = argv.mode || "development";
-  const rules = [fontRule, lessRule, imagesRule, cssRule, htmlRule, typescriptRule];
+  const rules = [fontRule, lessRule, svgrRule, imagesRule, cssRule, htmlRule, typescriptRule];
   const envVars = {
     GIT_SHA: gitSha,
     PORT: process.env.PORT || "1234",

@@ -1,5 +1,5 @@
 import { useId } from "@uifabric/react-hooks";
-import InfoBubble from "images/info-bubble.svg";
+import { ReactComponent as InfoBubble } from "images/info-bubble.svg";
 import { ITooltipHostStyles, TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
 import * as React from "react";
 
@@ -15,7 +15,7 @@ export const Tooltip: React.FunctionComponent = ({ children }: TooltipProps) => 
   return children ? (
     <span>
       <TooltipHost content={children} id={tooltipId} calloutProps={calloutProps} styles={hostStyles}>
-        <img className="infoImg" src={InfoBubble} alt="More information" />
+        <InfoBubble />
       </TooltipHost>
     </span>
   ) : (
