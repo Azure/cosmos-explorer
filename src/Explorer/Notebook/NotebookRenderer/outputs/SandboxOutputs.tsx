@@ -43,19 +43,20 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
   render(): JSX.Element {
     // Using min-width to set the width of the iFrame, works around an issue in iOS that can prevent the iFrame from sizing correctly.
     return this.props.outputs && this.props.outputs.size > 0 ? (
-      < div ref={this.nodeRef} >
+      <div ref={this.nodeRef}>
         <IframeResizer
           checkOrigin={false}
           loading="lazy"
           heightCalculationMethod="taggedElement"
-          onLoad={(event) => this.handleFrameLoad(event)
-          }
+          onLoad={(event) => this.handleFrameLoad(event)}
           src="./cellOutputViewer.html"
           style={{ height: "1px", width: "1px", minWidth: "100%", border: "none" }}
           sandbox="allow-downloads allow-popups allow-forms allow-pointer-lock allow-scripts allow-popups-to-escape-sandbox"
         />
-      </div >
-    ) : <></>;
+      </div>
+    ) : (
+      <></>
+    );
   }
 
   handleFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {

@@ -93,10 +93,9 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
             aspectRatio: cardHeightToWidthRatio,
             requestId: new Date().getTime().toString(),
             type: "celloutput",
-            cellId: cellIds[0]
+            cellId: cellIds[0],
           });
-        }
-        else {
+        } else {
           firstOutputErrorHandler(new Error("Output does not exist for any of the cells."));
         }
       }

@@ -64,7 +64,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
       >
         {React.cloneElement(this.props.panelContent, {
           notebookSnapshot: this.props.notebookSnapshot,
-          notebookSnapshotError: this.props.notebookSnapshotError
+          notebookSnapshotError: this.props.notebookSnapshotError,
         })}
       </Panel>
     );
