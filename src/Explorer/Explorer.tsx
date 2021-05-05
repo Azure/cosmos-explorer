@@ -12,7 +12,7 @@ import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { sendCachedDataMessage, sendMessage } from "../Common/MessageHandler";
+import { sendCachedDataMessage } from "../Common/MessageHandler";
 import { QueriesClient } from "../Common/QueriesClient";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
@@ -161,7 +161,6 @@ export default class Explorer {
   // features
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  public isRightPanelV2Enabled: ko.Computed<boolean>;
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
@@ -386,7 +385,6 @@ export default class Explorer {
         !this.isRunningOnNationalCloud() &&
         userContext.apiType !== "Gremlin"
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -707,10 +705,6 @@ export default class Explorer {
 
   public expandConsole(): void {
     this.setIsNotificationConsoleExpanded(true);
-  }
-
-  public collapseConsole(): void {
-    this.setIsNotificationConsoleExpanded(false);
   }
 
   public toggleLeftPaneExpanded() {
@@ -1126,38 +1120,6 @@ export default class Explorer {
   public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
   }
-
-  public signInAad = () => {
-    TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
-    sendMessage({
-      type: MessageTypes.AadSignIn,
-    });
-  };
-
-  public onSwitchToConnectionString = () => {
-    $("#connectWithAad").hide();
-    $("#connectWithConnectionString").show();
-  };
-
-  public clickHostedAccountSwitch = () => {
-    sendMessage({
-      type: MessageTypes.UpdateAccountSwitch,
-      click: true,
-    });
-  };
-
-  public clickHostedDirectorySwitch = () => {
-    sendMessage({
-      type: MessageTypes.UpdateDirectoryControl,
-      click: true,
-    });
-  };
-
-  public refreshDatabaseAccount = () => {
-    sendMessage({
-      type: MessageTypes.RefreshDatabaseAccount,
-    });
-  };
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
