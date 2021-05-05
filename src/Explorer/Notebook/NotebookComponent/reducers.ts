@@ -80,7 +80,7 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
     case cdbActions.STORE_NOTEBOOK_SNAPSHOT: {
       const typedAction = action as cdbActions.StoreNotebookSnapshotAction;
       // Clear pending request
-      return state.set("notebookSnapshot", typedAction.payload).set("pendingSnapshotRequest", undefined);
+      return state.set("notebookSnapshot", typedAction.payload);
     }
 
     case cdbActions.TAKE_NOTEBOOK_SNAPSHOT: {

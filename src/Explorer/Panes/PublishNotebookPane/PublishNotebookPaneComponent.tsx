@@ -87,16 +87,17 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
           cellId: undefined,
         });
       } else if (options.text === ImageTypes.UseFirstDisplayOutput) {
-        try {
-          const cellId = NotebookUtil.findFirstCodeCellWithDisplay(notebookObject);
+        const cellIds = NotebookUtil.findCodeCellWithDisplay(notebookObject);
+        if (cellIds.length > 0) {
           onTakeSnapshot({
             aspectRatio: cardHeightToWidthRatio,
             requestId: new Date().getTime().toString(),
             type: "celloutput",
-            cellId,
+            cellId: cellIds[0]
           });
-        } catch (error) {
-          firstOutputErrorHandler(error);
+        }
+        else {
+          firstOutputErrorHandler(new Error("Output does not exist for any of the cells."));
         }
       }
       setType(options.text);

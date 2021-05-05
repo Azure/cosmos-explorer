@@ -144,38 +144,35 @@ export class NotebookUtil {
     return `${basePath}${newName}`;
   }
 
-  public static findFirstCodeCellWithDisplay(notebookObject: ImmutableNotebook): string {
-    for (let i = 0; i < notebookObject.cellOrder.size; i++) {
-      const cellId = notebookObject.cellOrder.get(i);
-      if (cellId) {
-        const cell = notebookObject.cellMap.get(cellId);
-        if (cell?.cell_type === "code") {
-          const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
-            (output) =>
-              output.output_type === "display_data" ||
-              output.output_type === "execute_result" ||
-              output.output_type === "stream"
-          );
-          if (displayOutput) {
-            return cellId;
-          }
+  /**
+   * Find code cells with display
+   * @param notebookObject
+   * @returns array of cell ids
+   */
+  public static findCodeCellWithDisplay(notebookObject: ImmutableNotebook): string[] {
+    return notebookObject.cellOrder.reduce((accumulator: string[], cellId) => {
+      const cell = notebookObject.cellMap.get(cellId);
+      if (cell?.cell_type === "code") {
+        const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
+          (output) =>
+            output.output_type === "display_data" ||
+            output.output_type === "execute_result" ||
+            output.output_type === "stream"
+        );
+        if (displayOutput) {
+          accumulator.push(cellId);
         }
       }
-    }
-    throw new Error("Output does not exist for any of the cells.");
+      return accumulator;
+    }, []);
   }
 
-  /**
-   * @deprecated
-   * Use takeScreenshot instead
-   * */
   public static takeScreenshotHtml2Canvas = (
     target: HTMLElement,
     aspectRatio: number,
-    subSnaphosts: SnapshotFragment[],
+    subSnapshots: SnapshotFragment[],
     downloadFile?: boolean
-  ): Promise<{ image: HTMLImageElement | undefined }> => {
-    console.log("Taking snapshot");
+  ): Promise<{ imageSrc: string | undefined }> => {
     return new Promise(async (resolve, reject) => {
       try {
         // target.scrollIntoView();
@@ -186,7 +183,6 @@ export class NotebookUtil {
           logging: true,
         });
 
-        console.log("snapshotted!");
         //redraw canvas to fit aspect ratio
         const originalImageData = canvas.toDataURL();
         const width = parseInt(canvas.style.width.split("px")[0]);
@@ -196,14 +192,13 @@ export class NotebookUtil {
 
         if (originalImageData === "data:,") {
           // Empty output
-          resolve({ image: undefined });
+          resolve({ imageSrc: undefined });
           return;
         }
 
         const context = canvas.getContext("2d");
         const image = new Image();
         image.src = originalImageData;
-        console.log(canvas);
         image.onload = () => {
           if (!context) {
             reject(new Error("No context to draw on"));
@@ -212,9 +207,9 @@ export class NotebookUtil {
           context.drawImage(image, 0, 0);
 
           // draw sub images
-          if (subSnaphosts) {
+          if (subSnapshots) {
             const parentRect = target.getBoundingClientRect();
-            subSnaphosts.forEach((snapshot) => {
+            subSnapshots.forEach((snapshot) => {
               if (snapshot.image) {
                 context.drawImage(
                   snapshot.image,
@@ -225,7 +220,7 @@ export class NotebookUtil {
             });
           }
 
-          resolve({ image });
+          resolve({ imageSrc: canvas.toDataURL() });
 
           if (downloadFile) {
             const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
@@ -238,10 +233,10 @@ export class NotebookUtil {
     });
   };
 
-  public static takeScreenshot = (
+  public static takeScreenshotDomToImage = (
     target: HTMLElement,
     aspectRatio: number,
-    subSnaphosts: SnapshotFragment[],
+    subSnapshots: SnapshotFragment[],
     downloadFile?: boolean
   ): Promise<{ imageSrc: string | undefined }> => {
     return new Promise(async (resolve, reject) => {
@@ -268,15 +263,15 @@ export class NotebookUtil {
 
           const context = canvas.getContext("2d");
           if (!context) {
-            reject("No Canvas to draw on");
+            reject(new Error("No Canvas to draw on"));
             return;
           }
           context.drawImage(baseImage, 0, 0);
 
           // draw sub images
-          if (subSnaphosts) {
+          if (subSnapshots) {
             const parentRect = target.getBoundingClientRect();
-            subSnaphosts.forEach((snapshot) => {
+            subSnapshots.forEach((snapshot) => {
               if (snapshot.image) {
                 context.drawImage(
                   snapshot.image,

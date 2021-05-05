@@ -38,26 +38,28 @@ interface DispatchProps {
 type SandboxOutputsProps = ComponentProps & StateProps & DispatchProps;
 export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
   private childWindow: Window;
-  private boundingClientRect: DOMRect;
+  private nodeRef = React.createRef<HTMLDivElement>();
 
   render(): JSX.Element {
     // Using min-width to set the width of the iFrame, works around an issue in iOS that can prevent the iFrame from sizing correctly.
-    return (
-      <IframeResizer
-        checkOrigin={false}
-        loading="lazy"
-        heightCalculationMethod="taggedElement"
-        onLoad={(event) => this.handleFrameLoad(event)}
-        src="./cellOutputViewer.html"
-        style={{ height: "1px", width: "1px", minWidth: "100%", border: "none" }}
-        sandbox="allow-downloads allow-popups allow-forms allow-pointer-lock allow-scripts allow-popups-to-escape-sandbox"
-      />
-    );
+    return this.props.outputs && this.props.outputs.size > 0 ? (
+      < div ref={this.nodeRef} >
+        <IframeResizer
+          checkOrigin={false}
+          loading="lazy"
+          heightCalculationMethod="taggedElement"
+          onLoad={(event) => this.handleFrameLoad(event)
+          }
+          src="./cellOutputViewer.html"
+          style={{ height: "1px", width: "1px", minWidth: "100%", border: "none" }}
+          sandbox="allow-downloads allow-popups allow-forms allow-pointer-lock allow-scripts allow-popups-to-escape-sandbox"
+        />
+      </div >
+    ) : <></>;
   }
 
   handleFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {
     this.childWindow = (event.target as HTMLIFrameElement).contentWindow;
-    this.boundingClientRect = (event.target as HTMLIFrameElement).getBoundingClientRect();
     this.sendPropsToFrame();
   }
 
@@ -86,6 +88,8 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
     this.sendPropsToFrame();
 
     if (this.props.pendingSnapshotRequest && prevProps.pendingSnapshotRequest !== this.props.pendingSnapshotRequest) {
+      const boundingClientRect = this.nodeRef.current.getBoundingClientRect();
+
       try {
         const { data } = (await postRobot.send(
           this.childWindow,
@@ -96,7 +100,7 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
           if (data.imageSrc === undefined) {
             this.props.storeSnapshotFragment(this.props.id, {
               image: undefined,
-              boundingClientRect: this.boundingClientRect,
+              boundingClientRect: boundingClientRect,
               requestId: data.requestId,
             });
             return;
@@ -106,7 +110,7 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
           image.onload = () => {
             this.props.storeSnapshotFragment(this.props.id, {
               image,
-              boundingClientRect: this.boundingClientRect,
+              boundingClientRect: boundingClientRect,
               requestId: data.requestId,
             });
           };

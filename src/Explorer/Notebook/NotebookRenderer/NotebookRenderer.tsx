@@ -94,7 +94,8 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
       this.props.cellOutputSnapshots.size === this.props.nbCodeCells
     ) {
       try {
-        const result = await NotebookUtil.takeScreenshot(
+        // Use Html2Canvas because it is much more reliable and fast than dom-to-file
+        const result = await NotebookUtil.takeScreenshotHtml2Canvas(
           this.notebookRendererRef.current,
           this.props.pendingSnapshotRequest.aspectRatio,
           [...this.props.cellOutputSnapshots.values()]
@@ -189,11 +190,7 @@ export const makeMapStateToProps = (
 
     let nbCodeCells;
     if (model && model.type === "notebook") {
-      const { cellMap } = model.notebook;
-      nbCodeCells = [...cellMap.values()].reduce(
-        (accumulator, currentValue) => accumulator + (currentValue.cell_type === "code" ? 1 : 0),
-        0
-      );
+      nbCodeCells = NotebookUtil.findCodeCellWithDisplay(model.notebook).length;
     }
     const { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot } = state.cdb;
     return { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot, nbCodeCells };
