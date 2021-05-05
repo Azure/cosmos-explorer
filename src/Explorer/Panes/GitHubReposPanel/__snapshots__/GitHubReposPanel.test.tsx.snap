@@ -411,7 +411,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
               "parameters": [Function],
               "tabsButtons": Array [],
             },
-            "databaseAccount": [Function],
             "databases": [Function],
             "deleteCollectionText": [Function],
             "deleteDatabaseText": [Function],
@@ -1205,7 +1204,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "hasStorageAnalyticsAfecFeature": [Function],
             "isAccountReady": [Function],
             "isAutoscaleDefaultEnabled": [Function],
-            "isEnableMongoCapabilityPresent": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isHostedDataExplorerEnabled": [Function],
             "isLeftPaneExpanded": [Function],
@@ -1223,7 +1221,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "isTabsContentExpanded": [Function],
             "junoClient": JunoClient {
               "cachedPinnedRepos": [Function],
-              "databaseAccount": undefined,
             },
             "memoryUsageInfo": [Function],
             "notebookBasePath": [Function],

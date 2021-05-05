@@ -31,7 +31,7 @@ import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
@@ -109,18 +109,8 @@ export default class Explorer {
   public refreshTreeTitle: ko.Observable<string>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  /**
-   * @deprecated
-   * Use userContext.databaseAccount instead
-   * */
-  public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
-   * */
-  public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
@@ -231,7 +221,6 @@ export default class Explorer {
     this.deleteDatabaseText = ko.observable<string>("Delete Database");
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
-    this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -266,7 +255,7 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
                   userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -275,7 +264,7 @@ export default class Explorer {
             });
 
             if (this.isNotebookEnabled()) {
-              await this.initNotebooks(this.databaseAccount());
+              await this.initNotebooks(userContext.databaseAccount);
               const workspaces = await this._getArcadiaWorkspaces();
               this.arcadiaWorkspaces(workspaces);
             } else if (this.notebookToImport) {
@@ -377,35 +366,19 @@ export default class Explorer {
         return true;
       }
 
-      if (this.databaseAccount && !this.databaseAccount()) {
+      if (!userContext.databaseAccount) {
         return false;
       }
 
-      return this.isEnableMongoCapabilityPresent();
+      return userContext.apiType === "Mongo";
     });
 
     this.isServerlessEnabled = ko.computed(
       () =>
-        this.databaseAccount &&
-        this.databaseAccount()?.properties?.capabilities?.find(
+        userContext.databaseAccount?.properties?.capabilities?.find(
           (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
-
-    this.isEnableMongoCapabilityPresent = ko.computed(() => {
-      const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
-      if (!capabilities) {
-        return false;
-      }
-
-      for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-          return true;
-        }
-      }
-
-      return false;
-    });
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
@@ -672,11 +645,11 @@ export default class Explorer {
         this.isSynapseLinkUpdating(true);
         this._closeSynapseLinkModalDialog();
 
-        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(this.databaseAccount().id);
+        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(userContext.databaseAccount.id);
 
         try {
           const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
-            this.databaseAccount().id,
+            userContext.databaseAccount.id,
             "2019-12-12",
             {
               properties: {
@@ -687,7 +660,7 @@ export default class Explorer {
           clearInProgressMessage();
           logConsoleInfo("Enabled Azure Synapse Link for this account");
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          this.databaseAccount(databaseAccount);
+          updateUserContext({ databaseAccount });
         } catch (error) {
           clearInProgressMessage();
           logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
@@ -1010,14 +983,14 @@ export default class Explorer {
   }
 
   private async ensureNotebookWorkspaceRunning() {
-    if (!this.databaseAccount()) {
+    if (!userContext.databaseAccount) {
       return;
     }
 
     let clearMessage;
     try {
       const notebookWorkspace = await this.notebookWorkspaceManager.getNotebookWorkspaceAsync(
-        this.databaseAccount().id,
+        userContext.databaseAccount.id,
         "default"
       );
       if (
@@ -1027,7 +1000,7 @@ export default class Explorer {
         notebookWorkspace.properties.status.toLowerCase() === "stopped"
       ) {
         clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
-        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
+        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(userContext.databaseAccount.id, "default");
       }
     } catch (error) {
       handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
@@ -1112,21 +1085,10 @@ export default class Explorer {
       if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
-
-      const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.databaseAccount(databaseAccount);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      TelemetryProcessor.traceSuccess(
-        Action.LoadDatabaseAccount,
-        {
-          dataExplorerArea: Constants.Areas.ResourceTree,
-        },
-        inputs.loadDatabaseAccountTimestamp
-      );
-
       this.isAccountReady(true);
     }
   }
@@ -1616,7 +1578,7 @@ export default class Explorer {
   }
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
-    const authType = userContext.authType;
+    const { databaseAccount, authType } = userContext;
     if (
       authType === AuthType.EncryptedToken ||
       authType === AuthType.ResourceToken ||
@@ -1626,7 +1588,6 @@ export default class Explorer {
       return;
     }
 
-    const databaseAccount = this.databaseAccount();
     const firstWriteLocation =
       databaseAccount?.properties?.writeLocations &&
       databaseAccount?.properties?.writeLocations[0]?.locationName.toLowerCase();
@@ -1665,9 +1626,8 @@ export default class Explorer {
   }
 
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-    const subscriptionId = userContext.subscriptionId;
+    const { subscriptionId, authType } = userContext;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = userContext.authType;
     if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       this.isSparkEnabledForAccount(false);
@@ -1694,9 +1654,8 @@ export default class Explorer {
   };
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-    const subscriptionId = userContext.subscriptionId;
+    const { subscriptionId, authType } = userContext;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = userContext.authType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       return false;
@@ -2008,7 +1967,7 @@ export default class Explorer {
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(this.databaseAccount()))) {
+    if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
       this.closeAllPanes();
       this._openSetupNotebooksPaneForQuickstart();
     }
