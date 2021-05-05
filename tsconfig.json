@@ -22,6 +22,6 @@
     "types": ["jest", "puppeteer", "jest-environment-puppeteer", "expect-puppeteer"],
     "baseUrl": "src"
   },
-  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts", "./**/*.ts", "./**/*.tsx"],
+  "include": ["./src/**/*", "./utils/**/*", "./test/testExplorer/TestExplorer.ts", "./**/*.ts", "./**/*.tsx"],
   "exclude": ["./src/**/__mocks__/**/*"]
 }
