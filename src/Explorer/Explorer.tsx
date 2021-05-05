@@ -1627,7 +1627,9 @@ export default class Explorer {
     }
 
     const databaseAccount = this.databaseAccount();
-    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
+    const firstWriteLocation =
+      databaseAccount?.properties?.writeLocations &&
+      databaseAccount?.properties?.writeLocations[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
@@ -1652,9 +1654,9 @@ export default class Explorer {
         this.isNotebooksEnabledForAccount(true);
         return;
       }
-      const isAccountInAllowedLocation = !disallowedLocations.some(
-        (disallowedLocation) => disallowedLocation === databaseAccountLocation
-      );
+
+      // firstWriteLocation should not be disallowed
+      const isAccountInAllowedLocation = firstWriteLocation && disallowedLocations.indexOf(firstWriteLocation) === -1;
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
