@@ -131,7 +131,7 @@ describe("NotebookUtil", () => {
   describe("findFirstCodeCellWithDisplay", () => {
     it("works for Notebook file", () => {
       const notebookObject = notebookRecord as ImmutableNotebook;
-      expect(NotebookUtil.findFirstCodeCellWithDisplay(notebookObject)).toEqual("1");
+      expect(NotebookUtil.findCodeCellWithDisplay(notebookObject)[0]).toEqual("1");
     });
   });
 });
