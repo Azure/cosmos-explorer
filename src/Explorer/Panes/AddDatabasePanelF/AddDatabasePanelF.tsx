@@ -311,7 +311,6 @@ export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
                     checkbox: { width: 12, height: 12 },
                     label: { padding: 0, alignItems: "center" },
                   }}
-                  tabIndex={0}
                   label="Provision throughput"
                   checked={databaseCreateNewShared}
                   onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
