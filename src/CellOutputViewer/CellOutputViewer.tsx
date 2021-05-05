@@ -82,12 +82,6 @@ const onInit = async () => {
         return Promise.reject(new Error(errorMsg));
       }
 
-      const outputContainer = document.getElementById("output-container");
-      if (!outputContainer) {
-        const errorMsg = "Cell container not found";
-        return Promise.reject(new Error(errorMsg));
-      }
-
       // Typescript definition for event is wrong. So read props by casting to <any>
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const snapshotRequest = (event as any).data as SnapshotRequest;

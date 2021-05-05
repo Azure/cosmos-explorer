@@ -180,7 +180,7 @@ export class NotebookUtil {
           useCORS: true,
           allowTaint: true,
           scale: 1,
-          logging: true,
+          logging: false,
         });
 
         //redraw canvas to fit aspect ratio

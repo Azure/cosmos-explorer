@@ -70,29 +70,21 @@ const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, child
 class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   private notebookRendererRef = React.createRef<HTMLDivElement>();
 
-  constructor(props: NotebookRendererProps) {
-    super(props);
-
-    this.state = {
-      hoveredCellId: undefined,
-    };
-  }
-
   componentDidMount() {
     if (!userContext.features.sandboxNotebookOutputs) {
       loadTransform(this.props as any);
     }
   }
 
-  async componentDidUpdate() {
+  async componentDidUpdate(): Promise<void> {
     // Take a snapshot if there's a pending request and all the outputs are also saved
     if (
       this.props.pendingSnapshotRequest &&
       this.props.pendingSnapshotRequest.type === "notebook" &&
+      this.props.pendingSnapshotRequest.notebookContentRef === this.props.contentRef &&
       (!this.props.notebookSnapshot ||
         this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
-      this.props.cellOutputSnapshots.size === this.props.nbCodeCells
-    ) {
+      this.props.cellOutputSnapshots.size === this.props.nbCodeCells) {
       try {
         // Use Html2Canvas because it is much more reliable and fast than dom-to-file
         const result = await NotebookUtil.takeScreenshotHtml2Canvas(
@@ -103,6 +95,8 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
         this.props.storeNotebookSnapshot(result.imageSrc, this.props.pendingSnapshotRequest.requestId);
       } catch (error) {
         this.props.notebookSnapshotError(error.message);
+      } finally {
+        this.setState({ processedSnapshotRequest: undefined });
       }
     }
   }

@@ -112,6 +112,7 @@ export default class NotebookManager {
   public async openPublishNotebookPane(
     name: string,
     content: NotebookPaneContent,
+    notebookContentRef: string,
     onTakeSnapshot: (request: SnapshotRequest) => void,
     onClosePanel: () => void
   ): Promise<void> {
@@ -126,6 +127,7 @@ export default class NotebookManager {
         name={name}
         author={getFullName()}
         notebookContent={content}
+        notebookContentRef={notebookContentRef}
         onTakeSnapshot={onTakeSnapshot}
         notebookSnapshot={undefined /* Updated by App in Main.tsx */}
         notebookSnapshotError={undefined /* Updated by App in Main.tsx */}

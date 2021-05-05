@@ -14,6 +14,7 @@ export interface PublishNotebookPaneProps {
   notebookDescription: string;
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
+  notebookContentRef: string;
   imageSrc: string;
 
   onError: (formError: string, formErrorDetail: string, area: string) => void;
@@ -39,6 +40,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   notebookAuthor,
   notebookCreatedDate,
   notebookObject,
+  notebookContentRef,
   imageSrc,
   onError,
   clearFormError,
@@ -85,6 +87,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
           requestId: new Date().getTime().toString(),
           type: "notebook",
           cellId: undefined,
+          notebookContentRef,
         });
       } else if (options.text === ImageTypes.UseFirstDisplayOutput) {
         const cellIds = NotebookUtil.findCodeCellWithDisplay(notebookObject);
@@ -94,6 +97,7 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
             requestId: new Date().getTime().toString(),
             type: "celloutput",
             cellId: cellIds[0],
+            notebookContentRef,
           });
         } else {
           firstOutputErrorHandler(new Error("Output does not exist for any of the cells."));

@@ -13,7 +13,7 @@ import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
 import {
   GenericRightPaneComponent,
-  GenericRightPaneProps,
+  GenericRightPaneProps
 } from "../GenericRightPaneComponent/GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
@@ -25,6 +25,7 @@ export interface PublishNotebookPaneAProps {
   name: string;
   author: string;
   notebookContent: string | ImmutableNotebook;
+  notebookContentRef: string;
   onTakeSnapshot: (request: SnapshotRequest) => void;
   notebookSnapshot: string;
   notebookSnapshotError: string;
@@ -36,6 +37,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   name,
   author,
   notebookContent,
+  notebookContentRef,
   onTakeSnapshot,
   notebookSnapshot,
   notebookSnapshotError,
@@ -191,6 +193,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     notebookAuthor: author,
     notebookCreatedDate: new Date().toISOString(),
     notebookObject: notebookObject,
+    notebookContentRef,
     onError: createFormError,
     clearFormError: clearFormError,
     setNotebookName,

@@ -14,6 +14,7 @@ export interface SnapshotRequest {
   aspectRatio: number;
   type: "notebook" | "celloutput";
   cellId: string; // if type is "celloutput"
+  notebookContentRef: string; // notebook redux contentRef
 }
 export interface CdbRecordProps {
   databaseAccountName: string | undefined;

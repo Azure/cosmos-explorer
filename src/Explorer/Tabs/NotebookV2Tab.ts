@@ -469,15 +469,18 @@ export default class NotebookTabV2 extends NotebookTabBase {
     });
 
     const notebookContent = this.notebookComponentAdapter.getContent();
+    const notebookContentRef = this.notebookComponentAdapter.contentRef;
     const onPanelClose = (): void => {
       unsubscribe();
       this.container.setNotebookSnapshot(undefined);
       this.container.setNotebookSnapshotError(undefined);
+      notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(undefined));
     };
 
     await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
+      notebookContentRef,
       (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request)),
       onPanelClose
     );

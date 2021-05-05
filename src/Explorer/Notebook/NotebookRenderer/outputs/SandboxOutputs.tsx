@@ -38,9 +38,19 @@ interface DispatchProps {
 }
 
 type SandboxOutputsProps = ComponentProps & StateProps & DispatchProps;
-export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
+
+export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
+
   private childWindow: Window;
   private nodeRef = React.createRef<HTMLDivElement>();
+
+  constructor(props: SandboxOutputsProps) {
+    super(props);
+
+    this.state = {
+      processedSnapshotRequest: undefined,
+    };
+  }
 
   render(): JSX.Element {
     // Using min-width to set the width of the iFrame, works around an issue in iOS that can prevent the iFrame from sizing correctly.
@@ -74,9 +84,8 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
     const props: CellOutputViewerProps = {
       id: this.props.id,
       contentRef: this.props.contentRef,
-      outputsContainerClassName: `nteract-cell-outputs ${this.props.hidden ? "hidden" : ""} ${
-        this.props.expanded ? "expanded" : ""
-      } ${this.props.outputsContainerClassName}`,
+      outputsContainerClassName: `nteract-cell-outputs ${this.props.hidden ? "hidden" : ""} ${this.props.expanded ? "expanded" : ""
+        } ${this.props.outputsContainerClassName}`,
       outputClassName: this.props.outputClassName,
       outputs: this.props.outputs.toArray().map((output) => outputToJS(output)),
       onMetadataChange: this.props.onMetadataChange,
@@ -92,7 +101,10 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
   async componentDidUpdate(prevProps: SandboxOutputsProps): Promise<void> {
     this.sendPropsToFrame();
 
-    if (this.props.pendingSnapshotRequest && prevProps.pendingSnapshotRequest !== this.props.pendingSnapshotRequest) {
+    if (this.props.pendingSnapshotRequest &&
+      prevProps.pendingSnapshotRequest !== this.props.pendingSnapshotRequest &&
+      this.props.pendingSnapshotRequest.notebookContentRef === this.props.contentRef &&
+      this.nodeRef?.current) {
       const boundingClientRect = this.nodeRef.current.getBoundingClientRect();
 
       try {
@@ -125,6 +137,7 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
       } catch (error) {
         this.props.notebookSnapshotError(error.message);
       }
+
     }
   }
 }
