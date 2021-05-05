@@ -116,11 +116,6 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.apiType instead
-   * */
-  public defaultExperience: ko.Observable<string>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   /**
    * @deprecated
@@ -377,17 +372,6 @@ export default class Explorer {
       bounds: splitterBounds,
       direction: SplitterDirection.Vertical,
     });
-    this.defaultExperience = ko.observable<string>();
-    // this.databaseAccount.subscribe((databaseAccount) => {
-    //   const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-    //     databaseAccount
-    //   );
-    //   this.defaultExperience(defaultExperience);
-    //   // TODO. Remove this entirely
-    //   updateUserContext({
-    //     apiType: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-    //   });
-    // });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
@@ -1644,7 +1628,9 @@ export default class Explorer {
     }
 
     const databaseAccount = this.databaseAccount();
-    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
+    const firstWriteLocation =
+      databaseAccount?.properties?.writeLocations &&
+      databaseAccount?.properties?.writeLocations[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
@@ -1669,9 +1655,9 @@ export default class Explorer {
         this.isNotebooksEnabledForAccount(true);
         return;
       }
-      const isAccountInAllowedLocation = !disallowedLocations.some(
-        (disallowedLocation) => disallowedLocation === databaseAccountLocation
-      );
+
+      // firstWriteLocation should not be disallowed
+      const isAccountInAllowedLocation = firstWriteLocation && disallowedLocations.indexOf(firstWriteLocation) === -1;
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
