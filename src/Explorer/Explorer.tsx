@@ -1,5 +1,5 @@
-import * as ko from "knockout";
 import { IChoiceGroupProps } from "@fluentui/react";
+import * as ko from "knockout";
 import * as path from "path";
 import Q from "q";
 import React from "react";
@@ -53,7 +53,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { AddDatabasePanelF } from "./Panes/AddDatabasePanelF/AddDatabasePanelF";
+import { AddDatabasePanelF } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
