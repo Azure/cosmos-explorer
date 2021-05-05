@@ -20,7 +20,6 @@ describe("Add Collection Pane", () => {
         enableFreeTier: false,
       },
       type: undefined,
-      tags: [],
     };
 
     const mockFreeTierDatabaseAccount: DatabaseAccount = {
@@ -36,7 +35,6 @@ describe("Add Collection Pane", () => {
         enableFreeTier: true,
       },
       type: undefined,
-      tags: [],
     };
 
     beforeEach(() => {

@@ -1,4 +1,4 @@
-import { AccountKind, DefaultAccountExperience, TagNames } from "../../Common/Constants";
+import { AccountKind } from "../../Common/Constants";
 
 export const emulatorAccount = {
   name: "",
@@ -6,9 +6,6 @@ export const emulatorAccount = {
   location: "",
   type: "",
   kind: AccountKind.DocumentDB,
-  tags: {
-    [TagNames.defaultExperience]: DefaultAccountExperience.DocumentDB,
-  },
   properties: {
     documentEndpoint: "",
     tableEndpoint: "",

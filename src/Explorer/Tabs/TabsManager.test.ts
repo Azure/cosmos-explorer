@@ -23,7 +23,6 @@ describe("Tabs manager tests", () => {
       location: "",
       type: "",
       kind: "",
-      tags: "",
       properties: undefined,
     });
 
