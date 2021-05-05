@@ -189,8 +189,8 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
 };
 
 export const generateBladeLink = (blade: BladeType): string => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroupName = userContext.resourceGroup;
-  const databaseAccountName = userContext.databaseAccount.name;
-  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const databaseAccountName = databaseAccount.name;
+
+  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };

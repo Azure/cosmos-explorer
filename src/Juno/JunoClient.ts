@@ -70,7 +70,7 @@ export interface IPublishNotebookRequest {
 export class JunoClient {
   private cachedPinnedRepos: ko.Observable<IPinnedRepo[]>;
 
-  constructor(private databaseAccount?: ko.Observable<DataModels.DatabaseAccount>) {
+  constructor() {
     this.cachedPinnedRepos = ko.observable<IPinnedRepo[]>([]);
   }
 
@@ -500,7 +500,7 @@ export class JunoClient {
   }
 
   private getAccount(): string {
-    return this.databaseAccount().name;
+    return userContext?.databaseAccount?.name;
   }
 
   private getSubscriptionId(): string {

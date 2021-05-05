@@ -48,8 +48,9 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
 }
 
 async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  const defaultExperience = userContext.apiType;
-  switch (defaultExperience) {
+  const { apiType } = userContext;
+
+  switch (apiType) {
     case "SQL":
       return createSqlDatabase(params);
     case "Mongo":
@@ -59,7 +60,7 @@ async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): P
     case "Gremlin":
       return createGremlineDatabase(params);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }
 

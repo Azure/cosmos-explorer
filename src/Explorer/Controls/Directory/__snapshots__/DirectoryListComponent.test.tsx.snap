@@ -350,11 +350,11 @@ exports[`test render renders with filters 1`] = `
       }
     >
       <div
-        className="ms-ScrollablePane root-85"
+        className="ms-ScrollablePane root-53"
         data-is-scrollable="true"
       >
         <div
-          className="stickyAbove-87"
+          className="stickyAbove-55"
           style={
             Object {
               "height": 0,
@@ -365,7 +365,7 @@ exports[`test render renders with filters 1`] = `
           }
         />
         <div
-          className="ms-ScrollablePane--contentContainer contentContainer-86"
+          className="ms-ScrollablePane--contentContainer contentContainer-54"
           data-is-scrollable={true}
         >
           <Sticky
@@ -690,18 +690,18 @@ exports[`test render renders with filters 1`] = `
                       validateOnLoad={true}
                     >
                       <div
-                        className="ms-TextField directoryListFilterTextBox root-91"
+                        className="ms-TextField directoryListFilterTextBox root-59"
                       >
                         <div
                           className="ms-TextField-wrapper"
                         >
                           <div
-                            className="ms-TextField-fieldGroup fieldGroup-92"
+                            className="ms-TextField-fieldGroup fieldGroup-60"
                           >
                             <input
                               aria-invalid={false}
                               aria-label="Directory filter text box"
-                              className="ms-TextField-field field-93"
+                              className="ms-TextField-field field-61"
                               id="TextField0"
                               onBlur={[Function]}
                               onChange={[Function]}
@@ -1927,7 +1927,7 @@ exports[`test render renders with filters 1`] = `
                         >
                           <button
                             aria-disabled={true}
-                            className="ms-Button ms-Button--default is-disabled directoryListButton root-102"
+                            className="ms-Button ms-Button--default is-disabled directoryListButton root-70"
                             data-is-focusable={false}
                             disabled={true}
                             onClick={[Function]}
@@ -1939,7 +1939,7 @@ exports[`test render renders with filters 1`] = `
                             type="button"
                           >
                             <span
-                              className="ms-Button-flexContainer flexContainer-103"
+                              className="ms-Button-flexContainer flexContainer-71"
                               data-automationid="splitbuttonprimary"
                             >
                               <div
@@ -1970,7 +1970,7 @@ exports[`test render renders with filters 1`] = `
           </List>
         </div>
         <div
-          className="stickyBelow-88"
+          className="stickyBelow-56"
           style={
             Object {
               "bottom": "0px",
@@ -1981,7 +1981,7 @@ exports[`test render renders with filters 1`] = `
           }
         >
           <div
-            className="stickyBelowItems-89"
+            className="stickyBelowItems-57"
           />
         </div>
       </div>
