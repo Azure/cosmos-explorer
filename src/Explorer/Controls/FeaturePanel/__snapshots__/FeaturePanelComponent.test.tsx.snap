@@ -57,7 +57,7 @@ exports[`Feature panel renders all flags 1`] = `
         }
       }
     >
-      <StyledWithResponsiveMode
+      <Dropdown
         label="Base Url"
         onChange={[Function]}
         options={
@@ -85,7 +85,7 @@ exports[`Feature panel renders all flags 1`] = `
           }
         }
       />
-      <StyledWithResponsiveMode
+      <Dropdown
         label="Platform"
         onChange={[Function]}
         options={

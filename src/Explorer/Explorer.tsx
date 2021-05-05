@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { IChoiceGroupProps } from "office-ui-fabric-react";
+import { IChoiceGroupProps } from "@fluentui/react";
 import * as path from "path";
 import Q from "q";
 import React from "react";

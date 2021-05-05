@@ -30,7 +30,7 @@ exports[`AddMongoIndexComponent renders 1`] = `
       }
       value="sample_key"
     />
-    <StyledWithResponsiveMode
+    <Dropdown
       ariaLabel="Index Type 1"
       onChange={[Function]}
       options={
@@ -67,7 +67,7 @@ exports[`AddMongoIndexComponent renders 1`] = `
       onClick={[Function]}
     />
   </Stack>
-  <StyledMessageBarBase
+  <StyledMessageBar
     messageBarType={1}
     styles={
       Object {
@@ -78,6 +78,6 @@ exports[`AddMongoIndexComponent renders 1`] = `
     }
   >
     sample error
-  </StyledMessageBarBase>
+  </StyledMessageBar>
 </Stack>
 `;

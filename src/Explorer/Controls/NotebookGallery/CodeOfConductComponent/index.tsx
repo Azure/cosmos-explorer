@@ -1,4 +1,4 @@
-import { Checkbox, Link, PrimaryButton, Stack, Text } from "office-ui-fabric-react";
+import { Checkbox, Link, PrimaryButton, Stack, Text } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { CodeOfConductEndpoints, HttpStatusCodes } from "../../../../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../../../../Common/ErrorHandlingUtils";

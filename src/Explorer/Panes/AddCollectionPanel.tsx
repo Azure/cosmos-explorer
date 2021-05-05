@@ -12,7 +12,7 @@ import {
   Stack,
   Text,
   TooltipHost,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React from "react";
 import * as Constants from "../../Common/Constants";
 import { createCollection } from "../../Common/dataAccess/createCollection";

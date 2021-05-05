@@ -338,7 +338,7 @@ exports[`SettingsUtils functions render 1`] = `
     </StyledLinkBase>
     are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.
   </Text>
-  <StyledMessageBarBase
+  <StyledMessageBar
     messageBarType={1}
   >
     <Text>
@@ -350,7 +350,7 @@ exports[`SettingsUtils functions render 1`] = `
         azure portal.
       </StyledLinkBase>
     </Text>
-  </StyledMessageBarBase>
+  </StyledMessageBar>
   <Stack
     horizontal={true}
     tokens={
