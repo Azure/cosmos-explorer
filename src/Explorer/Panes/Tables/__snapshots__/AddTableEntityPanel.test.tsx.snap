@@ -955,11 +955,11 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                 <Portal
                   containerInfo={
                     <div
-                      class="ms-Layer ms-Layer--fixed root-86"
+                      class="ms-Layer ms-Layer--fixed root-54"
                       data-portal-element="true"
                     >
                       <div
-                        class="ms-Fabric ms-Layer-content content-88"
+                        class="ms-Fabric ms-Layer-content content-56"
                       >
                         <div
                           aria-labelledby="Panel0-headerText"
@@ -970,14 +970,14 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         >
                           <div
                             aria-hidden="false"
-                            class="ms-Panel is-open ms-Panel--hasCloseButton ms-Panel--custom root-74"
+                            class="ms-Panel is-open ms-Panel--hasCloseButton ms-Panel--custom root-42"
                             style="height: 736px;"
                           >
                             <div
-                              class="ms-Overlay overlay-90"
+                              class="ms-Overlay overlay-58"
                             />
                             <div
-                              class="ms-Panel-main main-76"
+                              class="ms-Panel-main main-44"
                               style="width: 700px;"
                             >
                               <div
@@ -987,18 +987,18 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 tabindex="0"
                               />
                               <div
-                                class="ms-Panel-commands commands-77"
+                                class="ms-Panel-commands commands-45"
                                 data-is-visible="true"
                               >
                                 <div
-                                  class="ms-Panel-navigation navigation-78"
+                                  class="ms-Panel-navigation navigation-46"
                                 >
                                   <div
-                                    class="ms-Panel-header header-80"
+                                    class="ms-Panel-header header-48"
                                   >
                                     <div
                                       aria-level="1"
-                                      class="ms-Panel-headerText panelHeader headerText-81"
+                                      class="ms-Panel-headerText panelHeader headerText-49"
                                       id="Panel0-headerText"
                                       role="heading"
                                     >
@@ -1007,19 +1007,19 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                   </div>
                                   <button
                                     aria-label="Close"
-                                    class="ms-Button ms-Panel-closeButton ms-PanelAction-close ms-Button--icon root-91"
+                                    class="ms-Button ms-Panel-closeButton ms-PanelAction-close ms-Button--icon root-59"
                                     data-is-focusable="true"
                                     data-is-visible="true"
                                     title="Close"
                                     type="button"
                                   >
                                     <span
-                                      class="ms-Button-flexContainer flexContainer-92"
+                                      class="ms-Button-flexContainer flexContainer-60"
                                       data-automationid="splitbuttonprimary"
                                     >
                                       <i
                                         aria-hidden="true"
-                                        class="ms-Icon root-37 css-99 ms-Button-icon icon-94"
+                                        class="ms-Icon root-37 css-67 ms-Button-icon icon-62"
                                         data-icon-name="Cancel"
                                         role="presentation"
                                         style="font-family: \\"FabricMDL2Icons\\";"
@@ -1031,14 +1031,14 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 </div>
                               </div>
                               <div
-                                class="ms-Panel-contentInner contentInner-79"
+                                class="ms-Panel-contentInner contentInner-47"
                               >
                                 <div
-                                  class="ms-Panel-scrollableContent scrollableContent-82"
+                                  class="ms-Panel-scrollableContent scrollableContent-50"
                                   data-is-scrollable="true"
                                 >
                                   <div
-                                    class="ms-Panel-content content-83"
+                                    class="ms-Panel-content content-51"
                                   >
                                     <form
                                       class="panelFormWrapper"
@@ -1050,20 +1050,20 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                           class="panelMainContent"
                                         >
                                           <div
-                                            class="ms-Stack addButtonEntiy css-100"
+                                            class="ms-Stack addButtonEntiy css-68"
                                           >
                                             <div
-                                              class="ms-Image root-101"
+                                              class="ms-Image root-69"
                                               style="width: 16px; height: 30px;"
                                             >
                                               <img
                                                 alt="Add Entity"
-                                                class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-102"
+                                                class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-70"
                                                 src=""
                                               />
                                             </div>
                                             <span
-                                              class="addNewParamStyle css-103"
+                                              class="addNewParamStyle css-71"
                                             >
                                               Add Property
                                             </span>
@@ -1101,7 +1101,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                   }
                 >
                   <StyledFabricBase
-                    className="ms-Layer-content content-87"
+                    className="ms-Layer-content content-55"
                     onBlur={[Function]}
                     onChange={[Function]}
                     onClick={[Function]}
@@ -1135,7 +1135,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                     onTouchStart={[Function]}
                   >
                     <FabricBase
-                      className="ms-Layer-content content-87"
+                      className="ms-Layer-content content-55"
                       onBlur={[Function]}
                       onChange={[Function]}
                       onClick={[Function]}
@@ -1443,7 +1443,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                       }
                     >
                       <div
-                        className="ms-Fabric ms-Layer-content content-88"
+                        className="ms-Fabric ms-Layer-content content-56"
                         onBlur={[Function]}
                         onChange={[Function]}
                         onClick={[Function]}
@@ -1498,7 +1498,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                           >
                             <div
                               aria-hidden={false}
-                              className="ms-Panel is-open ms-Panel--hasCloseButton ms-Panel--custom root-74"
+                              className="ms-Panel is-open ms-Panel--hasCloseButton ms-Panel--custom root-42"
                               style={
                                 Object {
                                   "height": "736px",
@@ -1507,13 +1507,13 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                             >
                               <StyledOverlayBase
                                 allowTouchBodyScroll={false}
-                                className="overlay-75"
+                                className="overlay-43"
                                 isDarkThemed={false}
                                 onClick={[Function]}
                               >
                                 <OverlayBase
                                   allowTouchBodyScroll={false}
-                                  className="overlay-75"
+                                  className="overlay-43"
                                   isDarkThemed={false}
                                   onClick={[Function]}
                                   styles={[Function]}
@@ -1792,13 +1792,13 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                   }
                                 >
                                   <div
-                                    className="ms-Overlay overlay-90"
+                                    className="ms-Overlay overlay-58"
                                     onClick={[Function]}
                                   />
                                 </OverlayBase>
                               </StyledOverlayBase>
                               <FocusTrapZone
-                                className="ms-Panel-main main-76"
+                                className="ms-Panel-main main-44"
                                 isClickableOutsideFocusTrap={true}
                                 style={
                                   Object {
@@ -1807,7 +1807,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                 }
                               >
                                 <div
-                                  className="ms-Panel-main main-76"
+                                  className="ms-Panel-main main-44"
                                   onBlur={[Function]}
                                   onFocus={[Function]}
                                   onFocusCapture={[Function]}
@@ -1830,18 +1830,18 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     tabIndex={0}
                                   />
                                   <div
-                                    className="ms-Panel-commands commands-77"
+                                    className="ms-Panel-commands commands-45"
                                     data-is-visible={true}
                                   >
                                     <div
-                                      className="ms-Panel-navigation navigation-78"
+                                      className="ms-Panel-navigation navigation-46"
                                     >
                                       <div
-                                        className="ms-Panel-header header-80"
+                                        className="ms-Panel-header header-48"
                                       >
                                         <div
                                           aria-level={1}
-                                          className="ms-Panel-headerText panelHeader headerText-81"
+                                          className="ms-Panel-headerText panelHeader headerText-49"
                                           id="Panel0-headerText"
                                           role="heading"
                                         >
@@ -2903,7 +2903,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                           >
                                             <button
                                               aria-label="Close"
-                                              className="ms-Button ms-Panel-closeButton ms-PanelAction-close ms-Button--icon root-91"
+                                              className="ms-Button ms-Panel-closeButton ms-PanelAction-close ms-Button--icon root-59"
                                               data-is-focusable={true}
                                               data-is-visible={true}
                                               onClick={[Function]}
@@ -2916,16 +2916,16 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                               type="button"
                                             >
                                               <span
-                                                className="ms-Button-flexContainer flexContainer-92"
+                                                className="ms-Button-flexContainer flexContainer-60"
                                                 data-automationid="splitbuttonprimary"
                                               >
                                                 <Component
-                                                  className="ms-Button-icon icon-94"
+                                                  className="ms-Button-icon icon-62"
                                                   iconName="Cancel"
                                                 >
                                                   <i
                                                     aria-hidden={true}
-                                                    className="ms-Icon root-37 css-99 ms-Button-icon icon-94"
+                                                    className="ms-Icon root-37 css-67 ms-Button-icon icon-62"
                                                     data-icon-name="Cancel"
                                                     role="presentation"
                                                     style={
@@ -2946,14 +2946,14 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                     </div>
                                   </div>
                                   <div
-                                    className="ms-Panel-contentInner contentInner-79"
+                                    className="ms-Panel-contentInner contentInner-47"
                                   >
                                     <div
-                                      className="ms-Panel-scrollableContent scrollableContent-82"
+                                      className="ms-Panel-scrollableContent scrollableContent-50"
                                       data-is-scrollable={true}
                                     >
                                       <div
-                                        className="ms-Panel-content content-83"
+                                        className="ms-Panel-content content-51"
                                       >
                                         <form
                                           className="panelFormWrapper"
@@ -2970,7 +2970,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                                 onClick={[Function]}
                                               >
                                                 <div
-                                                  className="ms-Stack addButtonEntiy css-100"
+                                                  className="ms-Stack addButtonEntiy css-68"
                                                   onClick={[Function]}
                                                 >
                                                   <StyledImageBase
@@ -3262,7 +3262,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                                       width={16}
                                                     >
                                                       <div
-                                                        className="ms-Image root-101"
+                                                        className="ms-Image root-69"
                                                         style={
                                                           Object {
                                                             "height": 30,
@@ -3272,7 +3272,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                                       >
                                                         <img
                                                           alt="Add Entity"
-                                                          className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-102"
+                                                          className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-70"
                                                           key="fabricImage"
                                                           onError={[Function]}
                                                           onLoad={[Function]}
@@ -3286,7 +3286,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                                     key=".0:$.1"
                                                   >
                                                     <span
-                                                      className="addNewParamStyle css-103"
+                                                      className="addNewParamStyle css-71"
                                                     >
                                                       Add Property
                                                     </span>
@@ -3335,7 +3335,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                         rootRef={
                           Object {
                             "current": <div
-                              class="ms-Fabric ms-Layer-content content-88"
+                              class="ms-Fabric ms-Layer-content content-56"
                             >
                               <div
                                 aria-labelledby="Panel0-headerText"
@@ -3346,14 +3346,14 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                               >
                                 <div
                                   aria-hidden="false"
-                                  class="ms-Panel is-open ms-Panel--hasCloseButton ms-Panel--custom root-74"
+                                  class="ms-Panel is-open ms-Panel--hasCloseButton ms-Panel--custom root-42"
                                   style="height: 736px;"
                                 >
                                   <div
-                                    class="ms-Overlay overlay-90"
+                                    class="ms-Overlay overlay-58"
                                   />
                                   <div
-                                    class="ms-Panel-main main-76"
+                                    class="ms-Panel-main main-44"
                                     style="width: 700px;"
                                   >
                                     <div
@@ -3363,18 +3363,18 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                       tabindex="0"
                                     />
                                     <div
-                                      class="ms-Panel-commands commands-77"
+                                      class="ms-Panel-commands commands-45"
                                       data-is-visible="true"
                                     >
                                       <div
-                                        class="ms-Panel-navigation navigation-78"
+                                        class="ms-Panel-navigation navigation-46"
                                       >
                                         <div
-                                          class="ms-Panel-header header-80"
+                                          class="ms-Panel-header header-48"
                                         >
                                           <div
                                             aria-level="1"
-                                            class="ms-Panel-headerText panelHeader headerText-81"
+                                            class="ms-Panel-headerText panelHeader headerText-49"
                                             id="Panel0-headerText"
                                             role="heading"
                                           >
@@ -3383,19 +3383,19 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                         </div>
                                         <button
                                           aria-label="Close"
-                                          class="ms-Button ms-Panel-closeButton ms-PanelAction-close ms-Button--icon root-91"
+                                          class="ms-Button ms-Panel-closeButton ms-PanelAction-close ms-Button--icon root-59"
                                           data-is-focusable="true"
                                           data-is-visible="true"
                                           title="Close"
                                           type="button"
                                         >
                                           <span
-                                            class="ms-Button-flexContainer flexContainer-92"
+                                            class="ms-Button-flexContainer flexContainer-60"
                                             data-automationid="splitbuttonprimary"
                                           >
                                             <i
                                               aria-hidden="true"
-                                              class="ms-Icon root-37 css-99 ms-Button-icon icon-94"
+                                              class="ms-Icon root-37 css-67 ms-Button-icon icon-62"
                                               data-icon-name="Cancel"
                                               role="presentation"
                                               style="font-family: \\"FabricMDL2Icons\\";"
@@ -3407,14 +3407,14 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                       </div>
                                     </div>
                                     <div
-                                      class="ms-Panel-contentInner contentInner-79"
+                                      class="ms-Panel-contentInner contentInner-47"
                                     >
                                       <div
-                                        class="ms-Panel-scrollableContent scrollableContent-82"
+                                        class="ms-Panel-scrollableContent scrollableContent-50"
                                         data-is-scrollable="true"
                                       >
                                         <div
-                                          class="ms-Panel-content content-83"
+                                          class="ms-Panel-content content-51"
                                         >
                                           <form
                                             class="panelFormWrapper"
@@ -3426,20 +3426,20 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                                 class="panelMainContent"
                                               >
                                                 <div
-                                                  class="ms-Stack addButtonEntiy css-100"
+                                                  class="ms-Stack addButtonEntiy css-68"
                                                 >
                                                   <div
-                                                    class="ms-Image root-101"
+                                                    class="ms-Image root-69"
                                                     style="width: 16px; height: 30px;"
                                                   >
                                                     <img
                                                       alt="Add Entity"
-                                                      class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-102"
+                                                      class="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-70"
                                                       src=""
                                                     />
                                                   </div>
                                                   <span
-                                                    class="addNewParamStyle css-103"
+                                                    class="addNewParamStyle css-71"
                                                   >
                                                     Add Property
                                                   </span>
