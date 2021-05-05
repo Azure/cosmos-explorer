@@ -171,7 +171,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   };
 
   const props: GenericRightPaneProps = {
-    container: container,
     formError: formError,
     formErrorDetail: formErrorDetail,
     id: "publishnotebookpane",
@@ -180,6 +179,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     submitButtonText: "Publish",
     onSubmit: () => submit(),
     onClose: closePanel,
+    expandConsole: () => container.expandConsole(),
     isSubmitButtonHidden: !isCodeOfConductAccepted,
   };
 

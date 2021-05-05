@@ -17,6 +17,8 @@ import { CdbAppState, SnapshotFragment, SnapshotRequest } from "../../NotebookCo
 interface ComponentProps {
   id: string;
   contentRef: ContentRef;
+  outputsContainerClassName?: string;
+  outputClassName?: string;
 }
 
 interface StateProps {
@@ -72,8 +74,10 @@ export class SandboxOutputs extends React.PureComponent<SandboxOutputsProps> {
     const props: CellOutputViewerProps = {
       id: this.props.id,
       contentRef: this.props.contentRef,
-      hidden: this.props.hidden,
-      expanded: this.props.expanded,
+      outputsContainerClassName: `nteract-cell-outputs ${this.props.hidden ? "hidden" : ""} ${
+        this.props.expanded ? "expanded" : ""
+      } ${this.props.outputsContainerClassName}`,
+      outputClassName: this.props.outputClassName,
       outputs: this.props.outputs.toArray().map((output) => outputToJS(output)),
       onMetadataChange: this.props.onMetadataChange,
     };

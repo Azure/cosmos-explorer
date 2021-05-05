@@ -1,4 +1,5 @@
 **/node_modules/
+src/**/__mocks__/**/*
 dist/
 Contracts/
 src/Api/Apis.ts

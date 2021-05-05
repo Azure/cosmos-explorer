@@ -138,6 +138,7 @@ jobs:
       matrix:
         test-file:
           - ./test/cassandra/container.spec.ts
+          - ./test/graph/container.spec.ts
           - ./test/sql/container.spec.ts
           - ./test/mongo/container.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts

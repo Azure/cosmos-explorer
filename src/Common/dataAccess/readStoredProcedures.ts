@@ -1,11 +1,10 @@
-import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
-import { client } from "../CosmosClient";
-import { handleError } from "../ErrorHandlingUtils";
+import { AuthType } from "../../AuthType";
+import { userContext } from "../../UserContext";
 import { listSqlStoredProcedures } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function readStoredProcedures(
   databaseId: string,
@@ -13,11 +12,7 @@ export async function readStoredProcedures(
 ): Promise<(StoredProcedureDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying stored procedures for container ${collectionId}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       const rpResponse = await listSqlStoredProcedures(
         userContext.subscriptionId,
         userContext.resourceGroup,

@@ -13,6 +13,7 @@ import { SnapshotRequest } from "../Explorer/Notebook/NotebookComponent/types";
 import "../Explorer/Notebook/NotebookRenderer/base.css";
 import "../Explorer/Notebook/NotebookRenderer/default.css";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
+import "./CellOutputViewer.less";
 import { TransformMedia } from "./TransformMedia";
 
 export interface SnapshotResponse {
@@ -22,8 +23,8 @@ export interface SnapshotResponse {
 export interface CellOutputViewerProps {
   id: string;
   contentRef: ContentRef;
-  hidden: boolean;
-  expanded: boolean;
+  outputsContainerClassName: string;
+  outputClassName: string;
   outputs: OnDiskOutput[];
   onMetadataChange: (metadata: JSONObject, mediaType: string, index?: number) => void;
 }
@@ -40,28 +41,26 @@ const onInit = async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const props = (event as any).data as CellOutputViewerProps;
       const outputs = (
-        <div
-          id="output-container"
-          data-iframe-height
-          className={`nteract-cell-outputs ${props.hidden ? "hidden" : ""} ${props.expanded ? "expanded" : ""}`}
-        >
+        <div data-iframe-height className={props.outputsContainerClassName}>
           {props.outputs?.map((output, index) => (
-            <Output output={createImmutableOutput(output)} key={index}>
-              <TransformMedia
-                output_type={"display_data"}
-                id={props.id}
-                contentRef={props.contentRef}
-                onMetadataChange={(metadata, mediaType) => props.onMetadataChange(metadata, mediaType, index)}
-              />
-              <TransformMedia
-                output_type={"execute_result"}
-                id={props.id}
-                contentRef={props.contentRef}
-                onMetadataChange={(metadata, mediaType) => props.onMetadataChange(metadata, mediaType, index)}
-              />
-              <KernelOutputError />
-              <StreamText />
-            </Output>
+            <div className={props.outputClassName} key={index}>
+              <Output output={createImmutableOutput(output)} key={index}>
+                <TransformMedia
+                  output_type={"display_data"}
+                  id={props.id}
+                  contentRef={props.contentRef}
+                  onMetadataChange={(metadata, mediaType) => props.onMetadataChange(metadata, mediaType, index)}
+                />
+                <TransformMedia
+                  output_type={"execute_result"}
+                  id={props.id}
+                  contentRef={props.contentRef}
+                  onMetadataChange={(metadata, mediaType) => props.onMetadataChange(metadata, mediaType, index)}
+                />
+                <KernelOutputError />
+                <StreamText />
+              </Output>
+            </div>
           ))}
         </div>
       );

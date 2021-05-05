@@ -9,6 +9,7 @@ import { DefaultExperienceUtility } from "../../../Shared/DefaultExperienceUtili
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
+import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import {
@@ -17,14 +18,12 @@ import {
 } from "../GenericRightPaneComponent/GenericRightPaneComponent";
 export interface DeleteCollectionConfirmationPaneProps {
   explorer: Explorer;
-  collectionName: string;
   closePanel: () => void;
 }
 
 export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectionConfirmationPaneProps> = ({
   explorer,
   closePanel,
-  collectionName,
 }: DeleteCollectionConfirmationPaneProps) => {
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
@@ -34,6 +33,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   const shouldRecordFeedback = (): boolean => {
     return explorer.isLastCollection() && !explorer.isSelectedDatabaseShared();
   };
+  const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
   const submit = async (): Promise<void> => {
     const collection = explorer.findSelectedCollection();
@@ -73,7 +73,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
         const deleteFeedback = new DeleteFeedback(
           userContext.databaseAccount?.id,
           userContext.databaseAccount?.name,
-          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.defaultExperience),
+          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType),
           deleteCollectionFeedback
         );
 
@@ -101,7 +101,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     }
   };
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
     formError: formError,
     formErrorDetail: formError,
     id: "deleteCollectionpane",
@@ -110,6 +109,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     submitButtonText: "OK",
     onClose: closePanel,
     onSubmit: submit,
+    expandConsole: () => explorer.expandConsole(),
   };
   return (
     <GenericRightPaneComponent {...genericPaneProps}>
