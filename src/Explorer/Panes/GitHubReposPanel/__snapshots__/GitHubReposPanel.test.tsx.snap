@@ -1221,7 +1221,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "isTabsContentExpanded": [Function],
             "junoClient": JunoClient {
               "cachedPinnedRepos": [Function],
-              "databaseAccount": undefined,
             },
             "memoryUsageInfo": [Function],
             "notebookBasePath": [Function],

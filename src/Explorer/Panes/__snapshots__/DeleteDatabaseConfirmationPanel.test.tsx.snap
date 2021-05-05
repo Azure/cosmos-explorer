@@ -1212,7 +1212,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isTabsContentExpanded": [Function],
       "junoClient": JunoClient {
         "cachedPinnedRepos": [Function],
-        "databaseAccount": undefined,
       },
       "memoryUsageInfo": [Function],
       "notebookBasePath": [Function],

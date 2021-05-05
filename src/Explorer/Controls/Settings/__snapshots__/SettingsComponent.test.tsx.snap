@@ -1232,7 +1232,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "junoClient": JunoClient {
                   "cachedPinnedRepos": [Function],
-                  "databaseAccount": undefined,
                 },
                 "memoryUsageInfo": [Function],
                 "notebookBasePath": [Function],
@@ -2515,7 +2514,6 @@ exports[`SettingsComponent renders 1`] = `
               "isTabsContentExpanded": [Function],
               "junoClient": JunoClient {
                 "cachedPinnedRepos": [Function],
-                "databaseAccount": undefined,
               },
               "memoryUsageInfo": [Function],
               "notebookBasePath": [Function],
@@ -3811,7 +3809,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "junoClient": JunoClient {
                   "cachedPinnedRepos": [Function],
-                  "databaseAccount": undefined,
                 },
                 "memoryUsageInfo": [Function],
                 "notebookBasePath": [Function],
@@ -5094,7 +5091,6 @@ exports[`SettingsComponent renders 1`] = `
               "isTabsContentExpanded": [Function],
               "junoClient": JunoClient {
                 "cachedPinnedRepos": [Function],
-                "databaseAccount": undefined,
               },
               "memoryUsageInfo": [Function],
               "notebookBasePath": [Function],
