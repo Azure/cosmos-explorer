@@ -115,11 +115,6 @@ export default class Explorer {
    * */
   public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.apiType instead
-   * */
-  public defaultExperience: ko.Observable<string>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   /**
    * @deprecated
@@ -376,17 +371,6 @@ export default class Explorer {
       bounds: splitterBounds,
       direction: SplitterDirection.Vertical,
     });
-    this.defaultExperience = ko.observable<string>();
-    // this.databaseAccount.subscribe((databaseAccount) => {
-    //   const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-    //     databaseAccount
-    //   );
-    //   this.defaultExperience(defaultExperience);
-    //   // TODO. Remove this entirely
-    //   updateUserContext({
-    //     apiType: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-    //   });
-    // });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {

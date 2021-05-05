@@ -3,6 +3,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import { NotebookClientV2 } from "../Notebook/NotebookClientV2";
 import TabsBase from "./TabsBase";
@@ -29,7 +30,7 @@ export default class NotebookTabBase extends TabsBase {
       NotebookTabBase.clientManager = new NotebookClientV2({
         connectionInfo: this.container.notebookServerInfo(),
         databaseAccountName: this.container.databaseAccount().name,
-        defaultExperience: this.container.defaultExperience(),
+        defaultExperience: userContext.apiType,
         contentProvider: this.container.notebookManager?.notebookContentProvider,
       });
     }

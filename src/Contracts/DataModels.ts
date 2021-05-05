@@ -4,7 +4,6 @@ export interface DatabaseAccount {
   location: string;
   type: string;
   kind: string;
-  tags: any;
   properties: DatabaseAccountExtendedProperties;
 }
 

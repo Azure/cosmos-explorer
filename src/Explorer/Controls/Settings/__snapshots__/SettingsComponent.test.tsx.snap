@@ -424,7 +424,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "databaseAccount": [Function],
                 "databases": [Function],
-                "defaultExperience": [Function],
                 "deleteCollectionText": [Function],
                 "deleteDatabaseText": [Function],
                 "gitHubClient": GitHubClient {
@@ -1710,7 +1709,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "databaseAccount": [Function],
               "databases": [Function],
-              "defaultExperience": [Function],
               "deleteCollectionText": [Function],
               "deleteDatabaseText": [Function],
               "gitHubClient": GitHubClient {
@@ -3009,7 +3007,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "databaseAccount": [Function],
                 "databases": [Function],
-                "defaultExperience": [Function],
                 "deleteCollectionText": [Function],
                 "deleteDatabaseText": [Function],
                 "gitHubClient": GitHubClient {
@@ -4295,7 +4292,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "databaseAccount": [Function],
               "databases": [Function],
-              "defaultExperience": [Function],
               "deleteCollectionText": [Function],
               "deleteDatabaseText": [Function],
               "gitHubClient": GitHubClient {

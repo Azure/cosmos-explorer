@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
-import { AccountKind, DefaultAccountExperience } from "../Common/Constants";
+import { AccountKind } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { configContext, Platform, updateConfigContext } from "../ConfigContext";
@@ -141,8 +141,6 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
     name: parsedResourceToken.accountEndpoint,
     kind: AccountKind.GlobalDocumentDB,
     properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
-    // Resource tokens can only be used with SQL API
-    tags: { defaultExperience: DefaultAccountExperience.DocumentDB },
   };
   updateUserContext({
     databaseAccount,
@@ -165,9 +163,7 @@ function configureHostedWithEncryptedToken(config: EncryptedToken, explorerParam
     authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
   });
-  const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
-    config.encryptedTokenMetadata.apiKind
-  );
+  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   const explorer = new Explorer(explorerParams);
   explorer.configure({
     databaseAccount: {

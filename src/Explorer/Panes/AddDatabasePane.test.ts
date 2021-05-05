@@ -21,7 +21,6 @@ describe("Add Database Pane", () => {
         enableFreeTier: false,
       },
       type: undefined,
-      tags: [],
     };
 
     const mockFreeTierDatabaseAccount: DatabaseAccount = {
@@ -37,7 +36,6 @@ describe("Add Database Pane", () => {
         enableFreeTier: true,
       },
       type: undefined,
-      tags: [],
     };
 
     beforeEach(() => {
