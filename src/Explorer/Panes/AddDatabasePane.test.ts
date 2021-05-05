@@ -37,16 +37,11 @@ const mockFreeTierDatabaseAccount: DatabaseAccount = {
 
 describe("Add Database Pane", () => {
   describe("getSharedThroughputDefault()", () => {
-    let explorer: Explorer;
-
-    beforeEach(() => {
-      explorer = new Explorer();
-    });
-
     it("should be true if subscription type is Benefits", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.Benefits,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
@@ -55,6 +50,7 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.EA,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(false);
     });
@@ -63,6 +59,7 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.Free,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
@@ -71,6 +68,7 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.Internal,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
@@ -79,6 +77,7 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.PAYG,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });

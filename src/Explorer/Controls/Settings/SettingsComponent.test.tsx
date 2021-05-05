@@ -161,7 +161,6 @@ describe("SettingsComponent", () => {
         location: undefined,
         type: undefined,
         kind: undefined,
-        tags: undefined,
         properties: {
           documentEndpoint: undefined,
           tableEndpoint: undefined,

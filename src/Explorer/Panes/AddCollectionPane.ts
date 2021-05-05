@@ -108,6 +108,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.collectionWithThroughputInShared = ko.observable<boolean>(false);
     this.databaseIds = ko.observableArray<string>();
     this.uniqueKeys = ko.observableArray<DynamicListItem>();
+    this.isSharedAutoPilotSelected = ko.observable<boolean>();
+    this.isAutoPilotSelected = ko.observable<boolean>();
 
     if (this.container) {
       this.container.databases.subscribe((newDatabases: ViewModels.Database[]) => {
