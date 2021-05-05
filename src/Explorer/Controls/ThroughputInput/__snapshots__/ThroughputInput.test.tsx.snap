@@ -16,7 +16,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       horizontal={true}
     >
       <div
-        className="ms-Stack css-40"
+        className="ms-Stack css-121"
       >
         <span
           className="mandatoryStar"
@@ -35,7 +35,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           variant="small"
         >
           <span
-            className="css-41"
+            className="css-122"
             style={
               Object {
                 "fontWeight": 600,
@@ -834,7 +834,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                 "borderColor": "#f3f2f1",
                                 "color": "#a19f9d",
                                 "cursor": "default",
-                                "pointerEvents": "none",
                                 "selectors": Object {
                                   ":focus": Object {
                                     "outline": 0,
@@ -1094,6 +1093,35 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                   "backgroundColor": "Window",
                                   "border": "1px solid GrayText",
                                   "color": "GrayText",
+                                },
+                              },
+                            },
+                            "splitButtonMenuFocused": Object {
+                              "outline": "transparent",
+                              "position": "relative",
+                              "selectors": Object {
+                                ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                                  "border": "1px solid #ffffff",
+                                  "bottom": 3,
+                                  "content": "\\"\\"",
+                                  "left": 3,
+                                  "outline": "1px solid #605e5c",
+                                  "position": "absolute",
+                                  "right": 3,
+                                  "selectors": Object {
+                                    "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                      "border": "none",
+                                      "bottom": -2,
+                                      "left": -2,
+                                      "right": -2,
+                                      "top": -2,
+                                    },
+                                  },
+                                  "top": 3,
+                                  "zIndex": 1,
+                                },
+                                "::-moz-focus-inner": Object {
+                                  "border": "0",
                                 },
                               },
                             },
@@ -1380,7 +1408,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       >
                         <button
                           aria-label="Info"
-                          className="ms-Button ms-Button--icon root-42"
+                          className="ms-Button ms-Button--icon root-123"
                           data-is-focusable={true}
                           id="iconButton1"
                           onClick={[Function]}
@@ -1392,18 +1420,17 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           type="button"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-43"
+                            className="ms-Button-flexContainer flexContainer-124"
                             data-automationid="splitbuttonprimary"
                           >
                             <Component
-                              className="ms-Button-icon icon-45"
+                              className="ms-Button-icon icon-126"
                               iconName="Info"
                             >
                               <i
                                 aria-hidden={true}
-                                className="ms-Icon root-37 css-50 ms-Button-icon icon-45"
+                                className="ms-Icon root-37 css-131 ms-Button-icon icon-126"
                                 data-icon-name="Info"
-                                role="presentation"
                                 style={
                                   Object {
                                     "fontFamily": "\\"FabricMDL2Icons\\"",
@@ -1431,9 +1458,9 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       verticalAlign="center"
     >
       <div
-        className="ms-Stack css-51"
+        className="ms-Stack css-132"
       >
-        <StyledChoiceGroupBase
+        <StyledChoiceGroup
           aria-label="mode"
           key=".0:$.0"
           onChange={[Function]}
@@ -1451,7 +1478,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           }
           selectedKey="true"
         >
-          <ChoiceGroupBase
+          <ChoiceGroup
             aria-label="mode"
             onChange={[Function]}
             options={
@@ -1744,19 +1771,19 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           >
             <div
               aria-label="mode"
-              className=""
+              className="ms-ChoiceFieldGroup root-133"
             >
               <div
-                className="ms-ChoiceFieldGroup root-52"
                 role="radiogroup"
               >
                 <div
                   className="ms-ChoiceFieldGroup-flexContainer"
                 >
-                  <StyledChoiceGroupOptionBase
+                  <StyledChoiceGroupOption
                     checked={true}
                     focused={false}
                     id="ChoiceGroup6-true"
+                    itemKey="true"
                     key="true"
                     labelId="ChoiceGroupLabel7-true"
                     name="ChoiceGroup6"
@@ -1765,16 +1792,11 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     onFocus={[Function]}
                     text="Autoscale"
                   >
-                    <ChoiceGroupOptionBase
+                    <ChoiceGroupOption
                       checked={true}
                       focused={false}
                       id="ChoiceGroup6-true"
-                      imageSize={
-                        Object {
-                          "height": 32,
-                          "width": 32,
-                        }
-                      }
+                      itemKey="true"
                       labelId="ChoiceGroupLabel7-true"
                       name="ChoiceGroup6"
                       onBlur={[Function]}
@@ -2057,14 +2079,14 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       }
                     >
                       <div
-                        className="ms-ChoiceField root-53"
+                        className="ms-ChoiceField root-134"
                       >
                         <div
                           className="ms-ChoiceField-wrapper"
                         >
                           <input
                             checked={true}
-                            className="ms-ChoiceField-input input-54"
+                            className="ms-ChoiceField-input input-135"
                             id="ChoiceGroup6-true"
                             name="ChoiceGroup6"
                             onBlur={[Function]}
@@ -2073,7 +2095,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             type="radio"
                           />
                           <label
-                            className="ms-ChoiceField-field is-checked field-55"
+                            className="ms-ChoiceField-field is-checked field-136"
                             htmlFor="ChoiceGroup6-true"
                           >
                             <span
@@ -2085,12 +2107,13 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           </label>
                         </div>
                       </div>
-                    </ChoiceGroupOptionBase>
-                  </StyledChoiceGroupOptionBase>
-                  <StyledChoiceGroupOptionBase
+                    </ChoiceGroupOption>
+                  </StyledChoiceGroupOption>
+                  <StyledChoiceGroupOption
                     checked={false}
                     focused={false}
                     id="ChoiceGroup6-false"
+                    itemKey="false"
                     key="false"
                     labelId="ChoiceGroupLabel7-false"
                     name="ChoiceGroup6"
@@ -2099,16 +2122,11 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     onFocus={[Function]}
                     text="Manual"
                   >
-                    <ChoiceGroupOptionBase
+                    <ChoiceGroupOption
                       checked={false}
                       focused={false}
                       id="ChoiceGroup6-false"
-                      imageSize={
-                        Object {
-                          "height": 32,
-                          "width": 32,
-                        }
-                      }
+                      itemKey="false"
                       labelId="ChoiceGroupLabel7-false"
                       name="ChoiceGroup6"
                       onBlur={[Function]}
@@ -2391,14 +2409,14 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       }
                     >
                       <div
-                        className="ms-ChoiceField root-53"
+                        className="ms-ChoiceField root-134"
                       >
                         <div
                           className="ms-ChoiceField-wrapper"
                         >
                           <input
                             checked={false}
-                            className="ms-ChoiceField-input input-54"
+                            className="ms-ChoiceField-input input-135"
                             id="ChoiceGroup6-false"
                             name="ChoiceGroup6"
                             onBlur={[Function]}
@@ -2407,7 +2425,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             type="radio"
                           />
                           <label
-                            className="ms-ChoiceField-field field-60"
+                            className="ms-ChoiceField-field field-141"
                             htmlFor="ChoiceGroup6-false"
                           >
                             <span
@@ -2419,20 +2437,20 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           </label>
                         </div>
                       </div>
-                    </ChoiceGroupOptionBase>
-                  </StyledChoiceGroupOptionBase>
+                    </ChoiceGroupOption>
+                  </StyledChoiceGroupOption>
                 </div>
               </div>
             </div>
-          </ChoiceGroupBase>
-        </StyledChoiceGroupBase>
+          </ChoiceGroup>
+        </StyledChoiceGroup>
       </div>
     </Stack>
     <Stack
       className="throughputInputSpacing"
     >
       <div
-        className="ms-Stack throughputInputSpacing css-63"
+        className="ms-Stack throughputInputSpacing css-144"
       >
         <Text
           data-testid="ruDescription"
@@ -2440,7 +2458,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           variant="small"
         >
           <span
-            className="css-41"
+            className="css-122"
             data-testid="ruDescription"
           >
             Estimate your required RU/s with 
@@ -2729,7 +2747,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 }
               >
                 <a
-                  className="ms-Link root-64"
+                  className="ms-Link root-145"
                   data-testid="ruDescription"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
@@ -2747,7 +2765,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           key=".0:$.1"
         >
           <div
-            className="ms-Stack css-40"
+            className="ms-Stack css-121"
           >
             <Text
               data-testid="maxRUDescription"
@@ -2761,7 +2779,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               variant="small"
             >
               <span
-                className="css-41"
+                className="css-122"
                 data-testid="maxRUDescription"
                 style={
                   Object {
@@ -3562,7 +3580,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                     "borderColor": "#f3f2f1",
                                     "color": "#a19f9d",
                                     "cursor": "default",
-                                    "pointerEvents": "none",
                                     "selectors": Object {
                                       ":focus": Object {
                                         "outline": 0,
@@ -3822,6 +3839,35 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                       "backgroundColor": "Window",
                                       "border": "1px solid GrayText",
                                       "color": "GrayText",
+                                    },
+                                  },
+                                },
+                                "splitButtonMenuFocused": Object {
+                                  "outline": "transparent",
+                                  "position": "relative",
+                                  "selectors": Object {
+                                    ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                                      "border": "1px solid #ffffff",
+                                      "bottom": 3,
+                                      "content": "\\"\\"",
+                                      "left": 3,
+                                      "outline": "1px solid #605e5c",
+                                      "position": "absolute",
+                                      "right": 3,
+                                      "selectors": Object {
+                                        "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                          "border": "none",
+                                          "bottom": -2,
+                                          "left": -2,
+                                          "right": -2,
+                                          "top": -2,
+                                        },
+                                      },
+                                      "top": 3,
+                                      "zIndex": 1,
+                                    },
+                                    "::-moz-focus-inner": Object {
+                                      "border": "0",
                                     },
                                   },
                                 },
@@ -4108,7 +4154,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           >
                             <button
                               aria-label="Info"
-                              className="ms-Button ms-Button--icon root-42"
+                              className="ms-Button ms-Button--icon root-123"
                               data-is-focusable={true}
                               id="iconButton9"
                               onClick={[Function]}
@@ -4120,18 +4166,17 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                               type="button"
                             >
                               <span
-                                className="ms-Button-flexContainer flexContainer-43"
+                                className="ms-Button-flexContainer flexContainer-124"
                                 data-automationid="splitbuttonprimary"
                               >
                                 <Component
-                                  className="ms-Button-icon icon-45"
+                                  className="ms-Button-icon icon-126"
                                   iconName="Info"
                                 >
                                   <i
                                     aria-hidden={true}
-                                    className="ms-Icon root-37 css-50 ms-Button-icon icon-45"
+                                    className="ms-Icon root-37 css-131 ms-Button-icon icon-126"
                                     data-icon-name="Info"
-                                    role="presentation"
                                     style={
                                       Object {
                                         "fontFamily": "\\"FabricMDL2Icons\\"",
@@ -4178,7 +4223,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         >
           <TextFieldBase
             aria-label="Max request units per second"
-            canRevealPassword={false}
             deferredValidationTime={200}
             errorMessage=""
             min={4000}
@@ -4465,17 +4509,17 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             value="4000"
           >
             <div
-              className="ms-TextField is-required root-66"
+              className="ms-TextField is-required root-147"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-67"
+                  className="ms-TextField-fieldGroup fieldGroup-148"
                 >
                   <input
                     aria-invalid={false}
-                    className="ms-TextField-field field-68"
+                    className="ms-TextField-field field-149"
                     id="TextField14"
                     min={4000}
                     onBlur={[Function]}
@@ -4497,7 +4541,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           variant="small"
         >
           <span
-            className="css-41"
+            className="css-122"
           >
             Your 
             container

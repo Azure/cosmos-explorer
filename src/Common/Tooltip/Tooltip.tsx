@@ -1,6 +1,5 @@
-import { useId } from "@uifabric/react-hooks";
-import { IButtonStyles, IconButton } from "office-ui-fabric-react";
-import { ITooltipHostStyles, TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
+import { IButtonStyles, IconButton, ITooltipHostStyles, TooltipHost } from "@fluentui/react";
+import { useId } from "@fluentui/react-hooks";
 import * as React from "react";
 
 const calloutProps = { gapSpace: 0 };

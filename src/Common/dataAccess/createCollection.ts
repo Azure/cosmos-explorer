@@ -62,8 +62,8 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
 };
 
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  const defaultExperience = userContext.apiType;
-  switch (defaultExperience) {
+  const { apiType } = userContext;
+  switch (apiType) {
     case "SQL":
       return createSqlContainer(params);
     case "Mongo":
@@ -75,7 +75,7 @@ const createCollectionWithARM = async (params: DataModels.CreateCollectionParams
     case "Tables":
       return createTable(params);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 };
 

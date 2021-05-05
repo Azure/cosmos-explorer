@@ -195,13 +195,7 @@ export default class Collection implements ViewModels.Collection {
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);
 
     this.showConflicts = ko.observable<boolean>(
-      container &&
-        container.databaseAccount &&
-        container.databaseAccount() &&
-        container.databaseAccount().properties &&
-        container.databaseAccount().properties.enableMultipleWriteLocations &&
-        data &&
-        !!data.conflictResolutionPolicy
+      userContext?.databaseAccount?.properties.enableMultipleWriteLocations && data && !!data.conflictResolutionPolicy
     );
 
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);
@@ -1008,7 +1002,7 @@ export default class Collection implements ViewModels.Collection {
       Logger.logError(
         JSON.stringify({
           error: getErrorMessage(error),
-          accountName: this.container && this.container.databaseAccount(),
+          accountName: userContext?.databaseAccount,
           databaseName: this.databaseId,
           collectionName: this.id(),
         }),

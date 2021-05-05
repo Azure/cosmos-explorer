@@ -1,4 +1,4 @@
-import { Checkbox, Text, TextField } from "office-ui-fabric-react";
+import { Checkbox, Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { createDatabase } from "../../../Common/dataAccess/createDatabase";

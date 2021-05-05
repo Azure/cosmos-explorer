@@ -1,4 +1,4 @@
-import { PrimaryButton } from "office-ui-fabric-react";
+import { PrimaryButton } from "@fluentui/react";
 import React from "react";
 
 export interface PanelFooterProps {

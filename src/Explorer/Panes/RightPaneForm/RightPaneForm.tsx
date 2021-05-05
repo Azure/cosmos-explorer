@@ -1,4 +1,4 @@
-import { IconButton } from "office-ui-fabric-react/lib/Button";
+import { IconButton } from "@fluentui/react";
 import React, { FunctionComponent, ReactNode } from "react";
 import { KeyCodes } from "../../../Common/Constants";
 import { PanelFooterComponent } from "../PanelFooterComponent";

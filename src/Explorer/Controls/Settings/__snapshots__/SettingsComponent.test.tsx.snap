@@ -7,7 +7,7 @@ exports[`SettingsComponent renders 1`] = `
   <div
     className="settingsV2TabsContainer"
   >
-    <StyledPivotBase
+    <StyledPivot
       onLinkClick={[Function]}
       selectedKey="ScaleTab"
     >
@@ -399,8 +399,6 @@ exports[`SettingsComponent renders 1`] = `
                   "userTableQuery": [Function],
                   "visible": [Function],
                 },
-                "clickHostedAccountSwitch": [Function],
-                "clickHostedDirectorySwitch": [Function],
                 "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
@@ -422,7 +420,6 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                   "tabsButtons": Array [],
                 },
-                "databaseAccount": [Function],
                 "databases": [Function],
                 "deleteCollectionText": [Function],
                 "deleteDatabaseText": [Function],
@@ -1216,7 +1213,6 @@ exports[`SettingsComponent renders 1`] = `
                 "hasStorageAnalyticsAfecFeature": [Function],
                 "isAccountReady": [Function],
                 "isAutoscaleDefaultEnabled": [Function],
-                "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isHostedDataExplorerEnabled": [Function],
                 "isLeftPaneExpanded": [Function],
@@ -1225,7 +1221,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isNotebooksEnabledForAccount": [Function],
                 "isPublishNotebookPaneEnabled": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
-                "isRightPanelV2Enabled": [Function],
                 "isSchemaEnabled": [Function],
                 "isServerlessEnabled": [Function],
                 "isSparkEnabled": [Function],
@@ -1234,7 +1229,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "junoClient": JunoClient {
                   "cachedPinnedRepos": [Function],
-                  "databaseAccount": undefined,
                 },
                 "memoryUsageInfo": [Function],
                 "notebookBasePath": [Function],
@@ -1242,14 +1236,12 @@ exports[`SettingsComponent renders 1`] = `
                 "onGitHubClientError": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "onSwitchToConnectionString": [Function],
                 "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
                 },
-                "refreshDatabaseAccount": [Function],
                 "refreshNotebookList": [Function],
                 "refreshTreeTitle": [Function],
                 "resourceTokenCollection": [Function],
@@ -1273,7 +1265,6 @@ exports[`SettingsComponent renders 1`] = `
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
-                "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
                 "splitter": Splitter {
                   "bounds": Object {
@@ -1684,8 +1675,6 @@ exports[`SettingsComponent renders 1`] = `
                 "userTableQuery": [Function],
                 "visible": [Function],
               },
-              "clickHostedAccountSwitch": [Function],
-              "clickHostedDirectorySwitch": [Function],
               "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
@@ -1707,7 +1696,6 @@ exports[`SettingsComponent renders 1`] = `
                 "parameters": [Function],
                 "tabsButtons": Array [],
               },
-              "databaseAccount": [Function],
               "databases": [Function],
               "deleteCollectionText": [Function],
               "deleteDatabaseText": [Function],
@@ -2501,7 +2489,6 @@ exports[`SettingsComponent renders 1`] = `
               "hasStorageAnalyticsAfecFeature": [Function],
               "isAccountReady": [Function],
               "isAutoscaleDefaultEnabled": [Function],
-              "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isHostedDataExplorerEnabled": [Function],
               "isLeftPaneExpanded": [Function],
@@ -2510,7 +2497,6 @@ exports[`SettingsComponent renders 1`] = `
               "isNotebooksEnabledForAccount": [Function],
               "isPublishNotebookPaneEnabled": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
-              "isRightPanelV2Enabled": [Function],
               "isSchemaEnabled": [Function],
               "isServerlessEnabled": [Function],
               "isSparkEnabled": [Function],
@@ -2519,7 +2505,6 @@ exports[`SettingsComponent renders 1`] = `
               "isTabsContentExpanded": [Function],
               "junoClient": JunoClient {
                 "cachedPinnedRepos": [Function],
-                "databaseAccount": undefined,
               },
               "memoryUsageInfo": [Function],
               "notebookBasePath": [Function],
@@ -2527,14 +2512,12 @@ exports[`SettingsComponent renders 1`] = `
               "onGitHubClientError": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "onSwitchToConnectionString": [Function],
               "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
               },
-              "refreshDatabaseAccount": [Function],
               "refreshNotebookList": [Function],
               "refreshTreeTitle": [Function],
               "resourceTokenCollection": [Function],
@@ -2558,7 +2541,6 @@ exports[`SettingsComponent renders 1`] = `
               "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,
-              "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
               "splitter": Splitter {
                 "bounds": Object {
@@ -2982,8 +2964,6 @@ exports[`SettingsComponent renders 1`] = `
                   "userTableQuery": [Function],
                   "visible": [Function],
                 },
-                "clickHostedAccountSwitch": [Function],
-                "clickHostedDirectorySwitch": [Function],
                 "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
@@ -3005,7 +2985,6 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                   "tabsButtons": Array [],
                 },
-                "databaseAccount": [Function],
                 "databases": [Function],
                 "deleteCollectionText": [Function],
                 "deleteDatabaseText": [Function],
@@ -3799,7 +3778,6 @@ exports[`SettingsComponent renders 1`] = `
                 "hasStorageAnalyticsAfecFeature": [Function],
                 "isAccountReady": [Function],
                 "isAutoscaleDefaultEnabled": [Function],
-                "isEnableMongoCapabilityPresent": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isHostedDataExplorerEnabled": [Function],
                 "isLeftPaneExpanded": [Function],
@@ -3808,7 +3786,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isNotebooksEnabledForAccount": [Function],
                 "isPublishNotebookPaneEnabled": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
-                "isRightPanelV2Enabled": [Function],
                 "isSchemaEnabled": [Function],
                 "isServerlessEnabled": [Function],
                 "isSparkEnabled": [Function],
@@ -3817,7 +3794,6 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "junoClient": JunoClient {
                   "cachedPinnedRepos": [Function],
-                  "databaseAccount": undefined,
                 },
                 "memoryUsageInfo": [Function],
                 "notebookBasePath": [Function],
@@ -3825,14 +3801,12 @@ exports[`SettingsComponent renders 1`] = `
                 "onGitHubClientError": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "onSwitchToConnectionString": [Function],
                 "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
                 },
-                "refreshDatabaseAccount": [Function],
                 "refreshNotebookList": [Function],
                 "refreshTreeTitle": [Function],
                 "resourceTokenCollection": [Function],
@@ -3856,7 +3830,6 @@ exports[`SettingsComponent renders 1`] = `
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
                 "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
-                "signInAad": [Function],
                 "sparkClusterConnectionInfo": [Function],
                 "splitter": Splitter {
                   "bounds": Object {
@@ -4267,8 +4240,6 @@ exports[`SettingsComponent renders 1`] = `
                 "userTableQuery": [Function],
                 "visible": [Function],
               },
-              "clickHostedAccountSwitch": [Function],
-              "clickHostedDirectorySwitch": [Function],
               "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
@@ -4290,7 +4261,6 @@ exports[`SettingsComponent renders 1`] = `
                 "parameters": [Function],
                 "tabsButtons": Array [],
               },
-              "databaseAccount": [Function],
               "databases": [Function],
               "deleteCollectionText": [Function],
               "deleteDatabaseText": [Function],
@@ -5084,7 +5054,6 @@ exports[`SettingsComponent renders 1`] = `
               "hasStorageAnalyticsAfecFeature": [Function],
               "isAccountReady": [Function],
               "isAutoscaleDefaultEnabled": [Function],
-              "isEnableMongoCapabilityPresent": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isHostedDataExplorerEnabled": [Function],
               "isLeftPaneExpanded": [Function],
@@ -5093,7 +5062,6 @@ exports[`SettingsComponent renders 1`] = `
               "isNotebooksEnabledForAccount": [Function],
               "isPublishNotebookPaneEnabled": [Function],
               "isResourceTokenCollectionNodeSelected": [Function],
-              "isRightPanelV2Enabled": [Function],
               "isSchemaEnabled": [Function],
               "isServerlessEnabled": [Function],
               "isSparkEnabled": [Function],
@@ -5102,7 +5070,6 @@ exports[`SettingsComponent renders 1`] = `
               "isTabsContentExpanded": [Function],
               "junoClient": JunoClient {
                 "cachedPinnedRepos": [Function],
-                "databaseAccount": undefined,
               },
               "memoryUsageInfo": [Function],
               "notebookBasePath": [Function],
@@ -5110,14 +5077,12 @@ exports[`SettingsComponent renders 1`] = `
               "onGitHubClientError": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "onSwitchToConnectionString": [Function],
               "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
               },
-              "refreshDatabaseAccount": [Function],
               "refreshNotebookList": [Function],
               "refreshTreeTitle": [Function],
               "resourceTokenCollection": [Function],
@@ -5141,7 +5106,6 @@ exports[`SettingsComponent renders 1`] = `
               "setInProgressConsoleDataIdToBeDeleted": undefined,
               "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,
-              "signInAad": [Function],
               "sparkClusterConnectionInfo": [Function],
               "splitter": Splitter {
                 "bounds": Object {
@@ -5214,7 +5178,7 @@ exports[`SettingsComponent renders 1`] = `
           shouldDiscardIndexingPolicy={false}
         />
       </PivotItem>
-    </StyledPivotBase>
+    </StyledPivot>
   </div>
 </div>
 `;

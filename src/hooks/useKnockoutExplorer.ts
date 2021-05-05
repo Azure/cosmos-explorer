@@ -98,10 +98,6 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   const explorer = new Explorer(explorerParams);
   explorer.configure({
     databaseAccount: account,
-    subscriptionId,
-    resourceGroup,
-    masterKey: keys.primaryMasterKey,
-    authorizationToken: `Bearer ${config.authorizationToken}`,
   });
   return explorer;
 }
@@ -127,7 +123,6 @@ function configureHostedWithConnectionString(config: ConnectionString, explorerP
   const explorer = new Explorer(explorerParams);
   explorer.configure({
     databaseAccount,
-    masterKey: config.masterKey,
   });
   return explorer;
 }
@@ -183,7 +178,6 @@ function configureEmulator(explorerParams: ExplorerParams): Explorer {
     authType: AuthType.MasterKey,
   });
   const explorer = new Explorer(explorerParams);
-  explorer.databaseAccount(emulatorAccount);
   explorer.isAccountReady(true);
   return explorer;
 }

@@ -3,7 +3,7 @@
  */
 import { Notebook } from "@nteract/commutable";
 import { createContentRef } from "@nteract/core";
-import { IChoiceGroupProps, Icon, IProgressIndicatorProps, Link, ProgressIndicator } from "office-ui-fabric-react";
+import { IChoiceGroupProps, Icon, IProgressIndicatorProps, Link, ProgressIndicator } from "@fluentui/react";
 import * as React from "react";
 import { contents } from "rx-jupyter";
 import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";

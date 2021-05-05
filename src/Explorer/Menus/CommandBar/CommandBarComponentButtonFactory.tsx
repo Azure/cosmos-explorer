@@ -239,21 +239,11 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     return undefined;
   }
 
-  if (
-    container.databaseAccount &&
-    container.databaseAccount() &&
-    container.databaseAccount().properties &&
-    container.databaseAccount().properties.enableAnalyticalStorage
-  ) {
+  if (userContext?.databaseAccount?.properties?.enableAnalyticalStorage) {
     return undefined;
   }
 
-  const capabilities =
-    (container.databaseAccount &&
-      container.databaseAccount() &&
-      container.databaseAccount().properties &&
-      container.databaseAccount().properties.capabilities) ||
-    [];
+  const capabilities = userContext?.databaseAccount?.properties?.capabilities || [];
   if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
     return undefined;
   }

@@ -8,7 +8,7 @@ import {
   SelectableOptionMenuItemType,
   Stack,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";

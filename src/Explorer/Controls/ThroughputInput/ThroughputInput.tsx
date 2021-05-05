@@ -8,7 +8,7 @@ import {
   Text,
   TextField,
   TooltipHost,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { Tooltip } from "../../../Common/Tooltip/Tooltip";

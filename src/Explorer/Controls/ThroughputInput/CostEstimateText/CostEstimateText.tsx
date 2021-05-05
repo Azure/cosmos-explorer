@@ -1,4 +1,4 @@
-import { Text } from "office-ui-fabric-react";
+import { Text } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import { Tooltip } from "../../../../Common/Tooltip/Tooltip";
 import * as SharedConstants from "../../../../Shared/Constants";

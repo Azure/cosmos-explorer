@@ -1,4 +1,4 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "office-ui-fabric-react";
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Upload } from "../../../Common/Upload/Upload";
 import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
