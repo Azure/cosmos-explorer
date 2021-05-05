@@ -57,7 +57,7 @@ export default class NotebookManager {
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
-    this.junoClient = new JunoClient(userContext?.databaseAccount);
+    this.junoClient = new JunoClient();
 
     this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
     this.gitHubClient = new GitHubClient(this.onGitHubClientError);

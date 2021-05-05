@@ -1,4 +1,3 @@
-import ko from "knockout";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { updateUserContext, userContext } from "../UserContext";
@@ -35,7 +34,7 @@ const samplePinnedRepos: IPinnedRepo[] = [
 ];
 
 describe("Pinned repos", () => {
-  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient();
 
   beforeEach(() => {
     window.fetch = jest.fn().mockImplementation(() => {
@@ -72,7 +71,7 @@ describe("Pinned repos", () => {
 });
 
 describe("GitHub", () => {
-  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient();
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -131,7 +130,7 @@ describe("GitHub", () => {
 });
 
 describe("Gallery", () => {
-  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient();
   const originalSubscriptionId = userContext.subscriptionId;
 
   beforeAll(() => {
