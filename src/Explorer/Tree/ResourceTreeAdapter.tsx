@@ -197,7 +197,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         className: "databaseHeader",
         children: [],
         isSelected: () => this.isDataNodeSelected(database.id()),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
         onClick: async (isExpanded) => {
           // Rewritten version of expandCollapseDatabase():
           if (isExpanded) {
@@ -604,7 +604,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.contextMenu = [
       {
         label: "Manage GitHub settings",
-        onClick: () => this.container.gitHubReposPane.open(),
+        onClick: () => this.container.openGitHubReposPanel("Manage GitHub settings"),
       },
       {
         label: "Disconnect from GitHub",

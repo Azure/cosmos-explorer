@@ -18,9 +18,7 @@ export default class AuthHeadersUtil {
 
   private static _generateResourceUrl(): string {
     const { databaseAccount, resourceGroup, subscriptionId } = userContext;
-
-    const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(databaseAccount);
-    const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
+    const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType);
     const accountEndpoint = databaseAccount?.properties?.documentEndpoint || "";
     const sid = subscriptionId || "";
     const rg = resourceGroup || "";

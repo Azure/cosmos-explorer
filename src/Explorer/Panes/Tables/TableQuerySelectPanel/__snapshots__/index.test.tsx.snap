@@ -11,7 +11,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
   }
 >
   <GenericRightPaneComponent
-    container={Object {}}
+    expandConsole={[Function]}
     formError=""
     formErrorDetail=""
     id="querySelectPane"
@@ -1066,7 +1066,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Close pane"
-                    className="ms-Button ms-Button--icon closePaneBtn root-40"
+                    className="ms-Button ms-Button--icon closePaneBtn root-72"
                     data-is-focusable={true}
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -1079,16 +1079,16 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-41"
+                      className="ms-Button-flexContainer flexContainer-73"
                       data-automationid="splitbuttonprimary"
                     >
                       <Component
-                        className="ms-Button-icon icon-43"
+                        className="ms-Button-icon icon-75"
                         iconName="Cancel"
                       >
                         <i
                           aria-hidden={true}
-                          className="ms-Icon root-37 css-48 ms-Button-icon icon-43"
+                          className="ms-Icon root-37 css-80 ms-Button-icon icon-75"
                           data-icon-name="Cancel"
                           role="presentation"
                           style={
@@ -1148,7 +1148,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
             >
               <Text>
                 <span
-                  className="css-49"
+                  className="css-81"
                 >
                   Select the columns that you want to query.
                 </span>
@@ -1444,14 +1444,14 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     }
                   >
                     <div
-                      className="ms-Checkbox is-checked is-enabled root-50"
+                      className="ms-Checkbox is-checked is-enabled root-82"
                     >
                       <Component />
                       <input
                         aria-checked="true"
                         aria-label="Available Columns"
                         checked={true}
-                        className="input-51"
+                        className="input-83"
                         id="availableCheckbox"
                         onBlur={[Function]}
                         onChange={[Function]}
@@ -1459,18 +1459,18 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         type="checkbox"
                       />
                       <label
-                        className="ms-Checkbox-label label-52"
+                        className="ms-Checkbox-label label-84"
                         htmlFor="availableCheckbox"
                       >
                         <div
-                          className="ms-Checkbox-checkbox checkbox-53"
+                          className="ms-Checkbox-checkbox checkbox-85"
                         >
                           <StyledIconBase
-                            className="ms-Checkbox-checkmark checkmark-54"
+                            className="ms-Checkbox-checkmark checkmark-86"
                             iconName="CheckMark"
                           >
                             <IconBase
-                              className="ms-Checkbox-checkmark checkmark-54"
+                              className="ms-Checkbox-checkmark checkmark-86"
                               iconName="CheckMark"
                               styles={[Function]}
                               theme={
@@ -1749,7 +1749,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             >
                               <i
                                 aria-hidden={true}
-                                className="ms-Checkbox-checkmark checkmark-56"
+                                className="ms-Checkbox-checkmark checkmark-88"
                                 data-icon-name="CheckMark"
                               >
                                 
@@ -1759,7 +1759,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         </div>
                         <span
                           aria-hidden="true"
-                          className="ms-Checkbox-text text-55"
+                          className="ms-Checkbox-text text-87"
                         >
                           Available Columns
                         </span>
@@ -2056,7 +2056,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     }
                   >
                     <div
-                      className="ms-Checkbox is-checked is-enabled root-50"
+                      className="ms-Checkbox is-checked is-enabled root-82"
                     >
                       <Component />
                       <input
@@ -2064,7 +2064,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         aria-disabled={false}
                         aria-label=""
                         checked={true}
-                        className="input-51"
+                        className="input-83"
                         disabled={false}
                         id="checkbox-3"
                         onBlur={[Function]}
@@ -2073,18 +2073,18 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         type="checkbox"
                       />
                       <label
-                        className="ms-Checkbox-label label-52"
+                        className="ms-Checkbox-label label-84"
                         htmlFor="checkbox-3"
                       >
                         <div
-                          className="ms-Checkbox-checkbox checkbox-53"
+                          className="ms-Checkbox-checkbox checkbox-85"
                         >
                           <StyledIconBase
-                            className="ms-Checkbox-checkmark checkmark-54"
+                            className="ms-Checkbox-checkmark checkmark-86"
                             iconName="CheckMark"
                           >
                             <IconBase
-                              className="ms-Checkbox-checkmark checkmark-54"
+                              className="ms-Checkbox-checkmark checkmark-86"
                               iconName="CheckMark"
                               styles={[Function]}
                               theme={
@@ -2363,7 +2363,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             >
                               <i
                                 aria-hidden={true}
-                                className="ms-Checkbox-checkmark checkmark-56"
+                                className="ms-Checkbox-checkmark checkmark-88"
                                 data-icon-name="CheckMark"
                               >
                                 
@@ -4095,7 +4095,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-63"
+                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-95"
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -4113,14 +4113,14 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           type="button"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-41"
+                            className="ms-Button-flexContainer flexContainer-73"
                             data-automationid="splitbuttonprimary"
                           >
                             <span
-                              className="ms-Button-textContainer textContainer-42"
+                              className="ms-Button-textContainer textContainer-74"
                             >
                               <span
-                                className="ms-Button-label label-64"
+                                className="ms-Button-label label-96"
                                 id="id__4"
                                 key="id__4"
                               >

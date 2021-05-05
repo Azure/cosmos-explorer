@@ -205,9 +205,8 @@ export default class Database implements ViewModels.Database {
     this.deleteCollectionsFromList(deltaCollections.toDelete);
   }
 
-  public openAddCollection(database: Database, event: MouseEvent) {
-    database.container.addCollectionPane.databaseId(database.id());
-    database.container.addCollectionPane.open();
+  public openAddCollection(database: Database) {
+    database.container.openAddCollectionPanel(database.id());
   }
 
   public findCollectionWithId(collectionId: string): ViewModels.Collection {

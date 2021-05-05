@@ -11,6 +11,7 @@ module.exports = {
   },
   parser: "@typescript-eslint/parser",
   parserOptions: {
+    project: ["./tsconfig.json", "./tsconfig.test.json"],
     ecmaFeatures: {
       jsx: true,
     },
@@ -35,6 +36,7 @@ module.exports = {
   rules: {
     "no-console": ["error", { allow: ["error", "warn", "dir"] }],
     curly: "error",
+    "@typescript-eslint/switch-exhaustiveness-check": "error",
     "@typescript-eslint/no-unused-vars": "error",
     "@typescript-eslint/no-extraneous-class": "error",
     "no-null/no-null": "error",

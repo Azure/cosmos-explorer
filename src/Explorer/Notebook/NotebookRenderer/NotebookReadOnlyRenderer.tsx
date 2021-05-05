@@ -1,5 +1,5 @@
 import { actions, ContentRef } from "@nteract/core";
-import { Cells, CodeCell, MarkdownCell, RawCell } from "@nteract/stateful-components";
+import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
@@ -11,6 +11,7 @@ import loadTransform from "../NotebookComponent/loadTransform";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import "./default.css";
+import MarkdownCell from "./markdown-cell";
 import "./NotebookReadOnlyRenderer.less";
 import SandboxOutputs from "./outputs/SandboxOutputs";
 

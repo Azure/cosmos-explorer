@@ -18,7 +18,6 @@ const mockDatabaseAccount: DatabaseAccount = {
     enableFreeTier: false,
   },
   type: undefined,
-  tags: [],
 };
 
 const mockFreeTierDatabaseAccount: DatabaseAccount = {
@@ -34,7 +33,6 @@ const mockFreeTierDatabaseAccount: DatabaseAccount = {
     enableFreeTier: true,
   },
   type: undefined,
-  tags: [],
 };
 
 describe("Add Database Pane", () => {

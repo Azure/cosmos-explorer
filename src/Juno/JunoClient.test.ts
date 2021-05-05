@@ -13,7 +13,6 @@ const sampleDatabaseAccount: DatabaseAccount = {
   location: "location",
   type: "type",
   kind: "kind",
-  tags: [],
   properties: {
     documentEndpoint: "documentEndpoint",
     gremlinEndpoint: "gremlinEndpoint",

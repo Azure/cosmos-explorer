@@ -88,7 +88,6 @@ describe("ScaleComponent", () => {
         location: undefined,
         type: undefined,
         kind: "documentdb",
-        tags: undefined,
         properties: {
           documentEndpoint: undefined,
           tableEndpoint: undefined,
