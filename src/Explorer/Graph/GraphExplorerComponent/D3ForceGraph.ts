@@ -626,12 +626,12 @@ export class D3ForceGraph implements GraphRenderer {
 
       this.addNewLinks();
 
-      const nodes = this.simulation.nodes();
+      const nodes = this.simulation && this.simulation.nodes();
       this.redrawGraph();
 
       this.animateBigBang(nodes, newNodes);
 
-      this.simulation.alpha(1).restart();
+      this.simulation && this.simulation.alpha(1).restart();
       this.params.onGraphUpdated(new Date().getTime());
     });
 
@@ -651,140 +651,143 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private addNewLinks(): d3.Selection<Element, any, any, any> {
-    const newLinks = this.linkSelection.enter().append("g").attr("class", "markerEndContainer");
+    let newLinks: any = {};
+    if (this.linkSelection) {
+      newLinks = this.linkSelection.enter().append("g").attr("class", "markerEndContainer");
+      const line = newLinks
+        .append("path")
+        .attr("class", "link")
+        .attr("fill", "none")
+        .attr("stroke-width", this.params.graphConfig.linkWidth())
+        .attr("stroke", this.params.graphConfig.linkColor());
 
-    const line = newLinks
-      .append("path")
-      .attr("class", "link")
-      .attr("fill", "none")
-      .attr("stroke-width", this.params.graphConfig.linkWidth())
-      .attr("stroke", this.params.graphConfig.linkColor());
+      if (D3ForceGraph.useSvgMarkerEnd()) {
+        line.attr("marker-end", `url(#${this.getArrowHeadSymbolId()}-marker)`);
+      } else {
+        newLinks
+          .append("g")
+          .append("use")
+          .attr("xlink:href", `#${this.getArrowHeadSymbolId()}-nonMarker`)
+          .attr("class", "markerEnd link")
+          .attr("fill", this.params.graphConfig.linkColor())
+          .classed(`${this.getArrowHeadSymbolId()}`, true);
+      }
 
-    if (D3ForceGraph.useSvgMarkerEnd()) {
-      line.attr("marker-end", `url(#${this.getArrowHeadSymbolId()}-marker)`);
-    } else {
-      newLinks
-        .append("g")
-        .append("use")
-        .attr("xlink:href", `#${this.getArrowHeadSymbolId()}-nonMarker`)
-        .attr("class", "markerEnd link")
-        .attr("fill", this.params.graphConfig.linkColor())
-        .classed(`${this.getArrowHeadSymbolId()}`, true);
+      this.linkSelection = newLinks.merge(this.linkSelection);
     }
-
-    this.linkSelection = newLinks.merge(this.linkSelection);
     return newLinks;
   }
 
   private addNewNodes(): d3.Selection<Element, any, any, any> {
     var self = this;
+    let newNodes: any = {};
+    if (this.nodeSelection) {
+      newNodes = this.nodeSelection
+        .enter()
+        .append("g")
+        .attr("class", (d: D3Node) => {
+          return d._isRoot ? "node root" : "node";
+        })
+        .call(
+          drag()
+            .on("start", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
+              return this.dragstarted(d, e);
+            }) as any)
+            .on("drag", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
+              return this.dragged(d, e);
+            }) as any)
+            .on("end", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
+              return this.dragended(d, e);
+            }) as any)
+        )
+        .on("mouseover", (_: MouseEvent, d: D3Node) => {
+          if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
+            return;
+          }
 
-    const newNodes = this.nodeSelection
-      .enter()
-      .append("g")
-      .attr("class", (d: D3Node) => {
-        return d._isRoot ? "node root" : "node";
-      })
-      .call(
-        drag()
-          .on("start", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
-            return this.dragstarted(d, e);
-          }) as any)
-          .on("drag", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
-            return this.dragged(d, e);
-          }) as any)
-          .on("end", ((e: D3DragEvent<SVGGElement, D3Node, unknown>, d: D3Node) => {
-            return this.dragended(d, e);
-          }) as any)
-      )
-      .on("mouseover", (_: MouseEvent, d: D3Node) => {
-        if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
-          return;
-        }
+          this.highlightNode(this, d);
+          this.simulation.stop();
+        })
+        .on("mouseout", (_: MouseEvent, d: D3Node) => {
+          if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
+            return;
+          }
 
-        this.highlightNode(this, d);
-        this.simulation.stop();
-      })
-      .on("mouseout", (_: MouseEvent, d: D3Node) => {
-        if (this.isHighlightDisabled || this.selectedNode || this.isDragging) {
-          return;
-        }
+          this.unhighlightNode();
 
-        this.unhighlightNode();
+          this.simulation.restart();
+        })
+        .each((d: D3Node) => {
+          // Initial position for nodes. This prevents blinking as following the tween transition doesn't always start right away
+          d.x = self.viewCenter.x;
+          d.y = self.viewCenter.y;
+        });
 
-        this.simulation.restart();
-      })
-      .each((d: D3Node) => {
-        // Initial position for nodes. This prevents blinking as following the tween transition doesn't always start right away
-        d.x = self.viewCenter.x;
-        d.y = self.viewCenter.y;
-      });
+      newNodes
+        .append("circle")
+        .attr("fill", this.getNodeColor.bind(this))
+        .attr("class", "main")
+        .attr("r", this.params.graphConfig.nodeSize());
 
-    newNodes
-      .append("circle")
-      .attr("fill", this.getNodeColor.bind(this))
-      .attr("class", "main")
-      .attr("r", this.params.graphConfig.nodeSize());
-
-    var iconGroup = newNodes
-      .append("g")
-      .attr("class", "iconContainer")
-      .attr("tabindex", 0)
-      .attr("aria-label", (d: D3Node) => {
-        return this.retrieveNodeCaption(d);
-      })
-      .on("dblclick", function (_: MouseEvent, d: D3Node) {
-        // this is the <g> element
-        self.onNodeClicked(this.parentNode, d);
-      })
-      .on("click", function (_: MouseEvent, d: D3Node) {
-        // this is the <g> element
-        self.onNodeClicked(this.parentNode, d);
-      })
-      .on("keypress", function (event: KeyboardEvent, d: D3Node) {
-        if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
-          event.stopPropagation();
+      var iconGroup = newNodes
+        .append("g")
+        .attr("class", "iconContainer")
+        .attr("tabindex", 0)
+        .attr("aria-label", (d: D3Node) => {
+          return this.retrieveNodeCaption(d);
+        })
+        .on("dblclick", function (_: MouseEvent, d: D3Node) {
           // this is the <g> element
           self.onNodeClicked(this.parentNode, d);
-        }
-      });
-    var nodeSize = this.params.graphConfig.nodeSize();
-    var bgsize = nodeSize + 1;
+        })
+        .on("click", function (_: MouseEvent, d: D3Node) {
+          // this is the <g> element
+          self.onNodeClicked(this.parentNode, d);
+        })
+        .on("keypress", function (event: KeyboardEvent, d: D3Node) {
+          if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
+            event.stopPropagation();
+            // this is the <g> element
+            self.onNodeClicked(this.parentNode, d);
+          }
+        });
+      var nodeSize = this.params.graphConfig.nodeSize();
+      var bgsize = nodeSize + 1;
 
-    iconGroup
-      .append("rect")
-      .attr("x", -bgsize)
-      .attr("y", -bgsize)
-      .attr("width", bgsize * 2)
-      .attr("height", bgsize * 2)
-      .attr("fill-opacity", (d: D3Node) => {
-        return this.params.graphConfig.nodeIconKey() ? 1 : 0;
-      })
-      .attr("class", "icon-background");
+      iconGroup
+        .append("rect")
+        .attr("x", -bgsize)
+        .attr("y", -bgsize)
+        .attr("width", bgsize * 2)
+        .attr("height", bgsize * 2)
+        .attr("fill-opacity", (d: D3Node) => {
+          return this.params.graphConfig.nodeIconKey() ? 1 : 0;
+        })
+        .attr("class", "icon-background");
 
-    // Possible icon: if xlink:href is undefined, the image won't show
-    iconGroup
-      .append("svg:image")
-      .attr("xlink:href", (d: D3Node) => {
-        return D3ForceGraph.computeImageData(d, this.params.graphConfig);
-      })
-      .attr("x", -nodeSize)
-      .attr("y", -nodeSize)
-      .attr("height", nodeSize * 2)
-      .attr("width", nodeSize * 2)
-      .attr("class", "icon");
+      // Possible icon: if xlink:href is undefined, the image won't show
+      iconGroup
+        .append("svg:image")
+        .attr("xlink:href", (d: D3Node) => {
+          return D3ForceGraph.computeImageData(d, this.params.graphConfig);
+        })
+        .attr("x", -nodeSize)
+        .attr("y", -nodeSize)
+        .attr("height", nodeSize * 2)
+        .attr("width", nodeSize * 2)
+        .attr("class", "icon");
 
-    newNodes
-      .append("text")
-      .attr("class", "caption")
-      .attr("dx", D3ForceGraph.TEXT_DX)
-      .attr("dy", ".35em")
-      .text((d: D3Node) => {
-        return this.retrieveNodeCaption(d);
-      });
+      newNodes
+        .append("text")
+        .attr("class", "caption")
+        .attr("dx", D3ForceGraph.TEXT_DX)
+        .attr("dy", ".35em")
+        .text((d: D3Node) => {
+          return this.retrieveNodeCaption(d);
+        });
 
-    this.nodeSelection = newNodes.merge(this.nodeSelection);
-
+      this.nodeSelection = newNodes.merge(this.nodeSelection);
+    }
     return newNodes;
   }
 
@@ -967,34 +970,36 @@ export class D3ForceGraph implements GraphRenderer {
    * Remove LoadMore subassembly for existing nodes that show all their children in the graph
    */
   private updateLoadMore(nodeSelection: d3.Selection<Element, any, any, any>) {
-    const self = this;
-    nodeSelection.selectAll(".loadmore").remove();
+    if (nodeSelection) {
+      const self = this;
+      nodeSelection.selectAll(".loadmore").remove();
 
-    var nodeSize = this.params.graphConfig.nodeSize();
-    const rootSelectionG = nodeSelection
-      .filter((d: D3Node) => {
-        return !!d._isRoot && !!d._pagination;
-      })
-      .append("g")
-      .attr("class", "loadmore");
-    this.createPaginationControl(rootSelectionG, nodeSize);
+      var nodeSize = this.params.graphConfig.nodeSize();
+      const rootSelectionG = nodeSelection
+        .filter((d: D3Node) => {
+          return !!d._isRoot && !!d._pagination;
+        })
+        .append("g")
+        .attr("class", "loadmore");
+      this.createPaginationControl(rootSelectionG, nodeSize);
 
-    const nodeNeighborMap = D3ForceGraph.countEdges(this.linkSelection.data());
-    const missingNeighborNonRootG = nodeSelection
-      .filter((d: D3Node) => {
-        return !(
-          d._isRoot ||
-          (d._outEAllLoaded &&
-            d._inEAllLoaded &&
-            nodeNeighborMap.get(d.id) >= d._outEdgeIds.length + d._inEdgeIds.length)
-        );
-      })
-      .append("g")
-      .attr("class", "loadmore");
-    this.createLoadMoreControl(missingNeighborNonRootG, nodeSize);
+      const nodeNeighborMap = D3ForceGraph.countEdges(this.linkSelection.data());
+      const missingNeighborNonRootG = nodeSelection
+        .filter((d: D3Node) => {
+          return !(
+            d._isRoot ||
+            (d._outEAllLoaded &&
+              d._inEAllLoaded &&
+              nodeNeighborMap.get(d.id) >= d._outEdgeIds.length + d._inEdgeIds.length)
+          );
+        })
+        .append("g")
+        .attr("class", "loadmore");
+      this.createLoadMoreControl(missingNeighborNonRootG, nodeSize);
 
-    // Don't color icons individually, just the definitions
-    this.svg.selectAll("#loadMoreIcon ellipse").attr("fill", this.params.graphConfig.nodeColor());
+      // Don't color icons individually, just the definitions
+      this.svg.selectAll("#loadMoreIcon ellipse").attr("fill", this.params.graphConfig.nodeColor());
+    }
   }
 
   /**

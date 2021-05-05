@@ -1,6 +1,6 @@
-import * as DataModels from "../Contracts/DataModels";
 import * as Q from "q";
 import * as sinon from "sinon";
+import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
 
@@ -101,12 +101,16 @@ describe("Query Utils", () => {
     });
 
     it("should not proceed with subsequent queries if the first one errors out", (done) => {
-      const queryStub = sinon.stub().returns(Q.reject("Error injected for testing purposes"));
-      QueryUtils.queryPagesUntilContentPresent(0, queryStub).finally(() => {
-        expect(queryStub.callCount).toBe(1);
-        expect(queryStub.getCall(0).args[0]).toBe(0);
-        done();
-      });
+      try {
+        const queryStub = sinon.stub().returns(Q.reject("Error injected for testing purposes"));
+        QueryUtils.queryPagesUntilContentPresent(0, queryStub).finally(() => {
+          expect(queryStub.callCount).toBe(1);
+          expect(queryStub.getCall(0).args[0]).toBe(0);
+          done();
+        });
+      } catch (error) {
+        console.error(error);
+      }
     });
   });
 
@@ -176,12 +180,16 @@ describe("Query Utils", () => {
     });
 
     it("should not proceed with subsequent fetches if the first one errors out", (done) => {
-      const queryStub = sinon.stub().returns(Q.reject("Error injected for testing purposes"));
-      QueryUtils.queryAllPages(queryStub).finally(() => {
-        expect(queryStub.callCount).toBe(1);
-        expect(queryStub.getCall(0).args[0]).toBe(0);
-        done();
-      });
+      try {
+        const queryStub = sinon.stub().returns(Q.reject("Error injected for testing purposes"));
+        QueryUtils.queryAllPages(queryStub).finally(() => {
+          expect(queryStub.callCount).toBe(1);
+          expect(queryStub.getCall(0).args[0]).toBe(0);
+          done();
+        });
+      } catch (error) {
+        console.error(error);
+      }
     });
   });
 });

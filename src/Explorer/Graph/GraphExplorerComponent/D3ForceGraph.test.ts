@@ -1,7 +1,7 @@
 ﻿import * as sinon from "sinon";
-import { D3ForceGraph, LoadMoreDataAction, D3GraphNodeData } from "./D3ForceGraph";
-import { D3Node, D3Link, GraphData } from "../GraphExplorerComponent/GraphData";
 import GraphTab from "../../Tabs/GraphTab";
+import { D3Link, D3Node, GraphData } from "../GraphExplorerComponent/GraphData";
+import { D3ForceGraph, D3GraphNodeData, LoadMoreDataAction } from "./D3ForceGraph";
 
 describe("D3ForceGraph", () => {
   const v1Id = "v1";
@@ -138,18 +138,20 @@ describe("D3ForceGraph", () => {
 
     it("should call onHighlightedNode callback when mouse hovering over node", () => {
       forceGraph.params.onGraphUpdated = () => {
-        const mouseoverEvent = document.createEvent("Events");
-        mouseoverEvent.initEvent("mouseover", true, false);
-        $(rootNode).find(".node")[0].dispatchEvent(mouseoverEvent); // [0] is v1 vertex
+        if (document) {
+          const mouseoverEvent = document.createEvent("Events");
+          mouseoverEvent.initEvent("mouseover", true, false);
+          $(rootNode).find(".node")[0].dispatchEvent(mouseoverEvent); // [0] is v1 vertex
 
-        // onHighlightedNode is always called once to clear the selection
-        expect((forceGraph.params.onHighlightedNode as sinon.SinonSpy).calledTwice).toBe(true);
+          // onHighlightedNode is always called once to clear the selection
+          expect((forceGraph.params.onHighlightedNode as sinon.SinonSpy).calledTwice).toBe(true);
 
-        const onHighlightedNode = (forceGraph.params.onHighlightedNode as sinon.SinonSpy).args[1][0] as D3GraphNodeData;
-        expect(onHighlightedNode).not.toBe(null);
-        expect(onHighlightedNode.id).toEqual(v1Id);
+          const onHighlightedNode = (forceGraph.params.onHighlightedNode as sinon.SinonSpy)
+            .args[1][0] as D3GraphNodeData;
+          expect(onHighlightedNode).not.toBe(null);
+          expect(onHighlightedNode.id).toEqual(v1Id);
+        }
       };
-
       forceGraph.updateGraph(newGraph);
     });
   });
