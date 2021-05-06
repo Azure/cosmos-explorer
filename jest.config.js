@@ -70,6 +70,7 @@ module.exports = {
     "^.*[.](svg|png|gif|less|css)$": "<rootDir>/mockModule",
     "@nteract/stateful-components/(.*)$": "<rootDir>/mockModule",
     "@fluentui/react/lib/(.*)$": "@fluentui/react/lib-commonjs/$1", // https://github.com/microsoft/fluentui/wiki/Version-8-release-notes
+    "monaco-editor/(.*)$": "<rootDir>/__mocks__/monaco-editor",
     "^dnd-core$": "dnd-core/dist/cjs",
     "^react-dnd$": "react-dnd/dist/cjs",
     "^react-dnd-html5-backend$": "react-dnd-html5-backend/dist/cjs",

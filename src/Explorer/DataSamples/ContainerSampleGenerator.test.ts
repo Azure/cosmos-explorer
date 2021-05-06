@@ -79,7 +79,6 @@ describe("ContainerSampleGenerator", () => {
         location: "foo",
         type: "foo",
         kind: "foo",
-        tags: [],
         properties: {
           documentEndpoint: "bar",
           gremlinEndpoint: "foo",

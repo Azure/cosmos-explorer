@@ -23,10 +23,10 @@ export default class MongoShellTab extends TabsBase {
     this._logTraces = new Map();
     this._container = options.collection.container;
     this.url = ko.computed<string>(() => {
-      const account = userContext.databaseAccount;
-      const resourceId = account && account.id;
-      const accountName = account && account.name;
-      const mongoEndpoint = account && (account.properties.mongoEndpoint || account.properties.documentEndpoint);
+      const { databaseAccount: account } = userContext;
+      const resourceId = account?.id;
+      const accountName = account?.name;
+      const mongoEndpoint = account?.properties?.mongoEndpoint || account?.properties?.documentEndpoint;
 
       this._runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
       const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
@@ -86,13 +86,12 @@ export default class MongoShellTab extends TabsBase {
     if (!isReadyMessage(event)) {
       return;
     }
+    const { databaseAccount } = userContext;
 
     const authorization: string = userContext.authorizationToken || "";
-    const resourceId = this._container.databaseAccount().id;
-    const accountName = this._container.databaseAccount().name;
-    const documentEndpoint =
-      this._container.databaseAccount().properties.mongoEndpoint ||
-      this._container.databaseAccount().properties.documentEndpoint;
+    const resourceId = databaseAccount?.id;
+    const accountName = databaseAccount?.name;
+    const documentEndpoint = databaseAccount?.properties.mongoEndpoint || databaseAccount?.properties.documentEndpoint;
     const mongoEndpoint =
       documentEndpoint.substr(
         Constants.MongoDBAccounts.protocol.length + 3,

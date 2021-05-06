@@ -11,12 +11,13 @@ export async function readUserDefinedFunctions(
   collectionId: string
 ): Promise<(UserDefinedFunctionDefinition & Resource)[]> {
   const clearMessage = logConsoleProgress(`Querying user defined functions for container ${collectionId}`);
+  const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
       const rpResponse = await listSqlUserDefinedFunctions(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
+        subscriptionId,
+        resourceGroup,
+        databaseAccount.name,
         databaseId,
         collectionId
       );

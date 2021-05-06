@@ -525,7 +525,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               }}
             >
               <Stack className="panelGroupSpacing" id="collapsibleSectionContent">
-                {this.props.explorer.isEnableMongoCapabilityPresent() && (
+                {userContext.databaseAccount.properties.capabilities.find((c) => c.name === "EnableMongo") && (
                   <Stack className="panelGroupSpacing">
                     <Stack horizontal>
                       <span className="mandatoryStar">*&nbsp;</span>
@@ -841,7 +841,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private isSynapseLinkEnabled(): boolean {
-    const properties = userContext.databaseAccount?.properties;
+    const { properties } = userContext.databaseAccount;
 
     if (!properties) {
       return false;

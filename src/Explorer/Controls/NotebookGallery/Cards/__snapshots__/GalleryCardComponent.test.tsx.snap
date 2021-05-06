@@ -23,6 +23,7 @@ exports[`GalleryCardComponent renders 1`] = `
         },
       ]
     }
+<<<<<<< HEAD
   />
   <StyledDocumentCardPreviewBase
     previewImages={
@@ -32,6 +33,29 @@ exports[`GalleryCardComponent renders 1`] = `
           "imageFit": 2,
           "previewImageSrc": "thumbnailUrl",
           "width": 256,
+=======
+  >
+    <StyledPersonaBase
+      imageUrl={false}
+      secondaryText="Invalid Date"
+      text="author"
+    />
+  </CardItem>
+  <CardItem>
+    <Image
+      alt="name cover image"
+      height={144}
+      imageFit={2}
+      src="thumbnailUrl"
+      width={256}
+    />
+  </CardItem>
+  <CardSection
+    styles={
+      Object {
+        "root": Object {
+          "padding": 10,
+>>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
         },
       ]
     }
