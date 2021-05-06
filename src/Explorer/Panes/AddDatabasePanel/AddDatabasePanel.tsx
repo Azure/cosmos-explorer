@@ -24,7 +24,7 @@ export interface AddDatabasePaneProps {
   openNotificationConsole: () => void;
 }
 
-export const AddDatabasePanelF: FunctionComponent<AddDatabasePaneProps> = ({
+export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   explorer: container,
   closePanel,
   openNotificationConsole,

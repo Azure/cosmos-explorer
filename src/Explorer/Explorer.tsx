@@ -53,7 +53,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
-import { AddDatabasePanelF } from "./Panes/AddDatabasePanel/AddDatabasePanel";
+import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
@@ -2047,7 +2047,7 @@ export default class Explorer {
     } else {
       this.openSidePanel(
         "Add Database",
-        <AddDatabasePanelF
+        <AddDatabasePanel
           explorer={this}
           openNotificationConsole={this.expandConsole}
           closePanel={this.closeSidePanel}

@@ -1,7 +1,7 @@
 import { shallow } from "enzyme";
 import React from "react";
 import Explorer from "../../Explorer";
-import { AddDatabasePanelF } from "./AddDatabasePanel";
+import { AddDatabasePanel } from "./AddDatabasePanel";
 
 const props = {
   explorer: new Explorer(),
@@ -11,7 +11,7 @@ const props = {
 
 describe("AddDatabasePane Pane", () => {
   it("should render Default properly", () => {
-    const wrapper = shallow(<AddDatabasePanelF {...props} />);
+    const wrapper = shallow(<AddDatabasePanel {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
 });
