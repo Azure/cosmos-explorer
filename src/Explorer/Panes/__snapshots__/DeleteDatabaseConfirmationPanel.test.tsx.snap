@@ -1596,12 +1596,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               variant="small"
             >
               <span
-<<<<<<< HEAD
-                className="panelWarningErrorMessage css-143"
-                data-testid="panelmessage"
-=======
                 className="panelWarningErrorMessage css-205"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
+                data-testid="panelmessage"
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
               </span>
@@ -4011,12 +4007,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   variantClassName="ms-Button--primary"
                 >
                   <button
-<<<<<<< HEAD
                     aria-label="OK"
-                    className="ms-Button ms-Button--primary root-156"
-=======
                     className="ms-Button ms-Button--primary root-218"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     data-is-focusable={true}
                     data-testid="submit"
                     id="sidePanelOkButton"
