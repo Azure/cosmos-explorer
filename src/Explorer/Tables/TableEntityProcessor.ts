@@ -189,7 +189,7 @@ export function convertEntityToNewDocument(entity: Entities.ITableEntityForTable
           parsedValue = parseInt(propertyValue, 10);
           break;
         case Constants.TableType.Int64:
-          parsedValue = parseInt(propertyValue, 10).toString();
+          parsedValue = propertyValue.toString();
           break;
         case Constants.TableType.Double:
           parsedValue = parseFloat(propertyValue);
