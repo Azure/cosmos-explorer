@@ -525,7 +525,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               }}
             >
               <Stack className="panelGroupSpacing" id="collapsibleSectionContent">
-                {userContext.databaseAccount.properties.capabilities.find((c) => c.name === "EnableMongo") && (
+                {userContext.databaseAccount.properties?.capabilities?.find((c) => c.name === "EnableMongo") && (
                   <Stack className="panelGroupSpacing">
                     <Stack horizontal>
                       <span className="mandatoryStar">*&nbsp;</span>
@@ -851,7 +851,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return true;
     }
 
-    return properties.capabilities.some(
+    return properties.capabilities?.some(
       (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics
     );
   }
