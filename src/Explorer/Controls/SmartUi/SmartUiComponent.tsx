@@ -1,12 +1,20 @@
+import {
+  Dropdown,
+  IDropdownOption,
+  IStackTokens,
+  Label,
+  Link,
+  MessageBar,
+  MessageBarType,
+  Position,
+  Slider,
+  SpinButton,
+  Stack,
+  Text,
+  TextField,
+  Toggle,
+} from "@fluentui/react";
 import { TFunction } from "i18next";
-import { Label, Link, MessageBar, MessageBarType, Toggle } from "office-ui-fabric-react";
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
-import { Slider } from "office-ui-fabric-react/lib/Slider";
-import { SpinButton } from "office-ui-fabric-react/lib/SpinButton";
-import { IStackTokens, Stack } from "office-ui-fabric-react/lib/Stack";
-import { Text } from "office-ui-fabric-react/lib/Text";
-import { TextField } from "office-ui-fabric-react/lib/TextField";
-import { Position } from "office-ui-fabric-react/lib/utilities/positioning";
 import * as React from "react";
 import {
   ChoiceItem,

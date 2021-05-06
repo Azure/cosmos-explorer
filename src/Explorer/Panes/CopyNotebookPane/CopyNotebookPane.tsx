@@ -1,4 +1,4 @@
-import { IDropdownOption } from "office-ui-fabric-react";
+import { IDropdownOption } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent, useEffect, useState } from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";

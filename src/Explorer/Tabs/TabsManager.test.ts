@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
 import DocumentsTab from "./DocumentsTab";
@@ -17,13 +17,15 @@ describe("Tabs manager tests", () => {
 
   beforeAll(() => {
     explorer = new Explorer();
-    explorer.databaseAccount = ko.observable<DataModels.DatabaseAccount>({
-      id: "test",
-      name: "test",
-      location: "",
-      type: "",
-      kind: "",
-      properties: undefined,
+    updateUserContext({
+      databaseAccount: {
+        id: "test",
+        name: "test",
+        location: "",
+        type: "",
+        kind: "",
+        properties: undefined,
+      },
     });
 
     database = {

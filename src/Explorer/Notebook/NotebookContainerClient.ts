@@ -5,6 +5,7 @@ import * as Constants from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
+import { userContext } from "../../UserContext";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export class NotebookContainerClient {
@@ -130,14 +131,15 @@ export class NotebookContainerClient {
 
   private async recreateNotebookWorkspaceAsync(): Promise<void> {
     const explorer = window.dataExplorer;
-    if (!explorer || !explorer.databaseAccount() || !explorer.databaseAccount().id) {
+    const { databaseAccount } = userContext;
+    if (!databaseAccount?.id) {
       throw new Error("DataExplorer not initialized");
     }
 
     const notebookWorkspaceManager = explorer.notebookWorkspaceManager;
     try {
-      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
-      await notebookWorkspaceManager.createNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
+      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(databaseAccount?.id, "default");
+      await notebookWorkspaceManager.createNotebookWorkspaceAsync(databaseAccount?.id, "default");
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);

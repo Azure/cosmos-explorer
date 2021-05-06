@@ -7,7 +7,7 @@ import {
   Label,
   Stack,
   TextField,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import EntityCancelIcon from "../../../../images/Entity_cancel.svg";
