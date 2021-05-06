@@ -4021,7 +4021,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                       </span>
                     </span>
                   </button>
-                  <FocusRects />
+                  <Component />
                 </BaseButton>
               </DefaultButton>
             </CustomizedDefaultButton>

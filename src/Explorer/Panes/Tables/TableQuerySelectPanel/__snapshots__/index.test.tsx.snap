@@ -1110,7 +1110,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                       className="ms-Button-flexContainer flexContainer-54"
                       data-automationid="splitbuttonprimary"
                     >
-                      <FontIcon
+                      <Component
                         className="ms-Button-icon icon-56"
                         iconName="Cancel"
                       >
@@ -1126,10 +1126,10 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         >
                           
                         </i>
-                      </FontIcon>
+                      </Component>
                     </span>
                   </button>
-                  <FocusRects />
+                  <Component />
                 </BaseButton>
               </IconButton>
             </CustomizedIconButton>
@@ -4180,7 +4180,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             </span>
                           </span>
                         </button>
-                        <FocusRects />
+                        <Component />
                       </BaseButton>
                     </DefaultButton>
                   </CustomizedDefaultButton>

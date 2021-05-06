@@ -1115,7 +1115,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       className="ms-Button-flexContainer flexContainer-103"
                       data-automationid="splitbuttonprimary"
                     >
-                      <FontIcon
+                      <Component
                         className="ms-Button-icon icon-105"
                         iconName="Cancel"
                       >
@@ -1131,10 +1131,10 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         >
                           
                         </i>
-                      </FontIcon>
+                      </Component>
                     </span>
                   </button>
-                  <FocusRects />
+                  <Component />
                 </BaseButton>
               </IconButton>
             </CustomizedIconButton>
@@ -3650,7 +3650,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                             </span>
                           </span>
                         </button>
-                        <FocusRects />
+                        <Component />
                       </BaseButton>
                     </DefaultButton>
                   </CustomizedDefaultButton>
