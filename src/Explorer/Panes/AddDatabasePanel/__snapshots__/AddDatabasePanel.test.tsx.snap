@@ -89,7 +89,6 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
                   },
                 }
               }
-              tabIndex={0}
               title="Provision shared throughput"
             />
              
