@@ -22,7 +22,7 @@ describe("ThroughputInput Pane", () => {
 
   it("test Autoscale Mode select", () => {
     wrapper.setProps({ isAutoscaleSelected: true });
-    expect(wrapper.find('[data-testid="ruDescription"]').at(0).text()).toContain(
+    expect(wrapper.find('[data-testid="ruDescription"]').at(0).text()).toBe(
       "Estimate your required RU/s with capacity calculator."
     );
     expect(wrapper.find('[data-testid="maxRUDescription"]').at(0).text()).toContain("Max RU/s");

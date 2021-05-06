@@ -2461,7 +2461,8 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             className="css-54"
             data-testid="ruDescription"
           >
-            Estimate your required RU/s with 
+            Estimate your required RU/s with
+             
             <StyledLinkBase
               data-testid="ruDescription"
               href="https://cosmos.azure.com/capacitycalculator/"

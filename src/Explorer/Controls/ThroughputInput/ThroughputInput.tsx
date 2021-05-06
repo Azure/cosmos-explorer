@@ -126,7 +126,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       {isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
           <Text variant="small" data-testid="ruDescription">
-            Estimate your required RU/s with&nbsp;
+            Estimate your required RU/s with{" "}
             <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" data-testid="ruDescription">
               capacity calculator
             </Link>
