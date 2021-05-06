@@ -1,5 +1,5 @@
+import { IChoiceGroupProps } from "@fluentui/react";
 import * as ko from "knockout";
-import { IChoiceGroupProps } from "office-ui-fabric-react";
 import * as path from "path";
 import Q from "q";
 import React from "react";
@@ -7,19 +7,21 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics } from "../Common/Constants";
+import { ExplorerMetrics, HttpStatusCodes } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { sendCachedDataMessage, sendMessage } from "../Common/MessageHandler";
+import { sendCachedDataMessage } from "../Common/MessageHandler";
 import { QueriesClient } from "../Common/QueriesClient";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
-import { IGalleryItem } from "../Juno/JunoClient";
+import { GitHubClient } from "../GitHub/GitHubClient";
+import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
@@ -29,13 +31,13 @@ import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
+import { getCollectionName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -57,6 +59,7 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
+import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
@@ -108,23 +111,8 @@ export default class Explorer {
   public refreshTreeTitle: ko.Observable<string>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  /**
-   * @deprecated
-   * Use userContext.databaseAccount instead
-   * */
-  public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.apiType instead
-   * */
-  public defaultExperience: ko.Observable<string>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
-   * */
-  public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
@@ -168,13 +156,13 @@ export default class Explorer {
   public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public gitHubReposPane: ContextualPaneBase;
+  private gitHubClient: GitHubClient;
+  public gitHubOAuthService: GitHubOAuthService;
+  public junoClient: JunoClient;
 
   // features
-  public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  public isRightPanelV2Enabled: ko.Computed<boolean>;
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
@@ -216,6 +204,8 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
+    this.gitHubClient = new GitHubClient(this.onGitHubClientError);
+    this.junoClient = new JunoClient();
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
@@ -237,7 +227,6 @@ export default class Explorer {
     this.deleteDatabaseText = ko.observable<string>("Delete Database");
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
-    this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -271,7 +260,7 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
                   userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -280,7 +269,7 @@ export default class Explorer {
             });
 
             if (this.isNotebookEnabled()) {
-              await this.initNotebooks(this.databaseAccount());
+              await this.initNotebooks(userContext.databaseAccount);
               const workspaces = await this._getArcadiaWorkspaces();
               this.arcadiaWorkspaces(workspaces);
             } else if (this.notebookToImport) {
@@ -323,7 +312,6 @@ export default class Explorer {
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
 
@@ -377,42 +365,25 @@ export default class Explorer {
       bounds: splitterBounds,
       direction: SplitterDirection.Vertical,
     });
-    this.defaultExperience = ko.observable<string>();
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
       }
 
-      if (this.databaseAccount && !this.databaseAccount()) {
+      if (!userContext.databaseAccount) {
         return false;
       }
 
-      return this.isEnableMongoCapabilityPresent();
+      return userContext.apiType === "Mongo";
     });
 
     this.isServerlessEnabled = ko.computed(
       () =>
-        this.databaseAccount &&
-        this.databaseAccount()?.properties?.capabilities?.find(
+        userContext.databaseAccount?.properties?.capabilities?.find(
           (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
-
-    this.isEnableMongoCapabilityPresent = ko.computed(() => {
-      const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
-      if (!capabilities) {
-        return false;
-      }
-
-      for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-          return true;
-        }
-      }
-
-      return false;
-    });
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
@@ -420,7 +391,6 @@ export default class Explorer {
         !this.isRunningOnNationalCloud() &&
         userContext.apiType !== "Gremlin"
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -593,9 +563,6 @@ export default class Explorer {
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
           refreshNotebookList: () => this.refreshNotebookList(),
         });
-
-        this.gitHubReposPane = this.notebookManager.gitHubReposPane;
-        this.isGitHubPaneEnabled(true);
       }
 
       this.refreshCommandBarButtons();
@@ -643,6 +610,23 @@ export default class Explorer {
     }
   }
 
+  private onGitHubClientError = (error: any): void => {
+    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
+
+    if (error.status === HttpStatusCodes.Unauthorized) {
+      this.gitHubOAuthService.resetToken();
+
+      this.showOkCancelModalDialog(
+        undefined,
+        "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
+        "Connect to GitHub",
+        () => this.openGitHubReposPanel("Connect to GitHub"),
+        "Cancel",
+        undefined
+      );
+    }
+  };
+
   public openEnableSynapseLinkDialog(): void {
     const addSynapseLinkDialogProps: DialogProps = {
       linkProps: {
@@ -665,11 +649,11 @@ export default class Explorer {
         this.isSynapseLinkUpdating(true);
         this._closeSynapseLinkModalDialog();
 
-        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(this.databaseAccount().id);
+        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(userContext.databaseAccount.id);
 
         try {
           const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
-            this.databaseAccount().id,
+            userContext.databaseAccount.id,
             "2019-12-12",
             {
               properties: {
@@ -680,7 +664,7 @@ export default class Explorer {
           clearInProgressMessage();
           logConsoleInfo("Enabled Azure Synapse Link for this account");
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          this.databaseAccount(databaseAccount);
+          updateUserContext({ databaseAccount });
         } catch (error) {
           clearInProgressMessage();
           logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
@@ -727,10 +711,6 @@ export default class Explorer {
 
   public expandConsole(): void {
     this.setIsNotificationConsoleExpanded(true);
-  }
-
-  public collapseConsole(): void {
-    this.setIsNotificationConsoleExpanded(false);
   }
 
   public toggleLeftPaneExpanded() {
@@ -1003,14 +983,14 @@ export default class Explorer {
   }
 
   private async ensureNotebookWorkspaceRunning() {
-    if (!this.databaseAccount()) {
+    if (!userContext.databaseAccount) {
       return;
     }
 
     let clearMessage;
     try {
       const notebookWorkspace = await this.notebookWorkspaceManager.getNotebookWorkspaceAsync(
-        this.databaseAccount().id,
+        userContext.databaseAccount.id,
         "default"
       );
       if (
@@ -1020,7 +1000,7 @@ export default class Explorer {
         notebookWorkspace.properties.status.toLowerCase() === "stopped"
       ) {
         clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
-        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
+        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(userContext.databaseAccount.id, "default");
       }
     } catch (error) {
       handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
@@ -1105,21 +1085,10 @@ export default class Explorer {
       if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
-
-      const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.databaseAccount(databaseAccount);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      TelemetryProcessor.traceSuccess(
-        Action.LoadDatabaseAccount,
-        {
-          dataExplorerArea: Constants.Areas.ResourceTree,
-        },
-        inputs.loadDatabaseAccountTimestamp
-      );
-
       this.isAccountReady(true);
     }
   }
@@ -1157,38 +1126,6 @@ export default class Explorer {
   public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
   }
-
-  public signInAad = () => {
-    TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
-    sendMessage({
-      type: MessageTypes.AadSignIn,
-    });
-  };
-
-  public onSwitchToConnectionString = () => {
-    $("#connectWithAad").hide();
-    $("#connectWithConnectionString").show();
-  };
-
-  public clickHostedAccountSwitch = () => {
-    sendMessage({
-      type: MessageTypes.UpdateAccountSwitch,
-      click: true,
-    });
-  };
-
-  public clickHostedDirectorySwitch = () => {
-    sendMessage({
-      type: MessageTypes.UpdateDirectoryControl,
-      click: true,
-    });
-  };
-
-  public refreshDatabaseAccount = () => {
-    sendMessage({
-      type: MessageTypes.RefreshDatabaseAccount,
-    });
-  };
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
@@ -1609,7 +1546,7 @@ export default class Explorer {
   }
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
-    const authType = userContext.authType;
+    const { databaseAccount, authType } = userContext;
     if (
       authType === AuthType.EncryptedToken ||
       authType === AuthType.ResourceToken ||
@@ -1619,8 +1556,9 @@ export default class Explorer {
       return;
     }
 
-    const databaseAccount = this.databaseAccount();
-    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
+    const firstWriteLocation =
+      databaseAccount?.properties?.writeLocations &&
+      databaseAccount?.properties?.writeLocations[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
@@ -1645,9 +1583,9 @@ export default class Explorer {
         this.isNotebooksEnabledForAccount(true);
         return;
       }
-      const isAccountInAllowedLocation = !disallowedLocations.some(
-        (disallowedLocation) => disallowedLocation === databaseAccountLocation
-      );
+
+      // firstWriteLocation should not be disallowed
+      const isAccountInAllowedLocation = firstWriteLocation && disallowedLocations.indexOf(firstWriteLocation) === -1;
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
@@ -1656,9 +1594,8 @@ export default class Explorer {
   }
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-    const subscriptionId = userContext.subscriptionId;
+    const { subscriptionId, authType } = userContext;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = userContext.authType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       return false;
@@ -1917,14 +1854,14 @@ export default class Explorer {
     }
   }
 
-  public onNewCollectionClicked(): void {
+  public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
-    } else if (userContext.features.enableReactPane) {
-      this.openAddCollectionPanel();
-    } else {
+    } else if (userContext.features.enableKOPanel) {
       this.addCollectionPane.open(this.selectedDatabaseId());
       document.getElementById("linkAddCollection").focus();
+    } else {
+      this.openAddCollectionPanel(databaseId);
     }
   }
 
@@ -1970,7 +1907,7 @@ export default class Explorer {
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(this.databaseAccount()))) {
+    if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
       this.closeAllPanes();
       this._openSetupNotebooksPaneForQuickstart();
     }
@@ -2028,14 +1965,9 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    let collectionName = PricingUtils.getCollectionName(userContext.apiType);
     this.openSidePanel(
-      "Delete " + collectionName,
-      <DeleteCollectionConfirmationPane
-        explorer={this}
-        collectionName={collectionName}
-        closePanel={this.closeSidePanel}
-      />
+      "Delete " + getCollectionName(),
+      <DeleteCollectionConfirmationPane explorer={this} closePanel={this.closeSidePanel} />
     );
   }
 
@@ -2073,14 +2005,15 @@ export default class Explorer {
     );
   }
 
-  public async openAddCollectionPanel(): Promise<void> {
+  public async openAddCollectionPanel(databaseId?: string): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
-      "New Collection",
+      "New " + getCollectionName(),
       <AddCollectionPanel
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+        databaseId={databaseId}
       />
     );
   }
@@ -2105,6 +2038,19 @@ export default class Explorer {
         expandConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
+      />
+    );
+  }
+
+  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
+    this.openSidePanel(
+      header,
+      <GitHubReposPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        gitHubClientProp={this.notebookManager.gitHubClient}
+        junoClientProp={junoClient}
+        openNotificationConsole={() => this.expandConsole()}
       />
     );
   }

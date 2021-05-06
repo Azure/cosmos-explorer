@@ -8,7 +8,7 @@ import {
   Dropdown,
   IDropdownOption,
   ITextField,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import {
   addMongoIndexSubElementsTokens,
   mongoErrorMessageStyles,

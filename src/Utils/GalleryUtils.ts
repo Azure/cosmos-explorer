@@ -1,6 +1,6 @@
+import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "@fluentui/react";
 import { Notebook } from "@nteract/commutable";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
-import { IChoiceGroupOption, IChoiceGroupProps, IProgressIndicatorProps } from "office-ui-fabric-react";
 import { HttpStatusCodes } from "../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import { TextFieldProps } from "../Explorer/Controls/Dialog";

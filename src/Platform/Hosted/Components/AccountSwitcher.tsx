@@ -1,16 +1,15 @@
 // TODO: Renable this rule for the file or turn it off everywhere
 /* eslint-disable react/display-name */
 
-import { StyleConstants } from "../../../Common/Constants";
-import { FunctionComponent, useState, useEffect } from "react";
+import { DefaultButton, IButtonStyles, IContextualMenuItem } from "@fluentui/react";
 import * as React from "react";
-import { DefaultButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
-import { IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
+import { FunctionComponent, useEffect, useState } from "react";
+import { StyleConstants } from "../../../Common/Constants";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
-import { SwitchSubscription } from "./SwitchSubscription";
+import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { SwitchAccount } from "./SwitchAccount";
+import { SwitchSubscription } from "./SwitchSubscription";
 
 const buttonStyles: IButtonStyles = {
   root: {

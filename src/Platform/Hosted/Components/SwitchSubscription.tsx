@@ -1,4 +1,4 @@
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
+import { Dropdown } from "@fluentui/react";
 import * as React from "react";
 import { FunctionComponent } from "react";
 import { Subscription } from "../../../Contracts/DataModels";

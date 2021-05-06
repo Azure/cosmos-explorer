@@ -1,10 +1,10 @@
-import * as DataModels from "../../Contracts/DataModels";
 import * as ko from "knockout";
-import Database from "./Database";
-import Explorer from "../Explorer";
 import { HttpStatusCodes } from "../../Common/Constants";
+import * as DataModels from "../../Contracts/DataModels";
 import { JunoClient } from "../../Juno/JunoClient";
-import { userContext, updateUserContext } from "../../UserContext";
+import { updateUserContext, userContext } from "../../UserContext";
+import Explorer from "../Explorer";
+import Database from "./Database";
 
 const createMockContainer = (): Explorer => {
   const mockContainer = new Explorer();
@@ -19,7 +19,6 @@ updateUserContext({
     name: "fakeName",
     location: "fakeLocation",
     type: "fakeType",
-    tags: undefined,
     kind: "fakeKind",
     properties: {
       documentEndpoint: "fakeEndpoint",

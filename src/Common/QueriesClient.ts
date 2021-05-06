@@ -182,11 +182,8 @@ export class QueriesClient {
   }
 
   public getResourceId(): string {
-    const databaseAccount = userContext.databaseAccount;
-    const databaseAccountName = (databaseAccount && databaseAccount.name) || "";
-    const subscriptionId = userContext.subscriptionId || "";
-    const resourceGroup = userContext.resourceGroup || "";
-
+    const { databaseAccount, subscriptionId = "", resourceGroup = "" } = userContext;
+    const databaseAccountName = databaseAccount?.name || "";
     return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}`;
   }
 
