@@ -86,7 +86,8 @@ export function useAADAuth(): ReturnType {
         msal.acquireTokenSilent({
           // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
           forceRefresh: true,
-          scopes: ["https://cosmos.azure.com//.default"],
+          // authority: `https://login.microsoftonline.com/${tenantId}`,
+          scopes: ["https://stfaul-sql.documents.azure.com/.default"],
         }),
       ]).then(([graphTokenResponse, armTokenResponse, aadTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);

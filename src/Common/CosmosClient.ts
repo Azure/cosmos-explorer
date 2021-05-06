@@ -11,8 +11,10 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  if (userContext.aadToken) {
-    return userContext.aadToken;
+  if (userContext.features.fetchesAADToken && userContext.aadToken) {
+    const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+    const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
+    return authorizationToken;
   }
 
   if (configContext.platform === Platform.Emulator) {
@@ -86,7 +88,7 @@ export function client(): Cosmos.CosmosClient {
   if (_client) return _client;
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    key: userContext.masterKey,
+    // key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
       enableEndpointDiscovery: false,

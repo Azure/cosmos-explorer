@@ -13,6 +13,7 @@ export type Features = {
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
+  readonly fetchesAADToken: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly livyEndpoint?: string;
@@ -55,6 +56,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
+    fetchesAADToken: true,
+    // fetchesAADToken: "true" === get("fetchesaadtoken"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
     junoEndpoint: get("junoendpoint"),
     livyEndpoint: get("livyendpoint"),
