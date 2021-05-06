@@ -111,7 +111,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
       <div
         className="notificationConsoleControls"
       >
-        <StyledWithResponsiveMode
+        <Dropdown
           aria-label="All"
           aria-labelledby="consoleFilterLabel"
           label="Filter:"
@@ -274,7 +274,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
       <div
         className="notificationConsoleControls"
       >
-        <StyledWithResponsiveMode
+        <Dropdown
           aria-label="All"
           aria-labelledby="consoleFilterLabel"
           label="Filter:"

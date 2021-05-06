@@ -19,9 +19,16 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": ["jest", "puppeteer", "jest-environment-puppeteer", "expect-puppeteer"],
+    "types": ["jest", "playwright", "jest-playwright-preset", "expect-playwright"],
     "baseUrl": "src"
   },
-  "include": ["./src/**/*", "./utils/**/*", "./test/testExplorer/TestExplorer.ts", "./**/*.ts", "./**/*.tsx"],
+  "include": [
+    "./src/**/*",
+    "./utils/**/*",
+    "./test/testExplorer/TestExplorer.ts",
+    "./**/*.ts",
+    "./**/*.tsx",
+    "src/custom.d.ts"
+  ],
   "exclude": ["./src/**/__mocks__/**/*"]
 }

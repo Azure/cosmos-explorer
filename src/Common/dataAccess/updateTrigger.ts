@@ -16,12 +16,13 @@ export async function updateTrigger(
   trigger: TriggerDefinition
 ): Promise<TriggerDefinition> {
   const clearMessage = logConsoleProgress(`Updating trigger ${trigger.id}`);
+  const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
       const getResponse = await getSqlTrigger(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
+        subscriptionId,
+        resourceGroup,
+        databaseAccount.name,
         databaseId,
         collectionId,
         trigger.id
@@ -35,9 +36,9 @@ export async function updateTrigger(
           },
         };
         const rpResponse = await createUpdateSqlTrigger(
-          userContext.subscriptionId,
-          userContext.resourceGroup,
-          userContext.databaseAccount.name,
+          subscriptionId,
+          resourceGroup,
+          databaseAccount.name,
           databaseId,
           collectionId,
           trigger.id,

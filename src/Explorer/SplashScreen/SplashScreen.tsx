@@ -1,6 +1,7 @@
 /**
  * Accordion top class
  */
+import { Link } from "@fluentui/react";
 import AddDatabaseIcon from "images/AddDatabase.svg";
 import NewQueryIcon from "images/AddSqlQuery_16x16.svg";
 import NewStoredProcedureIcon from "images/AddStoredProcedure.svg";
@@ -11,7 +12,6 @@ import SampleIcon from "images/Hero-sample.svg";
 import NotebookIcon from "images/notebook/Notebook-resource.svg";
 import ScaleAndSettingsIcon from "images/Scale_15x15.svg";
 import CollectionIcon from "images/tree-collection.svg";
-import { Link } from "office-ui-fabric-react/lib/Link";
 import * as React from "react";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";

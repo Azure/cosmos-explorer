@@ -9,7 +9,7 @@ import {
   Label,
   Stack,
   TextField,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };

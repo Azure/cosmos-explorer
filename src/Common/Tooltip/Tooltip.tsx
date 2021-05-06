@@ -1,6 +1,6 @@
-import { useId } from "@uifabric/react-hooks";
+import { ITooltipHostStyles, TooltipHost } from "@fluentui/react";
+import { useId } from "@fluentui/react-hooks";
 import { ReactComponent as InfoBubble } from "images/info-bubble.svg";
-import { ITooltipHostStyles, TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
 import * as React from "react";
 
 const calloutProps = { gapSpace: 0 };

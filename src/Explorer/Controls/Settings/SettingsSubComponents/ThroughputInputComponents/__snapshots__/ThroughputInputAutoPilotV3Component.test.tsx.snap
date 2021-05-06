@@ -8,7 +8,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     }
   }
 >
-  <StyledMessageBarBase
+  <StyledMessageBar
     messageBarIconProps={
       Object {
         "className": "messageBarWarningIcon",
@@ -27,7 +27,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
     >
       Your bill will be affected as you update your throughput settings. Please review the updated cost estimate below before saving your changes
     </Text>
-  </StyledMessageBarBase>
+  </StyledMessageBar>
   <Stack>
     <StyledLabelBase
       id="settingsV2RadioButtonLabelId"
@@ -49,7 +49,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         }
       />
     </StyledLabelBase>
-    <StyledMessageBarBase
+    <StyledMessageBar
       messageBarIconProps={
         Object {
           "className": "messageBarInfoIcon",
@@ -86,8 +86,8 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
           Learn more
         </a>
       </Text>
-    </StyledMessageBarBase>
-    <StyledChoiceGroupBase
+    </StyledMessageBar>
+    <StyledChoiceGroup
       ariaLabelledBy="settingsV2RadioButtonLabelId"
       onChange={[Function]}
       options={
@@ -196,7 +196,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
         }
       />
     </StyledLabelBase>
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       ariaLabelledBy="settingsV2RadioButtonLabelId"
       onChange={[Function]}
       options={
@@ -470,7 +470,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
         }
       />
     </StyledLabelBase>
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       ariaLabelledBy="settingsV2RadioButtonLabelId"
       onChange={[Function]}
       options={

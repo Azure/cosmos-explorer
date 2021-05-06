@@ -1,9 +1,13 @@
+import {
+  Dropdown,
+  ICommandBarItemProps,
+  IComponentAsProps,
+  IconType,
+  IDropdownOption,
+  IDropdownStyles,
+} from "@fluentui/react";
 import ChevronDownIcon from "images/Chevron_down.svg";
 import { Observable } from "knockout";
-import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
-import { Dropdown, IDropdownOption, IDropdownStyles } from "office-ui-fabric-react/lib/Dropdown";
-import { IconType } from "office-ui-fabric-react/lib/Icon";
-import { IComponentAsProps } from "office-ui-fabric-react/lib/Utilities";
 import * as React from "react";
 import _ from "underscore";
 import { StyleConstants } from "../../../Common/Constants";

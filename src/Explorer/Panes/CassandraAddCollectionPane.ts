@@ -78,10 +78,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.canExceedMaximumValue = ko.pureComputed(() => this.container.canExceedMaximumValue());
 
     this.isFreeTierAccount = ko.computed<boolean>(() => {
-      const databaseAccount = this.container && this.container.databaseAccount && this.container.databaseAccount();
-      const isFreeTierAccount =
-        databaseAccount && databaseAccount.properties && databaseAccount.properties.enableFreeTier;
-      return isFreeTierAccount;
+      return userContext?.databaseAccount?.properties?.enableFreeTier;
     });
 
     this.tableId = ko.observable<string>("");
@@ -116,7 +113,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     this.resetData();
 
     this.requestUnitsUsageCostDedicated = ko.computed(() => {
-      const account = this.container.databaseAccount();
+      const { databaseAccount: account } = userContext;
       if (!account) {
         return "";
       }
@@ -165,18 +162,13 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     });
 
     this.requestUnitsUsageCostShared = ko.computed(() => {
-      const account = this.container.databaseAccount();
+      const { databaseAccount: account } = userContext;
       if (!account) {
         return "";
       }
 
-      const regions =
-        (account &&
-          account.properties &&
-          account.properties.readLocations &&
-          account.properties.readLocations.length) ||
-        1;
-      const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
+      const regions = account?.properties?.readLocations?.length || 1;
+      const multimaster = account?.properties?.enableMultipleWriteLocations || false;
       let estimatedSpend: string;
       let estimatedSharedSpendAcknowledge: string;
       if (!this.isSharedAutoPilotSelected()) {
@@ -365,18 +357,19 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
       createTableQuery: createTableQuery,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, addCollectionPaneStartMessage);
+    const { databaseAccount } = userContext;
     if (toCreateKeyspace) {
       createTableAndKeyspacePromise = (<CassandraAPIDataClient>this.container.tableDataClient).createTableAndKeyspace(
-        this.container.databaseAccount().properties.cassandraEndpoint,
-        this.container.databaseAccount().id,
+        databaseAccount?.properties.cassandraEndpoint,
+        databaseAccount?.id,
         this.container,
         createTableQuery,
         createKeyspaceQuery
       );
     } else {
       createTableAndKeyspacePromise = (<CassandraAPIDataClient>this.container.tableDataClient).createTableAndKeyspace(
-        this.container.databaseAccount().properties.cassandraEndpoint,
-        this.container.databaseAccount().id,
+        databaseAccount?.properties.cassandraEndpoint,
+        databaseAccount?.id,
         this.container,
         createTableQuery
       );

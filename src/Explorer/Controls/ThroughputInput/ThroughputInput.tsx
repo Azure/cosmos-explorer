@@ -1,4 +1,4 @@
-import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "office-ui-fabric-react";
+import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
 import React from "react";
 import * as Constants from "../../../Common/Constants";
 import * as SharedConstants from "../../../Shared/Constants";
@@ -216,7 +216,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
   }
 
   private getCostAcknowledgeText(): string {
-    const databaseAccount = userContext.databaseAccount;
+    const { databaseAccount } = userContext;
     if (!databaseAccount || !databaseAccount.properties) {
       return "";
     }
@@ -259,8 +259,8 @@ interface CostEstimateTextProps {
 
 const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props: CostEstimateTextProps) => {
   const { requestUnits, isAutoscale } = props;
-  const databaseAccount = userContext.databaseAccount;
-  if (!databaseAccount || !databaseAccount.properties) {
+  const { databaseAccount } = userContext;
+  if (!databaseAccount?.properties) {
     return <></>;
   }
 

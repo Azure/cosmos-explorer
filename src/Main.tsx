@@ -1,4 +1,5 @@
 // CSS Dependencies
+import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
 // Image Dependencies
 import "images/CosmosDB_rgb_ui_lighttheme.ico";
@@ -6,7 +7,6 @@ import "images/favicon.ico";
 import hdeConnectImage from "images/HdeConnectCosmosDB.svg";
 import arrowLeftImg from "images/imgarrowlefticon.svg";
 import refreshImg from "images/refresh-cosmos.svg";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";

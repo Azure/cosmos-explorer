@@ -1,6 +1,6 @@
+import { IconButton, PrimaryButton } from "@fluentui/react";
 import ErrorRedIcon from "images/error_red.svg";
 import LoadingIndicatorIcon from "images/LoadingIndicator_3Squares.gif";
-import { IconButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import React, { FunctionComponent, ReactNode } from "react";
 import { KeyCodes } from "../../../Common/Constants";
 

@@ -2,6 +2,7 @@
  * React component for control bar
  */
 
+import { Dropdown, IDropdownOption } from "@fluentui/react";
 import LoaderIcon from "images/circular_loader_black_16x16.gif";
 import { ReactComponent as ClearIcon } from "images/Clear1.svg";
 import ErrorBlackIcon from "images/error_black.svg";
@@ -11,7 +12,6 @@ import InfoIcon from "images/info_color.svg";
 import LoadingIcon from "images/loading.svg";
 import ChevronDownIcon from "images/QueryBuilder/CollapseChevronDown_16x.png";
 import ChevronUpIcon from "images/QueryBuilder/CollapseChevronUp_16x.png";
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";

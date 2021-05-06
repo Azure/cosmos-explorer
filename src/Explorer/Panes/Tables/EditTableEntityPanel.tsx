@@ -1,16 +1,7 @@
-import { useBoolean } from "@uifabric/react-hooks";
+import { IDropdownOption, Image, IPanelProps, IRenderFunction, Label, Stack, Text, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import AddPropertyIcon from "images/Add-property.svg";
 import RevertBackIcon from "images/RevertBack.svg";
-import {
-  IDropdownOption,
-  Image,
-  IPanelProps,
-  IRenderFunction,
-  Label,
-  Stack,
-  Text,
-  TextField,
-} from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import { TableEntity } from "../../../Common/TableEntity";

@@ -5,15 +5,16 @@
  * - context menu
  */
 
+import {
+  DirectionalHint,
+  IButtonStyles,
+  IconButton,
+  IContextualMenuItemProps,
+  IContextualMenuProps,
+} from "@fluentui/react";
 import LoadingIndicator_3Squares from "images/LoadingIndicator_3Squares.gif";
 import TriangleDownIcon from "images/Triangle-down.svg";
 import TriangleRightIcon from "images/Triangle-right.svg";
-import { IButtonStyles, IconButton } from "office-ui-fabric-react/lib/Button";
-import {
-  DirectionalHint,
-  IContextualMenuItemProps,
-  IContextualMenuProps,
-} from "office-ui-fabric-react/lib/ContextualMenu";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import * as Constants from "../../../Common/Constants";

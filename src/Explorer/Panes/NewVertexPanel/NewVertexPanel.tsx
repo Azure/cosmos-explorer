@@ -1,4 +1,4 @@
-import { useBoolean } from "@uifabric/react-hooks";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";

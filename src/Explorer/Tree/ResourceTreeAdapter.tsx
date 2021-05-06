@@ -9,7 +9,7 @@ import PublishIcon from "images/notebook/publish_content.svg";
 import RefreshIcon from "images/refresh-cosmos.svg";
 import CollectionIcon from "images/tree-collection.svg";
 import * as ko from "knockout";
-import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "office-ui-fabric-react";
+import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
@@ -306,10 +306,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     // This is a rewrite of showConflicts
     const showConflicts =
-      this.container.databaseAccount &&
-      this.container.databaseAccount() &&
-      this.container.databaseAccount().properties &&
-      this.container.databaseAccount().properties.enableMultipleWriteLocations &&
+      userContext?.databaseAccount?.properties.enableMultipleWriteLocations &&
       collection.rawDataModel &&
       !!collection.rawDataModel.conflictResolutionPolicy;
 

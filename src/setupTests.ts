@@ -1,7 +1,7 @@
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import { configure } from "enzyme";
 import "jest-canvas-mock";
-import { initializeIcons } from "office-ui-fabric-react";
+import { initializeIcons } from "@fluentui/react";
 import { TextDecoder, TextEncoder } from "util";
 configure({ adapter: new Adapter() });
 initializeIcons();

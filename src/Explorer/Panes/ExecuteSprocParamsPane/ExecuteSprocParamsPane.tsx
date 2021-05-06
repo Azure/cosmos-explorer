@@ -1,6 +1,6 @@
-import { useBoolean } from "@uifabric/react-hooks";
+import { IDropdownOption, IImageProps, Image, Stack, Text } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import AddPropertyIcon from "images/Add-property.svg";
-import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
 import StoredProcedure from "../../Tree/StoredProcedure";
 import {

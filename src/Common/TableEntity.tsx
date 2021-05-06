@@ -10,7 +10,7 @@ import {
   Stack,
   TextField,
   TooltipHost,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import { CassandraType, TableType } from "../Explorer/Tables/Constants";
 import { userContext } from "../UserContext";

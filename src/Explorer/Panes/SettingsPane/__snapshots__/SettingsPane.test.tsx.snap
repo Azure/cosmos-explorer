@@ -29,7 +29,7 @@ exports[`Settings Pane should render Default properly 1`] = `
             Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
           </Tooltip>
         </div>
-        <StyledChoiceGroupBase
+        <StyledChoiceGroup
           onChange={[Function]}
           options={
             Array [
@@ -60,25 +60,11 @@ exports[`Settings Pane should render Default properly 1`] = `
               Enter the number of query results that should be shown per page.
             </Tooltip>
           </div>
-          <CustomizedSpinButton
+          <StyledSpinButton
             ariaLabel="Custom query items per page"
             className="textfontclr"
             decrementButtonAriaLabel="Decrease value by 1"
-            decrementButtonIcon={
-              Object {
-                "iconName": "ChevronDownSmall",
-              }
-            }
-            disabled={false}
             incrementButtonAriaLabel="Increase value by 1"
-            incrementButtonIcon={
-              Object {
-                "iconName": "ChevronUpSmall",
-              }
-            }
-            label=""
-            labelPosition={2}
-            max={100}
             min={1}
             onDecrement={[Function]}
             onIncrement={[Function]}
@@ -115,7 +101,6 @@ exports[`Settings Pane should render Default properly 1`] = `
               },
             }
           }
-          tabIndex={0}
         />
       </div>
     </div>
@@ -133,24 +118,10 @@ exports[`Settings Pane should render Default properly 1`] = `
             Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
           </Tooltip>
         </div>
-        <CustomizedSpinButton
+        <StyledSpinButton
           ariaLabel="Max degree of parallelism"
           className="textfontclr"
-          decrementButtonIcon={
-            Object {
-              "iconName": "ChevronDownSmall",
-            }
-          }
-          disabled={false}
           id="max-degree"
-          incrementButtonIcon={
-            Object {
-              "iconName": "ChevronUpSmall",
-            }
-          }
-          label=""
-          labelPosition={2}
-          max={100}
           min={-1}
           onDecrement={[Function]}
           onIncrement={[Function]}
@@ -209,7 +180,7 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
             Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
           </Tooltip>
         </div>
-        <StyledChoiceGroupBase
+        <StyledChoiceGroup
           aria-label="Graph Auto-visualization"
           onChange={[Function]}
           options={
