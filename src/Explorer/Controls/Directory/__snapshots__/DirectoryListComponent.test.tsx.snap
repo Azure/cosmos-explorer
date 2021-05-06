@@ -350,19 +350,11 @@ exports[`test render renders with filters 1`] = `
       }
     >
       <div
-<<<<<<< HEAD
         className="ms-ScrollablePane root-85"
         data-is-scrollable="true"
       >
         <div
           className="stickyAbove-87"
-=======
-        className="ms-ScrollablePane root-53"
-        data-is-scrollable="true"
-      >
-        <div
-          className="stickyAbove-55"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
           style={
             Object {
               "height": 0,
@@ -373,11 +365,7 @@ exports[`test render renders with filters 1`] = `
           }
         />
         <div
-<<<<<<< HEAD
           className="ms-ScrollablePane--contentContainer contentContainer-86"
-=======
-          className="ms-ScrollablePane--contentContainer contentContainer-54"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
           data-is-scrollable={true}
         >
           <Sticky
@@ -702,30 +690,18 @@ exports[`test render renders with filters 1`] = `
                       validateOnLoad={true}
                     >
                       <div
-<<<<<<< HEAD
                         className="ms-TextField directoryListFilterTextBox root-91"
-=======
-                        className="ms-TextField directoryListFilterTextBox root-59"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                       >
                         <div
                           className="ms-TextField-wrapper"
                         >
                           <div
-<<<<<<< HEAD
                             className="ms-TextField-fieldGroup fieldGroup-92"
-=======
-                            className="ms-TextField-fieldGroup fieldGroup-60"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           >
                             <input
                               aria-invalid={false}
                               aria-label="Directory filter text box"
-<<<<<<< HEAD
                               className="ms-TextField-field field-93"
-=======
-                              className="ms-TextField-field field-61"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                               id="TextField0"
                               onBlur={[Function]}
                               onChange={[Function]}
@@ -1951,11 +1927,7 @@ exports[`test render renders with filters 1`] = `
                         >
                           <button
                             aria-disabled={true}
-<<<<<<< HEAD
                             className="ms-Button ms-Button--default is-disabled directoryListButton root-102"
-=======
-                            className="ms-Button ms-Button--default is-disabled directoryListButton root-70"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                             data-is-focusable={false}
                             disabled={true}
                             onClick={[Function]}
@@ -1967,11 +1939,7 @@ exports[`test render renders with filters 1`] = `
                             type="button"
                           >
                             <span
-<<<<<<< HEAD
                               className="ms-Button-flexContainer flexContainer-103"
-=======
-                              className="ms-Button-flexContainer flexContainer-71"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                               data-automationid="splitbuttonprimary"
                             >
                               <div
@@ -2002,11 +1970,7 @@ exports[`test render renders with filters 1`] = `
           </List>
         </div>
         <div
-<<<<<<< HEAD
           className="stickyBelow-88"
-=======
-          className="stickyBelow-56"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
           style={
             Object {
               "bottom": "0px",
@@ -2017,11 +1981,7 @@ exports[`test render renders with filters 1`] = `
           }
         >
           <div
-<<<<<<< HEAD
             className="stickyBelowItems-89"
-=======
-            className="stickyBelowItems-57"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
           />
         </div>
       </div>

@@ -1289,11 +1289,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         verticalAlign="center"
       >
         <div
-<<<<<<< HEAD
           className="ms-Stack panelInfoErrorContainer css-166"
-=======
-          className="ms-Stack panelInfoErrorContainer css-202"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
         >
           <StyledIconBase
             className="panelWarningIcon"
@@ -1580,11 +1576,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             >
               <i
                 aria-hidden={true}
-<<<<<<< HEAD
                 className="panelWarningIcon root-168"
-=======
-                className="panelWarningIcon root-204"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                 data-icon-name="WarningSolid"
               >
                 
@@ -1600,11 +1592,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               variant="small"
             >
               <span
-<<<<<<< HEAD
                 className="panelWarningErrorMessage css-169"
-=======
-                className="panelWarningErrorMessage css-205"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
                  
@@ -1629,11 +1617,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-<<<<<<< HEAD
             className="css-169"
-=======
-            className="css-205"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
           >
             Confirm by typing the database id
           </span>
@@ -1933,30 +1917,18 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-<<<<<<< HEAD
               className="ms-TextField root-171"
-=======
-              className="ms-TextField root-207"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-<<<<<<< HEAD
                   className="ms-TextField-fieldGroup fieldGroup-172"
-=======
-                  className="ms-TextField-fieldGroup fieldGroup-208"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                 >
                   <input
                     aria-invalid={false}
                     autoFocus={true}
-<<<<<<< HEAD
                     className="ms-TextField-field field-173"
-=======
-                    className="ms-TextField-field field-209"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     id="confirmDatabaseId"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -1979,11 +1951,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-<<<<<<< HEAD
             className="css-190"
-=======
-            className="css-226"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
           >
             Help us improve Azure Cosmos DB!
           </span>
@@ -1993,11 +1961,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-<<<<<<< HEAD
             className="css-190"
-=======
-            className="css-226"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
           >
             What is the reason why you are deleting this database?
           </span>
@@ -2299,29 +2263,17 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-<<<<<<< HEAD
               className="ms-TextField ms-TextField--multiline root-171"
-=======
-              className="ms-TextField ms-TextField--multiline root-207"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-<<<<<<< HEAD
                   className="ms-TextField-fieldGroup fieldGroup-191"
                 >
                   <textarea
                     aria-invalid={false}
                     className="ms-TextField-field field-192"
-=======
-                  className="ms-TextField-fieldGroup fieldGroup-227"
-                >
-                  <textarea
-                    aria-invalid={false}
-                    className="ms-TextField-field field-228"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     id="deleteDatabaseFeedbackInput"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -4041,11 +3993,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   variantClassName="ms-Button--primary"
                 >
                   <button
-<<<<<<< HEAD
                     className="ms-Button ms-Button--primary root-182"
-=======
-                    className="ms-Button ms-Button--primary root-218"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     data-is-focusable={true}
                     id="sidePanelOkButton"
                     onClick={[Function]}
@@ -4057,7 +4005,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                     type="submit"
                   >
                     <span
-<<<<<<< HEAD
                       className="ms-Button-flexContainer flexContainer-183"
                       data-automationid="splitbuttonprimary"
                     >
@@ -4066,16 +4013,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                       >
                         <span
                           className="ms-Button-label label-186"
-=======
-                      className="ms-Button-flexContainer flexContainer-219"
-                      data-automationid="splitbuttonprimary"
-                    >
-                      <span
-                        className="ms-Button-textContainer textContainer-220"
-                      >
-                        <span
-                          className="ms-Button-label label-222"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           id="id__3"
                           key="id__3"
                         >

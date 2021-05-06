@@ -1090,11 +1090,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Close pane"
-<<<<<<< HEAD
                     className="ms-Button ms-Button--icon closePaneBtn root-85"
-=======
-                    className="ms-Button ms-Button--icon closePaneBtn root-53"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     data-is-focusable={true}
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -1107,28 +1103,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     type="button"
                   >
                     <span
-<<<<<<< HEAD
                       className="ms-Button-flexContainer flexContainer-86"
                       data-automationid="splitbuttonprimary"
                     >
                       <Component
                         className="ms-Button-icon icon-88"
-=======
-                      className="ms-Button-flexContainer flexContainer-54"
-                      data-automationid="splitbuttonprimary"
-                    >
-                      <Component
-                        className="ms-Button-icon icon-56"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         iconName="Cancel"
                       >
                         <i
                           aria-hidden={true}
-<<<<<<< HEAD
                           className="ms-Icon root-37 css-93 ms-Button-icon icon-88"
-=======
-                          className="ms-Icon root-37 css-61 ms-Button-icon icon-56"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           data-icon-name="Cancel"
                           style={
                             Object {
@@ -1472,11 +1456,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     }
                   >
                     <label
-<<<<<<< HEAD
                       className="ms-Label root-94"
-=======
-                      className="ms-Label root-62"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     >
                       Partition key value
                     </label>
@@ -1486,11 +1466,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   horizontal={true}
                 >
                   <div
-<<<<<<< HEAD
                     className="ms-Stack css-95"
-=======
-                    className="ms-Stack css-63"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                   >
                     <Dropdown
                       key=".0:$.0"
@@ -2396,11 +2372,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-<<<<<<< HEAD
                                   className="ms-Label ms-Dropdown-label root-112"
-=======
-                                  className="ms-Label ms-Dropdown-label root-80"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                   id="Dropdown3-label"
                                 >
                                   Key
@@ -2411,11 +2383,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               aria-expanded="false"
                               aria-haspopup="listbox"
                               aria-labelledby="Dropdown3-label Dropdown3-option"
-<<<<<<< HEAD
                               className="ms-Dropdown dropdown-96"
-=======
-                              className="ms-Dropdown dropdown-64"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                               data-is-focusable={true}
                               data-ktp-target={true}
                               id="Dropdown3"
@@ -2433,38 +2401,22 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 aria-atomic={true}
                                 aria-invalid={false}
                                 aria-live="polite"
-<<<<<<< HEAD
                                 className="ms-Dropdown-title title-131"
-=======
-                                className="ms-Dropdown-title title-99"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 id="Dropdown3-option"
                               >
                                 String
                               </span>
                               <span
-<<<<<<< HEAD
                                 className="ms-Dropdown-caretDownWrapper caretDownWrapper-98"
                               >
                                 <StyledIconBase
                                   aria-hidden={true}
                                   className="ms-Dropdown-caretDown caretDown-99"
-=======
-                                className="ms-Dropdown-caretDownWrapper caretDownWrapper-66"
-                              >
-                                <StyledIconBase
-                                  aria-hidden={true}
-                                  className="ms-Dropdown-caretDown caretDown-67"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                   iconName="ChevronDown"
                                 >
                                   <IconBase
                                     aria-hidden={true}
-<<<<<<< HEAD
                                     className="ms-Dropdown-caretDown caretDown-99"
-=======
-                                    className="ms-Dropdown-caretDown caretDown-67"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                     iconName="ChevronDown"
                                     styles={[Function]}
                                     theme={
@@ -2743,11 +2695,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                   >
                                     <i
                                       aria-hidden={true}
-<<<<<<< HEAD
                                       className="ms-Dropdown-caretDown caretDown-113"
-=======
-                                      className="ms-Dropdown-caretDown caretDown-81"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                       data-icon-name="ChevronDown"
                                     >
                                       
@@ -3051,11 +2999,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         validateOnLoad={true}
                       >
                         <div
-<<<<<<< HEAD
                           className="ms-TextField root-115"
-=======
-                          className="ms-TextField root-83"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         >
                           <div
                             className="ms-TextField-wrapper"
@@ -3344,11 +3288,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-<<<<<<< HEAD
                                   className="ms-Label root-94"
-=======
-                                  className="ms-Label root-62"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                   htmlFor="confirmCollectionId"
                                   id="TextFieldLabel6"
                                 >
@@ -3357,21 +3297,13 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               </LabelBase>
                             </StyledLabelBase>
                             <div
-<<<<<<< HEAD
                               className="ms-TextField-fieldGroup fieldGroup-116"
-=======
-                              className="ms-TextField-fieldGroup fieldGroup-84"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                             >
                               <input
                                 aria-invalid={false}
                                 aria-labelledby="TextFieldLabel6"
                                 autoFocus={true}
-<<<<<<< HEAD
                                 className="ms-TextField-field field-117"
-=======
-                                className="ms-TextField-field field-85"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 id="confirmCollectionId"
                                 onBlur={[Function]}
                                 onChange={[Function]}
@@ -3679,11 +3611,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     }
                   >
                     <label
-<<<<<<< HEAD
                       className="ms-Label root-94"
-=======
-                      className="ms-Label root-62"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     >
                       Enter input parameters (if any)
                     </label>
@@ -3693,11 +3621,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   horizontal={true}
                 >
                   <div
-<<<<<<< HEAD
                     className="ms-Stack css-95"
-=======
-                    className="ms-Stack css-63"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                   >
                     <Dropdown
                       key=".0:$.0"
@@ -4603,11 +4527,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-<<<<<<< HEAD
                                   className="ms-Label ms-Dropdown-label root-112"
-=======
-                                  className="ms-Label ms-Dropdown-label root-80"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                   id="Dropdown7-label"
                                 >
                                   Key
@@ -4618,11 +4538,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               aria-expanded="false"
                               aria-haspopup="listbox"
                               aria-labelledby="Dropdown7-label Dropdown7-option"
-<<<<<<< HEAD
                               className="ms-Dropdown dropdown-96"
-=======
-                              className="ms-Dropdown dropdown-64"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                               data-is-focusable={true}
                               data-ktp-target={true}
                               id="Dropdown7"
@@ -4640,38 +4556,22 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 aria-atomic={true}
                                 aria-invalid={false}
                                 aria-live="polite"
-<<<<<<< HEAD
                                 className="ms-Dropdown-title title-131"
-=======
-                                className="ms-Dropdown-title title-99"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 id="Dropdown7-option"
                               >
                                 String
                               </span>
                               <span
-<<<<<<< HEAD
                                 className="ms-Dropdown-caretDownWrapper caretDownWrapper-98"
                               >
                                 <StyledIconBase
                                   aria-hidden={true}
                                   className="ms-Dropdown-caretDown caretDown-99"
-=======
-                                className="ms-Dropdown-caretDownWrapper caretDownWrapper-66"
-                              >
-                                <StyledIconBase
-                                  aria-hidden={true}
-                                  className="ms-Dropdown-caretDown caretDown-67"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                   iconName="ChevronDown"
                                 >
                                   <IconBase
                                     aria-hidden={true}
-<<<<<<< HEAD
                                     className="ms-Dropdown-caretDown caretDown-99"
-=======
-                                    className="ms-Dropdown-caretDown caretDown-67"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                     iconName="ChevronDown"
                                     styles={[Function]}
                                     theme={
@@ -4950,11 +4850,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                   >
                                     <i
                                       aria-hidden={true}
-<<<<<<< HEAD
                                       className="ms-Dropdown-caretDown caretDown-113"
-=======
-                                      className="ms-Dropdown-caretDown caretDown-81"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                       data-icon-name="ChevronDown"
                                     >
                                       
@@ -5260,11 +5156,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         value=""
                       >
                         <div
-<<<<<<< HEAD
                           className="ms-TextField root-115"
-=======
-                          className="ms-TextField root-83"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         >
                           <div
                             className="ms-TextField-wrapper"
@@ -5553,11 +5445,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                                 }
                               >
                                 <label
-<<<<<<< HEAD
                                   className="ms-Label root-94"
-=======
-                                  className="ms-Label root-62"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                   htmlFor="confirmCollectionId"
                                   id="TextFieldLabel10"
                                 >
@@ -5566,21 +5454,13 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               </LabelBase>
                             </StyledLabelBase>
                             <div
-<<<<<<< HEAD
                               className="ms-TextField-fieldGroup fieldGroup-116"
-=======
-                              className="ms-TextField-fieldGroup fieldGroup-84"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                             >
                               <input
                                 aria-invalid={false}
                                 aria-labelledby="TextFieldLabel10"
                                 autoFocus={true}
-<<<<<<< HEAD
                                 className="ms-TextField-field field-117"
-=======
-                                className="ms-TextField-field field-85"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 id="confirmCollectionId"
                                 onBlur={[Function]}
                                 onChange={[Function]}
@@ -5887,11 +5767,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         width={20}
                       >
                         <div
-<<<<<<< HEAD
                           className="ms-Image addRemoveIconLabel root-126"
-=======
-                          className="ms-Image addRemoveIconLabel root-94"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           style={
                             Object {
                               "height": 30,
@@ -5901,11 +5777,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <img
                             alt="Delete param"
-<<<<<<< HEAD
                             className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-127"
-=======
-                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-95"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                             id="deleteparam"
                             key="fabricImage"
                             onClick={[Function]}
@@ -6209,11 +6081,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         width={20}
                       >
                         <div
-<<<<<<< HEAD
                           className="ms-Image addRemoveIconLabel root-126"
-=======
-                          className="ms-Image addRemoveIconLabel root-94"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           style={
                             Object {
                               "height": 30,
@@ -6223,11 +6091,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                         >
                           <img
                             alt="Add param"
-<<<<<<< HEAD
                             className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-127"
-=======
-                            className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-95"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                             id="addparam"
                             key="fabricImage"
                             onClick={[Function]}
@@ -6246,11 +6110,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                 onClick={[Function]}
               >
                 <div
-<<<<<<< HEAD
                   className="ms-Stack css-95"
-=======
-                  className="ms-Stack css-63"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                   onClick={[Function]}
                 >
                   <StyledImageBase
@@ -6541,11 +6401,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       width={20}
                     >
                       <div
-<<<<<<< HEAD
                         className="ms-Image root-126"
-=======
-                        className="ms-Image root-94"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         style={
                           Object {
                             "height": 30,
@@ -6555,11 +6411,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       >
                         <img
                           alt="Add param"
-<<<<<<< HEAD
                           className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-127"
-=======
-                          className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-95"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           key="fabricImage"
                           onError={[Function]}
                           onLoad={[Function]}
@@ -6573,11 +6425,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     key=".0:$.1"
                   >
                     <span
-<<<<<<< HEAD
                       className="addNewParamStyle css-128"
-=======
-                      className="addNewParamStyle css-96"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     >
                       Add New Param
                     </span>
@@ -8331,11 +8179,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-<<<<<<< HEAD
                           className="ms-Button ms-Button--primary genericPaneSubmitBtn root-129"
-=======
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-97"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -8353,7 +8197,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           type="button"
                         >
                           <span
-<<<<<<< HEAD
                             className="ms-Button-flexContainer flexContainer-86"
                             data-automationid="splitbuttonprimary"
                           >
@@ -8362,16 +8205,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                             >
                               <span
                                 className="ms-Button-label label-130"
-=======
-                            className="ms-Button-flexContainer flexContainer-54"
-                            data-automationid="splitbuttonprimary"
-                          >
-                            <span
-                              className="ms-Button-textContainer textContainer-55"
-                            >
-                              <span
-                                className="ms-Button-label label-98"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 id="id__11"
                                 key="id__11"
                               >

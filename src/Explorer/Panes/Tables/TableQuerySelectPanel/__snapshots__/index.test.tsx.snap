@@ -1094,11 +1094,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Close pane"
-<<<<<<< HEAD
                     className="ms-Button ms-Button--icon closePaneBtn root-85"
-=======
-                    className="ms-Button ms-Button--icon closePaneBtn root-53"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     data-is-focusable={true}
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -1111,28 +1107,16 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     type="button"
                   >
                     <span
-<<<<<<< HEAD
                       className="ms-Button-flexContainer flexContainer-86"
                       data-automationid="splitbuttonprimary"
                     >
                       <Component
                         className="ms-Button-icon icon-88"
-=======
-                      className="ms-Button-flexContainer flexContainer-54"
-                      data-automationid="splitbuttonprimary"
-                    >
-                      <Component
-                        className="ms-Button-icon icon-56"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         iconName="Cancel"
                       >
                         <i
                           aria-hidden={true}
-<<<<<<< HEAD
                           className="ms-Icon root-37 css-93 ms-Button-icon icon-88"
-=======
-                          className="ms-Icon root-37 css-61 ms-Button-icon icon-56"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           data-icon-name="Cancel"
                           style={
                             Object {
@@ -1191,11 +1175,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
             >
               <Text>
                 <span
-<<<<<<< HEAD
                   className="css-94"
-=======
-                  className="css-62"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                 >
                   Select the columns that you want to query.
                 </span>
@@ -1490,28 +1470,19 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     }
                   >
                     <div
-<<<<<<< HEAD
                       className="ms-Checkbox is-checked is-enabled root-95"
-=======
-                      className="ms-Checkbox is-checked is-enabled root-63"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     >
                       <input
                         aria-checked="true"
                         aria-label="Available Columns"
                         checked={true}
-<<<<<<< HEAD
                         className="input-96"
-=======
-                        className="input-64"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         data-ktp-execute-target={true}
                         id="availableCheckbox"
                         onChange={[Function]}
                         type="checkbox"
                       />
                       <label
-<<<<<<< HEAD
                         className="ms-Checkbox-label label-97"
                         htmlFor="availableCheckbox"
                       >
@@ -1525,21 +1496,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           >
                             <IconBase
                               className="ms-Checkbox-checkmark checkmark-99"
-=======
-                        className="ms-Checkbox-label label-65"
-                        htmlFor="availableCheckbox"
-                      >
-                        <div
-                          className="ms-Checkbox-checkbox checkbox-66"
-                          data-ktp-target={true}
-                        >
-                          <StyledIconBase
-                            className="ms-Checkbox-checkmark checkmark-67"
-                            iconName="CheckMark"
-                          >
-                            <IconBase
-                              className="ms-Checkbox-checkmark checkmark-67"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                               iconName="CheckMark"
                               styles={[Function]}
                               theme={
@@ -1818,11 +1774,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             >
                               <i
                                 aria-hidden={true}
-<<<<<<< HEAD
                                 className="ms-Checkbox-checkmark checkmark-101"
-=======
-                                className="ms-Checkbox-checkmark checkmark-69"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 data-icon-name="CheckMark"
                               >
                                 
@@ -1832,11 +1784,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         </div>
                         <span
                           aria-hidden="true"
-<<<<<<< HEAD
                           className="ms-Checkbox-text text-100"
-=======
-                          className="ms-Checkbox-text text-68"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         >
                           Available Columns
                         </span>
@@ -2132,22 +2080,14 @@ exports[`Table query select Panel should render Default properly 1`] = `
                     }
                   >
                     <div
-<<<<<<< HEAD
                       className="ms-Checkbox is-checked is-enabled root-95"
-=======
-                      className="ms-Checkbox is-checked is-enabled root-63"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                     >
                       <input
                         aria-checked="true"
                         aria-disabled={false}
                         aria-label=""
                         checked={true}
-<<<<<<< HEAD
                         className="input-96"
-=======
-                        className="input-64"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                         data-ktp-execute-target={true}
                         disabled={false}
                         id="checkbox-3"
@@ -2155,7 +2095,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         type="checkbox"
                       />
                       <label
-<<<<<<< HEAD
                         className="ms-Checkbox-label label-97"
                         htmlFor="checkbox-3"
                       >
@@ -2169,21 +2108,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           >
                             <IconBase
                               className="ms-Checkbox-checkmark checkmark-99"
-=======
-                        className="ms-Checkbox-label label-65"
-                        htmlFor="checkbox-3"
-                      >
-                        <div
-                          className="ms-Checkbox-checkbox checkbox-66"
-                          data-ktp-target={true}
-                        >
-                          <StyledIconBase
-                            className="ms-Checkbox-checkmark checkmark-67"
-                            iconName="CheckMark"
-                          >
-                            <IconBase
-                              className="ms-Checkbox-checkmark checkmark-67"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                               iconName="CheckMark"
                               styles={[Function]}
                               theme={
@@ -2462,11 +2386,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             >
                               <i
                                 aria-hidden={true}
-<<<<<<< HEAD
                                 className="ms-Checkbox-checkmark checkmark-101"
-=======
-                                className="ms-Checkbox-checkmark checkmark-69"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 data-icon-name="CheckMark"
                               >
                                 
@@ -4226,11 +4146,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-<<<<<<< HEAD
                           className="ms-Button ms-Button--primary genericPaneSubmitBtn root-108"
-=======
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-76"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -4248,7 +4164,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
                           type="button"
                         >
                           <span
-<<<<<<< HEAD
                             className="ms-Button-flexContainer flexContainer-86"
                             data-automationid="splitbuttonprimary"
                           >
@@ -4257,16 +4172,6 @@ exports[`Table query select Panel should render Default properly 1`] = `
                             >
                               <span
                                 className="ms-Button-label label-109"
-=======
-                            className="ms-Button-flexContainer flexContainer-54"
-                            data-automationid="splitbuttonprimary"
-                          >
-                            <span
-                              className="ms-Button-textContainer textContainer-55"
-                            >
-                              <span
-                                className="ms-Button-label label-77"
->>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
                                 id="id__4"
                                 key="id__4"
                               >
