@@ -9,7 +9,7 @@ describe("CodeOfConductComponent", () => {
   let codeOfConductProps: CodeOfConductComponentProps;
 
   beforeEach(() => {
-    const junoClient = new JunoClient(undefined);
+    const junoClient = new JunoClient();
     junoClient.acceptCodeOfConduct = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
       data: true,

@@ -63,12 +63,10 @@ async function updateCollectionWithARM(
   collectionId: string,
   newCollection: Partial<Collection>
 ): Promise<Collection> {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
-  switch (defaultExperience) {
+  switch (apiType) {
     case "SQL":
       return updateSqlContainer(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
     case "Cassandra":
@@ -87,7 +85,7 @@ async function updateCollectionWithARM(
         newCollection
       );
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }
 

@@ -83,13 +83,13 @@ exports[`SelfServeComponent message bar and spinner snapshots 1`] = `
         }
       />
     </StackItem>
-    <StyledMessageBarBase
+    <StyledMessageBar
       messageBarType={0}
     >
       <Text>
         refresh performed successfully
       </Text>
-    </StyledMessageBarBase>
+    </StyledMessageBar>
     <SmartUiComponent
       currentValues={
         Map {
@@ -821,13 +821,13 @@ exports[`SelfServeComponent message bar and spinner snapshots 3`] = `
 `;
 
 exports[`SelfServeComponent message bar and spinner snapshots 4`] = `
-<StyledMessageBarBase
+<StyledMessageBar
   messageBarType={1}
 >
   <Text>
     sample error message
   </Text>
-</StyledMessageBarBase>
+</StyledMessageBar>
 `;
 
 exports[`SelfServeComponent should render and honor save, discard, refresh actions 1`] = `

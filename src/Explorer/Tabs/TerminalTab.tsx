@@ -3,6 +3,7 @@ import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
@@ -47,7 +48,7 @@ export default class TerminalTab extends TabsBase {
     this.container = options.container;
     this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
       () => this.getNotebookServerInfo(options),
-      () => this.getContainer().databaseAccount()
+      () => userContext?.databaseAccount
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
       if (this.isTemplateReady() && this.container.isNotebookEnabled()) {

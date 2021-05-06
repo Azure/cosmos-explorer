@@ -1,4 +1,4 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "office-ui-fabric-react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
@@ -233,11 +233,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   public loadMongoIndexes = async (): Promise<void> => {
-    if (
-      userContext.apiType === "Mongo" &&
-      this.container.isEnableMongoCapabilityPresent() &&
-      this.container.databaseAccount()
-    ) {
+    if (userContext.apiType === "Mongo" && userContext?.databaseAccount) {
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
         this.collection.id()
@@ -300,8 +296,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
-    this.container?.databaseAccount &&
-    this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
+    userContext?.databaseAccount?.properties?.enableMultipleWriteLocations &&
     this.collection.conflictResolutionPolicy &&
     !!this.collection.conflictResolutionPolicy();
 
@@ -876,7 +871,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps
   ): JSX.Element => {
     if (userContext.authType === AuthType.AAD) {
-      if (this.container.isEnableMongoCapabilityPresent()) {
+      if (userContext.apiType === "Mongo") {
         return <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />;
       }
       return undefined;

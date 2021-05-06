@@ -19,12 +19,13 @@ export async function updateUserDefinedFunction(
   userDefinedFunction: UserDefinedFunctionDefinition
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating user defined function ${userDefinedFunction.id}`);
+  const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
       const getResponse = await getSqlUserDefinedFunction(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
+        subscriptionId,
+        resourceGroup,
+        databaseAccount.name,
         databaseId,
         collectionId,
         userDefinedFunction.id
@@ -38,9 +39,9 @@ export async function updateUserDefinedFunction(
           },
         };
         const rpResponse = await createUpdateSqlUserDefinedFunction(
-          userContext.subscriptionId,
-          userContext.resourceGroup,
-          userContext.databaseAccount.name,
+          subscriptionId,
+          resourceGroup,
+          databaseAccount.name,
           databaseId,
           collectionId,
           userDefinedFunction.id,

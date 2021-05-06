@@ -12,7 +12,7 @@ import {
   Spinner,
   SpinnerSize,
   Separator,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import {
   addMongoIndexStackProps,
   customDetailsListStyles,

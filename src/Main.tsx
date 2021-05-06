@@ -1,6 +1,6 @@
 // CSS Dependencies
+import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
@@ -26,9 +26,7 @@ import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
 import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
-import { ExplorerMetrics } from "./Common/Constants";
 import { ResourceTree } from "./Common/ResourceTree";
-import { Splitter, SplitterBounds, SplitterDirection } from "./Common/Splitter";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
@@ -94,26 +92,12 @@ const App: React.FunctionComponent = () => {
   const config = useConfig();
   const explorer = useKnockoutExplorer(config?.platform, explorerParams);
 
-  const splitterBounds: SplitterBounds = {
-    min: ExplorerMetrics.SplitterMinWidth,
-    max: ExplorerMetrics.SplitterMaxWidth,
-  };
-
-  const splitter = new Splitter({
-    splitterId: "h_splitter1",
-    leftId: "resourcetree",
-    bounds: splitterBounds,
-    direction: SplitterDirection.Vertical,
-  });
-
   const toggleLeftPaneExpanded = () => {
     setIsLeftPaneExpanded(!isLeftPaneExpanded);
     if (isLeftPaneExpanded) {
       document.getElementById("expandToggleLeftPaneButton").focus();
-      splitter.expandLeft();
     } else {
       document.getElementById("collapseToggleLeftPaneButton").focus();
-      splitter.collapseLeft();
     }
   };
 

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FeaturePanelComponent } from "./FeaturePanelComponent";
-import { getTheme, mergeStyleSets, FontWeights, Modal, IconButton, IIconProps } from "office-ui-fabric-react";
+import { getTheme, mergeStyleSets, FontWeights, Modal, IconButton, IIconProps } from "@fluentui/react";
 import "./FeaturePanelLauncher.less";
 
 // Modal wrapper

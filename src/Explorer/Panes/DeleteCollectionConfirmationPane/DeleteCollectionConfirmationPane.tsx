@@ -1,4 +1,4 @@
-import { Text, TextField } from "office-ui-fabric-react";
+import { Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import { Areas } from "../../../Common/Constants";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";

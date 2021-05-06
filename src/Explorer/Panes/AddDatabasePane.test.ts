@@ -5,49 +5,43 @@ import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import AddDatabasePane from "./AddDatabasePane";
 
+const mockDatabaseAccount: DatabaseAccount = {
+  id: "mock",
+  kind: "DocumentDB",
+  location: "",
+  name: "mock",
+  properties: {
+    documentEndpoint: "",
+    cassandraEndpoint: "",
+    gremlinEndpoint: "",
+    tableEndpoint: "",
+    enableFreeTier: false,
+  },
+  type: undefined,
+};
+
+const mockFreeTierDatabaseAccount: DatabaseAccount = {
+  id: "mock",
+  kind: "DocumentDB",
+  location: "",
+  name: "mock",
+  properties: {
+    documentEndpoint: "",
+    cassandraEndpoint: "",
+    gremlinEndpoint: "",
+    tableEndpoint: "",
+    enableFreeTier: true,
+  },
+  type: undefined,
+};
+
 describe("Add Database Pane", () => {
   describe("getSharedThroughputDefault()", () => {
-    let explorer: Explorer;
-    const mockDatabaseAccount: DatabaseAccount = {
-      id: "mock",
-      kind: "DocumentDB",
-      location: "",
-      name: "mock",
-      properties: {
-        documentEndpoint: "",
-        cassandraEndpoint: "",
-        gremlinEndpoint: "",
-        tableEndpoint: "",
-        enableFreeTier: false,
-      },
-      type: undefined,
-      tags: [],
-    };
-
-    const mockFreeTierDatabaseAccount: DatabaseAccount = {
-      id: "mock",
-      kind: "DocumentDB",
-      location: "",
-      name: "mock",
-      properties: {
-        documentEndpoint: "",
-        cassandraEndpoint: "",
-        gremlinEndpoint: "",
-        tableEndpoint: "",
-        enableFreeTier: true,
-      },
-      type: undefined,
-      tags: [],
-    };
-
-    beforeEach(() => {
-      explorer = new Explorer();
-    });
-
     it("should be true if subscription type is Benefits", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.Benefits,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
@@ -56,6 +50,7 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.EA,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(false);
     });
@@ -64,6 +59,7 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.Free,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
@@ -72,6 +68,7 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.Internal,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
@@ -80,12 +77,14 @@ describe("Add Database Pane", () => {
       updateUserContext({
         subscriptionType: SubscriptionType.PAYG,
       });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.getSharedThroughputDefault()).toBe(true);
     });
 
     it("should display free tier text in upsell messaging", () => {
-      explorer.databaseAccount(mockFreeTierDatabaseAccount);
+      updateUserContext({ databaseAccount: mockFreeTierDatabaseAccount });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.isFreeTierAccount()).toBe(true);
       expect(addDatabasePane.upsellMessage()).toContain("With free tier");
@@ -94,7 +93,8 @@ describe("Add Database Pane", () => {
     });
 
     it("should display standard texr in upsell messaging", () => {
-      explorer.databaseAccount(mockDatabaseAccount);
+      updateUserContext({ databaseAccount: mockDatabaseAccount });
+      const explorer = new Explorer();
       const addDatabasePane = explorer.addDatabasePane as AddDatabasePane;
       expect(addDatabasePane.isFreeTierAccount()).toBe(false);
       expect(addDatabasePane.upsellMessage()).toContain("Start at");
