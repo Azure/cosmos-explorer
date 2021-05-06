@@ -1611,6 +1611,35 @@ exports[`test render renders with filters 1`] = `
                                   },
                                 },
                               },
+                              "splitButtonMenuFocused": Object {
+                                "outline": "transparent",
+                                "position": "relative",
+                                "selectors": Object {
+                                  ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                                    "border": "1px solid #ffffff",
+                                    "bottom": 3,
+                                    "content": "\\"\\"",
+                                    "left": 3,
+                                    "outline": "1px solid #605e5c",
+                                    "position": "absolute",
+                                    "right": 3,
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                        "border": "none",
+                                        "bottom": -2,
+                                        "left": -2,
+                                        "right": -2,
+                                        "top": -2,
+                                      },
+                                    },
+                                    "top": 3,
+                                    "zIndex": 1,
+                                  },
+                                  "::-moz-focus-inner": Object {
+                                    "border": "0",
+                                  },
+                                },
+                              },
                               "splitButtonMenuIcon": Object {
                                 "color": "#323130",
                               },

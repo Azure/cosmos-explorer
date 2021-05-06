@@ -149,10 +149,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
           role="button"
           tabIndex={0}
         >
-          <img
-            alt="clear notifications image"
-            src=""
-          />
+          <Component />
           Clear Notifications
         </span>
       </div>
@@ -315,10 +312,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
           role="button"
           tabIndex={0}
         >
-          <img
-            alt="clear notifications image"
-            src=""
-          />
+          <Component />
           Clear Notifications
         </span>
       </div>
