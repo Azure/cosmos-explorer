@@ -47,15 +47,15 @@ export class HijackScroll extends React.Component<Props> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+public override componentDidUpdate(prevProps: Props) {
     this.scrollIntoViewIfNeeded(prevProps.focused);
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.scrollIntoViewIfNeeded();
   }
 
-  render() {
+public override render() {
     return (
       <div
         onClick={this.props.selectCell}

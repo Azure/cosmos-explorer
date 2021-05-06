@@ -34,7 +34,7 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
     this.addNewEdgeToNeighbor = this.props.isSource ? this.addNewEdgeToSource : this.addNewEdgeToTarget;
   }
 
-  public componentDidMount(): void {
+  public override componentDidMount(): void {
     // Show empty text boxes by default if no neighbor for convenience
     if (this.props.editedNeighbors.currentNeighbors.length === 0) {
       if (this.props.isSource) {
@@ -45,7 +45,7 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
     }
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const neighborTitle = this.props.isSource
       ? EditorNeighborsComponent.SOURCE_TITLE
       : EditorNeighborsComponent.TARGET_TITLE;

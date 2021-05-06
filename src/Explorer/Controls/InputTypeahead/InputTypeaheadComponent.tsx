@@ -113,7 +113,7 @@ export class InputTypeaheadComponent extends React.Component<
    * @param prevState
    * @param snapshot
    */
-  public componentDidUpdate(
+  public override componentDidUpdate(
     prevProps: InputTypeaheadComponentProps,
     prevState: InputTypeaheadComponentState,
     snapshot: any
@@ -127,11 +127,11 @@ export class InputTypeaheadComponent extends React.Component<
   /**
    * Executed once react is done building the DOM for this component
    */
-  public componentDidMount(): void {
+  public override componentDidMount(): void {
     this.initializeTypeahead();
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <span className="input-typeahead-container">
         <div

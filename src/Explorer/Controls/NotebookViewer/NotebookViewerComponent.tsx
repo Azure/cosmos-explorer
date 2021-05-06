@@ -132,7 +132,7 @@ export class NotebookViewerComponent
     }
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="notebookViewerContainer">
         {this.props.backNavigationText !== undefined ? (

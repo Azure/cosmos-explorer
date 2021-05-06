@@ -68,22 +68,22 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     };
   }
 
-  componentDidMount() {
+public override componentDidMount() {
     if (!userContext.features.sandboxNotebookOutputs) {
       loadTransform(this.props as any);
     }
     this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
-  componentDidUpdate() {
+public override componentDidUpdate() {
     this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
   }
 
-  componentWillUnmount() {
+public override componentWillUnmount() {
     this.props.updateNotebookParentDomElt(this.props.contentRef, undefined);
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     return (
       <>
         <div className="NotebookRendererContainer">

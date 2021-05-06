@@ -49,7 +49,7 @@ export class AuthorizeAccessComponent extends React.Component<
     };
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const choiceGroupProps: IChoiceGroupProps = {
       options: [
         {

@@ -279,7 +279,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     }
   }
 
-  public open() {
+  public override open() {
     super.open();
     if (!this.container.isServerlessEnabled()) {
       this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());
@@ -306,7 +306,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }
 
-  public submit() {
+  public override submit() {
     if (!this._isValid()) {
       return;
     }
@@ -436,7 +436,7 @@ export default class CassandraAddCollectionPane extends ContextualPaneBase {
     );
   }
 
-  public resetData() {
+  public override resetData() {
     super.resetData();
     const throughputDefaults = this.container.collectionCreationDefaults.throughput;
     this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());

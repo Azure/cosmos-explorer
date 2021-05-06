@@ -115,7 +115,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     fontSize: 12,
   };
 
-  componentDidUpdate(): void {
+public override componentDidUpdate(): void {
     if (!this.shouldCheckErrors) {
       this.shouldCheckErrors = true;
       return;
@@ -407,7 +407,7 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     );
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     return this.renderNode(this.props.descriptor.root);
   }
 }

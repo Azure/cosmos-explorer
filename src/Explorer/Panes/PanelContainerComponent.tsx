@@ -27,15 +27,15 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     };
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     window.addEventListener("resize", () => this.setState({ height: this.getPanelHeight() }));
   }
 
-  componentWillUnmount(): void {
+public override componentWillUnmount(): void {
     window.removeEventListener("resize", () => this.setState({ height: this.getPanelHeight() }));
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     if (!this.props.panelContent) {
       return <></>;
     }

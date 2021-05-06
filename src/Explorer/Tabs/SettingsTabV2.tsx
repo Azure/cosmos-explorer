@@ -46,7 +46,7 @@ export class CollectionSettingsTabV2 extends SettingsTabV2 {
     });
   }
 
-  public async onActivate(): Promise<void> {
+public override async onActivate(): Promise<void> {
     try {
       this.isExecuting(true);
 
@@ -106,7 +106,7 @@ export class DatabaseSettingsTabV2 extends SettingsTabV2 {
     });
   }
 
-  public async onActivate(): Promise<void> {
+public override async onActivate(): Promise<void> {
     try {
       this.isExecuting(true);
 

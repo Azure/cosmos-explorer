@@ -173,11 +173,11 @@ function collectTarget(
 export class DraggableCellView extends React.Component<Props & DnDSourceProps & DnDTargetProps, State> {
   el?: HTMLDivElement | null;
 
-  state = {
+public override state = {
     hoverUpperHalf: true,
   };
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     const connectDragPreview = this.props.connectDragPreview;
     const img = new (window as any).Image();
 
@@ -193,7 +193,7 @@ export class DraggableCellView extends React.Component<Props & DnDSourceProps & 
     focusCell({ id, contentRef });
   };
 
-  render() {
+public override render() {
     return this.props.connectDropTarget(
       // Sadly connectDropTarget _has_ to take a React element for a DOM element (no styled-divs)
       <div>

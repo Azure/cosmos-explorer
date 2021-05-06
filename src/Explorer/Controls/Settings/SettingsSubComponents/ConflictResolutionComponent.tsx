@@ -40,11 +40,11 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     { key: DataModels.ConflictResolutionMode.Custom, text: "Merge Procedure (custom)" },
   ];
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate(): void {
+public override componentDidUpdate(): void {
     this.onComponentUpdate();
   }
 
@@ -135,7 +135,7 @@ export class ConflictResolutionComponent extends React.Component<ConflictResolut
     />
   );
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
         {this.getConflictResolutionModeComponent()}

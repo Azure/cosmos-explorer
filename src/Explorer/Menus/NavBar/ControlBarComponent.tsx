@@ -23,7 +23,7 @@ export class ControlBarComponent extends React.Component<ControlBarComponentProp
     );
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     if (!this.props.buttons || this.props.buttons.length < 1) {
       return <React.Fragment />;
     }

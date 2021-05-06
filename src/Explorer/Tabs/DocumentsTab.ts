@@ -583,12 +583,12 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   }
 
-  public onTabClick(): void {
+  public override onTabClick(): void {
     super.onTabClick();
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 
-  public async onActivate(): Promise<void> {
+  public async override onActivate(): Promise<void> {
     super.onActivate();
 
     if (!this._documentsIterator) {
@@ -788,7 +788,7 @@ export default class DocumentsTab extends TabsBase {
     return QueryUtils.buildDocumentsQuery(filter, this.partitionKeyProperty, this.partitionKey);
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+  protected override getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     const label = !this.isPreferredApiMongoDB ? "New Item" : "New Document";
     if (this.newDocumentButton.visible()) {

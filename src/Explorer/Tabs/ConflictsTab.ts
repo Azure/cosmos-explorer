@@ -415,12 +415,12 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  public onTabClick(): void {
+  public override onTabClick(): void {
     super.onTabClick();
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
   }
 
-  public async onActivate(): Promise<void> {
+  public override async onActivate(): Promise<void> {
     super.onActivate();
 
     if (!this._documentsIterator) {
@@ -587,7 +587,7 @@ export default class ConflictsTab extends TabsBase {
     return Q();
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+  protected override getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     const label = this._acceptButtonLabel();
     if (this.acceptChangesButton.visible()) {

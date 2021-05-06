@@ -27,7 +27,7 @@ export default class GalleryTab extends TabsBase {
     return <GalleryViewer {...this.props} sortBy={SortBy.MostRecent} searchText={undefined} />;
   }
 
-  public getContainer(): Explorer {
+  public override getContainer(): Explorer {
     return this.props.container;
   }
 }

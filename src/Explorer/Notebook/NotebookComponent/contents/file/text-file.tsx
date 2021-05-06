@@ -35,7 +35,7 @@ interface TextFileState {
 }
 
 class EditorPlaceholder extends React.PureComponent<MonacoEditorProps> {
-  render(): JSX.Element {
+public override render(): JSX.Element {
     // TODO: Show a little blocky placeholder
     return null;
   }
@@ -53,13 +53,13 @@ export class TextFile extends React.PureComponent<TextFileProps, TextFileState> 
     this.props.handleChange(source);
   };
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     import(/* webpackChunkName: "monaco-editor" */ "@nteract/monaco-editor").then((module) => {
       this.setState({ Editor: module.default });
     });
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     const Editor = this.state.Editor;
 
     return (

@@ -149,7 +149,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     this.traceViewGallery();
 
     const tabs: GalleryTabInfo[] = [

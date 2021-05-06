@@ -19,7 +19,7 @@ export interface CollapsiblePanelProps {
 }
 
 export class CollapsiblePanel extends React.Component<CollapsiblePanelProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className={`collapsiblePanel ${this.props.isCollapsed ? "paneCollapsed" : ""}`}>
         {!this.props.isCollapsed ? this.getExpandedFragment() : this.getCollapsedFragment()}

@@ -10,17 +10,17 @@ interface MemoryTrackerProps {
 export class MemoryTrackerComponent extends React.Component<MemoryTrackerProps> {
   private memoryUsageInfoSubscription: Subscription;
 
-  public componentDidMount(): void {
+  public override componentDidMount(): void {
     this.memoryUsageInfoSubscription = this.props.memoryUsageInfo.subscribe(() => {
       this.forceUpdate();
     });
   }
 
-  public componentWillUnmount(): void {
+  public override componentWillUnmount(): void {
     this.memoryUsageInfoSubscription && this.memoryUsageInfoSubscription.dispose();
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const memoryUsageInfo: MemoryUsageInfo = this.props.memoryUsageInfo();
     if (!memoryUsageInfo) {
       return (

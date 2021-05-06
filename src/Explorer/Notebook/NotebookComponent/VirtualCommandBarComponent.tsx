@@ -16,7 +16,7 @@ class VirtualCommandBarComponent extends React.Component<VirtualCommandBarCompon
     this.state = {};
   }
 
-  shouldComponentUpdate(nextProps: VirtualCommandBarComponentProps): boolean {
+public override shouldComponentUpdate(nextProps: VirtualCommandBarComponentProps): boolean {
     return (
       this.props.kernelStatus !== nextProps.kernelStatus ||
       this.props.kernelSpecName !== nextProps.kernelSpecName ||
@@ -24,7 +24,7 @@ class VirtualCommandBarComponent extends React.Component<VirtualCommandBarCompon
     );
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     this.props.onRender && this.props.onRender();
     return <></>;
   }

@@ -56,7 +56,7 @@ export class DynamicListViewModel extends WaitsForTemplateViewModel {
   public ariaLabel: string;
   public buttonText: string;
   public newItem: ko.Observable<string>;
-  public isTemplateReady: ko.Observable<boolean>;
+  public override isTemplateReady: ko.Observable<boolean>;
   public listItems: ko.ObservableArray<DynamicListItem>;
 
   public constructor(options: DynamicListParams) {

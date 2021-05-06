@@ -36,7 +36,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     };
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const { directories: originalItems, selectedDirectoryId } = this.props;
     const { filterText } = this.state;
     const filteredItems =

@@ -104,7 +104,7 @@ export class NodePropertiesComponent extends React.Component<
     return null;
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     if (!this.props.node) {
       return <span />;
     } else {

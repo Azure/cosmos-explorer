@@ -21,20 +21,20 @@ export class EditorReact extends React.Component<EditorReactProps> {
     super(props);
   }
 
-  public componentDidMount(): void {
+  public override componentDidMount(): void {
     this.createEditor(this.configureEditor.bind(this));
   }
 
-  public shouldComponentUpdate(): boolean {
+  public override shouldComponentUpdate(): boolean {
     // Prevents component re-rendering
     return false;
   }
 
-  public componentWillUnmount(): void {
+  public override componentWillUnmount(): void {
     this.selectionListener && this.selectionListener.dispose();
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return <div className="jsonEditor" ref={(elt: HTMLElement) => this.setRef(elt)} />;
   }
 

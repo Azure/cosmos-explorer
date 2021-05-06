@@ -68,7 +68,7 @@ export class TabComponent extends React.Component<TabComponentProps> {
     });
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const currentTabContent = this.props.tabs[this.props.currentTabIndex].content;
     let className = "tabComponentContent";
     if (currentTabContent.className) {

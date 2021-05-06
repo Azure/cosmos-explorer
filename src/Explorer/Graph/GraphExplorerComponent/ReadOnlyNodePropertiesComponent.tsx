@@ -12,7 +12,7 @@ export interface ReadOnlyNodePropertiesComponentProps {
 }
 
 export class ReadOnlyNodePropertiesComponent extends React.Component<ReadOnlyNodePropertiesComponentProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <table className="roPropertyTable propertyTable">
         <tbody>

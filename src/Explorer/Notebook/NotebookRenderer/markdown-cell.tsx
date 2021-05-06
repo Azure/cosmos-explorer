@@ -54,7 +54,7 @@ export const Source = styled(BareSource)`
   width: -moz-available;
 `;
 export class PureMarkdownCell extends React.Component<ComponentProps & DispatchProps & StateProps> {
-  render() {
+public override render() {
     const { contentRef, id, cell, children } = this.props;
 
     const { isEditorFocused, isCellFocused, markdownOptions } = this.props;

@@ -74,7 +74,7 @@ export class NotificationConsoleComponent extends React.Component<
     this.prevHeaderStatus = undefined;
   }
 
-  public componentDidUpdate(
+  public override componentDidUpdate(
     prevProps: NotificationConsoleComponentProps,
     prevState: NotificationConsoleComponentState
   ): void {
@@ -102,7 +102,7 @@ export class NotificationConsoleComponent extends React.Component<
     this.consoleHeaderElement = element;
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const numInProgress = this.state.allConsoleData.filter(
       (data: ConsoleData) => data.type === ConsoleDataType.InProgress
     ).length;

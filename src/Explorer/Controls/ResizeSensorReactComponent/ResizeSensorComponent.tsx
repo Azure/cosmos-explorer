@@ -17,7 +17,7 @@ export abstract class ResizeSensorComponent<P, S> extends React.Component<P, S> 
   protected abstract onDimensionsChanged(width: number, height: number): void;
   protected abstract getSensorTarget(): HTMLElement;
 
-  public componentDidUpdate(): void {
+  public override componentDidUpdate(): void {
     if (this.isSensing) {
       return;
     }
@@ -37,7 +37,7 @@ export abstract class ResizeSensorComponent<P, S> extends React.Component<P, S> 
     }
   }
 
-  public componentWillUnmount(): void {
+  public override componentWillUnmount(): void {
     if (!!this.resizeSensor) {
       this.resizeSensor.detach();
     }

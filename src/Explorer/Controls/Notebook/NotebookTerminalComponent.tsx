@@ -19,7 +19,7 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
     super(props);
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="notebookTerminalContainer">
         <iframe

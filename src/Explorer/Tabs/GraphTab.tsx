@@ -126,7 +126,7 @@ export default class GraphTab extends TabsBase {
     );
   }
 
-  public onTabClick(): void {
+  public override onTabClick(): void {
     super.onTabClick();
     this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
   }
@@ -226,7 +226,7 @@ export default class GraphTab extends TabsBase {
       this.graphConfigUiData.nodeIconChoice(this.graphConfigUiData.nodePropertiesWithNone()[0]);
     }
   }
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+  protected override getTabsButtons(): CommandButtonComponentProps[] {
     const label = "New Vertex";
     const buttons: CommandButtonComponentProps[] = [
       {

@@ -38,7 +38,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
     this.props.setIsAutoscale(true);
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     return (
       <div className="throughputInputContainer throughputInputSpacing">
         <Stack horizontal>

@@ -38,7 +38,7 @@ export class InfoComponent extends React.Component<InfoComponentProps> {
     );
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <HoverCard plainCardProps={{ onRenderPlainCard: this.onHover }} instantOpenOnClick type={HoverCardType.plain}>
         <div className="infoPanelMain">

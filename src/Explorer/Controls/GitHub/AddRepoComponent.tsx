@@ -38,7 +38,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
     };
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const textFieldProps: ITextFieldProps = {
       placeholder: AddRepoComponent.TextFieldPlaceholder,
       autoFocus: true,

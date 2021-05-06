@@ -19,7 +19,7 @@ interface StateProps {
  * Displays "Cell <index>"
  */
 class CellLabeler extends React.Component<ComponentProps & StateProps> {
-  render() {
+public override render() {
     return (
       <div className="CellLabeler">
         <div className="CellLabel">Cell {this.props.cellIndex + 1}</div>

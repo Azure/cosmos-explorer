@@ -42,7 +42,7 @@ export class GalleryAndNotebookViewerComponent extends React.Component<
     };
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     if (this.state.notebookUrl) {
       const props: NotebookViewerComponentProps = {
         container: this.props.container,

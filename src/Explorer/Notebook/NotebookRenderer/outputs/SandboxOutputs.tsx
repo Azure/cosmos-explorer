@@ -33,7 +33,7 @@ interface DispatchProps {
 export class SandboxOutputs extends React.PureComponent<ComponentProps & StateProps & DispatchProps> {
   private childWindow: Window;
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     // Using min-width to set the width of the iFrame, works around an issue in iOS that can prevent the iFrame from sizing correctly.
     return (
       <IframeResizer
@@ -72,11 +72,11 @@ export class SandboxOutputs extends React.PureComponent<ComponentProps & StatePr
     postRobot.send(this.childWindow, "props", props);
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.sendPropsToFrame();
   }
 
-  componentDidUpdate(): void {
+public override componentDidUpdate(): void {
     this.sendPropsToFrame();
   }
 }

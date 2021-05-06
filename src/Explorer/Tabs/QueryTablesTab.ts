@@ -20,7 +20,7 @@ import TabsBase from "./TabsBase";
 // Will act as table explorer class
 export default class QueryTablesTab extends TabsBase {
   public readonly html = template;
-  public collection: ViewModels.Collection;
+  public override collection: ViewModels.Collection;
   public tableEntityListViewModel = ko.observable<TableEntityListViewModel>();
   public queryViewModel = ko.observable<QueryViewModel>();
   public tableCommands: TableCommands;
@@ -160,7 +160,7 @@ export default class QueryTablesTab extends TabsBase {
     return null;
   };
 
-  public onActivate(): void {
+public override onActivate(): void {
     super.onActivate();
     const columns =
       !!this.tableEntityListViewModel() &&
@@ -172,7 +172,7 @@ export default class QueryTablesTab extends TabsBase {
     }
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+  protected override getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     if (this.queryBuilderButton.visible()) {
       const label = userContext.apiType === "Cassandra" ? "CQL Query Builder" : "Query Builder";

@@ -58,11 +58,11 @@ export default class TerminalTab extends TabsBase {
     });
   }
 
-  public getContainer(): Explorer {
+public override getContainer(): Explorer {
     return this.container;
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+  protected override getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     return buttons;
   }

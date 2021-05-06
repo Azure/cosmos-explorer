@@ -23,8 +23,8 @@ enum ToggleState {
 
 export default class StoredProcedureTab extends ScriptTabBase {
   public readonly html = template;
-  public collection: ViewModels.Collection;
-  public node: StoredProcedure;
+  public override collection: ViewModels.Collection;
+  public override node: StoredProcedure;
   public executeResultsEditorId: string;
   public executeLogsEditorId: string;
   public toggleState: ko.Observable<ToggleState>;
@@ -64,7 +64,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
     });
   };
 
-  public onDiscard = (): Q.Promise<any> => {
+public override onDiscard = (): Q.Promise<any> => {
     this.setBaselines();
     const original = this.editorContent.getEditableOriginalValue();
     this.originalSprocBody(original);
@@ -135,13 +135,13 @@ export default class StoredProcedureTab extends ScriptTabBase {
     this.error(error);
   }
 
-  public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
+public override onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
     this.collection && this.collection.container.expandConsole();
 
     return false;
   };
 
-  public onErrorDetailsKeyPress = (src: any, event: KeyboardEvent): boolean => {
+public override onErrorDetailsKeyPress = (src: any, event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
       this.onErrorDetailsClick(src, null);
       return false;
@@ -182,7 +182,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
     return this.toggleState() === ToggleState.Logs;
   }
 
-  protected updateSelectedNode(): void {
+  protected override updateSelectedNode(): void {
     if (this.collection == null) {
       return;
     }
@@ -197,12 +197,12 @@ export default class StoredProcedureTab extends ScriptTabBase {
     }
   }
 
-  protected buildCommandBarOptions(): void {
+  protected override buildCommandBarOptions(): void {
     ko.computed(() => ko.toJSON([this.isNew, this.formIsDirty])).subscribe(() => this.updateNavbarWithTabsButtons());
     super.buildCommandBarOptions();
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+  protected override getTabsButtons(): CommandButtonComponentProps[] {
     const label = "Execute";
     return super.getTabsButtons().concat({
       iconSrc: ExecuteQueryIcon,

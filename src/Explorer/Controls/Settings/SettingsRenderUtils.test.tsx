@@ -26,7 +26,7 @@ import {
 } from "./SettingsRenderUtils";
 
 class SettingsRenderUtilsTestComponent extends React.Component {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const estimatedSpendingColumns: IColumn[] = [
       { key: "costType", name: "", fieldName: "costType", minWidth: 100, maxWidth: 200, isResizable: true },
       { key: "hourly", name: "Hourly", fieldName: "hourly", minWidth: 100, maxWidth: 200, isResizable: true },

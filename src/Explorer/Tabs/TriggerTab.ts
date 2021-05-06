@@ -13,8 +13,8 @@ import template from "./TriggerTab.html";
 
 export default class TriggerTab extends ScriptTabBase {
   public readonly html = template;
-  public collection: ViewModels.Collection;
-  public node: Trigger;
+  public override collection: ViewModels.Collection;
+  public override node: Trigger;
   public triggerType: ViewModels.Editable<string>;
   public triggerOperation: ViewModels.Editable<string>;
 
@@ -94,7 +94,7 @@ export default class TriggerTab extends ScriptTabBase {
       .finally(() => this.isExecuting(false));
   };
 
-  public setBaselines() {
+public override setBaselines() {
     super.setBaselines();
 
     const resource = this.resource();
@@ -102,7 +102,7 @@ export default class TriggerTab extends ScriptTabBase {
     this.triggerType.setBaseline(resource.triggerType);
   }
 
-  protected updateSelectedNode(): void {
+  protected override updateSelectedNode(): void {
     if (this.collection == null) {
       return;
     }

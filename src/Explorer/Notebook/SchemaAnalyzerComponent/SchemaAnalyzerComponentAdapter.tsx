@@ -71,7 +71,7 @@ export class SchemaAnalyzerComponentAdapter extends NotebookComponentBootstrappe
     }
   }
 
-  public renderComponent(): JSX.Element {
+  public override renderComponent(): JSX.Element {
     const props = {
       contentRef: this.contentRef,
       kernelRef: this.kernelRef,

@@ -50,13 +50,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.subscriptions = [];
   }
 
-  public componentWillUnmount() {
+  public override componentWillUnmount() {
     while (this.subscriptions.length) {
       this.subscriptions.pop().dispose();
     }
   }
 
-  public componentDidMount() {
+  public override componentDidMount() {
     this.subscriptions.push(
       this.container.selectedNode.subscribe(() => this.setState({})),
       this.container.isNotebookEnabled.subscribe(() => this.setState({}))
@@ -68,7 +68,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.setState({});
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
     const recentItems = this.createRecentItems();

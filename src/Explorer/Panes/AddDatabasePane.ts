@@ -23,7 +23,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
   public databaseIdTooltipText: ko.Computed<string>;
   public databaseLevelThroughputTooltipText: ko.Computed<string>;
   public databaseCreateNewShared: ko.Observable<boolean>;
-  public formErrorsDetails: ko.Observable<string>;
+  public override formErrorsDetails: ko.Observable<string>;
   public throughput: ViewModels.Editable<number>;
   public maxThroughputRU: ko.Observable<number>;
   public minThroughputRU: ko.Observable<number>;
@@ -255,7 +255,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     return true;
   };
 
-  public open() {
+  public override open() {
     super.open();
     this.resetData();
     const addDatabasePaneOpenMessage = {
@@ -272,7 +272,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     TelemetryProcessor.trace(Action.CreateDatabase, ActionModifiers.Open, addDatabasePaneOpenMessage);
   }
 
-  public submit() {
+  public override submit() {
     if (!this._isValid()) {
       return;
     }
@@ -317,7 +317,7 @@ export default class AddDatabasePane extends ContextualPaneBase {
     );
   }
 
-  public resetData() {
+  public override resetData() {
     this.databaseId("");
     this.databaseCreateNewShared(this.getSharedThroughputDefault());
     this.isAutoPilotSelected(this.container.isAutoscaleDefaultEnabled());

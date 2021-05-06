@@ -39,7 +39,7 @@ export default class NotebookTabBase extends TabsBase {
   /**
    * Override base behavior
    */
-  public getContainer(): Explorer {
+public override getContainer(): Explorer {
     return this.container;
   }
 

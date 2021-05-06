@@ -129,7 +129,7 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
   private dropdownElt: HTMLElement;
   private expandButtonElt: HTMLElement;
 
-  public componentDidUpdate(): void {
+  public override componentDidUpdate(): void {
     if (!this.dropdownElt || !this.expandButtonElt) {
       return;
     }
@@ -243,7 +243,7 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
     );
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     let mainClassName = "commandButtonComponent";
     if (this.props.disabled) {
       mainClassName += " commandDisabled";

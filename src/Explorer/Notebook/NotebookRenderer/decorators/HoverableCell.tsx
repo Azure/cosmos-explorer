@@ -20,7 +20,7 @@ interface DispatchProps {
  * HoverableCell sets the hovered cell
  */
 class HoverableCell extends React.Component<ComponentProps & DispatchProps> {
-  render() {
+public override render() {
     return (
       <div className="HoverableCell" onMouseEnter={this.props.hover} onMouseLeave={this.props.unHover}>
         {this.props.children}

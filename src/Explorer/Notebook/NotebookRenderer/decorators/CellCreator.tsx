@@ -132,7 +132,7 @@ export class PureCellCreator extends React.PureComponent<CellCreatorProps> {
     this.props.createCell("code", this.props.above);
   };
 
-  render() {
+public override render() {
     return (
       <CreatorHoverMask>
         <CreatorHoverRegion>
@@ -171,7 +171,7 @@ class CellCreator extends React.PureComponent<ComponentProps & DispatchProps & S
       : createCellBelow({ cellType: type, id, source: "", contentRef });
   };
 
-  render() {
+public override render() {
     return (
       <React.Fragment>
         {this.props.isFirstCell && (

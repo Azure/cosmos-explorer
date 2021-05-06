@@ -46,7 +46,7 @@ export class SchemaAnalyzerComponent extends React.Component<
     };
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     loadTransform(this.props);
   }
 
@@ -78,7 +78,7 @@ export class SchemaAnalyzerComponent extends React.Component<
     this.props.runCell(this.props.contentRef, this.props.firstCellId);
   };
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     const { firstCellId: id, contentRef, kernelStatus, outputs } = this.props;
     if (!id) {
       return <></>;

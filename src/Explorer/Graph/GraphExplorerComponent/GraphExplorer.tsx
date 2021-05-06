@@ -965,7 +965,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   }
 
   /* ************* React life-cycle methods *********** */
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const currentTabIndex = ((resultDisplay: ResultDisplay): number => {
       switch (resultDisplay) {
         case ResultDisplay.Graph:
@@ -1022,10 +1022,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     );
   }
 
-  public componentWillUnmount(): void {
+  public override componentWillUnmount(): void {
     this.gremlinClient.destroy();
   }
-  public componentDidMount(): void {
+  public override componentDidMount(): void {
     if (this.props.onLoadStartKey != null && this.props.onLoadStartKey != undefined) {
       TelemetryProcessor.traceSuccess(
         Action.Tab,
@@ -1069,7 +1069,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }
   }
 
-  public componentDidUpdate(): void {
+  public override componentDidUpdate(): void {
     this.onIsPropertyPaneEditing(this.isPropertyPaneEditing());
     this.onIsNewVertexDisabledChange(this.isNewVertexDisabled());
   }

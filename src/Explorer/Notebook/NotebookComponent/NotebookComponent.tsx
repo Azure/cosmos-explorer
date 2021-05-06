@@ -6,11 +6,11 @@ import { default as Contents } from "./contents";
 export class NotebookComponent extends React.Component<{ contentRef: ContentRef }> {
   notificationSystem!: ReactNotificationSystem;
 
-  shouldComponentUpdate(nextProps: { contentRef: ContentRef }): boolean {
+public override shouldComponentUpdate(nextProps: { contentRef: ContentRef }): boolean {
     return nextProps.contentRef !== this.props.contentRef;
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="notebookComponentContainer">
         <Contents contentRef={this.props.contentRef} />

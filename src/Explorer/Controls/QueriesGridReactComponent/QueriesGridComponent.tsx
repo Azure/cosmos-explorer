@@ -62,7 +62,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
     this.selection.setItems(this.state.filteredResults);
   }
 
-  public componentDidUpdate(prevProps: QueriesGridComponentProps, prevState: QueriesGridComponentState): void {
+  public override componentDidUpdate(prevProps: QueriesGridComponentProps, prevState: QueriesGridComponentState): void {
     this.selection.setItems(
       this.state.filteredResults,
       !_.isEqual(prevState.filteredResults, this.state.filteredResults)
@@ -79,11 +79,11 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
   }
 
   // fetched saved queries when panel open
-  public componentDidMount() {
+  public override componentDidMount() {
     this.fetchSavedQueries();
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     if (this.state.queries.length === 0) {
       return this.renderBannerComponent();
     }

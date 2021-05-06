@@ -89,14 +89,14 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     },
   ];
 
-  componentDidUpdate(prevProps: MongoIndexingPolicyComponentProps): void {
+public override componentDidUpdate(prevProps: MongoIndexingPolicyComponentProps): void {
     if (this.props.indexesToAdd.length > prevProps.indexesToAdd.length) {
       this.addMongoIndexComponentRefs[prevProps.indexesToAdd.length]?.current?.focus();
     }
     this.onComponentUpdate();
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.onComponentUpdate();
   }
 
@@ -311,7 +311,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
     );
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     if (this.props.mongoIndexes) {
       if (this.hasCompoundIndex()) {
         return mongoCompoundIndexNotSupportedMessage;

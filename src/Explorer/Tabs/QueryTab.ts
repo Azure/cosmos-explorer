@@ -41,7 +41,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   public allResultsMetadata: ko.ObservableArray<ViewModels.QueryResultsMetadata>;
   public showingDocumentsDisplayText: ko.Observable<string>;
   public requestChargeDisplayText: ko.Observable<string>;
-  public isTemplateReady: ko.Observable<boolean>;
+  public override isTemplateReady: ko.Observable<boolean>;
   public splitterId: string;
   public splitter: Splitter;
   public isPreferredApiMongoDB: boolean;
@@ -165,7 +165,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this._buildCommandBarOptions();
   }
 
-  public onTabClick(): void {
+public override onTabClick(): void {
     super.onTabClick();
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Query);
   }
@@ -197,13 +197,13 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     await this._executeQueryDocumentsPage(firstResultIndex + itemCount - 1);
   }
 
-  public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
+public override onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
     this.collection && this.collection.container.expandConsole();
 
     return false;
   };
 
-  public onErrorDetailsKeyPress = (src: any, event: KeyboardEvent): boolean => {
+public override onErrorDetailsKeyPress = (src: any, event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
       this.onErrorDetailsClick(src, null);
       return false;
@@ -553,7 +553,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     return csvData;
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+public override getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     if (this.executeQueryButton.visible()) {
       const label = this._executeQueryButtonTitle();

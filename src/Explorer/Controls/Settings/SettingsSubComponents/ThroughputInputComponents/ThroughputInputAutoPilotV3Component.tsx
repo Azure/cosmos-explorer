@@ -96,11 +96,11 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     { key: "false", text: "Manual" },
   ];
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate(): void {
+public override componentDidUpdate(): void {
     this.onComponentUpdate();
   }
 
@@ -627,7 +627,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     );
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <Stack {...checkBoxAndInputStackProps}>
         {this.renderWarningMessage()}

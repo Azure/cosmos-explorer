@@ -21,7 +21,7 @@ import ObjectId from "../Tree/ObjectId";
 import DocumentsTab from "./DocumentsTab";
 
 export default class MongoDocumentsTab extends DocumentsTab {
-  public collection: ViewModels.Collection;
+  public override collection: ViewModels.Collection;
   private continuationToken: string;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
@@ -43,7 +43,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     super.buildCommandBarOptions();
   }
 
-  public onSaveNewDocumentClick = (): Promise<any> => {
+  public override onSaveNewDocumentClick = (): Promise<any> => {
     const documentContent = JSON.parse(this.selectedDocumentContent());
     this.displayedError("");
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
@@ -127,7 +127,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       .finally(() => this.isExecuting(false));
   };
 
-  public onSaveExisitingDocumentClick = (): Promise<any> => {
+  public override onSaveExisitingDocumentClick = (): Promise<any> => {
     const selectedDocumentId = this.selectedDocumentId();
     const documentContent = this.selectedDocumentContent();
     this.isExecutionError(false);
@@ -185,17 +185,17 @@ export default class MongoDocumentsTab extends DocumentsTab {
       .finally(() => this.isExecuting(false));
   };
 
-  public buildQuery(filter: string): string {
+  public override buildQuery(filter: string): string {
     return filter || "{}";
   }
 
-  public async selectDocument(documentId: DocumentId): Promise<void> {
+  public override async selectDocument(documentId: DocumentId): Promise<void> {
     this.selectedDocumentId(documentId);
     const content = await readDocument(this.collection.databaseId, this.collection, documentId);
     this.initDocumentEditor(documentId, content);
   }
 
-  public loadNextPage(): Q.Promise<any> {
+  public override loadNextPage(): Q.Promise<any> {
     this.isExecuting(true);
     this.isExecutionError(false);
     const filter: string = this.filterContent().trim();
@@ -264,7 +264,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
       .finally(() => this.isExecuting(false));
   }
 
-  protected _onEditorContentChange(newContent: string) {
+  protected override _onEditorContentChange(newContent: string) {
     try {
       if (
         this.editorState() === ViewModels.DocumentExplorerState.newDocumentValid ||
@@ -281,7 +281,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
-  protected renderObjectForEditor(value: any, replacer: any, space: string | number): string {
+  protected override renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return MongoUtility.tojson(value, null, false);
   }
 
@@ -310,7 +310,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
     return partitionKey;
   }
 
-  protected __deleteDocument(documentId: DocumentId): Promise<void> {
+  protected override __deleteDocument(documentId: DocumentId): Promise<void> {
     return deleteDocument(this.collection.databaseId, this.collection, documentId);
   }
 }

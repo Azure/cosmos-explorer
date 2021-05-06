@@ -62,7 +62,7 @@ export class ArcadiaMenuPicker extends React.Component<ArcadiaMenuPickerProps, A
     this.props.onCreateNewSparkPoolClicked(item.key);
   };
 
-  public render() {
+  public override render() {
     const { workspaces } = this.props;
     let workspaceMenuItems: IContextualMenuItem[] = workspaces.map((workspace) => {
       let sparkPoolsMenuProps: IContextualMenuProps = {

@@ -29,7 +29,7 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
   private static readonly OKButtonText = "OK";
   private static readonly CancelButtonText = "Cancel";
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const content: JSX.Element = this.props.showAuthorizeAccess ? (
       <AuthorizeAccessComponent {...this.props.authorizeAccessProps} />
     ) : (

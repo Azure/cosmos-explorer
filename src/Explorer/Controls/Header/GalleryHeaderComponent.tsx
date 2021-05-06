@@ -30,7 +30,7 @@ export class GalleryHeaderComponent extends React.Component {
     );
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <Stack
         tokens={{ childrenGap: 10 }}

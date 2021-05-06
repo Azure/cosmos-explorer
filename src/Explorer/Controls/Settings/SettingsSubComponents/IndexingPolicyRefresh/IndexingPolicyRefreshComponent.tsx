@@ -52,7 +52,7 @@ export class IndexingPolicyRefreshComponent extends React.Component<
     }
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return this.renderIndexTransformationWarning() ? (
       <MessageBar messageBarType={MessageBarType.warning}>{this.renderIndexTransformationWarning()}</MessageBar>
     ) : (

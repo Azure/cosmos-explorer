@@ -56,7 +56,7 @@ export interface TreeComponentProps {
 }
 
 export class TreeComponent extends React.Component<TreeComponentProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div style={this.props.style} className={`treeComponent ${this.props.className}`}>
         <TreeNodeComponent paddingLeft={0} node={this.props.rootNode} generation={0} />
@@ -93,7 +93,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     };
   }
 
-  componentDidUpdate(prevProps: TreeNodeComponentProps, prevState: TreeNodeComponentState) {
+public override componentDidUpdate(prevProps: TreeNodeComponentProps, prevState: TreeNodeComponentState) {
     // Only call when expand has actually changed
     if (this.state.isExpanded !== prevState.isExpanded) {
       if (this.state.isExpanded) {
@@ -110,7 +110,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
     }
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return this.renderNode(this.props.node, this.props.generation);
   }
 

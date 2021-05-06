@@ -24,13 +24,13 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
     this.setState({ isExpanded: !this.state.isExpanded });
   };
 
-  public componentDidUpdate(): void {
+  public override componentDidUpdate(): void {
     if (this.state.isExpanded && this.props.onExpand) {
       this.props.onExpand();
     }
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <>
         <Stack

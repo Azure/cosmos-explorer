@@ -51,7 +51,7 @@ export default class MongoShellTab extends TabsBase {
     // }
   }
 
-  public onTabClick(): void {
+public override onTabClick(): void {
     super.onTabClick();
     this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }

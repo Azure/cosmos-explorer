@@ -25,7 +25,7 @@ export interface NotebookRendererProps {
  * This is the class that uses nteract to render a read-only notebook.
  */
 class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
-  componentDidMount() {
+public override componentDidMount() {
     if (!userContext.features.sandboxNotebookOutputs) {
       loadTransform(this.props as any);
     }
@@ -54,7 +54,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
     );
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     return (
       <div className="NotebookReadOnlyRender">
         <Cells contentRef={this.props.contentRef}>

@@ -72,11 +72,11 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
     this.partitionKeyName = userContext.apiType === "Mongo" ? "Shard key" : "Partition key";
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.onComponentUpdate();
   }
 
-  componentDidUpdate(): void {
+public override componentDidUpdate(): void {
     this.onComponentUpdate();
   }
 
@@ -323,7 +323,7 @@ export class SubSettingsComponent extends React.Component<SubSettingsComponentPr
 
   public isLargePartitionKeyEnabled = (): boolean => this.props.collection.partitionKey?.version >= 2;
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
         {userContext.apiType !== "Cassandra" && this.getTtlComponent()}

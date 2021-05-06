@@ -37,7 +37,7 @@ interface StateProps {
 class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & StateProps> {
   static contextType = CellToolbarContext;
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     let items: IContextualMenuItem[] = [];
 
     if (this.props.cellType === "code") {

@@ -18,7 +18,7 @@ interface LeftPaneComponentProps {
 }
 
 export class LeftPaneComponent extends React.Component<LeftPaneComponentProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="leftPane">
         <div className="paneTitle leftPaneResults">Results</div>

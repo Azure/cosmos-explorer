@@ -3,11 +3,11 @@ export class ObjectCache<T> extends Map<string, T> {
     super();
   }
 
-  public get(key: string): T | undefined {
+  public override get(key: string): T | undefined {
     return this.touch(key);
   }
 
-  public set(key: string, value: T): this {
+  public override set(key: string, value: T): this {
     if (this.size === this.limit) {
       this.delete(this.keys().next().value);
     }

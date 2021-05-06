@@ -12,7 +12,7 @@ interface MiddlePaneComponentProps {
 }
 
 export class MiddlePaneComponent extends React.Component<MiddlePaneComponentProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="middlePane">
         <div className="graphTitle">

@@ -31,18 +31,18 @@ export class KeyboardShortcuts extends React.Component<Props> {
     this.keyDown = this.keyDown.bind(this);
   }
 
-  shouldComponentUpdate(nextProps: Props) {
+public override shouldComponentUpdate(nextProps: Props) {
     const newContentRef = this.props.contentRef !== nextProps.contentRef;
     const newFocusedCell = this.props.focusedCell !== nextProps.focusedCell;
     const newCellOrder = this.props.cellOrder && this.props.cellOrder.size !== nextProps.cellOrder.size;
     return newContentRef || newFocusedCell || newCellOrder;
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     document.addEventListener("keydown", this.keyDown);
   }
 
-  componentWillUnmount(): void {
+public override componentWillUnmount(): void {
     document.removeEventListener("keydown", this.keyDown);
   }
 
@@ -102,7 +102,7 @@ export class KeyboardShortcuts extends React.Component<Props> {
     }
   }
 
-  render() {
+public override render() {
     return <React.Fragment>{this.props.children}</React.Fragment>;
   }
 }

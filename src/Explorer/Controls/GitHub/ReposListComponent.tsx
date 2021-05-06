@@ -67,7 +67,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
   private static readonly DefaultBranchName = "master";
   private static readonly FooterIndex = -1;
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const pinnedReposListProps: IDetailsListProps = {
       styles: {
         contentWrapper: {

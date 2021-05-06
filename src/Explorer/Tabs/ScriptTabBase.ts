@@ -31,7 +31,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
   public isNew: ko.Observable<boolean>;
   // TODO: Remove any. The SDK types for all the script.body are slightly incorrect which makes this REALLY hard to type correct.
   public resource: ko.Observable<any>;
-  public isTemplateReady: ko.Observable<boolean>;
+  public override isTemplateReady: ko.Observable<boolean>;
   protected _partitionKey: DataModels.PartitionKey;
 
   constructor(options: ViewModels.ScriptTabOption) {
@@ -186,7 +186,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     this._setBaselines();
   }
 
-  public onTabClick(): void {
+  public override onTabClick(): void {
     super.onTabClick();
     if (this.isNew()) {
       this.collection.selectedSubnodeKind(this.tabKind);
@@ -215,7 +215,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     return undefined;
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+  protected override getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
     const label = "Save";
     if (this.saveButton.visible()) {

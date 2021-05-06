@@ -36,7 +36,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public collectionWithThroughputInShared: ko.Observable<boolean>;
   public databaseCreateNewShared: ko.Observable<boolean>;
   public databaseHasSharedOffer: ko.Observable<boolean>;
-  public formErrorsDetails: ko.Observable<string>;
+  public override formErrorsDetails: ko.Observable<string>;
   public formWarnings: ko.Observable<string>;
   public partitionKey: ko.Observable<string>;
   public partitionKeyName: ko.Computed<string>;
@@ -658,7 +658,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     return true;
   };
 
-  public async open(databaseId?: string) {
+  public override async open(databaseId?: string) {
     super.open();
     // TODO: Figure out if a database level partition split is about to happen once shared throughput read is available
     this.formWarnings("");
@@ -752,7 +752,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     return this._getThroughput();
   }
 
-  public submit() {
+  public override submit() {
     if (!this.isValid()) {
       return;
     }
@@ -912,7 +912,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     );
   }
 
-  public resetData() {
+  public override resetData() {
     this.collectionId("");
     this.databaseId("");
     this.partitionKey("");

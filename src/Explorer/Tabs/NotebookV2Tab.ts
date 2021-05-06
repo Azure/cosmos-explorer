@@ -62,7 +62,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       });
   }
 
-  public onCloseTabButtonClick(): Q.Promise<any> {
+public override onCloseTabButtonClick(): Q.Promise<any> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
       super.onCloseTabButtonClick();
@@ -92,7 +92,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
+public override getTabsButtons(): CommandButtonComponentProps[] {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
 
     const saveLabel = "Save";

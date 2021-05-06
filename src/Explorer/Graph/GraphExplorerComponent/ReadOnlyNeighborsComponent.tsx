@@ -20,7 +20,7 @@ export class ReadOnlyNeighborsComponent extends React.Component<ReadOnlyNeighbor
   private static readonly NO_TARGETS_LABEL = "No targets found";
   private static readonly TARGET_TITLE = "Target";
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const neighbors = this.props.isSource ? this.props.node.sources : this.props.node.targets;
     const noNeighborsLabel = this.props.isSource
       ? ReadOnlyNeighborsComponent.NO_SOURCES_LABEL

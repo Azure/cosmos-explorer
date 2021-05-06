@@ -107,7 +107,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   public cqlQuery: ko.Observable<string>;
   public oDataQuery: ko.Observable<string>;
   public sqlQuery: ko.Observable<string>;
-  public cache: TableEntityCache;
+  public override cache: TableEntityCache;
   public isCancelled: boolean = false;
   public queryErrorMessage: ko.Observable<string>;
   public id: string;
@@ -386,7 +386,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   /**
    * @override
    */
-  protected matchesKeys(item: Entities.ITableEntity, itemKeys: Entities.IProperty[]): boolean {
+  protected override matchesKeys(item: Entities.ITableEntity, itemKeys: Entities.IProperty[]): boolean {
     return itemKeys.every((property: Entities.IProperty) => {
       return this.stringCompare(item[property.key]._, property.value);
     });

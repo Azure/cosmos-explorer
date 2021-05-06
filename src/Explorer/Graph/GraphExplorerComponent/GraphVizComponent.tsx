@@ -18,20 +18,20 @@ export class GraphVizComponent extends React.Component<GraphVizComponentProps> {
     this.forceGraph = new D3ForceGraph(this.props.forceGraphParams);
   }
 
-  public componentDidMount(): void {
+  public override componentDidMount(): void {
     this.forceGraph.init(this.rootNode);
   }
 
-  public shouldComponentUpdate(): boolean {
+  public override shouldComponentUpdate(): boolean {
     // Prevents component re-rendering
     return false;
   }
 
-  public componentWillUnmount(): void {
+  public override componentWillUnmount(): void {
     this.forceGraph.destroy();
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <svg id="maingraph" ref={(elt: Element) => this.setRef(elt)}>
         <title>Main Graph</title>

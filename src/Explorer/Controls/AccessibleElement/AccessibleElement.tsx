@@ -20,7 +20,7 @@ export class AccessibleElement extends React.Component<AccessibleElementProps> {
     }
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const elementProps = { ...this.props };
     delete elementProps.as;
     delete elementProps.onActivated;

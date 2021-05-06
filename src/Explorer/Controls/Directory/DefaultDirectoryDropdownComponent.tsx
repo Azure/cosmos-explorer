@@ -16,7 +16,7 @@ export interface DefaultDirectoryDropdownProps {
 export class DefaultDirectoryDropdownComponent extends React.Component<DefaultDirectoryDropdownProps> {
   public static readonly lastVisitedKey: string = "lastVisited";
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const lastVisitedOption: IDropdownOption = {
       key: DefaultDirectoryDropdownComponent.lastVisitedKey,
       text: "Sign in to your last visited directory",

@@ -53,7 +53,7 @@ export class NotebookComponentAdapter extends NotebookComponentBootstrapper impl
     };
   }
 
-  protected renderExtraComponent = (): JSX.Element => {
+  protected override renderExtraComponent = (): JSX.Element => {
     return <VirtualCommandBarComponent contentRef={this.contentRef} onRender={this.onUpdateKernelInfo} />;
   };
 }

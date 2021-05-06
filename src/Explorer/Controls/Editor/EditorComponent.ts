@@ -26,7 +26,7 @@ export interface EditorParams extends JsonEditorParams {
  */
 // TODO: Ideally, JsonEditorViewModel should extend EditorViewModel and not the other way around
 class EditorViewModel extends JsonEditorViewModel {
-  public params: EditorParams;
+  public override params: EditorParams;
   private static providerRegistered: string[] = [];
 
   public constructor(params: EditorParams) {
@@ -44,11 +44,11 @@ class EditorViewModel extends JsonEditorViewModel {
       });
   }
 
-  protected getEditorLanguage(): string {
+  protected override getEditorLanguage(): string {
     return this.params.contentType;
   }
 
-  protected async registerCompletionItemProvider() {
+  protected override async registerCompletionItemProvider() {
     if (EditorViewModel.providerRegistered.indexOf("sql") < 0) {
       const { SqlCompletionItemProvider } = await import("@azure/cosmos-language-service");
       const monaco = await loadMonaco();
@@ -57,7 +57,7 @@ class EditorViewModel extends JsonEditorViewModel {
     }
   }
 
-  protected async getErrorMarkers(input: string): Promise<monaco.editor.IMarkerData[]> {
+  protected override async getErrorMarkers(input: string): Promise<monaco.editor.IMarkerData[]> {
     const { ErrorMarkProvider } = await import("@azure/cosmos-language-service");
     return ErrorMarkProvider.getErrorMark(input);
   }

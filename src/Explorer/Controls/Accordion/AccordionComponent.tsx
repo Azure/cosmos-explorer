@@ -12,7 +12,7 @@ import TriangleRightIcon from "../../../../images/Triangle-right.svg";
 export interface AccordionComponentProps {}
 
 export class AccordionComponent extends React.Component<AccordionComponentProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return <div className="accordion">{this.props.children}</div>;
   }
 }
@@ -42,7 +42,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
     };
   }
 
-  componentDidUpdate() {
+public override componentDidUpdate() {
     if (this.props.isExpanded !== this.isExpanded) {
       this.isExpanded = this.props.isExpanded;
       this.setState({
@@ -51,7 +51,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
     }
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="accordionItemContainer">
         <div className="accordionItemHeader" onClick={this.onHeaderClick} onKeyPress={this.onHeaderKeyPress}>

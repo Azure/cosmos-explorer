@@ -216,7 +216,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
     );
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <Stack {...subComponentStackProps}>
         {this.isFreeTierAccount() && (

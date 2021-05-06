@@ -20,7 +20,7 @@ export interface RadioSwitchComponentProps {
 }
 
 export class RadioSwitchComponent extends React.Component<RadioSwitchComponentProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="radioSwitchComponent">
         {this.props.choices.map((choice: Choice) => (

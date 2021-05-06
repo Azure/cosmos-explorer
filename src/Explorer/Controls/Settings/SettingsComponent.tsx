@@ -213,7 +213,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     if (this.isCollectionSettingsTab) {
       this.refreshIndexTransformationProgress();
       this.loadMongoIndexes();
@@ -226,7 +226,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     }
   }
 
-  componentDidUpdate(): void {
+public override componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
       this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
     }
@@ -879,7 +879,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return mongoIndexingPolicyAADError;
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
       database: this.database,

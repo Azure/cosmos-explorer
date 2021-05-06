@@ -36,7 +36,7 @@ interface DispatchProps {
 type Props = StateProps & DispatchProps & ComponentProps;
 
 export class PromptPure extends React.Component<Props> {
-  render() {
+public override render() {
     return (
       <div className="nteract-cell-prompt">
         {this.props.children({

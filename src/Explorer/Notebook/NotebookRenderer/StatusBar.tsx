@@ -45,14 +45,14 @@ const BarContainer = styled.div`
 `;
 
 export class StatusBar extends React.Component<Props> {
-  shouldComponentUpdate(nextProps: Props): boolean {
+public override shouldComponentUpdate(nextProps: Props): boolean {
     if (this.props.lastSaved !== nextProps.lastSaved || this.props.kernelStatus !== nextProps.kernelStatus) {
       return true;
     }
     return false;
   }
 
-  render() {
+public override render() {
     const name = this.props.kernelSpecDisplayName || "Loading...";
 
     return (

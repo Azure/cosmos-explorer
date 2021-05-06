@@ -10,7 +10,7 @@ export interface ToolTipLabelComponentProps {
 const iconButtonStyles: Partial<IIconStyles> = { root: { marginBottom: -3 } };
 
 export class ToolTipLabelComponent extends React.Component<ToolTipLabelComponentProps> {
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <>
         <Stack horizontal verticalAlign="center" tokens={toolTipLabelStackTokens}>

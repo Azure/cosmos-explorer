@@ -25,7 +25,7 @@ export class QueryContainerComponent extends React.Component<
     };
   }
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <div className="queryContainer">
         <InputTypeaheadComponent.InputTypeaheadComponent

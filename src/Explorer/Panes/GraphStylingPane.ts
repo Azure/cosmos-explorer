@@ -61,7 +61,7 @@ export default class GraphStylingPane extends ContextualPaneBase {
     this.remoteConfig = config;
   }
 
-  public close() {
+  public override close() {
     this.remoteConfig = null;
     super.close();
   }

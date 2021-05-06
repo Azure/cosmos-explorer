@@ -91,7 +91,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     };
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     return (
       <form className="panelFormWrapper" onSubmit={this.submit.bind(this)}>
         {this.state.errorMessage && (

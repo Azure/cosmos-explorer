@@ -41,7 +41,7 @@ export class NotebookMetadataComponent extends React.Component<NotebookMetadataC
     );
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     const options: Intl.DateTimeFormatOptions = {
       year: "numeric",
       month: "short",

@@ -51,7 +51,7 @@ class KeyValidator implements ValueValidator {
 class BooleanValueValidator extends ValueValidator {
   private detailedHelp = "Enter true or false."; // localize
 
-  public validate(value: string): IValidationResult {
+  public override validate(value: string): IValidationResult {
     var success: boolean = false;
     var help: string = noHelp;
 
@@ -66,7 +66,7 @@ class BooleanValueValidator extends ValueValidator {
     return { isInvalid: !success, help: help };
   }
 
-  public parseValue(value: string): boolean {
+  public override parseValue(value: string): boolean {
     // OData seems to require lowercase boolean values, see http://www.odata.org/documentation/odata-version-2-0/overview/
     return value.toString().toLowerCase() === "true";
   }
@@ -75,7 +75,7 @@ class BooleanValueValidator extends ValueValidator {
 class DateTimeValueValidator extends ValueValidator {
   private detailedHelp = "Enter a date and time."; // localize
 
-  public validate(value: string): IValidationResult {
+  public override validate(value: string): IValidationResult {
     var success: boolean = false;
     var help: string = noHelp;
 
@@ -93,7 +93,7 @@ class DateTimeValueValidator extends ValueValidator {
     return { isInvalid: !success, help: help };
   }
 
-  public parseValue(value: string): Date {
+  public override parseValue(value: string): Date {
     var millisecondTime = Date.parse(value);
     var parsed: Date = new Date(millisecondTime);
 
@@ -104,7 +104,7 @@ class DateTimeValueValidator extends ValueValidator {
 class DoubleValueValidator extends ValueValidator {
   private detailedHelp = "Enter a 64-bit floating point value."; // localize
 
-  public validate(value: string): IValidationResult {
+  public override validate(value: string): IValidationResult {
     var success: boolean = false;
     var help: string = noHelp;
 
@@ -119,7 +119,7 @@ class DoubleValueValidator extends ValueValidator {
     return { isInvalid: !success, help: help };
   }
 
-  public parseValue(value: string): number {
+  public override parseValue(value: string): number {
     return parseFloat(value);
   }
 }
@@ -127,7 +127,7 @@ class DoubleValueValidator extends ValueValidator {
 class GuidValueValidator extends ValueValidator {
   private detailedHelp = "Enter a 16-byte (128-bit) GUID value."; // localize
 
-  public validate(value: string): IValidationResult {
+  public override validate(value: string): IValidationResult {
     var success: boolean = false;
     var help: string = noHelp;
 
@@ -155,7 +155,7 @@ class IntegerValueValidator extends ValueValidator {
     this.isInt64 = isInt64;
   }
 
-  public validate(value: string): IValidationResult {
+  public override validate(value: string): IValidationResult {
     var success: boolean = false;
     var help: string = noHelp;
 
@@ -180,7 +180,7 @@ class IntegerValueValidator extends ValueValidator {
     return { isInvalid: !success, help: help };
   }
 
-  public parseValue(value: string): number {
+  public override parseValue(value: string): number {
     return parseInt(value, 10);
   }
 }
@@ -198,7 +198,7 @@ class StringValidator extends ValueValidator {
     this.isRequired = isRequired;
   }
 
-  public validate(value: string): IValidationResult {
+  public override validate(value: string): IValidationResult {
     var help: string = this.isRequired ? this.isRequiredHelp : this.detailedHelp;
     if (value === null) {
       return { isInvalid: false, help: help };
@@ -219,7 +219,7 @@ class StringValidator extends ValueValidator {
     return { isInvalid: !success, help: help };
   }
 
-  public parseValue(value: string): string {
+  public override parseValue(value: string): string {
     return String(value); // Ensure value is converted to string.
   }
 }
@@ -233,12 +233,12 @@ class NotSupportedValidator extends ValueValidator {
     this.type = type;
   }
 
-  public validate(ignoredValue: string): IValidationResult {
+  public override validate(ignoredValue: string): IValidationResult {
     //throw new Errors.NotSupportedError(this.getMessage());
     return null;
   }
 
-  public parseValue(ignoredValue: string): any {
+  public override parseValue(ignoredValue: string): any {
     //throw new Errors.NotSupportedError(this.getMessage());
     return null;
   }

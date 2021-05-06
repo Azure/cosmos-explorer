@@ -54,7 +54,7 @@ class Contents extends React.PureComponent<ContentsProps> {
     SAVE: ["ctrl+s", "ctrl+shift+s", "meta+s", "meta+shift+s"],
   };
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     const { contentRef, handlers } = this.props;
 
     if (!contentRef) {

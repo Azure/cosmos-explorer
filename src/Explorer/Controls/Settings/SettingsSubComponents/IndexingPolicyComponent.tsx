@@ -38,7 +38,7 @@ export class IndexingPolicyComponent extends React.Component<
     };
   }
 
-  componentDidUpdate(): void {
+public override componentDidUpdate(): void {
     if (this.props.shouldDiscardIndexingPolicy) {
       this.resetIndexingPolicyEditor();
       this.props.resetShouldDiscardIndexingPolicy();
@@ -46,7 +46,7 @@ export class IndexingPolicyComponent extends React.Component<
     this.onComponentUpdate();
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.resetIndexingPolicyEditor();
     this.onComponentUpdate();
   }
@@ -112,7 +112,7 @@ export class IndexingPolicyComponent extends React.Component<
     }
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <Stack {...titleAndInputStackProps}>
         <IndexingPolicyRefreshComponent

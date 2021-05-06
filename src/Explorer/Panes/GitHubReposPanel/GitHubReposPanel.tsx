@@ -98,7 +98,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
     this.junoClient = this.props.junoClientProp;
   }
 
-  componentDidMount(): void {
+public override componentDidMount(): void {
     this.open();
   }
 
@@ -431,7 +431,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
     this.props.explorer.notebookManager?.gitHubOAuthService.startOAuth(scope);
   }
 
-  render(): JSX.Element {
+public override render(): JSX.Element {
     return (
       <form className="panelFormWrapper">
         {this.state.errorMessage && (

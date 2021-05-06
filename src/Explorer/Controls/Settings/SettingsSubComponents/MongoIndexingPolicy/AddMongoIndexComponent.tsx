@@ -61,7 +61,7 @@ export class AddMongoIndexComponent extends React.Component<AddMongoIndexCompone
     this.descriptionTextField.focus();
   };
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <Stack {...mongoWarningStackProps}>
         <Stack horizontal tokens={addMongoIndexSubElementsTokens}>

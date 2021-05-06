@@ -20,7 +20,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
   public static readonly VERTEX_PROPERTY_TYPES = ["string", "number", "boolean" /* 'null' */]; // TODO Enable null when fully supported by backend
   private static readonly DEFAULT_PROPERTY_TYPE = "string";
 
-  public render(): JSX.Element {
+  public override render(): JSX.Element {
     return (
       <table className="propertyTable">
         <tbody>

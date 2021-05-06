@@ -12,8 +12,8 @@ import template from "./UserDefinedFunctionTab.html";
 
 export default class UserDefinedFunctionTab extends ScriptTabBase {
   public readonly html = template;
-  public collection: ViewModels.Collection;
-  public node: UserDefinedFunction;
+  public override collection: ViewModels.Collection;
+  public override node: UserDefinedFunction;
   constructor(options: ViewModels.ScriptTabOption) {
     super(options);
     this.ariaLabel("User Defined Function Body");
@@ -76,7 +76,7 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
       .finally(() => this.isExecuting(false));
   };
 
-  protected updateSelectedNode(): void {
+  protected override updateSelectedNode(): void {
     if (this.collection == null) {
       return;
     }

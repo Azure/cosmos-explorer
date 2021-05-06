@@ -79,8 +79,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   private retryIntervalInMs: number;
   private retryOptions: promiseRetry.Options;
   private translationFunction: TFunction;
-
-  componentDidMount(): void {
+  public override componentDidMount(): void {
     this.performRefresh().then(() => {
       if (this.state.refreshResult?.isUpdateInProgress) {
         promiseRetry(() => this.pollRefresh(), this.retryOptions);
@@ -442,7 +441,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     });
   };
 
-  public render(): JSX.Element {
+public override render(): JSX.Element {
     if (this.state.compileErrorMessage) {
       return (
         <MessageBar messageBarType={MessageBarType.error}>
