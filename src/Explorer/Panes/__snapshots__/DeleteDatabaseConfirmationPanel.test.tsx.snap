@@ -1289,7 +1289,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         verticalAlign="center"
       >
         <div
-          className="ms-Stack panelInfoErrorContainer css-166"
+          className="ms-Stack panelInfoErrorContainer css-102"
         >
           <StyledIconBase
             className="panelWarningIcon"
@@ -1576,7 +1576,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             >
               <i
                 aria-hidden={true}
-                className="panelWarningIcon root-168"
+                className="panelWarningIcon root-104"
                 data-icon-name="WarningSolid"
               >
                 
@@ -1592,7 +1592,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               variant="small"
             >
               <span
-                className="panelWarningErrorMessage css-169"
+                className="panelWarningErrorMessage css-105"
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
                  
@@ -1617,7 +1617,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-169"
+            className="css-105"
           >
             Confirm by typing the database id
           </span>
@@ -1917,18 +1917,18 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField root-171"
+              className="ms-TextField root-107"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-172"
+                  className="ms-TextField-fieldGroup fieldGroup-108"
                 >
                   <input
                     aria-invalid={false}
                     autoFocus={true}
-                    className="ms-TextField-field field-173"
+                    className="ms-TextField-field field-109"
                     id="confirmDatabaseId"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -1951,7 +1951,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-190"
+            className="css-126"
           >
             Help us improve Azure Cosmos DB!
           </span>
@@ -1961,7 +1961,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-190"
+            className="css-126"
           >
             What is the reason why you are deleting this database?
           </span>
@@ -2263,17 +2263,17 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField ms-TextField--multiline root-171"
+              className="ms-TextField ms-TextField--multiline root-107"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-191"
+                  className="ms-TextField-fieldGroup fieldGroup-127"
                 >
                   <textarea
                     aria-invalid={false}
-                    className="ms-TextField-field field-192"
+                    className="ms-TextField-field field-128"
                     id="deleteDatabaseFeedbackInput"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -3993,7 +3993,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   variantClassName="ms-Button--primary"
                 >
                   <button
-                    className="ms-Button ms-Button--primary root-182"
+                    className="ms-Button ms-Button--primary root-118"
                     data-is-focusable={true}
                     id="sidePanelOkButton"
                     onClick={[Function]}
@@ -4005,14 +4005,14 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                     type="submit"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-183"
+                      className="ms-Button-flexContainer flexContainer-119"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-184"
+                        className="ms-Button-textContainer textContainer-120"
                       >
                         <span
-                          className="ms-Button-label label-186"
+                          className="ms-Button-label label-122"
                           id="id__3"
                           key="id__3"
                         >
@@ -4021,7 +4021,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                       </span>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </DefaultButton>
             </CustomizedDefaultButton>

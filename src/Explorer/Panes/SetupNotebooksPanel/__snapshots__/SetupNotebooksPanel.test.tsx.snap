@@ -1732,7 +1732,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                 >
                   <button
                     aria-label="Complete setup"
-                    className="ms-Button ms-Button--primary btncreatecoll1 btnSetupQueries root-85"
+                    className="ms-Button ms-Button--primary btncreatecoll1 btnSetupQueries root-53"
                     data-is-focusable={true}
                     id="completeSetupBtn"
                     onClick={[Function]}
@@ -1744,14 +1744,14 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-86"
+                      className="ms-Button-flexContainer flexContainer-54"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-87"
+                        className="ms-Button-textContainer textContainer-55"
                       >
                         <span
-                          className="ms-Button-label label-89"
+                          className="ms-Button-label label-57"
                           id="id__0"
                           key="id__0"
                         >
@@ -1760,7 +1760,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                       </span>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </DefaultButton>
             </CustomizedDefaultButton>
