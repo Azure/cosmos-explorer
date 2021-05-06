@@ -1,4 +1,4 @@
-import { DatePicker, TextField } from "office-ui-fabric-react";
+import { DatePicker, TextField } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 
 export interface TableEntityProps {
@@ -6,6 +6,7 @@ export interface TableEntityProps {
   entityValuePlaceholder: string;
   entityValue: string | Date;
   isEntityTypeDate: boolean;
+  isEntityValueDisable?: boolean;
   entityTimeValue: string;
   entityValueType: string;
   onEntityValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
@@ -22,6 +23,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
   entityValueType,
   onEntityValueChange,
   onSelectDate,
+  isEntityValueDisable,
   onEntityTimeValueChange,
 }: TableEntityProps): JSX.Element => {
   if (isEntityTypeDate) {
@@ -33,6 +35,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
           value={entityValue && new Date(entityValue)}
           ariaLabel={entityValuePlaceholder}
           onSelectDate={onSelectDate}
+          disabled={isEntityValueDisable}
         />
         <TextField
           label={entityValueLabel && entityValueLabel}
@@ -41,6 +44,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
           type="time"
           value={entityTimeValue}
           onChange={onEntityTimeValueChange}
+          disabled={isEntityValueDisable}
         />
       </>
     );
@@ -52,6 +56,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
       className="addEntityTextField"
       id="entityValueId"
       autoFocus
+      disabled={isEntityValueDisable}
       type={entityValueType}
       placeholder={entityValuePlaceholder}
       value={typeof entityValue === "string" && entityValue}

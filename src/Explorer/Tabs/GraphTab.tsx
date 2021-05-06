@@ -5,12 +5,15 @@ import StyleIcon from "../../../images/Style.svg";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
-import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
+import {
+  GraphAccessor,
+  GraphExplorer,
+  GraphExplorerError,
+  GraphExplorerProps,
+} from "../Graph/GraphExplorerComponent/GraphExplorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import GraphStylingPane from "../Panes/GraphStylingPane";
 import { NewVertexPanel } from "../Panes/NewVertexPanel/NewVertexPanel";
-import template from "./GraphTab.html";
 import TabsBase from "./TabsBase";
 export interface GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -37,14 +40,13 @@ interface GraphTabOptions extends ViewModels.TabOptions {
 }
 
 export default class GraphTab extends TabsBase {
-  public static readonly component = { name: "graph-tab", template };
   // Graph default configuration
   public static readonly DEFAULT_NODE_CAPTION = "id";
   private static readonly LINK_COLOR = "#aaa";
   private static readonly NODE_SIZE = 10;
   private static readonly NODE_COLOR = "orange";
   private static readonly LINK_WIDTH = 1;
-  private graphExplorerAdapter: GraphExplorerAdapter;
+  private graphExplorerProps: GraphExplorerProps;
   private isNewVertexDisabled: ko.Observable<boolean>;
   private isPropertyEditing: ko.Observable<boolean>;
   private isGraphDisplayed: ko.Observable<boolean>;
@@ -70,7 +72,7 @@ export default class GraphTab extends TabsBase {
     this.graphConfig = GraphTab.createGraphConfig();
     // TODO Merge this with this.graphConfig
     this.graphConfigUiData = GraphTab.createGraphConfigUiData(this.graphConfig);
-    this.graphExplorerAdapter = new GraphExplorerAdapter({
+    this.graphExplorerProps = {
       onGraphAccessorCreated: (instance: GraphAccessor): void => {
         this.graphAccessor = instance;
       },
@@ -89,8 +91,9 @@ export default class GraphTab extends TabsBase {
       onResetDefaultGraphConfigValues: () => this.setDefaultGraphConfigValues(),
       graphConfig: this.graphConfig,
       graphConfigUiData: this.graphConfigUiData,
-      onIsFilterQueryLoading: (isFilterQueryLoading: boolean): void => this.isFilterQueryLoading(isFilterQueryLoading),
-      onIsValidQuery: (isValidQuery: boolean): void => this.isValidQuery(isValidQuery),
+      onIsFilterQueryLoadingChange: (isFilterQueryLoading: boolean): void =>
+        this.isFilterQueryLoading(isFilterQueryLoading),
+      onIsValidQueryChange: (isValidQuery: boolean): void => this.isValidQuery(isValidQuery),
       collectionPartitionKeyProperty: options.collectionPartitionKeyProperty,
       graphBackendEndpoint: GraphTab.getGremlinEndpoint(options.account),
       databaseId: options.databaseId,
@@ -103,7 +106,7 @@ export default class GraphTab extends TabsBase {
         }
       },
       resourceId: options.account.id,
-    });
+    };
 
     this.isFilterQueryLoading = ko.observable(false);
     this.isValidQuery = ko.observable(true);
@@ -113,6 +116,14 @@ export default class GraphTab extends TabsBase {
     return account.properties.gremlinEndpoint
       ? GraphTab.sanitizeHost(account.properties.gremlinEndpoint)
       : `${account.name}.graphs.azure.com:443/`;
+  }
+
+  public render(): JSX.Element {
+    return (
+      <div className="graphExplorerContainer" role="tabpanel" id={this.tabId}>
+        <GraphExplorer {...this.graphExplorerProps} />
+      </div>
+    );
   }
 
   public onTabClick(): void {

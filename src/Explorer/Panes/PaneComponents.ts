@@ -1,9 +1,7 @@
 import AddCollectionPaneTemplate from "./AddCollectionPane.html";
 import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
-import GitHubReposPaneTemplate from "./GitHubReposPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
-import StringInputPaneTemplate from "./StringInputPane.html";
 import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
 import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 
@@ -62,24 +60,6 @@ export class CassandraAddCollectionPaneComponent {
     return {
       viewModel: PaneComponent,
       template: CassandraAddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class StringInputPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: StringInputPaneTemplate,
-    };
-  }
-}
-
-export class GitHubReposPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: GitHubReposPaneTemplate,
     };
   }
 }

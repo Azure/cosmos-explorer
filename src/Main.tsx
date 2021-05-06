@@ -1,6 +1,6 @@
 // CSS Dependencies
+import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import "../externals/jquery-ui.min.css";
@@ -53,7 +53,6 @@ import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { useTabs } from "./hooks/useTabs";
-import { KOCommentEnd, KOCommentIfStart } from "./koComment";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 import { userContext } from "./UserContext";
@@ -231,15 +230,7 @@ const App: React.FunctionComponent = () => {
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
-      <div data-bind='component: { name: "table-edit-entity-pane", params: { data: editTableEntityPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      <div data-bind='component: { name: "string-input-pane", params: { data: stringInputPane} }' />
-      <KOCommentIfStart if="isGitHubPaneEnabled" />
-      <div data-bind='component: { name: "github-repos-pane", params: { data: gitHubReposPane } }' />
-      <KOCommentEnd />
-      <KOCommentIfStart if="isPublishNotebookPaneEnabled" />
-      <div data-bind="react: publishNotebookPaneAdapter" />
-      <KOCommentEnd />
       {showDialog && <Dialog {...dialogProps} />}
     </div>
   );

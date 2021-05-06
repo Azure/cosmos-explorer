@@ -9,7 +9,7 @@ import {
   SpinnerSize,
   Stack,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import promiseRetry, { AbortError } from "p-retry";
 import React from "react";
 import { WithTranslation } from "react-i18next";

@@ -1,4 +1,4 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "office-ui-fabric-react";
+import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { Tooltip } from "../../../Common/Tooltip/Tooltip";
@@ -7,19 +7,18 @@ import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility"
 import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
 import {
   GenericRightPaneComponent,
   GenericRightPaneProps,
 } from "../GenericRightPaneComponent/GenericRightPaneComponent";
 
 export interface SettingsPaneProps {
-  explorer: Explorer;
+  expandConsole: () => void;
   closePanel: () => void;
 }
 
 export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
-  explorer: container,
+  expandConsole,
   closePanel,
 }: SettingsPaneProps) => {
   const [formErrors, setFormErrors] = useState<string>("");
@@ -107,7 +106,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   };
 
   const genericPaneProps: GenericRightPaneProps = {
-    container,
+    expandConsole,
     formError: formErrors,
     formErrorDetail: "",
     id: "settingspane",
@@ -188,7 +187,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                   label: { padding: 0 },
                 }}
                 className="padding"
-                tabIndex={0}
                 ariaLabel="Enable cross partition query"
                 checked={crossPartitionQueryEnabled}
                 onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}

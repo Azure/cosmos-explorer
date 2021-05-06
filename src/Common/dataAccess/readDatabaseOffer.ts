@@ -1,24 +1,19 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
-import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { userContext } from "../../UserContext";
 import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { handleError } from "../ErrorHandlingUtils";
+import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
-import { userContext } from "../../UserContext";
 
 export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promise<Offer> => {
   const clearMessage = logConsoleProgress(`Querying offer for database ${params.databaseId}`);
 
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       return await readDatabaseOfferWithARM(params.databaseId);
     }
 
@@ -32,28 +27,26 @@ export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promis
 };
 
 const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   let rpResponse;
   try {
-    switch (defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
+    switch (apiType) {
+      case "SQL":
         rpResponse = await getSqlDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         rpResponse = await getMongoDBDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         rpResponse = await getCassandraKeyspaceThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         rpResponse = await getGremlinDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
       default:
-        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${apiType}`);
     }
   } catch (error) {
     if (error.code !== "NotFound") {

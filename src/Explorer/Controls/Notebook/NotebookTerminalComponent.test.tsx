@@ -13,7 +13,6 @@ const createTestDatabaseAccount = (): DataModels.DatabaseAccount => {
       gremlinEndpoint: null,
       tableEndpoint: null,
     },
-    tags: "testTags",
     type: "testType",
   };
 };
@@ -30,7 +29,6 @@ const createTestMongo32DatabaseAccount = (): DataModels.DatabaseAccount => {
       gremlinEndpoint: null,
       tableEndpoint: null,
     },
-    tags: "testTags",
     type: "testType",
   };
 };
@@ -48,7 +46,6 @@ const createTestMongo36DatabaseAccount = (): DataModels.DatabaseAccount => {
       tableEndpoint: null,
       mongoEndpoint: "https://testMongoEndpoint.azure.com/",
     },
-    tags: "testTags",
     type: "testType",
   };
 };
@@ -65,7 +62,6 @@ const createTestCassandraDatabaseAccount = (): DataModels.DatabaseAccount => {
       gremlinEndpoint: null,
       tableEndpoint: null,
     },
-    tags: "testTags",
     type: "testType",
   };
 };

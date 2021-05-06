@@ -1,4 +1,4 @@
-import { IPanelProps, IRenderFunction, Panel, PanelType } from "office-ui-fabric-react";
+import { IPanelProps, IRenderFunction, Panel, PanelType } from "@fluentui/react";
 import * as React from "react";
 
 export interface PanelContainerProps {

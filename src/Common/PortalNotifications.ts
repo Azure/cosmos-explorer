@@ -1,8 +1,8 @@
+import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { userContext } from "../UserContext";
-import { configContext, Platform } from "../ConfigContext";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 const notificationsPath = () => {
   switch (configContext.platform) {
@@ -20,9 +20,7 @@ export const fetchPortalNotifications = async (): Promise<DataModels.Notificatio
     return [];
   }
 
-  const databaseAccount = userContext.databaseAccount;
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
+  const { databaseAccount, resourceGroup, subscriptionId } = userContext;
   const url = `${configContext.BACKEND_ENDPOINT}${notificationsPath()}?accountName=${
     databaseAccount.name
   }&subscriptionId=${subscriptionId}&resourceGroup=${resourceGroup}`;

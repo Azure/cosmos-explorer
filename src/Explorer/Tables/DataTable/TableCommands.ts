@@ -58,10 +58,6 @@ export default class TableCommands {
     var entityToUpdate: Entities.ITableEntity = viewModel.selected()[0];
     var originalNumberOfProperties = entityToUpdate ? 0 : Object.keys(entityToUpdate).length - 1; // .metadata is always a property for etag
 
-    this._container.editTableEntityPane.originEntity = entityToUpdate;
-    this._container.editTableEntityPane.tableViewModel = viewModel;
-    this._container.editTableEntityPane.originalNumberOfProperties = originalNumberOfProperties;
-    this._container.editTableEntityPane.open();
     return null;
   }
 

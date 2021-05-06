@@ -1,4 +1,4 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "office-ui-fabric-react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
@@ -136,15 +136,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       this.container = this.collection?.container;
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
-      this.shouldShowIndexingPolicyEditor =
-        this.container && userContext.apiType !== "Cassandra" && !this.container.isPreferredApiMongoDB();
+      this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
 
       this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
-        this.container.isPreferredApiMongoDB() &&
-        (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
+        userContext.apiType === "Mongo" && (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
     } else {
       this.database = this.props.settingsTab.database;
       this.container = this.database?.container;
@@ -235,11 +233,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   }
 
   public loadMongoIndexes = async (): Promise<void> => {
-    if (
-      this.container.isPreferredApiMongoDB() &&
-      this.container.isEnableMongoCapabilityPresent() &&
-      this.container.databaseAccount()
-    ) {
+    if (userContext.apiType === "Mongo" && userContext?.databaseAccount) {
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
         this.collection.id()
@@ -302,8 +296,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
-    this.container?.databaseAccount &&
-    this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
+    userContext?.databaseAccount?.properties?.enableMultipleWriteLocations &&
     this.collection.conflictResolutionPolicy &&
     !!this.collection.conflictResolutionPolicy();
 
@@ -878,7 +871,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps
   ): JSX.Element => {
     if (userContext.authType === AuthType.AAD) {
-      if (this.container.isEnableMongoCapabilityPresent()) {
+      if (userContext.apiType === "Mongo") {
         return <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />;
       }
       return undefined;
@@ -1002,7 +995,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />,
       });
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       const mongoIndexTabContext = this.getMongoIndexTabContent(mongoIndexingPolicyComponentProps);
       if (mongoIndexTabContext) {
         tabs.push({

@@ -1,9 +1,7 @@
-import * as React from "react";
+import { ProgressIndicator, Spinner, SpinnerSize, Stack } from "@fluentui/react";
 import { Observable, Subscription } from "knockout";
+import * as React from "react";
 import { MemoryUsageInfo } from "../../../Contracts/DataModels";
-import { ProgressIndicator } from "office-ui-fabric-react/lib/ProgressIndicator";
-import { Spinner, SpinnerSize } from "office-ui-fabric-react/lib/Spinner";
-import { Stack } from "office-ui-fabric-react/lib/Stack";
 
 interface MemoryTrackerProps {
   memoryUsageInfo: Observable<MemoryUsageInfo>;

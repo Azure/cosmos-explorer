@@ -8,7 +8,7 @@ import {
   Stack,
   TextField,
   TooltipHost,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import DeleteIcon from "../../images/delete.svg";
 import EditIcon from "../../images/Edit_entity.svg";
@@ -32,6 +32,7 @@ export interface TableEntityProps {
   options: { key: string; text: string }[];
   isPropertyTypeDisable: boolean;
   entityTimeValue: string;
+  isEntityValueDisable?: boolean;
   onDeleteEntity?: () => void;
   onEditEntity?: () => void;
   onEntityPropertyChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
@@ -55,6 +56,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
   isPropertyTypeDisable,
   isEntityTypeDate,
   entityTimeValue,
+  isEntityValueDisable,
   onEditEntity,
   onDeleteEntity,
   onEntityPropertyChange,
@@ -113,6 +115,7 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         <EntityValue
           entityValueLabel={entityValueLabel}
           entityValueType={getEntityValueType()}
+          isEntityValueDisable={isEntityValueDisable}
           entityValuePlaceholder={entityValuePlaceholder}
           entityValue={entityValue}
           isEntityTypeDate={isEntityTypeDate}
@@ -121,10 +124,11 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onSelectDate={onSelectDate}
           onEntityTimeValueChange={onEntityTimeValueChange}
         />
-        <TooltipHost content="Edit property" id="editTooltip">
-          <Image {...imageProps} src={EditIcon} alt="editEntity" id="editEntity" onClick={onEditEntity} />
-        </TooltipHost>
-
+        {!isEntityValueDisable && (
+          <TooltipHost content="Edit property" id="editTooltip">
+            <Image {...imageProps} src={EditIcon} alt="editEntity" id="editEntity" onClick={onEditEntity} />
+          </TooltipHost>
+        )}
         {isDeleteOptionVisible && userContext.apiType !== "Cassandra" && (
           <TooltipHost content="Delete property" id="deleteTooltip">
             <Image {...imageProps} src={DeleteIcon} alt="delete entity" id="deleteEntity" onClick={onDeleteEntity} />
