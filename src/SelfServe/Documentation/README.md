@@ -19,15 +19,16 @@ Clone the cosmos-explorer repo and run
 - `npm install`
 - `npm run build`
 
+[Click here](../index.html) for more info on setting up the cosmos-explorer repo.
+
 ## Code Changes
 
 Code changes need to be made only in the following files
-- Strings JSON file
-- Types File
-- RP file
-- Class file
-- SelfServeType in [SelfServeUtils.tsx](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServeUtils.tsx)
-- [SelfServe.tsx](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx)
+- A JSON file - for strings to be displayed
+- A Types File - for defining the data models
+- A RP file - for defining the REST calls
+- A Class file - for defining the UI
+- [SelfServeUtils.tsx](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServeUtils.tsx) and [SelfServe.tsx](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx) - for defning the entrypoint for the UI
 
 ### 1. JSON file for UI strings
 
@@ -77,12 +78,12 @@ You can learn more on how to define the class file [here](./selfserve.html#4-cla
 [SelfServeExample.types.ts](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/Example/SelfServeExample.types.ts)
 
 #### Description
-This file contains the definitions of all the types and interfaces to be used in your Class file and RP file.
+This file contains the definitions of all the data models to be used in your Class file and RP file.
 
-For example, if you want to save the `stringProperty` and `booleanProperty` of your SelfServe class, then you can define an interface in your `FeatureName.types.ts` file like this.
+For example, if your RP call takes/returns the `stringProperty` and `booleanProperty` of your SelfServe class, then you can define an interface in your `FeatureName.types.ts` file like this.
 
 ```ts
-export PropertiesToSave {
+export RpDataModel {
   stringProperty: string,
   booleanProperty: boolean
 }
@@ -97,14 +98,15 @@ export PropertiesToSave {
 [SelfServeExample.rp.ts](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/Example/SelfServeExample.rp.ts)
 
 #### Description
-The RP file will host the REST calls needed for the initialize, save and refresh functions. This decouples the code that builds the UI and the code that makes REST calls.
+The RP file will host the REST calls needed for the initialize, save and refresh functions. This decouples the view and the model of the feature.
 
-The `userContext` object exposes the following Azure Cosmos DB databaseAccount information
-* `userContext.subscriptionId` - The subscription id
-* `userContext.resourceGroup` - The resource group name 
-* `userContext.databaseAccount.name` - The database account name
+To make the ARM call, we need some information about the Azure Cosmos DB databaseAccount - the subscription id, resource group name and database account name. These are readily available through the `userContext` object, exposed through
 
-`armRequestWithoutPolling` function can be used to make the ARM api call.
+* `userContext.subscriptionId`
+* `userContext.resourceGroup`
+* `userContext.databaseAccount.name`
+
+You can use the `armRequestWithoutPolling` function to make the ARM api call.
 
 Your `FeatureName.rp.ts` file can look like the following.
 
@@ -115,7 +117,7 @@ import { configContext } from "../../ConfigContext";
 
 const apiVersion = "2020-06-01-preview";
 
-export const saveData = async (properties: PropertiesToSave): Promise<void> => {
+export const saveData = async (properties: RpDataModel): Promise<void> => {
   const path = `/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/<REST_OF_THE_PATH>`
   const body = {
       data : properties
@@ -149,7 +151,7 @@ This file will contain the actual code that is translated into the UI component 
   * Needs to define an [onRefresh()](../classes/selfserve_selfservetypes.selfservebaseclass.html#onrefresh) function, a callback for when the refresh button is clicked.
   * Can have an optional [@RefreshOptions()](./selfserve_decorators.html#refreshoptions) decorator that determines how often the auto refresh of the UI component should take place.
 
-* Each property of the Self Serve class that needs to be translated to a UI element
+* For every UI element needed, add a property to the Self Serve class. Each of these properties
   * Needs to have a [@Values()](./selfserve_decorators.html#values) decorator.
   * Can have an optional [@PropertyInfo()](./selfserve_decorators.html#propertyinfo) decorator that describes it's info bubble.
   * Can have an optional [@OnChange()](./selfserve_decorators.html#onchange) decorator that dictates the effects of the change of the UI element tied to this property.
@@ -160,9 +162,9 @@ Your `FeatureName.tsx` file will look like the following.
 @RefreshOptions({ retryIntervalInMs: 2000 })
 export default class FeatureName extends SelfServeBaseClass {
 
-  public onRefresh = async (): Promise<RefreshResult> => {
-      // refresh RP call and processing logic
-  };
+  public initialize = async (): Promise<Map<string, SmartUiInput>> => {
+      // initialize RP call and processing logic
+  }
 
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
@@ -171,9 +173,9 @@ export default class FeatureName extends SelfServeBaseClass {
       // onSave RP call and processing logic
   }
 
-  public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-      // initialize RP call and processing logic
-  }
+  public onRefresh = async (): Promise<RefreshResult> => {
+      // refresh RP call and processing logic
+  };
 
   @Values(...)
   stringProperty: string;
@@ -201,7 +203,7 @@ export enum SelfServeType {
 
 ### 6. Update SelfServe.tsx (landing page)
 
-Once The SelfServeType has been updated, update [SelfServe.tsx](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx) for your feature. This is the entry point for the selfServe.html landing page, and decides which SelfServe Class needs to be rendered.
+Once the SelfServeType has been updated, update [SelfServe.tsx](https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx) for your feature. This ensures that the framework picks up your SelfServe Class.
 
 ```ts
 const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDescriptor> => {
@@ -232,11 +234,11 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
 ## Telemetry
 You can add telemetry for your feature using the functions in [SelfServeTelemetryProcessor](./selfserve_selfservetelemetryprocessor.html)
 
-For example, in your SelfServe class, you can call the trace method on every onSave call.
+For example, in your SelfServe class, you can call the trace method in your `onSave` function.
 
 ```ts
 import { saveData } from "./FeatureName.rp"
-import { PropertiesToSave } from "./FeatureName.types"
+import { RpDataModel } from "./FeatureName.types"
 
 @IsDisplayable()
 export default class FeatureName extends SelfServeBaseClass {
@@ -253,7 +255,7 @@ export default class FeatureName extends SelfServeBaseClass {
     stringPropertyValue = currentValues.get("stringProperty")
     booleanPropertyValue = currentValues.get("booleanProperty")
     
-    const propertiesToSave : PropertiesToSave = { 
+    const propertiesToSave : RpDataModel = { 
       stringProperty: stringPropertyValue,
       booleanProperty: booleanPropertyValue
     }
@@ -279,7 +281,7 @@ export default class FeatureName extends SelfServeBaseClass {
 }
 ```
 
-## Developing
+## Execution
 
 ### Watch mode
 
@@ -287,9 +289,11 @@ Run `npm start` to start the development server and automatically rebuild on cha
 
 ### Local Development
 
-Update [SelfServeType](../enums/selfserve_selfserveutils.selfservetype.html) to add your feature.
+Ensure that you have made the [Code changes](./selfserve.html#code-changes).
 
-Add the feature flag `feature.showSelfServeExample=true&feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3D<SELF_SERVE_TYPE>` to open up the your feature's UI in the `Self Serve Example` blade of the portal.
+- Go to `https://ms.portal.azure.com/`
+- Add the query string `feature.showSelfServeExample=true&feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3D<SELF_SERVE_TYPE>`
+- Click on the `Self Serve Example` menu item on the left panel.
 
 For example, if you want to open up the the UI of a class with the type `sqlx`, then visit `https://ms.portal.azure.com/?feature.showSelfServeExample=true&feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3Dsqlx`
 

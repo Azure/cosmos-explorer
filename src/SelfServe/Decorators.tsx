@@ -140,14 +140,14 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
 };
 
 /**
- * Indicates the Callback to be fired when the UI element corresponding to the property is changed.
+ * Indicates the callback to be fired when the UI element corresponding to the property is changed.
  */
 export const OnChange = (onChange: OnChangeCallback): PropertyDecorator => {
   return addToMap({ name: "onChange", value: onChange });
 };
 
 /**
- * Indicates that the UI element corresondign to the property should have an Info bubble.
+ * Indicates that the UI element corresponding to the property should have an Info bubble.
  */
 export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecorator => {
   return addToMap({ name: "info", value: info });
