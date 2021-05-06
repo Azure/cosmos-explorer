@@ -28,14 +28,12 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
 };
 
 const readCollectionOfferWithARM = async (databaseId: string, collectionId: string): Promise<Offer> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   let rpResponse;
   try {
-    switch (defaultExperience) {
+    switch (apiType) {
       case "SQL":
         rpResponse = await getSqlContainerThroughput(
           subscriptionId,
@@ -76,7 +74,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
         rpResponse = await getTableThroughput(subscriptionId, resourceGroup, accountName, collectionId);
         break;
       default:
-        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${apiType}`);
     }
   } catch (error) {
     if (error.code !== "NotFound") {

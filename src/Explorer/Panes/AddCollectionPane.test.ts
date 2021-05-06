@@ -4,45 +4,38 @@ import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import AddCollectionPane from "./AddCollectionPane";
 
+const mockDatabaseAccount: DatabaseAccount = {
+  id: "mock",
+  kind: "DocumentDB",
+  location: "",
+  name: "mock",
+  properties: {
+    documentEndpoint: "",
+    cassandraEndpoint: "",
+    gremlinEndpoint: "",
+    tableEndpoint: "",
+    enableFreeTier: false,
+  },
+  type: undefined,
+};
+
+const mockFreeTierDatabaseAccount: DatabaseAccount = {
+  id: "mock",
+  kind: "DocumentDB",
+  location: "",
+  name: "mock",
+  properties: {
+    documentEndpoint: "",
+    cassandraEndpoint: "",
+    gremlinEndpoint: "",
+    tableEndpoint: "",
+    enableFreeTier: true,
+  },
+  type: undefined,
+};
+
 describe("Add Collection Pane", () => {
   describe("isValid()", () => {
-    let explorer: Explorer;
-    const mockDatabaseAccount: DatabaseAccount = {
-      id: "mock",
-      kind: "DocumentDB",
-      location: "",
-      name: "mock",
-      properties: {
-        documentEndpoint: "",
-        cassandraEndpoint: "",
-        gremlinEndpoint: "",
-        tableEndpoint: "",
-        enableFreeTier: false,
-      },
-      type: undefined,
-      tags: [],
-    };
-
-    const mockFreeTierDatabaseAccount: DatabaseAccount = {
-      id: "mock",
-      kind: "DocumentDB",
-      location: "",
-      name: "mock",
-      properties: {
-        documentEndpoint: "",
-        cassandraEndpoint: "",
-        gremlinEndpoint: "",
-        tableEndpoint: "",
-        enableFreeTier: true,
-      },
-      type: undefined,
-      tags: [],
-    };
-
-    beforeEach(() => {
-      explorer = new Explorer();
-    });
-
     it("should be true if graph API and partition key is not /id nor /label", () => {
       updateUserContext({
         databaseAccount: {
@@ -51,6 +44,7 @@ describe("Add Collection Pane", () => {
           },
         } as DatabaseAccount,
       });
+      const explorer = new Explorer();
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       addCollectionPane.partitionKey("/blah");
       expect(addCollectionPane.isValid()).toBe(true);
@@ -64,6 +58,7 @@ describe("Add Collection Pane", () => {
           },
         } as DatabaseAccount,
       });
+      const explorer = new Explorer();
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       addCollectionPane.partitionKey("/id");
       expect(addCollectionPane.isValid()).toBe(false);
@@ -80,6 +75,7 @@ describe("Add Collection Pane", () => {
           },
         } as DatabaseAccount,
       });
+      const explorer = new Explorer();
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
 
       addCollectionPane.partitionKey("/id");
@@ -90,7 +86,8 @@ describe("Add Collection Pane", () => {
     });
 
     it("should display free tier text in upsell messaging", () => {
-      explorer.databaseAccount(mockFreeTierDatabaseAccount);
+      updateUserContext({ databaseAccount: mockFreeTierDatabaseAccount });
+      const explorer = new Explorer();
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       expect(addCollectionPane.isFreeTierAccount()).toBe(true);
       expect(addCollectionPane.upsellMessage()).toContain("With free tier");
@@ -99,7 +96,8 @@ describe("Add Collection Pane", () => {
     });
 
     it("should display standard texr in upsell messaging", () => {
-      explorer.databaseAccount(mockDatabaseAccount);
+      updateUserContext({ databaseAccount: mockDatabaseAccount });
+      const explorer = new Explorer();
       const addCollectionPane = explorer.addCollectionPane as AddCollectionPane;
       expect(addCollectionPane.isFreeTierAccount()).toBe(false);
       expect(addCollectionPane.upsellMessage()).toContain("Start at");

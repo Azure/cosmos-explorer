@@ -1,8 +1,7 @@
+import { IconButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import { IconButton } from "office-ui-fabric-react/lib/Button";
-import { Spinner, SpinnerSize } from "office-ui-fabric-react/lib/Spinner";
-import "./Prompt.less";
 import { PassedPromptProps } from "./Prompt";
+import "./Prompt.less";
 
 export const promptContent = (props: PassedPromptProps): JSX.Element => {
   if (props.status === "busy") {

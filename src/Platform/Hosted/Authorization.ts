@@ -17,14 +17,20 @@ export default class AuthHeadersUtil {
   }
 
   private static _generateResourceUrl(): string {
+<<<<<<< HEAD
     const databaseAccount = userContext.databaseAccount;
     const subscriptionId: string = userContext.subscriptionId;
     const resourceGroup = userContext.resourceGroup;
     const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType);
     const accountEndpoint = (databaseAccount && databaseAccount.properties.documentEndpoint) || "";
+=======
+    const { databaseAccount, resourceGroup, subscriptionId } = userContext;
+    const apiKind: DataModels.ApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType);
+    const accountEndpoint = databaseAccount?.properties?.documentEndpoint || "";
+>>>>>>> 23223cfb231e7c65b01dd47faa51a1d84007352d
     const sid = subscriptionId || "";
     const rg = resourceGroup || "";
-    const dba = (databaseAccount && databaseAccount.name) || "";
+    const dba = databaseAccount?.name || "";
     const resourceUrl = encodeURIComponent(accountEndpoint);
     const rid = "";
     const rtype = "";

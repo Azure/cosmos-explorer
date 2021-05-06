@@ -1,4 +1,4 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "office-ui-fabric-react";
+import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { Tooltip } from "../../../Common/Tooltip/Tooltip";
@@ -187,7 +187,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                   label: { padding: 0 },
                 }}
                 className="padding"
-                tabIndex={0}
                 ariaLabel="Enable cross partition query"
                 checked={crossPartitionQueryEnabled}
                 onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}

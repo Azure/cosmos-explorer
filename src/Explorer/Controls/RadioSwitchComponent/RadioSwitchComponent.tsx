@@ -2,10 +2,10 @@
  * Horizontal switch component
  */
 
+import { Icon } from "@fluentui/react";
 import * as React from "react";
-import "./RadioSwitchComponent.less";
-import { Icon } from "office-ui-fabric-react/lib/Icon";
 import { NormalizedEventKey } from "../../../Common/Constants";
+import "./RadioSwitchComponent.less";
 
 export interface Choice {
   key: string;

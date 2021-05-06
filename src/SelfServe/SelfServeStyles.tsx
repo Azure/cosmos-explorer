@@ -1,4 +1,4 @@
-import { IButtonStyles, ICommandBarStyles, ISeparatorStyles, IStackTokens } from "office-ui-fabric-react";
+import { IButtonStyles, ICommandBarStyles, ISeparatorStyles, IStackTokens } from "@fluentui/react";
 import { StyleConstants } from "../Common/Constants";
 
 export const commandBarItemStyles: IButtonStyles = { root: { paddingLeft: 20 } };

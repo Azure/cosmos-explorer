@@ -9,7 +9,7 @@ import {
   subComponentStackProps,
   getChoiceGroupStyles,
 } from "../SettingsRenderUtils";
-import { TextField, ITextFieldProps, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
+import { TextField, ITextFieldProps, Stack, IChoiceGroupOption, ChoiceGroup } from "@fluentui/react";
 import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 import { isDirty } from "../SettingsUtils";
 

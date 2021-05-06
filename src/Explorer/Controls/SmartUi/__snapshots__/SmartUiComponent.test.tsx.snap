@@ -77,22 +77,11 @@ exports[`SmartUiComponent disable all inputs 1`] = `
                 }
               }
             >
-              <CustomizedSpinButton
+              <StyledSpinButton
                 aria-labelledby="throughput-label"
                 ariaLabel="Throughput (input)"
-                decrementButtonIcon={
-                  Object {
-                    "iconName": "ChevronDownSmall",
-                  }
-                }
                 disabled={true}
                 id="throughput-spinner-input"
-                incrementButtonIcon={
-                  Object {
-                    "iconName": "ChevronUpSmall",
-                  }
-                }
-                label=""
                 labelPosition={0}
                 max={500}
                 min={400}
@@ -169,12 +158,12 @@ exports[`SmartUiComponent disable all inputs 1`] = `
       }
     >
       <StackItem>
-        <StyledMessageBarBase
+        <StyledMessageBar
           messageBarType={1}
         >
           Error: 
           label, truelabel and falselabel are required for boolean input 'throughput3'
-        </StyledMessageBarBase>
+        </StyledMessageBar>
       </StackItem>
     </Stack>
   </div>
@@ -282,7 +271,7 @@ exports[`SmartUiComponent disable all inputs 1`] = `
                 label="Database"
               />
             </StyledLabelBase>
-            <StyledWithResponsiveMode
+            <Dropdown
               aria-labelledby="database-label"
               disabled={true}
               id="database-dropdown-input"
@@ -402,22 +391,10 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
                 }
               }
             >
-              <CustomizedSpinButton
+              <StyledSpinButton
                 aria-labelledby="throughput-label"
                 ariaLabel="Throughput (input)"
-                decrementButtonIcon={
-                  Object {
-                    "iconName": "ChevronDownSmall",
-                  }
-                }
-                disabled={false}
                 id="throughput-spinner-input"
-                incrementButtonIcon={
-                  Object {
-                    "iconName": "ChevronUpSmall",
-                  }
-                }
-                label=""
                 labelPosition={0}
                 max={500}
                 min={400}
@@ -493,12 +470,12 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
       }
     >
       <StackItem>
-        <StyledMessageBarBase
+        <StyledMessageBar
           messageBarType={1}
         >
           Error: 
           label, truelabel and falselabel are required for boolean input 'throughput3'
-        </StyledMessageBarBase>
+        </StyledMessageBar>
       </StackItem>
     </Stack>
   </div>
@@ -604,7 +581,7 @@ exports[`SmartUiComponent should render and honor input's hidden, disabled state
                 label="Database"
               />
             </StyledLabelBase>
-            <StyledWithResponsiveMode
+            <Dropdown
               aria-labelledby="database-label"
               id="database-dropdown-input"
               onChange={[Function]}

@@ -1,17 +1,17 @@
+import { initializeIcons } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
 import React from "react";
 import * as ReactDOM from "react-dom";
-import { initializeConfiguration, configContext } from "../ConfigContext";
+import { configContext, initializeConfiguration } from "../ConfigContext";
+import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
+import { GalleryTab } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import {
   NotebookViewerComponent,
   NotebookViewerComponentProps,
 } from "../Explorer/Controls/NotebookViewer/NotebookViewerComponent";
+import * as FileSystemUtil from "../Explorer/Notebook/FileSystemUtil";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
-import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
-import * as FileSystemUtil from "../Explorer/Notebook/FileSystemUtil";
-import { GalleryTab } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 
 const onInit = async () => {
   initializeIcons();

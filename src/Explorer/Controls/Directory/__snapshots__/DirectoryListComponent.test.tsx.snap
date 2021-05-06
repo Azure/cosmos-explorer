@@ -350,11 +350,11 @@ exports[`test render renders with filters 1`] = `
       }
     >
       <div
-        className="ms-ScrollablePane root-40"
+        className="ms-ScrollablePane root-53"
         data-is-scrollable="true"
       >
         <div
-          className="stickyAbove-42"
+          className="stickyAbove-55"
           style={
             Object {
               "height": 0,
@@ -365,7 +365,7 @@ exports[`test render renders with filters 1`] = `
           }
         />
         <div
-          className="ms-ScrollablePane--contentContainer contentContainer-41"
+          className="ms-ScrollablePane--contentContainer contentContainer-54"
           data-is-scrollable={true}
         >
           <Sticky
@@ -408,7 +408,6 @@ exports[`test render renders with filters 1`] = `
                   >
                     <TextFieldBase
                       ariaLabel="Directory filter text box"
-                      canRevealPassword={false}
                       className="directoryListFilterTextBox"
                       deferredValidationTime={200}
                       onChange={[Function]}
@@ -691,18 +690,18 @@ exports[`test render renders with filters 1`] = `
                       validateOnLoad={true}
                     >
                       <div
-                        className="ms-TextField directoryListFilterTextBox root-46"
+                        className="ms-TextField directoryListFilterTextBox root-59"
                       >
                         <div
                           className="ms-TextField-wrapper"
                         >
                           <div
-                            className="ms-TextField-fieldGroup fieldGroup-47"
+                            className="ms-TextField-fieldGroup fieldGroup-60"
                           >
                             <input
                               aria-invalid={false}
                               aria-label="Directory filter text box"
-                              className="ms-TextField-field field-48"
+                              className="ms-TextField-field field-61"
                               id="TextField0"
                               onBlur={[Function]}
                               onChange={[Function]}
@@ -1266,7 +1265,6 @@ exports[`test render renders with filters 1`] = `
                                   "borderColor": "#f3f2f1",
                                   "color": "#a19f9d",
                                   "cursor": "default",
-                                  "pointerEvents": "none",
                                   "selectors": Object {
                                     ":focus": Object {
                                       "outline": 0,
@@ -1611,6 +1609,35 @@ exports[`test render renders with filters 1`] = `
                                   },
                                 },
                               },
+                              "splitButtonMenuFocused": Object {
+                                "outline": "transparent",
+                                "position": "relative",
+                                "selectors": Object {
+                                  ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                                    "border": "1px solid #ffffff",
+                                    "bottom": 3,
+                                    "content": "\\"\\"",
+                                    "left": 3,
+                                    "outline": "1px solid #605e5c",
+                                    "position": "absolute",
+                                    "right": 3,
+                                    "selectors": Object {
+                                      "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                        "border": "none",
+                                        "bottom": -2,
+                                        "left": -2,
+                                        "right": -2,
+                                        "top": -2,
+                                      },
+                                    },
+                                    "top": 3,
+                                    "zIndex": 1,
+                                  },
+                                  "::-moz-focus-inner": Object {
+                                    "border": "0",
+                                  },
+                                },
+                              },
                               "splitButtonMenuIcon": Object {
                                 "color": "#323130",
                               },
@@ -1900,7 +1927,7 @@ exports[`test render renders with filters 1`] = `
                         >
                           <button
                             aria-disabled={true}
-                            className="ms-Button ms-Button--default is-disabled directoryListButton root-57"
+                            className="ms-Button ms-Button--default is-disabled directoryListButton root-70"
                             data-is-focusable={false}
                             disabled={true}
                             onClick={[Function]}
@@ -1912,7 +1939,7 @@ exports[`test render renders with filters 1`] = `
                             type="button"
                           >
                             <span
-                              className="ms-Button-flexContainer flexContainer-58"
+                              className="ms-Button-flexContainer flexContainer-71"
                               data-automationid="splitbuttonprimary"
                             >
                               <div
@@ -1943,7 +1970,7 @@ exports[`test render renders with filters 1`] = `
           </List>
         </div>
         <div
-          className="stickyBelow-43"
+          className="stickyBelow-56"
           style={
             Object {
               "bottom": "0px",
@@ -1954,7 +1981,7 @@ exports[`test render renders with filters 1`] = `
           }
         >
           <div
-            className="stickyBelowItems-44"
+            className="stickyBelowItems-57"
           />
         </div>
       </div>
