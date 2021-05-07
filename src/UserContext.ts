@@ -20,7 +20,7 @@ interface UserContext {
   readonly quotaId?: string;
   // API Type is not yet provided by ARM. You need to manually inspect all the capabilities+kind so we abstract that logic in userContext
   // This is coming in a future Cosmos ARM API version as a prperty on databaseAccount
-  apiType?: ApiType;
+  apiType: ApiType;
   readonly isTryCosmosDBSubscription?: boolean;
   readonly portalEnv?: PortalEnv;
   readonly features: Features;
@@ -28,7 +28,7 @@ interface UserContext {
   readonly hasWriteAccess: boolean;
 }
 
-type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
+export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
 export type PortalEnv = "localhost" | "blackforest" | "fairfax" | "mooncake" | "prod" | "dev";
 
 const features = extractFeatures();

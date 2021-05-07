@@ -1,5 +1,5 @@
+import { Icon, Link, Stack, Text } from "@fluentui/react";
 import React from "react";
-import { Icon, Link, Stack, Text } from "office-ui-fabric-react";
 
 export interface PanelInfoErrorProps {
   message: string;
@@ -23,7 +23,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
   }
 
   return (
-    <Stack className="panelInfoErrorContainer" horizontal verticalAlign="start">
+    <Stack className="panelInfoErrorContainer" horizontal verticalAlign="center">
       {icon}
       <span className="panelWarningErrorDetailsLinkContainer">
         <Text className="panelWarningErrorMessage" variant="small">

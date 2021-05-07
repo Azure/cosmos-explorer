@@ -1,22 +1,24 @@
-import { IButtonProps, IconButton } from "office-ui-fabric-react/lib/Button";
-import { ContextualMenu, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
 import {
+  ContextualMenu,
   DetailsList,
   DetailsListLayoutMode,
   DetailsRow,
+  FocusZone,
+  IButtonProps,
   IColumn,
+  IconButton,
+  IContextualMenuProps,
   IDetailsListProps,
   IDetailsRowProps,
-} from "office-ui-fabric-react/lib/DetailsList";
-import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
-import { ITextField, ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
-import {
   IObjectWithKey,
   ISelectionZoneProps,
+  ITextField,
+  ITextFieldProps,
   Selection,
   SelectionMode,
   SelectionZone,
-} from "office-ui-fabric-react/lib/utilities/selection/index";
+  TextField,
+} from "@fluentui/react";
 import * as React from "react";
 import * as _ from "underscore";
 import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";

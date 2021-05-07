@@ -144,9 +144,8 @@ const updateDatabaseOfferWithARM = async (params: UpdateOfferParams): Promise<Of
 };
 
 const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateSqlContainerToAutoscale(
@@ -178,9 +177,8 @@ const updateSqlContainerOffer = async (params: UpdateOfferParams): Promise<void>
 };
 
 const updateMongoCollectionOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateMongoDBCollectionToAutoscale(
@@ -212,9 +210,8 @@ const updateMongoCollectionOffer = async (params: UpdateOfferParams): Promise<vo
 };
 
 const updateCassandraTableOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateCassandraTableToAutoscale(
@@ -246,9 +243,8 @@ const updateCassandraTableOffer = async (params: UpdateOfferParams): Promise<voi
 };
 
 const updateGremlinGraphOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateGremlinGraphToAutoscale(
@@ -280,9 +276,8 @@ const updateGremlinGraphOffer = async (params: UpdateOfferParams): Promise<void>
 };
 
 const updateTableOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateTableToAutoscale(subscriptionId, resourceGroup, accountName, params.collectionId);
@@ -295,9 +290,8 @@ const updateTableOffer = async (params: UpdateOfferParams): Promise<void> => {
 };
 
 const updateSqlDatabaseOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateSqlDatabaseToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);
@@ -310,9 +304,8 @@ const updateSqlDatabaseOffer = async (params: UpdateOfferParams): Promise<void> 
 };
 
 const updateMongoDatabaseOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateMongoDBDatabaseToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);
@@ -325,9 +318,8 @@ const updateMongoDatabaseOffer = async (params: UpdateOfferParams): Promise<void
 };
 
 const updateCassandraKeyspaceOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateCassandraKeyspaceToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);
@@ -340,9 +332,8 @@ const updateCassandraKeyspaceOffer = async (params: UpdateOfferParams): Promise<
 };
 
 const updateGremlinDatabaseOffer = async (params: UpdateOfferParams): Promise<void> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   if (params.migrateToAutoPilot) {
     await migrateGremlinDatabaseToAutoscale(subscriptionId, resourceGroup, accountName, params.databaseId);

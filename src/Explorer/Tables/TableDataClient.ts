@@ -255,7 +255,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     const clearMessage =
       shouldNotify && NotificationConsoleUtils.logConsoleProgress(`Querying rows for table ${collection.id()}`);
     try {
-      const authType = userContext.authType;
+      const { authType, databaseAccount } = userContext;
       const apiEndpoint: string =
         authType === AuthType.EncryptedToken
           ? Constants.CassandraBackend.guestQueryApi
@@ -263,12 +263,9 @@ export class CassandraAPIDataClient extends TableDataClient {
       const data: any = await $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
         type: "POST",
         data: {
-          accountName:
-            collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-          cassandraEndpoint: this.trimCassandraEndpoint(
-            collection.container.databaseAccount().properties.cassandraEndpoint
-          ),
-          resourceId: collection.container.databaseAccount().id,
+          accountName: databaseAccount?.name,
+          cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+          resourceId: databaseAccount?.id,
           keyspaceId: collection.databaseId,
           tableId: collection.id(),
           query,
@@ -399,21 +396,20 @@ export class CassandraAPIDataClient extends TableDataClient {
       return Q.resolve(collection.cassandraKeys);
     }
     const clearInProgressMessage = logConsoleProgress(`Fetching keys for table ${collection.id()}`);
-    const authType = userContext.authType;
+    const { authType, databaseAccount } = userContext;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
         : Constants.CassandraBackend.keysApi;
     let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKeys>();
+
     $.ajax(endpoint, {
       type: "POST",
       data: {
-        accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-        cassandraEndpoint: this.trimCassandraEndpoint(
-          collection.container.databaseAccount().properties.cassandraEndpoint
-        ),
-        resourceId: collection.container.databaseAccount().id,
+        accountName: databaseAccount?.name,
+        cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+        resourceId: databaseAccount?.id,
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       },
@@ -440,21 +436,20 @@ export class CassandraAPIDataClient extends TableDataClient {
       return Q.resolve(collection.cassandraSchema);
     }
     const clearInProgressMessage = logConsoleProgress(`Fetching schema for table ${collection.id()}`);
-    const authType = userContext.authType;
+    const { databaseAccount, authType } = userContext;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
         : Constants.CassandraBackend.schemaApi;
     let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKey[]>();
+
     $.ajax(endpoint, {
       type: "POST",
       data: {
-        accountName: collection && collection.container.databaseAccount && collection.container.databaseAccount().name,
-        cassandraEndpoint: this.trimCassandraEndpoint(
-          collection.container.databaseAccount().properties.cassandraEndpoint
-        ),
-        resourceId: collection.container.databaseAccount().id,
+        accountName: databaseAccount?.name,
+        cassandraEndpoint: this.trimCassandraEndpoint(databaseAccount?.properties.cassandraEndpoint),
+        resourceId: databaseAccount?.id,
         keyspaceId: collection.databaseId,
         tableId: collection.id(),
       },
@@ -478,7 +473,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
   private createOrDeleteQuery(cassandraEndpoint: string, resourceId: string, query: string): Q.Promise<any> {
     const deferred = Q.defer();
-    const authType = userContext.authType;
+    const { authType, databaseAccount } = userContext;
     const apiEndpoint: string =
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestCreateOrDeleteApi
@@ -486,7 +481,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     $.ajax(`${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`, {
       type: "POST",
       data: {
-        accountName: userContext.databaseAccount?.name,
+        accountName: databaseAccount?.name,
         cassandraEndpoint: this.trimCassandraEndpoint(cassandraEndpoint),
         resourceId: resourceId,
         query: query,

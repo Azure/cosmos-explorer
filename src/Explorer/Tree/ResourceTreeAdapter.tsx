@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "office-ui-fabric-react";
+import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -197,7 +197,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         className: "databaseHeader",
         children: [],
         isSelected: () => this.isDataNodeSelected(database.id()),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
         onClick: async (isExpanded) => {
           // Rewritten version of expandCollapseDatabase():
           if (isExpanded) {
@@ -306,10 +306,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     // This is a rewrite of showConflicts
     const showConflicts =
-      this.container.databaseAccount &&
-      this.container.databaseAccount() &&
-      this.container.databaseAccount().properties &&
-      this.container.databaseAccount().properties.enableMultipleWriteLocations &&
+      userContext?.databaseAccount?.properties.enableMultipleWriteLocations &&
       collection.rawDataModel &&
       !!collection.rawDataModel.conflictResolutionPolicy;
 
@@ -607,7 +604,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.contextMenu = [
       {
         label: "Manage GitHub settings",
-        onClick: () => this.container.gitHubReposPane.open(),
+        onClick: () => this.container.openGitHubReposPanel("Manage GitHub settings"),
       },
       {
         label: "Disconnect from GitHub",

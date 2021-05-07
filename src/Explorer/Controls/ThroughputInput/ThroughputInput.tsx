@@ -1,13 +1,15 @@
-import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "office-ui-fabric-react";
+import { Checkbox, DirectionalHint, Icon, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
 import React from "react";
 import * as Constants from "../../../Common/Constants";
 import * as SharedConstants from "../../../Shared/Constants";
 import { userContext } from "../../../UserContext";
+import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import * as PricingUtils from "../../../Utils/PricingUtils";
 
 export interface ThroughputInputProps {
   isDatabase: boolean;
+  isSharded: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
@@ -18,6 +20,7 @@ export interface ThroughputInputState {
   isAutoscaleSelected: boolean;
   throughput: number;
   isCostAcknowledged: boolean;
+  throughputError: string;
 }
 
 export class ThroughputInput extends React.Component<ThroughputInputProps, ThroughputInputState> {
@@ -28,6 +31,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
       isAutoscaleSelected: true,
       throughput: AutoPilotUtils.minAutoPilotThroughput,
       isCostAcknowledged: false,
+      throughputError: undefined,
     };
 
     this.props.setThroughputValue(AutoPilotUtils.minAutoPilotThroughput);
@@ -39,11 +43,11 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
       <div className="throughputInputContainer throughputInputSpacing">
         <Stack horizontal>
           <span className="mandatoryStar">*&nbsp;</span>
-          <Text variant="small" style={{ lineHeight: "20px" }}>
+          <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
             {this.getThroughputLabelText()}
           </Text>
           <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={PricingUtils.getRuToolTipText()}>
-            <Icon iconName="InfoSolid" className="panelInfoIcon" />
+            <Icon iconName="Info" className="panelInfoIcon" />
           </TooltipHost>
         </Stack>
 
@@ -74,7 +78,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
         {this.state.isAutoscaleSelected && (
           <Stack className="throughputInputSpacing">
             <Text variant="small">
-              Provision maximum RU/s required by this resource. Estimate your required RU/s with&nbsp;
+              Estimate your required RU/s with&nbsp;
               <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/">
                 capacity calculator
               </Link>
@@ -82,11 +86,11 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
             </Text>
 
             <Stack horizontal>
-              <Text variant="small" style={{ lineHeight: "20px" }}>
-                Max RU/s
+              <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+                {this.props.isDatabase ? "Database" : getCollectionName()} max RU/s
               </Text>
               <TooltipHost directionalHint={DirectionalHint.bottomLeftEdge} content={this.getAutoScaleTooltip()}>
-                <Icon iconName="InfoSolid" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" />
               </TooltipHost>
             </Stack>
 
@@ -101,11 +105,12 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
               min={AutoPilotUtils.minAutoPilotThroughput}
               value={this.state.throughput.toString()}
               aria-label="Max request units per second"
-              required={true}
+              errorMessage={this.state.throughputError}
             />
 
             <Text variant="small">
-              Your {this.props.isDatabase ? "database" : "container"} throughput will automatically scale from{" "}
+              Your {this.props.isDatabase ? "database" : getCollectionName().toLocaleLowerCase()} throughput will
+              automatically scale from{" "}
               <b>
                 {AutoPilotUtils.getMinRUsBasedOnUserInput(this.state.throughput)} RU/s (10% of max RU/s) -{" "}
                 {this.state.throughput} RU/s
@@ -147,6 +152,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
                 value={this.state.throughput.toString()}
                 aria-label="Max request units per second"
                 required={true}
+                errorMessage={this.state.throughputError}
               />
             </TooltipHost>
           </Stack>
@@ -156,6 +162,7 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
 
         {this.state.throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && (
           <Stack horizontal verticalAlign="start">
+            <span className="mandatoryStar">*&nbsp;</span>
             <Checkbox
               checked={this.state.isCostAcknowledged}
               styles={{
@@ -177,34 +184,39 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
   }
 
   private getThroughputLabelText(): string {
+    let throughputHeaderText: string;
     if (this.state.isAutoscaleSelected) {
-      return AutoPilotUtils.getAutoPilotHeaderText();
+      throughputHeaderText = AutoPilotUtils.getAutoPilotHeaderText().toLocaleLowerCase();
+    } else {
+      const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
+      const maxRU: string = userContext.isTryCosmosDBSubscription
+        ? Constants.TryCosmosExperience.maxRU.toLocaleString()
+        : "unlimited";
+      throughputHeaderText = `throughput (${minRU} - ${maxRU} RU/s)`;
     }
 
-    const minRU: string = SharedConstants.CollectionCreation.DefaultCollectionRUs400.toLocaleString();
-    const maxRU: string = userContext.isTryCosmosDBSubscription
-      ? Constants.TryCosmosExperience.maxRU.toLocaleString()
-      : "unlimited";
-    return this.state.isAutoscaleSelected
-      ? AutoPilotUtils.getAutoPilotHeaderText()
-      : `Throughput (${minRU} - ${maxRU} RU/s)`;
+    return `${this.props.isDatabase ? "Database" : getCollectionName()} ${throughputHeaderText}`;
   }
 
   private onThroughputValueChange(newInput: string): void {
     const newThroughput = parseInt(newInput);
     this.setState({ throughput: newThroughput });
     this.props.setThroughputValue(newThroughput);
+
+    if (!this.props.isSharded && newThroughput > 10000) {
+      this.setState({ throughputError: "Unsharded collections support up to 10,000 RUs" });
+    } else {
+      this.setState({ throughputError: undefined });
+    }
   }
 
   private getAutoScaleTooltip(): string {
-    return `After the first ${AutoPilotUtils.getStorageBasedOnUserInput(
-      this.state.throughput
-    )} GB of data stored, the max
-    RU/s will be automatically upgraded based on the new storage value.`;
+    const collectionName = getCollectionName().toLocaleLowerCase();
+    return `Set the max RU/s to the highest RU/s you want your ${collectionName} to scale to. The ${collectionName} will scale between 10% of max RU/s to the max RU/s based on usage.`;
   }
 
   private getCostAcknowledgeText(): string {
-    const databaseAccount = userContext.databaseAccount;
+    const { databaseAccount } = userContext;
     if (!databaseAccount || !databaseAccount.properties) {
       return "";
     }
@@ -247,8 +259,8 @@ interface CostEstimateTextProps {
 
 const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props: CostEstimateTextProps) => {
   const { requestUnits, isAutoscale } = props;
-  const databaseAccount = userContext.databaseAccount;
-  if (!databaseAccount || !databaseAccount.properties) {
+  const { databaseAccount } = userContext;
+  if (!databaseAccount?.properties) {
     return <></>;
   }
 
@@ -271,10 +283,20 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
     ? PricingUtils.getAutoscalePricePerRu(serverId, multiplier) * multiplier
     : PricingUtils.getPricePerRu(serverId) * multiplier;
 
+  const iconWithEstimatedCostDisclaimer: JSX.Element = (
+    <TooltipHost
+      directionalHint={DirectionalHint.bottomLeftEdge}
+      content={PricingUtils.estimatedCostDisclaimer}
+      styles={{ root: { verticalAlign: "bottom" } }}
+    >
+      <Icon iconName="Info" className="panelInfoIcon" />
+    </TooltipHost>
+  );
+
   if (isAutoscale) {
     return (
       <Text variant="small">
-        Estimated monthly cost ({currency}):{" "}
+        Estimated monthly cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
         <b>
           {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice / 10)} -{" "}
           {currencySign + PricingUtils.calculateEstimateNumber(monthlyPrice)}{" "}
@@ -287,7 +309,7 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
 
   return (
     <Text variant="small">
-      Cost ({currency}):{" "}
+      Estimated cost ({currency}){iconWithEstimatedCostDisclaimer}:{" "}
       <b>
         {currencySign + PricingUtils.calculateEstimateNumber(hourlyPrice)} hourly /{" "}
         {currencySign + PricingUtils.calculateEstimateNumber(dailyPrice)} daily /{" "}
@@ -295,8 +317,6 @@ const CostEstimateText: React.FunctionComponent<CostEstimateTextProps> = (props:
       </b>
       ({numberOfRegions + (numberOfRegions === 1 ? " region" : " regions")}, {requestUnits}RU/s,{" "}
       {currencySign + pricePerRu}/RU)
-      <br />
-      <em>{PricingUtils.estimatedCostDisclaimer}</em>
     </Text>
   );
 };

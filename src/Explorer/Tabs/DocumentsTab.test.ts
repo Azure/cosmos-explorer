@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import * as Constants from "../../Common/Constants";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
@@ -27,7 +27,13 @@ describe("Documents tab", () => {
   describe("showPartitionKey", () => {
     const explorer = new Explorer();
     const mongoExplorer = new Explorer();
-    mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableGremlin" }],
+        },
+      } as DatabaseAccount,
+    });
 
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
