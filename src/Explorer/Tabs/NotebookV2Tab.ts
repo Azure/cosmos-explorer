@@ -461,9 +461,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       source: Source.CommandBarMenu,
     });
 
-    // TODO get snapshots from somewhere better
     const notebookReduxStore = NotebookTabV2.clientManager.getStore();
-
     const unsubscribe = notebookReduxStore.subscribe(() => {
       const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
       useNotebookSnapshotStore.setState({
