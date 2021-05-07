@@ -130,7 +130,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
     const initialValues = await this.props.descriptor.initialize();
     this.props.descriptor.inputNames.map((inputName) => {
-      let initialValue = initialValues.get(inputName);
+      const initialValue = initialValues.get(inputName);
       currentValues = currentValues.set(inputName, initialValue);
       baselineValues = baselineValues.set(inputName, initialValue);
       initialValues.delete(inputName);
