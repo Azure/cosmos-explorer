@@ -22,11 +22,11 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
 }: PanelInfoErrorProps): JSX.Element => {
   let icon: JSX.Element;
   if (messageType === "error") {
-    icon = <Icon iconName="StatusErrorFull" className="panelErrorIcon" data-testid="errorIcon" />;
+    icon = <Icon iconName="StatusErrorFull" className="panelErrorIcon" aria-label="error" />;
   } else if (messageType === "warning") {
-    icon = <Icon iconName="WarningSolid" className="panelWarningIcon" data-testid="warningIcon" />;
+    icon = <Icon iconName="WarningSolid" className="panelWarningIcon" aria-label="warning" />;
   } else if (messageType === "info") {
-    icon = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" data-testid="InfoIcon" />;
+    icon = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
   }
 
   return (
@@ -34,7 +34,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
       <Stack className="panelInfoErrorContainer" horizontal verticalAlign="center">
         {icon}
         <span className="panelWarningErrorDetailsLinkContainer">
-          <Text className="panelWarningErrorMessage" variant="small" data-testid="panelmessage">
+          <Text className="panelWarningErrorMessage" variant="small" aria-label="message">
             {message}
             {link && linkText && (
               <Link target="_blank" href={link}>

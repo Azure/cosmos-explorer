@@ -3,7 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { createDatabase } from "../../../Common/dataAccess/createDatabase";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
-import { Tooltip } from "../../../Common/Tooltip/Tooltip";
+import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as DataModels from "../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../Contracts/SubscriptionType";
@@ -102,7 +102,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
     return true;
   };
-  const title: string = container?.addDatabaseText() || "New Database";
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   useEffect(() => {
@@ -254,96 +253,90 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     expandConsole: container.expandConsole,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
-    id: "add-database-inputs",
     isExecuting,
-    title,
     submitButtonText: "OK",
-    onClose: closePanel,
     onSubmit: submit,
   };
 
   return (
     <RightPaneForm {...genericPaneProps}>
-      <form style={{ height: "100%" }}>
-        <div className="paneContentContainer" role="dialog" aria-labelledby="databaseTitle">
-          {showUpsellMessage && formErrors === "" && (
-            <PanelInfoErrorComponent
-              message={upsellMessage}
-              messageType="info"
-              showErrorDetails={false}
-              openNotificationConsole={openNotificationConsole}
-              link={upsellAnchorUrl}
-              linkText={upsellAnchorText}
+      <div className="paneContentContainer" role="dialog" aria-labelledby="databaseTitle">
+        {showUpsellMessage && formErrors === "" && (
+          <PanelInfoErrorComponent
+            message={upsellMessage}
+            messageType="info"
+            showErrorDetails={false}
+            openNotificationConsole={openNotificationConsole}
+            link={upsellAnchorUrl}
+            linkText={upsellAnchorText}
+          />
+        )}
+        <div className="paneMainContent">
+          <div>
+            <p>
+              <span className="mandatoryStar">*</span>
+              <Text variant="small">{databaseIdLabel}</Text>
+              <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
+            </p>
+
+            <TextField
+              id="database-id"
+              type="text"
+              aria-required="true"
+              autoComplete="off"
+              pattern="[^/?#\\]*[^/?# \\]"
+              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              size={40}
+              aria-label={databaseIdLabel}
+              placeholder={databaseIdPlaceHolder}
+              value={databaseId}
+              onChange={handleonChangeDBId}
+              autoFocus
             />
-          )}
 
-          <div className="paneMainContent">
-            <div>
-              <p>
-                <span className="mandatoryStar">*</span>
-                <Text variant="small">{databaseIdLabel}</Text>
-                <Tooltip>{databaseIdTooltipText}</Tooltip>
-              </p>
-
-              <TextField
-                id="database-id"
-                type="text"
-                aria-required="true"
-                autoComplete="off"
-                pattern="[^/?#\\]*[^/?# \\]"
-                title="May not end with space nor contain characters '\' '/' '#' '?'"
-                size={40}
-                aria-label={databaseIdLabel}
-                placeholder={databaseIdPlaceHolder}
-                value={databaseId}
-                onChange={handleonChangeDBId}
-                autoFocus
-              />
-
-              <div
-                className="databaseProvision"
-                aria-label="New database provision support"
-                style={{ display: "block ruby" }}
-              >
-                <Checkbox
-                  title="Provision shared throughput"
-                  styles={{
-                    checkbox: { width: 12, height: 12 },
-                    label: { padding: 0, alignItems: "center" },
-                  }}
-                  label="Provision throughput"
-                  checked={databaseCreateNewShared}
-                  onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
-                />{" "}
-                <Tooltip>{databaseLevelThroughputTooltipText}</Tooltip>
-              </div>
-              {databaseCreateNewShared && (
-                <div>
-                  <ThroughputInput
-                    showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
-                    isDatabase={true}
-                    isSharded={databaseCreateNewShared}
-                    isAutoscaleSelected={isAutoPilotSelected}
-                    throughput={throughput}
-                    setThroughputValue={(throughput: number) => setThroughput(throughput)}
-                    setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
-                    onCostAcknowledgeChange={(isAcknowledged: boolean) => setThroughputSpendAck(isAcknowledged)}
-                  />
-
-                  {canRequestSupport() && (
-                    <p>
-                      <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">
-                        Contact support{" "}
-                      </a>
-                      for more than <span>{throughputDefaults.unlimitedmax?.toLocaleString()} </span> RU/s.
-                    </p>
-                  )}
-                </div>
-              )}
+            <div
+              className="databaseProvision"
+              aria-label="New database provision support"
+              style={{ display: "block ruby" }}
+            >
+              <Checkbox
+                title="Provision shared throughput"
+                styles={{
+                  checkbox: { width: 12, height: 12 },
+                  label: { padding: 0, alignItems: "center" },
+                }}
+                label="Provision throughput"
+                checked={databaseCreateNewShared}
+                onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
+              />{" "}
+              <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
             </div>
+            {databaseCreateNewShared && (
+              <div>
+                <ThroughputInput
+                  showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
+                  isDatabase={true}
+                  isSharded={databaseCreateNewShared}
+                  isAutoscaleSelected={isAutoPilotSelected}
+                  throughput={throughput}
+                  setThroughputValue={(throughput: number) => setThroughput(throughput)}
+                  setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
+                  onCostAcknowledgeChange={(isAcknowledged: boolean) => setThroughputSpendAck(isAcknowledged)}
+                />
+
+                {canRequestSupport() && (
+                  <p>
+                    <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">
+                      Contact support{" "}
+                    </a>
+                    for more than <span>{throughputDefaults.unlimitedmax?.toLocaleString()} </span> RU/s.
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </div>
-      </form>
+      </div>
     </RightPaneForm>
   );
 };

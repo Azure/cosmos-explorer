@@ -46,35 +46,16 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             Container throughput (autoscale)
           </span>
         </Text>
-        <Tooltip
+        <InfoTooltip
           key=".0:$.2"
         >
           <span>
             <StyledTooltipHostBase
-              calloutProps={
-                Object {
-                  "gapSpace": 0,
-                }
-              }
               content="Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage."
-              id="tooltip0"
-              styles={
-                Object {
-                  "root": Object {
-                    "display": "inline-block",
-                  },
-                }
-              }
             >
               <TooltipHostBase
-                calloutProps={
-                  Object {
-                    "gapSpace": 0,
-                  }
-                }
                 content="Set the throughput — Request Units per second (RU/s) — required for the workload. A read of a 1 KB document uses 1 RU. Select manual if you plan to scale RU/s yourself. Select autoscale to allow the system to scale RU/s based on usage."
                 delay={1}
-                id="tooltip0"
                 styles={[Function]}
                 theme={
                   Object {
@@ -351,7 +332,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 }
               >
                 <div
-                  className="ms-TooltipHost root-37"
+                  className="ms-TooltipHost root-55"
                   onBlurCapture={[Function]}
                   onFocusCapture={[Function]}
                   onKeyDown={[Function]}
@@ -365,28 +346,13 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         "iconName": "Info",
                       }
                     }
-                    id="iconButton1"
-                    styles={
-                      Object {
-                        "root": Object {
-                          "marginBottom": -3,
-                        },
-                      }
-                    }
+                    vertical-align={true}
                   >
                     <IconButton
                       ariaLabel="Info"
                       iconProps={
                         Object {
                           "iconName": "Info",
-                        }
-                      }
-                      id="iconButton1"
-                      styles={
-                        Object {
-                          "root": Object {
-                            "marginBottom": -3,
-                          },
                         }
                       }
                       theme={
@@ -662,6 +628,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           },
                         }
                       }
+                      vertical-align={true}
                     >
                       <BaseButton
                         ariaLabel="Info"
@@ -671,7 +638,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             "iconName": "Info",
                           }
                         }
-                        id="iconButton1"
                         onRenderDescription={[Function]}
                         onRenderText={[Function]}
                         split={false}
@@ -786,9 +752,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                 "height": "32px",
                                 "padding": "0 4px",
                                 "width": "32px",
-                              },
-                              Object {
-                                "marginBottom": -3,
                               },
                             ],
                             "rootChecked": Object {
@@ -1405,12 +1368,12 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           }
                         }
                         variantClassName="ms-Button--icon"
+                        vertical-align={true}
                       >
                         <button
                           aria-label="Info"
-                          className="ms-Button ms-Button--icon root-55"
+                          className="ms-Button ms-Button--icon root-56"
                           data-is-focusable={true}
-                          id="iconButton1"
                           onClick={[Function]}
                           onKeyDown={[Function]}
                           onKeyPress={[Function]}
@@ -1420,16 +1383,16 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                           type="button"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-56"
+                            className="ms-Button-flexContainer flexContainer-57"
                             data-automationid="splitbuttonprimary"
                           >
                             <Component
-                              className="ms-Button-icon icon-58"
+                              className="ms-Button-icon icon-59"
                               iconName="Info"
                             >
                               <i
                                 aria-hidden={true}
-                                className="ms-Icon root-37 css-63 ms-Button-icon icon-58"
+                                className="ms-Icon root-37 css-64 ms-Button-icon icon-59"
                                 data-icon-name="Info"
                                 style={
                                   Object {
@@ -1450,7 +1413,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
               </TooltipHostBase>
             </StyledTooltipHostBase>
           </span>
-        </Tooltip>
+        </InfoTooltip>
       </div>
     </Stack>
     <Stack
@@ -1458,7 +1421,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       verticalAlign="center"
     >
       <div
-        className="ms-Stack css-64"
+        className="ms-Stack css-65"
       >
         <StyledChoiceGroup
           aria-label="mode"
@@ -1771,7 +1734,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           >
             <div
               aria-label="mode"
-              className="ms-ChoiceFieldGroup root-65"
+              className="ms-ChoiceFieldGroup root-66"
             >
               <div
                 role="radiogroup"
@@ -1782,11 +1745,11 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   <StyledChoiceGroupOption
                     checked={true}
                     focused={false}
-                    id="ChoiceGroup6-true"
+                    id="ChoiceGroup4-true"
                     itemKey="true"
                     key="true"
-                    labelId="ChoiceGroupLabel7-true"
-                    name="ChoiceGroup6"
+                    labelId="ChoiceGroupLabel5-true"
+                    name="ChoiceGroup4"
                     onBlur={[Function]}
                     onChange={[Function]}
                     onFocus={[Function]}
@@ -1795,10 +1758,10 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     <ChoiceGroupOption
                       checked={true}
                       focused={false}
-                      id="ChoiceGroup6-true"
+                      id="ChoiceGroup4-true"
                       itemKey="true"
-                      labelId="ChoiceGroupLabel7-true"
-                      name="ChoiceGroup6"
+                      labelId="ChoiceGroupLabel5-true"
+                      name="ChoiceGroup4"
                       onBlur={[Function]}
                       onChange={[Function]}
                       onFocus={[Function]}
@@ -2079,28 +2042,28 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       }
                     >
                       <div
-                        className="ms-ChoiceField root-66"
+                        className="ms-ChoiceField root-67"
                       >
                         <div
                           className="ms-ChoiceField-wrapper"
                         >
                           <input
                             checked={true}
-                            className="ms-ChoiceField-input input-67"
-                            id="ChoiceGroup6-true"
-                            name="ChoiceGroup6"
+                            className="ms-ChoiceField-input input-68"
+                            id="ChoiceGroup4-true"
+                            name="ChoiceGroup4"
                             onBlur={[Function]}
                             onChange={[Function]}
                             onFocus={[Function]}
                             type="radio"
                           />
                           <label
-                            className="ms-ChoiceField-field is-checked field-68"
-                            htmlFor="ChoiceGroup6-true"
+                            className="ms-ChoiceField-field is-checked field-69"
+                            htmlFor="ChoiceGroup4-true"
                           >
                             <span
                               className="ms-ChoiceFieldLabel"
-                              id="ChoiceGroupLabel7-true"
+                              id="ChoiceGroupLabel5-true"
                             >
                               Autoscale
                             </span>
@@ -2112,11 +2075,11 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   <StyledChoiceGroupOption
                     checked={false}
                     focused={false}
-                    id="ChoiceGroup6-false"
+                    id="ChoiceGroup4-false"
                     itemKey="false"
                     key="false"
-                    labelId="ChoiceGroupLabel7-false"
-                    name="ChoiceGroup6"
+                    labelId="ChoiceGroupLabel5-false"
+                    name="ChoiceGroup4"
                     onBlur={[Function]}
                     onChange={[Function]}
                     onFocus={[Function]}
@@ -2125,10 +2088,10 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     <ChoiceGroupOption
                       checked={false}
                       focused={false}
-                      id="ChoiceGroup6-false"
+                      id="ChoiceGroup4-false"
                       itemKey="false"
-                      labelId="ChoiceGroupLabel7-false"
-                      name="ChoiceGroup6"
+                      labelId="ChoiceGroupLabel5-false"
+                      name="ChoiceGroup4"
                       onBlur={[Function]}
                       onChange={[Function]}
                       onFocus={[Function]}
@@ -2409,28 +2372,28 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                       }
                     >
                       <div
-                        className="ms-ChoiceField root-66"
+                        className="ms-ChoiceField root-67"
                       >
                         <div
                           className="ms-ChoiceField-wrapper"
                         >
                           <input
                             checked={false}
-                            className="ms-ChoiceField-input input-67"
-                            id="ChoiceGroup6-false"
-                            name="ChoiceGroup6"
+                            className="ms-ChoiceField-input input-68"
+                            id="ChoiceGroup4-false"
+                            name="ChoiceGroup4"
                             onBlur={[Function]}
                             onChange={[Function]}
                             onFocus={[Function]}
                             type="radio"
                           />
                           <label
-                            className="ms-ChoiceField-field field-73"
-                            htmlFor="ChoiceGroup6-false"
+                            className="ms-ChoiceField-field field-74"
+                            htmlFor="ChoiceGroup4-false"
                           >
                             <span
                               className="ms-ChoiceFieldLabel"
-                              id="ChoiceGroupLabel7-false"
+                              id="ChoiceGroupLabel5-false"
                             >
                               Manual
                             </span>
@@ -2450,7 +2413,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       className="throughputInputSpacing"
     >
       <div
-        className="ms-Stack throughputInputSpacing css-76"
+        className="ms-Stack throughputInputSpacing css-77"
       >
         <Text
           data-testid="ruDescription"
@@ -2748,7 +2711,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                 }
               >
                 <a
-                  className="ms-Link root-77"
+                  className="ms-Link root-78"
                   data-testid="ruDescription"
                   href="https://cosmos.azure.com/capacitycalculator/"
                   onClick={[Function]}
@@ -2793,35 +2756,16 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                  Max RU/s
               </span>
             </Text>
-            <Tooltip
+            <InfoTooltip
               key=".0:$.1"
             >
               <span>
                 <StyledTooltipHostBase
-                  calloutProps={
-                    Object {
-                      "gapSpace": 0,
-                    }
-                  }
                   content="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
-                  id="tooltip8"
-                  styles={
-                    Object {
-                      "root": Object {
-                        "display": "inline-block",
-                      },
-                    }
-                  }
                 >
                   <TooltipHostBase
-                    calloutProps={
-                      Object {
-                        "gapSpace": 0,
-                      }
-                    }
                     content="Set the max RU/s to the highest RU/s you want your container to scale to. The container will scale between 10% of max RU/s to the max RU/s based on usage."
                     delay={1}
-                    id="tooltip8"
                     styles={[Function]}
                     theme={
                       Object {
@@ -3098,7 +3042,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     }
                   >
                     <div
-                      className="ms-TooltipHost root-37"
+                      className="ms-TooltipHost root-55"
                       onBlurCapture={[Function]}
                       onFocusCapture={[Function]}
                       onKeyDown={[Function]}
@@ -3112,28 +3056,13 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             "iconName": "Info",
                           }
                         }
-                        id="iconButton9"
-                        styles={
-                          Object {
-                            "root": Object {
-                              "marginBottom": -3,
-                            },
-                          }
-                        }
+                        vertical-align={true}
                       >
                         <IconButton
                           ariaLabel="Info"
                           iconProps={
                             Object {
                               "iconName": "Info",
-                            }
-                          }
-                          id="iconButton9"
-                          styles={
-                            Object {
-                              "root": Object {
-                                "marginBottom": -3,
-                              },
                             }
                           }
                           theme={
@@ -3409,6 +3338,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                               },
                             }
                           }
+                          vertical-align={true}
                         >
                           <BaseButton
                             ariaLabel="Info"
@@ -3418,7 +3348,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                 "iconName": "Info",
                               }
                             }
-                            id="iconButton9"
                             onRenderDescription={[Function]}
                             onRenderText={[Function]}
                             split={false}
@@ -3533,9 +3462,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                                     "height": "32px",
                                     "padding": "0 4px",
                                     "width": "32px",
-                                  },
-                                  Object {
-                                    "marginBottom": -3,
                                   },
                                 ],
                                 "rootChecked": Object {
@@ -4152,12 +4078,12 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                               }
                             }
                             variantClassName="ms-Button--icon"
+                            vertical-align={true}
                           >
                             <button
                               aria-label="Info"
-                              className="ms-Button ms-Button--icon root-55"
+                              className="ms-Button ms-Button--icon root-56"
                               data-is-focusable={true}
-                              id="iconButton9"
                               onClick={[Function]}
                               onKeyDown={[Function]}
                               onKeyPress={[Function]}
@@ -4167,16 +4093,16 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                               type="button"
                             >
                               <span
-                                className="ms-Button-flexContainer flexContainer-56"
+                                className="ms-Button-flexContainer flexContainer-57"
                                 data-automationid="splitbuttonprimary"
                               >
                                 <Component
-                                  className="ms-Button-icon icon-58"
+                                  className="ms-Button-icon icon-59"
                                   iconName="Info"
                                 >
                                   <i
                                     aria-hidden={true}
-                                    className="ms-Icon root-37 css-63 ms-Button-icon icon-58"
+                                    className="ms-Icon root-37 css-64 ms-Button-icon icon-59"
                                     data-icon-name="Info"
                                     style={
                                       Object {
@@ -4197,7 +4123,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                   </TooltipHostBase>
                 </StyledTooltipHostBase>
               </span>
-            </Tooltip>
+            </InfoTooltip>
           </div>
         </Stack>
         <StyledTextFieldBase
@@ -4510,18 +4436,18 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
             value="4000"
           >
             <div
-              className="ms-TextField is-required root-79"
+              className="ms-TextField is-required root-80"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-80"
+                  className="ms-TextField-fieldGroup fieldGroup-81"
                 >
                   <input
                     aria-invalid={false}
-                    className="ms-TextField-field field-81"
-                    id="TextField14"
+                    className="ms-TextField-field field-82"
+                    id="TextField10"
                     min={4000}
                     onBlur={[Function]}
                     onChange={[Function]}

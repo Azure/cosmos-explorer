@@ -11,7 +11,7 @@ import {
 } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
-import { Tooltip } from "../../../Common/Tooltip/Tooltip";
+import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as SharedConstants from "../../../Shared/Constants";
 import { userContext } from "../../../UserContext";
 import { getCollectionName } from "../../../Utils/APITypeUtils";
@@ -111,7 +111,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
           {getThroughputLabelText()}
         </Text>
-        <Tooltip>{PricingUtils.getRuToolTipText()}</Tooltip>
+        <InfoTooltip>{PricingUtils.getRuToolTipText()}</InfoTooltip>
       </Stack>
 
       <Stack horizontal verticalAlign="center">
@@ -137,7 +137,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
             <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} data-testid="maxRUDescription">
               {isDatabase ? "Database" : getCollectionName()} Max RU/s
             </Text>
-            <Tooltip>{getAutoScaleTooltip()}</Tooltip>
+            <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
           </Stack>
 
           <TextField
