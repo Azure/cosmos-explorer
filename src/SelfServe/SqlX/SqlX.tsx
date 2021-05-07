@@ -9,14 +9,14 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -49,14 +49,26 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
 
 const onNumberOfInstancesChange = (
   newValue: InputType,
-  currentValues: Map<string, SmartUiInput>
+  currentValues: Map<string, SmartUiInput>,
+  baselineValues: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
-  currentValues.set("warningBanner", {
-    value: { textTKey: "WarningBannerOnUpdate" } as Description,
-    hidden: false,
-  });
-
+  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+  const baselineInstances = baselineValues.get("instances")?.value as number;
+  if (!dedicatedGatewayOriginallyEnabled || baselineInstances !== newValue) {
+    currentValues.set("warningBanner", {
+      value: {
+        textTKey: "WarningBannerOnUpdate",
+        link: {
+          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+          textTKey: "DedicatedGatewayPricing",
+        },
+      } as Description,
+      hidden: false,
+    });
+  } else {
+    currentValues.set("warningBanner", undefined);
+  }
   return currentValues;
 };
 
@@ -180,20 +192,9 @@ export default class SqlX extends SelfServeBaseClass {
           },
         };
       } else {
-        let operationStatusUrl;
-        if (baselineValues.get("instances")?.value === currentValues.get("instances")?.value) {
-          currentValues.set("warningBanner", {
-            value: { textTKey: "NoChangesToExistingResource" } as Description,
-            hidden: false,
-          });
-          return {
-            operationStatusUrl: undefined,
-          };
-        } else {
-          const sku = currentValues.get("sku")?.value as string;
-          const instances = currentValues.get("instances").value as number;
-          operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
-        }
+        const sku = currentValues.get("sku")?.value as string;
+        const instances = currentValues.get("instances").value as number;
+        const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
