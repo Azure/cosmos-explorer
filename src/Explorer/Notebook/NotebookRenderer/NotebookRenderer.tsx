@@ -84,7 +84,8 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
       this.props.pendingSnapshotRequest.notebookContentRef === this.props.contentRef &&
       (!this.props.notebookSnapshot ||
         this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
-      this.props.cellOutputSnapshots.size === this.props.nbCodeCells) {
+      this.props.cellOutputSnapshots.size === this.props.nbCodeCells
+    ) {
       try {
         // Use Html2Canvas because it is much more reliable and fast than dom-to-file
         const result = await NotebookUtil.takeScreenshotHtml2Canvas(

@@ -2,6 +2,7 @@ import { ImmutableNotebook, toJS } from "@nteract/commutable";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
+import { useNotebookSnapshotStore } from "../../../hooks/useNotebookSnapshotStore";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -27,8 +28,6 @@ export interface PublishNotebookPaneAProps {
   notebookContent: string | ImmutableNotebook;
   notebookContentRef: string;
   onTakeSnapshot: (request: SnapshotRequest) => void;
-  notebookSnapshot: string;
-  notebookSnapshotError: string;
 }
 export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> = ({
   explorer: container,
@@ -39,8 +38,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   notebookContent,
   notebookContentRef,
   onTakeSnapshot,
-  notebookSnapshot,
-  notebookSnapshotError,
 }: PublishNotebookPaneAProps): JSX.Element => {
   const [isCodeOfConductAccepted, setIsCodeOfConductAccepted] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
@@ -52,6 +49,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   const [notebookDescription, setNotebookDescription] = useState<string>("");
   const [notebookTags, setNotebookTags] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>();
+  const { snapshot: notebookSnapshot, error: notebookSnapshotError } = useNotebookSnapshotStore();
 
   const CodeOfConductAccepted = async () => {
     try {

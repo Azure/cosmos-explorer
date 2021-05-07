@@ -15,6 +15,7 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import { ArmApiVersions } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
+import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
 import { trackEvent } from "../../Shared/appInsights";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -462,18 +463,23 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
     // TODO get snapshots from somewhere better
     const notebookReduxStore = NotebookTabV2.clientManager.getStore();
+
     const unsubscribe = notebookReduxStore.subscribe(() => {
       const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
-      this.container.setNotebookSnapshot(cdbState.notebookSnapshot?.imageSrc);
-      this.container.setNotebookSnapshotError(cdbState.notebookSnapshotError);
+      useNotebookSnapshotStore.setState({
+        snapshot: cdbState.notebookSnapshot?.imageSrc,
+        error: cdbState.notebookSnapshotError,
+      });
     });
 
     const notebookContent = this.notebookComponentAdapter.getContent();
     const notebookContentRef = this.notebookComponentAdapter.contentRef;
     const onPanelClose = (): void => {
       unsubscribe();
-      this.container.setNotebookSnapshot(undefined);
-      this.container.setNotebookSnapshotError(undefined);
+      useNotebookSnapshotStore.setState({
+        snapshot: undefined,
+        error: undefined,
+      });
       notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(undefined));
     };
 

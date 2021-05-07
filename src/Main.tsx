@@ -51,7 +51,6 @@ import "./Explorer/Tabs/QueryTab.less";
 import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
-import { useNotebookSnapshot } from "./hooks/useNotebookSnapshot";
 import { useSidePanel } from "./hooks/useSidePanel";
 import { useTabs } from "./hooks/useTabs";
 import "./Libs/jquery";
@@ -79,12 +78,6 @@ const App: React.FunctionComponent = () => {
 
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
   const { tabs, activeTab, tabsManager } = useTabs();
-  const {
-    snapshot: notebookSnapshot,
-    error: notebookSnapshotError,
-    setSnapshot: setNotebookSnapshot,
-    setError: setNotebookSnapshotError,
-  } = useNotebookSnapshot();
 
   const explorerParams: ExplorerParams = {
     setIsNotificationConsoleExpanded,
@@ -95,8 +88,6 @@ const App: React.FunctionComponent = () => {
     openDialog,
     closeDialog,
     tabsManager,
-    setNotebookSnapshot,
-    setNotebookSnapshotError,
   };
 
   const config = useConfig();
@@ -235,8 +226,6 @@ const App: React.FunctionComponent = () => {
         headerText={headerText}
         closePanel={closeSidePanel}
         isConsoleExpanded={isNotificationConsoleExpanded}
-        notebookSnapshot={notebookSnapshot}
-        notebookSnapshotError={notebookSnapshotError}
       />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
       <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />

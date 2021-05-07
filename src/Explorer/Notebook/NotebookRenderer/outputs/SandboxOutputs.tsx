@@ -40,7 +40,6 @@ interface DispatchProps {
 type SandboxOutputsProps = ComponentProps & StateProps & DispatchProps;
 
 export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
-
   private childWindow: Window;
   private nodeRef = React.createRef<HTMLDivElement>();
 
@@ -84,8 +83,9 @@ export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
     const props: CellOutputViewerProps = {
       id: this.props.id,
       contentRef: this.props.contentRef,
-      outputsContainerClassName: `nteract-cell-outputs ${this.props.hidden ? "hidden" : ""} ${this.props.expanded ? "expanded" : ""
-        } ${this.props.outputsContainerClassName}`,
+      outputsContainerClassName: `nteract-cell-outputs ${this.props.hidden ? "hidden" : ""} ${
+        this.props.expanded ? "expanded" : ""
+      } ${this.props.outputsContainerClassName}`,
       outputClassName: this.props.outputClassName,
       outputs: this.props.outputs.toArray().map((output) => outputToJS(output)),
       onMetadataChange: this.props.onMetadataChange,
@@ -101,10 +101,12 @@ export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
   async componentDidUpdate(prevProps: SandboxOutputsProps): Promise<void> {
     this.sendPropsToFrame();
 
-    if (this.props.pendingSnapshotRequest &&
+    if (
+      this.props.pendingSnapshotRequest &&
       prevProps.pendingSnapshotRequest !== this.props.pendingSnapshotRequest &&
       this.props.pendingSnapshotRequest.notebookContentRef === this.props.contentRef &&
-      this.nodeRef?.current) {
+      this.nodeRef?.current
+    ) {
       const boundingClientRect = this.nodeRef.current.getBoundingClientRect();
 
       try {
@@ -137,7 +139,6 @@ export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
       } catch (error) {
         this.props.notebookSnapshotError(error.message);
       }
-
     }
   }
 }

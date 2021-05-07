@@ -98,8 +98,6 @@ export interface ExplorerParams {
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
-  setNotebookSnapshot: (imageSrc: string) => void;
-  setNotebookSnapshotError: (error: string) => void;
 }
 
 export default class Explorer {
@@ -203,10 +201,6 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
-  // Notebook snapshot
-  public setNotebookSnapshot: (imageSrc: string) => void;
-  public setNotebookSnapshotError: (error: string) => void;
-
   private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
@@ -231,8 +225,6 @@ export default class Explorer {
     this.closeSidePanel = params?.closeSidePanel;
     this.closeDialog = params?.closeDialog;
     this.openDialog = params?.openDialog;
-    this.setNotebookSnapshot = params?.setNotebookSnapshot;
-    this.setNotebookSnapshotError = params?.setNotebookSnapshotError;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -1410,7 +1402,13 @@ export default class Explorer {
     onClosePanel: () => void
   ): Promise<void> {
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(name, content, notebookContentRef, onTakeSnapshot, onClosePanel);
+      await this.notebookManager.openPublishNotebookPane(
+        name,
+        content,
+        notebookContentRef,
+        onTakeSnapshot,
+        onClosePanel
+      );
       this.isPublishNotebookPaneEnabled(true);
     }
   }

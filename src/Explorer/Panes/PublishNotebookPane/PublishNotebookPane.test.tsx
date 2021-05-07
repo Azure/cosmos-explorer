@@ -12,6 +12,7 @@ describe("PublishNotebookPaneComponent", () => {
       notebookAuthor: "CosmosDB",
       notebookCreatedDate: "2020-07-17T00:00:00Z",
       notebookObject: undefined,
+      notebookContentRef: undefined,
       setNotebookName: undefined,
       setNotebookDescription: undefined,
       setNotebookTags: undefined,
