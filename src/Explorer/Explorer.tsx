@@ -1,6 +1,5 @@
 import { IChoiceGroupProps } from "@fluentui/react";
 import * as ko from "knockout";
-import * as path from "path";
 import Q from "q";
 import React from "react";
 import _ from "underscore";
@@ -254,8 +253,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-                  userContext.features.enableNotebooks)
+              ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+                userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
@@ -276,7 +275,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
+              userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
@@ -1840,39 +1839,6 @@ export default class Explorer {
           }
         )
       );
-    }
-  }
-
-  public async openNotebookViewer(notebookUrl: string) {
-    const title = path.basename(notebookUrl);
-    const hashLocation = notebookUrl;
-    const NotebookViewerTab = await (
-      await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab")
-    ).default;
-
-    const notebookViewerTab = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2).find((tab) => {
-      return tab.hashLocation() == hashLocation && tab instanceof NotebookViewerTab && tab.notebookUrl === notebookUrl;
-    });
-
-    if (notebookViewerTab) {
-      this.tabsManager.activateNewTab(notebookViewerTab);
-    } else {
-      const notebookViewerTab = new NotebookViewerTab({
-        account: userContext.databaseAccount,
-        tabKind: ViewModels.CollectionTabKind.NotebookViewer,
-        node: null,
-        title: title,
-        tabPath: title,
-        collection: null,
-        hashLocation: hashLocation,
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        container: this,
-        notebookUrl,
-      });
-
-      this.tabsManager.activateNewTab(notebookViewerTab);
     }
   }
 

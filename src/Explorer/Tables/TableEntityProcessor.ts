@@ -183,11 +183,13 @@ export function convertEntityToNewDocument(entity: Entities.ITableEntityForTable
           parsedValue = DateTimeUtilities.convertJSDateToTicksWithPadding(propertyValue);
           break;
         case Constants.TableType.Boolean:
-          parsedValue = propertyValue.toLowerCase() === "true";
+          parsedValue = propertyValue.toString().toLowerCase() === "true";
           break;
         case Constants.TableType.Int32:
-        case Constants.TableType.Int64:
           parsedValue = parseInt(propertyValue, 10);
+          break;
+        case Constants.TableType.Int64:
+          parsedValue = propertyValue.toString();
           break;
         case Constants.TableType.Double:
           parsedValue = parseFloat(propertyValue);
