@@ -8,7 +8,7 @@ import {
   Stack,
   TextField,
   TooltipHost,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import DeleteIcon from "../../images/delete.svg";
 import EditIcon from "../../images/Edit_entity.svg";

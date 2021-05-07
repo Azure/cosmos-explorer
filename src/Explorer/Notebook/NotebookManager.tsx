@@ -2,7 +2,7 @@
  * Contains all notebook related stuff meant to be dynamically loaded by explorer
  */
 
-import type { ImmutableNotebook } from "@nteract/commutable";
+import { ImmutableNotebook } from "@nteract/commutable";
 import type { IContentProvider } from "@nteract/core";
 import ko from "knockout";
 import React from "react";
@@ -17,12 +17,13 @@ import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
-import { GitHubReposPane } from "../Panes/GitHubReposPane";
-import { PublishNotebookPaneAdapter } from "../Panes/PublishNotebookPaneAdapter";
+// import { GitHubReposPane } from "../Panes/GitHubReposPane";
+import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { NotebookContainerClient } from "./NotebookContainerClient";
@@ -50,24 +51,16 @@ export default class NotebookManager {
 
   private gitHubContentProvider: GitHubContentProvider;
   public gitHubOAuthService: GitHubOAuthService;
-  private gitHubClient: GitHubClient;
+  public gitHubClient: GitHubClient;
 
   public gitHubReposPane: ContextualPaneBase;
-  public publishNotebookPaneAdapter: PublishNotebookPaneAdapter;
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
-    this.junoClient = new JunoClient(this.params.container.databaseAccount);
+    this.junoClient = new JunoClient();
 
     this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
     this.gitHubClient = new GitHubClient(this.onGitHubClientError);
-    this.gitHubReposPane = new GitHubReposPane({
-      id: "gitHubReposPane",
-      visible: ko.observable<boolean>(false),
-      container: this.params.container,
-      junoClient: this.junoClient,
-      gitHubClient: this.gitHubClient,
-    });
 
     this.gitHubContentProvider = new GitHubContentProvider({
       gitHubClient: this.gitHubClient,
@@ -81,7 +74,7 @@ export default class NotebookManager {
 
     this.notebookClient = new NotebookContainerClient(
       this.params.container.notebookServerInfo,
-      () => this.params.container.initNotebooks(this.params.container.databaseAccount()),
+      () => this.params.container.initNotebooks(userContext?.databaseAccount),
       (update: MemoryUsageInfo) => this.params.container.memoryUsageInfo(update)
     );
 
@@ -91,13 +84,11 @@ export default class NotebookManager {
       this.notebookContentProvider
     );
 
-    this.publishNotebookPaneAdapter = new PublishNotebookPaneAdapter(this.params.container, this.junoClient);
-
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
       this.gitHubClient.setToken(token?.access_token);
-
-      if (this.gitHubReposPane.visible()) {
-        this.gitHubReposPane.open();
+      if (this?.gitHubOAuthService.isLoggedIn()) {
+        this.params.container.closeSidePanel();
+        this.params.container.openGitHubReposPanel("Manager GitHub settings", this.junoClient);
       }
 
       this.params.refreshCommandBarButtons();
@@ -123,7 +114,20 @@ export default class NotebookManager {
     content: NotebookPaneContent,
     parentDomElement: HTMLElement
   ): Promise<void> {
-    await this.publishNotebookPaneAdapter.open(name, getFullName(), content, parentDomElement);
+    const explorer = this.params.container;
+    explorer.openSidePanel(
+      "New Collection",
+      <PublishNotebookPane
+        explorer={this.params.container}
+        junoClient={this.junoClient}
+        closePanel={this.params.container.closeSidePanel}
+        openNotificationConsole={this.params.container.expandConsole}
+        name={name}
+        author={getFullName()}
+        notebookContent={content}
+        parentDomElement={parentDomElement}
+      />
+    );
   }
 
   public openCopyNotebookPane(name: string, content: string): void {
@@ -153,7 +157,7 @@ export default class NotebookManager {
         undefined,
         "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
         "Connect to GitHub",
-        () => this.gitHubReposPane.open(),
+        () => this.params.container.openGitHubReposPanel("Connect to GitHub"),
         "Cancel",
         undefined
       );

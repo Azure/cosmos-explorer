@@ -143,7 +143,6 @@
         size="40"
         class="collid"
         data-bind="visible: databaseCreateNew, textInput: databaseId, hasFocus: firstFieldHasFocus"
-        aria-label="Database id"
         autofocus
       />
 
@@ -161,7 +160,6 @@
         size="40"
         class="collid"
         data-bind="visible: !databaseCreateNew(), textInput: databaseId, hasFocus: firstFieldHasFocus"
-        aria-label="Database id"
       />
 
       <datalist id="databasesList" data-bind="foreach: databaseIds" data-bind="visible: databaseCreateNew">
@@ -246,15 +244,12 @@
         placeholder="e.g., Container1"
         size="40"
         class="textfontclr collid"
-        data-bind="value: collectionId, attr: { 'aria-label': collectionIdTitle }"
+        data-bind="value: collectionId"
       />
     </div>
 
     <!-- Indexing For Shared Throughput - start -->
-    <div
-      class="seconddivpadding"
-      data-bind="visible: showIndexingOptionsForSharedThroughput() && !container.isPreferredApiMongoDB()"
-    >
+    <div class="seconddivpadding" data-bind="visible: showIndexingOptionsForSharedThroughput() && !isMongo()">
       <div
         class="useIndexingForSharedThroughput createNewDatabaseOrUseExisting"
         aria-label="Indexing For Shared Throughput"
@@ -297,7 +292,7 @@
 
     <p
       class="seconddivpadding"
-      data-bind="visible: container.isPreferredApiMongoDB() && !databaseHasSharedOffer() || container.isFixedCollectionWithSharedThroughputSupported"
+      data-bind="visible: isMongo() && !databaseHasSharedOffer() || container.isFixedCollectionWithSharedThroughputSupported"
     >
       <span class="mandatoryStar">*</span>
       <span class="addCollectionLabel">Storage capacity</span>
@@ -312,7 +307,7 @@
     <div class="tabs">
       <div
         tabindex="0"
-        data-bind="event: { keydown: onStorageOptionsKeyDown }, visible: container.isPreferredApiMongoDB() && !databaseHasSharedOffer() || container.isFixedCollectionWithSharedThroughputSupported"
+        data-bind="event: { keydown: onStorageOptionsKeyDown }, visible: isMongo() && !databaseHasSharedOffer() || container.isFixedCollectionWithSharedThroughputSupported"
         aria-label="Storage capacity"
       >
         <!-- Fixed option button - Start -->
@@ -355,7 +350,6 @@
                                                 attr: {
                                                     placeholder: partitionKeyPlaceholder,
                                                     required: partitionKeyVisible(),
-                                                    'aria-label': partitionKeyName,
                                                     pattern: partitionKeyPattern,
                                                     title: partitionKeyTitle
                                                 }"
@@ -444,7 +438,7 @@
         <!-- Provision collection throughput - end -->
 
         <!-- Custom indexes for mongo checkbox - start -->
-        <div class="pkPadding" data-bind="visible: container.isEnableMongoCapabilityPresent()">
+        <div class="pkPadding" data-bind="visible: isEnableMongoCapabilityEnabled()">
           <p>
             <span class="addCollectionLabel">Indexing</span>
           </p>

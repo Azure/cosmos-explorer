@@ -175,10 +175,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiMongoDB() &&
-        collection.onMongoDBDocumentsClick();
+      userContext.apiType === "Mongo" && collection.onMongoDBDocumentsClick();
     });
   }
 
@@ -188,10 +185,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      collection &&
-        collection.container &&
-        collection.container.isPreferredApiMongoDB() &&
-        collection.onSchemaAnalyzerClick();
+      collection && userContext.apiType === "Mongo" && collection.onSchemaAnalyzerClick();
     });
   }
 
@@ -228,10 +222,7 @@ export class TabRouteHandler {
       if (!!matchingTab) {
         matchingTab.onTabClick();
       } else {
-        collection &&
-          collection.container &&
-          collection.container.isPreferredApiMongoDB() &&
-          collection.onNewMongoQueryClick(collection, null);
+        userContext.apiType === "Mongo" && collection.onNewMongoQueryClick(collection, null);
       }
     });
   }
@@ -250,10 +241,7 @@ export class TabRouteHandler {
       if (!!matchingTab) {
         matchingTab.onTabClick();
       } else {
-        collection &&
-          collection.container &&
-          collection.container.isPreferredApiMongoDB() &&
-          collection.onNewMongoShellClick();
+        userContext.apiType === "Mongo" && collection.onNewMongoShellClick();
       }
     });
   }

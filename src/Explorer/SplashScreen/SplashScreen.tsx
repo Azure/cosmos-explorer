@@ -1,7 +1,7 @@
 /**
  * Accordion top class
  */
-import { Link } from "office-ui-fabric-react/lib/Link";
+import { Link } from "@fluentui/react";
 import * as React from "react";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
@@ -237,7 +237,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           title: "New SQL Query",
           description: null,
         });
-      } else if (this.container.isPreferredApiMongoDB()) {
+      } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {

@@ -1,4 +1,4 @@
-import { TextField } from "office-ui-fabric-react";
+import { TextField } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
@@ -92,7 +92,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
     }
   };
   const genericPaneProps: GenericRightPaneProps = {
-    container: container,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
     id: "stringInputPane",
@@ -101,6 +100,7 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
     submitButtonText: submitButtonLabel,
     onClose: closePanel,
     onSubmit: submit,
+    expandConsole: () => container.expandConsole(),
   };
   return (
     <GenericRightPaneComponent {...genericPaneProps}>

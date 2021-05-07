@@ -1,11 +1,15 @@
-import _ from "underscore";
+import {
+  DefaultButton,
+  IButtonProps,
+  ITextFieldProps,
+  List,
+  ScrollablePane,
+  Sticky,
+  StickyPositionType,
+  TextField,
+} from "@fluentui/react";
 import * as React from "react";
-
-import { DefaultButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
-import { List } from "office-ui-fabric-react/lib/List";
-import { ScrollablePane } from "office-ui-fabric-react/lib/ScrollablePane";
-import { Sticky, StickyPositionType } from "office-ui-fabric-react/lib/Sticky";
-import { TextField, ITextFieldProps } from "office-ui-fabric-react/lib/TextField";
+import _ from "underscore";
 import { Tenant } from "../../../Contracts/DataModels";
 
 export interface DirectoryListProps {

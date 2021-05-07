@@ -1,25 +1,20 @@
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Offer, ReadCollectionOfferParams } from "../../Contracts/DataModels";
-import { handleError } from "../ErrorHandlingUtils";
-import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { userContext } from "../../UserContext";
 import { getCassandraTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import { getGremlinGraphThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { getTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";
-import { userContext } from "../../UserContext";
 
 export const readCollectionOffer = async (params: ReadCollectionOfferParams): Promise<Offer> => {
   const clearMessage = logConsoleProgress(`Querying offer for collection ${params.collectionId}`);
 
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       return await readCollectionOfferWithARM(params.databaseId, params.collectionId);
     }
 
@@ -33,15 +28,13 @@ export const readCollectionOffer = async (params: ReadCollectionOfferParams): Pr
 };
 
 const readCollectionOfferWithARM = async (databaseId: string, collectionId: string): Promise<Offer> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   let rpResponse;
   try {
-    switch (defaultExperience) {
-      case DefaultAccountExperienceType.DocumentDB:
+    switch (apiType) {
+      case "SQL":
         rpResponse = await getSqlContainerThroughput(
           subscriptionId,
           resourceGroup,
@@ -50,7 +43,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.MongoDB:
+      case "Mongo":
         rpResponse = await getMongoDBCollectionThroughput(
           subscriptionId,
           resourceGroup,
@@ -59,7 +52,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.Cassandra:
+      case "Cassandra":
         rpResponse = await getCassandraTableThroughput(
           subscriptionId,
           resourceGroup,
@@ -68,7 +61,7 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.Graph:
+      case "Gremlin":
         rpResponse = await getGremlinGraphThroughput(
           subscriptionId,
           resourceGroup,
@@ -77,11 +70,11 @@ const readCollectionOfferWithARM = async (databaseId: string, collectionId: stri
           collectionId
         );
         break;
-      case DefaultAccountExperienceType.Table:
+      case "Tables":
         rpResponse = await getTableThroughput(subscriptionId, resourceGroup, accountName, collectionId);
         break;
       default:
-        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${apiType}`);
     }
   } catch (error) {
     if (error.code !== "NotFound") {

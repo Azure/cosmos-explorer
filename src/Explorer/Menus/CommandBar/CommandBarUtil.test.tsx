@@ -1,6 +1,6 @@
-import * as CommandBarUtil from "./CommandBarUtil";
-import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
+import { ICommandBarItemProps } from "@fluentui/react";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import * as CommandBarUtil from "./CommandBarUtil";
 
 describe("CommandBarUtil tests", () => {
   const createButton = (): CommandButtonComponentProps => {

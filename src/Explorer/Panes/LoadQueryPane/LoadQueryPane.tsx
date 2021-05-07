@@ -1,5 +1,5 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import { IImageProps, Image, ImageFit, Stack, TextField } from "office-ui-fabric-react";
+import { useBoolean } from "@fluentui/react-hooks";
+import { IImageProps, Image, ImageFit, Stack, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
@@ -37,7 +37,7 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
 
   const title = "Load Query";
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
+    expandConsole: () => explorer.expandConsole(),
     formError: formError,
     formErrorDetail: formErrorsDetails,
     id: "loadQueryPane",

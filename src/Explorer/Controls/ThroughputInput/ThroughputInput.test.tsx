@@ -6,6 +6,7 @@ const props = {
   showFreeTierExceedThroughputTooltip: true,
   isAutoscaleSelected: true,
   throughput: 500,
+  isSharded: false,
   setThroughputValue: () => jest.fn(),
   setIsAutoscale: () => jest.fn(),
   onCostAcknowledgeChange: () => jest.fn(),

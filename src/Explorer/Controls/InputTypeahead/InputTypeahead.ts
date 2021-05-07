@@ -128,21 +128,21 @@ class InputTypeaheadViewModel {
         },
       },
       callback: {
-        onClick: (node: any, a: any, item: OnClickItem, event: any) => {
+        onClick: (_node: unknown, _a: unknown, item: OnClickItem) => {
           cache.selection = item;
 
           if (params.selection) {
             params.selection(item);
           }
         },
-        onResult(node: any, query: any, result: any, resultCount: any, resultCountPerGroup: any) {
+        onResult(_node: unknown, query: any) {
           cache.inputValue = query;
           if (params.inputValue) {
             params.inputValue(query);
           }
         },
       },
-      template: (query: string, item: any) => {
+      template: (_query: string, item: any) => {
         // Don't display id if caption *IS* the id
         return item.caption === item.value
           ? "<span>{{caption}}</span>"

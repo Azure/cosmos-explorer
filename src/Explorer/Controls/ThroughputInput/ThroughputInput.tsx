@@ -9,7 +9,7 @@ import {
   Text,
   TextField,
   TooltipHost,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { Tooltip } from "../../../Common/Tooltip/Tooltip";
@@ -22,6 +22,7 @@ import "./ThroughputInput.less";
 
 export interface ThroughputInputProps {
   isDatabase: boolean;
+  isSharded: boolean;
   showFreeTierExceedThroughputTooltip: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
@@ -35,6 +36,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   showFreeTierExceedThroughputTooltip,
   setThroughputValue,
   setIsAutoscale,
+  isSharded,
   isAutoscaleSelected = true,
   throughput = AutoPilotUtils.minAutoPilotThroughput,
   onCostAcknowledgeChange,
