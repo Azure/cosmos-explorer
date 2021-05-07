@@ -3,13 +3,11 @@ import { CellId, CellType, ImmutableNotebook } from "@nteract/commutable";
 import {
   actions,
   AppState,
-
-
-  ContentRef, DocumentRecordProps,
-
+  ContentRef,
+  DocumentRecordProps,
   KernelRef,
   NotebookContentRecord,
-  selectors
+  selectors,
 } from "@nteract/core";
 import "@nteract/styles/editor-overrides.css";
 import "@nteract/styles/global-variables.css";
@@ -26,11 +24,6 @@ import * as NteractUtil from "../NTeractUtil";
 import * as CdbActions from "./actions";
 import { NotebookComponent } from "./NotebookComponent";
 import "./NotebookComponent.less";
-
-
-
-
-
 
 export interface NotebookComponentBootstrapperOptions {
   notebookClient: NotebookClientV2;

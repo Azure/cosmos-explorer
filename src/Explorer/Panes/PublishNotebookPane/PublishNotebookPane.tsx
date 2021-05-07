@@ -14,7 +14,7 @@ import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
 import {
   GenericRightPaneComponent,
-  GenericRightPaneProps
+  GenericRightPaneProps,
 } from "../GenericRightPaneComponent/GenericRightPaneComponent";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
