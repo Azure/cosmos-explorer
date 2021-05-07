@@ -163,7 +163,6 @@ export default class Explorer {
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
-
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -1063,6 +1062,9 @@ export default class Explorer {
     }
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
+    }
+    if (flights.indexOf(Constants.Flights.SchemaAnalyzer) !== -1) {
+      userContext.features.enableSchemaAnalyzer = true;
     }
   }
 

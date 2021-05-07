@@ -1,13 +1,17 @@
-import { FontIcon, PrimaryButton, Spinner, SpinnerSize, Stack, Text, TextField } from "@fluentui/react";
-import { ImmutableOutput } from "@nteract/commutable";
+import { Spinner, SpinnerSize, Stack } from "@fluentui/react";
+import { ImmutableExecuteResult, ImmutableOutput } from "@nteract/commutable";
 import { actions, AppState, ContentRef, KernelRef, selectors } from "@nteract/core";
 import Immutable from "immutable";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import loadTransform from "../NotebookComponent/loadTransform";
 import SandboxOutputs from "../NotebookRenderer/outputs/SandboxOutputs";
 import "./SchemaAnalyzerComponent.less";
+import { DefaultFilter, DefaultSampleSize, SchemaAnalyzerHeaderComponent } from "./SchemaAnalyzerHeaderComponent";
+import { SchemaAnalyzerSplashScreenComponent } from "./SchemaAnalyzerSplashScreenComponent";
 
 interface SchemaAnalyzerComponentPureProps {
   contentRef: ContentRef;
@@ -26,8 +30,8 @@ type OutputType = "rich" | "json";
 
 interface SchemaAnalyzerComponentState {
   outputType: OutputType;
-  filter?: string;
   isFiltering: boolean;
+  sampleSize: string;
 }
 
 type SchemaAnalyzerComponentProps = SchemaAnalyzerComponentPureProps &
@@ -38,11 +42,14 @@ export class SchemaAnalyzerComponent extends React.Component<
   SchemaAnalyzerComponentProps,
   SchemaAnalyzerComponentState
 > {
+  private clickAnalyzeTelemetryStartKey: number;
+
   constructor(props: SchemaAnalyzerComponentProps) {
     super(props);
     this.state = {
       outputType: "rich",
       isFiltering: false,
+      sampleSize: DefaultSampleSize,
     };
   }
 
@@ -50,32 +57,57 @@ export class SchemaAnalyzerComponent extends React.Component<
     loadTransform(this.props);
   }
 
-  private onFilterTextFieldChange = (
-    event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>,
-    newValue?: string
-  ): void => {
-    this.setState({
-      filter: newValue,
-    });
-  };
-
-  private onAnalyzeButtonClick = () => {
+  private onAnalyzeButtonClick = (filter: string = DefaultFilter, sampleSize: string = this.state.sampleSize) => {
     const query = {
       command: "listSchema",
       database: this.props.databaseId,
       collection: this.props.collectionId,
       outputType: this.state.outputType,
-      filter: this.state.filter,
+      filter,
+      sampleSize,
     };
 
-    if (this.state.filter) {
-      this.setState({
-        isFiltering: true,
-      });
-    }
+    this.setState({
+      isFiltering: true,
+    });
 
     this.props.updateCell(JSON.stringify(query), this.props.firstCellId, this.props.contentRef);
+
+    this.clickAnalyzeTelemetryStartKey = traceStart(Action.SchemaAnalyzerClickAnalyze, {
+      database: this.props.databaseId,
+      collection: this.props.collectionId,
+      sampleSize,
+    });
+
     this.props.runCell(this.props.contentRef, this.props.firstCellId);
+  };
+
+  private traceClickAnalyzeComplete = (kernelStatus: string, outputs: Immutable.List<ImmutableOutput>) => {
+    /**
+     * CosmosMongoKernel always returns 1st output as "text/html"
+     * This output can be an error stack or information about how many documents were sampled
+     */
+    let firstTextHtmlOutput: string;
+    if (outputs.size > 0 && outputs.get(0).output_type === "execute_result") {
+      const executeResult = outputs.get(0) as ImmutableExecuteResult;
+      firstTextHtmlOutput = executeResult.data["text/html"];
+    }
+
+    const data = {
+      database: this.props.databaseId,
+      collection: this.props.collectionId,
+      firstTextHtmlOutput,
+      sampleSize: this.state.sampleSize,
+      numOfOutputs: outputs.size,
+      kernelStatus,
+    };
+
+    // Only in cases where CosmosMongoKernel runs into an error we get a single output
+    if (outputs.size === 1) {
+      traceFailure(Action.SchemaAnalyzerClickAnalyze, data, this.clickAnalyzeTelemetryStartKey);
+    } else {
+      traceSuccess(Action.SchemaAnalyzerClickAnalyze, data, this.clickAnalyzeTelemetryStartKey);
+    }
   };
 
   render(): JSX.Element {
@@ -86,31 +118,22 @@ export class SchemaAnalyzerComponent extends React.Component<
 
     const isKernelBusy = kernelStatus === "busy";
     const isKernelIdle = kernelStatus === "idle";
-    const showSchemaOutput = isKernelIdle && outputs.size > 0;
+    const showSchemaOutput = isKernelIdle && outputs?.size > 0;
+
+    if (showSchemaOutput && this.clickAnalyzeTelemetryStartKey) {
+      this.traceClickAnalyzeComplete(kernelStatus, outputs);
+      this.clickAnalyzeTelemetryStartKey = undefined;
+    }
 
     return (
       <div className="schemaAnalyzerComponent">
-        <Stack horizontalAlign="center" tokens={{ childrenGap: 20, padding: 20 }}>
-          <Stack.Item grow styles={{ root: { display: "contents" } }}>
-            <Stack horizontal tokens={{ childrenGap: 20 }} styles={{ root: { width: "100%" } }}>
-              <Stack.Item grow align="end">
-                <TextField
-                  value={this.state.filter}
-                  onChange={this.onFilterTextFieldChange}
-                  label="Filter"
-                  placeholder="{ field: 'value' }"
-                  disabled={!isKernelIdle}
-                />
-              </Stack.Item>
-              <Stack.Item align="end">
-                <PrimaryButton
-                  text={isKernelBusy ? "Analyzing..." : "Analyze"}
-                  onClick={this.onAnalyzeButtonClick}
-                  disabled={!isKernelIdle}
-                />
-              </Stack.Item>
-            </Stack>
-          </Stack.Item>
+        <Stack tokens={{ childrenGap: 20, padding: 20 }}>
+          <SchemaAnalyzerHeaderComponent
+            isKernelIdle={isKernelIdle}
+            isKernelBusy={isKernelBusy}
+            onSampleSizeUpdated={(sampleSize) => this.setState({ sampleSize })}
+            onAnalyzeButtonClick={this.onAnalyzeButtonClick}
+          />
 
           {showSchemaOutput ? (
             <SandboxOutputs
@@ -120,32 +143,13 @@ export class SchemaAnalyzerComponent extends React.Component<
               outputClassName="schema-analyzer-cell-output"
             />
           ) : this.state.isFiltering ? (
-            <Stack.Item>
-              {isKernelBusy && <Spinner styles={{ root: { marginTop: 40 } }} size={SpinnerSize.large} />}
-            </Stack.Item>
+            <Spinner styles={{ root: { marginTop: 40 } }} size={SpinnerSize.large} />
           ) : (
-            <>
-              <Stack.Item>
-                <FontIcon iconName="Chart" style={{ fontSize: 100, color: "#43B1E5", marginTop: 40 }} />
-              </Stack.Item>
-              <Stack.Item>
-                <Text variant="xxLarge">Explore your schema</Text>
-              </Stack.Item>
-              <Stack.Item>
-                <Text variant="large">
-                  Quickly visualize your schema to infer the frequency, types and ranges of fields in your data set.
-                </Text>
-              </Stack.Item>
-              <Stack.Item>
-                <PrimaryButton
-                  styles={{ root: { fontSize: 18, padding: 30 } }}
-                  text={isKernelBusy ? "Analyzing..." : "Analyze Schema"}
-                  onClick={this.onAnalyzeButtonClick}
-                  disabled={kernelStatus !== "idle"}
-                />
-              </Stack.Item>
-              <Stack.Item>{isKernelBusy && <Spinner size={SpinnerSize.large} />}</Stack.Item>
-            </>
+            <SchemaAnalyzerSplashScreenComponent
+              isKernelIdle={isKernelIdle}
+              isKernelBusy={isKernelBusy}
+              onAnalyzeButtonClick={this.onAnalyzeButtonClick}
+            />
           )}
         </Stack>
       </div>

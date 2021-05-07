@@ -1,5 +1,5 @@
-import * as ko from "knockout";
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
+import * as ko from "knockout";
 import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
