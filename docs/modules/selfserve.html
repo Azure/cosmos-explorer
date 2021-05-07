@@ -155,9 +155,9 @@
 						<a href="#description-1" id="description-1" style="color: inherit; text-decoration: none;">
 							<h4>Description</h4>
 						</a>
-						<p>This file contains the definitions of all the data models to be used in your Class file and RP file.</p>
-						<p>For example, if your RP call takes/returns the <code>stringProperty</code> and <code>booleanProperty</code> of your SelfServe class, then you can define an interface in your <code>FeatureName.types.ts</code> file like this.</p>
-						<pre><code class="language-ts"><span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #001080">RpDataModel</span><span style="color: #000000"> {</span>
+						<p>This file contains the definitions of all the types and interfaces to be used in your Class file and RP file.</p>
+						<p>For example, if you want to save the <code>stringProperty</code> and <code>booleanProperty</code> of your SelfServe class, then you can define an interface in your <code>FeatureName.types.ts</code> file like this.</p>
+						<pre><code class="language-ts"><span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #001080">PropertiesToSave</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #001080">stringProperty</span><span style="color: #000000">: </span><span style="color: #001080">string</span><span style="color: #000000">,</span>
 <span style="color: #000000">  </span><span style="color: #001080">booleanProperty</span><span style="color: #000000">: </span><span style="color: #001080">boolean</span>
 <span style="color: #000000">}</span>
@@ -191,7 +191,7 @@
 
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">apiVersion</span><span style="color: #000000"> = </span><span style="color: #A31515">&quot;2020-06-01-preview&quot;</span><span style="color: #000000">;</span>
 
-<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">saveData</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">properties</span><span style="color: #000000">: </span><span style="color: #267F99">RpDataModel</span><span style="color: #000000">): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">void</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">saveData</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">properties</span><span style="color: #000000">: </span><span style="color: #267F99">PropertiesToSave</span><span style="color: #000000">): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">void</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">path</span><span style="color: #000000"> = </span><span style="color: #A31515">`/subscriptions/</span><span style="color: #0000FF">${</span><span style="color: #001080">userContext</span><span style="color: #000000FF">.</span><span style="color: #001080">subscriptionId</span><span style="color: #0000FF">}</span><span style="color: #A31515">/resourceGroups/</span><span style="color: #0000FF">${</span><span style="color: #001080">userContext</span><span style="color: #000000FF">.</span><span style="color: #001080">resourceGroup</span><span style="color: #0000FF">}</span><span style="color: #A31515">/providers/Microsoft.DocumentDB/databaseAccounts/</span><span style="color: #0000FF">${</span><span style="color: #001080">userContext</span><span style="color: #000000FF">.</span><span style="color: #001080">databaseAccount</span><span style="color: #000000FF">.</span><span style="color: #001080">name</span><span style="color: #0000FF">}</span><span style="color: #A31515">/&lt;REST_OF_THE_PATH&gt;`</span>
 <span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">body</span><span style="color: #000000"> = {</span>
 <span style="color: #000000">      </span><span style="color: #001080">data :</span><span style="color: #000000"> </span><span style="color: #001080">properties</span>
@@ -232,7 +232,7 @@
 									<li>Can have an optional <a href="./selfserve_decorators.html#refreshoptions">@RefreshOptions()</a> decorator that determines how often the auto refresh of the UI component should take place.</li>
 								</ul>
 							</li>
-							<li><p>For every UI element needed, add a property to the Self Serve class. Each of these properties</p>
+							<li><p>Each property of the Self Serve class that needs to be translated to a UI element</p>
 								<ul>
 									<li>Needs to have a <a href="./selfserve_decorators.html#values">@Values()</a> decorator.</li>
 									<li>Can have an optional <a href="./selfserve_decorators.html#propertyinfo">@PropertyInfo()</a> decorator that describes it&#39;s info bubble.</li>
@@ -245,9 +245,9 @@
 <span style="color: #000000">@</span><span style="color: #795E26">RefreshOptions</span><span style="color: #000000">({ </span><span style="color: #001080">retryIntervalInMs:</span><span style="color: #000000"> </span><span style="color: #098658">2000</span><span style="color: #000000"> })</span>
 <span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">FeatureName</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">SelfServeBaseClass</span><span style="color: #000000"> {</span>
 
-<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">initialize</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #008000">// initialize RP call and processing logic</span>
-<span style="color: #000000">  }</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">onRefresh</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">RefreshResult</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// refresh RP call and processing logic</span>
+<span style="color: #000000">  };</span>
 
 <span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">onSave</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span>
 <span style="color: #000000">    </span><span style="color: #001080">currentValues</span><span style="color: #000000">: </span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;,</span>
@@ -256,9 +256,9 @@
 <span style="color: #000000">      </span><span style="color: #008000">// onSave RP call and processing logic</span>
 <span style="color: #000000">  }</span>
 
-<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">onRefresh</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">RefreshResult</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
-<span style="color: #000000">      </span><span style="color: #008000">// refresh RP call and processing logic</span>
-<span style="color: #000000">  };</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">initialize</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// initialize RP call and processing logic</span>
+<span style="color: #000000">  }</span>
 
 <span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">(...)</span>
 <span style="color: #000000">  </span><span style="color: #001080">stringProperty</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
@@ -284,7 +284,7 @@
 						<a href="#6-update-selfservetsx-landing-page" id="6-update-selfservetsx-landing-page" style="color: inherit; text-decoration: none;">
 							<h3>6. Update SelfServe.tsx (landing page)</h3>
 						</a>
-						<p>Once the SelfServeType has been updated, update <a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx">SelfServe.tsx</a> for your feature. This ensures that the framework picks up your SelfServe Class.</p>
+						<p>Once The SelfServeType has been updated, update <a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx">SelfServe.tsx</a> for your feature. This is the entry point for the selfServe.html landing page, and decides which SelfServe Class needs to be rendered.</p>
 						<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">getDescriptor</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">selfServeType</span><span style="color: #000000">: </span><span style="color: #267F99">SelfServeType</span><span style="color: #000000">): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">SelfServeDescriptor</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
 <span style="color: #000000">  </span><span style="color: #AF00DB">switch</span><span style="color: #000000"> (</span><span style="color: #001080">selfServeType</span><span style="color: #000000">) {</span>
 <span style="color: #000000">    </span><span style="color: #AF00DB">case</span><span style="color: #000000"> </span><span style="color: #001080">SelfServeType</span><span style="color: #000000">.</span><span style="color: #001080">example</span><span style="color: #000000">: {</span>
@@ -313,9 +313,9 @@
 							<h2>Telemetry</h2>
 						</a>
 						<p>You can add telemetry for your feature using the functions in <a href="./selfserve_selfservetelemetryprocessor.html">SelfServeTelemetryProcessor</a></p>
-						<p>For example, in your SelfServe class, you can call the trace method in your <code>onSave</code> function.</p>
+						<p>For example, in your SelfServe class, you can call the trace method on every onSave call.</p>
 						<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">saveData</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./FeatureName.rp&quot;</span>
-<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">RpDataModel</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./FeatureName.types&quot;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">PropertiesToSave</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./FeatureName.types&quot;</span>
 
 <span style="color: #000000">@</span><span style="color: #795E26">IsDisplayable</span><span style="color: #000000">()</span>
 <span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">FeatureName</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">SelfServeBaseClass</span><span style="color: #000000"> {</span>
@@ -332,7 +332,7 @@
 <span style="color: #000000">    </span><span style="color: #001080">stringPropertyValue</span><span style="color: #000000"> = </span><span style="color: #001080">currentValues</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;stringProperty&quot;</span><span style="color: #000000">)</span>
 <span style="color: #000000">    </span><span style="color: #001080">booleanPropertyValue</span><span style="color: #000000"> = </span><span style="color: #001080">currentValues</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;booleanProperty&quot;</span><span style="color: #000000">)</span>
 <span style="color: #000000">    </span>
-<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">propertiesToSave</span><span style="color: #000000"> : </span><span style="color: #267F99">RpDataModel</span><span style="color: #000000"> = { </span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">propertiesToSave</span><span style="color: #000000"> : </span><span style="color: #267F99">PropertiesToSave</span><span style="color: #000000"> = { </span>
 <span style="color: #000000">      </span><span style="color: #001080">stringProperty:</span><span style="color: #000000"> </span><span style="color: #001080">stringPropertyValue</span><span style="color: #000000">,</span>
 <span style="color: #000000">      </span><span style="color: #001080">booleanProperty:</span><span style="color: #000000"> </span><span style="color: #001080">booleanPropertyValue</span>
 <span style="color: #000000">    }</span>
@@ -357,8 +357,8 @@
 <span style="color: #000000">  </span><span style="color: #001080">booleanProperty</span><span style="color: #000000">: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
 <span style="color: #000000">}</span>
 </code></pre>
-						<a href="#execution" id="execution" style="color: inherit; text-decoration: none;">
-							<h2>Execution</h2>
+						<a href="#developing" id="developing" style="color: inherit; text-decoration: none;">
+							<h2>Developing</h2>
 						</a>
 						<a href="#watch-mode" id="watch-mode" style="color: inherit; text-decoration: none;">
 							<h3>Watch mode</h3>
@@ -367,12 +367,8 @@
 						<a href="#local-development" id="local-development" style="color: inherit; text-decoration: none;">
 							<h3>Local Development</h3>
 						</a>
-						<p>Ensure that you have made the <a href="./selfserve.html#code-changes">Code changes</a>.</p>
-						<ul>
-							<li>Go to <code>https://ms.portal.azure.com/</code></li>
-							<li>Add the query string <code>feature.showSelfServeExample=true&amp;feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3D&lt;SELF_SERVE_TYPE&gt;</code></li>
-							<li>Click on the <code>Self Serve Example</code> menu item on the left panel.</li>
-						</ul>
+						<p>Update <a href="../enums/selfserve_selfserveutils.selfservetype.html">SelfServeType</a> to add your feature.</p>
+						<p>Add the feature flag <code>feature.showSelfServeExample=true&amp;feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3D&lt;SELF_SERVE_TYPE&gt;</code> to open up the your feature&#39;s UI in the <code>Self Serve Example</code> blade of the portal.</p>
 						<p>For example, if you want to open up the the UI of a class with the type <code>sqlx</code>, then visit <code>https://ms.portal.azure.com/?feature.showSelfServeExample=true&amp;feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3Dsqlx</code></p>
 						<p><img src="https://sdkctlstore.blob.core.windows.net/exe/selfserveDev.PNG" alt=""></p>
 					</div>
