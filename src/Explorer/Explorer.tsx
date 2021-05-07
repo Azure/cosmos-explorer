@@ -253,8 +253,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-              ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-                userContext.features.enableNotebooks)
+                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+                  userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
@@ -275,7 +275,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-              userContext.features.enableSpark
+                userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
