@@ -1,7 +1,7 @@
 import { ChoiceGroup, IChoiceGroupOption, Label, TextField } from "office-ui-fabric-react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
-import { HashMap } from "../../../Common/HashMap";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Tooltip } from "../../../Common/Tooltip/Tooltip";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as DataModels from "../../../Contracts/DataModels";
@@ -138,7 +138,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
   const [canConfigureThroughput, setCanConfigureThroughput] = useState<boolean>(!container.isServerlessEnabled());
 
   const [requestUnitsUsageCostDedicated, setRequestUnitsUsageCostDedicated] = useState<string>(() => {
-    const account = container.databaseAccount();
+    const { databaseAccount: account } = userContext;
     if (!account) {
       return "";
     }
@@ -178,7 +178,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     return estimatedSpend;
   });
   const [requestUnitsUsageCostShared, setRequestUnitsUsageCostShared] = useState<string>(() => {
-    const account = container.databaseAccount();
+    const { databaseAccount: account } = userContext;
     if (!account) {
       return "";
     }
@@ -222,7 +222,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     return estimatedSpend;
   });
 
-  const keyspaceOffers: HashMap<DataModels.Offer> = new HashMap();
+  const keyspaceOffers = new Map();
   const title = "Add Table";
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formErrors, setFormErrors] = useState<string>("");
@@ -408,8 +408,8 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     console.log(
       "abc",
       startKey,
-      container.databaseAccount().properties.cassandraEndpoint,
-      container.databaseAccount().id,
+      userContext?.databaseAccount?.properties?.cassandraEndpoint,
+      userContext?.databaseAccount?.id,
       container,
       createTableQuery,
       createKeyspaceQuery
@@ -417,16 +417,16 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     let createTableAndKeyspacePromise: Q.Promise<any>;
     if (toCreateKeyspace) {
       createTableAndKeyspacePromise = cassandraApiClient.createTableAndKeyspace(
-        container.databaseAccount().properties.cassandraEndpoint,
-        container.databaseAccount().id,
+        userContext?.databaseAccount?.properties?.cassandraEndpoint,
+        userContext?.databaseAccount?.id,
         container,
         createTableQuery,
         createKeyspaceQuery
       );
     } else {
       createTableAndKeyspacePromise = cassandraApiClient.createTableAndKeyspace(
-        container.databaseAccount().properties.cassandraEndpoint,
-        container.databaseAccount().id,
+        userContext?.databaseAccount?.properties?.cassandraEndpoint,
+        userContext?.databaseAccount?.id,
         container,
         createTableQuery
       );
@@ -436,60 +436,20 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
         container.refreshAllDatabases();
         setIsExecuting(false);
         closePanel();
-        // const addCollectionPaneSuccessMessage = {
-        //   collection: {
-        //     id: tableId,
-        //     storage: Constants.BackendDefaults.multiPartitionStorageInGb,
-        //     offerThroughput: throughput,
-        //     partitionKey: "",
-        //     databaseId: keyspaceId,
-        //     hasDedicatedThroughput: dedicateTableThroughput,
-        //   },
-        //   keyspaceHasSharedOffer: keyspaceHasSharedOffer(),
-        //   subscriptionType: SubscriptionType[container.subscriptionType()],
-        //   subscriptionQuotaId: userContext.quotaId,
-        //   defaultsCheck: {
-        //     storage: "u",
-        //     throughput: throughput(),
-        //     flight: container.flight(),
-        //   },
-        //   dataExplorerArea: Constants.Areas.ContextualPane,
-        //   toCreateKeyspace: toCreateKeyspace,
-        //   createKeyspaceQuery: createKeyspaceQuery,
-        //   createTableQuery: createTableQuery,
-        // };
-        // TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneSuccessMessage, startKey);
+
+        TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneStartMessage, startKey);
       },
       (error) => {
         console.log("errror", error);
-        // const errorMessage = getErrorMessage(error);
-        // this.formErrors(errorMessage);
-        // this.isExecuting(false);
-        // const addCollectionPaneFailedMessage = {
-        //   collection: {
-        //     id: this.tableId(),
-        //     storage: Constants.BackendDefaults.multiPartitionStorageInGb,
-        //     offerThroughput: this.throughput(),
-        //     partitionKey: "",
-        //     databaseId: this.keyspaceId(),
-        //     hasDedicatedThroughput: this.dedicateTableThroughput(),
-        //   },
-        //   keyspaceHasSharedOffer: this.keyspaceHasSharedOffer(),
-        //   subscriptionType: SubscriptionType[container.subscriptionType()],
-        //   subscriptionQuotaId: userContext.quotaId,
-        //   defaultsCheck: {
-        //     storage: "u",
-        //     throughput: this.throughput(),
-        //     flight: container.flight(),
-        //   },
-        //   dataExplorerArea: Constants.Areas.ContextualPane,
-        //   toCreateKeyspace: toCreateKeyspace,
-        //   createKeyspaceQuery: createKeyspaceQuery,
-        //   createTableQuery: createTableQuery,
-        //   error: errorMessage,
-        //   errorStack: getErrorStack(error),
-        // };
-        // TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
+        const errorMessage = getErrorMessage(error);
+        setFormErrors(errorMessage);
+        setIsExecuting(false);
+        const addCollectionPaneFailedMessage = {
+          ...addCollectionPaneStartMessage,
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        };
+        TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
       }
     );
   };
@@ -501,7 +461,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     { key: "false", text: "Use existing" },
   ];
   const genericPaneProps: GenericRightPaneProps = {
-    container,
+    expandConsole: () => container.expandConsole(),
     formError: formErrors,
     formErrorDetail: "",
     id: "cassandraaddcollectionpane",
@@ -569,6 +529,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
               <ThroughputInput
                 showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
                 isDatabase={false}
+                isSharded={false}
                 isAutoscaleSelected={isAutoPilotSelected}
                 throughput={throughput}
                 setThroughputValue={(throughput: number) => setThroughput(throughput)}
