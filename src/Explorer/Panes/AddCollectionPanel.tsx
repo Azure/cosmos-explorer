@@ -25,6 +25,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
+import { isCapabilityEnabled } from "../../Utils/CapabilityUtils";
 import { getUpsellMessage } from "../../Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
@@ -80,7 +81,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isSharded: userContext.apiType !== "Tables",
       partitionKey: "",
       enableDedicatedThroughput: false,
-      createMongoWildCardIndex: true,
+      createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
       useHashV2: false,
       enableAnalyticalStore: false,
       uniqueKeys: [],
@@ -529,7 +530,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               }}
             >
               <Stack className="panelGroupSpacing" id="collapsibleSectionContent">
-                {userContext.databaseAccount.properties.capabilities.find((c) => c.name === "EnableMongo") && (
+                {isCapabilityEnabled("EnableMongo") && (
                   <Stack className="panelGroupSpacing">
                     <Stack horizontal>
                       <span className="mandatoryStar">*&nbsp;</span>
@@ -855,7 +856,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return true;
     }
 
-    return properties.capabilities.some(
+    return properties.capabilities?.some(
       (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics
     );
   }
