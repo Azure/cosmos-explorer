@@ -91,7 +91,8 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
         const result = await NotebookUtil.takeScreenshotHtml2Canvas(
           this.notebookRendererRef.current,
           this.props.pendingSnapshotRequest.aspectRatio,
-          [...this.props.cellOutputSnapshots.values()]
+          [...this.props.cellOutputSnapshots.values()],
+          this.props.pendingSnapshotRequest.downloadFilename
         );
         this.props.storeNotebookSnapshot(result.imageSrc, this.props.pendingSnapshotRequest.requestId);
       } catch (error) {

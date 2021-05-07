@@ -144,6 +144,15 @@ export class NotebookUtil {
     return `${basePath}${newName}`;
   }
 
+  public static hasCodeCellOutput(cell: ImmutableCodeCell): boolean {
+    return !!cell?.outputs?.find(
+      (output) =>
+        output.output_type === "display_data" ||
+        output.output_type === "execute_result" ||
+        output.output_type === "stream"
+    );
+  }
+
   /**
    * Find code cells with display
    * @param notebookObject
@@ -153,13 +162,7 @@ export class NotebookUtil {
     return notebookObject.cellOrder.reduce((accumulator: string[], cellId) => {
       const cell = notebookObject.cellMap.get(cellId);
       if (cell?.cell_type === "code") {
-        const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
-          (output) =>
-            output.output_type === "display_data" ||
-            output.output_type === "execute_result" ||
-            output.output_type === "stream"
-        );
-        if (displayOutput) {
+        if (NotebookUtil.hasCodeCellOutput(cell as ImmutableCodeCell)) {
           accumulator.push(cellId);
         }
       }
@@ -171,7 +174,7 @@ export class NotebookUtil {
     target: HTMLElement,
     aspectRatio: number,
     subSnapshots: SnapshotFragment[],
-    downloadFile?: boolean
+    downloadFilename?: string
   ): Promise<{ imageSrc: string | undefined }> => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -222,9 +225,11 @@ export class NotebookUtil {
 
           resolve({ imageSrc: canvas.toDataURL() });
 
-          if (downloadFile) {
-            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream"); // here is the most important part because if you dont replace you will get a DOM 18 exception.
-            window.location.href = image2; // it will save locally
+          if (downloadFilename) {
+            NotebookUtil.downloadFile(
+              downloadFilename,
+              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+            );
           }
         };
       } catch (error) {
@@ -237,7 +242,7 @@ export class NotebookUtil {
     target: HTMLElement,
     aspectRatio: number,
     subSnapshots: SnapshotFragment[],
-    downloadFile?: boolean
+    downloadFilename?: string
   ): Promise<{ imageSrc: string | undefined }> => {
     return new Promise(async (resolve, reject) => {
       // target.scrollIntoView();
@@ -266,6 +271,11 @@ export class NotebookUtil {
             reject(new Error("No Canvas to draw on"));
             return;
           }
+
+          // White background otherwise image is transparent
+          context.fillStyle = "white";
+          context.fillRect(0, 0, baseImage.width, baseImage.height);
+
           context.drawImage(baseImage, 0, 0);
 
           // draw sub images
@@ -284,9 +294,11 @@ export class NotebookUtil {
 
           resolve({ imageSrc: canvas.toDataURL() });
 
-          if (downloadFile) {
-            const image2 = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-            window.location.href = image2; // it will save locally
+          if (downloadFilename) {
+            NotebookUtil.downloadFile(
+              downloadFilename,
+              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+            );
           }
         };
       } catch (error) {
@@ -294,4 +306,13 @@ export class NotebookUtil {
       }
     });
   };
+
+  private static downloadFile(filename: string, content: string): void {
+    const link = document.createElement("a");
+    link.href = content;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
 }

@@ -15,6 +15,7 @@ export interface SnapshotRequest {
   type: "notebook" | "celloutput";
   cellId: string; // if type is "celloutput"
   notebookContentRef: string; // notebook redux contentRef
+  downloadFilename?: string; // Optional: will download as a file
 }
 export interface CdbRecordProps {
   databaseAccountName: string | undefined;
