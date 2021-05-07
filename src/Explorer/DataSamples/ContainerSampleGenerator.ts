@@ -80,7 +80,7 @@ export class ContainerSampleGenerator {
       if (!queries || queries.length < 1) {
         return;
       }
-      const account = userContext.databaseAccount;
+      const { databaseAccount: account } = userContext;
       const databaseId = collection.databaseId;
       const gremlinClient = new GremlinClient();
       gremlinClient.initialize({

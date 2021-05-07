@@ -1,14 +1,5 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import {
-  IDropdownOption,
-  Image,
-  IPanelProps,
-  IRenderFunction,
-  Label,
-  Stack,
-  Text,
-  TextField,
-} from "office-ui-fabric-react";
+import { IDropdownOption, Image, IPanelProps, IRenderFunction, Label, Stack, Text, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
@@ -328,7 +319,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
                   selectedKey={entity.type}
                   entityPropertyPlaceHolder={detailedHelp}
                   entityValuePlaceholder={entity.entityValuePlaceholder}
-                  entityValue={entity.value}
+                  entityValue={entity.value?.toString()}
                   isEntityTypeDate={entity.isEntityTypeDate}
                   entityTimeValue={entity.entityTimeValue}
                   isEntityValueDisable={entity.isEntityValueDisable}

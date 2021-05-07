@@ -1,4 +1,4 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "office-ui-fabric-react";
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Upload } from "../../../Common/Upload/Upload";
 import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
@@ -71,7 +71,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({
   };
 
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
+    expandConsole: () => explorer.expandConsole(),
     formError,
     formErrorDetail,
     id: "uploaditemspane",

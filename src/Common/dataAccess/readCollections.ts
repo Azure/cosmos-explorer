@@ -29,12 +29,11 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
 async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Collection[]> {
   let rpResponse;
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
 
-  switch (defaultExperience) {
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
+
+  switch (apiType) {
     case "SQL":
       rpResponse = await listSqlContainers(subscriptionId, resourceGroup, accountName, databaseId);
       break;
@@ -51,7 +50,7 @@ async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Co
       rpResponse = await listTables(subscriptionId, resourceGroup, accountName);
       break;
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 
   return rpResponse?.value?.map((collection) => collection.properties?.resource as DataModels.Collection);

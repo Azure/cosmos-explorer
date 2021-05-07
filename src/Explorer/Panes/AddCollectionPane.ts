@@ -14,6 +14,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import { isCapabilityEnabled } from "../../Utils/CapabilityUtils";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
@@ -95,6 +96,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
 
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
+  private isEnableMongoCapabilityEnabled: ko.Observable<boolean>;
 
   constructor(options: AddCollectionPaneOptions) {
     super(options);
@@ -108,6 +110,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
     this.collectionWithThroughputInShared = ko.observable<boolean>(false);
     this.databaseIds = ko.observableArray<string>();
     this.uniqueKeys = ko.observableArray<DynamicListItem>();
+    this.isSharedAutoPilotSelected = ko.observable<boolean>();
+    this.isAutoPilotSelected = ko.observable<boolean>();
 
     if (this.container) {
       this.container.databases.subscribe((newDatabases: ViewModels.Database[]) => {
@@ -177,7 +181,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const account = this.container.databaseAccount();
+      const { databaseAccount: account } = userContext;
       if (!account) {
         return "";
       }
@@ -235,7 +239,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
         return "";
       }
 
-      const account = this.container.databaseAccount();
+      const { databaseAccount: account } = userContext;
       if (!account) {
         return "";
       }
@@ -476,7 +480,6 @@ export default class AddCollectionPane extends ContextualPaneBase {
         userContext.portalEnv,
         this.isFreeTierAccount(),
         this.container.isFirstResourceCreated(),
-        userContext.apiType,
         true
       );
     });
@@ -524,10 +527,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this.isFreeTierAccount = ko.computed<boolean>(() => {
-      const databaseAccount = this.container && this.container.databaseAccount && this.container.databaseAccount();
-      const isFreeTierAccount =
-        databaseAccount && databaseAccount.properties && databaseAccount.properties.enableFreeTier;
-      return isFreeTierAccount;
+      return userContext?.databaseAccount?.properties?.enableFreeTier;
     });
 
     this.showUpsellMessage = ko.pureComputed(() => {
@@ -597,9 +597,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     });
 
     this._isSynapseLinkEnabled = ko.computed(() => {
-      const databaseAccount =
-        (this.container && this.container.databaseAccount && this.container.databaseAccount()) ||
-        ({} as DataModels.DatabaseAccount);
+      const databaseAccount = userContext?.databaseAccount || ({} as DataModels.DatabaseAccount);
       const properties = databaseAccount.properties || ({} as DataModels.DatabaseAccountExtendedProperties);
 
       // TODO: remove check for capability once all accounts have been migrated
@@ -638,11 +636,13 @@ export default class AddCollectionPane extends ContextualPaneBase {
       });
     });
 
+    this.isEnableMongoCapabilityEnabled = ko.observable(isCapabilityEnabled("EnableMongo"));
+
     this.shouldCreateMongoWildcardIndex = ko.observable(this.container.isMongoIndexingEnabled());
   }
 
   public getSharedThroughputDefault(): boolean {
-    const subscriptionType = userContext.subscriptionType;
+    const { subscriptionType } = userContext;
     if (subscriptionType === SubscriptionType.EA || this.container.isServerlessEnabled()) {
       return false;
     }
@@ -810,7 +810,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
     let indexingPolicy: DataModels.IndexingPolicy;
     let createMongoWildcardIndex: boolean;
     // todo - remove mongo indexing policy ticket # 616274
-    if (userContext.apiType === "Mongo" && this.container.isEnableMongoCapabilityPresent()) {
+    if (userContext.apiType === "Mongo") {
       createMongoWildcardIndex = this.shouldCreateMongoWildcardIndex();
     } else if (this.showIndexingOptionsForSharedThroughput()) {
       if (this.useIndexingForSharedThroughput()) {

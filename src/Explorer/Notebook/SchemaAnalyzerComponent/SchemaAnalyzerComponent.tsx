@@ -1,14 +1,12 @@
+import { FontIcon, PrimaryButton, Spinner, SpinnerSize, Stack, Text, TextField } from "@fluentui/react";
 import { ImmutableOutput } from "@nteract/commutable";
 import { actions, AppState, ContentRef, KernelRef, selectors } from "@nteract/core";
-import { KernelOutputError, Output, StreamText } from "@nteract/outputs";
-import TransformMedia from "@nteract/stateful-components/lib/outputs/transform-media";
-import { Card } from "@uifabric/react-cards";
 import Immutable from "immutable";
-import { FontIcon, PrimaryButton, Spinner, SpinnerSize, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import loadTransform from "../NotebookComponent/loadTransform";
+import SandboxOutputs from "../NotebookRenderer/outputs/SandboxOutputs";
 import "./SchemaAnalyzerComponent.less";
 
 interface SchemaAnalyzerComponentPureProps {
@@ -91,70 +89,66 @@ export class SchemaAnalyzerComponent extends React.Component<
     const showSchemaOutput = isKernelIdle && outputs.size > 0;
 
     return (
-      <Stack className="schemaAnalyzerComponent" horizontalAlign="center" tokens={{ childrenGap: 20, padding: 20 }}>
-        <Stack.Item grow styles={{ root: { display: "contents" } }}>
-          <Stack horizontal tokens={{ childrenGap: 20 }} styles={{ root: { width: "100%" } }}>
-            <Stack.Item grow align="end">
-              <TextField
-                value={this.state.filter}
-                onChange={this.onFilterTextFieldChange}
-                label="Filter"
-                placeholder="{ field: 'value' }"
-                disabled={!isKernelIdle}
-              />
-            </Stack.Item>
-            <Stack.Item align="end">
-              <PrimaryButton
-                text={isKernelBusy ? "Analyzing..." : "Analyze"}
-                onClick={this.onAnalyzeButtonClick}
-                disabled={!isKernelIdle}
-              />
-            </Stack.Item>
-          </Stack>
-        </Stack.Item>
-
-        {showSchemaOutput ? (
-          outputs.map((output, index) => (
-            <Card className="schemaAnalyzerCard" key={index}>
-              <Card.Item tokens={{ padding: 10 }}>
-                <Output output={output}>
-                  <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
-                  <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
-                  <KernelOutputError />
-                  <StreamText />
-                </Output>
-              </Card.Item>
-            </Card>
-          ))
-        ) : this.state.isFiltering ? (
-          <Stack.Item>
-            {isKernelBusy && <Spinner styles={{ root: { marginTop: 40 } }} size={SpinnerSize.large} />}
+      <div className="schemaAnalyzerComponent">
+        <Stack horizontalAlign="center" tokens={{ childrenGap: 20, padding: 20 }}>
+          <Stack.Item grow styles={{ root: { display: "contents" } }}>
+            <Stack horizontal tokens={{ childrenGap: 20 }} styles={{ root: { width: "100%" } }}>
+              <Stack.Item grow align="end">
+                <TextField
+                  value={this.state.filter}
+                  onChange={this.onFilterTextFieldChange}
+                  label="Filter"
+                  placeholder="{ field: 'value' }"
+                  disabled={!isKernelIdle}
+                />
+              </Stack.Item>
+              <Stack.Item align="end">
+                <PrimaryButton
+                  text={isKernelBusy ? "Analyzing..." : "Analyze"}
+                  onClick={this.onAnalyzeButtonClick}
+                  disabled={!isKernelIdle}
+                />
+              </Stack.Item>
+            </Stack>
           </Stack.Item>
-        ) : (
-          <>
+
+          {showSchemaOutput ? (
+            <SandboxOutputs
+              id={id}
+              contentRef={contentRef}
+              outputsContainerClassName="schema-analyzer-cell-outputs"
+              outputClassName="schema-analyzer-cell-output"
+            />
+          ) : this.state.isFiltering ? (
             <Stack.Item>
-              <FontIcon iconName="Chart" style={{ fontSize: 100, color: "#43B1E5", marginTop: 40 }} />
+              {isKernelBusy && <Spinner styles={{ root: { marginTop: 40 } }} size={SpinnerSize.large} />}
             </Stack.Item>
-            <Stack.Item>
-              <Text variant="xxLarge">Explore your schema</Text>
-            </Stack.Item>
-            <Stack.Item>
-              <Text variant="large">
-                Quickly visualize your schema to infer the frequency, types and ranges of fields in your data set.
-              </Text>
-            </Stack.Item>
-            <Stack.Item>
-              <PrimaryButton
-                styles={{ root: { fontSize: 18, padding: 30 } }}
-                text={isKernelBusy ? "Analyzing..." : "Analyze Schema"}
-                onClick={this.onAnalyzeButtonClick}
-                disabled={kernelStatus !== "idle"}
-              />
-            </Stack.Item>
-            <Stack.Item>{isKernelBusy && <Spinner size={SpinnerSize.large} />}</Stack.Item>
-          </>
-        )}
-      </Stack>
+          ) : (
+            <>
+              <Stack.Item>
+                <FontIcon iconName="Chart" style={{ fontSize: 100, color: "#43B1E5", marginTop: 40 }} />
+              </Stack.Item>
+              <Stack.Item>
+                <Text variant="xxLarge">Explore your schema</Text>
+              </Stack.Item>
+              <Stack.Item>
+                <Text variant="large">
+                  Quickly visualize your schema to infer the frequency, types and ranges of fields in your data set.
+                </Text>
+              </Stack.Item>
+              <Stack.Item>
+                <PrimaryButton
+                  styles={{ root: { fontSize: 18, padding: 30 } }}
+                  text={isKernelBusy ? "Analyzing..." : "Analyze Schema"}
+                  onClick={this.onAnalyzeButtonClick}
+                  disabled={kernelStatus !== "idle"}
+                />
+              </Stack.Item>
+              <Stack.Item>{isKernelBusy && <Spinner size={SpinnerSize.large} />}</Stack.Item>
+            </>
+          )}
+        </Stack>
+      </div>
     );
   }
 }

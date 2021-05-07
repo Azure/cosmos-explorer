@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useBoolean } from "@uifabric/react-hooks";
+import { useBoolean } from "@fluentui/react-hooks";
 import { UserAgentApplication, Account, Configuration } from "msal";
 
 const config: Configuration = {
