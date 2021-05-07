@@ -852,7 +852,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return true;
     }
 
-    return properties.capabilities.some(
+    return properties.capabilities?.some(
       (capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics
     );
   }
