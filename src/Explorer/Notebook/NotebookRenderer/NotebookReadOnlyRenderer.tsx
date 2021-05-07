@@ -1,10 +1,8 @@
 import { actions, ContentRef } from "@nteract/core";
-import { KernelOutputError, StreamText } from "@nteract/outputs";
-import { Cells, CodeCell, MarkdownCell, RawCell } from "@nteract/stateful-components";
+import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
 import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
-import TransformMedia from "@nteract/stateful-components/lib/outputs/transform-media";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
@@ -13,8 +11,9 @@ import loadTransform from "../NotebookComponent/loadTransform";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import "./default.css";
+import MarkdownCell from "./markdown-cell";
 import "./NotebookReadOnlyRenderer.less";
-import IFrameOutputs from "./outputs/IFrameOutputs";
+import SandboxOutputs from "./outputs/SandboxOutputs";
 
 export interface NotebookRendererProps {
   contentRef: any;
@@ -27,7 +26,9 @@ export interface NotebookRendererProps {
  */
 class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
   componentDidMount() {
-    loadTransform(this.props as any);
+    if (!userContext.features.sandboxNotebookOutputs) {
+      loadTransform(this.props as any);
+    }
   }
 
   private renderPrompt(id: string, contentRef: string): JSX.Element {
@@ -63,14 +64,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                 {{
                   prompt: (props: { id: string; contentRef: string }) => this.renderPrompt(props.id, props.contentRef),
                   outputs: userContext.features.sandboxNotebookOutputs
-                    ? (props: any) => (
-                        <IFrameOutputs id={id} contentRef={contentRef}>
-                          <TransformMedia output_type={"display_data"} id={id} contentRef={contentRef} />
-                          <TransformMedia output_type={"execute_result"} id={id} contentRef={contentRef} />
-                          <KernelOutputError />
-                          <StreamText />
-                        </IFrameOutputs>
-                      )
+                    ? () => <SandboxOutputs id={id} contentRef={contentRef} />
                     : undefined,
                   editor: {
                     monaco: (props: PassedEditorProps) =>

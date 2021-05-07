@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "office-ui-fabric-react";
+import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -197,7 +197,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         className: "databaseHeader",
         children: [],
         isSelected: () => this.isDataNodeSelected(database.id()),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
         onClick: async (isExpanded) => {
           // Rewritten version of expandCollapseDatabase():
           if (isExpanded) {
@@ -273,6 +273,17 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
+    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
+      children.push({
+        label: "Schema (Preview)",
+        onClick: collection.onSchemaAnalyzerClick.bind(collection),
+        isSelected: () =>
+          this.isDataNodeSelected(collection.databaseId, collection.id(), [
+            ViewModels.CollectionTabKind.SchemaAnalyzer,
+          ]),
+      });
+    }
+
     if (userContext.apiType !== "Cassandra" || !this.container.isServerlessEnabled()) {
       children.push({
         label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
@@ -295,10 +306,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     // This is a rewrite of showConflicts
     const showConflicts =
-      this.container.databaseAccount &&
-      this.container.databaseAccount() &&
-      this.container.databaseAccount().properties &&
-      this.container.databaseAccount().properties.enableMultipleWriteLocations &&
+      userContext?.databaseAccount?.properties.enableMultipleWriteLocations &&
       collection.rawDataModel &&
       !!collection.rawDataModel.conflictResolutionPolicy;
 
@@ -596,7 +604,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.contextMenu = [
       {
         label: "Manage GitHub settings",
-        onClick: () => this.container.gitHubReposPane.open(),
+        onClick: () => this.container.openGitHubReposPanel("Manage GitHub settings"),
       },
       {
         label: "Disconnect from GitHub",
@@ -750,7 +758,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       {
         label: "Rename",
         iconSrc: NotebookIcon,
-        onClick: () => this.container.renameNotebook(item).then(() => this.triggerRender()),
+        onClick: () => this.container.renameNotebook(item),
       },
       {
         label: "New Directory",
@@ -919,7 +927,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private cleanupDatabasesKoSubs(): void {
-    this.koSubsDatabaseIdMap.keys().forEach((databaseId: string) => {
+    for (const databaseId of this.koSubsDatabaseIdMap.keys()) {
       this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
       this.koSubsDatabaseIdMap.delete(databaseId);
 
@@ -928,7 +936,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           .get(databaseId)
           .forEach((collectionId: string) => this.cleanupKoSubsForCollection(databaseId, collectionId));
       }
-    });
+    }
   }
 
   private cleanupCollectionsKoSubs(databaseId: string, existingCollectionIds: string[]): void {

@@ -2,11 +2,11 @@ import { IResourceProviderClient } from "../ResourceProvider/IResourceProviderCl
 import { NotebookWorkspace } from "../Contracts/DataModels";
 
 export class NotebookWorkspaceSettingsProviderClient implements IResourceProviderClient<string> {
-  public async deleteAsync(url: string, apiVersion: string): Promise<void> {
+  public async deleteAsync(_url: string, _apiVersion: string): Promise<void> {
     throw new Error("Not yet implemented");
   }
 
-  public async postAsync(url: string, body: any, apiVersion: string): Promise<any> {
+  public async postAsync(_url: string, _body: any, _apiVersion: string): Promise<any> {
     return Promise.resolve({
       notebookServerEndpoint: "http://localhost:8888",
       username: "",
@@ -14,37 +14,37 @@ export class NotebookWorkspaceSettingsProviderClient implements IResourceProvide
     });
   }
 
-  public async getAsync(url: string, apiVersion: string): Promise<string> {
+  public async getAsync(): Promise<string> {
     throw new Error("Not yet implemented");
   }
 
-  public async putAsync(url: string, body: any, apiVersion: string): Promise<string> {
+  public async putAsync(): Promise<string> {
     throw new Error("Not yet implemented");
   }
 
-  public async patchAsync(url: string, apiVersion: string): Promise<string> {
+  public async patchAsync(): Promise<string> {
     throw new Error("Not yet implemented");
   }
 }
 
 export class NotebookWorkspaceResourceProviderClient implements IResourceProviderClient<NotebookWorkspace> {
-  public async deleteAsync(url: string, apiVersion: string): Promise<void> {
+  public async deleteAsync(): Promise<void> {
     throw new Error("Not yet implemented");
   }
 
-  public async postAsync(url: string, body: any, apiVersion: string): Promise<NotebookWorkspace> {
+  public async postAsync(): Promise<NotebookWorkspace> {
     throw new Error("Not yet implemented");
   }
 
-  public async getAsync(url: string, apiVersion: string): Promise<NotebookWorkspace | NotebookWorkspace[]> {
+  public async getAsync(): Promise<NotebookWorkspace | NotebookWorkspace[]> {
     throw new Error("Not yet implemented");
   }
 
-  public async putAsync(url: string, body: any, apiVersion: string): Promise<NotebookWorkspace> {
+  public async putAsync(): Promise<NotebookWorkspace> {
     throw new Error("Not yet implemented");
   }
 
-  public async patchAsync(url: string, body: any, apiVersion: string): Promise<NotebookWorkspace> {
+  public async patchAsync(): Promise<NotebookWorkspace> {
     throw new Error("Not yet implemented");
   }
 }

@@ -1,0 +1,218 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Settings Pane should render Default properly 1`] = `
+<GenericRightPaneComponent
+  expandConsole={[Function]}
+  formError=""
+  formErrorDetail=""
+  id="settingspane"
+  isExecuting={false}
+  onClose={[Function]}
+  onSubmit={[Function]}
+  submitButtonText="Apply"
+  title="Setting"
+>
+  <div
+    className="paneMainContent"
+  >
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart pageOptionsPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Page options
+          <Tooltip>
+            Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
+          </Tooltip>
+        </div>
+        <StyledChoiceGroup
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "custom",
+                "text": "Custom",
+              },
+              Object {
+                "key": "unlimited",
+                "text": "Unlimited",
+              },
+            ]
+          }
+          selectedKey="custom"
+        />
+      </div>
+      <div
+        className="tabs settingsSectionPart"
+      >
+        <div
+          className="tabcontent"
+        >
+          <div
+            className="settingsSectionLabel"
+          >
+            Query results per page
+            <Tooltip>
+              Enter the number of query results that should be shown per page.
+            </Tooltip>
+          </div>
+          <StyledSpinButton
+            ariaLabel="Custom query items per page"
+            className="textfontclr"
+            decrementButtonAriaLabel="Decrease value by 1"
+            incrementButtonAriaLabel="Increase value by 1"
+            min={1}
+            onDecrement={[Function]}
+            onIncrement={[Function]}
+            onValidate={[Function]}
+            step={1}
+            value="0"
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Enable cross-partition query
+          <Tooltip>
+            Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
+          </Tooltip>
+        </div>
+        <StyledCheckboxBase
+          ariaLabel="Enable cross partition query"
+          checked={true}
+          className="padding"
+          onChange={[Function]}
+          styles={
+            Object {
+              "label": Object {
+                "padding": 0,
+              },
+            }
+          }
+        />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Max degree of parallelism
+          <Tooltip>
+            Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
+          </Tooltip>
+        </div>
+        <StyledSpinButton
+          ariaLabel="Max degree of parallelism"
+          className="textfontclr"
+          id="max-degree"
+          min={-1}
+          onDecrement={[Function]}
+          onIncrement={[Function]}
+          onValidate={[Function]}
+          role="textbox"
+          step={1}
+          tabIndex={0}
+          value="6"
+        />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Explorer Version
+        </div>
+        <div />
+      </div>
+    </div>
+  </div>
+</GenericRightPaneComponent>
+`;
+
+exports[`Settings Pane should render Gremlin properly 1`] = `
+<GenericRightPaneComponent
+  expandConsole={[Function]}
+  formError=""
+  formErrorDetail=""
+  id="settingspane"
+  isExecuting={false}
+  onClose={[Function]}
+  onSubmit={[Function]}
+  submitButtonText="Apply"
+  title="Setting"
+>
+  <div
+    className="paneMainContent"
+  >
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Display Gremlin query results as: 
+          <Tooltip>
+            Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
+          </Tooltip>
+        </div>
+        <StyledChoiceGroup
+          aria-label="Graph Auto-visualization"
+          onChange={[Function]}
+          options={
+            Array [
+              Object {
+                "key": "false",
+                "text": "Graph",
+              },
+              Object {
+                "key": "true",
+                "text": "JSON",
+              },
+            ]
+          }
+          selectedKey="false"
+        />
+      </div>
+    </div>
+    <div
+      className="settingsSection"
+    >
+      <div
+        className="settingsSectionPart"
+      >
+        <div
+          className="settingsSectionLabel"
+        >
+          Explorer Version
+        </div>
+        <div />
+      </div>
+    </div>
+  </div>
+</GenericRightPaneComponent>
+`;

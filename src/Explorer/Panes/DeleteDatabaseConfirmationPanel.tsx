@@ -1,5 +1,5 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import { Text, TextField } from "office-ui-fabric-react";
+import { useBoolean } from "@fluentui/react-hooks";
+import { Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import { Areas } from "../../Common/Constants";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
@@ -94,7 +94,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         const deleteFeedback = new DeleteFeedback(
           userContext?.databaseAccount.id,
           userContext?.databaseAccount.name,
-          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.defaultExperience),
+          DefaultExperienceUtility.getApiKindFromDefaultExperience(userContext.apiType),
           databaseFeedbackInput
         );
 

@@ -5,11 +5,10 @@ import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import DocumentId from "../Explorer/Tree/DocumentId";
-import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { userContext } from "../UserContext";
+import { logConsoleError } from "../Utils/NotificationConsoleUtils";
+import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
 import { MinimalQueryIterator } from "./IteratorUtilities";
 import { sendMessage } from "./MessageHandler";
 
@@ -62,7 +61,7 @@ export function queryDocuments(
   query: string,
   continuationToken?: string
 ): Promise<QueryResponse> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
     db: databaseId,
@@ -122,7 +121,7 @@ export function readDocument(
   collection: Collection,
   documentId: DocumentId
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 4).join("/");
@@ -168,7 +167,7 @@ export function createDocument(
   partitionKeyProperty: string,
   documentContent: unknown
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
     db: databaseId,
@@ -207,7 +206,7 @@ export function updateDocument(
   documentId: DocumentId,
   documentContent: string
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 5).join("/");
@@ -248,7 +247,7 @@ export function updateDocument(
 }
 
 export function deleteDocument(databaseId: string, collection: Collection, documentId: DocumentId): Promise<void> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 5).join("/");
@@ -290,7 +289,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
 export function createMongoCollectionWithProxy(
   params: DataModels.CreateCollectionParams
 ): Promise<DataModels.Collection> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const shardKey: string = params.partitionKey?.paths[0];
   const mongoParams: DataModels.MongoParameters = {
     resourceUrl: databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint,
@@ -348,10 +347,7 @@ export function getEndpoint(): string {
 async function errorHandling(response: Response, action: string, params: unknown): Promise<void> {
   const errorMessage = await response.text();
   // Log the error where the user can see it
-  NotificationConsoleUtils.logConsoleMessage(
-    ConsoleDataType.Error,
-    `Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`
-  );
+  logConsoleError(`Error ${action}: ${errorMessage}, Payload: ${JSON.stringify(params)}`);
   if (response.status === HttpStatusCodes.Forbidden) {
     sendMessage({ type: MessageTypes.ForbiddenError, reason: errorMessage });
     return;

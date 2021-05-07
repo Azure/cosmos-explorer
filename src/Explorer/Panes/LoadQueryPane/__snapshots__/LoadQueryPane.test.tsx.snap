@@ -1,0 +1,62 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Load Query Pane should render Default properly 1`] = `
+<GenericRightPaneComponent
+  expandConsole={[Function]}
+  formError=""
+  formErrorDetail=""
+  id="loadQueryPane"
+  isExecuting={false}
+  onClose={[Function]}
+  onSubmit={[Function]}
+  submitButtonText="Load"
+  title="Load Query"
+>
+  <div
+    className="panelFormWrapper"
+  >
+    <div
+      className="panelMainContent"
+    >
+      <Stack
+        horizontal={true}
+      >
+        <StyledTextFieldBase
+          autoFocus={true}
+          id="confirmCollectionId"
+          label="Select a query document"
+          readOnly={true}
+          styles={
+            Object {
+              "fieldGroup": Object {
+                "width": 300,
+              },
+            }
+          }
+          value=""
+        />
+        <label
+          className="customFileUpload"
+          htmlFor="importQueryInputId"
+        >
+          <Image
+            alt="upload files"
+            className="fileIcon"
+            height={20}
+            imageFit={4}
+            src=""
+            width={20}
+          />
+          <input
+            accept="text/plain"
+            className="fileUpload"
+            id="importQueryInputId"
+            onChange={[Function]}
+            type="file"
+          />
+        </label>
+      </Stack>
+    </div>
+  </div>
+</GenericRightPaneComponent>
+`;

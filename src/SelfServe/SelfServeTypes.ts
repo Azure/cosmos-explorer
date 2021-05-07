@@ -92,6 +92,9 @@ export type onSaveCallback =
     baselineValues: ReadonlyMap<string, SmartUiInput>
   ) => Promise<OnSaveResult>;
 
+/**
+ * All SelfServe feature classes need to derive from the SelfServeBaseClass
+ */
 export abstract class SelfServeBaseClass {
   /**
    * Sets default values for the properties of the Self Serve Class. Typically, you can make rest calls here

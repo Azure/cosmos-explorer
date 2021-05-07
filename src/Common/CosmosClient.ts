@@ -43,12 +43,7 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return (
-    userContext.endpoint ||
-    (userContext.databaseAccount &&
-      userContext.databaseAccount.properties &&
-      userContext.databaseAccount.properties.documentEndpoint)
-  );
+  return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
 };
 
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {

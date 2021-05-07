@@ -80,6 +80,14 @@ function openCollectionTab(
         }
 
         if (
+          action.tabKind === ActionContracts.TabKind.SchemaAnalyzer ||
+          (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.SchemaAnalyzer]
+        ) {
+          collection.onSchemaAnalyzerClick();
+          break;
+        }
+
+        if (
           action.tabKind === ActionContracts.TabKind.TableEntities ||
           (<any>action).tabKind === ActionContracts.TabKind[ActionContracts.TabKind.TableEntities]
         ) {
@@ -133,7 +141,7 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.AddCollection]
   ) {
     explorer.closeAllPanes();
-    explorer.addCollectionPane.open();
+    explorer.onNewCollectionClicked();
   } else if (
     action.paneKind === ActionContracts.PaneKind.CassandraAddCollection ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.CassandraAddCollection]

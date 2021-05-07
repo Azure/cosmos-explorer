@@ -101,7 +101,8 @@ jobs:
           PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
   endtoendemulator:
     name: "End To End Emulator Tests"
-    if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
+    # Temporarily disabled. This test needs to be rewritten in playwright
+    if: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
@@ -128,7 +129,6 @@ jobs:
           path: failed-*
   endtoend:
     name: "E2E"
-    needs: [cleanupaccounts]
     runs-on: ubuntu-latest
     env:
       NODE_TLS_REJECT_UNAUTHORIZED: 0
@@ -138,6 +138,7 @@ jobs:
       matrix:
         test-file:
           - ./test/cassandra/container.spec.ts
+          - ./test/graph/container.spec.ts
           - ./test/sql/container.spec.ts
           - ./test/mongo/container.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
@@ -154,27 +155,15 @@ jobs:
       - run: npm start &
       - run: npm run wait-for-server
       - name: ${{ matrix['test-file'] }}
-        run: npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }}
+        run: |
+          # Run tests up to three times
+          for i in $(seq 1 3); do npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }} && s=0 && break || s=$? && sleep 1; done; (exit $s)
         shell: bash
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: screenshots
           path: screenshots/
-  cleanupaccounts:
-    name: "Cleanup Test Database Accounts"
-    runs-on: ubuntu-latest
-    env:
-      NOTEBOOKS_TEST_RUNNER_CLIENT_ID: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_ID }}
-      NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 14.x
-      - run: npm ci
-      - run: node utils/cleanupDBs.js
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')

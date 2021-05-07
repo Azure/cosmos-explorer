@@ -10,7 +10,6 @@ import DeleteTriggerIcon from "../../images/DeleteTrigger.svg";
 import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
 import * as ViewModels from "../Contracts/ViewModels";
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
 import { userContext } from "../UserContext";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
@@ -30,16 +29,16 @@ export interface DatabaseContextMenuButtonParams {
  * New resource tree (in ReactJS)
  */
 export class ResourceTreeContextMenuButtonFactory {
-  public static createDatabaseContextMenu(container: Explorer): TreeNodeMenuItem[] {
+  public static createDatabaseContextMenu(container: Explorer, databaseId: string): TreeNodeMenuItem[] {
     const items: TreeNodeMenuItem[] = [
       {
         iconSrc: AddCollectionIcon,
-        onClick: () => container.onNewCollectionClicked(),
+        onClick: () => container.onNewCollectionClicked(databaseId),
         label: container.addCollectionText(),
       },
     ];
 
-    if (userContext.defaultExperience !== DefaultAccountExperienceType.Table) {
+    if (userContext.apiType !== "Tables") {
       items.push({
         iconSrc: DeleteDatabaseIcon,
         onClick: () => container.openDeleteDatabaseConfirmationPane(),
@@ -63,7 +62,7 @@ export class ResourceTreeContextMenuButtonFactory {
       });
     }
 
-    if (container.isPreferredApiMongoDB()) {
+    if (userContext.apiType === "Mongo") {
       items.push({
         iconSrc: AddSqlQueryIcon,
         onClick: () => selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null),

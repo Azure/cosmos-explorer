@@ -11,11 +11,11 @@
     margin: 20px 0;
     overflow: auto;
 
-    & > * {
+    & > :not(.collapsibleSection) {
       margin-bottom: @DefaultSpace;
 
-      & > * {
-        margin-bottom: @SmallSpace;
+      & > :not(:last-child) {
+        margin-bottom: @DefaultSpace;
       }
     }
 
@@ -23,7 +23,6 @@
       font-size: @mediumFontSize;
       width: @mediumFontSize;
       margin: auto 0 auto @SmallSpace;
-      color: @InfoIconColor;
       cursor: default;
       vertical-align: middle;
     }
@@ -48,10 +47,6 @@
     .panelRadioBtnLabel {
       font-size: @mediumFontSize;
       padding: 0 @LargeSpace 0 @SmallSpace;
-    }
-
-    .collapsibleSection {
-      margin-bottom: 0;
     }
   }
 }
@@ -99,7 +94,7 @@
 }
 
 .panelFooter {
-  padding: 20px 34px;
+  padding: 16px 34px;
   border-top: solid 1px #bbbbbb;
 
   & button {
@@ -123,8 +118,8 @@
   cursor: pointer;
 }
 
-.panelGroupSpacing > * {
-  margin-bottom: @SmallSpace;
+.panelGroupSpacing > :not(:last-child) {
+  margin-bottom: @DefaultSpace;
 }
 .fileUpload {
   display: none !important;
@@ -152,6 +147,24 @@
 .removeIcon {
   color: @InfoIconColor;
 }
+.backImageIcon {
+  margin-top: 8px;
+}
+.entityValueTextField {
+  margin: 24px;
+}
+.addEntityDatePicker {
+  max-width: 145px;
+}
+.addEntityTextField {
+  width: 237px;
+}
+.addButtonEntiy {
+  width: 25%;
+}
 .column-select-view {
   margin: 20px 0px 0px 0px;
+}
+.panelSeparator::before {
+  background-color: #edebe9;
 }

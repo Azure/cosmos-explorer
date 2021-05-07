@@ -3,6 +3,7 @@
     "allowJs": true,
     "sourceMap": false,
     "noImplicitAny": true,
+    "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
@@ -42,7 +43,7 @@
   },
   "include": [
     "./src/**/*",
-    "./test/testExplorer/TestExplorer.ts"
+    "./utils/**/*"
   ],
   "exclude": [
     "./src/**/__mocks__/**/*"

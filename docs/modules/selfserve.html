@@ -92,17 +92,17 @@
 							<li><code>npm install</code></li>
 							<li><code>npm run build</code></li>
 						</ul>
+						<p><a href="../index.html">Click here</a> for more info on setting up the cosmos-explorer repo.</p>
 						<a href="#code-changes" id="code-changes" style="color: inherit; text-decoration: none;">
 							<h2>Code Changes</h2>
 						</a>
 						<p>Code changes need to be made only in the following files</p>
 						<ul>
-							<li>Strings JSON file</li>
-							<li>Types File</li>
-							<li>RP file</li>
-							<li>Class file</li>
-							<li>SelfServeType in <a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServeUtils.tsx">SelfServeUtils.tsx</a></li>
-							<li><a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx">SelfServe.tsx</a></li>
+							<li>A JSON file - for strings to be displayed</li>
+							<li>A Types File - for defining the data models</li>
+							<li>A RP file - for defining the REST calls</li>
+							<li>A Class file - for defining the UI</li>
+							<li><a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServeUtils.tsx">SelfServeUtils.tsx</a> and <a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx">SelfServe.tsx</a> - for defning the entrypoint for the UI</li>
 						</ul>
 						<a href="#1-json-file-for-ui-strings" id="1-json-file-for-ui-strings" style="color: inherit; text-decoration: none;">
 							<h3>1. JSON file for UI strings</h3>
@@ -176,14 +176,14 @@
 						<a href="#description-2" id="description-2" style="color: inherit; text-decoration: none;">
 							<h4>Description</h4>
 						</a>
-						<p>The RP file will host the REST calls needed for the initialize, save and refresh functions. This decouples the code that builds the UI and the code that makes REST calls.</p>
-						<p>The <code>userContext</code> object exposes the following Azure Cosmos DB databaseAccount information</p>
+						<p>The RP file will host the REST calls needed for the initialize, save and refresh functions. This decouples the view and the model of the feature.</p>
+						<p>To make the ARM call, we need some information about the Azure Cosmos DB databaseAccount - the subscription id, resource group name and database account name. These are readily available through the <code>userContext</code> object, exposed through</p>
 						<ul>
-							<li><code>userContext.subscriptionId</code> - The subscription id</li>
-							<li><code>userContext.resourceGroup</code> - The resource group name </li>
-							<li><code>userContext.databaseAccount.name</code> - The database account name</li>
+							<li><code>userContext.subscriptionId</code></li>
+							<li><code>userContext.resourceGroup</code></li>
+							<li><code>userContext.databaseAccount.name</code></li>
 						</ul>
-						<p><code>armRequestWithoutPolling</code> function can be used to make the ARM api call.</p>
+						<p>You can use the <code>armRequestWithoutPolling</code> function to make the ARM api call.</p>
 						<p>Your <code>FeatureName.rp.ts</code> file can look like the following.</p>
 						<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">userContext</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;../../UserContext&quot;</span><span style="color: #000000">;</span>
 <span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">armRequestWithoutPolling</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;../../Utils/arm/request&quot;</span><span style="color: #000000">;</span>

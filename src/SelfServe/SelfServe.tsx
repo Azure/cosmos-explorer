@@ -1,5 +1,4 @@
-import { Spinner, SpinnerSize } from "office-ui-fabric-react";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
+import { initializeIcons, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { withTranslation } from "react-i18next";

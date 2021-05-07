@@ -1,15 +1,15 @@
 /**
  * Notebook container related stuff
  */
-import * as DataModels from "../../Contracts/DataModels";
 import * as Constants from "../../Common/Constants";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import * as Logger from "../../Common/Logger";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import * as Logger from "../../Common/Logger";
+import * as DataModels from "../../Contracts/DataModels";
+import { userContext } from "../../UserContext";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export class NotebookContainerClient {
-  private reconnectingNotificationId: string;
+  private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
 
   constructor(
@@ -61,9 +61,9 @@ export class NotebookContainerClient {
         },
       });
       if (response.ok) {
-        if (this.reconnectingNotificationId) {
-          NotificationConsoleUtils.clearInProgressMessageWithId(this.reconnectingNotificationId);
-          this.reconnectingNotificationId = "";
+        if (this.clearReconnectionAttemptMessage) {
+          this.clearReconnectionAttemptMessage();
+          this.clearReconnectionAttemptMessage = undefined;
         }
         const memoryUsageInfo = await response.json();
         if (memoryUsageInfo) {
@@ -76,9 +76,8 @@ export class NotebookContainerClient {
       return undefined;
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/getMemoryUsage");
-      if (!this.reconnectingNotificationId) {
-        this.reconnectingNotificationId = NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.InProgress,
+      if (!this.clearReconnectionAttemptMessage) {
+        this.clearReconnectionAttemptMessage = logConsoleProgress(
           "Connection lost with Notebook server. Attempting to reconnect..."
         );
       }
@@ -132,14 +131,15 @@ export class NotebookContainerClient {
 
   private async recreateNotebookWorkspaceAsync(): Promise<void> {
     const explorer = window.dataExplorer;
-    if (!explorer || !explorer.databaseAccount() || !explorer.databaseAccount().id) {
+    const { databaseAccount } = userContext;
+    if (!databaseAccount?.id) {
       throw new Error("DataExplorer not initialized");
     }
 
     const notebookWorkspaceManager = explorer.notebookWorkspaceManager;
     try {
-      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
-      await notebookWorkspaceManager.createNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
+      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(databaseAccount?.id, "default");
+      await notebookWorkspaceManager.createNotebookWorkspaceAsync(databaseAccount?.id, "default");
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);

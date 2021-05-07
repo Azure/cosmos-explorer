@@ -13,9 +13,8 @@ import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import Collection from "./Collection";
 
@@ -101,10 +100,7 @@ export default class Database implements ViewModels.Database {
             },
             startKey
           );
-          NotificationConsoleUtils.logConsoleMessage(
-            ConsoleDataType.Error,
-            `Error while fetching database settings for database ${this.id()}: ${errorMessage}`
-          );
+          logConsoleError(`Error while fetching database settings for database ${this.id()}: ${errorMessage}`);
           throw error;
         }
       );
@@ -209,9 +205,8 @@ export default class Database implements ViewModels.Database {
     this.deleteCollectionsFromList(deltaCollections.toDelete);
   }
 
-  public openAddCollection(database: Database, event: MouseEvent) {
-    database.container.addCollectionPane.databaseId(database.id());
-    database.container.addCollectionPane.open();
+  public openAddCollection(database: Database) {
+    database.container.openAddCollectionPanel(database.id());
   }
 
   public findCollectionWithId(collectionId: string): ViewModels.Collection {
@@ -253,7 +248,7 @@ export default class Database implements ViewModels.Database {
       Logger.logError(
         JSON.stringify({
           error: getErrorMessage(error),
-          accountName: this.container && this.container.databaseAccount(),
+          accountName: userContext?.databaseAccount,
           databaseName: this.id(),
           collectionName: this.id(),
         }),

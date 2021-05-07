@@ -31,7 +31,7 @@ exports[`GalleryCardComponent renders 1`] = `
     />
   </CardItem>
   <CardItem>
-    <StyledImageBase
+    <Image
       alt="name cover image"
       height={144}
       imageFit={2}
