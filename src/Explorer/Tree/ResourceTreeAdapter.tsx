@@ -716,7 +716,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
           const content = await this.container.readFile(item);
           if (content) {
-            await this.container.publishNotebook(item.name, content, undefined, undefined);
+            await this.container.publishNotebook(item.name, content, undefined, undefined, undefined);
           }
         },
       });
