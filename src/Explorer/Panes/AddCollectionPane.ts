@@ -14,6 +14,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import * as AutoPilotUtils from "../../Utils/AutoPilotUtils";
+import { isCapabilityEnabled } from "../../Utils/CapabilityUtils";
 import * as PricingUtils from "../../Utils/PricingUtils";
 import { DynamicListItem } from "../Controls/DynamicList/DynamicListComponent";
 import { ContextualPaneBase } from "./ContextualPaneBase";
@@ -95,6 +96,7 @@ export default class AddCollectionPane extends ContextualPaneBase {
   public shouldCreateMongoWildcardIndex: ko.Observable<boolean>;
 
   private _isSynapseLinkEnabled: ko.Computed<boolean>;
+  private isEnableMongoCapabilityEnabled: ko.Observable<boolean>;
 
   constructor(options: AddCollectionPaneOptions) {
     super(options);
@@ -633,6 +635,8 @@ export default class AddCollectionPane extends ContextualPaneBase {
         changedSelectedValueTo: value ? ActionModifiers.IndexAll : ActionModifiers.NoIndex,
       });
     });
+
+    this.isEnableMongoCapabilityEnabled = ko.observable(isCapabilityEnabled("EnableMongo"));
 
     this.shouldCreateMongoWildcardIndex = ko.observable(this.container.isMongoIndexingEnabled());
   }

@@ -3,6 +3,7 @@
     "allowJs": true,
     "sourceMap": false,
     "noImplicitAny": true,
+    "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
