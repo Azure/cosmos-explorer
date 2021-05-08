@@ -1,13 +1,13 @@
+import { initializeIcons } from "@fluentui/react";
 import Adapter from "@wojtekmaj/enzyme-adapter-react-17";
 import { configure } from "enzyme";
 import "jest-canvas-mock";
-import { initializeIcons } from "@fluentui/react";
 import { TextDecoder, TextEncoder } from "util";
 configure({ adapter: new Adapter() });
 initializeIcons();
 
 if (typeof window.URL.createObjectURL === "undefined") {
-  Object.defineProperty(window.URL, "createObjectURL", { value: () => {} });
+  Object.defineProperty(window.URL, "createObjectURL", { value: () => { } });
 }
 
 // TODO Remove when jquery and documentdbclient SDK are removed

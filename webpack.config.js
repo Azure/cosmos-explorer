@@ -13,7 +13,7 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const TerserPlugin = require("terser-webpack-plugin");
 const isCI = require("is-ci");
 

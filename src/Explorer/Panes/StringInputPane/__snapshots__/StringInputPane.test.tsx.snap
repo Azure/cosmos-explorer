@@ -2379,7 +2379,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       className="ms-Button-flexContainer flexContainer-154"
                       data-automationid="splitbuttonprimary"
                     >
-                      <Component
+                      <FontIcon
                         className="ms-Button-icon icon-156"
                         iconName="Cancel"
                       >
@@ -2395,10 +2395,10 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         >
                           
                         </i>
-                      </Component>
+                      </FontIcon>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </IconButton>
             </CustomizedIconButton>
@@ -4837,7 +4837,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             </span>
                           </span>
                         </button>
-                        <Component />
+                        <FocusRects />
                       </BaseButton>
                     </DefaultButton>
                   </CustomizedDefaultButton>

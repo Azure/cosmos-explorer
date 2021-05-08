@@ -123,8 +123,9 @@ export const cellTarget = {
     if (monitor) {
       const hoverUpperHalf = isDragUpper(props, monitor, component.el);
       // DropTargetSpec monitor definition could be undefined. we'll need a check for monitor in order to pass validation.
+      const item: Props = monitor.getItem();
       props.moveCell({
-        id: monitor.getItem().id,
+        id: item.id,
         destinationId: props.id,
         above: hoverUpperHalf,
         contentRef: props.contentRef,

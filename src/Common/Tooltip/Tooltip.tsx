@@ -1,7 +1,7 @@
 import { ITooltipHostStyles, TooltipHost } from "@fluentui/react";
 import { useId } from "@fluentui/react-hooks";
 import { ReactComponent as InfoBubble } from "images/info-bubble.svg";
-import * as React from "react";
+import React, { FunctionComponent } from "react";
 
 const calloutProps = { gapSpace: 0 };
 const hostStyles: Partial<ITooltipHostStyles> = { root: { display: "inline-block" } };
@@ -9,7 +9,7 @@ const hostStyles: Partial<ITooltipHostStyles> = { root: { display: "inline-block
 export interface TooltipProps {
   children: string;
 }
-export const Tooltip: React.FunctionComponent = ({ children }: TooltipProps) => {
+export const Tooltip: FunctionComponent = ({ children }: TooltipProps) => {
   const tooltipId = useId("tooltip");
 
   return children ? (
