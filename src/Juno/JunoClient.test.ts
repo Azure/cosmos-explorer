@@ -1,4 +1,3 @@
-import ko from "knockout";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { updateUserContext, userContext } from "../UserContext";
@@ -13,7 +12,6 @@ const sampleDatabaseAccount: DatabaseAccount = {
   location: "location",
   type: "type",
   kind: "kind",
-  tags: [],
   properties: {
     documentEndpoint: "documentEndpoint",
     gremlinEndpoint: "gremlinEndpoint",
@@ -36,7 +34,7 @@ const samplePinnedRepos: IPinnedRepo[] = [
 ];
 
 describe("Pinned repos", () => {
-  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient();
 
   beforeEach(() => {
     window.fetch = jest.fn().mockImplementation(() => {
@@ -73,7 +71,7 @@ describe("Pinned repos", () => {
 });
 
 describe("GitHub", () => {
-  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient();
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -132,11 +130,16 @@ describe("GitHub", () => {
 });
 
 describe("Gallery", () => {
-  const junoClient = new JunoClient(ko.observable<DatabaseAccount>(sampleDatabaseAccount));
+  const junoClient = new JunoClient();
   const originalSubscriptionId = userContext.subscriptionId;
 
   beforeAll(() => {
-    updateUserContext({ subscriptionId: sampleSubscriptionId });
+    updateUserContext({
+      databaseAccount: {
+        name: "name",
+      } as DatabaseAccount,
+      subscriptionId: sampleSubscriptionId,
+    });
   });
 
   afterEach(() => {
@@ -203,7 +206,6 @@ describe("Gallery", () => {
       status: HttpStatusCodes.OK,
       json: () => undefined as any,
     });
-
     const response = await junoClient.increaseNotebookViews(id);
 
     expect(response.status).toBe(HttpStatusCodes.OK);

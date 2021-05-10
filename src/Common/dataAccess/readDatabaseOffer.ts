@@ -27,14 +27,12 @@ export const readDatabaseOffer = async (params: ReadDatabaseOfferParams): Promis
 };
 
 const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
   let rpResponse;
   try {
-    switch (defaultExperience) {
+    switch (apiType) {
       case "SQL":
         rpResponse = await getSqlDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
@@ -48,7 +46,7 @@ const readDatabaseOfferWithARM = async (databaseId: string): Promise<Offer> => {
         rpResponse = await getGremlinDatabaseThroughput(subscriptionId, resourceGroup, accountName, databaseId);
         break;
       default:
-        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+        throw new Error(`Unsupported default experience type: ${apiType}`);
     }
   } catch (error) {
     if (error.code !== "NotFound") {

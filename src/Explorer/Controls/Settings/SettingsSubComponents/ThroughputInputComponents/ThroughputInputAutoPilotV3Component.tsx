@@ -10,7 +10,7 @@ import {
   Stack,
   Text,
   TextField,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";

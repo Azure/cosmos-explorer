@@ -1,15 +1,10 @@
+import { ContextualMenuItemType, DirectionalHint, IconButton, IContextualMenuItem } from "@fluentui/react";
 import { CellId, CellType, ImmutableCodeCell } from "@nteract/commutable";
 import { actions, AppState, DocumentRecordProps } from "@nteract/core";
 import * as selectors from "@nteract/selectors";
 import { CellToolbarContext } from "@nteract/stateful-components";
 import { ContentRef } from "@nteract/types";
 import { RecordOf } from "immutable";
-import { IconButton } from "office-ui-fabric-react/lib/Button";
-import {
-  ContextualMenuItemType,
-  DirectionalHint,
-  IContextualMenuItem,
-} from "office-ui-fabric-react/lib/ContextualMenu";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";

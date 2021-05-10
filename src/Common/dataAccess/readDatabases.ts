@@ -29,12 +29,10 @@ export async function readDatabases(): Promise<DataModels.Database[]> {
 
 async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
   let rpResponse;
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
-  switch (defaultExperience) {
+  switch (apiType) {
     case "SQL":
       rpResponse = await listSqlDatabases(subscriptionId, resourceGroup, accountName);
       break;
@@ -48,7 +46,7 @@ async function readDatabasesWithARM(): Promise<DataModels.Database[]> {
       rpResponse = await listGremlinDatabases(subscriptionId, resourceGroup, accountName);
       break;
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 
   return rpResponse?.value?.map((database) => database.properties?.resource as DataModels.Database);

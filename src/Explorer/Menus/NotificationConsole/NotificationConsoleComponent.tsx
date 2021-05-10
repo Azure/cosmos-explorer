@@ -2,7 +2,7 @@
  * React component for control bar
  */
 
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
+import { Dropdown, IDropdownOption } from "@fluentui/react";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";

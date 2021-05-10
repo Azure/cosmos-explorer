@@ -1,6 +1,6 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { IColumn, Text } from "office-ui-fabric-react";
+import { IColumn, Text } from "@fluentui/react";
 import {
   getAutoPilotV3SpendElement,
   getEstimatedSpendingElement,

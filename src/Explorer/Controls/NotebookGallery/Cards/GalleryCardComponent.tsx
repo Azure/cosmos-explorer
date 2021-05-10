@@ -1,4 +1,3 @@
-import { Card } from "@uifabric/react-cards";
 import {
   BaseButton,
   Button,
@@ -8,14 +7,14 @@ import {
   Image,
   ImageFit,
   Link,
-  LinkBase,
   Persona,
   Separator,
   Spinner,
   SpinnerSize,
   Text,
   TooltipHost,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
+import { Card } from "@uifabric/react-cards";
 import React, { FunctionComponent, useState } from "react";
 import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
@@ -110,7 +109,7 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
 
   const handlerOnClick = (
     event:
-      | React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | LinkBase, MouseEvent>
+      | React.MouseEvent<HTMLElement | HTMLAnchorElement | HTMLButtonElement | MouseEvent>
       | React.MouseEvent<
           HTMLAnchorElement | HTMLButtonElement | HTMLDivElement | BaseButton | Button | HTMLSpanElement,
           MouseEvent

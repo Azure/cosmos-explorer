@@ -1,5 +1,5 @@
+import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "@fluentui/react";
 import { ImmutableNotebook } from "@nteract/commutable";
-import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "office-ui-fabric-react";
 import React, { FunctionComponent, useState } from "react";
 import { GalleryCardComponent } from "../../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";

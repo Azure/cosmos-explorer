@@ -17,6 +17,7 @@ import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
@@ -57,7 +58,7 @@ export default class NotebookManager {
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
-    this.junoClient = new JunoClient(this.params.container.databaseAccount);
+    this.junoClient = new JunoClient();
 
     this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
     this.gitHubClient = new GitHubClient(this.onGitHubClientError);
@@ -74,7 +75,7 @@ export default class NotebookManager {
 
     this.notebookClient = new NotebookContainerClient(
       this.params.container.notebookServerInfo,
-      () => this.params.container.initNotebooks(this.params.container.databaseAccount()),
+      () => this.params.container.initNotebooks(userContext?.databaseAccount),
       (update: MemoryUsageInfo) => this.params.container.memoryUsageInfo(update)
     );
 

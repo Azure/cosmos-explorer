@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
-import { AccountKind, DefaultAccountExperience } from "../Common/Constants";
+import { AccountKind } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { configContext, Platform, updateConfigContext } from "../ConfigContext";
@@ -98,10 +98,6 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   const explorer = new Explorer(explorerParams);
   explorer.configure({
     databaseAccount: account,
-    subscriptionId,
-    resourceGroup,
-    masterKey: keys.primaryMasterKey,
-    authorizationToken: `Bearer ${config.authorizationToken}`,
   });
   return explorer;
 }
@@ -127,7 +123,6 @@ function configureHostedWithConnectionString(config: ConnectionString, explorerP
   const explorer = new Explorer(explorerParams);
   explorer.configure({
     databaseAccount,
-    masterKey: config.masterKey,
   });
   return explorer;
 }
@@ -141,8 +136,6 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
     name: parsedResourceToken.accountEndpoint,
     kind: AccountKind.GlobalDocumentDB,
     properties: { documentEndpoint: parsedResourceToken.accountEndpoint },
-    // Resource tokens can only be used with SQL API
-    tags: { defaultExperience: DefaultAccountExperience.DocumentDB },
   };
   updateUserContext({
     databaseAccount,
@@ -165,9 +158,7 @@ function configureHostedWithEncryptedToken(config: EncryptedToken, explorerParam
     authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
   });
-  const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(
-    config.encryptedTokenMetadata.apiKind
-  );
+  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   const explorer = new Explorer(explorerParams);
   explorer.configure({
     databaseAccount: {
@@ -187,7 +178,6 @@ function configureEmulator(explorerParams: ExplorerParams): Explorer {
     authType: AuthType.MasterKey,
   });
   const explorer = new Explorer(explorerParams);
-  explorer.databaseAccount(emulatorAccount);
   explorer.isAccountReady(true);
   return explorer;
 }

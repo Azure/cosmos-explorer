@@ -1,7 +1,7 @@
+import { FontIcon, PrimaryButton, Spinner, SpinnerSize, Stack, Text, TextField } from "@fluentui/react";
 import { ImmutableOutput } from "@nteract/commutable";
 import { actions, AppState, ContentRef, KernelRef, selectors } from "@nteract/core";
 import Immutable from "immutable";
-import { FontIcon, PrimaryButton, Spinner, SpinnerSize, Stack, Text, TextField } from "office-ui-fabric-react";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
