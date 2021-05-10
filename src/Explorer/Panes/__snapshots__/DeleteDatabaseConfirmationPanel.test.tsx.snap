@@ -1288,7 +1288,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       <Stack
         className="panelInfoErrorContainer"
         horizontal={true}
-        verticalAlign="center"
+        verticalAlign="start"
       >
         <div
           className="ms-Stack panelInfoErrorContainer css-202"
@@ -1296,12 +1296,14 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           <StyledIconBase
             aria-label="warning"
             className="panelWarningIcon"
+            data-testid="warningIcon"
             iconName="WarningSolid"
             key=".0:$.0"
           >
             <IconBase
               aria-label="warning"
               className="panelWarningIcon"
+              data-testid="warningIcon"
               iconName="WarningSolid"
               styles={[Function]}
               theme={
@@ -1582,7 +1584,11 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                 aria-label="warning"
                 className="panelWarningIcon root-204"
                 data-icon-name="WarningSolid"
+<<<<<<< HEAD
                 role="img"
+=======
+                data-testid="warningIcon"
+>>>>>>> 487fbf207299bfd3b7d6404bf0307a8de29ac987
               >
                 
               </i>
@@ -1595,11 +1601,13 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             <Text
               aria-label="message"
               className="panelWarningErrorMessage"
+              data-testid="panelmessage"
               variant="small"
             >
               <span
                 aria-label="message"
                 className="panelWarningErrorMessage css-205"
+                data-testid="panelmessage"
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
               </span>

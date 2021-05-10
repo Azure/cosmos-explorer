@@ -22,7 +22,6 @@ describe("Load Query Pane", () => {
     wrapper = mount(<RightPaneForm {...props} />);
     expect(wrapper).toMatchSnapshot();
   });
-
   it("should call submit method enter in form", () => {
     render(<RightPaneForm {...props} />);
     fireEvent.click(screen.getByTestId("submit"));
