@@ -1,14 +1,4 @@
-import {
-  Checkbox,
-  ChoiceGroup,
-  DirectionalHint,
-  IChoiceGroupOption,
-  Link,
-  Stack,
-  Text,
-  TextField,
-  TooltipHost,
-} from "@fluentui/react";
+import { Checkbox, DirectionalHint, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
@@ -90,8 +80,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     );
   };
 
-  const handleOnChangeMode = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
-    if (option.key === "true") {
+  const handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
+    if (mode === "Autoscale") {
       setThroughputValue(AutoPilotUtils.minAutoPilotThroughput);
       setIsAutoscale(true);
     } else {
@@ -100,10 +90,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     }
   };
 
-  const optionList: IChoiceGroupOption[] = [
-    { key: "true", text: "Autoscale" },
-    { key: "false", text: "Manual" },
-  ];
   return (
     <div className="throughputInputContainer throughputInputSpacing">
       <Stack horizontal>
@@ -115,26 +101,41 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       </Stack>
 
       <Stack horizontal verticalAlign="center">
-        <ChoiceGroup
-          selectedKey={"" + isAutoscaleSelected}
-          options={optionList}
-          onChange={handleOnChangeMode}
-          aria-label="mode"
+        <input
+          className="throughputInputRadioBtn"
+          aria-label="Autoscale mode"
+          checked={isAutoscaleSelected}
+          type="radio"
+          role="radio"
+          tabIndex={0}
+          onChange={(e) => handleOnChangeMode(e, "Autoscale")}
         />
+        <span className="throughputInputRadioBtnLabel">Autoscale</span>
+
+        <input
+          className="throughputInputRadioBtn"
+          aria-label="Manual mode"
+          checked={!isAutoscaleSelected}
+          type="radio"
+          role="radio"
+          tabIndex={0}
+          onChange={(e) => handleOnChangeMode(e, "Manual")}
+        />
+        <span className="throughputInputRadioBtnLabel">Manual</span>
       </Stack>
 
       {isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small" data-testid="ruDescription">
+          <Text variant="small" aria-label="ruDescription">
             Estimate your required RU/s with{" "}
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" data-testid="ruDescription">
+            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="ruDescription">
               capacity calculator
             </Link>
             .
           </Text>
 
           <Stack horizontal>
-            <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} data-testid="maxRUDescription">
+            <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }} aria-label="maxRUDescription">
               {isDatabase ? "Database" : getCollectionName()} Max RU/s
             </Text>
             <InfoTooltip>{getAutoScaleTooltip()}</InfoTooltip>
@@ -168,9 +169,9 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
       {!isAutoscaleSelected && (
         <Stack className="throughputInputSpacing">
-          <Text variant="small" data-testid="ruDescription">
+          <Text variant="small" aria-label="ruDescription">
             Estimate your required RU/s with&nbsp;
-            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" data-testid="capacityLink">
+            <Link target="_blank" href="https://cosmos.azure.com/capacitycalculator/" aria-label="capacityLink">
               capacity calculator
             </Link>
             .

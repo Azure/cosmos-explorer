@@ -134,7 +134,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     TelemetryProcessor.trace(Action.CreateDatabase, ActionModifiers.Open, addDatabasePaneOpenMessage);
   }, []);
 
-  const submit = () => {
+  const onSubmit = () => {
     if (!_isValid()) {
       return;
     }
@@ -249,17 +249,17 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     []
   );
 
-  const genericPaneProps: RightPaneFormProps = {
+  const props: RightPaneFormProps = {
     expandConsole: container.expandConsole,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
     isExecuting,
     submitButtonText: "OK",
-    onSubmit: submit,
+    onSubmit,
   };
 
   return (
-    <RightPaneForm {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneContentContainer" role="dialog" aria-labelledby="databaseTitle">
         {showUpsellMessage && formErrors === "" && (
           <PanelInfoErrorComponent

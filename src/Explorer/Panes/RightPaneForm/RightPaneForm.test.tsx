@@ -15,7 +15,7 @@ const props = {
   onSubmit,
 };
 
-describe("Load Query Pane", () => {
+describe("Right Pane Form", () => {
   let wrapper: ReactWrapper;
 
   it("should render Default properly", () => {
@@ -24,12 +24,12 @@ describe("Load Query Pane", () => {
   });
   it("should call submit method enter in form", () => {
     render(<RightPaneForm {...props} />);
-    fireEvent.click(screen.getByTestId("submit"));
+    fireEvent.click(screen.getByLabelText("Load"));
     expect(onSubmit).toHaveBeenCalled();
   });
   it("should call submit method click on submit button", () => {
     render(<RightPaneForm {...props} />);
-    fireEvent.click(screen.getByTestId("submit"));
+    fireEvent.click(screen.getByLabelText("Load"));
     expect(onSubmit).toHaveBeenCalled();
   });
   it("should render error in header", () => {

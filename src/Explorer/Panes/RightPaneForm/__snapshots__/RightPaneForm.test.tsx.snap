@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Load Query Pane should render Default properly 1`] = `
+exports[`Right Pane Form should render Default properly 1`] = `
 <RightPaneForm
   expandConsole={[MockFunction]}
   formError=""
@@ -28,14 +28,12 @@ exports[`Load Query Pane should render Default properly 1`] = `
       >
         <CustomizedPrimaryButton
           ariaLabel="Load"
-          data-testid="submit"
           id="sidePanelOkButton"
           text="Load"
           type="submit"
         >
           <PrimaryButton
             ariaLabel="Load"
-            data-testid="submit"
             id="sidePanelOkButton"
             text="Load"
             theme={
@@ -315,7 +313,6 @@ exports[`Load Query Pane should render Default properly 1`] = `
           >
             <CustomizedDefaultButton
               ariaLabel="Load"
-              data-testid="submit"
               id="sidePanelOkButton"
               onRenderDescription={[Function]}
               primary={true}
@@ -597,7 +594,6 @@ exports[`Load Query Pane should render Default properly 1`] = `
             >
               <DefaultButton
                 ariaLabel="Load"
-                data-testid="submit"
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
                 primary={true}
@@ -880,7 +876,6 @@ exports[`Load Query Pane should render Default properly 1`] = `
                 <BaseButton
                   ariaLabel="Load"
                   baseClassName="ms-Button"
-                  data-testid="submit"
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
                   primary={true}
@@ -1737,7 +1732,6 @@ exports[`Load Query Pane should render Default properly 1`] = `
                     aria-label="Load"
                     className="ms-Button ms-Button--primary root-53"
                     data-is-focusable={true}
-                    data-testid="submit"
                     id="sidePanelOkButton"
                     onClick={[Function]}
                     onKeyDown={[Function]}
