@@ -1,5 +1,5 @@
-import * as ko from "knockout";
 import { IChoiceGroupProps } from "@fluentui/react";
+import * as ko from "knockout";
 import * as path from "path";
 import Q from "q";
 import React from "react";
@@ -50,7 +50,6 @@ import { NotebookContentItem, NotebookContentItemType } from "./Notebook/Noteboo
 import type NotebookManager from "./Notebook/NotebookManager";
 import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
-import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
@@ -151,7 +150,6 @@ export default class Explorer {
 
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
-  public addCollectionPane: AddCollectionPane;
   public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   private gitHubClient: GitHubClient;
@@ -413,14 +411,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.addCollectionPane = new AddCollectionPane({
-      isPreferredApiTable: ko.computed(() => userContext.apiType === "Tables"),
-      id: "addcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.graphStylingPane = new GraphStylingPane({
       id: "graphstylingpane",
       visible: ko.observable<boolean>(false),
@@ -443,12 +433,7 @@ export default class Explorer {
       }
     });
 
-    this._panes = [
-      this.addDatabasePane,
-      this.addCollectionPane,
-      this.graphStylingPane,
-      this.cassandraAddCollectionPane,
-    ];
+    this._panes = [this.addDatabasePane, this.graphStylingPane, this.cassandraAddCollectionPane];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 
@@ -472,11 +457,6 @@ export default class Explorer {
         this.collectionTreeNodeAltText("Container");
         this.deleteCollectionText("Delete Container");
         this.deleteDatabaseText("Delete Database");
-        this.addCollectionPane.title("Add Container");
-        this.addCollectionPane.collectionIdTitle("Container id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle(
-          "Provision dedicated throughput for this container"
-        );
         this.refreshTreeTitle("Refresh containers");
         break;
       case "Mongo":
@@ -486,11 +466,6 @@ export default class Explorer {
         this.collectionTreeNodeAltText("Collection");
         this.deleteCollectionText("Delete Collection");
         this.deleteDatabaseText("Delete Database");
-        this.addCollectionPane.title("Add Collection");
-        this.addCollectionPane.collectionIdTitle("Collection id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle(
-          "Provision dedicated throughput for this collection"
-        );
         this.refreshTreeTitle("Refresh collections");
         break;
       case "Gremlin":
@@ -500,9 +475,6 @@ export default class Explorer {
         this.deleteDatabaseText("Delete Database");
         this.collectionTitle("Gremlin API");
         this.collectionTreeNodeAltText("Graph");
-        this.addCollectionPane.title("Add Graph");
-        this.addCollectionPane.collectionIdTitle("Graph id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
         this.refreshTreeTitle("Refresh graphs");
         break;
       case "Tables":
@@ -512,9 +484,6 @@ export default class Explorer {
         this.deleteDatabaseText("Delete Database");
         this.collectionTitle("Azure Table API");
         this.collectionTreeNodeAltText("Table");
-        this.addCollectionPane.title("Add Table");
-        this.addCollectionPane.collectionIdTitle("Table id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new TablesAPIDataClient();
         break;
@@ -525,9 +494,6 @@ export default class Explorer {
         this.deleteDatabaseText("Delete Keyspace");
         this.collectionTitle("Cassandra API");
         this.collectionTreeNodeAltText("Table");
-        this.addCollectionPane.title("Add Table");
-        this.addCollectionPane.collectionIdTitle("Table id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
@@ -1879,9 +1845,6 @@ export default class Explorer {
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
-    } else if (userContext.features.enableKOPanel) {
-      this.addCollectionPane.open(this.selectedDatabaseId());
-      document.getElementById("linkAddCollection").focus();
     } else {
       this.openAddCollectionPanel(databaseId);
     }

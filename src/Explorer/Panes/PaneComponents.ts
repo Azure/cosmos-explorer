@@ -1,4 +1,3 @@
-import AddCollectionPaneTemplate from "./AddCollectionPane.html";
 import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
@@ -16,15 +15,6 @@ export class AddDatabasePaneComponent {
     return {
       viewModel: PaneComponent,
       template: AddDatabasePaneTemplate,
-    };
-  }
-}
-
-export class AddCollectionPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: AddCollectionPaneTemplate,
     };
   }
 }

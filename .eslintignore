@@ -109,8 +109,6 @@ src/Explorer/Notebook/NotebookUtil.ts
 src/Explorer/OpenActions.test.ts
 src/Explorer/OpenActions.ts
 src/Explorer/OpenActionsStubs.ts
-src/Explorer/Panes/AddCollectionPane.test.ts
-src/Explorer/Panes/AddCollectionPane.ts
 src/Explorer/Panes/AddDatabasePane.test.ts
 src/Explorer/Panes/AddDatabasePane.ts
 src/Explorer/Panes/BrowseQueriesPane.ts

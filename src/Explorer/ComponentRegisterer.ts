@@ -20,7 +20,6 @@ ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponent
 
 // Panes
 ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());
-ko.components.register("add-collection-pane", new PaneComponents.AddCollectionPaneComponent());
 ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPaneComponent());
 ko.components.register("table-add-entity-pane", new PaneComponents.TableAddEntityPaneComponent());
 ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEntityPaneComponent());
