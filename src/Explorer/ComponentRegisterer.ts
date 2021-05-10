@@ -19,8 +19,7 @@ ko.components.register("dynamic-list", DynamicListComponent);
 ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponentAutoPilotV3);
 
 // Panes
+
 ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());
 ko.components.register("graph-styling-pane", new PaneComponents.GraphStylingPaneComponent());
-ko.components.register("table-add-entity-pane", new PaneComponents.TableAddEntityPaneComponent());
-ko.components.register("table-edit-entity-pane", new PaneComponents.TableEditEntityPaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());

@@ -2199,7 +2199,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 >
                   <button
                     aria-label="Close pane"
-                    className="ms-Button ms-Button--icon closePaneBtn root-153"
+                    className="ms-Button ms-Button--icon closePaneBtn root-53"
                     data-is-focusable={true}
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -2212,16 +2212,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-154"
+                      className="ms-Button-flexContainer flexContainer-54"
                       data-automationid="splitbuttonprimary"
                     >
-                      <Component
-                        className="ms-Button-icon icon-156"
+                      <FontIcon
+                        className="ms-Button-icon icon-56"
                         iconName="Cancel"
                       >
                         <i
                           aria-hidden={true}
-                          className="ms-Icon root-37 css-161 ms-Button-icon icon-156"
+                          className="ms-Icon root-37 css-61 ms-Button-icon icon-56"
                           data-icon-name="Cancel"
                           style={
                             Object {
@@ -2231,10 +2231,10 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         >
                           
                         </i>
-                      </Component>
+                      </FontIcon>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </IconButton>
             </CustomizedIconButton>
@@ -2571,7 +2571,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 value=""
               >
                 <div
-                  className="ms-TextField is-required root-163"
+                  className="ms-TextField is-required root-63"
                 >
                   <div
                     className="ms-TextField-wrapper"
@@ -2862,7 +2862,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         }
                       >
                         <label
-                          className="ms-Label root-174"
+                          className="ms-Label root-74"
                           htmlFor="TextField3"
                           id="TextFieldLabel5"
                         >
@@ -2871,13 +2871,13 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       </LabelBase>
                     </StyledLabelBase>
                     <div
-                      className="ms-TextField-fieldGroup fieldGroup-164"
+                      className="ms-TextField-fieldGroup fieldGroup-64"
                     >
                       <input
                         aria-invalid={false}
                         aria-labelledby="TextFieldLabel5"
                         autoFocus={true}
-                        className="ms-TextField-field field-165"
+                        className="ms-TextField-field field-65"
                         id="TextField3"
                         name="collectionIdConfirmation"
                         onBlur={[Function]}
@@ -4639,7 +4639,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-175"
+                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-75"
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -4657,14 +4657,14 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           type="button"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-154"
+                            className="ms-Button-flexContainer flexContainer-54"
                             data-automationid="splitbuttonprimary"
                           >
                             <span
-                              className="ms-Button-textContainer textContainer-155"
+                              className="ms-Button-textContainer textContainer-55"
                             >
                               <span
-                                className="ms-Button-label label-176"
+                                className="ms-Button-label label-76"
                                 id="id__6"
                                 key="id__6"
                               >
@@ -4673,7 +4673,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             </span>
                           </span>
                         </button>
-                        <Component />
+                        <FocusRects />
                       </BaseButton>
                     </DefaultButton>
                   </CustomizedDefaultButton>

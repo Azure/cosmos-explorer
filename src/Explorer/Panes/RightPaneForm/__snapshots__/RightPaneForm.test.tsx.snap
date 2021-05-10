@@ -1,38 +1,41 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Setup Notebooks Panel should render Default properly 1`] = `
-<SetupNoteBooksPanel
-  closePanel={[Function]}
-  explorer={Object {}}
-  openNotificationConsole={[Function]}
-  panelDescription=""
-  panelTitle=""
+exports[`Right Pane Form should render Default properly 1`] = `
+<RightPaneForm
+  expandConsole={[MockFunction]}
+  formError=""
+  formErrorDetail=""
+  isExecuting={false}
+  onSubmit={[MockFunction]}
+  submitButtonText="Load"
 >
+  <PanelInfoErrorComponent
+    formError={false}
+    message=""
+    messageType="error"
+    openNotificationConsole={[MockFunction]}
+    showErrorDetails={false}
+  />
   <form
     className="panelFormWrapper"
+    onSubmit={[Function]}
   >
-    <div
-      className="panelMainContent"
+    <PanelFooterComponent
+      buttonLabel="Load"
     >
       <div
-        className="pkPadding"
+        className="panelFooter"
       >
-        <div />
         <CustomizedPrimaryButton
-          aria-label="Complete setup"
-          className="btncreatecoll1 btnSetupQueries"
-          id="completeSetupBtn"
-          onClick={[Function]}
-          onKeyPress={[Function]}
-          text="Complete Setup"
+          ariaLabel="Load"
+          id="sidePanelOkButton"
+          text="Load"
+          type="submit"
         >
           <PrimaryButton
-            aria-label="Complete setup"
-            className="btncreatecoll1 btnSetupQueries"
-            id="completeSetupBtn"
-            onClick={[Function]}
-            onKeyPress={[Function]}
-            text="Complete Setup"
+            ariaLabel="Load"
+            id="sidePanelOkButton"
+            text="Load"
             theme={
               Object {
                 "disableGlobalClassNames": false,
@@ -306,16 +309,14 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                 },
               }
             }
+            type="submit"
           >
             <CustomizedDefaultButton
-              aria-label="Complete setup"
-              className="btncreatecoll1 btnSetupQueries"
-              id="completeSetupBtn"
-              onClick={[Function]}
-              onKeyPress={[Function]}
+              ariaLabel="Load"
+              id="sidePanelOkButton"
               onRenderDescription={[Function]}
               primary={true}
-              text="Complete Setup"
+              text="Load"
               theme={
                 Object {
                   "disableGlobalClassNames": false,
@@ -589,16 +590,14 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                   },
                 }
               }
+              type="submit"
             >
               <DefaultButton
-                aria-label="Complete setup"
-                className="btncreatecoll1 btnSetupQueries"
-                id="completeSetupBtn"
-                onClick={[Function]}
-                onKeyPress={[Function]}
+                ariaLabel="Load"
+                id="sidePanelOkButton"
                 onRenderDescription={[Function]}
                 primary={true}
-                text="Complete Setup"
+                text="Load"
                 theme={
                   Object {
                     "disableGlobalClassNames": false,
@@ -872,14 +871,12 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                     },
                   }
                 }
+                type="submit"
               >
                 <BaseButton
-                  aria-label="Complete setup"
+                  ariaLabel="Load"
                   baseClassName="ms-Button"
-                  className="btncreatecoll1 btnSetupQueries"
-                  id="completeSetupBtn"
-                  onClick={[Function]}
-                  onKeyPress={[Function]}
+                  id="sidePanelOkButton"
                   onRenderDescription={[Function]}
                   primary={true}
                   split={false}
@@ -1454,7 +1451,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                       },
                     }
                   }
-                  text="Complete Setup"
+                  text="Load"
                   theme={
                     Object {
                       "disableGlobalClassNames": false,
@@ -1728,20 +1725,21 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                       },
                     }
                   }
+                  type="submit"
                   variantClassName="ms-Button--primary"
                 >
                   <button
-                    aria-label="Complete setup"
-                    className="ms-Button ms-Button--primary btncreatecoll1 btnSetupQueries root-53"
+                    aria-label="Load"
+                    className="ms-Button ms-Button--primary root-53"
                     data-is-focusable={true}
-                    id="completeSetupBtn"
+                    id="sidePanelOkButton"
                     onClick={[Function]}
                     onKeyDown={[Function]}
                     onKeyPress={[Function]}
                     onKeyUp={[Function]}
                     onMouseDown={[Function]}
                     onMouseUp={[Function]}
-                    type="button"
+                    type="submit"
                   >
                     <span
                       className="ms-Button-flexContainer flexContainer-54"
@@ -1755,7 +1753,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                           id="id__0"
                           key="id__0"
                         >
-                          Complete Setup
+                          Load
                         </span>
                       </span>
                     </span>
@@ -1767,7 +1765,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
           </PrimaryButton>
         </CustomizedPrimaryButton>
       </div>
-    </div>
+    </PanelFooterComponent>
   </form>
-</SetupNoteBooksPanel>
+</RightPaneForm>
 `;

@@ -2,7 +2,7 @@ import { Image, Stack, TextField } from "@fluentui/react";
 import React, { ChangeEvent, FunctionComponent, KeyboardEvent, useRef, useState } from "react";
 import FolderIcon from "../../../images/folder_16x16.svg";
 import * as Constants from "../Constants";
-import { Tooltip } from "../Tooltip/Tooltip";
+import { InfoTooltip } from "../Tooltip/InfoTooltip";
 
 interface UploadProps {
   label: string;
@@ -51,7 +51,7 @@ export const Upload: FunctionComponent<UploadProps> = ({
   return (
     <div>
       <span className="renewUploadItemsHeader">{label}</span>
-      <Tooltip>{tooltip}</Tooltip>
+      {tooltip && <InfoTooltip>{tooltip}</InfoTooltip>}
       <Stack horizontal>
         <TextField styles={{ fieldGroup: { width: 300 } }} readOnly value={selectedFilesTitle.toString()} />
         <input
