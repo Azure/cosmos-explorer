@@ -32,9 +32,9 @@ export interface CdbRecordProps {
   kernelRestartDelayMs: number;
   hoveredCellId: CellId | undefined;
   cellOutputSnapshots: Map<string, SnapshotFragment>;
-  notebookSnapshot: { imageSrc: string; requestId: string } | undefined;
-  pendingSnapshotRequest: SnapshotRequest | undefined;
-  notebookSnapshotError: string | undefined;
+  notebookSnapshot?: { imageSrc: string; requestId: string };
+  pendingSnapshotRequest?: SnapshotRequest;
+  notebookSnapshotError?: string;
 }
 
 export type CdbRecord = Immutable.RecordOf<CdbRecordProps>;
