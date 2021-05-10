@@ -5,11 +5,8 @@ exports[`Upload Items Pane should render Default properly 1`] = `
   expandConsole={[Function]}
   formError=""
   formErrorDetail=""
-  id="uploaditemspane"
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Upload"
-  title="Upload Items"
 >
   <div
     className="paneMainContent"

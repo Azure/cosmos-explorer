@@ -17,7 +17,6 @@ export class AddDatabasePaneComponent {
     };
   }
 }
-
 export class AddCollectionPaneComponent {
   constructor() {
     return {

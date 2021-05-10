@@ -31,7 +31,7 @@ import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants"
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
 import { updateUserContext, userContext } from "../UserContext";
-import { getCollectionName } from "../Utils/APITypeUtils";
+import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -52,6 +52,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import AddDatabasePane from "./Panes/AddDatabasePane";
+import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
@@ -1961,7 +1962,7 @@ export default class Explorer {
 
   public openDeleteDatabaseConfirmationPane(): void {
     this.openSidePanel(
-      "Delete Database",
+      "Delete " + getDatabaseName(),
       <DeleteDatabaseConfirmationPanel
         explorer={this}
         openNotificationConsole={this.expandConsole}
@@ -1972,12 +1973,12 @@ export default class Explorer {
   }
 
   public openUploadItemsPanePane(): void {
-    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+    this.openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
   }
 
   public openSettingPane(): void {
     this.openSidePanel(
-      "Settings",
+      "Setting",
       <SettingsPane expandConsole={() => this.expandConsole()} closePanel={this.closeSidePanel} />
     );
   }
@@ -2005,6 +2006,21 @@ export default class Explorer {
       />
     );
   }
+  public openAddDatabasePane(): void {
+    if (userContext.features.enableKOPanel) {
+      this.addDatabasePane.open();
+      document.getElementById("linkAddDatabase").focus();
+    } else {
+      this.openSidePanel(
+        "Add " + getDatabaseName(),
+        <AddDatabasePanel
+          explorer={this}
+          openNotificationConsole={this.expandConsole}
+          closePanel={this.closeSidePanel}
+        />
+      );
+    }
+  }
 
   public openBrowseQueriesPanel(): void {
     this.openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this} closePanel={this.closeSidePanel} />);
@@ -2021,7 +2037,7 @@ export default class Explorer {
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     parent = parent || this.resourceTree.myNotebooksContentRoot;
     this.openSidePanel(
-      "Upload File",
+      "Upload file to notebook server",
       <UploadFilePane
         expandConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
