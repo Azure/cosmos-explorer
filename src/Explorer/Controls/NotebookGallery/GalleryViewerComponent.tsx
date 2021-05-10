@@ -34,7 +34,6 @@ import { CodeOfConductComponent } from "./CodeOfConductComponent";
 import "./GalleryViewerComponent.less";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
 
-const CARD_WIDTH = 256;
 export interface GalleryViewerComponentProps {
   container?: Explorer;
   junoClient: JunoClient;
@@ -87,7 +86,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   public static readonly PublishedTitle = "My published work";
 
   private static readonly rowsPerPage = 5;
-
+  private static readonly CARD_WIDTH = 256;
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
   private static readonly mostFavoritedText = "Most favorited";
@@ -644,7 +643,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
     if (itemIndex === 0) {
-      this.columnCount = Math.floor(visibleRect.width / CARD_WIDTH) || this.columnCount;
+      this.columnCount = Math.floor(visibleRect.width / GalleryViewerComponent.CARD_WIDTH) || this.columnCount;
       this.rowCount = GalleryViewerComponent.rowsPerPage;
     }
 
@@ -672,7 +671,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     };
 
     return (
-      <div style={{ float: "left", padding: 10 }}>
+      <div style={{ float: "left", padding: 5 }}>
         <GalleryCardComponent {...props} />
       </div>
     );
