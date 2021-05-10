@@ -9,14 +9,23 @@ export interface SnapshotFragment {
   requestId: string;
 }
 
-export interface SnapshotRequest {
+export type SnapshotRequest = NotebookSnapshotRequest | CellSnapshotRequest;
+interface NotebookSnapshotRequestBase {
   requestId: string;
   aspectRatio: number;
-  type: "notebook" | "celloutput";
-  cellId: string; // if type is "celloutput"
   notebookContentRef: string; // notebook redux contentRef
   downloadFilename?: string; // Optional: will download as a file
 }
+
+interface NotebookSnapshotRequest extends NotebookSnapshotRequestBase {
+  type: "notebook";
+}
+
+interface CellSnapshotRequest extends NotebookSnapshotRequestBase {
+  type: "celloutput";
+  cellId: string;
+}
+
 export interface CdbRecordProps {
   databaseAccountName: string | undefined;
   defaultExperience: string | undefined;

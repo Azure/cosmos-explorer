@@ -1397,9 +1397,9 @@ export default class Explorer {
   public async publishNotebook(
     name: string,
     content: NotebookPaneContent,
-    notebookContentRef: string,
-    onTakeSnapshot: (request: SnapshotRequest) => void,
-    onClosePanel: () => void
+    notebookContentRef?: string,
+    onTakeSnapshot?: (request: SnapshotRequest) => void,
+    onClosePanel?: () => void
   ): Promise<void> {
     if (this.notebookManager) {
       await this.notebookManager.openPublishNotebookPane(

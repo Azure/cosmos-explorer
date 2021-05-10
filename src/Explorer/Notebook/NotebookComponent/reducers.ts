@@ -74,7 +74,7 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       const typedAction = action as cdbActions.StoreCellOutputSnapshotAction;
       state.cellOutputSnapshots.set(typedAction.payload.cellId, typedAction.payload.snapshot);
       // TODO Simpler datastructure to instantiate new Map?
-      return state.set("cellOutputSnapshots", new Map(state.cellOutputSnapshots.entries()));
+      return state.set("cellOutputSnapshots", new Map(state.cellOutputSnapshots));
     }
 
     case cdbActions.STORE_NOTEBOOK_SNAPSHOT: {

@@ -86,7 +86,6 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
           aspectRatio: cardHeightToWidthRatio,
           requestId: new Date().getTime().toString(),
           type: "notebook",
-          cellId: undefined,
           notebookContentRef,
         });
       } else if (options.text === ImageTypes.UseFirstDisplayOutput) {
