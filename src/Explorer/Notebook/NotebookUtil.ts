@@ -174,7 +174,7 @@ export class NotebookUtil {
     aspectRatio: number,
     subSnapshots: SnapshotFragment[],
     downloadFilename?: string
-  ): Promise<{ imageSrc: string | undefined }> => {
+  ): Promise<{ imageSrc?: string }> => {
     return new Promise(async (resolve, reject) => {
       // target.scrollIntoView();
       try {
@@ -186,7 +186,7 @@ export class NotebookUtil {
         const originalImageData = await domtoimage.toPng(target, { filter });
         if (originalImageData === "data:,") {
           // Empty output
-          resolve({ imageSrc: undefined });
+          resolve({});
           return;
         }
 
