@@ -1760,7 +1760,7 @@ exports[`Setup Notebooks Panel should render Default properly 1`] = `
                       </span>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </DefaultButton>
             </CustomizedDefaultButton>

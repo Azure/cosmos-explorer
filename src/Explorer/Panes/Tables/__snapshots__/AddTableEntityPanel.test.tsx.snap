@@ -2663,7 +2663,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                               className="ms-Button-flexContainer flexContainer-73"
                                               data-automationid="splitbuttonprimary"
                                             >
-                                              <Component
+                                              <FontIcon
                                                 className="ms-Button-icon icon-75"
                                                 iconName="Cancel"
                                               >
@@ -2679,10 +2679,10 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
                                                 >
                                                   
                                                 </i>
-                                              </Component>
+                                              </FontIcon>
                                             </span>
                                           </button>
-                                          <Component />
+                                          <FocusRects />
                                         </BaseButton>
                                       </IconButton>
                                     </CustomizedIconButton>
