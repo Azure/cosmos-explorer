@@ -66,9 +66,9 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
   const dateString = new Date(data.created).toLocaleString("default", options);
   const cardTitle = FileSystemUtil.stripExtension(data.name, "ipynb");
 
-  const renderTruncatedDescription = (): string => {
-    let truncatedDescription = data.description.substr(0, cardDescriptionMaxChars);
-    if (data.description.length > cardDescriptionMaxChars) {
+  const renderTruncated = (text: string, totalLength: number): string => {
+    let truncatedDescription = text.substr(0, totalLength);
+    if (text.length > totalLength) {
       truncatedDescription = `${truncatedDescription} ...`;
     }
     return truncatedDescription;
@@ -162,8 +162,11 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
                 <br />
               )}
             </Text>
-            <DocumentCardTitle title={cardTitle.substr(0, 25)} shouldTruncate />
-            <DocumentCardTitle title={renderTruncatedDescription()} showAsSecondaryTitle />
+            <DocumentCardTitle title={renderTruncated(cardTitle, 20)} shouldTruncate />
+            <DocumentCardTitle
+              title={renderTruncated(data.description, cardDescriptionMaxChars)}
+              showAsSecondaryTitle
+            />
             <span style={{ padding: "8px 16px" }}>
               {data.views !== undefined && generateIconText("RedEye", data.views.toString())}
               {data.downloads !== undefined && generateIconText("Download", data.downloads.toString())}

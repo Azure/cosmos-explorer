@@ -671,7 +671,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     };
 
     return (
-      <div style={{ float: "left", padding: 10 }}>
+      <div style={{ float: "left", padding: 5 }}>
         <GalleryCardComponent {...props} />
       </div>
     );
