@@ -58,18 +58,16 @@ export interface AddCollectionPanelState {
   errorMessage: string;
   showErrorDetails: boolean;
   isExecuting: boolean;
+  newDatabaseThroughput: number;
+  isNewDatabaseAutoscale: boolean;
+  collectionThroughput: number;
+  isCollectionAutoscale: boolean;
+  isCostAcknowledged: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
-  private newDatabaseThroughput: number;
-  private isNewDatabaseAutoscale: boolean;
-  private collectionThroughput: number;
-  private isCollectionAutoscale: boolean;
-  private isCostAcknowledged: boolean;
-
   constructor(props: AddCollectionPanelProps) {
     super(props);
-
     this.state = {
       createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
       newDatabaseId: "",
@@ -88,6 +86,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       errorMessage: "",
       showErrorDetails: false,
       isExecuting: false,
+      newDatabaseThroughput: undefined,
+      isNewDatabaseAutoscale: true,
+      collectionThroughput: undefined,
+      isCollectionAutoscale: true,
+      isCostAcknowledged: false,
     };
   }
 
@@ -213,12 +216,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
                     }
                     isDatabase={true}
-                    isAutoscaleSelected={this.isNewDatabaseAutoscale}
-                    throughput={this.newDatabaseThroughput}
+                    isAutoscaleSelected={this.state.isNewDatabaseAutoscale}
+                    throughput={this.state.newDatabaseThroughput}
                     isSharded={this.state.isSharded}
-                    setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
-                    setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
-                    onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
+                    setThroughputValue={(throughput: number) => this.setState({ newDatabaseThroughput: throughput })}
+                    setIsAutoscale={(isAutoscale: boolean) => this.setState({ isNewDatabaseAutoscale: isAutoscale })}
+                    onCostAcknowledgeChange={(isAcknowledge: boolean) =>
+                      this.setState({ isCostAcknowledged: isAcknowledge })
+                    }
                   />
                 )}
               </Stack>
@@ -444,13 +449,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
               }
               isDatabase={false}
-              isAutoscaleSelected={this.isCollectionAutoscale}
-              throughput={this.collectionThroughput}
+              isAutoscaleSelected={this.state.isCollectionAutoscale}
+              throughput={this.state.collectionThroughput}
               isSharded={this.state.isSharded}
-              setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
-              setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
+              setThroughputValue={(throughput: number) => this.setState({ collectionThroughput: throughput })}
+              setIsAutoscale={(isAutoscale: boolean) => this.setState({ isCollectionAutoscale: isAutoscale })}
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {
-                this.isCostAcknowledged = isAcknowledged;
+                this.setState({ isCostAcknowledged: isAcknowledged });
               }}
             />
           )}
@@ -895,9 +900,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    const throughput = this.state.createNewDatabase ? this.newDatabaseThroughput : this.collectionThroughput;
-    if (throughput > CollectionCreation.DefaultCollectionRUs100K && !this.isCostAcknowledged) {
-      const errorMessage = this.isNewDatabaseAutoscale
+    const throughput = this.state.createNewDatabase
+      ? this.state.newDatabaseThroughput
+      : this.state.collectionThroughput;
+    if (throughput > CollectionCreation.DefaultCollectionRUs100K && !this.state.isCostAcknowledged) {
+      const errorMessage = this.state.isNewDatabaseAutoscale
         ? "Please acknowledge the estimated monthly spend."
         : "Please acknowledge the estimated daily spend.";
       this.setState({ errorMessage });
@@ -980,8 +987,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       },
       collection: {
         id: this.state.collectionId,
-        throughput: this.collectionThroughput,
-        isAutoscale: this.isCollectionAutoscale,
+        throughput: this.state.collectionThroughput,
+        isAutoscale: this.state.isCollectionAutoscale,
         partitionKey,
         uniqueKeyPolicy,
         collectionWithDedicatedThroughput: this.state.enableDedicatedThroughput,
@@ -999,16 +1006,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     let offerThroughput: number;
     let autoPilotMaxThroughput: number;
     if (this.state.createNewDatabase) {
-      if (this.isNewDatabaseAutoscale) {
-        autoPilotMaxThroughput = this.newDatabaseThroughput;
+      if (this.state.isNewDatabaseAutoscale) {
+        autoPilotMaxThroughput = this.state.newDatabaseThroughput;
       } else {
-        offerThroughput = this.newDatabaseThroughput;
+        offerThroughput = this.state.newDatabaseThroughput;
       }
     } else if (!databaseLevelThroughput) {
-      if (this.isCollectionAutoscale) {
-        autoPilotMaxThroughput = this.collectionThroughput;
+      if (this.state.isCollectionAutoscale) {
+        autoPilotMaxThroughput = this.state.collectionThroughput;
       } else {
-        offerThroughput = this.collectionThroughput;
+        offerThroughput = this.state.collectionThroughput;
       }
     }
 
