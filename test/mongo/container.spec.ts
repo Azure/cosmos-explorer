@@ -23,7 +23,7 @@ test("Mongo CRUD", async () => {
   await safeClick(explorer, `.nodeItem >> text=${databaseId}`);
   await safeClick(explorer, `.nodeItem >> text=${containerId}`);
   // Create indexing policy
-  await safeClick(explorer, ".nodeItem >> text=Settings");
+  await safeClick(explorer, ".nodeItem >> text=Setting");
   await explorer.click('button[role="tab"]:has-text("Indexing Policy")');
   await explorer.click('[aria-label="Index Field Name 0"]');
   await explorer.fill('[aria-label="Index Field Name 0"]', "foo");

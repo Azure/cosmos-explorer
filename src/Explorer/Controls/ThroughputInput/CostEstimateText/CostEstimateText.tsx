@@ -1,6 +1,6 @@
 import { Text } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
-import { Tooltip } from "../../../../Common/Tooltip/Tooltip";
+import { InfoTooltip } from "../../../../Common/Tooltip/InfoTooltip";
 import * as SharedConstants from "../../../../Shared/Constants";
 import { userContext } from "../../../../UserContext";
 import {
@@ -46,7 +46,7 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
     ? getAutoscalePricePerRu(serverId, multiplier) * multiplier
     : getPricePerRu(serverId) * multiplier;
 
-  const iconWithEstimatedCostDisclaimer: JSX.Element = <Tooltip>PricingUtils.estimatedCostDisclaimer</Tooltip>;
+  const iconWithEstimatedCostDisclaimer: JSX.Element = <InfoTooltip>PricingUtils.estimatedCostDisclaimer</InfoTooltip>;
 
   if (isAutoscale) {
     return (
