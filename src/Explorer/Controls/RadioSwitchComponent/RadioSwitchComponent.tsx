@@ -25,6 +25,7 @@ export class RadioSwitchComponent extends React.Component<RadioSwitchComponentPr
       <div className="radioSwitchComponent">
         {this.props.choices.map((choice: Choice) => (
           <span
+            role="button"
             tabIndex={0}
             key={choice.key}
             onClick={() => this.onSelect(choice)}

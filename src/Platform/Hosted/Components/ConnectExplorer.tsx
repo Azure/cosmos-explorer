@@ -1,9 +1,9 @@
-import * as React from "react";
 import { useBoolean } from "@fluentui/react-hooks";
-import { HttpHeaders } from "../../../Common/Constants";
-import { GenerateTokenResponse } from "../../../Contracts/DataModels";
-import { configContext } from "../../../ConfigContext";
+import * as React from "react";
 import { AuthType } from "../../../AuthType";
+import { HttpHeaders } from "../../../Common/Constants";
+import { configContext } from "../../../ConfigContext";
+import { GenerateTokenResponse } from "../../../Contracts/DataModels";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 
 interface Props {
@@ -75,16 +75,16 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
               <p className="connectExplorerContent">
                 <input className="filterbtnstyle" type="submit" value="Connect" />
               </p>
-              <p className="switchConnectTypeText" onClick={login}>
+              <div className="switchConnectTypeText" onClick={login} onKeyDown={login} role="button" tabIndex={0}>
                 Sign In with Azure Account
-              </p>
+              </div>
             </form>
           ) : (
             <div id="connectWithAad">
               <input className="filterbtnstyle" type="button" value="Sign In" onClick={login} />
-              <p className="switchConnectTypeText" onClick={showForm}>
+              <div className="switchConnectTypeText" onClick={showForm} onKeyDown={showForm} role="button" tabIndex={0}>
                 Connect to your account with connection string
-              </p>
+              </div>
             </div>
           )}
         </div>

@@ -19,21 +19,27 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
   >
     <div
       onKeyDown={[Function]}
+      role="button"
       tabIndex={-1}
     >
       <div
         className="contextual-pane-out"
         onClick={[Function]}
+        onKeyDown={[Function]}
+        role="button"
+        tabIndex={0}
       />
       <div
         className="contextual-pane"
         id="executesprocparamspane"
         onKeyDown={[Function]}
+        role="button"
         style={
           Object {
             "height": NaN,
           }
         }
+        tabIndex={0}
       >
         <div
           className="panelContentWrapper"
@@ -1152,14 +1158,16 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   className="formErrors"
                   title=""
                 />
-                <a
-                  className="errorLink"
+                <div
+                  className="errorLink errorLinkColor"
                   hidden={true}
                   onClick={[Function]}
+                  onKeyDown={[Function]}
                   role="link"
+                  tabIndex={0}
                 >
                   More details
-                </a>
+                </div>
               </span>
             </div>
           </div>
@@ -2709,14 +2717,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       </DropdownBase>
                     </Dropdown>
                     <StyledTextFieldBase
-                      autoFocus={true}
                       id="confirmCollectionId"
                       key=".0:$.1"
                       label="Value"
                       onChange={[Function]}
                     >
                       <TextFieldBase
-                        autoFocus={true}
                         deferredValidationTime={200}
                         id="confirmCollectionId"
                         label="Value"
@@ -3302,7 +3308,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               <input
                                 aria-invalid={false}
                                 aria-labelledby="TextFieldLabel6"
-                                autoFocus={true}
                                 className="ms-TextField-field field-85"
                                 id="confirmCollectionId"
                                 onBlur={[Function]}
@@ -4864,7 +4869,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       </DropdownBase>
                     </Dropdown>
                     <StyledTextFieldBase
-                      autoFocus={true}
                       id="confirmCollectionId"
                       key=".0:$.1"
                       label="Param"
@@ -4872,7 +4876,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       value=""
                     >
                       <TextFieldBase
-                        autoFocus={true}
                         deferredValidationTime={200}
                         id="confirmCollectionId"
                         label="Param"
@@ -5459,7 +5462,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                               <input
                                 aria-invalid={false}
                                 aria-labelledby="TextFieldLabel10"
-                                autoFocus={true}
                                 className="ms-TextField-field field-85"
                                 id="confirmCollectionId"
                                 onBlur={[Function]}
@@ -8227,6 +8229,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
           hidden={true}
         >
           <img
+            alt="Loader img"
             className="dataExplorerLoader"
             src=""
           />

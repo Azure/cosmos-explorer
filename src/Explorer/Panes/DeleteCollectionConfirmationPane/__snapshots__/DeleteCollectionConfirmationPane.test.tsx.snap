@@ -28,21 +28,27 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
   >
     <div
       onKeyDown={[Function]}
+      role="button"
       tabIndex={-1}
     >
       <div
         className="contextual-pane-out"
         onClick={[Function]}
+        onKeyDown={[Function]}
+        role="button"
+        tabIndex={0}
       />
       <div
         className="contextual-pane"
         id="deleteCollectionpane"
         onKeyDown={[Function]}
+        role="button"
         style={
           Object {
             "height": NaN,
           }
         }
+        tabIndex={0}
       >
         <div
           className="panelContentWrapper"
@@ -1161,14 +1167,16 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   className="formErrors"
                   title=""
                 />
-                <a
-                  className="errorLink"
+                <div
+                  className="errorLink errorLinkColor"
                   hidden={true}
                   onClick={[Function]}
+                  onKeyDown={[Function]}
                   role="link"
+                  tabIndex={0}
                 >
                   More details
-                </a>
+                </div>
               </span>
             </div>
           </div>
@@ -1198,7 +1206,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   </span>
                 </Text>
                 <StyledTextFieldBase
-                  autoFocus={true}
                   id="confirmCollectionId"
                   onChange={[Function]}
                   styles={
@@ -1211,7 +1218,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   value=""
                 >
                   <TextFieldBase
-                    autoFocus={true}
                     deferredValidationTime={200}
                     id="confirmCollectionId"
                     onChange={[Function]}
@@ -1504,7 +1510,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                         >
                           <input
                             aria-invalid={false}
-                            autoFocus={true}
                             className="ms-TextField-field field-215"
                             id="confirmCollectionId"
                             onBlur={[Function]}
@@ -3664,6 +3669,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
           hidden={true}
         >
           <img
+            alt="Loader img"
             className="dataExplorerLoader"
             src=""
           />

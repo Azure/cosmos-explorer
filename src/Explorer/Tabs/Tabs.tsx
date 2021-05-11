@@ -42,6 +42,7 @@ function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
       aria-controls={tab.tabId}
       tabIndex={0}
       role="tab"
+      onFocus={() => setHovering(true)}
     >
       <span className="tabNavContentContainer">
         <a data-toggle="tab" href={"#" + tab.tabId} tabIndex={-1}>

@@ -47,7 +47,7 @@ export const Upload: FunctionComponent<UploadProps> = ({
       props.onUpload(event);
     }
   };
-  const title = label + " to upload";
+
   return (
     <div>
       <span className="renewUploadItemsHeader">{label}</span>
@@ -67,7 +67,7 @@ export const Upload: FunctionComponent<UploadProps> = ({
           role="button"
         />
         <a href="#" id="fileImportLinkNotebook" onClick={onImportLinkClick} onKeyPress={onImportLinkKeyPress}>
-          <Image className="fileImportImg" src={FolderIcon} alt={title} title={title} />
+          <Image className="fileImportImg" src={FolderIcon} alt={label} title={label} />
         </a>
       </Stack>
     </div>

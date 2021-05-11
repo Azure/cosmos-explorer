@@ -1,5 +1,5 @@
-import { useBoolean } from "@fluentui/react-hooks";
 import { Text, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import { Areas } from "../../Common/Constants";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
@@ -134,7 +134,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           <Text variant="small">Confirm by typing the database id</Text>
           <TextField
             id="confirmDatabaseId"
-            autoFocus
             styles={{ fieldGroup: { width: 300 } }}
             onChange={(event, newInput?: string) => {
               setDatabaseInput(newInput);

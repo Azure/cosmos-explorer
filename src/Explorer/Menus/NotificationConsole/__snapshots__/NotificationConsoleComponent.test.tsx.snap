@@ -9,6 +9,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
     id="notificationConsoleHeader"
     onClick={[Function]}
     onKeyDown={[Function]}
+    role="button"
     tabIndex={0}
   >
     <div
@@ -150,7 +151,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
           tabIndex={0}
         >
           <img
-            alt="clear notifications image"
+            alt="clear notifications"
             src=""
           />
           Clear Notifications
@@ -173,6 +174,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
     id="notificationConsoleHeader"
     onClick={[Function]}
     onKeyDown={[Function]}
+    role="button"
     tabIndex={0}
   >
     <div
@@ -316,7 +318,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
           tabIndex={0}
         >
           <img
-            alt="clear notifications image"
+            alt="clear notifications"
             src=""
           />
           Clear Notifications

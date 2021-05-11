@@ -67,9 +67,16 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
             <span className="formErrors" title={formError}>
               {formError}
             </span>
-            <a className="errorLink" role="link" hidden={!formErrorDetail} onClick={expandConsole}>
+            <div
+              className="errorLink errorLinkColor"
+              role="link"
+              hidden={!formErrorDetail}
+              onClick={expandConsole}
+              tabIndex={0}
+              onKeyDown={expandConsole}
+            >
               More details
-            </a>
+            </div>
           </span>
         </div>
       </div>
@@ -97,7 +104,7 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
   const renderLoadingScreen = (): JSX.Element => {
     return (
       <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!isExecuting}>
-        <img className="dataExplorerLoader" src={LoadingIndicatorIcon} />
+        <img className="dataExplorerLoader" src={LoadingIndicatorIcon} alt="Loader img" />
       </div>
     );
   };
@@ -110,9 +117,16 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
   };
 
   return (
-    <div tabIndex={-1} onKeyDown={onKeyDown}>
-      <div className="contextual-pane-out" onClick={onClose}></div>
-      <div className="contextual-pane" id={id} style={{ height: panelHeight }} onKeyDown={onKeyDown}>
+    <div tabIndex={-1} onKeyDown={onKeyDown} role="button">
+      <div className="contextual-pane-out" onClick={onClose} role="button" tabIndex={0} onKeyDown={onClose}></div>
+      <div
+        className="contextual-pane"
+        id={id}
+        style={{ height: panelHeight }}
+        onKeyDown={onKeyDown}
+        role="button"
+        tabIndex={0}
+      >
         <div className="panelContentWrapper">
           {renderPanelHeader()}
           {renderErrorSection()}

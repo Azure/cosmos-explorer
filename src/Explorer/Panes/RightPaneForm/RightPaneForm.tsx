@@ -78,9 +78,16 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   };
 
   return (
-    <div tabIndex={-1} onKeyDown={onKeyDown}>
-      <div className="contextual-pane-out" onClick={onClose}></div>
-      <div className="contextual-pane" id={id} style={{ height: panelHeight }} onKeyDown={onKeyDown}>
+    <div tabIndex={-1} onKeyDown={onKeyDown} role="button">
+      <div className="contextual-pane-out" onClick={onClose} role="button" tabIndex={0} onKeyDown={onClose}></div>
+      <div
+        className="contextual-pane"
+        id={id}
+        style={{ height: panelHeight }}
+        onKeyDown={onKeyDown}
+        role="button"
+        tabIndex={0}
+      >
         <div className="panelContentWrapper">
           {renderPanelHeader()}
           <PanelInfoErrorComponent {...panelInfoErrorProps} />

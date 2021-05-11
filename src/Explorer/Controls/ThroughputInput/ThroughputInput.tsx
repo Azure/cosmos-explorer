@@ -57,7 +57,6 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
             aria-label="Autoscale mode"
             checked={this.state.isAutoscaleSelected}
             type="radio"
-            role="radio"
             tabIndex={0}
             onChange={this.onAutoscaleRadioBtnChange.bind(this)}
           />
@@ -68,7 +67,6 @@ export class ThroughputInput extends React.Component<ThroughputInputProps, Throu
             aria-label="Manual mode"
             checked={!this.state.isAutoscaleSelected}
             type="radio"
-            role="radio"
             tabIndex={0}
             onChange={this.onManualRadioBtnChange.bind(this)}
           />

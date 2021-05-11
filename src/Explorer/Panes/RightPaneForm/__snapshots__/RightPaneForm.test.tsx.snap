@@ -15,21 +15,27 @@ exports[`Load Query Pane should render Default properly 1`] = `
 >
   <div
     onKeyDown={[Function]}
+    role="button"
     tabIndex={-1}
   >
     <div
       className="contextual-pane-out"
       onClick={[MockFunction]}
+      onKeyDown={[MockFunction]}
+      role="button"
+      tabIndex={0}
     />
     <div
       className="contextual-pane"
       id="loadQueryPane"
       onKeyDown={[Function]}
+      role="button"
       style={
         Object {
           "height": NaN,
         }
       }
+      tabIndex={0}
     >
       <div
         className="panelContentWrapper"

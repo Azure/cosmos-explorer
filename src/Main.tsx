@@ -131,7 +131,12 @@ const App: React.FunctionComponent = () => {
                           aria-label="Refresh tree"
                           title="Refresh tree"
                         >
-                          <img className="refreshcol" src={refreshImg} data-bind="attr: { alt: refreshTreeTitle }" />
+                          <img
+                            className="refreshcol"
+                            src={refreshImg}
+                            data-bind="attr: { alt: refreshTreeTitle }"
+                            alt="Refresh"
+                          />
                         </span>
                         <span
                           className="padimgcolrefresh1"
@@ -169,9 +174,7 @@ const App: React.FunctionComponent = () => {
                     <li
                       className="resourceTreeCollapse"
                       id="collapseToggleLeftPaneButton"
-                      role="button"
                       data-bind="event: { keypress: toggleLeftPaneExpandedKeyPress }"
-                      tabIndex={0}
                       aria-label="Expand Tree"
                     >
                       <span

@@ -43,9 +43,15 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
             )}
           </Text>
           {showErrorDetails && (
-            <a className="paneErrorLink" role="link" onClick={openNotificationConsole}>
+            <div
+              className="paneErrorLink"
+              role="link"
+              onClick={openNotificationConsole}
+              tabIndex={0}
+              onKeyDown={openNotificationConsole}
+            >
               More details
-            </a>
+            </div>
           )}
         </span>
       </Stack>

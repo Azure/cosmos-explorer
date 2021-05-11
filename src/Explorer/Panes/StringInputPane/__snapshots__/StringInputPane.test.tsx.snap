@@ -1294,21 +1294,27 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
   >
     <div
       onKeyDown={[Function]}
+      role="button"
       tabIndex={-1}
     >
       <div
         className="contextual-pane-out"
         onClick={[Function]}
+        onKeyDown={[Function]}
+        role="button"
+        tabIndex={0}
       />
       <div
         className="contextual-pane"
         id="stringInputPane"
         onKeyDown={[Function]}
+        role="button"
         style={
           Object {
             "height": NaN,
           }
         }
+        tabIndex={0}
       >
         <div
           className="panelContentWrapper"
@@ -2427,14 +2433,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                   className="formErrors"
                   title=""
                 />
-                <a
-                  className="errorLink"
+                <div
+                  className="errorLink errorLinkColor"
                   hidden={true}
                   onClick={[Function]}
+                  onKeyDown={[Function]}
                   role="link"
+                  tabIndex={0}
                 >
                   More details
-                </a>
+                </div>
               </span>
             </div>
           </div>
@@ -2443,7 +2451,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
           >
             <StyledTextFieldBase
               aria-label="Enter new directory name"
-              autoFocus={true}
               label="Enter new directory name"
               name="collectionIdConfirmation"
               onChange={[Function]}
@@ -2452,7 +2459,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
             >
               <TextFieldBase
                 aria-label="Enter new directory name"
-                autoFocus={true}
                 deferredValidationTime={200}
                 label="Enter new directory name"
                 name="collectionIdConfirmation"
@@ -3042,7 +3048,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       <input
                         aria-invalid={false}
                         aria-labelledby="TextFieldLabel5"
-                        autoFocus={true}
                         className="ms-TextField-field field-165"
                         id="TextField3"
                         name="collectionIdConfirmation"
@@ -4853,6 +4858,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
           hidden={true}
         >
           <img
+            alt="Loader img"
             className="dataExplorerLoader"
             src=""
           />
