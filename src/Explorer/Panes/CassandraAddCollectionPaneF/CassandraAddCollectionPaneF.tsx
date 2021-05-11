@@ -241,9 +241,8 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
 
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, addCollectionPaneStartMessage);
     try {
-      let createTableAndKeyspacePromise;
       if (toCreateKeyspace) {
-        createTableAndKeyspacePromise = await cassandraApiClient.createTableAndKeyspace(
+        await cassandraApiClient.createTableAndKeyspace(
           userContext?.databaseAccount?.properties?.cassandraEndpoint,
           userContext?.databaseAccount?.id,
           container,
@@ -251,7 +250,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
           createKeyspaceQuery
         );
       } else {
-        createTableAndKeyspacePromise = await cassandraApiClient.createTableAndKeyspace(
+        await cassandraApiClient.createTableAndKeyspace(
           userContext?.databaseAccount?.properties?.cassandraEndpoint,
           userContext?.databaseAccount?.id,
           container,
@@ -365,8 +364,8 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
             <div>
               <ThroughputInput
                 showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
-                isDatabase={true}
-                isSharded={true}
+                isDatabase
+                isSharded
                 isAutoscaleSelected={isSharedAutoPilotSelected}
                 throughput={keyspaceThroughput}
                 setThroughputValue={(throughput: number) => setKeyspaceThroughput(throughput)}
@@ -436,7 +435,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
             <ThroughputInput
               showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
               isDatabase={false}
-              isSharded
+              isSharded={false}
               isAutoscaleSelected={isAutoPilotSelected}
               throughput={throughput}
               setThroughputValue={(throughput: number) => setThroughput(throughput)}
