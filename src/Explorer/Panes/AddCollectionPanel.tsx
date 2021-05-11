@@ -210,6 +210,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
                     }
                     isDatabase={true}
+                    isAutoscaleSelected={this.isNewDatabaseAutoscale}
+                    throughput={this.newDatabaseThroughput}
                     isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
@@ -435,6 +437,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
               }
               isDatabase={false}
+              isAutoscaleSelected={this.isCollectionAutoscale}
+              throughput={this.collectionThroughput}
               isSharded={this.state.isSharded}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}

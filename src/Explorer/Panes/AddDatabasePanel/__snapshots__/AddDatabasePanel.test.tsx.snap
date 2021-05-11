@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddDatabasePane Pane should render Default properly 1`] = `
+<RightPaneForm
+  expandConsole={[Function]}
+  formError=""
+  isExecuting={false}
+  onSubmit={[Function]}
+  submitButtonText="OK"
+>
+  <div
+    aria-labelledby="databaseTitle"
+    className="paneContentContainer"
+    role="dialog"
+  >
+    <PanelInfoErrorComponent
+      link="https://aka.ms/azure-cosmos-db-pricing"
+      linkText="More details"
+      message="Start at $24/mo per database, multiple containers included"
+      messageType="info"
+      openNotificationConsole={[Function]}
+      showErrorDetails={false}
+    />
+    <div
+      className="paneMainContent"
+    >
+      <div>
+        <p>
+          <span
+            className="mandatoryStar"
+          >
+            *
+          </span>
+          <Text
+            variant="small"
+          >
+            Database id
+          </Text>
+          <InfoTooltip>
+            A database is a logical container of one or more collections
+          </InfoTooltip>
+        </p>
+        <StyledTextFieldBase
+          aria-label="Database id"
+          aria-required="true"
+          autoComplete="off"
+          id="database-id"
+          onChange={[Function]}
+          pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+          placeholder="Type a new database id"
+          size={40}
+          title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+          type="text"
+          value=""
+        />
+        <div
+          aria-label="New database provision support"
+          className="databaseProvision"
+          style={
+            Object {
+              "display": "block ruby",
+            }
+          }
+        >
+          <StyledCheckboxBase
+            checked={true}
+            label="Provision throughput"
+            onChange={[Function]}
+            styles={
+              Object {
+                "checkbox": Object {
+                  "height": 12,
+                  "width": 12,
+                },
+                "label": Object {
+                  "alignItems": "center",
+                  "padding": 0,
+                },
+              }
+            }
+            title="Provision shared throughput"
+          />
+           
+          <InfoTooltip>
+            Provisioned throughput at the database level will be shared across all collections within the database.
+          </InfoTooltip>
+        </div>
+        <div>
+          <ThroughputInput
+            isAutoscaleSelected={false}
+            isDatabase={true}
+            isSharded={true}
+            onCostAcknowledgeChange={[Function]}
+            setIsAutoscale={[Function]}
+            setThroughputValue={[Function]}
+            throughput={400}
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</RightPaneForm>
+`;

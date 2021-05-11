@@ -52,89 +52,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "upsellMessageAriaLabel": [Function],
           "visible": [Function],
         },
-        AddCollectionPane {
-          "_isSynapseLinkEnabled": [Function],
-          "autoPilotThroughput": [Function],
-          "autoPilotUsageCost": [Function],
-          "canConfigureThroughput": [Function],
-          "canExceedMaximumValue": [Function],
-          "canRequestSupport": [Function],
-          "collectionId": [Function],
-          "collectionIdTitle": [Function],
-          "collectionWithThroughputInShared": [Function],
-          "collectionWithThroughputInSharedTitle": [Function],
-          "container": [Circular],
-          "costsVisible": [Function],
-          "databaseCreateNew": [Function],
-          "databaseCreateNewShared": [Function],
-          "databaseHasSharedOffer": [Function],
-          "databaseId": [Function],
-          "databaseIds": [Function],
-          "dedicatedRequestUnitsUsageCost": [Function],
-          "displayCollectionThroughput": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "formWarnings": [Function],
-          "freeTierExceedThroughputTooltip": [Function],
-          "id": "addcollectionpane",
-          "isAnalyticalStorageOn": [Function],
-          "isAutoPilotSelected": [Function],
-          "isEnableMongoCapabilityEnabled": [Function],
-          "isExecuting": [Function],
-          "isFixedStorageSelected": [Function],
-          "isFreeTierAccount": [Function],
-          "isNonTableApi": [Function],
-          "isPreferredApiTable": [Function],
-          "isSharedAutoPilotSelected": [Function],
-          "isSynapseLinkSupported": [Function],
-          "isSynapseLinkUpdating": [Function],
-          "isTemplateReady": [Function],
-          "isTryCosmosDBSubscription": [Function],
-          "isUnlimitedStorageSelected": [Function],
-          "largePartitionKey": [Function],
-          "lowerCasePartitionKeyName": [Function],
-          "maxCollectionsReached": [Function],
-          "maxCollectionsReachedMessage": [Function],
-          "maxThroughputRU": [Function],
-          "minThroughputRU": [Function],
-          "onMoreDetailsKeyPress": [Function],
-          "partitionKey": [Function],
-          "partitionKeyName": [Function],
-          "partitionKeyPattern": [Function],
-          "partitionKeyPlaceholder": [Function],
-          "partitionKeyTitle": [Function],
-          "partitionKeyVisible": [Function],
-          "requestUnitsUsageCost": [Function],
-          "ruToolTipText": [Function],
-          "sharedAutoPilotThroughput": [Function],
-          "sharedThroughputRangeText": [Function],
-          "shouldCreateMongoWildcardIndex": [Function],
-          "shouldUseDatabaseThroughput": [Function],
-          "showAnalyticalStore": [Function],
-          "showEnableSynapseLink": [Function],
-          "showIndexingOptionsForSharedThroughput": [Function],
-          "showUpsellMessage": [Function],
-          "storage": [Function],
-          "throughputDatabase": [Function],
-          "throughputMultiPartition": [Function],
-          "throughputRangeText": [Function],
-          "throughputSinglePartition": [Function],
-          "throughputSpendAck": [Function],
-          "throughputSpendAckText": [Function],
-          "throughputSpendAckVisible": [Function],
-          "title": [Function],
-          "ttl90DaysEnabled": [Function],
-          "uniqueKeys": [Function],
-          "uniqueKeysPlaceholder": [Function],
-          "uniqueKeysVisible": [Function],
-          "upsellAnchorText": [Function],
-          "upsellAnchorUrl": [Function],
-          "upsellMessage": [Function],
-          "upsellMessageAriaLabel": [Function],
-          "useIndexingForSharedThroughput": [Function],
-          "visible": [Function],
-        },
         GraphStylingPane {
           "container": [Circular],
           "firstFieldHasFocus": [Function],
@@ -203,89 +120,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       ],
       "_refreshSparkEnabledStateForAccount": [Function],
       "_resetNotebookWorkspace": [Function],
-      "addCollectionPane": AddCollectionPane {
-        "_isSynapseLinkEnabled": [Function],
-        "autoPilotThroughput": [Function],
-        "autoPilotUsageCost": [Function],
-        "canConfigureThroughput": [Function],
-        "canExceedMaximumValue": [Function],
-        "canRequestSupport": [Function],
-        "collectionId": [Function],
-        "collectionIdTitle": [Function],
-        "collectionWithThroughputInShared": [Function],
-        "collectionWithThroughputInSharedTitle": [Function],
-        "container": [Circular],
-        "costsVisible": [Function],
-        "databaseCreateNew": [Function],
-        "databaseCreateNewShared": [Function],
-        "databaseHasSharedOffer": [Function],
-        "databaseId": [Function],
-        "databaseIds": [Function],
-        "dedicatedRequestUnitsUsageCost": [Function],
-        "displayCollectionThroughput": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "formWarnings": [Function],
-        "freeTierExceedThroughputTooltip": [Function],
-        "id": "addcollectionpane",
-        "isAnalyticalStorageOn": [Function],
-        "isAutoPilotSelected": [Function],
-        "isEnableMongoCapabilityEnabled": [Function],
-        "isExecuting": [Function],
-        "isFixedStorageSelected": [Function],
-        "isFreeTierAccount": [Function],
-        "isNonTableApi": [Function],
-        "isPreferredApiTable": [Function],
-        "isSharedAutoPilotSelected": [Function],
-        "isSynapseLinkSupported": [Function],
-        "isSynapseLinkUpdating": [Function],
-        "isTemplateReady": [Function],
-        "isTryCosmosDBSubscription": [Function],
-        "isUnlimitedStorageSelected": [Function],
-        "largePartitionKey": [Function],
-        "lowerCasePartitionKeyName": [Function],
-        "maxCollectionsReached": [Function],
-        "maxCollectionsReachedMessage": [Function],
-        "maxThroughputRU": [Function],
-        "minThroughputRU": [Function],
-        "onMoreDetailsKeyPress": [Function],
-        "partitionKey": [Function],
-        "partitionKeyName": [Function],
-        "partitionKeyPattern": [Function],
-        "partitionKeyPlaceholder": [Function],
-        "partitionKeyTitle": [Function],
-        "partitionKeyVisible": [Function],
-        "requestUnitsUsageCost": [Function],
-        "ruToolTipText": [Function],
-        "sharedAutoPilotThroughput": [Function],
-        "sharedThroughputRangeText": [Function],
-        "shouldCreateMongoWildcardIndex": [Function],
-        "shouldUseDatabaseThroughput": [Function],
-        "showAnalyticalStore": [Function],
-        "showEnableSynapseLink": [Function],
-        "showIndexingOptionsForSharedThroughput": [Function],
-        "showUpsellMessage": [Function],
-        "storage": [Function],
-        "throughputDatabase": [Function],
-        "throughputMultiPartition": [Function],
-        "throughputRangeText": [Function],
-        "throughputSinglePartition": [Function],
-        "throughputSpendAck": [Function],
-        "throughputSpendAckText": [Function],
-        "throughputSpendAckVisible": [Function],
-        "title": [Function],
-        "ttl90DaysEnabled": [Function],
-        "uniqueKeys": [Function],
-        "uniqueKeysPlaceholder": [Function],
-        "uniqueKeysVisible": [Function],
-        "upsellAnchorText": [Function],
-        "upsellAnchorUrl": [Function],
-        "upsellMessage": [Function],
-        "upsellMessageAriaLabel": [Function],
-        "useIndexingForSharedThroughput": [Function],
-        "visible": [Function],
-      },
       "addCollectionText": [Function],
       "addDatabasePane": AddDatabasePane {
         "autoPilotUsageCost": [Function],
@@ -1288,20 +1122,20 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       <Stack
         className="panelInfoErrorContainer"
         horizontal={true}
-        verticalAlign="start"
+        verticalAlign="center"
       >
         <div
-          className="ms-Stack panelInfoErrorContainer css-202"
+          className="ms-Stack panelInfoErrorContainer css-102"
         >
           <StyledIconBase
+            aria-label="warning"
             className="panelWarningIcon"
-            data-testid="warningIcon"
             iconName="WarningSolid"
             key=".0:$.0"
           >
             <IconBase
+              aria-label="warning"
               className="panelWarningIcon"
-              data-testid="warningIcon"
               iconName="WarningSolid"
               styles={[Function]}
               theme={
@@ -1579,10 +1413,10 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               }
             >
               <i
-                aria-hidden={true}
-                className="panelWarningIcon root-204"
+                aria-label="warning"
+                className="panelWarningIcon root-104"
                 data-icon-name="WarningSolid"
-                data-testid="warningIcon"
+                role="img"
               >
                 
               </i>
@@ -1593,13 +1427,13 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             key=".0:$.1"
           >
             <Text
+              aria-label="message"
               className="panelWarningErrorMessage"
-              data-testid="panelmessage"
               variant="small"
             >
               <span
-                className="panelWarningErrorMessage css-205"
-                data-testid="panelmessage"
+                aria-label="message"
+                className="panelWarningErrorMessage css-105"
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
               </span>
@@ -1623,7 +1457,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-205"
+            className="css-105"
           >
             Confirm by typing the database id
           </span>
@@ -1921,17 +1755,17 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField root-207"
+              className="ms-TextField root-107"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-208"
+                  className="ms-TextField-fieldGroup fieldGroup-108"
                 >
                   <input
                     aria-invalid={false}
-                    className="ms-TextField-field field-209"
+                    className="ms-TextField-field field-109"
                     id="confirmDatabaseId"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -1954,7 +1788,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-226"
+            className="css-126"
           >
             Help us improve Azure Cosmos DB!
           </span>
@@ -1964,7 +1798,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-226"
+            className="css-126"
           >
             What is the reason why you are deleting this database?
           </span>
@@ -2266,17 +2100,17 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField ms-TextField--multiline root-207"
+              className="ms-TextField ms-TextField--multiline root-107"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-227"
+                  className="ms-TextField-fieldGroup fieldGroup-127"
                 >
                   <textarea
                     aria-invalid={false}
-                    className="ms-TextField-field field-228"
+                    className="ms-TextField-field field-128"
                     id="deleteDatabaseFeedbackInput"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -2300,14 +2134,12 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       >
         <CustomizedPrimaryButton
           ariaLabel="OK"
-          data-testid="submit"
           id="sidePanelOkButton"
           text="OK"
           type="submit"
         >
           <PrimaryButton
             ariaLabel="OK"
-            data-testid="submit"
             id="sidePanelOkButton"
             text="OK"
             theme={
@@ -2587,7 +2419,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           >
             <CustomizedDefaultButton
               ariaLabel="OK"
-              data-testid="submit"
               id="sidePanelOkButton"
               onRenderDescription={[Function]}
               primary={true}
@@ -2869,7 +2700,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             >
               <DefaultButton
                 ariaLabel="OK"
-                data-testid="submit"
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
                 primary={true}
@@ -3152,7 +2982,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                 <BaseButton
                   ariaLabel="OK"
                   baseClassName="ms-Button"
-                  data-testid="submit"
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
                   primary={true}
@@ -4007,9 +3836,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                 >
                   <button
                     aria-label="OK"
-                    className="ms-Button ms-Button--primary root-218"
+                    className="ms-Button ms-Button--primary root-118"
                     data-is-focusable={true}
-                    data-testid="submit"
                     id="sidePanelOkButton"
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -4020,14 +3848,14 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                     type="submit"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-219"
+                      className="ms-Button-flexContainer flexContainer-119"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-220"
+                        className="ms-Button-textContainer textContainer-120"
                       >
                         <span
-                          className="ms-Button-label label-222"
+                          className="ms-Button-label label-122"
                           id="id__3"
                           key="id__3"
                         >

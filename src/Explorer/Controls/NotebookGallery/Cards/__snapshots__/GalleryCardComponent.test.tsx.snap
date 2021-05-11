@@ -1,59 +1,49 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`GalleryCardComponent renders 1`] = `
-<Card
+<StyledDocumentCardBase
   aria-label="name"
-  data-is-focusable="true"
-  onClick={[Function]}
-  style={
+  styles={
     Object {
-      "background": "white",
-    }
-  }
-  tokens={
-    Object {
-      "childrenGap": 0,
-      "width": 256,
+      "root": Object {
+        "display": "inline-block",
+        "marginRight": 20,
+        "width": 256,
+      },
     }
   }
 >
-  <CardItem
-    tokens={
-      Object {
-        "padding": 10,
-      }
-    }
-  >
-    <StyledPersonaBase
-      imageUrl={false}
-      secondaryText="Invalid Date"
-      text="author"
-    />
-  </CardItem>
-  <CardItem>
-    <Image
-      alt="name cover image"
-      height={144}
-      imageFit={2}
-      src="thumbnailUrl"
-      width={256}
-    />
-  </CardItem>
-  <CardSection
-    styles={
-      Object {
-        "root": Object {
-          "padding": 10,
+  <StyledDocumentCardActivityBase
+    activity="Invalid Date"
+    people={
+      Array [
+        Object {
+          "name": "author",
+          "profileImageSrc": false,
         },
-      }
+      ]
     }
-  >
+  />
+  <StyledDocumentCardPreviewBase
+    previewImages={
+      Array [
+        Object {
+          "height": 144,
+          "imageFit": 2,
+          "previewImageSrc": "thumbnailUrl",
+          "width": 256,
+        },
+      ]
+    }
+  />
+  <StyledDocumentCardDetailsBase>
     <Text
       nowrap={true}
       styles={
         Object {
           "root": Object {
             "height": 18,
+            "padding": "2px 16px",
           },
         }
       }
@@ -69,33 +59,21 @@ exports[`GalleryCardComponent renders 1`] = `
         </StyledLinkBase>
       </span>
     </Text>
-    <Text
-      nowrap={true}
-      styles={
+    <StyledDocumentCardTitleBase
+      shouldTruncate={true}
+      title="name"
+    />
+    <StyledDocumentCardTitleBase
+      showAsSecondaryTitle={true}
+      title="description"
+    />
+    <span
+      style={
         Object {
-          "root": Object {
-            "fontWeight": 600,
-            "paddingBottom": 8,
-            "paddingTop": 8,
-          },
+          "padding": "8px 16px",
         }
       }
     >
-      name
-    </Text>
-    <Text
-      styles={
-        Object {
-          "root": Object {
-            "height": 36,
-          },
-        }
-      }
-      variant="small"
-    >
-      description
-    </Text>
-    <span>
       <Text
         styles={
           Object {
@@ -169,17 +147,8 @@ exports[`GalleryCardComponent renders 1`] = `
         0
       </Text>
     </span>
-  </CardSection>
-  <CardSection
-    styles={
-      Object {
-        "root": Object {
-          "marginLeft": 10,
-          "marginRight": 10,
-        },
-      }
-    }
-  >
+  </StyledDocumentCardDetailsBase>
+  <StyledDocumentCardDetailsBase>
     <Separator
       styles={
         Object {
@@ -190,7 +159,13 @@ exports[`GalleryCardComponent renders 1`] = `
         }
       }
     />
-    <span>
+    <span
+      style={
+        Object {
+          "padding": "0px 16px",
+        }
+      }
+    >
       <StyledTooltipHostBase
         calloutProps={
           Object {
@@ -276,6 +251,6 @@ exports[`GalleryCardComponent renders 1`] = `
         />
       </StyledTooltipHostBase>
     </span>
-  </CardSection>
-</Card>
+  </StyledDocumentCardDetailsBase>
+</StyledDocumentCardBase>
 `;
