@@ -1,4 +1,3 @@
-import { TFunction } from "i18next";
 import {
   CommandBar,
   ICommandBarItemProps,
@@ -10,6 +9,7 @@ import {
   Stack,
   Text,
 } from "@fluentui/react";
+import { TFunction } from "i18next";
 import promiseRetry, { AbortError } from "p-retry";
 import React from "react";
 import { WithTranslation } from "react-i18next";
@@ -130,10 +130,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
 
     const initialValues = await this.props.descriptor.initialize();
     this.props.descriptor.inputNames.map((inputName) => {
-      let initialValue = initialValues.get(inputName);
-      if (!initialValue) {
-        initialValue = { value: undefined, hidden: false, disabled: false };
-      }
+      const initialValue = initialValues.get(inputName);
       currentValues = currentValues.set(inputName, initialValue);
       baselineValues = baselineValues.set(inputName, initialValue);
       initialValues.delete(inputName);

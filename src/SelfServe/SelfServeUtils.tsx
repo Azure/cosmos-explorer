@@ -34,6 +34,7 @@ export enum BladeType {
   CassandraKeys = "cassandraDbKeys",
   GremlinKeys = "keys",
   TableKeys = "tableKeys",
+  Metrics = "metrics",
 }
 
 export interface DecoratorProperties {
