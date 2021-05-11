@@ -37,6 +37,24 @@ const connectionStringValue: Description = {
   },
 };
 
+const metricsStringValue: Description = {
+  textTKey: "MetricsText",
+  type: DescriptionType.Text,
+  link: {
+    href: generateBladeLink(BladeType.Metrics),
+    textTKey: "MetricsBlade",
+  },
+};
+
+const resizingDecisionValue: Description = {
+  textTKey: "ResizingDecisionText",
+  type: DescriptionType.Text,
+  link: {
+    href: "aka.ms/cosmosdb-dedicatedgateway-monitor",
+    textTKey: "ResizingDecisionLink",
+  },
+};
+
 const CosmosD4s = "Cosmos.D4s";
 const CosmosD8s = "Cosmos.D8s";
 const CosmosD16s = "Cosmos.D16s";
@@ -85,6 +103,8 @@ const onEnableDedicatedGatewayChange = (
     currentValues.set("costPerHour", baselineValues.get("costPerHour"));
     currentValues.set("warningBanner", baselineValues.get("warningBanner"));
     currentValues.set("connectionString", baselineValues.get("connectionString"));
+    currentValues.set("metricsString", baselineValues.get("metricsString"));
+    currentValues.set("resizingDecisionString", baselineValues.get("resizingDecisionString"));
     return currentValues;
   }
 
@@ -129,6 +149,16 @@ const onEnableDedicatedGatewayChange = (
   currentValues.set("costPerHour", { value: costPerHourValue, hidden: hideAttributes });
   currentValues.set("connectionString", {
     value: connectionStringValue,
+    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+  });
+
+  currentValues.set("metricsString", {
+    value: metricsStringValue,
+    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+  });
+
+  currentValues.set("resizingDecisionString", {
+    value: resizingDecisionValue,
     hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
   });
 
@@ -245,17 +275,40 @@ export default class SqlX extends SelfServeBaseClass {
     defaults.set("instances", { value: await getInstancesMin(), hidden: true });
     defaults.set("costPerHour", undefined);
     defaults.set("connectionString", undefined);
+    defaults.set("metricsString", {
+      value: undefined,
+      hidden: true,
+    });
+    defaults.set("resizingDecisionString", {
+      value: undefined,
+      hidden: true,
+    });
 
-    const response = await getCurrentProvisioningState();
-    if (response.status && response.status !== "Deleting") {
-      defaults.set("enableDedicatedGateway", { value: true });
-      defaults.set("sku", { value: response.sku, disabled: true });
-      defaults.set("instances", { value: response.instances, disabled: false });
-      defaults.set("costPerHour", { value: costPerHourValue });
-      defaults.set("connectionString", {
-        value: connectionStringValue,
-        hidden: false,
-      });
+    let response;
+    try {
+      response = await getCurrentProvisioningState();
+      if (response.status && response.status !== "Deleting") {
+        defaults.set("enableDedicatedGateway", { value: true });
+        defaults.set("sku", { value: response.sku, disabled: true });
+        defaults.set("instances", { value: response.instances, disabled: false });
+        defaults.set("costPerHour", { value: costPerHourValue });
+        defaults.set("connectionString", {
+          value: connectionStringValue,
+          hidden: false,
+        });
+
+        defaults.set("metricsString", {
+          value: metricsStringValue,
+          hidden: false,
+        });
+
+        defaults.set("resizingDecisionString", {
+          value: resizingDecisionValue,
+          hidden: false,
+        });
+      }
+    } catch (e) {
+      console.log(e);
     }
 
     defaults.set("warningBanner", undefined);
@@ -304,6 +357,16 @@ export default class SqlX extends SelfServeBaseClass {
     uiType: NumberUiType.Spinner,
   })
   instances: number;
+
+  @Values({
+    description: metricsStringValue,
+  })
+  metricsString: string;
+
+  @Values({
+    description: resizingDecisionValue,
+  })
+  resizingDecisionString: string;
 
   @Values({
     labelTKey: "Cost",

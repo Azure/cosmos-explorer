@@ -44,7 +44,12 @@
     "CostText": "Hourly cost of the dedicated gateway resource depends on the SKU selection, number of instances per region, and number of regions.",
     "ConnectionString": "Connection String",
     "ConnectionStringText": "To use the dedicated gateway, use the connection string shown in ",
-    "KeysBlade": "the keys blade",
+    "KeysBlade": "the keys blade.",
+    "MetricsString": "Metrics",
+    "MetricsText": "Monitor the \"DedicatedGatewayCpuUsage\" and \"DedicatedGatewayMemoryUsage\" in ",
+    "MetricsBlade": "the metrics blade.",
+    "ResizingDecisionText": "To understand if the dedicated gateway is the right size, ",
+    "ResizingDecisionLink": "learn more about dedicated gateway sizing.",
     "NoChangesToExistingResource": "No changes were made to the existing resource. Saving will have no effect.",
     "WarningBannerOnUpdate": "Adding or modifying dedicated gateway instances may affect your bill.",
     "WarningBannerOnDelete": "After deprovisioning the dedicated gateway, you must update any applications using the old dedicated gateway connection string."

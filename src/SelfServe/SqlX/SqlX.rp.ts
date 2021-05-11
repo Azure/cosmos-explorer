@@ -35,7 +35,7 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
       serviceType: "SqlDedicatedGateway",
     },
   };
-  const telemetryData = { ...body, selfServeClassName: SqlX.name };
+  const telemetryData = { ...body, httpMethod: "PUT", selfServeClassName: SqlX.name };
   const updateTimeStamp = selfServeTraceStart(telemetryData);
   let armRequestResult;
   try {
@@ -56,7 +56,7 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
 
 export const deleteDedicatedGatewayResource = async (): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const telemetryData = { selfServeClassName: SqlX.name };
+  const telemetryData = { httpMethod: "DELETE", selfServeClassName: SqlX.name };
   const deleteTimeStamp = selfServeTraceStart(telemetryData);
   let armRequestResult;
   try {
@@ -76,7 +76,7 @@ export const deleteDedicatedGatewayResource = async (): Promise<string> => {
 
 export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const telemetryData = { selfServeClassName: SqlX.name };
+  const telemetryData = { httpMethod: "GET", selfServeClassName: SqlX.name };
   const getResourceTimeStamp = selfServeTraceStart(telemetryData);
   let armRequestResult;
   try {
