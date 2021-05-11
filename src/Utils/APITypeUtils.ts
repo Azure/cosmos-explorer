@@ -28,3 +28,30 @@ export const getCollectionName = (isPlural?: boolean): string => {
 
   return collectionName;
 };
+
+export const getDatabaseName = (): string => {
+  const { apiType } = userContext;
+  switch (apiType) {
+    case "SQL":
+    case "Mongo":
+    case "Gremlin":
+    case "Tables":
+      return "Database";
+    case "Cassandra":
+      return "Keyspace";
+    default:
+      throw new Error(`Unknown API type: ${apiType}`);
+  }
+};
+
+export const getUploadName = (): string => {
+  switch (userContext.apiType) {
+    case "Cassandra":
+    case "Tables":
+      return "Tables";
+    case "Gremlin":
+      return "Graph";
+    default:
+      return "Items";
+  }
+};
