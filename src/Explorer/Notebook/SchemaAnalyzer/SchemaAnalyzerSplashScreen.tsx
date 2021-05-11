@@ -1,17 +1,17 @@
 import { FontIcon, PrimaryButton, Spinner, SpinnerSize, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 
-type SchemaAnalyzerSplashScreenComponentProps = {
+type SchemaAnalyzerSplashScreenProps = {
   isKernelIdle: boolean;
   isKernelBusy: boolean;
   onAnalyzeButtonClick: () => void;
 };
 
-export const SchemaAnalyzerSplashScreenComponent = ({
+export const SchemaAnalyzerSplashScreen = ({
   isKernelIdle,
   isKernelBusy,
   onAnalyzeButtonClick,
-}: SchemaAnalyzerSplashScreenComponentProps): JSX.Element => {
+}: SchemaAnalyzerSplashScreenProps): JSX.Element => {
   return (
     <Stack horizontalAlign="center" tokens={{ childrenGap: 20, padding: 20 }}>
       <Stack.Item>

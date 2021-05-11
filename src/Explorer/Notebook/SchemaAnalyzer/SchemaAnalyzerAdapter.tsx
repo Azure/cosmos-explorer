@@ -6,10 +6,10 @@ import {
   NotebookComponentBootstrapper,
   NotebookComponentBootstrapperOptions,
 } from "../NotebookComponent/NotebookComponentBootstrapper";
-import SchemaAnalyzerComponent from "./SchemaAnalyzerComponent";
+import SchemaAnalyzer from "./SchemaAnalyzer";
 import { SchemaAnalyzerNotebook } from "./SchemaAnalyzerUtils";
 
-export class SchemaAnalyzerComponentAdapter extends NotebookComponentBootstrapper implements ReactAdapter {
+export class SchemaAnalyzerAdapter extends NotebookComponentBootstrapper implements ReactAdapter {
   public parameters: unknown;
   private kernelRef: KernelRef;
 
@@ -41,7 +41,7 @@ export class SchemaAnalyzerComponentAdapter extends NotebookComponentBootstrappe
 
     return (
       <Provider store={this.getStore()}>
-        <SchemaAnalyzerComponent {...props} />;
+        <SchemaAnalyzer {...props} />;
       </Provider>
     );
   }

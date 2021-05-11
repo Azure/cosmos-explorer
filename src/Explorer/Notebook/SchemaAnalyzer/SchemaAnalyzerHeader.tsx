@@ -10,7 +10,7 @@ import {
 } from "@fluentui/react";
 import * as React from "react";
 
-type SchemaAnalyzerHeaderComponentProps = {
+type SchemaAnalyzerHeaderProps = {
   isKernelIdle: boolean;
   isKernelBusy: boolean;
   onSampleSizeUpdated: (sampleSize: string) => void;
@@ -24,12 +24,12 @@ const SampleSizePlaceholder = "1000";
 const MinSampleSize = 1;
 const MaxSampleSize = 5000;
 
-export const SchemaAnalyzerHeaderComponent = ({
+export const SchemaAnalyzerHeader = ({
   isKernelIdle,
   isKernelBusy,
   onSampleSizeUpdated,
   onAnalyzeButtonClick,
-}: SchemaAnalyzerHeaderComponentProps): JSX.Element => {
+}: SchemaAnalyzerHeaderProps): JSX.Element => {
   const [filter, setFilter] = React.useState<string>(DefaultFilter);
   const [sampleSize, setSampleSize] = React.useState<string>(DefaultSampleSize);
 

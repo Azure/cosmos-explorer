@@ -9,18 +9,18 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import loadTransform from "../NotebookComponent/loadTransform";
 import SandboxOutputs from "../NotebookRenderer/outputs/SandboxOutputs";
-import "./SchemaAnalyzerComponent.less";
-import { DefaultFilter, DefaultSampleSize, SchemaAnalyzerHeaderComponent } from "./SchemaAnalyzerHeaderComponent";
-import { SchemaAnalyzerSplashScreenComponent } from "./SchemaAnalyzerSplashScreenComponent";
+import "./SchemaAnalyzer.less";
+import { DefaultFilter, DefaultSampleSize, SchemaAnalyzerHeader } from "./SchemaAnalyzerHeader";
+import { SchemaAnalyzerSplashScreen } from "./SchemaAnalyzerSplashScreen";
 
-interface SchemaAnalyzerComponentPureProps {
+interface SchemaAnalyzerPureProps {
   contentRef: ContentRef;
   kernelRef: KernelRef;
   databaseId: string;
   collectionId: string;
 }
 
-interface SchemaAnalyzerComponentDispatchProps {
+interface SchemaAnalyzerDispatchProps {
   runCell: (contentRef: ContentRef, cellId: string) => void;
   addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => void;
   updateCell: (text: string, id: string, contentRef: ContentRef) => void;
@@ -28,23 +28,18 @@ interface SchemaAnalyzerComponentDispatchProps {
 
 type OutputType = "rich" | "json";
 
-interface SchemaAnalyzerComponentState {
+interface SchemaAnalyzerState {
   outputType: OutputType;
   isFiltering: boolean;
   sampleSize: string;
 }
 
-type SchemaAnalyzerComponentProps = SchemaAnalyzerComponentPureProps &
-  StateProps &
-  SchemaAnalyzerComponentDispatchProps;
+type SchemaAnalyzerProps = SchemaAnalyzerPureProps & StateProps & SchemaAnalyzerDispatchProps;
 
-export class SchemaAnalyzerComponent extends React.Component<
-  SchemaAnalyzerComponentProps,
-  SchemaAnalyzerComponentState
-> {
+export class SchemaAnalyzer extends React.Component<SchemaAnalyzerProps, SchemaAnalyzerState> {
   private clickAnalyzeTelemetryStartKey: number;
 
-  constructor(props: SchemaAnalyzerComponentProps) {
+  constructor(props: SchemaAnalyzerProps) {
     super(props);
     this.state = {
       outputType: "rich",
@@ -126,9 +121,9 @@ export class SchemaAnalyzerComponent extends React.Component<
     }
 
     return (
-      <div className="schemaAnalyzerComponent">
+      <div className="schemaAnalyzer">
         <Stack tokens={{ childrenGap: 20, padding: 20 }}>
-          <SchemaAnalyzerHeaderComponent
+          <SchemaAnalyzerHeader
             isKernelIdle={isKernelIdle}
             isKernelBusy={isKernelBusy}
             onSampleSizeUpdated={(sampleSize) => this.setState({ sampleSize })}
@@ -145,7 +140,7 @@ export class SchemaAnalyzerComponent extends React.Component<
           ) : this.state.isFiltering ? (
             <Spinner styles={{ root: { marginTop: 40 } }} size={SpinnerSize.large} />
           ) : (
-            <SchemaAnalyzerSplashScreenComponent
+            <SchemaAnalyzerSplashScreen
               isKernelIdle={isKernelIdle}
               isKernelBusy={isKernelBusy}
               onAnalyzeButtonClick={this.onAnalyzeButtonClick}
@@ -233,4 +228,4 @@ const makeMapDispatchToProps = () => {
   return mapDispatchToProps;
 };
 
-export default connect(makeMapStateToProps, makeMapDispatchToProps)(SchemaAnalyzerComponent);
+export default connect(makeMapStateToProps, makeMapDispatchToProps)(SchemaAnalyzer);

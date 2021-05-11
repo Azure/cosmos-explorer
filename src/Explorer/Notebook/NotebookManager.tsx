@@ -29,7 +29,7 @@ import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProv
 import { SnapshotRequest } from "./NotebookComponent/types";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
-import { SchemaAnalyzerNotebook } from "./SchemaAnalyzerComponent/SchemaAnalyzerUtils";
+import { SchemaAnalyzerNotebook } from "./SchemaAnalyzer/SchemaAnalyzerUtils";
 
 type NotebookPaneContent = string | ImmutableNotebook;
 
