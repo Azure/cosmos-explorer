@@ -233,7 +233,7 @@ export class NotebookUtil {
           }
         };
       } catch (error) {
-        return Promise.reject(error);
+        return reject(error);
       }
     });
   };
