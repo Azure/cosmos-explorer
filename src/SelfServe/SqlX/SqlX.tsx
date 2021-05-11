@@ -284,31 +284,26 @@ export default class SqlX extends SelfServeBaseClass {
       hidden: true,
     });
 
-    let response;
-    try {
-      response = await getCurrentProvisioningState();
-      if (response.status && response.status !== "Deleting") {
-        defaults.set("enableDedicatedGateway", { value: true });
-        defaults.set("sku", { value: response.sku, disabled: true });
-        defaults.set("instances", { value: response.instances, disabled: false });
-        defaults.set("costPerHour", { value: costPerHourValue });
-        defaults.set("connectionString", {
-          value: connectionStringValue,
-          hidden: false,
-        });
+    const response = await getCurrentProvisioningState();
+    if (response.status && response.status !== "Deleting") {
+      defaults.set("enableDedicatedGateway", { value: true });
+      defaults.set("sku", { value: response.sku, disabled: true });
+      defaults.set("instances", { value: response.instances, disabled: false });
+      defaults.set("costPerHour", { value: costPerHourValue });
+      defaults.set("connectionString", {
+        value: connectionStringValue,
+        hidden: false,
+      });
 
-        defaults.set("metricsString", {
-          value: metricsStringValue,
-          hidden: false,
-        });
+      defaults.set("metricsString", {
+        value: metricsStringValue,
+        hidden: false,
+      });
 
-        defaults.set("resizingDecisionString", {
-          value: resizingDecisionValue,
-          hidden: false,
-        });
-      }
-    } catch (e) {
-      console.log(e);
+      defaults.set("resizingDecisionString", {
+        value: resizingDecisionValue,
+        hidden: false,
+      });
     }
 
     defaults.set("warningBanner", undefined);
