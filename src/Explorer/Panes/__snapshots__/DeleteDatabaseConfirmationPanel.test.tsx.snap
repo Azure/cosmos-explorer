@@ -80,6 +80,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "id": "addcollectionpane",
           "isAnalyticalStorageOn": [Function],
           "isAutoPilotSelected": [Function],
+          "isEnableMongoCapabilityEnabled": [Function],
           "isExecuting": [Function],
           "isFixedStorageSelected": [Function],
           "isFreeTierAccount": [Function],
@@ -230,6 +231,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "id": "addcollectionpane",
         "isAnalyticalStorageOn": [Function],
         "isAutoPilotSelected": [Function],
+        "isEnableMongoCapabilityEnabled": [Function],
         "isExecuting": [Function],
         "isFixedStorageSelected": [Function],
         "isFreeTierAccount": [Function],
@@ -4021,7 +4023,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                       </span>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </DefaultButton>
             </CustomizedDefaultButton>

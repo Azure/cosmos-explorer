@@ -2,8 +2,6 @@ import AddCollectionPaneTemplate from "./AddCollectionPane.html";
 import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
 import GraphStylingPaneTemplate from "./GraphStylingPane.html";
-import TableAddEntityPaneTemplate from "./Tables/TableAddEntityPane.html";
-import TableEditEntityPaneTemplate from "./Tables/TableEditEntityPane.html";
 
 export class PaneComponent {
   constructor(data: any) {
@@ -38,23 +36,6 @@ export class GraphStylingPaneComponent {
   }
 }
 
-export class TableAddEntityPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: TableAddEntityPaneTemplate,
-    };
-  }
-}
-
-export class TableEditEntityPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: TableEditEntityPaneTemplate,
-    };
-  }
-}
 export class CassandraAddCollectionPaneComponent {
   constructor() {
     return {
