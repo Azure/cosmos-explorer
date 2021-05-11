@@ -273,7 +273,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
+    if (
+      userContext.apiType === "Mongo" &&
+      this.container.isNotebookEnabled() &&
+      userContext.features.enableSchemaAnalyzer
+    ) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),
