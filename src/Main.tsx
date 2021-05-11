@@ -227,7 +227,6 @@ const App: React.FunctionComponent = () => {
         isConsoleExpanded={isNotificationConsoleExpanded}
       />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
-      <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
       {showDialog && <Dialog {...dialogProps} />}
