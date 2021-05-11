@@ -1,5 +1,6 @@
 import { ImmutableCodeCell, ImmutableNotebook } from "@nteract/commutable";
 import domtoimage from "dom-to-image";
+import Html2Canvas from "html2canvas";
 import path from "path";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as StringUtils from "../../Utils/StringUtils";
@@ -168,6 +169,74 @@ export class NotebookUtil {
       return accumulator;
     }, []);
   }
+
+  public static takeScreenshotHtml2Canvas = (
+    target: HTMLElement,
+    aspectRatio: number,
+    subSnapshots: SnapshotFragment[],
+    downloadFilename?: string
+  ): Promise<{ imageSrc: string | undefined }> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // target.scrollIntoView();
+        const canvas = await Html2Canvas(target, {
+          useCORS: true,
+          allowTaint: true,
+          scale: 1,
+          logging: false,
+        });
+
+        //redraw canvas to fit aspect ratio
+        const originalImageData = canvas.toDataURL();
+        const width = parseInt(canvas.style.width.split("px")[0]);
+        if (aspectRatio) {
+          canvas.height = width * aspectRatio;
+        }
+
+        if (originalImageData === "data:,") {
+          // Empty output
+          resolve({ imageSrc: undefined });
+          return;
+        }
+
+        const context = canvas.getContext("2d");
+        const image = new Image();
+        image.src = originalImageData;
+        image.onload = () => {
+          if (!context) {
+            reject(new Error("No context to draw on"));
+            return;
+          }
+          context.drawImage(image, 0, 0);
+
+          // draw sub images
+          if (subSnapshots) {
+            const parentRect = target.getBoundingClientRect();
+            subSnapshots.forEach((snapshot) => {
+              if (snapshot.image) {
+                context.drawImage(
+                  snapshot.image,
+                  snapshot.boundingClientRect.x - parentRect.x,
+                  snapshot.boundingClientRect.y - parentRect.y
+                );
+              }
+            });
+          }
+
+          resolve({ imageSrc: canvas.toDataURL() });
+
+          if (downloadFilename) {
+            NotebookUtil.downloadFile(
+              downloadFilename,
+              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+            );
+          }
+        };
+      } catch (error) {
+        return Promise.reject(error);
+      }
+    });
+  };
 
   public static takeScreenshotDomToImage = (
     target: HTMLElement,

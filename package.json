@@ -62,6 +62,7 @@
     "eslint-plugin-jest": "23.13.2",
     "eslint-plugin-react": "7.20.0",
     "hasher": "1.2.0",
+    "html2canvas": "1.0.0-rc.5",
     "i18next": "19.8.4",
     "i18next-browser-languagedetector": "6.0.1",
     "i18next-http-backend": "1.0.23",
