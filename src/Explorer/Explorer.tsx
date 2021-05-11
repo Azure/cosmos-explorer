@@ -1846,7 +1846,7 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.cassandraAddCollectionPane.open();
+      this.openCassandraAddCollectionPane();
     } else if (userContext.features.enableKOPanel) {
       this.addCollectionPane.open(this.selectedDatabaseId());
       document.getElementById("linkAddCollection").focus();
@@ -2048,14 +2048,18 @@ export default class Explorer {
   }
 
   public openCassandraAddCollectionPane(): void {
-    this.openSidePanel(
-      "Add Table",
-      <CassandraAddCollectionPaneF
-        explorer={this}
-        closePanel={() => this.closeSidePanel()}
-        cassandraApiClient={new CassandraAPIDataClient()}
-      />
-    );
+    if (userContext.features.enableKOPanel) {
+      this.cassandraAddCollectionPane.open();
+    } else {
+      this.openSidePanel(
+        "Add Table",
+        <CassandraAddCollectionPaneF
+          explorer={this}
+          closePanel={() => this.closeSidePanel()}
+          cassandraApiClient={new CassandraAPIDataClient()}
+        />
+      );
+    }
   }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     this.openSidePanel(

@@ -65,7 +65,7 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
         >
           <StyledCheckboxBase
             checked={true}
-            label="Provision throughput"
+            label="Provision shared throughput"
             onChange={[Function]}
             styles={
               Object {
@@ -79,9 +79,7 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
                 },
               }
             }
-            title="Provision shared throughput"
           />
-           
           <InfoTooltip>
             Provisioned throughput at the database level will be shared across all collections within the database.
           </InfoTooltip>

@@ -1,17 +1,17 @@
-import { ChoiceGroup, IChoiceGroupOption, Label, TextField } from "office-ui-fabric-react";
+import { Label, Stack, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
+import * as _ from "underscore";
 import * as Constants from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
-import { Tooltip } from "../../../Common/Tooltip/Tooltip";
-import { configContext, Platform } from "../../../ConfigContext";
+import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import * as AddCollectionUtility from "../../../Shared/AddCollectionUtility";
 import * as SharedConstants from "../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import * as PricingUtils from "../../../Utils/PricingUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
@@ -34,8 +34,6 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
   const throughputDefaults = container.collectionCreationDefaults.throughput;
   const [createTableQuery, setCreateTableQuery] = useState<string>("CREATE TABLE ");
   const [keyspaceId, setKeyspaceId] = useState<string>("");
-  const [maxThroughputRU, setMaxThroughputRU] = useState<number>(throughputDefaults.unlimitedmax);
-  const [minThroughputRU, setMinThroughputRU] = useState<number>(throughputDefaults.unlimitedmin);
   const [tableId, setTableId] = useState<string>("");
   const [throughput, setThroughput] = useState<number>(
     AddCollectionUtility.getMaxThroughput(container.collectionCreationDefaults, container)
@@ -43,51 +41,25 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
 
   const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(container.isAutoscaleDefaultEnabled());
 
-  const [throughputRangeText, setThroughputRangeText] = useState<string>(() => {
-    if (!isAutoPilotSelected) {
-      return `Throughput (${minThroughputRU.toLocaleString()} - ${maxThroughputRU.toLocaleString()} RU/s)`;
-    }
-    return AutoPilotUtils.getAutoPilotHeaderText();
-  });
   const [isSharedAutoPilotSelected, setIsSharedAutoPilotSelected] = useState<boolean>(
     container.isAutoscaleDefaultEnabled()
   );
-  const [sharedThroughputRangeText, setSharedThroughputRangeText] = useState<string>(() => {
-    if (isSharedAutoPilotSelected) {
-      return AutoPilotUtils.getAutoPilotHeaderText();
-    }
-    return `Throughput (${minThroughputRU.toLocaleString()} - ${maxThroughputRU.toLocaleString()} RU/s)`;
-  });
+
   const [userTableQuery, setUserTableQuery] = useState<string>(
     "(userid int, name text, email text, PRIMARY KEY (userid))"
   );
 
-  const [costsVisible, setCostsVisible] = useState<boolean>(configContext.platform !== Platform.Emulator);
   const [keyspaceHasSharedOffer, setKeyspaceHasSharedOffer] = useState<boolean>(false);
-  const [keyspaceIds, setKeyspaceIds] = useState<string>("");
+  const [keyspaceIds, setKeyspaceIds] = useState<string[]>([]);
   const [keyspaceThroughput, setKeyspaceThroughput] = useState<number>(throughputDefaults.shared);
   const [keyspaceCreateNew, setKeyspaceCreateNew] = useState<boolean>(true);
   const [dedicateTableThroughput, setDedicateTableThroughput] = useState<boolean>(false);
-  const [canRequestSupport, setCanRequestSupport] = useState<boolean>(() => {
-    if (configContext.platform !== Platform.Emulator && !userContext.isTryCosmosDBSubscription) {
-      const offerThroughput: number = throughput;
-      return offerThroughput <= 100000;
-    }
-
-    return false;
-  });
-  const [throughputSpendAckText, setThroughputSpendAckText] = useState<string>();
   const [throughputSpendAck, setThroughputSpendAck] = useState<boolean>(false);
   const [sharedThroughputSpendAck, setSharedThroughputSpendAck] = useState<boolean>(false);
 
-  const [sharedThroughputSpendAckText, setSharedThroughputSpendAckText] = useState<string>();
+  const { minAutoPilotThroughput: selectedAutoPilotThroughput } = AutoPilotUtils;
+  const { minAutoPilotThroughput: sharedAutoPilotThroughput } = AutoPilotUtils;
 
-  const [selectedAutoPilotThroughput, setSelectedAutoPilotThroughput] = useState<number>(
-    AutoPilotUtils.minAutoPilotThroughput
-  );
-  const [sharedAutoPilotThroughput, setSharedAutoPilotThroughput] = useState<number>(
-    AutoPilotUtils.minAutoPilotThroughput
-  );
   const _getAutoPilot = (): DataModels.AutoPilotCreationSettings => {
     if (keyspaceCreateNew && keyspaceHasSharedOffer && isSharedAutoPilotSelected && sharedAutoPilotThroughput) {
       return {
@@ -103,127 +75,12 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
 
     return undefined;
   };
-  const [autoPilotUsageCost, setAutoPilotUsageCost] = useState<string>(() => {
-    const autoPilot = _getAutoPilot();
-    if (!autoPilot) {
-      return "";
-    }
-    const isDatabaseThroughput: boolean = keyspaceCreateNew;
-    return PricingUtils.getAutoPilotV3SpendHtml(autoPilot.maxThroughput, isDatabaseThroughput);
-  });
-  const [sharedThroughputSpendAckVisible, setSharedThroughputSpendAckVisible] = useState<boolean>(() => {
-    const autoscaleThroughput = sharedAutoPilotThroughput * 1;
-    if (isSharedAutoPilotSelected) {
-      return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
-    }
 
-    return keyspaceThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
-  });
+  const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
-  const [throughputSpendAckVisible, setThroughputSpendAckVisible] = useState<boolean>(() => {
-    const autoscaleThroughput = selectedAutoPilotThroughput * 1;
-    if (isAutoPilotSelected) {
-      return autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
-    }
-
-    return throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K;
-  });
-
-  const [canExceedMaximumValue, setCanExceedMaximumValue] = useState<boolean>(container.canExceedMaximumValue());
-  const [isFreeTierAccount, setIsFreeTierAccount] = useState<boolean>(
-    userContext.databaseAccount?.properties?.enableFreeTier
-  );
-
-  const [ruToolTipText, setRuToolTipText] = useState<string>(PricingUtils.getRuToolTipText());
-  const [canConfigureThroughput, setCanConfigureThroughput] = useState<boolean>(!container.isServerlessEnabled());
-
-  const [requestUnitsUsageCostDedicated, setRequestUnitsUsageCostDedicated] = useState<string>(() => {
-    const { databaseAccount: account } = userContext;
-    if (!account) {
-      return "";
-    }
-
-    const regions =
-      (account && account.properties && account.properties.readLocations && account.properties.readLocations.length) ||
-      1;
-    const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
-    const offerThroughput: number = throughput;
-    let estimatedSpend: string;
-    let estimatedDedicatedSpendAcknowledge: string;
-    if (!isAutoPilotSelected) {
-      estimatedSpend = PricingUtils.getEstimatedSpendHtml(offerThroughput, userContext.portalEnv, regions, multimaster);
-      estimatedDedicatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
-        offerThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster,
-        isAutoPilotSelected
-      );
-    } else {
-      estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
-        selectedAutoPilotThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster
-      );
-      estimatedDedicatedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
-        selectedAutoPilotThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster,
-        isAutoPilotSelected
-      );
-    }
-    setThroughputSpendAckText(estimatedDedicatedSpendAcknowledge);
-    return estimatedSpend;
-  });
-  const [requestUnitsUsageCostShared, setRequestUnitsUsageCostShared] = useState<string>(() => {
-    const { databaseAccount: account } = userContext;
-    if (!account) {
-      return "";
-    }
-
-    const regions =
-      (account && account.properties && account.properties.readLocations && account.properties.readLocations.length) ||
-      1;
-    const multimaster = (account && account.properties && account.properties.enableMultipleWriteLocations) || false;
-    let estimatedSpend: string;
-    let estimatedSharedSpendAcknowledge: string;
-    if (!isSharedAutoPilotSelected) {
-      estimatedSpend = PricingUtils.getEstimatedSpendHtml(
-        keyspaceThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster
-      );
-      estimatedSharedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
-        keyspaceThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster,
-        isSharedAutoPilotSelected
-      );
-    } else {
-      estimatedSpend = PricingUtils.getEstimatedAutoscaleSpendHtml(
-        sharedAutoPilotThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster
-      );
-      estimatedSharedSpendAcknowledge = PricingUtils.getEstimatedSpendAcknowledgeString(
-        sharedAutoPilotThroughput,
-        userContext.portalEnv,
-        regions,
-        multimaster,
-        isSharedAutoPilotSelected
-      );
-    }
-    setSharedThroughputSpendAckText(estimatedSharedSpendAcknowledge);
-    return estimatedSpend;
-  });
+  const canConfigureThroughput = !container.isServerlessEnabled();
 
   const keyspaceOffers = new Map();
-  const title = "Add Table";
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formErrors, setFormErrors] = useState<string>("");
 
@@ -258,44 +115,23 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }, []);
 
-  // constructor(options: ViewModels.PaneOptions) {
-  //   this.keyspaceId.extend({ rateLimit: 100 });
-
-  //   if (!!container) {
-  //     const updateKeyspaceIds: (keyspaces: ViewModels.Database[]) => void = (
-  //       newKeyspaceIds: ViewModels.Database[]
-  //     ): void => {
-  //       const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
-  //         if (keyspace && keyspace.offer && !!keyspace.offer()) {
-  //           keyspaceOffers.set(keyspace.id(), keyspace.offer());
-  //         }
-  //         return keyspace.id();
-  //       });
-  //       setKeyspaceIds(cachedKeyspaceIdsList);
-  //     };
-  //     container.databases.subscribe((newDatabases: ViewModels.Database[]) => updateKeyspaceIds(newDatabases));
-  //     updateKeyspaceIds(container.databases());
-  //   }
-
-  // }
-
-  const decreaseThroughput = () => {
-    let offerThroughput: number = throughput;
-
-    if (offerThroughput > minThroughputRU) {
-      offerThroughput -= 100;
-      setThroughput(offerThroughput);
+  useEffect(() => {
+    if (container) {
+      const updateKeyspaceIds: (keyspaces: ViewModels.Database[]) => void = (
+        newKeyspaceIds: ViewModels.Database[]
+      ): void => {
+        const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
+          if (keyspace && keyspace.offer && !!keyspace.offer()) {
+            keyspaceOffers.set(keyspace.id(), keyspace.offer());
+          }
+          return keyspace.id();
+        });
+        setKeyspaceIds(cachedKeyspaceIdsList);
+      };
+      container.databases.subscribe((newDatabases: ViewModels.Database[]) => updateKeyspaceIds(newDatabases));
+      updateKeyspaceIds(container.databases());
     }
-  };
-
-  const increaseThroughput = () => {
-    let offerThroughput: number = throughput;
-
-    if (offerThroughput < maxThroughputRU) {
-      offerThroughput += 100;
-      setThroughput(offerThroughput);
-    }
-  };
+  }, []);
 
   const _isValid = () => {
     const sharedAutoscaleThroughput = sharedAutoPilotThroughput * 1;
@@ -351,7 +187,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     return true;
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!_isValid()) {
       return;
     }
@@ -367,17 +203,17 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
         : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${keyspaceThroughput};`
       : `${createKeyspaceQueryPrefix};`;
 
-    let createTableQuery: string;
+    let tableQuery: string;
     const createTableQueryPrefix = `${createTableQuery}${tableId.trim()} ${userTableQuery}`;
 
     if (canConfigureThroughput && (dedicateTableThroughput || !keyspaceHasSharedOffer)) {
       if (isAutoPilotSelected && selectedAutoPilotThroughput) {
-        createTableQuery = `${createTableQueryPrefix} WITH ${autoPilotCommand}=${selectedAutoPilotThroughput};`;
+        tableQuery = `${createTableQueryPrefix} WITH ${autoPilotCommand}=${throughput};`;
       } else {
-        createTableQuery = `${createTableQueryPrefix} WITH cosmosdb_provisioned_throughput=${throughput};`;
+        tableQuery = `${createTableQueryPrefix} WITH cosmosdb_provisioned_throughput=${throughput};`;
       }
     } else {
-      createTableQuery = `${createTableQueryPrefix};`;
+      tableQuery = `${createTableQueryPrefix};`;
     }
 
     const addCollectionPaneStartMessage = {
@@ -400,66 +236,49 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
       dataExplorerArea: Constants.Areas.ContextualPane,
       toCreateKeyspace: toCreateKeyspace,
       createKeyspaceQuery: createKeyspaceQuery,
-      createTableQuery: createTableQuery,
+      createTableQuery: tableQuery,
     };
 
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, addCollectionPaneStartMessage);
-
-    console.log(
-      "abc",
-      startKey,
-      userContext?.databaseAccount?.properties?.cassandraEndpoint,
-      userContext?.databaseAccount?.id,
-      container,
-      createTableQuery,
-      createKeyspaceQuery
-    );
-    let createTableAndKeyspacePromise: Q.Promise<any>;
-    if (toCreateKeyspace) {
-      createTableAndKeyspacePromise = cassandraApiClient.createTableAndKeyspace(
-        userContext?.databaseAccount?.properties?.cassandraEndpoint,
-        userContext?.databaseAccount?.id,
-        container,
-        createTableQuery,
-        createKeyspaceQuery
-      );
-    } else {
-      createTableAndKeyspacePromise = cassandraApiClient.createTableAndKeyspace(
-        userContext?.databaseAccount?.properties?.cassandraEndpoint,
-        userContext?.databaseAccount?.id,
-        container,
-        createTableQuery
-      );
-    }
-    createTableAndKeyspacePromise.then(
-      () => {
-        container.refreshAllDatabases();
-        setIsExecuting(false);
-        closePanel();
-
-        TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneStartMessage, startKey);
-      },
-      (error) => {
-        console.log("errror", error);
-        const errorMessage = getErrorMessage(error);
-        setFormErrors(errorMessage);
-        setIsExecuting(false);
-        const addCollectionPaneFailedMessage = {
-          ...addCollectionPaneStartMessage,
-          error: errorMessage,
-          errorStack: getErrorStack(error),
-        };
-        TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
+    try {
+      let createTableAndKeyspacePromise;
+      if (toCreateKeyspace) {
+        createTableAndKeyspacePromise = await cassandraApiClient.createTableAndKeyspace(
+          userContext?.databaseAccount?.properties?.cassandraEndpoint,
+          userContext?.databaseAccount?.id,
+          container,
+          tableQuery,
+          createKeyspaceQuery
+        );
+      } else {
+        createTableAndKeyspacePromise = await cassandraApiClient.createTableAndKeyspace(
+          userContext?.databaseAccount?.properties?.cassandraEndpoint,
+          userContext?.databaseAccount?.id,
+          container,
+          tableQuery
+        );
       }
-    );
+      container.refreshAllDatabases();
+      setIsExecuting(false);
+      closePanel();
+
+      TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneStartMessage, startKey);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      setFormErrors(errorMessage);
+      setIsExecuting(false);
+      const addCollectionPaneFailedMessage = {
+        ...addCollectionPaneStartMessage,
+        error: errorMessage,
+        errorStack: getErrorStack(error),
+      };
+      TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
+    }
   };
-  const handleOnChangeKeyspaceType = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
-    setKeyspaceCreateNew(option.key === "true");
+  const handleOnChangeKeyspaceType = (ev: React.FormEvent<HTMLInputElement>, mode: string): void => {
+    setKeyspaceCreateNew(mode === "Create new");
   };
-  const optionList: IChoiceGroupOption[] = [
-    { key: "true", text: "Create new" },
-    { key: "false", text: "Use existing" },
-  ];
+
   const genericPaneProps: GenericRightPaneProps = {
     expandConsole: () => container.expandConsole(),
     formError: formErrors,
@@ -477,18 +296,33 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
         <div className="seconddivpadding">
           <p>
             <Label required>
-              Keyspace name <Tooltip>Select an existing keyspace or enter a new keyspace id.</Tooltip>
+              Keyspace name <InfoTooltip>Select an existing keyspace or enter a new keyspace id.</InfoTooltip>
             </Label>
           </p>
 
-          <div className="createNewDatabaseOrUseExisting">
-            <ChoiceGroup
-              selectedKey={"" + keyspaceCreateNew}
-              options={optionList}
-              onChange={handleOnChangeKeyspaceType}
-              aria-label="Create new keyspace | Use existing keyspace"
+          <Stack horizontal verticalAlign="center">
+            <input
+              className="throughputInputRadioBtn"
+              aria-label="Create new keyspace"
+              checked={keyspaceCreateNew}
+              type="radio"
+              role="radio"
+              tabIndex={0}
+              onChange={(e) => handleOnChangeKeyspaceType(e, "Create new")}
             />
-          </div>
+            <span className="throughputInputRadioBtnLabel">Create new</span>
+
+            <input
+              className="throughputInputRadioBtn"
+              aria-label="Use existing keyspace"
+              checked={!keyspaceCreateNew}
+              type="radio"
+              role="radio"
+              tabIndex={0}
+              onChange={(e) => handleOnChangeKeyspaceType(e, "Use existing")}
+            />
+            <span className="throughputInputRadioBtnLabel">Use existing</span>
+          </Stack>
 
           <TextField
             aria-required="true"
@@ -500,15 +334,16 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
             size={40}
             value={keyspaceId}
             onChange={(e, newValue) => setKeyspaceId(newValue)}
-            aria-label="Keyspace id"
+            ariaLabel="Keyspace id"
             autoFocus
           />
-          {/* <datalist id="keyspacesList">
-            {container.databases &&
-              container.databases.map((data: { id: number }, index: number) => <option key={index}>{data.id}</option>)}
-          </datalist> */}
+          <datalist id="keyspacesList">
+            {keyspaceIds?.map((id: string, index: number) => (
+              <option key={index}>{id}</option>
+            ))}
+          </datalist>
           {canConfigureThroughput && keyspaceCreateNew && (
-            <div className="databaseProvision" aria-label="New database provision support">
+            <div className="databaseProvision">
               <input
                 tabIndex={0}
                 type="checkbox"
@@ -517,24 +352,28 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
                 checked={keyspaceHasSharedOffer}
                 onChange={(e) => setKeyspaceHasSharedOffer(e.target.checked)}
               />
-              <span className="databaseProvisionText">Provision keyspace throughput</span>
-              <Tooltip>
+              <span className="databaseProvisionText" aria-label="Provision keyspace throughput">
+                Provision keyspace throughput
+              </span>
+              <InfoTooltip>
                 Provisioned throughput at the keyspace level will be shared across unlimited number of tables within the
                 keyspace
-              </Tooltip>
+              </InfoTooltip>
             </div>
           )}
           {canConfigureThroughput && keyspaceCreateNew && keyspaceHasSharedOffer && (
             <div>
               <ThroughputInput
                 showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
-                isDatabase={false}
-                isSharded={false}
-                isAutoscaleSelected={isAutoPilotSelected}
-                throughput={throughput}
-                setThroughputValue={(throughput: number) => setThroughput(throughput)}
-                setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
-                onCostAcknowledgeChange={(isAcknowledge: boolean) => {}}
+                isDatabase={true}
+                isSharded={true}
+                isAutoscaleSelected={isSharedAutoPilotSelected}
+                throughput={keyspaceThroughput}
+                setThroughputValue={(throughput: number) => setKeyspaceThroughput(throughput)}
+                setIsAutoscale={(isAutoscale: boolean) => setIsSharedAutoPilotSelected(isAutoscale)}
+                onCostAcknowledgeChange={(isAcknowledge: boolean) => {
+                  setSharedThroughputSpendAck(isAcknowledge);
+                }}
               />
             </div>
           )}
@@ -543,15 +382,17 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
           <p>
             <Label required>
               Enter CQL command to create the table.
-              <a href="https://aka.ms/cassandra-create-table" target="_blank">
+              <a href="https://aka.ms/cassandra-create-table" target="_blank" rel="noreferrer">
                 Learn More
               </a>
             </Label>
           </p>
-          <div style={{ float: "left", paddingTop: "3px", paddingRight: "3px" }}>{createTableQuery}</div>
+          <div aria-label={createTableQuery} style={{ float: "left", paddingTop: "3px", paddingRight: "3px" }}>
+            {createTableQuery}
+          </div>
           <TextField
-            data-test="addCollection-tableId"
             aria-required="true"
+            ariaLabel="addCollection-tableId"
             autoComplete="off"
             pattern="[^/?#\\]*[^/?# \\]"
             title="May not end with space nor contain characters '\' '/' '#' '?'"
@@ -582,12 +423,12 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
               onChange={(e) => setDedicateTableThroughput(e.target.checked)}
             />
             <span>Provision dedicated throughput for this table</span>
-            <Tooltip>
+            <InfoTooltip>
               You can optionally provision dedicated throughput for a table within a keyspace that has throughput
               provisioned. This dedicated throughput amount will not be shared with other tables in the keyspace and
               does not count towards the throughput you provisioned for the keyspace. This throughput amount will be
               billed in addition to the throughput amount you provisioned at the keyspace level.
-            </Tooltip>
+            </InfoTooltip>
           </div>
         )}
         {canConfigureThroughput && (!keyspaceHasSharedOffer || dedicateTableThroughput) && (
@@ -600,7 +441,9 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
               throughput={throughput}
               setThroughputValue={(throughput: number) => setThroughput(throughput)}
               setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
-              onCostAcknowledgeChange={(isAcknowledge: boolean) => {}}
+              onCostAcknowledgeChange={(isAcknowledge: boolean) => {
+                setThroughputSpendAck(isAcknowledge);
+              }}
             />
           </div>
         )}

@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`CassandraAddCollectionPane  Pane should render Default properly 1`] = `
-<h1>
-  Hello
-</h1>
-`;

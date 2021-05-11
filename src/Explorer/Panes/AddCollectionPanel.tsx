@@ -11,7 +11,7 @@ import {
   Separator,
   Stack,
   Text,
-  TooltipHost
+  TooltipHost,
 } from "@fluentui/react";
 import React from "react";
 import * as Constants from "../../Common/Constants";
@@ -215,8 +215,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     isAutoscaleSelected={this.isNewDatabaseAutoscale}
                     throughput={this.newDatabaseThroughput}
                     isDatabase={true}
-                    isAutoscaleSelected={this.isNewDatabaseAutoscale}
-                    throughput={this.newDatabaseThroughput}
                     isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}

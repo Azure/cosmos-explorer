@@ -300,15 +300,14 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
               style={{ display: "block ruby" }}
             >
               <Checkbox
-                title="Provision shared throughput"
+                label="Provision shared throughput"
                 styles={{
                   checkbox: { width: 12, height: 12 },
                   label: { padding: 0, alignItems: "center" },
                 }}
-                label="Provision throughput"
                 checked={databaseCreateNewShared}
                 onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
-              />{" "}
+              ></Checkbox>
               <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
             </div>
             {databaseCreateNewShared && (
