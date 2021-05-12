@@ -45,6 +45,7 @@ import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/Gallery
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
+import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
 import type { NotebookPaneContent } from "./Notebook/NotebookManager";
@@ -91,7 +92,7 @@ export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
@@ -125,7 +126,7 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
-  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   public closeSidePanel: () => void;
 
   // Resource Tree
@@ -1270,10 +1271,18 @@ export default class Explorer {
   public async publishNotebook(
     name: string,
     content: NotebookPaneContent,
-    parentDomElement?: HTMLElement
+    notebookContentRef?: string,
+    onTakeSnapshot?: (request: SnapshotRequest) => void,
+    onClosePanel?: () => void
   ): Promise<void> {
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
+      await this.notebookManager.openPublishNotebookPane(
+        name,
+        content,
+        notebookContentRef,
+        onTakeSnapshot,
+        onClosePanel
+      );
       this.isPublishNotebookPaneEnabled(true);
     }
   }
