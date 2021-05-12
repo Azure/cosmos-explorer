@@ -815,6 +815,20 @@ export default class Explorer {
     window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
+  public async getAadToken(): Promise<string> {
+    return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
+      sendCachedDataMessage<string>(MessageTypes.GetAadToken, undefined /** params **/).then(
+        (token: string) => {
+          resolve(token);
+        },
+        (error: any) => {
+          Logger.logError(getErrorMessage(error), "Explorer/getAadToken");
+          resolve(undefined);
+        }
+      );
+    });
+  }
+
   public async getArcadiaToken(): Promise<string> {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
       sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(

@@ -25,7 +25,7 @@ export class QueriesClient {
   private static readonly FetchQuery: string = "SELECT * FROM c";
   private static readonly FetchMongoQuery: string = "{}";
 
-  public constructor(private container: Explorer) {}
+  public constructor(private container: Explorer) { }
 
   public async setupQueriesCollection(): Promise<DataModels.Collection> {
     const queriesCollection: ViewModels.Collection = this.findQueriesCollection();

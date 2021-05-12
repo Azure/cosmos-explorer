@@ -1,4 +1,4 @@
-import { useBoolean } from "@uifabric/react-hooks";
+import { useBoolean } from "@fluentui/react-hooks";
 import { Account, Configuration, UserAgentApplication } from "msal";
 import * as React from "react";
 
@@ -70,6 +70,7 @@ export function useAADAuth(): ReturnType {
 
   React.useEffect(() => {
     if (account && tenantId) {
+      console.log(account)
       Promise.all([
         msal.acquireTokenSilent({
           // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
@@ -86,8 +87,8 @@ export function useAADAuth(): ReturnType {
         msal.acquireTokenSilent({
           // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
           forceRefresh: true,
-          // authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://stfaul-sql.documents.azure.com/.default"],
+          claimsRequest: "{\"hasgroups\":{\"values\":[true]}}",
+          scopes: ["https://cosmos.azure.com/.default"],
         }),
       ]).then(([graphTokenResponse, armTokenResponse, aadTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);

@@ -1,6 +1,6 @@
-import * as Versions from "./Versions";
 import * as ActionContracts from "./ActionContracts";
 import * as Diagnostics from "./Diagnostics";
+import * as Versions from "./Versions";
 
 /**
  * Messaging types used with Data Explorer <-> Portal communication
@@ -30,6 +30,7 @@ export enum MessageTypes {
   ExplorerClickEvent,
   LoadingStatus,
   GetArcadiaToken,
+  GetAadToken,
   CreateWorkspace,
   CreateSparkPool,
   RefreshDatabaseAccount,
