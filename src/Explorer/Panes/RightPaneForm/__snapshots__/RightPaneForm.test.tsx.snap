@@ -15,7 +15,9 @@ exports[`Right Pane Form should render Default properly 1`] = `
     messageType="error"
     openNotificationConsole={[MockFunction]}
     showErrorDetails={false}
-  />
+  >
+    <div />
+  </PanelInfoErrorComponent>
   <form
     className="panelFormWrapper"
     onSubmit={[Function]}

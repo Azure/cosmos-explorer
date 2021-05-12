@@ -59,6 +59,7 @@
     "./src/Explorer/OpenFullScreen.tsx",
     "./src/Explorer/Panes/PaneComponents.ts",
     "./src/Explorer/Panes/PanelFooterComponent.tsx",
+    "./src/Explorer/Panes/PanelInfoErrorComponent.tsx",
     "./src/Explorer/Panes/PanelLoadingScreen.tsx",
     "./src/Explorer/Panes/Tables/Validators/EntityPropertyNameValidator.ts",
     "./src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts",
