@@ -1,10 +1,9 @@
-import { Checkbox, Text, TextField } from "@fluentui/react";
+import { Checkbox, Stack, Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { createDatabase } from "../../../Common/dataAccess/createDatabase";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
-import { configContext, Platform } from "../../../ConfigContext";
 import * as DataModels from "../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../Contracts/SubscriptionType";
 import * as SharedConstants from "../../../Shared/Constants";
@@ -12,7 +11,8 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import * as PricingUtils from "../../../Utils/PricingUtils";
+import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
+import { getUpsellMessage } from "../../../Utils/PricingUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
@@ -29,17 +29,10 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   closePanel,
   openNotificationConsole,
 }: AddDatabasePaneProps) => {
+  let throughput: number;
+  let isAutoscaleSelected: boolean;
+  let isCostAcknowledged: boolean;
   const { subscriptionType } = userContext;
-  const getSharedThroughputDefault = !(subscriptionType === SubscriptionType.EA || container.isServerlessEnabled());
-  const _isAutoPilotSelectedAndWhatTier = (): DataModels.AutoPilotCreationSettings => {
-    if (isAutoPilotSelected && maxAutoPilotThroughputSet) {
-      return {
-        maxThroughput: maxAutoPilotThroughputSet * 1,
-      };
-    }
-    return undefined;
-  };
-
   const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
   const databaseLabel: string = isCassandraAccount ? "keyspace" : "database";
   const collectionsLabel: string = isCassandraAccount ? "tables" : "collections";
@@ -52,61 +45,14 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   } is a logical container of one or more ${isCassandraAccount ? "tables" : "collections"}`;
 
   const databaseLevelThroughputTooltipText = `Provisioned throughput at the ${databaseLabel} level will be shared across all ${collectionsLabel} within the ${databaseLabel}.`;
-  const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(getSharedThroughputDefault);
+  const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(
+    subscriptionType !== SubscriptionType.EA && !isServerlessAccount()
+  );
   const [formErrorsDetails, setFormErrorsDetails] = useState<string>();
   const [formErrors, setFormErrors] = useState<string>("");
-
-  const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(container.isAutoscaleDefaultEnabled());
-
-  const throughputDefaults = container.collectionCreationDefaults.throughput;
-  const [throughput, setThroughput] = useState<number>(
-    isAutoPilotSelected ? AutoPilotUtils.minAutoPilotThroughput : throughputDefaults.shared
-  );
-
-  const [throughputSpendAck, setThroughputSpendAck] = useState<boolean>(false);
-
-  const canRequestSupport = () => {
-    if (
-      configContext.platform !== Platform.Emulator &&
-      !userContext.isTryCosmosDBSubscription &&
-      configContext.platform !== Platform.Portal
-    ) {
-      const offerThroughput: number = throughput;
-      return offerThroughput <= 100000;
-    }
-
-    return false;
-  };
-  const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
-  const upsellMessage: string = PricingUtils.getUpsellMessage(
-    userContext.portalEnv,
-    isFreeTierAccount,
-    container.isFirstResourceCreated(),
-    false
-  );
-
-  const upsellAnchorUrl: string = isFreeTierAccount ? Constants.Urls.freeTierInformation : Constants.Urls.cosmosPricing;
-
-  const upsellAnchorText: string = isFreeTierAccount ? "Learn more" : "More details";
-  const maxAutoPilotThroughputSet = AutoPilotUtils.minAutoPilotThroughput;
-
-  const canConfigureThroughput = !container.isServerlessEnabled();
-  const showUpsellMessage = () => {
-    if (container.isServerlessEnabled()) {
-      return false;
-    }
-
-    if (isFreeTierAccount) {
-      return databaseCreateNewShared;
-    }
-
-    return true;
-  };
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
-  useEffect(() => {
-    setDatabaseCreateNewShared(getSharedThroughputDefault);
-  }, [subscriptionType]);
+  const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
   const addDatabasePaneMessage = {
     database: {
@@ -126,7 +72,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       subscriptionType: SubscriptionType[subscriptionType],
       subscriptionQuotaId: userContext.quotaId,
       defaultsCheck: {
-        throughput: throughput,
+        throughput,
         flight: userContext.addCollectionFlight,
       },
       dataExplorerArea: Constants.Areas.ContextualPane,
@@ -139,11 +85,9 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       return;
     }
 
-    const offerThroughput: number = _computeOfferThroughput();
-
     const addDatabasePaneStartMessage = {
       ...addDatabasePaneMessage,
-      offerThroughput,
+      throughput,
     };
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateDatabase, addDatabasePaneStartMessage);
     setFormErrors("");
@@ -153,18 +97,18 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       databaseId: addDatabasePaneStartMessage.database.id,
       databaseLevelThroughput: addDatabasePaneStartMessage.database.shared,
     };
-    if (isAutoPilotSelected) {
-      createDatabaseParams.autoPilotMaxThroughput = addDatabasePaneStartMessage.offerThroughput;
+    if (isAutoscaleSelected) {
+      createDatabaseParams.autoPilotMaxThroughput = addDatabasePaneStartMessage.throughput;
     } else {
-      createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.offerThroughput;
+      createDatabaseParams.offerThroughput = addDatabasePaneStartMessage.throughput;
     }
 
     createDatabase(createDatabaseParams).then(
       () => {
-        _onCreateDatabaseSuccess(offerThroughput, startKey);
+        _onCreateDatabaseSuccess(throughput, startKey);
       },
       (error: string) => {
-        _onCreateDatabaseFailure(error, offerThroughput, startKey);
+        _onCreateDatabaseFailure(error, throughput, startKey);
       }
     );
   };
@@ -194,48 +138,19 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     TelemetryProcessor.traceFailure(Action.CreateDatabase, addDatabasePaneFailedMessage, startKey);
   };
 
-  const _getThroughput = (): number => {
-    return isNaN(throughput) ? 0 : Number(throughput);
-  };
-
-  const _computeOfferThroughput = (): number => {
-    if (!canConfigureThroughput) {
-      return undefined;
-    }
-
-    return _getThroughput();
-  };
-
   const _isValid = (): boolean => {
     // TODO add feature flag that disables validation for customers with custom accounts
-    if (isAutoPilotSelected) {
-      const autoPilot = _isAutoPilotSelectedAndWhatTier();
-      if (
-        !autoPilot ||
-        !autoPilot.maxThroughput ||
-        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
-      ) {
+    if (isAutoscaleSelected) {
+      if (!AutoPilotUtils.isValidAutoPilotThroughput(throughput)) {
         setFormErrors(
           `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
         );
         return false;
       }
     }
-    const throughput = _getThroughput();
 
-    if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !throughputSpendAck) {
-      setFormErrors(`Please acknowledge the estimated daily spend.`);
-      return false;
-    }
-
-    const autoscaleThroughput = maxAutoPilotThroughputSet * 1;
-
-    if (
-      isAutoPilotSelected &&
-      autoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
-      !throughputSpendAck
-    ) {
-      setFormErrors(`Please acknowledge the estimated monthly spend.`);
+    if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
+      setFormErrors(`Please acknowledge the estimated ${isAutoscaleSelected ? "monthly" : "daily"} spend.`);
       return false;
     }
 
@@ -250,7 +165,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   );
 
   const props: RightPaneFormProps = {
-    expandConsole: container.expandConsole,
+    expandConsole: openNotificationConsole,
     formError: formErrors,
     formErrorDetail: formErrorsDetails,
     isExecuting,
@@ -260,80 +175,65 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
   return (
     <RightPaneForm {...props}>
-      <div className="paneContentContainer" role="dialog" aria-labelledby="databaseTitle">
-        {showUpsellMessage && formErrors === "" && (
-          <PanelInfoErrorComponent
-            message={upsellMessage}
-            messageType="info"
-            showErrorDetails={false}
-            openNotificationConsole={openNotificationConsole}
-            link={upsellAnchorUrl}
-            linkText={upsellAnchorText}
+      {!formErrors && isFreeTierAccount && (
+        <PanelInfoErrorComponent
+          message={getUpsellMessage(userContext.portalEnv, true, container.isFirstResourceCreated(), true)}
+          messageType="info"
+          showErrorDetails={false}
+          openNotificationConsole={openNotificationConsole}
+          link={Constants.Urls.freeTierInformation}
+          linkText="Learn more"
+        />
+      )}
+      <div className="panelMainContent">
+        <div>
+          <Stack horizontal>
+            <span className="mandatoryStar">*</span>
+            <Text variant="small">{databaseIdLabel}</Text>
+            <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
+          </Stack>
+
+          <TextField
+            id="database-id"
+            type="text"
+            aria-required="true"
+            autoComplete="off"
+            pattern="[^/?#\\]*[^/?# \\]"
+            title="May not end with space nor contain characters '\' '/' '#' '?'"
+            size={40}
+            aria-label={databaseIdLabel}
+            placeholder={databaseIdPlaceHolder}
+            value={databaseId}
+            onChange={handleonChangeDBId}
+            style={{ fontSize: 12 }}
+            styles={{ root: { width: 300 } }}
           />
-        )}
-        <div className="paneMainContent">
-          <div>
-            <p>
-              <span className="mandatoryStar">*</span>
-              <Text variant="small">{databaseIdLabel}</Text>
-              <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
-            </p>
 
-            <TextField
-              id="database-id"
-              type="text"
-              aria-required="true"
-              autoComplete="off"
-              pattern="[^/?#\\]*[^/?# \\]"
-              title="May not end with space nor contain characters '\' '/' '#' '?'"
-              size={40}
-              aria-label={databaseIdLabel}
-              placeholder={databaseIdPlaceHolder}
-              value={databaseId}
-              onChange={handleonChangeDBId}
+          <Stack horizontal>
+            <Checkbox
+              title="Provision shared throughput"
+              styles={{
+                text: { fontSize: 12 },
+                checkbox: { width: 12, height: 12 },
+                label: { padding: 0, alignItems: "center" },
+              }}
+              label="Provision throughput"
+              checked={databaseCreateNewShared}
+              onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
             />
+            <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
+          </Stack>
 
-            <div
-              className="databaseProvision"
-              aria-label="New database provision support"
-              style={{ display: "block ruby" }}
-            >
-              <Checkbox
-                title="Provision shared throughput"
-                styles={{
-                  checkbox: { width: 12, height: 12 },
-                  label: { padding: 0, alignItems: "center" },
-                }}
-                label="Provision throughput"
-                checked={databaseCreateNewShared}
-                onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
-              />{" "}
-              <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
-            </div>
-            {databaseCreateNewShared && (
-              <div>
-                <ThroughputInput
-                  showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
-                  isDatabase={true}
-                  isSharded={databaseCreateNewShared}
-                  isAutoscaleSelected={isAutoPilotSelected}
-                  throughput={throughput}
-                  setThroughputValue={(throughput: number) => setThroughput(throughput)}
-                  setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
-                  onCostAcknowledgeChange={(isAcknowledged: boolean) => setThroughputSpendAck(isAcknowledged)}
-                />
-
-                {canRequestSupport() && (
-                  <p>
-                    <a href="https://aka.ms/cosmosdbfeedback?subject=Cosmos%20DB%20More%20Throughput%20Request">
-                      Contact support{" "}
-                    </a>
-                    for more than <span>{throughputDefaults.unlimitedmax?.toLocaleString()} </span> RU/s.
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
+          {!isServerlessAccount() && databaseCreateNewShared && (
+            <ThroughputInput
+              showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
+              isDatabase={true}
+              isSharded={databaseCreateNewShared}
+              setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
+              setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
+              onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
+            />
+          )}
         </div>
       </div>
     </RightPaneForm>

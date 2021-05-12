@@ -18,7 +18,7 @@ export const useSidePanel = (): SidePanelHooks => {
     setHeaderText(headerText);
     setPanelContent(panelContent);
     setIsPanelOpen(true);
-    setOnCloseCallback({ callback: onClose });
+    !!onClose && setOnCloseCallback({ callback: onClose });
   };
 
   const closeSidePanel = (): void => {
