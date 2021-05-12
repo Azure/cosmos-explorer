@@ -103,7 +103,7 @@ export const Dialog: FunctionComponent<DialogProps> = ({
           text: secondaryButtonText,
           onClick: onSecondaryButtonClick,
         }
-      : undefined;
+      : {};
 
   return (
     <FluentDialog {...dialogProps}>

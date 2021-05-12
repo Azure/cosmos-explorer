@@ -18,7 +18,7 @@ export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
 }
 
 export function useGraphPhoto(graphToken: string): string {
-  const [photo, setPhoto] = useState<string>();
+  const [photo, setPhoto] = useState<string>("");
 
   useEffect(() => {
     if (graphToken) {
