@@ -27,7 +27,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
   const submit = () => {
     setFormErrors("");
     if (!files || files.length === 0) {
-      setFormErrors("NNo file specified. Please input a file.");
+      setFormErrors("No file specified. Please input a file.");
       logConsoleError(`${errorMessage} -- No file specified. Please input a file.`);
       return;
     }
