@@ -4,6 +4,22 @@ export enum Platform {
   Emulator = "Emulator",
 }
 
+export const intialConfigContext = {
+  platform: Platform.Portal,
+  allowedParentFrameOrigins: [""],
+  AAD_ENDPOINT: "",
+  ARM_AUTH_AREA: "",
+  ARM_ENDPOINT: "",
+  ARM_API_VERSION: "",
+  GRAPH_ENDPOINT: "",
+  GRAPH_API_VERSION: "",
+  ARCADIA_ENDPOINT: "",
+  ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "",
+  JUNO_ENDPOINT: "",
+  GITHUB_CLIENT_ID: "",
+  hostedExplorerURL: "",
+  allowedJunoOrigins: [""],
+};
 export interface ConfigContext {
   platform: Platform;
   allowedParentFrameOrigins: string[];
