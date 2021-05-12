@@ -141,6 +141,7 @@ jobs:
           - ./test/graph/container.spec.ts
           - ./test/sql/container.spec.ts
           - ./test/mongo/container.spec.ts
+          - ./test/mongo/container32.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
           - ./test/notebooks/upload.spec.ts
           - ./test/sql/resourceToken.spec.ts
