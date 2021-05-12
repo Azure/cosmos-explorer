@@ -4,18 +4,10 @@ exports[`Right Pane Form should render Default properly 1`] = `
 <RightPaneForm
   expandConsole={[MockFunction]}
   formError=""
-  formErrorDetail=""
   isExecuting={false}
   onSubmit={[MockFunction]}
   submitButtonText="Load"
 >
-  <PanelInfoErrorComponent
-    formError={false}
-    message=""
-    messageType="error"
-    openNotificationConsole={[MockFunction]}
-    showErrorDetails={false}
-  />
   <form
     className="panelFormWrapper"
     onSubmit={[Function]}
@@ -1758,7 +1750,7 @@ exports[`Right Pane Form should render Default properly 1`] = `
                       </span>
                     </span>
                   </button>
-                  <FocusRects />
+                  <Component />
                 </BaseButton>
               </DefaultButton>
             </CustomizedDefaultButton>

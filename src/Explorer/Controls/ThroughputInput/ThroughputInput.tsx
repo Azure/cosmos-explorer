@@ -101,7 +101,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     <div className="throughputInputContainer throughputInputSpacing">
       <Stack horizontal>
         <span className="mandatoryStar">*&nbsp;</span>
-        <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+        <Text aria-label="Throughput header" variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
           {getThroughputLabelText()}
         </Text>
         <InfoTooltip>{PricingUtils.getRuToolTipText()}</InfoTooltip>
