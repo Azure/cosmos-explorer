@@ -921,6 +921,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getAnalyticalStorageTtl(): number {
+    if (!this.isSynapseLinkEnabled()) {
+      return undefined;
+    }
+
     if (!this.shouldShowAnalyticalStoreOptions()) {
       return undefined;
     }
