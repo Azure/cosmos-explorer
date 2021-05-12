@@ -2,6 +2,7 @@ import { ImmutableNotebook, toJS } from "@nteract/commutable";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
+import { useNotebookSnapshotStore } from "../../../hooks/useNotebookSnapshotStore";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -10,6 +11,7 @@ import { CodeOfConductComponent } from "../../Controls/NotebookGallery/CodeOfCon
 import { GalleryTab } from "../../Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
+import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
 import {
   GenericRightPaneComponent,
   GenericRightPaneProps,
@@ -24,7 +26,8 @@ export interface PublishNotebookPaneAProps {
   name: string;
   author: string;
   notebookContent: string | ImmutableNotebook;
-  parentDomElement: HTMLElement;
+  notebookContentRef: string;
+  onTakeSnapshot: (request: SnapshotRequest) => void;
 }
 export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> = ({
   explorer: container,
@@ -33,7 +36,8 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   name,
   author,
   notebookContent,
-  parentDomElement,
+  notebookContentRef,
+  onTakeSnapshot,
 }: PublishNotebookPaneAProps): JSX.Element => {
   const [isCodeOfConductAccepted, setIsCodeOfConductAccepted] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
@@ -45,6 +49,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   const [notebookDescription, setNotebookDescription] = useState<string>("");
   const [notebookTags, setNotebookTags] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>();
+  const { snapshot: notebookSnapshot, error: notebookSnapshotError } = useNotebookSnapshotStore();
 
   const CodeOfConductAccepted = async () => {
     try {
@@ -73,6 +78,14 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     }
     setContent(newContent);
   }, []);
+
+  useEffect(() => {
+    setImageSrc(notebookSnapshot);
+  }, [notebookSnapshot]);
+
+  useEffect(() => {
+    setFormError(notebookSnapshotError);
+  }, [notebookSnapshotError]);
 
   const submit = async (): Promise<void> => {
     const clearPublishingMessage = NotificationConsoleUtils.logConsoleProgress(`Publishing ${name} to gallery`);
@@ -178,13 +191,14 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     notebookAuthor: author,
     notebookCreatedDate: new Date().toISOString(),
     notebookObject: notebookObject,
-    notebookParentDomElement: parentDomElement,
+    notebookContentRef,
     onError: createFormError,
     clearFormError: clearFormError,
     setNotebookName,
     setNotebookDescription,
     setNotebookTags,
     setImageSrc,
+    onTakeSnapshot,
   };
   return (
     <GenericRightPaneComponent {...props}>

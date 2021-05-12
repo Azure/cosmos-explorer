@@ -7,7 +7,7 @@ configure({ adapter: new Adapter() });
 initializeIcons();
 
 if (typeof window.URL.createObjectURL === "undefined") {
-  Object.defineProperty(window.URL, "createObjectURL", { value: () => { } });
+  Object.defineProperty(window.URL, "createObjectURL", { value: () => {} });
 }
 
 // TODO Remove when jquery and documentdbclient SDK are removed

@@ -35,7 +35,6 @@ import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
-import "./Explorer/Controls/ThroughputInput/ThroughputInput.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
@@ -228,7 +227,6 @@ const App: React.FunctionComponent = () => {
         isConsoleExpanded={isNotificationConsoleExpanded}
       />
       <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
-      <div data-bind='component: { name: "add-collection-pane", params: { data: addCollectionPane} }' />
       <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
       <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
       {showDialog && <Dialog {...dialogProps} />}

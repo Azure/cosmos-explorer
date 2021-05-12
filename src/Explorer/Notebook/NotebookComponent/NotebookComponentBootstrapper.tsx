@@ -1,35 +1,29 @@
-import * as React from "react";
-
-import { NotebookComponent } from "./NotebookComponent";
-import { NotebookClientV2 } from "../NotebookClientV2";
-import { NotebookUtil } from "../NotebookUtil";
-
+import { CellId, CellType, ImmutableNotebook } from "@nteract/commutable";
 // Vendor modules
 import {
   actions,
   AppState,
-  createKernelRef,
-  DocumentRecordProps,
   ContentRef,
+  DocumentRecordProps,
   KernelRef,
   NotebookContentRecord,
   selectors,
 } from "@nteract/core";
-import * as Immutable from "immutable";
-import { Provider } from "react-redux";
-import { CellType, CellId, ImmutableNotebook } from "@nteract/commutable";
-import { Store, AnyAction } from "redux";
-
-import "./NotebookComponent.less";
-
-import "codemirror/addon/hint/show-hint.css";
-import "codemirror/lib/codemirror.css";
 import "@nteract/styles/editor-overrides.css";
 import "@nteract/styles/global-variables.css";
+import "codemirror/addon/hint/show-hint.css";
+import "codemirror/lib/codemirror.css";
+import * as Immutable from "immutable";
+import * as React from "react";
+import { Provider } from "react-redux";
 import "react-table/react-table.css";
-
-import * as CdbActions from "./actions";
+import { AnyAction, Store } from "redux";
+import { NotebookClientV2 } from "../NotebookClientV2";
+import { NotebookUtil } from "../NotebookUtil";
 import * as NteractUtil from "../NTeractUtil";
+import * as CdbActions from "./actions";
+import { NotebookComponent } from "./NotebookComponent";
+import "./NotebookComponent.less";
 
 export interface NotebookComponentBootstrapperOptions {
   notebookClient: NotebookClientV2;
@@ -37,7 +31,7 @@ export interface NotebookComponentBootstrapperOptions {
 }
 
 export class NotebookComponentBootstrapper {
-  protected contentRef: ContentRef;
+  public contentRef: ContentRef;
   protected renderExtraComponent: () => JSX.Element;
 
   private notebookClient: NotebookClientV2;

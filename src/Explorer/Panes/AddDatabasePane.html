@@ -1,4 +1,4 @@
-﻿<div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
+<div data-bind="visible: visible, event: { keydown: onPaneKeyDown }">
   <div class="contextual-pane-out" data-bind="click: cancel, clickBubble: false"></div>
   <div class="contextual-pane" data-bind="attr: { id: id }">
     <!-- Add database form  -- Start -->
@@ -126,31 +126,31 @@
       <div data-bind="visible: databaseCreateNewShared">
         <throughput-input-autopilot-v3
           params="{
-                                              step: 100,
-                                              value: throughput,
-                                              testId: 'sharedThroughputValue',
-                                              minimum: minThroughputRU,
-                                              maximum: maxThroughputRU,
-                                              isEnabled: databaseCreateNewShared,
-                                              label: throughputRangeText,
-                                              ariaLabel: throughputRangeText,
-                                              costsVisible: costsVisible,
-                                              requestUnitsUsageCost: requestUnitsUsageCost,
-                                              spendAckChecked: throughputSpendAck,
-                                              spendAckId: 'throughputSpendAckDatabase',
-                                              spendAckText: throughputSpendAckText,
-                                              spendAckVisible: throughputSpendAckVisible,
-                                              showAsMandatory: true,
-                                              infoBubbleText: ruToolTipText,
-                                              throughputAutoPilotRadioId: 'newDatabase-databaseThroughput-autoPilotRadio',
-                                              throughputProvisionedRadioId: 'newDatabase-databaseThroughput-manualRadio',
-                                              throughputModeRadioName: 'throughputModeRadioName',
-                                              isAutoPilotSelected: isAutoPilotSelected,
-                                              maxAutoPilotThroughputSet: maxAutoPilotThroughputSet,
-                                              autoPilotUsageCost: autoPilotUsageCost,
-                                              canExceedMaximumValue: canExceedMaximumValue,
-                                              freeTierExceedThroughputTooltip: freeTierExceedThroughputTooltip
-                                          }"
+                                                step: 100,
+                                                value: throughput,
+                                                testId: 'sharedThroughputValue',
+                                                minimum: minThroughputRU,
+                                                maximum: maxThroughputRU,
+                                                isEnabled: databaseCreateNewShared,
+                                                label: throughputRangeText,
+                                                ariaLabel: throughputRangeText,
+                                                costsVisible: costsVisible,
+                                                requestUnitsUsageCost: requestUnitsUsageCost,
+                                                spendAckChecked: throughputSpendAck,
+                                                spendAckId: 'throughputSpendAckDatabase',
+                                                spendAckText: throughputSpendAckText,
+                                                spendAckVisible: throughputSpendAckVisible,
+                                                showAsMandatory: true,
+                                                infoBubbleText: ruToolTipText,
+                                                throughputAutoPilotRadioId: 'newDatabase-databaseThroughput-autoPilotRadio',
+                                                throughputProvisionedRadioId: 'newDatabase-databaseThroughput-manualRadio',
+                                                throughputModeRadioName: 'throughputModeRadioName',
+                                                isAutoPilotSelected: isAutoPilotSelected,
+                                                maxAutoPilotThroughputSet: maxAutoPilotThroughputSet,
+                                                autoPilotUsageCost: autoPilotUsageCost,
+                                                canExceedMaximumValue: canExceedMaximumValue,
+                                                freeTierExceedThroughputTooltip: freeTierExceedThroughputTooltip
+                                            }"
         >
         </throughput-input-autopilot-v3>
         <p data-bind="visible: canRequestSupport">
