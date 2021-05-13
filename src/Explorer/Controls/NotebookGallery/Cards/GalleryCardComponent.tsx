@@ -1,20 +1,23 @@
 import {
   BaseButton,
   Button,
-  FontWeights,
+  DocumentCard,
+  DocumentCardActivity,
+  DocumentCardDetails,
+  DocumentCardPreview,
+  DocumentCardTitle,
   Icon,
   IconButton,
-  Image,
+  IDocumentCardPreviewProps,
+  IDocumentCardStyles,
   ImageFit,
   Link,
-  Persona,
   Separator,
   Spinner,
   SpinnerSize,
   Text,
   TooltipHost,
 } from "@fluentui/react";
-import { Card } from "@uifabric/react-cards";
 import React, { FunctionComponent, useState } from "react";
 import CosmosDBLogo from "../../../../../images/CosmosDB-logo.svg";
 import { IGalleryItem } from "../../../../Juno/JunoClient";
@@ -48,7 +51,6 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
   const CARD_WIDTH = 256;
   const cardImageHeight = 144;
   const cardDescriptionMaxChars = 80;
-  const cardItemGapBig = 10;
   const cardItemGapSmall = 8;
   const cardDeleteSpinnerHeight = 360;
   const smallTextLineHeight = 18;
@@ -64,9 +66,9 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
   const dateString = new Date(data.created).toLocaleString("default", options);
   const cardTitle = FileSystemUtil.stripExtension(data.name, "ipynb");
 
-  const renderTruncatedDescription = (): string => {
-    let truncatedDescription = data.description.substr(0, cardDescriptionMaxChars);
-    if (data.description.length > cardDescriptionMaxChars) {
+  const renderTruncated = (text: string, totalLength: number): string => {
+    let truncatedDescription = text.substr(0, totalLength);
+    if (text.length > totalLength) {
       truncatedDescription = `${truncatedDescription} ...`;
     }
     return truncatedDescription;
@@ -120,42 +122,35 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
     event.preventDefault();
     activate();
   };
-
+  const DocumentCardActivityPeople = [{ name: data.author, profileImageSrc: data.isSample && CosmosDBLogo }];
+  const previewProps: IDocumentCardPreviewProps = {
+    previewImages: [
+      {
+        previewImageSrc: data.thumbnailUrl,
+        imageFit: ImageFit.cover,
+        width: CARD_WIDTH,
+        height: cardImageHeight,
+      },
+    ],
+  };
+  const cardStyles: IDocumentCardStyles = {
+    root: { display: "inline-block", marginRight: 20, width: CARD_WIDTH },
+  };
   return (
-    <Card
-      style={{ background: "white" }}
-      aria-label={cardTitle}
-      data-is-focusable="true"
-      tokens={{ width: CARD_WIDTH, childrenGap: 0 }}
-      onClick={(event) => handlerOnClick(event, onClick)}
-    >
+    <DocumentCard aria-label={cardTitle} styles={cardStyles} onClick={onClick}>
       {isDeletingPublishedNotebook && (
-        <Card.Item tokens={{ padding: cardItemGapBig }}>
-          <Spinner
-            size={SpinnerSize.large}
-            label={`Deleting '${cardTitle}'`}
-            styles={{ root: { height: cardDeleteSpinnerHeight } }}
-          />
-        </Card.Item>
+        <Spinner
+          size={SpinnerSize.large}
+          label={`Deleting '${cardTitle}'`}
+          styles={{ root: { height: cardDeleteSpinnerHeight } }}
+        />
       )}
       {!isDeletingPublishedNotebook && (
         <>
-          <Card.Item tokens={{ padding: cardItemGapBig }}>
-            <Persona imageUrl={data.isSample && CosmosDBLogo} text={data.author} secondaryText={dateString} />
-          </Card.Item>
-
-          <Card.Item>
-            <Image
-              src={data.thumbnailUrl}
-              width={CARD_WIDTH}
-              height={cardImageHeight}
-              imageFit={ImageFit.cover}
-              alt={`${cardTitle} cover image`}
-            />
-          </Card.Item>
-
-          <Card.Section styles={{ root: { padding: cardItemGapBig } }}>
-            <Text variant="small" nowrap styles={{ root: { height: smallTextLineHeight } }}>
+          <DocumentCardActivity activity={dateString} people={DocumentCardActivityPeople} />
+          <DocumentCardPreview {...previewProps} />
+          <DocumentCardDetails>
+            <Text variant="small" nowrap styles={{ root: { height: smallTextLineHeight, padding: "2px 16px" } }}>
               {data.tags ? (
                 data.tags.map((tag, index, array) => (
                   <span key={tag}>
@@ -167,43 +162,22 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
                 <br />
               )}
             </Text>
-
-            <Text
-              styles={{
-                root: {
-                  fontWeight: FontWeights.semibold,
-                  paddingTop: cardItemGapSmall,
-                  paddingBottom: cardItemGapSmall,
-                },
-              }}
-              nowrap
-            >
-              {cardTitle}
-            </Text>
-
-            <Text variant="small" styles={{ root: { height: smallTextLineHeight * 2 } }}>
-              {renderTruncatedDescription()}
-            </Text>
-
-            <span>
+            <DocumentCardTitle title={renderTruncated(cardTitle, 20)} shouldTruncate />
+            <DocumentCardTitle
+              title={renderTruncated(data.description, cardDescriptionMaxChars)}
+              showAsSecondaryTitle
+            />
+            <span style={{ padding: "8px 16px" }}>
               {data.views !== undefined && generateIconText("RedEye", data.views.toString())}
               {data.downloads !== undefined && generateIconText("Download", data.downloads.toString())}
               {data.favorites !== undefined && generateIconText("Heart", data.favorites.toString())}
             </span>
-          </Card.Section>
-
+          </DocumentCardDetails>
           {cardButtonsVisible && (
-            <Card.Section
-              styles={{
-                root: {
-                  marginLeft: cardItemGapBig,
-                  marginRight: cardItemGapBig,
-                },
-              }}
-            >
+            <DocumentCardDetails>
               <Separator styles={{ root: { padding: 0, height: 1 } }} />
 
-              <span>
+              <span style={{ padding: "0px 16px" }}>
                 {isFavorite !== undefined &&
                   generateIconButtonWithTooltip(
                     isFavorite ? "HeartFill" : "Heart",
@@ -222,10 +196,10 @@ export const GalleryCardComponent: FunctionComponent<GalleryCardComponentProps> 
                     )
                   )}
               </span>
-            </Card.Section>
+            </DocumentCardDetails>
           )}
         </>
       )}
-    </Card>
+    </DocumentCard>
   );
 };

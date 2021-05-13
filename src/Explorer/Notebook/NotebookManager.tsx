@@ -26,6 +26,7 @@ import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
+import { SnapshotRequest } from "./NotebookComponent/types";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
 
@@ -112,11 +113,13 @@ export default class NotebookManager {
   public async openPublishNotebookPane(
     name: string,
     content: NotebookPaneContent,
-    parentDomElement: HTMLElement
+    notebookContentRef: string,
+    onTakeSnapshot: (request: SnapshotRequest) => void,
+    onClosePanel: () => void
   ): Promise<void> {
     const explorer = this.params.container;
     explorer.openSidePanel(
-      "New Collection",
+      "Publish Notebook",
       <PublishNotebookPane
         explorer={this.params.container}
         junoClient={this.junoClient}
@@ -125,8 +128,10 @@ export default class NotebookManager {
         name={name}
         author={getFullName()}
         notebookContent={content}
-        parentDomElement={parentDomElement}
-      />
+        notebookContentRef={notebookContentRef}
+        onTakeSnapshot={onTakeSnapshot}
+      />,
+      onClosePanel
     );
   }
 

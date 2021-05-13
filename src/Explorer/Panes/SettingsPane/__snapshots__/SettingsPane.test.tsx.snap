@@ -1,16 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Settings Pane should render Default properly 1`] = `
-<GenericRightPaneComponent
+<RightPaneForm
   expandConsole={[Function]}
   formError=""
-  formErrorDetail=""
-  id="settingspane"
   isExecuting={false}
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Apply"
-  title="Setting"
 >
   <div
     className="paneMainContent"
@@ -25,9 +21,9 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="settingsSectionLabel"
         >
           Page options
-          <Tooltip>
+          <InfoTooltip>
             Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
-          </Tooltip>
+          </InfoTooltip>
         </div>
         <StyledChoiceGroup
           onChange={[Function]}
@@ -56,9 +52,9 @@ exports[`Settings Pane should render Default properly 1`] = `
             className="settingsSectionLabel"
           >
             Query results per page
-            <Tooltip>
+            <InfoTooltip>
               Enter the number of query results that should be shown per page.
-            </Tooltip>
+            </InfoTooltip>
           </div>
           <StyledSpinButton
             ariaLabel="Custom query items per page"
@@ -85,9 +81,9 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="settingsSectionLabel"
         >
           Enable cross-partition query
-          <Tooltip>
+          <InfoTooltip>
             Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
-          </Tooltip>
+          </InfoTooltip>
         </div>
         <StyledCheckboxBase
           ariaLabel="Enable cross partition query"
@@ -114,9 +110,9 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="settingsSectionLabel"
         >
           Max degree of parallelism
-          <Tooltip>
+          <InfoTooltip>
             Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
-          </Tooltip>
+          </InfoTooltip>
         </div>
         <StyledSpinButton
           ariaLabel="Max degree of parallelism"
@@ -148,20 +144,16 @@ exports[`Settings Pane should render Default properly 1`] = `
       </div>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;
 
 exports[`Settings Pane should render Gremlin properly 1`] = `
-<GenericRightPaneComponent
+<RightPaneForm
   expandConsole={[Function]}
   formError=""
-  formErrorDetail=""
-  id="settingspane"
   isExecuting={false}
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Apply"
-  title="Setting"
 >
   <div
     className="paneMainContent"
@@ -176,9 +168,9 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           className="settingsSectionLabel"
         >
           Display Gremlin query results as: 
-          <Tooltip>
+          <InfoTooltip>
             Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
-          </Tooltip>
+          </InfoTooltip>
         </div>
         <StyledChoiceGroup
           aria-label="Graph Auto-visualization"
@@ -214,5 +206,5 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       </div>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;

@@ -9,12 +9,6 @@ export const PanelFooterComponent: React.FunctionComponent<PanelFooterProps> = (
   buttonLabel,
 }: PanelFooterProps): JSX.Element => (
   <div className="panelFooter">
-    <PrimaryButton
-      type="submit"
-      id="sidePanelOkButton"
-      text={buttonLabel}
-      ariaLabel={buttonLabel}
-      data-testid="submit"
-    />
+    <PrimaryButton type="submit" id="sidePanelOkButton" text={buttonLabel} ariaLabel={buttonLabel} />
   </div>
 );

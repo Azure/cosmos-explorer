@@ -15,6 +15,7 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import { ArmApiVersions } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
+import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
 import { trackEvent } from "../../Shared/appInsights";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -24,7 +25,9 @@ import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { KernelSpecsDisplay } from "../Notebook/NotebookClientV2";
+import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
+import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
 
@@ -458,11 +461,32 @@ export default class NotebookTabV2 extends NotebookTabBase {
       source: Source.CommandBarMenu,
     });
 
+    const notebookReduxStore = NotebookTabV2.clientManager.getStore();
+    const unsubscribe = notebookReduxStore.subscribe(() => {
+      const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
+      useNotebookSnapshotStore.setState({
+        snapshot: cdbState.notebookSnapshot?.imageSrc,
+        error: cdbState.notebookSnapshotError,
+      });
+    });
+
     const notebookContent = this.notebookComponentAdapter.getContent();
+    const notebookContentRef = this.notebookComponentAdapter.contentRef;
+    const onPanelClose = (): void => {
+      unsubscribe();
+      useNotebookSnapshotStore.setState({
+        snapshot: undefined,
+        error: undefined,
+      });
+      notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(undefined));
+    };
+
     await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      this.notebookComponentAdapter.getNotebookParentElement()
+      notebookContentRef,
+      (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request)),
+      onPanelClose
     );
   };
 
