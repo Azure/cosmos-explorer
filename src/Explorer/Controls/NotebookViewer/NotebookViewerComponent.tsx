@@ -44,7 +44,8 @@ interface NotebookViewerComponentState {
 
 export class NotebookViewerComponent
   extends React.Component<NotebookViewerComponentProps, NotebookViewerComponentState>
-  implements DialogHost {
+  implements DialogHost
+{
   private clientManager: NotebookClientV2;
   private notebookComponentBootstrapper: NotebookComponentBootstrapper;
 

@@ -206,11 +206,9 @@ describe("GraphExplorer", () => {
     const gVRU = 123.456;
 
     const disableMonacoEditor = (graphExplorer: GraphExplorer) => {
-      renderResultAsJsonStub = sinon.stub(graphExplorer, "renderResultAsJson").callsFake(
-        (): JSX.Element => {
-          return <div>[Monaco Editor Stub]</div>;
-        }
-      );
+      renderResultAsJsonStub = sinon.stub(graphExplorer, "renderResultAsJson").callsFake((): JSX.Element => {
+        return <div>[Monaco Editor Stub]</div>;
+      });
     };
 
     interface AjaxResponse {

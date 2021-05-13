@@ -172,8 +172,8 @@ export default class QueryClauseViewModel {
     } else {
       this.resetFromTimestamp();
       if (userContext.apiType === "Cassandra") {
-        const cassandraSchema = this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection
-          .cassandraSchema;
+        const cassandraSchema =
+          this._queryBuilderViewModel.tableEntityListViewModel.queryTablesTab.collection.cassandraSchema;
         for (let i = 0, len = cassandraSchema.length; i < len; i++) {
           if (cassandraSchema[i].property === this.field()) {
             this.type(cassandraSchema[i].type);

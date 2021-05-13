@@ -19,21 +19,8 @@ export const options = [
   { key: Int64, text: Int64 },
 ];
 
-const {
-  Text,
-  Ascii,
-  Bigint,
-  Blob,
-  Decimal,
-  Float,
-  Int,
-  Uuid,
-  Varchar,
-  Varint,
-  Inet,
-  Smallint,
-  Tinyint,
-} = TableConstants.CassandraType;
+const { Text, Ascii, Bigint, Blob, Decimal, Float, Int, Uuid, Varchar, Varint, Inet, Smallint, Tinyint } =
+  TableConstants.CassandraType;
 export const cassandraOptions = [
   { key: Text, text: Text },
   { key: Ascii, text: Ascii },

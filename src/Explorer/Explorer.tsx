@@ -1067,9 +1067,9 @@ export default class Explorer {
   }
 
   public findSelectedCollection(): ViewModels.Collection {
-    return (this.selectedNode().nodeKind === "Collection"
-      ? this.selectedNode()
-      : this.selectedNode().collection) as ViewModels.Collection;
+    return (
+      this.selectedNode().nodeKind === "Collection" ? this.selectedNode() : this.selectedNode().collection
+    ) as ViewModels.Collection;
   }
 
   public closeAllPanes(): void {
@@ -1165,9 +1165,10 @@ export default class Explorer {
     return true;
   }
 
-  private getDeltaDatabases(
-    updatedDatabaseList: DataModels.Database[]
-  ): { toAdd: ViewModels.Database[]; toDelete: ViewModels.Database[] } {
+  private getDeltaDatabases(updatedDatabaseList: DataModels.Database[]): {
+    toAdd: ViewModels.Database[];
+    toDelete: ViewModels.Database[];
+  } {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         this.databases(),

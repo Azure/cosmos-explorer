@@ -192,36 +192,36 @@ export class NotebookClientV2 {
      * is triggered for *any* state change).
      * TODO: Use react-redux connect() to subscribe to state changes?
      */
-    const cacheKernelSpecsMiddleware: Middleware = <D extends Dispatch<AnyAction>, S extends AppState>({
-      dispatch,
-      getState,
-    }: MiddlewareAPI<D, S>) => (next: Dispatch<AnyAction>) => <A extends AnyAction>(action: A): A => {
-      switch (action.type) {
-        case actions.FETCH_KERNELSPECS_FULFILLED: {
-          const payload = ((action as unknown) as actions.FetchKernelspecsFulfilled).payload;
-          const defaultKernelName = payload.defaultKernelName;
-          this.kernelSpecsForDisplay = Object.values(payload.kernelspecs)
-            .filter((spec) => !spec.metadata?.hasOwnProperty("hidden"))
-            .map((spec) => ({
-              name: spec.name,
-              displayName: spec.displayName,
-            }))
-            .sort((a: KernelSpecsDisplay, b: KernelSpecsDisplay) => {
-              // Put default at the top, otherwise lexicographically compare
-              if (a.displayName === defaultKernelName) {
-                return -1;
-              } else if (b.name === defaultKernelName) {
-                return 1;
-              } else {
-                return a.displayName.localeCompare(b.displayName);
-              }
-            });
-          break;
+    const cacheKernelSpecsMiddleware: Middleware =
+      <D extends Dispatch<AnyAction>, S extends AppState>({ dispatch, getState }: MiddlewareAPI<D, S>) =>
+      (next: Dispatch<AnyAction>) =>
+      <A extends AnyAction>(action: A): A => {
+        switch (action.type) {
+          case actions.FETCH_KERNELSPECS_FULFILLED: {
+            const payload = (action as unknown as actions.FetchKernelspecsFulfilled).payload;
+            const defaultKernelName = payload.defaultKernelName;
+            this.kernelSpecsForDisplay = Object.values(payload.kernelspecs)
+              .filter((spec) => !spec.metadata?.hasOwnProperty("hidden"))
+              .map((spec) => ({
+                name: spec.name,
+                displayName: spec.displayName,
+              }))
+              .sort((a: KernelSpecsDisplay, b: KernelSpecsDisplay) => {
+                // Put default at the top, otherwise lexicographically compare
+                if (a.displayName === defaultKernelName) {
+                  return -1;
+                } else if (b.name === defaultKernelName) {
+                  return 1;
+                } else {
+                  return a.displayName.localeCompare(b.displayName);
+                }
+              });
+            break;
+          }
         }
-      }
 
-      return next(action);
-    };
+        return next(action);
+      };
 
     const traceErrorFct = (title: string, message: string) => {
       TelemetryProcessor.traceFailure(Action.NotebookErrorNotification, {

@@ -214,11 +214,9 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
           }}
         >
           <div className="commandDropdown">
-            {this.props.children.map(
-              (c: CommandButtonComponentProps, index: number): JSX.Element => {
-                return CommandButtonComponent.renderButton(c, `${index}`);
-              }
-            )}
+            {this.props.children.map((c: CommandButtonComponentProps, index: number): JSX.Element => {
+              return CommandButtonComponent.renderButton(c, `${index}`);
+            })}
           </div>
         </div>
       </div>

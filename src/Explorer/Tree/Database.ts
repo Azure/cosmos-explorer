@@ -259,9 +259,10 @@ export default class Database implements ViewModels.Database {
     }
   }
 
-  private getDeltaCollections(
-    updatedCollectionsList: DataModels.Collection[]
-  ): { toAdd: DataModels.Collection[]; toDelete: Collection[] } {
+  private getDeltaCollections(updatedCollectionsList: DataModels.Collection[]): {
+    toAdd: DataModels.Collection[];
+    toDelete: Collection[];
+  } {
     const collectionsToAdd: DataModels.Collection[] = _.filter(
       updatedCollectionsList,
       (collection: DataModels.Collection) => {

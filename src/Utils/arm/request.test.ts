@@ -7,7 +7,7 @@ interface Global {
   Headers: unknown;
 }
 
-((global as unknown) as Global).Headers = ((fetch as unknown) as Global).Headers;
+(global as unknown as Global).Headers = (fetch as unknown as Global).Headers;
 
 describe("ARM request", () => {
   updateUserContext({

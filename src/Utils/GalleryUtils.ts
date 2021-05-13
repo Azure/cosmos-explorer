@@ -475,9 +475,7 @@ export function getTabTitle(tab: GalleryTab): string {
   }
 }
 
-export function filterPublishedNotebooks(
-  items: IGalleryItem[]
-): {
+export function filterPublishedNotebooks(items: IGalleryItem[]): {
   published: IGalleryItem[];
   underReview: IGalleryItem[];
   removed: IGalleryItem[];

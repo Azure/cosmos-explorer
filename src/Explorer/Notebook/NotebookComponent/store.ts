@@ -21,16 +21,16 @@ export default function configureStore(
   /**
    * Catches errors in reducers
    */
-  const catchErrorMiddleware: Middleware = <D extends Dispatch<AnyAction>, S extends AppState>({
-    dispatch,
-    getState,
-  }: MiddlewareAPI<D, S>) => (next: Dispatch<AnyAction>) => <A extends AnyAction>(action: A): any => {
-    try {
-      next(action);
-    } catch (error) {
-      traceFailure("Reducer failure", error);
-    }
-  };
+  const catchErrorMiddleware: Middleware =
+    <D extends Dispatch<AnyAction>, S extends AppState>({ dispatch, getState }: MiddlewareAPI<D, S>) =>
+    (next: Dispatch<AnyAction>) =>
+    <A extends AnyAction>(action: A): any => {
+      try {
+        next(action);
+      } catch (error) {
+        traceFailure("Reducer failure", error);
+      }
+    };
 
   const protect = (epic: Epic) => {
     return (action$: Observable<any>, state$: any, dependencies: any) =>

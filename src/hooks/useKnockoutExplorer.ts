@@ -65,7 +65,7 @@ export function useKnockoutExplorer(platform: Platform, explorerParams: Explorer
 }
 
 async function configureHosted(explorerParams: ExplorerParams): Promise<Explorer> {
-  const win = (window as unknown) as HostedExplorerChildFrame;
+  const win = window as unknown as HostedExplorerChildFrame;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
     return configureHostedWithEncryptedToken(win.hostedConfig, explorerParams);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {

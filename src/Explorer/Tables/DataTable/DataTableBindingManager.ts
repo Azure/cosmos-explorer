@@ -277,8 +277,9 @@ function updateTableScrollableRegionWidth(): void {
     }
 
     var bodyWidth = $(window).width();
-    var dataTablesScrollBodyPosLeft = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset()
-      .left;
+    var dataTablesScrollBodyPosLeft = $(tabElement)
+      .find(Constants.htmlSelectors.dataTableScrollBodySelector)
+      .offset().left;
     var scrollWidth = bodyWidth - dataTablesScrollBodyPosLeft;
 
     // jquery datatables automatically sets width:100% to both the header and the body when we use it's column autoWidth feature.

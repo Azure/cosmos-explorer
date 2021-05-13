@@ -67,10 +67,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
   const [entityAttributeProperty, setEntityAttributeProperty] = useState<string>("");
-  const [
-    isEntityValuePanelOpen,
-    { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
-  ] = useBoolean(false);
+  const [isEntityValuePanelOpen, { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse }] =
+    useBoolean(false);
 
   /* Get default and previous saved entity headers */
   useEffect(() => {

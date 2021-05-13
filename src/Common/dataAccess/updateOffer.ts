@@ -405,7 +405,7 @@ const updateOfferWithSDK = async (params: UpdateOfferParams): Promise<Offer> => 
   const sdkResponse = await client()
     .offer(params.currentOffer.id)
     // TODO Remove casting when SDK types are fixed (https://github.com/Azure/azure-sdk-for-js/issues/10660)
-    .replace((newOffer as unknown) as OfferDefinition, options);
+    .replace(newOffer as unknown as OfferDefinition, options);
 
   return parseSDKOfferResponse(sdkResponse);
 };

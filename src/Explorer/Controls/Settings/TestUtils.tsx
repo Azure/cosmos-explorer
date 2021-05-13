@@ -5,7 +5,7 @@ import ko from "knockout";
 
 export const container = new Explorer();
 
-export const collection = ({
+export const collection = {
   container: container,
   databaseId: "test",
   id: ko.observable<string>("test"),
@@ -43,4 +43,4 @@ export const collection = ({
   readSettings: () => {
     return;
   },
-} as unknown) as ViewModels.Collection;
+} as unknown as ViewModels.Collection;

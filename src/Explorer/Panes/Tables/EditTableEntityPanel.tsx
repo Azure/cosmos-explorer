@@ -67,10 +67,8 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   const [originalDocument, setOriginalDocument] = useState<Entities.ITableEntity>({});
   const [entityAttributeProperty, setEntityAttributeProperty] = useState<string>("");
 
-  const [
-    isEntityValuePanelOpen,
-    { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
-  ] = useBoolean(false);
+  const [isEntityValuePanelOpen, { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse }] =
+    useBoolean(false);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -111,7 +109,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
             const nonEditableType: boolean =
               entityAttributeType === TableConstants.CassandraType.Blob ||
               entityAttributeType === TableConstants.CassandraType.Inet;
-            const isDisable = !_.contains<string>(cassandraKeys, key) && !nonEditableType;
+            const isDisable = !_.contains<string>(cassandraKeys[0], key) && !nonEditableType;
             const time =
               entityAttributeType === TableConstants.TableType.DateTime ? getFormattedTime(displayValue) : "";
             displayedAttributes.push({

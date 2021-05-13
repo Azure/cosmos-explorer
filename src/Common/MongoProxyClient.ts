@@ -314,7 +314,7 @@ export function createMongoCollectionWithProxy(
   return window
     .fetch(
       `${endpoint}/createCollection?${queryString.stringify(
-        (mongoParams as unknown) as queryString.ParsedUrlQueryInput
+        mongoParams as unknown as queryString.ParsedUrlQueryInput
       )}`,
       {
         method: "POST",

@@ -31,7 +31,7 @@ const collection = {
   },
 } as Collection;
 
-const documentId = ({
+const documentId = {
   partitionKeyHeader: () => "[]",
   self: "db/testDB/db/testCollection/docs/testId",
   partitionKeyProperty,
@@ -40,7 +40,7 @@ const documentId = ({
     kind: "Hash",
     version: 1,
   },
-} as unknown) as DocumentId;
+} as unknown as DocumentId;
 
 const databaseAccount = {
   id: "foo",

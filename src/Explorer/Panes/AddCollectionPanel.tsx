@@ -471,44 +471,42 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </TooltipHost>
               </Stack>
 
-              {this.state.uniqueKeys.map(
-                (uniqueKey: string, i: number): JSX.Element => {
-                  return (
-                    <Stack style={{ marginBottom: 8 }} key={`uniqueKey${i}`} horizontal>
-                      <input
-                        type="text"
-                        autoComplete="off"
-                        placeholder={
-                          userContext.apiType === "Mongo"
-                            ? "Comma separated paths e.g. firstName,address.zipCode"
-                            : "Comma separated paths e.g. /firstName,/address/zipCode"
-                        }
-                        className="panelTextField"
-                        autoFocus
-                        value={uniqueKey}
-                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                          const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
-                            if (i === j) {
-                              return event.target.value;
-                            }
-                            return uniqueKey;
-                          });
-                          this.setState({ uniqueKeys });
-                        }}
-                      />
+              {this.state.uniqueKeys.map((uniqueKey: string, i: number): JSX.Element => {
+                return (
+                  <Stack style={{ marginBottom: 8 }} key={`uniqueKey${i}`} horizontal>
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      placeholder={
+                        userContext.apiType === "Mongo"
+                          ? "Comma separated paths e.g. firstName,address.zipCode"
+                          : "Comma separated paths e.g. /firstName,/address/zipCode"
+                      }
+                      className="panelTextField"
+                      autoFocus
+                      value={uniqueKey}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
+                          if (i === j) {
+                            return event.target.value;
+                          }
+                          return uniqueKey;
+                        });
+                        this.setState({ uniqueKeys });
+                      }}
+                    />
 
-                      <IconButton
-                        iconProps={{ iconName: "Delete" }}
-                        style={{ height: 27 }}
-                        onClick={() => {
-                          const uniqueKeys = this.state.uniqueKeys.filter((uniqueKey, j) => i !== j);
-                          this.setState({ uniqueKeys });
-                        }}
-                      />
-                    </Stack>
-                  );
-                }
-              )}
+                    <IconButton
+                      iconProps={{ iconName: "Delete" }}
+                      style={{ height: 27 }}
+                      onClick={() => {
+                        const uniqueKeys = this.state.uniqueKeys.filter((uniqueKey, j) => i !== j);
+                        this.setState({ uniqueKeys });
+                      }}
+                    />
+                  </Stack>
+                );
+              })}
 
               <ActionButton
                 iconProps={{ iconName: "Add" }}

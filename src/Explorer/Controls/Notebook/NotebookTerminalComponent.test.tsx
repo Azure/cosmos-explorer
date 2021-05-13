@@ -111,9 +111,7 @@ describe("NotebookTerminalComponent", () => {
     const terminal: NotebookTerminalComponent = createTerminal();
     const params: Map<string, string> = terminal.getTerminalParams();
 
-    expect(params).toEqual(
-      new Map<string, string>([["terminal", "true"]])
-    );
+    expect(params).toEqual(new Map<string, string>([["terminal", "true"]]));
   });
 
   it("getTerminalParams: Test for Mongo 3.2 terminal", () => {

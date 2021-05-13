@@ -106,10 +106,12 @@ export class NotificationConsoleComponent extends React.Component<
     const numInProgress = this.state.allConsoleData.filter(
       (data: ConsoleData) => data.type === ConsoleDataType.InProgress
     ).length;
-    const numErroredItems = this.state.allConsoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Error)
-      .length;
-    const numInfoItems = this.state.allConsoleData.filter((data: ConsoleData) => data.type === ConsoleDataType.Info)
-      .length;
+    const numErroredItems = this.state.allConsoleData.filter(
+      (data: ConsoleData) => data.type === ConsoleDataType.Error
+    ).length;
+    const numInfoItems = this.state.allConsoleData.filter(
+      (data: ConsoleData) => data.type === ConsoleDataType.Info
+    ).length;
 
     return (
       <div className="notificationConsoleContainer">

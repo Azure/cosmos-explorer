@@ -21,14 +21,12 @@ export class DefaultDirectoryDropdownComponent extends React.Component<DefaultDi
       key: DefaultDirectoryDropdownComponent.lastVisitedKey,
       text: "Sign in to your last visited directory",
     };
-    const directoryOptions: Array<IDropdownOption> = this.props.directories.map(
-      (dirc): IDropdownOption => {
-        return {
-          key: dirc.tenantId,
-          text: `${dirc.displayName}(${dirc.tenantId})`,
-        };
-      }
-    );
+    const directoryOptions: Array<IDropdownOption> = this.props.directories.map((dirc): IDropdownOption => {
+      return {
+        key: dirc.tenantId,
+        text: `${dirc.displayName}(${dirc.tenantId})`,
+      };
+    });
     const dropDownOptions: Array<IDropdownOption> = [lastVisitedOption, ...directoryOptions];
     const dropDownProps: IDropdownProps = {
       label: "Set your default directory",

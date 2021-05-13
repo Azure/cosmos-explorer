@@ -52,15 +52,8 @@ export class KeyboardShortcuts extends React.Component<Props> {
       return;
     }
 
-    const {
-      executeFocusedCell,
-      focusNextCell,
-      focusNextCellEditor,
-      contentRef,
-      cellOrder,
-      focusedCell,
-      cellMap,
-    } = this.props;
+    const { executeFocusedCell, focusNextCell, focusNextCellEditor, contentRef, cellOrder, focusedCell, cellMap } =
+      this.props;
 
     let ctrlKeyPressed = e.ctrlKey;
     // Allow cmd + enter (macOS) to operate like ctrl + enter

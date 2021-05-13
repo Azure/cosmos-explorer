@@ -14,13 +14,11 @@ export interface ControlBarComponentProps {
 
 export class ControlBarComponent extends React.Component<ControlBarComponentProps> {
   private static renderButtons(commandButtonOptions: CommandButtonComponentProps[]): JSX.Element[] {
-    return commandButtonOptions.map(
-      (btn: CommandButtonComponentProps, index: number): JSX.Element => {
-        // Remove label
-        btn.commandButtonLabel = undefined;
-        return CommandButtonComponent.renderButton(btn, `${index}`);
-      }
-    );
+    return commandButtonOptions.map((btn: CommandButtonComponentProps, index: number): JSX.Element => {
+      // Remove label
+      btn.commandButtonLabel = undefined;
+      return CommandButtonComponent.renderButton(btn, `${index}`);
+    });
   }
 
   public render(): JSX.Element {
