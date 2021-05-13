@@ -11,7 +11,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
-      "_panes": Array [],
       "_refreshSparkEnabledStateForAccount": [Function],
       "_resetNotebookWorkspace": [Function],
       "addCollectionText": [Function],

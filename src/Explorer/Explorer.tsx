@@ -180,7 +180,6 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
-  private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -1048,10 +1047,6 @@ export default class Explorer {
       : this.selectedNode().collection) as ViewModels.Collection;
   }
 
-  public closeAllPanes(): void {
-    this._panes.forEach((pane: ContextualPaneBase) => pane.close());
-  }
-
   public isRunningOnNationalCloud(): boolean {
     return (
       userContext.portalEnv === "blackforest" ||
@@ -1845,7 +1840,6 @@ export default class Explorer {
 
   public async handleOpenFileAction(path: string): Promise<void> {
     if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
-      this.closeAllPanes();
       this._openSetupNotebooksPaneForQuickstart();
     }
 

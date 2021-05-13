@@ -9,7 +9,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
-      "_panes": Array [],
       "_refreshSparkEnabledStateForAccount": [Function],
       "_resetNotebookWorkspace": [Function],
       "addCollectionText": [Function],

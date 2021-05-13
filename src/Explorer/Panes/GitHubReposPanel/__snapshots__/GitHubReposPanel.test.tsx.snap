@@ -21,7 +21,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "_closeSynapseLinkModalDialog": [Function],
             "_isAfecFeatureRegistered": [Function],
             "_isInitializingNotebooks": false,
-            "_panes": Array [],
             "_refreshSparkEnabledStateForAccount": [Function],
             "_resetNotebookWorkspace": [Function],
             "addCollectionText": [Function],
