@@ -4,12 +4,10 @@ import NewVertexIcon from "../../../images/NewVertex.svg";
 import StyleIcon from "../../../images/Style.svg";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { GraphAccessor, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
+import { GraphAccessor, GraphExplorer, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
 import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
-import GraphStylingPane from "../Panes/GraphStylingPane";
 import { GraphStylingPanel } from "../Panes/GraphStylingPanel/GraphStylingPanel";
 import { NewVertexPanel } from "../Panes/NewVertexPanel/NewVertexPanel";
 import TabsBase from "./TabsBase";
@@ -49,19 +47,6 @@ interface GraphTabOptions extends ViewModels.TabOptions {
   collectionPartitionKeyProperty: string;
 }
 
-// export interface GraphParams {
-//   // openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
-// }
-
-interface GraphTabStates {
-  isChange: boolean;
-}
-interface GraphTabProps {
-  options: TabsBase;
-}
-
-export default interface GraphTab extends TabsBase, React.Component<GraphTabProps, GraphTabStates> {}
-
 // export default class GraphTab extends React.Component<GraphTabProps, GraphTabStates> {
 export default class GraphTab extends TabsBase {
   public readonly html =
@@ -77,35 +62,25 @@ export default class GraphTab extends TabsBase {
   private isPropertyEditing: ko.Observable<boolean>;
   private isGraphDisplayed: ko.Observable<boolean>;
   private graphAccessor: GraphAccessor;
-  private graphConfig: GraphConfig;
   private igraphConfig: IGraphConfig;
-  private graphConfigUiData: ViewModels.GraphConfigUiData;
   private igraphConfigUiData: ViewModels.IGraphConfigUiData;
   private isFilterQueryLoading: ko.Observable<boolean>;
   private isValidQuery: ko.Observable<boolean>;
-  private graphStylingPane: GraphStylingPane;
   private collectionPartitionKeyProperty: string;
   private contextualPane: ContextualPaneBase;
-
+  public graphExplorer: GraphExplorer;
+  public options: GraphTabOptions;
   constructor(options: GraphTabOptions) {
     super(options);
-    this.state = {
-      isChange: false,
-    };
-    this.graphStylingPane = options.collection && options.collection.container.graphStylingPane;
-    this.collectionPartitionKeyProperty = options.collectionPartitionKeyProperty;
 
+    this.collectionPartitionKeyProperty = options.collectionPartitionKeyProperty;
     this.isNewVertexDisabled = ko.observable(false);
     this.isPropertyEditing = ko.observable(false);
     this.isGraphDisplayed = ko.observable(false);
     this.graphAccessor = undefined;
-    this.graphConfig = GraphTab.createGraphConfig();
-    // // this.openSidePanel = params?.openSidePanel;
-    // this.igraphConfig = GraphTab.createGraphConfig();
-    this.igraphConfigUiData = this.createIGraphConfigUiData();
+    this.igraphConfig = GraphTab.createIGraphConfig();
+    this.igraphConfigUiData = GraphTab.createIGraphConfigUiData(this.igraphConfig);
 
-    // TODO Merge this with this.graphConfig
-    this.graphConfigUiData = GraphTab.createGraphConfigUiData(this.graphConfig);
     this.graphExplorerAdapter = new GraphExplorerAdapter({
       onGraphAccessorCreated: (instance: GraphAccessor): void => {
         this.graphAccessor = instance;
@@ -122,9 +97,9 @@ export default class GraphTab extends TabsBase {
         this.isGraphDisplayed(isDisplayed);
         this.updateNavbarWithTabsButtons();
       },
-      onResetDefaultGraphConfigValues: () => this.setDefaultGraphConfigValues(),
-      graphConfig: this.graphConfig,
-      graphConfigUiData: this.graphConfigUiData,
+      onResetDefaultGraphConfigValues: () => this.setDefaultIGraphConfigValues(),
+      igraphConfig: this.igraphConfig,
+      igraphConfigUiData: this.igraphConfigUiData,
       onIsFilterQueryLoading: (isFilterQueryLoading: boolean): void => this.isFilterQueryLoading(isFilterQueryLoading),
       onIsValidQuery: (isValidQuery: boolean): void => this.isValidQuery(isValidQuery),
       collectionPartitionKeyProperty: options.collectionPartitionKeyProperty,
@@ -139,8 +114,7 @@ export default class GraphTab extends TabsBase {
         }
       },
       resourceId: options.account.id,
-      // igraphConfig: this.igraphConfig,
-      // igraphConfigUiData: this.igraphConfigUiData,
+      setIConfigUiData: this.setIGraphConfigUiData,
     });
 
     this.isFilterQueryLoading = ko.observable(false);
@@ -198,91 +172,76 @@ export default class GraphTab extends TabsBase {
     );
   }
   public openStyling(): void {
-    this.setDefaultGraphConfigValues();
-    // Update the styling pane with this instance
-    this.graphStylingPane.setData(this.graphConfigUiData);
-    // this.graphStylingPane.open();
-    userContext.features.enableKOPanel
-      ? this.graphStylingPane.open()
-      : this.collection.container.openSidePanel(
-          "Graph",
-          <GraphStylingPanel
-            explorer={this.collection.container}
-            closePanel={this.collection.container.closeSidePanel}
-            config={this.igraphConfigUiData}
-            openNotificationConsole={this.collection.container.expandConsole}
-          />
-        );
+    this.collection.container.openSidePanel(
+      "Graph Style",
+      <GraphStylingPanel
+        closePanel={this.collection.container.closeSidePanel}
+        igraphConfigUiData={this.igraphConfigUiData}
+        igraphConfig={this.igraphConfig}
+        getValues={(igraphConfig?: IGraphConfig): void => {
+          this.igraphConfig = igraphConfig;
+          this.graphAccessor.shareIGraphConfig(igraphConfig);
+        }}
+      />
+    );
   }
 
-  public static createGraphConfig(): GraphConfig {
-    return {
-      nodeColor: ko.observable(GraphTab.NODE_COLOR),
-      nodeColorKey: ko.observable(undefined),
-      linkColor: ko.observable(GraphTab.LINK_COLOR),
-      showNeighborType: ko.observable(ViewModels.NeighborType.TARGETS_ONLY),
-      nodeCaption: ko.observable(GraphTab.DEFAULT_NODE_CAPTION),
-      nodeSize: ko.observable(GraphTab.NODE_SIZE),
-      linkWidth: ko.observable(GraphTab.LINK_WIDTH),
-      nodeIconKey: ko.observable(undefined),
-      iconsMap: ko.observable({}),
-    };
-  }
-
-  public static createGraphConfigUiData(graphConfig: GraphConfig): ViewModels.GraphConfigUiData {
-    return {
-      showNeighborType: ko.observable(graphConfig.showNeighborType()),
-      nodeProperties: ko.observableArray([]),
-      nodePropertiesWithNone: ko.observableArray([]),
-      nodeCaptionChoice: ko.observable(graphConfig.nodeCaption()),
-      nodeColorKeyChoice: ko.observable(graphConfig.nodeColorKey()),
-      nodeIconChoice: ko.observable(graphConfig.nodeIconKey()),
-      nodeIconSet: ko.observable(undefined),
-    };
-  }
-
-  setValues = (): void => {
-    //eslint-disable-next-line
-    console.log("setValues > ", this.setState);
-    // this.setState({ isChange: true });
-    // this.graphExplorerAdapter.callGraphExplorer(this.state.isChange);
+  setIGraphConfigUiData = (val: string[]): void => {
+    if (val.length > 0) {
+      this.igraphConfigUiData = {
+        showNeighborType: ViewModels.NeighborType.TARGETS_ONLY,
+        nodeProperties: val,
+        nodePropertiesWithNone: [GraphExplorer.NONE_CHOICE].concat(val),
+        nodeCaptionChoice: this.igraphConfig.nodeCaption,
+        nodeColorKeyChoice: "None",
+        nodeIconChoice: "Node",
+        nodeIconSet: "",
+      };
+    }
   };
 
-  public createIGraphConfigUiData(): ViewModels.IGraphConfigUiData {
+  public static createIGraphConfig(): IGraphConfig {
     return {
-      showNeighborType: ViewModels.NeighborType.BOTH,
-      nodeProperties: [],
-      nodePropertiesWithNone: [],
-      nodeCaptionChoice: undefined,
-      nodeColorKeyChoice: undefined,
-      nodeIconChoice: undefined,
-      nodeIconSet: undefined,
-      setValues: this.setValues,
+      nodeColor: GraphTab.NODE_COLOR,
+      nodeColorKey: "None",
+      linkColor: GraphTab.LINK_COLOR,
+      showNeighborType: ViewModels.NeighborType.TARGETS_ONLY,
+      nodeCaption: GraphTab.DEFAULT_NODE_CAPTION,
+      nodeSize: GraphTab.NODE_SIZE,
+      linkWidth: GraphTab.LINK_WIDTH,
+      nodeIconKey: undefined,
+      iconsMap: {},
     };
   }
 
-  /**
-   * Make sure graph config values are not undefined
-   */
-  private setDefaultGraphConfigValues() {
+  public static createIGraphConfigUiData(igraphConfig: IGraphConfig): ViewModels.IGraphConfigUiData {
+    return {
+      showNeighborType: igraphConfig.showNeighborType,
+      nodeProperties: [],
+      nodePropertiesWithNone: [],
+      nodeCaptionChoice: igraphConfig.nodeCaption,
+      nodeColorKeyChoice: igraphConfig.nodeIconKey,
+      nodeIconChoice: igraphConfig.nodeIconKey,
+      nodeIconSet: undefined,
+    };
+  }
+
+  private setDefaultIGraphConfigValues() {
     // Assign default values if undefined
-    if (
-      this.graphConfigUiData.nodeCaptionChoice() === undefined &&
-      this.graphConfigUiData.nodeProperties().length > 1
-    ) {
-      this.graphConfigUiData.nodeCaptionChoice(this.graphConfigUiData.nodeProperties()[0]);
+    if (this.igraphConfigUiData.nodeCaptionChoice === undefined && this.igraphConfigUiData.nodeProperties.length > 1) {
+      this.igraphConfigUiData.nodeCaptionChoice = this.igraphConfigUiData.nodeProperties[0];
     }
     if (
-      this.graphConfigUiData.nodeColorKeyChoice() === undefined &&
-      this.graphConfigUiData.nodePropertiesWithNone().length > 1
+      this.igraphConfigUiData.nodeColorKeyChoice === undefined &&
+      this.igraphConfigUiData.nodePropertiesWithNone.length > 1
     ) {
-      this.graphConfigUiData.nodeColorKeyChoice(this.graphConfigUiData.nodePropertiesWithNone()[0]);
+      this.igraphConfigUiData.nodeColorKeyChoice = this.igraphConfigUiData.nodePropertiesWithNone[0];
     }
     if (
-      this.graphConfigUiData.nodeIconChoice() === undefined &&
-      this.graphConfigUiData.nodePropertiesWithNone().length > 1
+      this.igraphConfigUiData.nodeIconChoice === undefined &&
+      this.igraphConfigUiData.nodePropertiesWithNone.length > 1
     ) {
-      this.graphConfigUiData.nodeIconChoice(this.graphConfigUiData.nodePropertiesWithNone()[0]);
+      this.igraphConfigUiData.nodeIconChoice = this.igraphConfigUiData.nodePropertiesWithNone[0];
     }
   }
   protected getTabsButtons(): CommandButtonComponentProps[] {

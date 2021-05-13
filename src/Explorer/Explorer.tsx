@@ -58,7 +58,6 @@ import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
-import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
@@ -165,7 +164,6 @@ export default class Explorer {
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
   public addCollectionPane: AddCollectionPane;
-  public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   public gitHubReposPane: ContextualPaneBase;
 
@@ -462,13 +460,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.graphStylingPane = new GraphStylingPane({
-      id: "graphstylingpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -484,12 +475,7 @@ export default class Explorer {
       }
     });
 
-    this._panes = [
-      this.addDatabasePane,
-      this.addCollectionPane,
-      this.graphStylingPane,
-      this.cassandraAddCollectionPane,
-    ];
+    this._panes = [this.addDatabasePane, this.addCollectionPane, this.cassandraAddCollectionPane];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 

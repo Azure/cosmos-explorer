@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { GraphConfig, IGraphConfig } from "../../Tabs/GraphTab";
+import { IGraphConfig } from "../../Tabs/GraphTab";
 import { GraphAccessor, GraphExplorer } from "./GraphExplorer";
 interface Parameter {
   onIsNewVertexDisabledChange: (isEnabled: boolean) => void;
@@ -11,9 +11,6 @@ interface Parameter {
   onIsPropertyEditing: (isEditing: boolean) => void;
   onIsGraphDisplayed: (isDisplayed: boolean) => void;
   onResetDefaultGraphConfigValues: () => void;
-
-  graphConfigUiData: ViewModels.GraphConfigUiData;
-  graphConfig?: GraphConfig;
 
   collectionPartitionKeyProperty: string;
   graphBackendEndpoint: string;
@@ -27,6 +24,7 @@ interface Parameter {
 
   igraphConfigUiData: ViewModels.IGraphConfigUiData;
   igraphConfig: IGraphConfig;
+  setIConfigUiData?: (data: string[]) => void;
 }
 
 interface IGraphExplorerProps {
@@ -47,14 +45,7 @@ export class GraphExplorerAdapter implements ReactAdapter {
 
   public constructor(params: Parameter, props?: IGraphExplorerProps) {
     this.params = params;
-    this.state = {
-      isChangedState: this.props && this.props.isChanged,
-    };
   }
-
-  // callGraphExplorer = (isChanged: boolean) => {
-  //   console.log("GraphExplorerAdapter > callGraphExplorer > ", isChanged);
-  // };
 
   public renderComponent(): JSX.Element {
     return (
@@ -74,12 +65,9 @@ export class GraphExplorerAdapter implements ReactAdapter {
         onLoadStartKey={this.params.onLoadStartKey}
         onLoadStartKeyChange={this.params.onLoadStartKeyChange}
         resourceId={this.params.resourceId}
-        /* TODO Figure out how to make this Knockout-free */
-        graphConfigUiData={this.params.graphConfigUiData}
-        graphConfig={this.params.graphConfig}
         igraphConfigUiData={this.params.igraphConfigUiData}
-        igraphCofig={this.params.igraphConfig}
-        isChanged={this.props && this.props.isChanged}
+        igraphConfig={this.params.igraphConfig}
+        setIConfigUiData={this.params.setIConfigUiData}
       />
     );
   }

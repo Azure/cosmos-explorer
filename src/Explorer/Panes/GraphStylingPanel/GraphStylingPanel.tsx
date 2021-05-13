@@ -1,78 +1,37 @@
-import React, { FunctionComponent, useState } from "react";
-// import { useReact } from "react";
+import React, { FunctionComponent } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import Explorer from "../../Explorer";
-import { GraphStyleComponentF } from "../../Graph/GraphStyleComponentF/GraphStyleComponent";
+import { GraphStyleComponent } from "../../Graph/GraphStyleComponent/GraphStyleComponent";
+import { IGraphConfig } from "../../Tabs/GraphTab";
 import { PanelFooterComponent } from "../PanelFooterComponent";
-import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
-import { PanelLoadingScreen } from "../PanelLoadingScreen";
-// import { GenericRightPaneComponent, GenericRightPaneProps } from "../GenericRightPaneComponent";
-
 interface GraphStylingProps {
-  explorer: Explorer;
   closePanel: () => void;
-  config: ViewModels.IGraphConfigUiData;
-  openNotificationConsole: () => void;
+  igraphConfigUiData: ViewModels.IGraphConfigUiData;
+  igraphConfig: IGraphConfig;
+  getValues: (igraphConfig?: IGraphConfig) => void;
 }
 
 export const GraphStylingPanel: FunctionComponent<GraphStylingProps> = ({
-  explorer,
   closePanel,
-  config,
-  openNotificationConsole,
+  igraphConfigUiData,
+  igraphConfig,
+  getValues,
 }: GraphStylingProps): JSX.Element => {
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const buttonLabel = "Ok";
-  // const [graphConfigUIData, setGraphConfigUIData] = useState({
-  //   showNeighborType: config.showNeighborType,
-  //   nodeProperties: config.nodeProperties,
-  //   nodePropertiesWithNone: config.nodePropertiesWithNone,
-  //   nodeCaptionChoice: config.nodeCaptionChoice,
-  //   nodeColorKeyChoice: config.nodeColorKeyChoice,
-  //   nodeIconChoice: config.nodeIconChoice,
-  //   nodeIconSet: config.nodeIconSet,
-  // });
 
-  // const [formError, setFormError] = useState<string>();
-  // const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
-  // const [isExecuting, setIsExecuting] = useState<boolean>(false);
-  // const [firstFieldHasFocus, setFirstFieldHasFocus] = useState(true);
-
-  // const genericPaneProps: GenericRightPaneProps = {
-  //   container: explorer,
-  //   formError: undefined,
-  //   formErrorDetail: undefined,
-  //   id: "graphStylingPane",
-  //   isExecuting: undefined,
-  //   title: "Graph Styling",
-  //   submitButtonText: "OK",
-  //   onClose: () => closePanel(),
-  //   onSubmit: undefined,
-  // };
+  const submit = () => {
+    closePanel();
+  };
 
   return (
-    <form className="panelFormWrapper">
-      {errorMessage && (
-        <PanelInfoErrorComponent
-          message={errorMessage}
-          messageType="error"
-          showErrorDetails={showErrorDetails}
-          openNotificationConsole={openNotificationConsole}
-        />
-      )}
+    <form className="panelFormWrapper" onSubmit={submit}>
       <div className="panelMainContent">
-        <GraphStyleComponentF config={config}></GraphStyleComponentF>
+        <GraphStyleComponent
+          igraphConfigUiData={igraphConfigUiData}
+          igraphConfig={igraphConfig}
+          getValues={getValues}
+        ></GraphStyleComponent>
       </div>
       <PanelFooterComponent buttonLabel={buttonLabel} />
-      {isLoading && <PanelLoadingScreen />}
     </form>
-    // <GenericRightPaneComponent {...genericPaneProps}>
-    //   <div className="panelMainContent">
-    //     <GraphStyleComponentF config={config}></GraphStyleComponentF>
-    //   </div>
-    // </GenericRightPaneComponent>
   );
 };
