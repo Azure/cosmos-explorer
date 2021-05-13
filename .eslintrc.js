@@ -43,6 +43,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "error",
     "prefer-arrow/prefer-arrow-functions": ["error", { allowStandaloneDeclarations: true }],
     eqeqeq: "error",
+    "react/react-in-jsx-scope": "off",
     "react/display-name": "off",
     "react-hooks/rules-of-hooks": "warn", // TODO: error
     "react-hooks/exhaustive-deps": "warn", // TODO: error

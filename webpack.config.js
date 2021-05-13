@@ -242,6 +242,7 @@ module.exports = function (_env = {}, argv = {}) {
       },
       alias: {
         process: "process/browser",
+        react: path.resolve("./node_modules/react"),
       },
     },
     optimization: {
