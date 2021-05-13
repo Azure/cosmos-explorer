@@ -12,16 +12,8 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("error-display")).toBe(true);
   });
 
-  it("should register graph-style component", () => {
-    expect(ko.components.isRegistered("graph-style")).toBe(true);
-  });
-
   it("should register json-editor component", () => {
     expect(ko.components.isRegistered("json-editor")).toBe(true);
-  });
-
-  it("should register graph-styling-pane component", () => {
-    expect(ko.components.isRegistered("graph-styling-pane")).toBe(true);
   });
 
   it("should register dynamic-list component", () => {

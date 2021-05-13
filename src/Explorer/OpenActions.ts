@@ -140,19 +140,16 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     action.paneKind === ActionContracts.PaneKind.AddCollection ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.AddCollection]
   ) {
-    explorer.closeAllPanes();
     explorer.onNewCollectionClicked();
   } else if (
     action.paneKind === ActionContracts.PaneKind.CassandraAddCollection ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.CassandraAddCollection]
   ) {
-    explorer.closeAllPanes();
     explorer.cassandraAddCollectionPane.open();
   } else if (
     action.paneKind === ActionContracts.PaneKind.GlobalSettings ||
     (<any>action).paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.GlobalSettings]
   ) {
-    explorer.closeAllPanes();
     explorer.openSettingPane();
   }
 }
