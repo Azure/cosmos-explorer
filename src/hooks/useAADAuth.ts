@@ -41,7 +41,7 @@ export function useAADAuth(): ReturnType {
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
 
-  msalInstance.setActiveAccount(account)
+  msalInstance.setActiveAccount(account);
   const login = React.useCallback(async () => {
     const response = await msalInstance.loginPopup();
     setLoggedIn();
@@ -57,7 +57,7 @@ export function useAADAuth(): ReturnType {
   }, []);
 
   const switchTenant = React.useCallback(
-    async (id) => {
+    async () => {
       const response = await msalInstance.loginPopup();
       setTenantId(response.tenantId);
       setAccount(response.account);
