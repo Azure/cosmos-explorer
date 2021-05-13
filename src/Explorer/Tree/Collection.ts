@@ -511,7 +511,7 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
     const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      description: "Mongo Schema node",
+      description: "Schema node",
       databaseName: this.databaseId,
       collectionName: this.id(),
       dataExplorerArea: Constants.Areas.ResourceTree,
