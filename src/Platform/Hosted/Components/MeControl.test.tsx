@@ -1,12 +1,12 @@
 jest.mock("../../../hooks/useDirectories");
+import { AccountInfo } from "@azure/msal-browser";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen } from "@testing-library/react";
 import React from "react";
 import { MeControl } from "./MeControl";
-import { Account } from "msal";
 
 it("renders", () => {
-  const account = {} as Account;
+  const account = {} as AccountInfo;
   const logout = jest.fn();
   const openPanel = jest.fn();
 
