@@ -18,7 +18,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
   linkText,
   openNotificationConsole,
 }: PanelInfoErrorProps): JSX.Element => {
-  let icon: JSX.Element;
+  let icon: JSX.Element = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
   if (messageType === "error") {
     icon = <Icon iconName="StatusErrorFull" className="panelErrorIcon" aria-label="error" />;
   } else if (messageType === "warning") {
