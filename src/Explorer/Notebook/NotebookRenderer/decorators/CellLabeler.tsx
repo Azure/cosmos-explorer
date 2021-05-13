@@ -1,9 +1,8 @@
+import { AppState, ContentRef, DocumentRecordProps, selectors } from "@nteract/core";
+import { RecordOf } from "immutable";
 import React from "react";
 import { connect } from "react-redux";
 import "./CellLabeler.less";
-
-import { AppState, ContentRef, selectors, DocumentRecordProps } from "@nteract/core";
-import { RecordOf } from "immutable";
 
 interface ComponentProps {
   id: string;
@@ -29,7 +28,7 @@ class CellLabeler extends React.Component<ComponentProps & StateProps> {
   }
 }
 
-const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
+const makeMapStateToProps = (_state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
   const mapStateToProps = (state: AppState) => {
     const model = selectors.model(state, { contentRef: ownProps.contentRef });
     const cellOrder = selectors.notebook.cellOrder(model as RecordOf<DocumentRecordProps>);
