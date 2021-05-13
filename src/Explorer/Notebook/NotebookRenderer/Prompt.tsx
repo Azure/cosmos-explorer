@@ -53,7 +53,7 @@ export class PromptPure extends React.Component<Props> {
   }
 }
 
-const makeMapStateToProps = (state: CdbAppState, ownProps: ComponentProps): ((state: CdbAppState) => StateProps) => {
+const makeMapStateToProps = (_state: CdbAppState, ownProps: ComponentProps): ((state: CdbAppState) => StateProps) => {
   const mapStateToProps = (state: CdbAppState) => {
     const { contentRef, id } = ownProps;
     const model = selectors.model(state, { contentRef });

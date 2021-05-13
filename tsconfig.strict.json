@@ -8,6 +8,13 @@
     "noUnusedParameters": true
   },
   "files": [
+    "./src/hooks/useGraphPhoto.tsx",
+    "./src/Explorer/Notebook/NotebookRenderer/decorators/CellLabeler.tsx",
+    "./src/Explorer/Notebook/NotebookRenderer/Prompt.tsx",
+    "./src/Explorer/Controls/Header/GalleryHeaderComponent.tsx",
+    "./src/Explorer/Controls/Header/GalleryHeaderComponent.tsx",
+    "./src/Explorer/Controls/Dialog.tsx",
+    "./src/Common/Tooltip/InfoTooltip.tsx",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",

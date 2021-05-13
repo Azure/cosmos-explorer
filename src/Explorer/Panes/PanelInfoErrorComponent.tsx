@@ -8,7 +8,6 @@ export interface PanelInfoErrorProps {
   link?: string;
   linkText?: string;
   openNotificationConsole?: () => void;
-  formError?: boolean;
 }
 
 export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProps> = ({
@@ -18,7 +17,6 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
   link,
   linkText,
   openNotificationConsole,
-  formError = true,
 }: PanelInfoErrorProps): JSX.Element => {
   let icon: JSX.Element = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
   if (messageType === "error") {
@@ -29,7 +27,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
     icon = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
   }
 
-  return formError ? (
+  return (
     <Stack className="panelInfoErrorContainer" horizontal verticalAlign="center">
       {icon}
       <span className="panelWarningErrorDetailsLinkContainer">
@@ -48,7 +46,5 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
         )}
       </span>
     </Stack>
-  ) : (
-    <div />
   );
 };

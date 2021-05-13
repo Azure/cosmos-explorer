@@ -34,6 +34,7 @@ import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
+import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -368,7 +369,7 @@ export default class Explorer {
         return false;
       }
 
-      return userContext.apiType === "Mongo";
+      return isCapabilityEnabled("EnableMongo");
     });
 
     this.isServerlessEnabled = ko.computed(
@@ -1987,7 +1988,7 @@ export default class Explorer {
         "Add " + getDatabaseName(),
         <AddDatabasePanel
           explorer={this}
-          openNotificationConsole={this.expandConsole}
+          openNotificationConsole={() => this.expandConsole()}
           closePanel={this.closeSidePanel}
         />
       );

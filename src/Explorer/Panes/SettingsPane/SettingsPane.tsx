@@ -18,7 +18,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   expandConsole,
   closePanel,
 }: SettingsPaneProps) => {
-  const [formErrors, setFormErrors] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
@@ -50,7 +49,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
 
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-    setFormErrors("");
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
@@ -104,8 +102,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
 
   const genericPaneProps: RightPaneFormProps = {
     expandConsole,
-    formError: formErrors,
-    formErrorDetail: "",
+    formError: "",
     isExecuting,
     submitButtonText: "Apply",
     onSubmit: () => handlerOnSubmit(undefined),
