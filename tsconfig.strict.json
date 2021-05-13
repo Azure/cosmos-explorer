@@ -38,7 +38,6 @@
     "./src/Contracts/Versions.ts",
     "./src/Explorer/Controls/Dialog.tsx",
     "./src/Explorer/Controls/GitHub/GitHubStyleConstants.ts",
-    "./src/Explorer/Controls/InputTypeahead/InputTypeahead.ts",
     "./src/Explorer/Controls/SmartUi/InputUtils.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.ts",
