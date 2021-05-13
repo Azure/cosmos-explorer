@@ -7,7 +7,9 @@ import postRobot from "post-robot";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { CellOutputViewerProps } from "../../../../CellOutputViewer/CellOutputViewer";
+import { CellOutputViewerProps, SnapshotResponse } from "../../../../CellOutputViewer/CellOutputViewer";
+import * as cdbActions from "../../NotebookComponent/actions";
+import { CdbAppState, SnapshotFragment, SnapshotRequest } from "../../NotebookComponent/types";
 
 // Adapted from https://github.com/nteract/nteract/blob/main/packages/stateful-components/src/outputs/index.tsx
 // to add support for sandboxing using <iframe>
@@ -24,27 +26,47 @@ interface StateProps {
   expanded: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   outputs: Immutable.List<any>;
+
+  pendingSnapshotRequest: SnapshotRequest;
 }
 
 interface DispatchProps {
   onMetadataChange?: (metadata: JSONObject, mediaType: string, index?: number) => void;
+  storeNotebookSnapshot: (imageSrc: string, requestId: string) => void;
+  storeSnapshotFragment: (cellId: string, snapshotFragment: SnapshotFragment) => void;
+  notebookSnapshotError: (error: string) => void;
 }
 
-export class SandboxOutputs extends React.PureComponent<ComponentProps & StateProps & DispatchProps> {
+type SandboxOutputsProps = ComponentProps & StateProps & DispatchProps;
+
+export class SandboxOutputs extends React.Component<SandboxOutputsProps> {
   private childWindow: Window;
+  private nodeRef = React.createRef<HTMLDivElement>();
+
+  constructor(props: SandboxOutputsProps) {
+    super(props);
+
+    this.state = {
+      processedSnapshotRequest: undefined,
+    };
+  }
 
   render(): JSX.Element {
     // Using min-width to set the width of the iFrame, works around an issue in iOS that can prevent the iFrame from sizing correctly.
-    return (
-      <IframeResizer
-        checkOrigin={false}
-        loading="lazy"
-        heightCalculationMethod="taggedElement"
-        onLoad={(event) => this.handleFrameLoad(event)}
-        src="./cellOutputViewer.html"
-        style={{ height: "1px", width: "1px", minWidth: "100%", border: "none" }}
-        sandbox="allow-downloads allow-popups allow-forms allow-pointer-lock allow-scripts allow-popups-to-escape-sandbox"
-      />
+    return this.props.outputs && this.props.outputs.size > 0 ? (
+      <div ref={this.nodeRef}>
+        <IframeResizer
+          checkOrigin={false}
+          loading="lazy"
+          heightCalculationMethod="taggedElement"
+          onLoad={(event) => this.handleFrameLoad(event)}
+          src="./cellOutputViewer.html"
+          style={{ height: "1px", width: "1px", minWidth: "100%", border: "none" }}
+          sandbox="allow-downloads allow-popups allow-forms allow-pointer-lock allow-scripts allow-popups-to-escape-sandbox"
+        />
+      </div>
+    ) : (
+      <></>
     );
   }
 
@@ -76,8 +98,48 @@ export class SandboxOutputs extends React.PureComponent<ComponentProps & StatePr
     this.sendPropsToFrame();
   }
 
-  componentDidUpdate(): void {
+  async componentDidUpdate(prevProps: SandboxOutputsProps): Promise<void> {
     this.sendPropsToFrame();
+
+    if (
+      this.props.pendingSnapshotRequest &&
+      prevProps.pendingSnapshotRequest !== this.props.pendingSnapshotRequest &&
+      this.props.pendingSnapshotRequest.notebookContentRef === this.props.contentRef &&
+      this.nodeRef?.current
+    ) {
+      const boundingClientRect = this.nodeRef.current.getBoundingClientRect();
+
+      try {
+        const { data } = (await postRobot.send(
+          this.childWindow,
+          "snapshotRequest",
+          this.props.pendingSnapshotRequest
+        )) as { data: SnapshotResponse };
+        if (this.props.pendingSnapshotRequest.type === "notebook") {
+          if (data.imageSrc === undefined) {
+            this.props.storeSnapshotFragment(this.props.id, {
+              image: undefined,
+              boundingClientRect: boundingClientRect,
+              requestId: data.requestId,
+            });
+            return;
+          }
+          const image = new Image();
+          image.src = data.imageSrc;
+          image.onload = () => {
+            this.props.storeSnapshotFragment(this.props.id, {
+              image,
+              boundingClientRect: boundingClientRect,
+              requestId: data.requestId,
+            });
+          };
+        } else if (this.props.pendingSnapshotRequest.type === "celloutput") {
+          this.props.storeNotebookSnapshot(data.imageSrc, this.props.pendingSnapshotRequest.requestId);
+        }
+      } catch (error) {
+        this.props.notebookSnapshotError(error.message);
+      }
+    }
   }
 }
 
@@ -85,7 +147,7 @@ export const makeMapStateToProps = (
   initialState: AppState,
   ownProps: ComponentProps
 ): ((state: AppState) => StateProps) => {
-  const mapStateToProps = (state: AppState): StateProps => {
+  const mapStateToProps = (state: CdbAppState): StateProps => {
     let outputs = Immutable.List();
     let hidden = false;
     let expanded = false;
@@ -102,7 +164,17 @@ export const makeMapStateToProps = (
       }
     }
 
-    return { outputs, hidden, expanded };
+    // Determine whether to take a snapshot or not
+    let pendingSnapshotRequest = state.cdb.pendingSnapshotRequest;
+    if (
+      pendingSnapshotRequest &&
+      pendingSnapshotRequest.type === "celloutput" &&
+      pendingSnapshotRequest.cellId !== id
+    ) {
+      pendingSnapshotRequest = undefined;
+    }
+
+    return { outputs, hidden, expanded, pendingSnapshotRequest };
   };
   return mapStateToProps;
 };
@@ -125,6 +197,11 @@ export const makeMapDispatchToProps = (
           })
         );
       },
+      storeSnapshotFragment: (cellId: string, snapshot: SnapshotFragment) =>
+        dispatch(cdbActions.storeCellOutputSnapshot({ cellId, snapshot })),
+      storeNotebookSnapshot: (imageSrc: string, requestId: string) =>
+        dispatch(cdbActions.storeNotebookSnapshot({ imageSrc, requestId })),
+      notebookSnapshotError: (error: string) => dispatch(cdbActions.notebookSnapshotError({ error })),
     };
   };
   return mapDispatchToProps;

@@ -34,6 +34,7 @@ import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
+import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -45,6 +46,7 @@ import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/Gallery
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
+import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
 import type { NotebookPaneContent } from "./Notebook/NotebookManager";
@@ -92,7 +94,7 @@ export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
@@ -126,14 +128,13 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
-  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   public closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
-  public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
@@ -163,7 +164,6 @@ export default class Explorer {
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
-
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -230,6 +230,7 @@ export default class Explorer {
         });
       }
     });
+
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
@@ -334,7 +335,6 @@ export default class Explorer {
       }
       return true;
     });
-    this.isLeftPaneExpanded = ko.observable<boolean>(true);
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
     this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
       // Make sure switching tabs restores tabs display
@@ -368,7 +368,7 @@ export default class Explorer {
         return false;
       }
 
-      return userContext.apiType === "Mongo";
+      return isCapabilityEnabled("EnableMongo");
     });
 
     this.isServerlessEnabled = ko.computed(
@@ -674,16 +674,8 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded(true);
   }
 
-  public toggleLeftPaneExpanded() {
-    this.isLeftPaneExpanded(!this.isLeftPaneExpanded());
-
-    if (this.isLeftPaneExpanded()) {
-      document.getElementById("expandToggleLeftPaneButton").focus();
-      this.splitter.expandLeft();
-    } else {
-      document.getElementById("collapseToggleLeftPaneButton").focus();
-      this.splitter.collapseLeft();
-    }
+  public collapseConsole(): void {
+    this.setIsNotificationConsoleExpanded(false);
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
@@ -800,14 +792,6 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     this.refreshNotebookList();
-  };
-
-  public toggleLeftPaneExpandedKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.toggleLeftPaneExpanded();
-      return false;
-    }
-    return true;
   };
 
   // Facade
@@ -1064,6 +1048,9 @@ export default class Explorer {
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
     }
+    if (flights.indexOf(Constants.Flights.SchemaAnalyzer) !== -1) {
+      userContext.features.enableSchemaAnalyzer = true;
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
@@ -1271,10 +1258,18 @@ export default class Explorer {
   public async publishNotebook(
     name: string,
     content: NotebookPaneContent,
-    parentDomElement?: HTMLElement
+    notebookContentRef?: string,
+    onTakeSnapshot?: (request: SnapshotRequest) => void,
+    onClosePanel?: () => void
   ): Promise<void> {
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
+      await this.notebookManager.openPublishNotebookPane(
+        name,
+        content,
+        notebookContentRef,
+        onTakeSnapshot,
+        onClosePanel
+      );
       this.isPublishNotebookPaneEnabled(true);
     }
   }
@@ -1979,7 +1974,7 @@ export default class Explorer {
         "Add " + getDatabaseName(),
         <AddDatabasePanel
           explorer={this}
-          openNotificationConsole={this.expandConsole}
+          openNotificationConsole={() => this.expandConsole()}
           closePanel={this.closeSidePanel}
         />
       );

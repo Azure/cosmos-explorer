@@ -4,7 +4,6 @@ exports[`Upload Items Pane should render Default properly 1`] = `
 <RightPaneForm
   expandConsole={[Function]}
   formError=""
-  formErrorDetail=""
   onSubmit={[Function]}
   submitButtonText="Upload"
 >

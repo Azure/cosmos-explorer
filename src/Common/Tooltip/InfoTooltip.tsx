@@ -5,7 +5,7 @@ export interface TooltipProps {
   children: string;
 }
 
-export const InfoTooltip: React.FunctionComponent = ({ children }: TooltipProps) => {
+export const InfoTooltip: React.FunctionComponent<TooltipProps> = ({ children }: TooltipProps) => {
   return (
     <span>
       <TooltipHost content={children}>

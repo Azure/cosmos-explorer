@@ -1,6 +1,7 @@
 import { CellId } from "@nteract/commutable";
 import { ContentRef } from "@nteract/core";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { SnapshotFragment, SnapshotRequest } from "./types";
 
 export const CLOSE_NOTEBOOK = "CLOSE_NOTEBOOK";
 export interface CloseNotebookAction {
@@ -85,21 +86,68 @@ export const traceNotebookTelemetry = (payload: {
   };
 };
 
-export const UPDATE_NOTEBOOK_PARENT_DOM_ELTS = "UPDATE_NOTEBOOK_PARENT_DOM_ELTS";
-export interface UpdateNotebookParentDomEltAction {
-  type: "UPDATE_NOTEBOOK_PARENT_DOM_ELTS";
+export const STORE_CELL_OUTPUT_SNAPSHOT = "STORE_CELL_OUTPUT_SNAPSHOT";
+export interface StoreCellOutputSnapshotAction {
+  type: "STORE_CELL_OUTPUT_SNAPSHOT";
   payload: {
-    contentRef: ContentRef;
-    parentElt: HTMLElement;
+    cellId: string;
+    snapshot: SnapshotFragment;
   };
 }
 
-export const UpdateNotebookParentDomElt = (payload: {
-  contentRef: ContentRef;
-  parentElt: HTMLElement;
-}): UpdateNotebookParentDomEltAction => {
+export const storeCellOutputSnapshot = (payload: {
+  cellId: string;
+  snapshot: SnapshotFragment;
+}): StoreCellOutputSnapshotAction => {
   return {
-    type: UPDATE_NOTEBOOK_PARENT_DOM_ELTS,
+    type: STORE_CELL_OUTPUT_SNAPSHOT,
+    payload,
+  };
+};
+
+export const STORE_NOTEBOOK_SNAPSHOT = "STORE_NOTEBOOK_SNAPSHOT";
+export interface StoreNotebookSnapshotAction {
+  type: "STORE_NOTEBOOK_SNAPSHOT";
+  payload: {
+    imageSrc: string;
+    requestId: string;
+  };
+}
+
+export const storeNotebookSnapshot = (payload: {
+  imageSrc: string;
+  requestId: string;
+}): StoreNotebookSnapshotAction => {
+  return {
+    type: STORE_NOTEBOOK_SNAPSHOT,
+    payload,
+  };
+};
+
+export const TAKE_NOTEBOOK_SNAPSHOT = "TAKE_NOTEBOOK_SNAPSHOT";
+export interface TakeNotebookSnapshotAction {
+  type: "TAKE_NOTEBOOK_SNAPSHOT";
+  payload: SnapshotRequest;
+}
+
+export const takeNotebookSnapshot = (payload: SnapshotRequest): TakeNotebookSnapshotAction => {
+  return {
+    type: TAKE_NOTEBOOK_SNAPSHOT,
+    payload,
+  };
+};
+
+export const NOTEBOOK_SNAPSHOT_ERROR = "NOTEBOOK_SNAPSHOT_ERROR";
+export interface NotebookSnapshotErrorAction {
+  type: "NOTEBOOK_SNAPSHOT_ERROR";
+  payload: {
+    error: string;
+  };
+}
+
+export const notebookSnapshotError = (payload: { error: string }): NotebookSnapshotErrorAction => {
+  return {
+    type: NOTEBOOK_SNAPSHOT_ERROR,
     payload,
   };
 };

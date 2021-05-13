@@ -4,7 +4,6 @@ exports[`Settings Pane should render Default properly 1`] = `
 <RightPaneForm
   expandConsole={[Function]}
   formError=""
-  formErrorDetail=""
   isExecuting={false}
   onSubmit={[Function]}
   submitButtonText="Apply"
@@ -152,7 +151,6 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
 <RightPaneForm
   expandConsole={[Function]}
   formError=""
-  formErrorDetail=""
   isExecuting={false}
   onSubmit={[Function]}
   submitButtonText="Apply"

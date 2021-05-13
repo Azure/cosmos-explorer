@@ -52,7 +52,6 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
     <StackItem>
       <Dropdown
         ariaLabel="Cover image"
-        defaultSelectedKey="Custom Image"
         label="Cover image"
         onChange={[Function]}
         options={
@@ -67,6 +66,7 @@ exports[`PublishNotebookPaneComponent renders 1`] = `
             },
           ]
         }
+        selectedKey="Custom Image"
       />
     </StackItem>
     <StackItem>
