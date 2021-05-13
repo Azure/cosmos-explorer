@@ -56,14 +56,11 @@ export function useAADAuth(): ReturnType {
     msalInstance.logoutRedirect();
   }, []);
 
-  const switchTenant = React.useCallback(
-    async () => {
-      const response = await msalInstance.loginPopup();
-      setTenantId(response.tenantId);
-      setAccount(response.account);
-    },
-    [account, tenantId]
-  );
+  const switchTenant = React.useCallback(async () => {
+    const response = await msalInstance.loginPopup();
+    setTenantId(response.tenantId);
+    setAccount(response.account);
+  }, [account, tenantId]);
 
   React.useEffect(() => {
     if (account && tenantId) {
