@@ -19,7 +19,7 @@ test("Notebooks", async () => {
   await explorer.click('[data-test="My Notebooks"] [aria-label="More"]');
   await explorer.click('button[role="menuitem"]:has-text("Upload File")');
   await explorer.setInputFiles("#importFileInput", path.join(__dirname, fileToUpload));
-  await explorer.click('[aria-label="Submit"]');
+  await explorer.click('[aria-label="Upload"]');
   await explorer.click(`[data-test="${fileToUpload}"] [aria-label="More"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete")');
   await explorer.click('button:has-text("Delete")');

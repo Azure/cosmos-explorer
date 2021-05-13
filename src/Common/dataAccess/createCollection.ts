@@ -1,33 +1,32 @@
-import * as DataModels from "../../Contracts/DataModels";
-import { AuthType } from "../../AuthType";
 import { ContainerResponse, DatabaseResponse } from "@azure/cosmos";
+import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
-import { createMongoCollectionWithProxy } from "../MongoProxyClient";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { AuthType } from "../../AuthType";
+import * as DataModels from "../../Contracts/DataModels";
+import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
   getCassandraTable,
 } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
 import {
-  createUpdateMongoDBCollection,
-  getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import {
   createUpdateGremlinGraph,
   getGremlinGraph,
 } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+import {
+  createUpdateMongoDBCollection,
+  getMongoDBCollection,
+} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
 import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
-import { createDatabase } from "./createDatabase";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
+import { createMongoCollectionWithProxy } from "../MongoProxyClient";
+import { createDatabase } from "./createDatabase";
 
 export const createCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   const clearMessage = logConsoleProgress(
@@ -46,7 +45,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
         await createDatabase(createDatabaseParams);
       }
       collection = await createCollectionWithARM(params);
-    } else if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
+    } else if (userContext.apiType === "Mongo") {
       collection = await createMongoCollectionWithProxy(params);
     } else {
       collection = await createCollectionWithSDK(params);
@@ -63,20 +62,20 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
 };
 
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  const defaultExperience = userContext.defaultExperience;
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+  const { apiType } = userContext;
+  switch (apiType) {
+    case "SQL":
       return createSqlContainer(params);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return createMongoCollection(params);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return createCassandraTable(params);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return createGraph(params);
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       return createTable(params);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 };
 

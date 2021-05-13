@@ -16,10 +16,6 @@ describe("Component Registerer", () => {
     expect(ko.components.isRegistered("json-editor")).toBe(true);
   });
 
-  it("should registeradd-collection-pane component", () => {
-    expect(ko.components.isRegistered("add-collection-pane")).toBe(true);
-  });
-
   it("should register dynamic-list component", () => {
     expect(ko.components.isRegistered("dynamic-list")).toBe(true);
   });

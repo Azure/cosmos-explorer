@@ -90,6 +90,7 @@ export default class Collection implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
+  private isOfferRead: boolean;
 
   constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
     this.nodeKind = "Collection";
@@ -195,18 +196,13 @@ export default class Collection implements ViewModels.Collection {
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);
 
     this.showConflicts = ko.observable<boolean>(
-      container &&
-        container.databaseAccount &&
-        container.databaseAccount() &&
-        container.databaseAccount().properties &&
-        container.databaseAccount().properties.enableMultipleWriteLocations &&
-        data &&
-        !!data.conflictResolutionPolicy
+      userContext?.databaseAccount?.properties.enableMultipleWriteLocations && data && !!data.conflictResolutionPolicy
     );
 
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);
     this.isUserDefinedFunctionsExpanded = ko.observable<boolean>(false);
     this.isTriggersExpanded = ko.observable<boolean>(false);
+    this.isOfferRead = false;
   }
 
   public expandCollapseCollection() {
@@ -1008,7 +1004,7 @@ export default class Collection implements ViewModels.Collection {
       Logger.logError(
         JSON.stringify({
           error: getErrorMessage(error),
-          accountName: this.container && this.container.databaseAccount(),
+          accountName: userContext?.databaseAccount,
           databaseName: this.databaseId,
           collectionName: this.id(),
         }),
@@ -1149,7 +1145,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.container.isServerlessEnabled() && !this.offer()) {
+    if (!this.isOfferRead && !this.container.isServerlessEnabled() && !this.offer()) {
       const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
         databaseName: this.databaseId,
         collectionName: this.id(),
@@ -1164,6 +1160,7 @@ export default class Collection implements ViewModels.Collection {
       try {
         this.offer(await readCollectionOffer(params));
         this.usageSizeInKB(await getCollectionUsageSizeInKB(this.databaseId, this.id()));
+        this.isOfferRead = true;
 
         TelemetryProcessor.traceSuccess(
           Action.LoadOffers,

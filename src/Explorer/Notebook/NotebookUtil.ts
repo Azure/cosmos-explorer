@@ -1,8 +1,11 @@
+import { ImmutableCodeCell, ImmutableNotebook } from "@nteract/commutable";
+import domtoimage from "dom-to-image";
+import Html2Canvas from "html2canvas";
 import path from "path";
-import { ImmutableNotebook, ImmutableCodeCell } from "@nteract/commutable";
-import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import * as StringUtils from "../../Utils/StringUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
+import * as StringUtils from "../../Utils/StringUtils";
+import { SnapshotFragment } from "./NotebookComponent/types";
+import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";
@@ -141,23 +144,175 @@ export class NotebookUtil {
     return `${basePath}${newName}`;
   }
 
-  public static findFirstCodeCellWithDisplay(notebookObject: ImmutableNotebook): number {
-    let codeCellIndex = 0;
-    for (let i = 0; i < notebookObject.cellOrder.size; i++) {
-      const cellId = notebookObject.cellOrder.get(i);
-      if (cellId) {
-        const cell = notebookObject.cellMap.get(cellId);
-        if (cell?.cell_type === "code") {
-          const displayOutput = (cell as ImmutableCodeCell)?.outputs?.find(
-            (output) => output.output_type === "display_data" || output.output_type === "execute_result"
-          );
-          if (displayOutput) {
-            return codeCellIndex;
-          }
-          codeCellIndex++;
+  public static hasCodeCellOutput(cell: ImmutableCodeCell): boolean {
+    return !!cell?.outputs?.find(
+      (output) =>
+        output.output_type === "display_data" ||
+        output.output_type === "execute_result" ||
+        output.output_type === "stream"
+    );
+  }
+
+  /**
+   * Find code cells with display
+   * @param notebookObject
+   * @returns array of cell ids
+   */
+  public static findCodeCellWithDisplay(notebookObject: ImmutableNotebook): string[] {
+    return notebookObject.cellOrder.reduce((accumulator: string[], cellId) => {
+      const cell = notebookObject.cellMap.get(cellId);
+      if (cell?.cell_type === "code") {
+        if (NotebookUtil.hasCodeCellOutput(cell as ImmutableCodeCell)) {
+          accumulator.push(cellId);
         }
       }
-    }
-    throw new Error("Output does not exist for any of the cells.");
+      return accumulator;
+    }, []);
+  }
+
+  public static takeScreenshotHtml2Canvas = (
+    target: HTMLElement,
+    aspectRatio: number,
+    subSnapshots: SnapshotFragment[],
+    downloadFilename?: string
+  ): Promise<{ imageSrc: string | undefined }> => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // target.scrollIntoView();
+        const canvas = await Html2Canvas(target, {
+          useCORS: true,
+          allowTaint: true,
+          scale: 1,
+          logging: false,
+        });
+
+        //redraw canvas to fit aspect ratio
+        const originalImageData = canvas.toDataURL();
+        const width = parseInt(canvas.style.width.split("px")[0]);
+        if (aspectRatio) {
+          canvas.height = width * aspectRatio;
+        }
+
+        if (originalImageData === "data:,") {
+          // Empty output
+          resolve({ imageSrc: undefined });
+          return;
+        }
+
+        const context = canvas.getContext("2d");
+        const image = new Image();
+        image.src = originalImageData;
+        image.onload = () => {
+          if (!context) {
+            reject(new Error("No context to draw on"));
+            return;
+          }
+          context.drawImage(image, 0, 0);
+
+          // draw sub images
+          if (subSnapshots) {
+            const parentRect = target.getBoundingClientRect();
+            subSnapshots.forEach((snapshot) => {
+              if (snapshot.image) {
+                context.drawImage(
+                  snapshot.image,
+                  snapshot.boundingClientRect.x - parentRect.x,
+                  snapshot.boundingClientRect.y - parentRect.y
+                );
+              }
+            });
+          }
+
+          resolve({ imageSrc: canvas.toDataURL() });
+
+          if (downloadFilename) {
+            NotebookUtil.downloadFile(
+              downloadFilename,
+              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+            );
+          }
+        };
+      } catch (error) {
+        return reject(error);
+      }
+    });
+  };
+
+  public static takeScreenshotDomToImage = (
+    target: HTMLElement,
+    aspectRatio: number,
+    subSnapshots: SnapshotFragment[],
+    downloadFilename?: string
+  ): Promise<{ imageSrc?: string }> => {
+    return new Promise(async (resolve, reject) => {
+      // target.scrollIntoView();
+      try {
+        const filter = (node: Node): boolean => {
+          const excludedList = ["IMG", "CANVAS"];
+          return !excludedList.includes((node as HTMLElement).tagName);
+        };
+
+        const originalImageData = await domtoimage.toPng(target, { filter });
+        if (originalImageData === "data:,") {
+          // Empty output
+          resolve({});
+          return;
+        }
+
+        const baseImage = new Image();
+        baseImage.src = originalImageData;
+        baseImage.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = baseImage.width;
+          canvas.height = aspectRatio !== undefined ? baseImage.width * aspectRatio : baseImage.width;
+
+          const context = canvas.getContext("2d");
+          if (!context) {
+            reject(new Error("No Canvas to draw on"));
+            return;
+          }
+
+          // White background otherwise image is transparent
+          context.fillStyle = "white";
+          context.fillRect(0, 0, baseImage.width, baseImage.height);
+
+          context.drawImage(baseImage, 0, 0);
+
+          // draw sub images
+          if (subSnapshots) {
+            const parentRect = target.getBoundingClientRect();
+            subSnapshots.forEach((snapshot) => {
+              if (snapshot.image) {
+                context.drawImage(
+                  snapshot.image,
+                  snapshot.boundingClientRect.x - parentRect.x,
+                  snapshot.boundingClientRect.y - parentRect.y
+                );
+              }
+            });
+          }
+
+          resolve({ imageSrc: canvas.toDataURL() });
+
+          if (downloadFilename) {
+            NotebookUtil.downloadFile(
+              downloadFilename,
+              canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+            );
+          }
+        };
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+
+  private static downloadFile(filename: string, content: string): void {
+    const link = document.createElement("a");
+    link.href = content;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 }

@@ -38,7 +38,7 @@ import {
   IDetailsRowProps,
   DetailsRow,
   IDetailsColumnStyles,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
 export interface EstimatedSpendingDisplayProps {

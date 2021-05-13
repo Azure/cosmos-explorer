@@ -1,6 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upload Items Pane should render Default properly 1`] = `
+<<<<<<< HEAD
 <GenericRightPaneComponent
   container={
     Explorer {
@@ -460,13 +461,13 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
+=======
+<RightPaneForm
+  expandConsole={[Function]}
+>>>>>>> d7c62ac7f17501f3c8b85943d3f190ac07ff1cf8
   formError=""
-  formErrorDetail=""
-  id="uploaditemspane"
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Upload"
-  title="Upload Items"
 >
   <div
     className="paneMainContent"
@@ -482,5 +483,5 @@ exports[`Upload Items Pane should render Default properly 1`] = `
  can perform multiple upload operations for larger data sets."
     />
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;

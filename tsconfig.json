@@ -3,6 +3,7 @@
     "allowJs": true,
     "sourceMap": false,
     "noImplicitAny": true,
+    "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
@@ -14,13 +15,24 @@
     "target": "es2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": ["es5", "es6", "dom"],
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": ["jest"]
+    "types": [
+      "jest"
+    ]
   },
-  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts"],
-  "exclude": ["./src/**/__mocks__/**/*"]
+  "include": [
+    "./src/**/*",
+    "./utils/**/*"
+  ],
+  "exclude": [
+    "./src/**/__mocks__/**/*"
+  ]
 }

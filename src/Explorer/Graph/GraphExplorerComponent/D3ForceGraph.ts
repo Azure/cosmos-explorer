@@ -733,15 +733,16 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("aria-label", (d: D3Node) => {
         return this.retrieveNodeCaption(d);
       })
-      .on("dblclick", function (_: MouseEvent, d: D3Node) {
+      .on("dblclick", function (this: Element, _: MouseEvent, d: D3Node) {
+        // https://stackoverflow.com/a/41945742 ('this' implicitly has type 'any' because it does not have a type annotation)
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("click", function (_: MouseEvent, d: D3Node) {
+      .on("click", function (this: Element, _: MouseEvent, d: D3Node) {
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("keypress", function (event: KeyboardEvent, d: D3Node) {
+      .on("keypress", function (this: Element, event: KeyboardEvent, d: D3Node) {
         if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
           event.stopPropagation();
           // this is the <g> element

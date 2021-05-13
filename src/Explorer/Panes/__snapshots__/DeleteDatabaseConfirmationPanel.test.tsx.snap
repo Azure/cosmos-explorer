@@ -52,6 +52,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "upsellMessageAriaLabel": [Function],
           "visible": [Function],
         },
+<<<<<<< HEAD
         AddCollectionPane {
           "_isSynapseLinkEnabled": [Function],
           "autoPilotThroughput": [Function],
@@ -132,6 +133,26 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "upsellMessage": [Function],
           "upsellMessageAriaLabel": [Function],
           "useIndexingForSharedThroughput": [Function],
+=======
+        GraphStylingPane {
+          "container": [Circular],
+          "firstFieldHasFocus": [Function],
+          "formErrors": [Function],
+          "formErrorsDetails": [Function],
+          "graphConfigUIData": Object {
+            "nodeCaptionChoice": [Function],
+            "nodeColorKeyChoice": [Function],
+            "nodeIconChoice": [Function],
+            "nodeIconSet": [Function],
+            "nodeProperties": [Function],
+            "nodePropertiesWithNone": [Function],
+            "showNeighborType": [Function],
+          },
+          "id": "graphstylingpane",
+          "isExecuting": [Function],
+          "isTemplateReady": [Function],
+          "title": [Function],
+>>>>>>> d7c62ac7f17501f3c8b85943d3f190ac07ff1cf8
           "visible": [Function],
         },
         CassandraAddCollectionPane {
@@ -182,88 +203,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       ],
       "_refreshSparkEnabledStateForAccount": [Function],
       "_resetNotebookWorkspace": [Function],
-      "addCollectionPane": AddCollectionPane {
-        "_isSynapseLinkEnabled": [Function],
-        "autoPilotThroughput": [Function],
-        "autoPilotUsageCost": [Function],
-        "canConfigureThroughput": [Function],
-        "canExceedMaximumValue": [Function],
-        "canRequestSupport": [Function],
-        "collectionId": [Function],
-        "collectionIdTitle": [Function],
-        "collectionWithThroughputInShared": [Function],
-        "collectionWithThroughputInSharedTitle": [Function],
-        "container": [Circular],
-        "costsVisible": [Function],
-        "databaseCreateNew": [Function],
-        "databaseCreateNewShared": [Function],
-        "databaseHasSharedOffer": [Function],
-        "databaseId": [Function],
-        "databaseIds": [Function],
-        "dedicatedRequestUnitsUsageCost": [Function],
-        "displayCollectionThroughput": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "formWarnings": [Function],
-        "freeTierExceedThroughputTooltip": [Function],
-        "id": "addcollectionpane",
-        "isAnalyticalStorageOn": [Function],
-        "isAutoPilotSelected": [Function],
-        "isExecuting": [Function],
-        "isFixedStorageSelected": [Function],
-        "isFreeTierAccount": [Function],
-        "isNonTableApi": [Function],
-        "isPreferredApiTable": [Function],
-        "isSharedAutoPilotSelected": [Function],
-        "isSynapseLinkSupported": [Function],
-        "isSynapseLinkUpdating": [Function],
-        "isTemplateReady": [Function],
-        "isTryCosmosDBSubscription": [Function],
-        "isUnlimitedStorageSelected": [Function],
-        "largePartitionKey": [Function],
-        "lowerCasePartitionKeyName": [Function],
-        "maxCollectionsReached": [Function],
-        "maxCollectionsReachedMessage": [Function],
-        "maxThroughputRU": [Function],
-        "minThroughputRU": [Function],
-        "onMoreDetailsKeyPress": [Function],
-        "partitionKey": [Function],
-        "partitionKeyName": [Function],
-        "partitionKeyPattern": [Function],
-        "partitionKeyPlaceholder": [Function],
-        "partitionKeyTitle": [Function],
-        "partitionKeyVisible": [Function],
-        "requestUnitsUsageCost": [Function],
-        "ruToolTipText": [Function],
-        "sharedAutoPilotThroughput": [Function],
-        "sharedThroughputRangeText": [Function],
-        "shouldCreateMongoWildcardIndex": [Function],
-        "shouldUseDatabaseThroughput": [Function],
-        "showAnalyticalStore": [Function],
-        "showEnableSynapseLink": [Function],
-        "showIndexingOptionsForSharedThroughput": [Function],
-        "showUpsellMessage": [Function],
-        "storage": [Function],
-        "throughputDatabase": [Function],
-        "throughputMultiPartition": [Function],
-        "throughputRangeText": [Function],
-        "throughputSinglePartition": [Function],
-        "throughputSpendAck": [Function],
-        "throughputSpendAckText": [Function],
-        "throughputSpendAckVisible": [Function],
-        "title": [Function],
-        "ttl90DaysEnabled": [Function],
-        "uniqueKeys": [Function],
-        "uniqueKeysPlaceholder": [Function],
-        "uniqueKeysVisible": [Function],
-        "upsellAnchorText": [Function],
-        "upsellAnchorUrl": [Function],
-        "upsellMessage": [Function],
-        "upsellMessageAriaLabel": [Function],
-        "useIndexingForSharedThroughput": [Function],
-        "visible": [Function],
-      },
       "addCollectionText": [Function],
       "addDatabasePane": AddDatabasePane {
         "autoPilotUsageCost": [Function],
@@ -356,8 +295,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "userTableQuery": [Function],
         "visible": [Function],
       },
-      "clickHostedAccountSwitch": [Function],
-      "clickHostedDirectorySwitch": [Function],
       "closeDialog": undefined,
       "closeSidePanel": undefined,
       "collapsedResourceTreeWidth": 36,
@@ -379,27 +316,811 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "parameters": [Function],
         "tabsButtons": Array [],
       },
-      "databaseAccount": [Function],
       "databases": [Function],
-      "defaultExperience": [Function],
       "deleteCollectionText": [Function],
       "deleteDatabaseText": [Function],
+<<<<<<< HEAD
+=======
+      "gitHubClient": GitHubClient {
+        "errorCallback": [Function],
+        "ocktokit": OctokitWithDefaults {
+          "actions": Object {
+            "addSelectedRepoToOrgSecret": [Function],
+            "cancelWorkflowRun": [Function],
+            "createOrUpdateOrgSecret": [Function],
+            "createOrUpdateRepoSecret": [Function],
+            "createOrUpdateSecretForRepo": [Function],
+            "createRegistrationToken": [Function],
+            "createRegistrationTokenForOrg": [Function],
+            "createRegistrationTokenForRepo": [Function],
+            "createRemoveToken": [Function],
+            "createRemoveTokenForOrg": [Function],
+            "createRemoveTokenForRepo": [Function],
+            "deleteArtifact": [Function],
+            "deleteOrgSecret": [Function],
+            "deleteRepoSecret": [Function],
+            "deleteSecretFromRepo": [Function],
+            "deleteSelfHostedRunnerFromOrg": [Function],
+            "deleteSelfHostedRunnerFromRepo": [Function],
+            "deleteWorkflowRunLogs": [Function],
+            "downloadArtifact": [Function],
+            "downloadJobLogsForWorkflowRun": [Function],
+            "downloadWorkflowJobLogs": [Function],
+            "downloadWorkflowRunLogs": [Function],
+            "getArtifact": [Function],
+            "getJobForWorkflowRun": [Function],
+            "getOrgPublicKey": [Function],
+            "getOrgSecret": [Function],
+            "getPublicKey": [Function],
+            "getRepoPublicKey": [Function],
+            "getRepoSecret": [Function],
+            "getSecret": [Function],
+            "getSelfHostedRunner": [Function],
+            "getSelfHostedRunnerForOrg": [Function],
+            "getSelfHostedRunnerForRepo": [Function],
+            "getWorkflow": [Function],
+            "getWorkflowJob": [Function],
+            "getWorkflowRun": [Function],
+            "getWorkflowRunUsage": [Function],
+            "getWorkflowUsage": [Function],
+            "listArtifactsForRepo": [Function],
+            "listDownloadsForSelfHostedRunnerApplication": [Function],
+            "listJobsForWorkflowRun": [Function],
+            "listOrgSecrets": [Function],
+            "listRepoSecrets": [Function],
+            "listRepoWorkflowRuns": [Function],
+            "listRepoWorkflows": [Function],
+            "listRunnerApplicationsForOrg": [Function],
+            "listRunnerApplicationsForRepo": [Function],
+            "listSecretsForRepo": [Function],
+            "listSelectedReposForOrgSecret": [Function],
+            "listSelfHostedRunnersForOrg": [Function],
+            "listSelfHostedRunnersForRepo": [Function],
+            "listWorkflowJobLogs": [Function],
+            "listWorkflowRunArtifacts": [Function],
+            "listWorkflowRunLogs": [Function],
+            "listWorkflowRuns": [Function],
+            "listWorkflowRunsForRepo": [Function],
+            "reRunWorkflow": [Function],
+            "removeSelectedRepoFromOrgSecret": [Function],
+            "removeSelfHostedRunner": [Function],
+            "setSelectedReposForOrgSecret": [Function],
+          },
+          "activity": Object {
+            "checkRepoIsStarredByAuthenticatedUser": [Function],
+            "checkStarringRepo": [Function],
+            "deleteRepoSubscription": [Function],
+            "deleteThreadSubscription": [Function],
+            "getFeeds": [Function],
+            "getRepoSubscription": [Function],
+            "getThread": [Function],
+            "getThreadSubscription": [Function],
+            "getThreadSubscriptionForAuthenticatedUser": [Function],
+            "listEventsForAuthenticatedUser": [Function],
+            "listEventsForOrg": [Function],
+            "listEventsForUser": [Function],
+            "listFeeds": [Function],
+            "listNotifications": [Function],
+            "listNotificationsForAuthenticatedUser": [Function],
+            "listNotificationsForRepo": [Function],
+            "listOrgEventsForAuthenticatedUser": [Function],
+            "listPublicEvents": [Function],
+            "listPublicEventsForOrg": [Function],
+            "listPublicEventsForRepoNetwork": [Function],
+            "listPublicEventsForUser": [Function],
+            "listPublicOrgEvents": [Function],
+            "listReceivedEventsForUser": [Function],
+            "listReceivedPublicEventsForUser": [Function],
+            "listRepoEvents": [Function],
+            "listRepoNotificationsForAuthenticatedUser": [Function],
+            "listReposStarredByAuthenticatedUser": [Function],
+            "listReposStarredByUser": [Function],
+            "listReposWatchedByUser": [Function],
+            "listStargazersForRepo": [Function],
+            "listWatchedReposForAuthenticatedUser": [Function],
+            "listWatchersForRepo": [Function],
+            "markAsRead": [Function],
+            "markNotificationsAsRead": [Function],
+            "markNotificationsAsReadForRepo": [Function],
+            "markRepoNotificationsAsRead": [Function],
+            "markThreadAsRead": [Function],
+            "setRepoSubscription": [Function],
+            "setThreadSubscription": [Function],
+            "starRepo": [Function],
+            "starRepoForAuthenticatedUser": [Function],
+            "unstarRepo": [Function],
+            "unstarRepoForAuthenticatedUser": [Function],
+          },
+          "apps": Object {
+            "addRepoToInstallation": [Function],
+            "checkAccountIsAssociatedWithAny": [Function],
+            "checkAccountIsAssociatedWithAnyStubbed": [Function],
+            "checkToken": [Function],
+            "createContentAttachment": [Function],
+            "createFromManifest": [Function],
+            "createInstallationAccessToken": [Function],
+            "createInstallationToken": [Function],
+            "deleteAuthorization": [Function],
+            "deleteInstallation": [Function],
+            "deleteToken": [Function],
+            "getAuthenticated": [Function],
+            "getBySlug": [Function],
+            "getInstallation": [Function],
+            "getOrgInstallation": [Function],
+            "getRepoInstallation": [Function],
+            "getSubscriptionPlanForAccount": [Function],
+            "getSubscriptionPlanForAccountStubbed": [Function],
+            "getUserInstallation": [Function],
+            "listAccountsForPlan": [Function],
+            "listAccountsForPlanStubbed": [Function],
+            "listAccountsUserOrOrgOnPlan": [Function],
+            "listAccountsUserOrOrgOnPlanStubbed": [Function],
+            "listInstallationReposForAuthenticatedUser": [Function],
+            "listInstallations": [Function],
+            "listInstallationsForAuthenticatedUser": [Function],
+            "listMarketplacePurchasesForAuthenticatedUser": [Function],
+            "listMarketplacePurchasesForAuthenticatedUserStubbed": [Function],
+            "listPlans": [Function],
+            "listPlansStubbed": [Function],
+            "listRepos": [Function],
+            "listReposAccessibleToInstallation": [Function],
+            "listSubscriptionsForAuthenticatedUser": [Function],
+            "listSubscriptionsForAuthenticatedUserStubbed": [Function],
+            "removeRepoFromInstallation": [Function],
+            "resetToken": [Function],
+            "revokeInstallationAccessToken": [Function],
+            "revokeInstallationToken": [Function],
+            "suspendInstallation": [Function],
+            "unsuspendInstallation": [Function],
+          },
+          "auth": [Function],
+          "checks": Object {
+            "create": [Function],
+            "createSuite": [Function],
+            "get": [Function],
+            "getSuite": [Function],
+            "listAnnotations": [Function],
+            "listForRef": [Function],
+            "listForSuite": [Function],
+            "listSuitesForRef": [Function],
+            "rerequestSuite": [Function],
+            "setSuitesPreferences": [Function],
+            "update": [Function],
+          },
+          "codeScanning": Object {
+            "getAlert": [Function],
+            "listAlertsForRepo": [Function],
+          },
+          "codesOfConduct": Object {
+            "getAllCodesOfConduct": [Function],
+            "getConductCode": [Function],
+            "getForRepo": [Function],
+            "listConductCodes": [Function],
+          },
+          "emojis": Object {
+            "get": [Function],
+          },
+          "gists": Object {
+            "checkIsStarred": [Function],
+            "create": [Function],
+            "createComment": [Function],
+            "delete": [Function],
+            "deleteComment": [Function],
+            "fork": [Function],
+            "get": [Function],
+            "getComment": [Function],
+            "getRevision": [Function],
+            "list": [Function],
+            "listComments": [Function],
+            "listCommits": [Function],
+            "listForUser": [Function],
+            "listForks": [Function],
+            "listPublic": [Function],
+            "listPublicForUser": [Function],
+            "listStarred": [Function],
+            "star": [Function],
+            "unstar": [Function],
+            "update": [Function],
+            "updateComment": [Function],
+          },
+          "git": Object {
+            "createBlob": [Function],
+            "createCommit": [Function],
+            "createRef": [Function],
+            "createTag": [Function],
+            "createTree": [Function],
+            "deleteRef": [Function],
+            "getBlob": [Function],
+            "getCommit": [Function],
+            "getRef": [Function],
+            "getTag": [Function],
+            "getTree": [Function],
+            "listMatchingRefs": [Function],
+            "updateRef": [Function],
+          },
+          "gitignore": Object {
+            "getAllTemplates": [Function],
+            "getTemplate": [Function],
+            "listTemplates": [Function],
+          },
+          "graphql": [Function],
+          "hook": [Function],
+          "interactions": Object {
+            "addOrUpdateRestrictionsForOrg": [Function],
+            "addOrUpdateRestrictionsForRepo": [Function],
+            "getRestrictionsForOrg": [Function],
+            "getRestrictionsForRepo": [Function],
+            "removeRestrictionsForOrg": [Function],
+            "removeRestrictionsForRepo": [Function],
+            "setRestrictionsForOrg": [Function],
+            "setRestrictionsForRepo": [Function],
+          },
+          "issues": Object {
+            "addAssignees": [Function],
+            "addLabels": [Function],
+            "checkAssignee": [Function],
+            "checkUserCanBeAssigned": [Function],
+            "create": [Function],
+            "createComment": [Function],
+            "createLabel": [Function],
+            "createMilestone": [Function],
+            "deleteComment": [Function],
+            "deleteLabel": [Function],
+            "deleteMilestone": [Function],
+            "get": [Function],
+            "getComment": [Function],
+            "getEvent": [Function],
+            "getLabel": [Function],
+            "getMilestone": [Function],
+            "list": [Function],
+            "listAssignees": [Function],
+            "listComments": [Function],
+            "listCommentsForRepo": [Function],
+            "listEvents": [Function],
+            "listEventsForRepo": [Function],
+            "listEventsForTimeline": [Function],
+            "listForAuthenticatedUser": [Function],
+            "listForOrg": [Function],
+            "listForRepo": [Function],
+            "listLabelsForMilestone": [Function],
+            "listLabelsForRepo": [Function],
+            "listLabelsOnIssue": [Function],
+            "listMilestones": [Function],
+            "listMilestonesForRepo": [Function],
+            "lock": [Function],
+            "removeAllLabels": [Function],
+            "removeAssignees": [Function],
+            "removeLabel": [Function],
+            "removeLabels": [Function],
+            "replaceAllLabels": [Function],
+            "replaceLabels": [Function],
+            "setLabels": [Function],
+            "unlock": [Function],
+            "update": [Function],
+            "updateComment": [Function],
+            "updateLabel": [Function],
+            "updateMilestone": [Function],
+          },
+          "licenses": Object {
+            "get": [Function],
+            "getAllCommonlyUsed": [Function],
+            "getForRepo": [Function],
+            "listCommonlyUsed": [Function],
+          },
+          "log": Object {
+            "debug": [Function],
+            "error": [Function],
+            "info": [Function],
+            "warn": [Function],
+          },
+          "markdown": Object {
+            "render": [Function],
+            "renderRaw": [Function],
+          },
+          "meta": Object {
+            "get": [Function],
+          },
+          "migrations": Object {
+            "cancelImport": [Function],
+            "deleteArchiveForAuthenticatedUser": [Function],
+            "deleteArchiveForOrg": [Function],
+            "downloadArchiveForOrg": [Function],
+            "getArchiveForAuthenticatedUser": [Function],
+            "getCommitAuthors": [Function],
+            "getImportProgress": [Function],
+            "getImportStatus": [Function],
+            "getLargeFiles": [Function],
+            "getStatusForAuthenticatedUser": [Function],
+            "getStatusForOrg": [Function],
+            "listForAuthenticatedUser": [Function],
+            "listForOrg": [Function],
+            "listReposForOrg": [Function],
+            "listReposForUser": [Function],
+            "mapCommitAuthor": [Function],
+            "setLfsPreference": [Function],
+            "startForAuthenticatedUser": [Function],
+            "startForOrg": [Function],
+            "startImport": [Function],
+            "unlockRepoForAuthenticatedUser": [Function],
+            "unlockRepoForOrg": [Function],
+            "updateImport": [Function],
+          },
+          "orgs": Object {
+            "addOrUpdateMembership": [Function],
+            "blockUser": [Function],
+            "checkBlockedUser": [Function],
+            "checkMembership": [Function],
+            "checkMembershipForUser": [Function],
+            "checkPublicMembership": [Function],
+            "checkPublicMembershipForUser": [Function],
+            "concealMembership": [Function],
+            "convertMemberToOutsideCollaborator": [Function],
+            "createHook": [Function],
+            "createInvitation": [Function],
+            "createWebhook": [Function],
+            "deleteHook": [Function],
+            "deleteWebhook": [Function],
+            "get": [Function],
+            "getHook": [Function],
+            "getMembership": [Function],
+            "getMembershipForAuthenticatedUser": [Function],
+            "getMembershipForUser": [Function],
+            "getWebhook": [Function],
+            "list": [Function],
+            "listAppInstallations": [Function],
+            "listBlockedUsers": [Function],
+            "listForAuthenticatedUser": [Function],
+            "listForUser": [Function],
+            "listHooks": [Function],
+            "listInstallations": [Function],
+            "listInvitationTeams": [Function],
+            "listMembers": [Function],
+            "listMemberships": [Function],
+            "listMembershipsForAuthenticatedUser": [Function],
+            "listOutsideCollaborators": [Function],
+            "listPendingInvitations": [Function],
+            "listPublicMembers": [Function],
+            "listWebhooks": [Function],
+            "pingHook": [Function],
+            "pingWebhook": [Function],
+            "publicizeMembership": [Function],
+            "removeMember": [Function],
+            "removeMembership": [Function],
+            "removeMembershipForUser": [Function],
+            "removeOutsideCollaborator": [Function],
+            "removePublicMembershipForAuthenticatedUser": [Function],
+            "setMembershipForUser": [Function],
+            "setPublicMembershipForAuthenticatedUser": [Function],
+            "unblockUser": [Function],
+            "update": [Function],
+            "updateHook": [Function],
+            "updateMembership": [Function],
+            "updateMembershipForAuthenticatedUser": [Function],
+            "updateWebhook": [Function],
+          },
+          "paginate": [Function],
+          "projects": Object {
+            "addCollaborator": [Function],
+            "createCard": [Function],
+            "createColumn": [Function],
+            "createForAuthenticatedUser": [Function],
+            "createForOrg": [Function],
+            "createForRepo": [Function],
+            "delete": [Function],
+            "deleteCard": [Function],
+            "deleteColumn": [Function],
+            "get": [Function],
+            "getCard": [Function],
+            "getColumn": [Function],
+            "getPermissionForUser": [Function],
+            "listCards": [Function],
+            "listCollaborators": [Function],
+            "listColumns": [Function],
+            "listForOrg": [Function],
+            "listForRepo": [Function],
+            "listForUser": [Function],
+            "moveCard": [Function],
+            "moveColumn": [Function],
+            "removeCollaborator": [Function],
+            "reviewUserPermissionLevel": [Function],
+            "update": [Function],
+            "updateCard": [Function],
+            "updateColumn": [Function],
+          },
+          "pulls": Object {
+            "checkIfMerged": [Function],
+            "create": [Function],
+            "createComment": [Function],
+            "createReplyForReviewComment": [Function],
+            "createReview": [Function],
+            "createReviewComment": [Function],
+            "createReviewCommentReply": [Function],
+            "createReviewRequest": [Function],
+            "deleteComment": [Function],
+            "deletePendingReview": [Function],
+            "deleteReviewComment": [Function],
+            "deleteReviewRequest": [Function],
+            "dismissReview": [Function],
+            "get": [Function],
+            "getComment": [Function],
+            "getCommentsForReview": [Function],
+            "getReview": [Function],
+            "getReviewComment": [Function],
+            "list": [Function],
+            "listComments": [Function],
+            "listCommentsForRepo": [Function],
+            "listCommentsForReview": [Function],
+            "listCommits": [Function],
+            "listFiles": [Function],
+            "listRequestedReviewers": [Function],
+            "listReviewComments": [Function],
+            "listReviewCommentsForRepo": [Function],
+            "listReviewRequests": [Function],
+            "listReviews": [Function],
+            "merge": [Function],
+            "removeRequestedReviewers": [Function],
+            "requestReviewers": [Function],
+            "submitReview": [Function],
+            "update": [Function],
+            "updateBranch": [Function],
+            "updateComment": [Function],
+            "updateReview": [Function],
+            "updateReviewComment": [Function],
+          },
+          "rateLimit": Object {
+            "get": [Function],
+          },
+          "reactions": Object {
+            "createForCommitComment": [Function],
+            "createForIssue": [Function],
+            "createForIssueComment": [Function],
+            "createForPullRequestReviewComment": [Function],
+            "createForTeamDiscussionCommentInOrg": [Function],
+            "createForTeamDiscussionInOrg": [Function],
+            "delete": [Function],
+            "deleteForCommitComment": [Function],
+            "deleteForIssue": [Function],
+            "deleteForIssueComment": [Function],
+            "deleteForPullRequestComment": [Function],
+            "deleteForTeamDiscussion": [Function],
+            "deleteForTeamDiscussionComment": [Function],
+            "deleteLegacy": [Function],
+            "listForCommitComment": [Function],
+            "listForIssue": [Function],
+            "listForIssueComment": [Function],
+            "listForPullRequestReviewComment": [Function],
+            "listForTeamDiscussionCommentInOrg": [Function],
+            "listForTeamDiscussionInOrg": [Function],
+          },
+          "repos": Object {
+            "acceptInvitation": [Function],
+            "addAppAccessRestrictions": [Function],
+            "addCollaborator": [Function],
+            "addDeployKey": [Function],
+            "addProtectedBranchAdminEnforcement": [Function],
+            "addProtectedBranchAppRestrictions": [Function],
+            "addProtectedBranchRequiredSignatures": [Function],
+            "addProtectedBranchRequiredStatusChecksContexts": [Function],
+            "addProtectedBranchTeamRestrictions": [Function],
+            "addProtectedBranchUserRestrictions": [Function],
+            "addStatusCheckContexts": [Function],
+            "addTeamAccessRestrictions": [Function],
+            "addUserAccessRestrictions": [Function],
+            "checkCollaborator": [Function],
+            "checkVulnerabilityAlerts": [Function],
+            "compareCommits": [Function],
+            "createCommitComment": [Function],
+            "createCommitSignatureProtection": [Function],
+            "createCommitStatus": [Function],
+            "createDeployKey": [Function],
+            "createDeployment": [Function],
+            "createDeploymentStatus": [Function],
+            "createDispatchEvent": [Function],
+            "createForAuthenticatedUser": [Function],
+            "createFork": [Function],
+            "createHook": [Function],
+            "createInOrg": [Function],
+            "createOrUpdateFile": [Function],
+            "createOrUpdateFileContents": [Function],
+            "createPagesSite": [Function],
+            "createRelease": [Function],
+            "createStatus": [Function],
+            "createUsingTemplate": [Function],
+            "createWebhook": [Function],
+            "declineInvitation": [Function],
+            "delete": [Function],
+            "deleteAccessRestrictions": [Function],
+            "deleteAdminBranchProtection": [Function],
+            "deleteBranchProtection": [Function],
+            "deleteCommitComment": [Function],
+            "deleteCommitSignatureProtection": [Function],
+            "deleteDeployKey": [Function],
+            "deleteDeployment": [Function],
+            "deleteDownload": [Function],
+            "deleteFile": [Function],
+            "deleteHook": [Function],
+            "deleteInvitation": [Function],
+            "deletePagesSite": [Function],
+            "deletePullRequestReviewProtection": [Function],
+            "deleteRelease": [Function],
+            "deleteReleaseAsset": [Function],
+            "deleteWebhook": [Function],
+            "disableAutomatedSecurityFixes": [Function],
+            "disablePagesSite": [Function],
+            "disableVulnerabilityAlerts": [Function],
+            "downloadArchive": [Function],
+            "enableAutomatedSecurityFixes": [Function],
+            "enablePagesSite": [Function],
+            "enableVulnerabilityAlerts": [Function],
+            "get": [Function],
+            "getAccessRestrictions": [Function],
+            "getAdminBranchProtection": [Function],
+            "getAllStatusCheckContexts": [Function],
+            "getAllTopics": [Function],
+            "getAppsWithAccessToProtectedBranch": [Function],
+            "getArchiveLink": [Function],
+            "getBranch": [Function],
+            "getBranchProtection": [Function],
+            "getClones": [Function],
+            "getCodeFrequencyStats": [Function],
+            "getCollaboratorPermissionLevel": [Function],
+            "getCombinedStatusForRef": [Function],
+            "getCommit": [Function],
+            "getCommitActivityStats": [Function],
+            "getCommitComment": [Function],
+            "getCommitSignatureProtection": [Function],
+            "getCommunityProfileMetrics": [Function],
+            "getContent": [Function],
+            "getContents": [Function],
+            "getContributorsStats": [Function],
+            "getDeployKey": [Function],
+            "getDeployment": [Function],
+            "getDeploymentStatus": [Function],
+            "getDownload": [Function],
+            "getHook": [Function],
+            "getLatestPagesBuild": [Function],
+            "getLatestRelease": [Function],
+            "getPages": [Function],
+            "getPagesBuild": [Function],
+            "getParticipationStats": [Function],
+            "getProtectedBranchAdminEnforcement": [Function],
+            "getProtectedBranchPullRequestReviewEnforcement": [Function],
+            "getProtectedBranchRequiredSignatures": [Function],
+            "getProtectedBranchRequiredStatusChecks": [Function],
+            "getProtectedBranchRestrictions": [Function],
+            "getPullRequestReviewProtection": [Function],
+            "getPunchCardStats": [Function],
+            "getReadme": [Function],
+            "getRelease": [Function],
+            "getReleaseAsset": [Function],
+            "getReleaseByTag": [Function],
+            "getStatusChecksProtection": [Function],
+            "getTeamsWithAccessToProtectedBranch": [Function],
+            "getTopPaths": [Function],
+            "getTopReferrers": [Function],
+            "getUsersWithAccessToProtectedBranch": [Function],
+            "getViews": [Function],
+            "getWebhook": [Function],
+            "list": [Function],
+            "listAssetsForRelease": [Function],
+            "listBranches": [Function],
+            "listBranchesForHeadCommit": [Function],
+            "listCollaborators": [Function],
+            "listCommentsForCommit": [Function],
+            "listCommitComments": [Function],
+            "listCommitCommentsForRepo": [Function],
+            "listCommitStatusesForRef": [Function],
+            "listCommits": [Function],
+            "listContributors": [Function],
+            "listDeployKeys": [Function],
+            "listDeploymentStatuses": [Function],
+            "listDeployments": [Function],
+            "listDownloads": [Function],
+            "listForAuthenticatedUser": [Function],
+            "listForOrg": [Function],
+            "listForUser": [Function],
+            "listForks": [Function],
+            "listHooks": [Function],
+            "listInvitations": [Function],
+            "listInvitationsForAuthenticatedUser": [Function],
+            "listLanguages": [Function],
+            "listPagesBuilds": [Function],
+            "listProtectedBranchRequiredStatusChecksContexts": [Function],
+            "listPublic": [Function],
+            "listPullRequestsAssociatedWithCommit": [Function],
+            "listReleaseAssets": [Function],
+            "listReleases": [Function],
+            "listStatusesForRef": [Function],
+            "listTags": [Function],
+            "listTeams": [Function],
+            "listTopics": [Function],
+            "listWebhooks": [Function],
+            "merge": [Function],
+            "pingHook": [Function],
+            "pingWebhook": [Function],
+            "removeAppAccessRestrictions": [Function],
+            "removeBranchProtection": [Function],
+            "removeCollaborator": [Function],
+            "removeDeployKey": [Function],
+            "removeProtectedBranchAdminEnforcement": [Function],
+            "removeProtectedBranchAppRestrictions": [Function],
+            "removeProtectedBranchPullRequestReviewEnforcement": [Function],
+            "removeProtectedBranchRequiredSignatures": [Function],
+            "removeProtectedBranchRequiredStatusChecks": [Function],
+            "removeProtectedBranchRequiredStatusChecksContexts": [Function],
+            "removeProtectedBranchRestrictions": [Function],
+            "removeProtectedBranchTeamRestrictions": [Function],
+            "removeProtectedBranchUserRestrictions": [Function],
+            "removeStatusCheckContexts": [Function],
+            "removeStatusCheckProtection": [Function],
+            "removeTeamAccessRestrictions": [Function],
+            "removeUserAccessRestrictions": [Function],
+            "replaceAllTopics": [Function],
+            "replaceProtectedBranchAppRestrictions": [Function],
+            "replaceProtectedBranchRequiredStatusChecksContexts": [Function],
+            "replaceProtectedBranchTeamRestrictions": [Function],
+            "replaceProtectedBranchUserRestrictions": [Function],
+            "replaceTopics": [Function],
+            "requestPageBuild": [Function],
+            "requestPagesBuild": [Function],
+            "retrieveCommunityProfileMetrics": [Function],
+            "setAdminBranchProtection": [Function],
+            "setAppAccessRestrictions": [Function],
+            "setStatusCheckContexts": [Function],
+            "setTeamAccessRestrictions": [Function],
+            "setUserAccessRestrictions": [Function],
+            "testPushHook": [Function],
+            "testPushWebhook": [Function],
+            "transfer": [Function],
+            "update": [Function],
+            "updateBranchProtection": [Function],
+            "updateCommitComment": [Function],
+            "updateHook": [Function],
+            "updateInformationAboutPagesSite": [Function],
+            "updateInvitation": [Function],
+            "updateProtectedBranchPullRequestReviewEnforcement": [Function],
+            "updateProtectedBranchRequiredStatusChecks": [Function],
+            "updatePullRequestReviewProtection": [Function],
+            "updateRelease": [Function],
+            "updateReleaseAsset": [Function],
+            "updateStatusCheckPotection": [Function],
+            "updateWebhook": [Function],
+            "uploadReleaseAsset": [Function],
+          },
+          "request": [Function],
+          "search": Object {
+            "code": [Function],
+            "commits": [Function],
+            "issuesAndPullRequests": [Function],
+            "labels": [Function],
+            "repos": [Function],
+            "topics": [Function],
+            "users": [Function],
+          },
+          "teams": Object {
+            "addOrUpdateMembershipForUserInOrg": [Function],
+            "addOrUpdateMembershipInOrg": [Function],
+            "addOrUpdateProjectInOrg": [Function],
+            "addOrUpdateProjectPermissionsInOrg": [Function],
+            "addOrUpdateRepoInOrg": [Function],
+            "addOrUpdateRepoPermissionsInOrg": [Function],
+            "checkManagesRepoInOrg": [Function],
+            "checkPermissionsForProjectInOrg": [Function],
+            "checkPermissionsForRepoInOrg": [Function],
+            "create": [Function],
+            "createDiscussionCommentInOrg": [Function],
+            "createDiscussionInOrg": [Function],
+            "deleteDiscussionCommentInOrg": [Function],
+            "deleteDiscussionInOrg": [Function],
+            "deleteInOrg": [Function],
+            "getByName": [Function],
+            "getDiscussionCommentInOrg": [Function],
+            "getDiscussionInOrg": [Function],
+            "getMembershipForUserInOrg": [Function],
+            "getMembershipInOrg": [Function],
+            "list": [Function],
+            "listChildInOrg": [Function],
+            "listDiscussionCommentsInOrg": [Function],
+            "listDiscussionsInOrg": [Function],
+            "listForAuthenticatedUser": [Function],
+            "listMembersInOrg": [Function],
+            "listPendingInvitationsInOrg": [Function],
+            "listProjectsInOrg": [Function],
+            "listReposInOrg": [Function],
+            "removeMembershipForUserInOrg": [Function],
+            "removeMembershipInOrg": [Function],
+            "removeProjectInOrg": [Function],
+            "removeRepoInOrg": [Function],
+            "reviewProjectInOrg": [Function],
+            "updateDiscussionCommentInOrg": [Function],
+            "updateDiscussionInOrg": [Function],
+            "updateInOrg": [Function],
+          },
+          "users": Object {
+            "addEmailForAuthenticated": [Function],
+            "addEmails": [Function],
+            "block": [Function],
+            "checkBlocked": [Function],
+            "checkFollowing": [Function],
+            "checkFollowingForUser": [Function],
+            "checkPersonIsFollowedByAuthenticated": [Function],
+            "createGpgKey": [Function],
+            "createGpgKeyForAuthenticated": [Function],
+            "createPublicKey": [Function],
+            "createPublicSshKeyForAuthenticated": [Function],
+            "deleteEmailForAuthenticated": [Function],
+            "deleteEmails": [Function],
+            "deleteGpgKey": [Function],
+            "deleteGpgKeyForAuthenticated": [Function],
+            "deletePublicKey": [Function],
+            "deletePublicSshKeyForAuthenticated": [Function],
+            "follow": [Function],
+            "getAuthenticated": [Function],
+            "getByUsername": [Function],
+            "getContextForUser": [Function],
+            "getGpgKey": [Function],
+            "getGpgKeyForAuthenticated": [Function],
+            "getPublicKey": [Function],
+            "getPublicSshKeyForAuthenticated": [Function],
+            "list": [Function],
+            "listBlocked": [Function],
+            "listBlockedByAuthenticated": [Function],
+            "listEmails": [Function],
+            "listEmailsForAuthenticated": [Function],
+            "listFollowedByAuthenticated": [Function],
+            "listFollowersForAuthenticatedUser": [Function],
+            "listFollowersForUser": [Function],
+            "listFollowingForAuthenticatedUser": [Function],
+            "listFollowingForUser": [Function],
+            "listGpgKeys": [Function],
+            "listGpgKeysForAuthenticated": [Function],
+            "listGpgKeysForUser": [Function],
+            "listPublicEmails": [Function],
+            "listPublicEmailsForAuthenticated": [Function],
+            "listPublicKeys": [Function],
+            "listPublicKeysForUser": [Function],
+            "listPublicSshKeysForAuthenticated": [Function],
+            "setPrimaryEmailVisibilityForAuthenticated": [Function],
+            "togglePrimaryEmailVisibility": [Function],
+            "unblock": [Function],
+            "unfollow": [Function],
+            "updateAuthenticated": [Function],
+          },
+        },
+      },
+      "graphStylingPane": GraphStylingPane {
+        "container": [Circular],
+        "firstFieldHasFocus": [Function],
+        "formErrors": [Function],
+        "formErrorsDetails": [Function],
+        "graphConfigUIData": Object {
+          "nodeCaptionChoice": [Function],
+          "nodeColorKeyChoice": [Function],
+          "nodeIconChoice": [Function],
+          "nodeIconSet": [Function],
+          "nodeProperties": [Function],
+          "nodePropertiesWithNone": [Function],
+          "showNeighborType": [Function],
+        },
+        "id": "graphstylingpane",
+        "isExecuting": [Function],
+        "isTemplateReady": [Function],
+        "title": [Function],
+        "visible": [Function],
+      },
+>>>>>>> d7c62ac7f17501f3c8b85943d3f190ac07ff1cf8
       "hasStorageAnalyticsAfecFeature": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
-      "isEnableMongoCapabilityPresent": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
-      "isGitHubPaneEnabled": [Function],
       "isHostedDataExplorerEnabled": [Function],
       "isLastCollection": [Function],
       "isLastNonEmptyDatabase": [Function],
-      "isLeftPaneExpanded": [Function],
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
       "isPublishNotebookPaneEnabled": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
-      "isRightPanelV2Enabled": [Function],
       "isSchemaEnabled": [Function],
       "isSelectedDatabaseShared": [Function],
       "isServerlessEnabled": [Function],
@@ -407,12 +1128,15 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isSparkEnabledForAccount": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
+      "junoClient": JunoClient {
+        "cachedPinnedRepos": [Function],
+      },
       "memoryUsageInfo": [Function],
       "notebookBasePath": [Function],
       "notebookServerInfo": [Function],
+      "onGitHubClientError": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
-      "onSwitchToConnectionString": [Function],
       "openDialog": undefined,
       "openSidePanel": undefined,
       "provideFeedbackEmail": [Function],
@@ -420,7 +1144,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "container": [Circular],
       },
       "refreshAllDatabases": [Function],
-      "refreshDatabaseAccount": [Function],
       "refreshNotebookList": [Function],
       "refreshTreeTitle": [Function],
       "resourceTokenCollection": [Function],
@@ -444,7 +1167,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "setInProgressConsoleDataIdToBeDeleted": undefined,
       "setIsNotificationConsoleExpanded": undefined,
       "setNotificationConsoleData": undefined,
-      "signInAad": [Function],
       "sparkClusterConnectionInfo": [Function],
       "splitter": Splitter {
         "bounds": Object {
@@ -462,7 +1184,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "activeTab": [Function],
         "openedTabs": [Function],
       },
-      "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
   openNotificationConsole={[Function]}
@@ -485,17 +1206,19 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       <Stack
         className="panelInfoErrorContainer"
         horizontal={true}
-        verticalAlign="start"
+        verticalAlign="center"
       >
         <div
-          className="ms-Stack panelInfoErrorContainer css-140"
+          className="ms-Stack panelInfoErrorContainer css-102"
         >
           <StyledIconBase
+            aria-label="warning"
             className="panelWarningIcon"
             iconName="WarningSolid"
             key=".0:$.0"
           >
             <IconBase
+              aria-label="warning"
               className="panelWarningIcon"
               iconName="WarningSolid"
               styles={[Function]}
@@ -774,9 +1497,10 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               }
             >
               <i
-                aria-hidden={true}
-                className="panelWarningIcon root-142"
+                aria-label="warning"
+                className="panelWarningIcon root-104"
                 data-icon-name="WarningSolid"
+                role="img"
               >
                 
               </i>
@@ -787,14 +1511,15 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             key=".0:$.1"
           >
             <Text
+              aria-label="message"
               className="panelWarningErrorMessage"
               variant="small"
             >
               <span
-                className="panelWarningErrorMessage css-143"
+                aria-label="message"
+                className="panelWarningErrorMessage css-105"
               >
                 Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
-                 
               </span>
             </Text>
           </span>
@@ -816,7 +1541,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-143"
+            className="css-105"
           >
             Confirm by typing the database id
           </span>
@@ -835,7 +1560,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         >
           <TextFieldBase
             autoFocus={true}
-            canRevealPassword={false}
             deferredValidationTime={200}
             id="confirmDatabaseId"
             onChange={[Function]}
@@ -1117,18 +1841,18 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField root-145"
+              className="ms-TextField root-107"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-146"
+                  className="ms-TextField-fieldGroup fieldGroup-108"
                 >
                   <input
                     aria-invalid={false}
                     autoFocus={true}
-                    className="ms-TextField-field field-147"
+                    className="ms-TextField-field field-109"
                     id="confirmDatabaseId"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -1151,7 +1875,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-164"
+            className="css-126"
           >
             Help us improve Azure Cosmos DB!
           </span>
@@ -1161,7 +1885,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           variant="small"
         >
           <span
-            className="css-164"
+            className="css-126"
           >
             What is the reason why you are deleting this database?
           </span>
@@ -1180,7 +1904,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           }
         >
           <TextFieldBase
-            canRevealPassword={false}
             deferredValidationTime={200}
             id="deleteDatabaseFeedbackInput"
             multiline={true}
@@ -1464,17 +2187,17 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             validateOnLoad={true}
           >
             <div
-              className="ms-TextField ms-TextField--multiline root-145"
+              className="ms-TextField ms-TextField--multiline root-107"
             >
               <div
                 className="ms-TextField-wrapper"
               >
                 <div
-                  className="ms-TextField-fieldGroup fieldGroup-165"
+                  className="ms-TextField-fieldGroup fieldGroup-127"
                 >
                   <textarea
                     aria-invalid={false}
-                    className="ms-TextField-field field-166"
+                    className="ms-TextField-field field-128"
                     id="deleteDatabaseFeedbackInput"
                     onBlur={[Function]}
                     onChange={[Function]}
@@ -1497,11 +2220,13 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         className="panelFooter"
       >
         <CustomizedPrimaryButton
+          ariaLabel="OK"
           id="sidePanelOkButton"
           text="OK"
           type="submit"
         >
           <PrimaryButton
+            ariaLabel="OK"
             id="sidePanelOkButton"
             text="OK"
             theme={
@@ -1780,6 +2505,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             type="submit"
           >
             <CustomizedDefaultButton
+              ariaLabel="OK"
               id="sidePanelOkButton"
               onRenderDescription={[Function]}
               primary={true}
@@ -2060,6 +2786,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
               type="submit"
             >
               <DefaultButton
+                ariaLabel="OK"
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
                 primary={true}
@@ -2340,6 +3067,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                 type="submit"
               >
                 <BaseButton
+                  ariaLabel="OK"
                   baseClassName="ms-Button"
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
@@ -2524,7 +3252,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                           "borderColor": "#f3f2f1",
                           "color": "#a19f9d",
                           "cursor": "default",
-                          "pointerEvents": "none",
                           "selectors": Object {
                             ":focus": Object {
                               "outline": 0,
@@ -2871,6 +3598,35 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                           },
                         },
                       },
+                      "splitButtonMenuFocused": Object {
+                        "outline": "transparent",
+                        "position": "relative",
+                        "selectors": Object {
+                          ".ms-Fabric--isFocusVisible &:focus:after": Object {
+                            "border": "1px solid #ffffff",
+                            "bottom": 3,
+                            "content": "\\"\\"",
+                            "left": 3,
+                            "outline": "1px solid #605e5c",
+                            "position": "absolute",
+                            "right": 3,
+                            "selectors": Object {
+                              "@media screen and (-ms-high-contrast: active), (forced-colors: active)": Object {
+                                "border": "none",
+                                "bottom": -2,
+                                "left": -2,
+                                "right": -2,
+                                "top": -2,
+                              },
+                            },
+                            "top": 3,
+                            "zIndex": 1,
+                          },
+                          "::-moz-focus-inner": Object {
+                            "border": "0",
+                          },
+                        },
+                      },
                       "splitButtonMenuIcon": Object {
                         "color": "#ffffff",
                       },
@@ -3166,7 +3922,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   variantClassName="ms-Button--primary"
                 >
                   <button
-                    className="ms-Button ms-Button--primary root-156"
+                    aria-label="OK"
+                    className="ms-Button ms-Button--primary root-118"
                     data-is-focusable={true}
                     id="sidePanelOkButton"
                     onClick={[Function]}
@@ -3178,14 +3935,14 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                     type="submit"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-157"
+                      className="ms-Button-flexContainer flexContainer-119"
                       data-automationid="splitbuttonprimary"
                     >
                       <span
-                        className="ms-Button-textContainer textContainer-158"
+                        className="ms-Button-textContainer textContainer-120"
                       >
                         <span
-                          className="ms-Button-label label-160"
+                          className="ms-Button-label label-122"
                           id="id__3"
                           key="id__3"
                         >
@@ -3194,7 +3951,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                       </span>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </DefaultButton>
             </CustomizedDefaultButton>

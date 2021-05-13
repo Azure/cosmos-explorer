@@ -1,152 +1,47 @@
-import * as _ from "underscore";
-import * as Constants from "../Common/Constants";
 import * as DataModels from "../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../DefaultAccountExperienceType";
+import { userContext } from "../UserContext";
 
 export class DefaultExperienceUtility {
-  public static getDefaultExperienceFromDatabaseAccount(databaseAccount: DataModels.DatabaseAccount): string | null {
-    if (!databaseAccount) {
-      return null;
-    }
-
-    const kind: string =
-      databaseAccount && databaseAccount.kind && databaseAccount.kind && databaseAccount.kind.toLowerCase();
-    const capabilities = (databaseAccount.properties && databaseAccount.properties.capabilities) || [];
-
-    return DefaultExperienceUtility._getDefaultExperience(kind, capabilities);
-  }
-
-  public static getApiKindFromDefaultExperience(defaultExperience: string): DataModels.ApiKind {
+  public static getApiKindFromDefaultExperience(defaultExperience: typeof userContext.apiType): DataModels.ApiKind {
     if (!defaultExperience) {
       return DataModels.ApiKind.SQL;
     }
 
     switch (defaultExperience) {
-      case Constants.DefaultAccountExperience.DocumentDB:
+      case "SQL":
         return DataModels.ApiKind.SQL;
-      case Constants.DefaultAccountExperience.MongoDB:
-      case Constants.DefaultAccountExperience.ApiForMongoDB:
+      case "Mongo":
         return DataModels.ApiKind.MongoDB;
-      case Constants.DefaultAccountExperience.Table:
+      case "Tables":
         return DataModels.ApiKind.Table;
-      case Constants.DefaultAccountExperience.Cassandra:
+      case "Cassandra":
         return DataModels.ApiKind.Cassandra;
-      case Constants.DefaultAccountExperience.Graph:
+      case "Gremlin":
         return DataModels.ApiKind.Graph;
       default:
         return DataModels.ApiKind.SQL;
     }
   }
 
-  public static getDefaultExperienceFromApiKind(apiKind: DataModels.ApiKind): string {
+  public static getDefaultExperienceFromApiKind(apiKind: DataModels.ApiKind): typeof userContext.apiType {
     if (apiKind == null) {
-      return Constants.DefaultAccountExperience.Default;
+      return "SQL";
     }
 
     switch (apiKind) {
       case DataModels.ApiKind.SQL:
-        return Constants.DefaultAccountExperience.DocumentDB;
+        return "SQL";
       case DataModels.ApiKind.MongoDB:
       case DataModels.ApiKind.MongoDBCompute:
-        return Constants.DefaultAccountExperience.MongoDB;
+        return "Mongo";
       case DataModels.ApiKind.Table:
-        return Constants.DefaultAccountExperience.Table;
+        return "Tables";
       case DataModels.ApiKind.Cassandra:
-        return Constants.DefaultAccountExperience.Cassandra;
+        return "Cassandra";
       case DataModels.ApiKind.Graph:
-        return Constants.DefaultAccountExperience.Graph;
+        return "Gremlin";
       default:
-        return Constants.DefaultAccountExperience.Default;
+        return "SQL";
     }
-  }
-
-  public static mapDefaultExperienceStringToEnum(defaultExperience: string): DefaultAccountExperienceType {
-    switch (defaultExperience) {
-      case Constants.DefaultAccountExperience.DocumentDB:
-        return DefaultAccountExperienceType.DocumentDB;
-      case Constants.DefaultAccountExperience.Graph:
-        return DefaultAccountExperienceType.Graph;
-      case Constants.DefaultAccountExperience.MongoDB:
-        return DefaultAccountExperienceType.MongoDB;
-      case Constants.DefaultAccountExperience.Table:
-        return DefaultAccountExperienceType.Table;
-      case Constants.DefaultAccountExperience.Cassandra:
-        return DefaultAccountExperienceType.Cassandra;
-      case Constants.DefaultAccountExperience.ApiForMongoDB:
-        return DefaultAccountExperienceType.ApiForMongoDB;
-      default:
-        throw new Error(`Unsupported default experience type: ${defaultExperience}`);
-    }
-  }
-
-  private static _getDefaultExperience(kind: string, capabilities: DataModels.Capability[]): string {
-    const defaultDefaultExperience: string = Constants.DefaultAccountExperience.DocumentDB;
-    const defaultExperienceFromKind: string = DefaultExperienceUtility._getDefaultExperienceFromAccountKind(kind) || "";
-    const defaultExperienceFromCapabilities: string =
-      DefaultExperienceUtility._getDefaultExperienceFromAccountCapabilities(capabilities) || "";
-    if (!!defaultExperienceFromKind) {
-      return defaultExperienceFromKind;
-    }
-
-    if (!!defaultExperienceFromCapabilities) {
-      return defaultExperienceFromCapabilities;
-    }
-
-    return defaultDefaultExperience;
-  }
-
-  private static _getDefaultExperienceFromAccountKind(kind: string): string | null {
-    if (!kind) {
-      return null;
-    }
-
-    if (kind.toLowerCase() === Constants.AccountKind.MongoDB.toLowerCase()) {
-      return Constants.DefaultAccountExperience.MongoDB;
-    }
-
-    if (kind.toLowerCase() === Constants.AccountKind.Parse.toLowerCase()) {
-      return Constants.DefaultAccountExperience.MongoDB;
-    }
-
-    return null;
-  }
-
-  private static _getDefaultExperienceFromAccountCapabilities(capabilities: DataModels.Capability[]): string | null {
-    if (!capabilities) {
-      return null;
-    }
-
-    if (!Array.isArray(capabilities)) {
-      return null;
-    }
-
-    const enableTable = DefaultExperienceUtility._findCapability(capabilities, Constants.CapabilityNames.EnableTable);
-    if (enableTable) {
-      return Constants.DefaultAccountExperience.Table;
-    }
-
-    const enableGremlin = DefaultExperienceUtility._findCapability(
-      capabilities,
-      Constants.CapabilityNames.EnableGremlin
-    );
-    if (enableGremlin) {
-      return Constants.DefaultAccountExperience.Graph;
-    }
-
-    const enableCassandra = DefaultExperienceUtility._findCapability(
-      capabilities,
-      Constants.CapabilityNames.EnableCassandra
-    );
-    if (enableCassandra) {
-      return Constants.DefaultAccountExperience.Cassandra;
-    }
-
-    return null;
-  }
-
-  private static _findCapability(capabilities: DataModels.Capability[], capabilityName: string): DataModels.Capability {
-    return _.find(capabilities, (capability) => {
-      return capability && capability.name && capability.name.toLowerCase() === capabilityName.toLowerCase();
-    });
   }
 }

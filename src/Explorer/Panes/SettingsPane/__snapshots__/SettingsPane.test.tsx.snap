@@ -1,6 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Settings Pane should render Default properly 1`] = `
+<<<<<<< HEAD
 <GenericRightPaneComponent
   container={
     Explorer {
@@ -460,14 +461,14 @@ exports[`Settings Pane should render Default properly 1`] = `
       "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
+=======
+<RightPaneForm
+  expandConsole={[Function]}
+>>>>>>> d7c62ac7f17501f3c8b85943d3f190ac07ff1cf8
   formError=""
-  formErrorDetail=""
-  id="settingspane"
   isExecuting={false}
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Apply"
-  title="Setting"
 >
   <div
     className="paneMainContent"
@@ -482,11 +483,11 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="settingsSectionLabel"
         >
           Page options
-          <Tooltip>
+          <InfoTooltip>
             Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
-          </Tooltip>
+          </InfoTooltip>
         </div>
-        <StyledChoiceGroupBase
+        <StyledChoiceGroup
           onChange={[Function]}
           options={
             Array [
@@ -500,12 +501,37 @@ exports[`Settings Pane should render Default properly 1`] = `
               },
             ]
           }
-          selectedKey="unlimited"
+          selectedKey="custom"
         />
       </div>
       <div
         className="tabs settingsSectionPart"
-      />
+      >
+        <div
+          className="tabcontent"
+        >
+          <div
+            className="settingsSectionLabel"
+          >
+            Query results per page
+            <InfoTooltip>
+              Enter the number of query results that should be shown per page.
+            </InfoTooltip>
+          </div>
+          <StyledSpinButton
+            ariaLabel="Custom query items per page"
+            className="textfontclr"
+            decrementButtonAriaLabel="Decrease value by 1"
+            incrementButtonAriaLabel="Increase value by 1"
+            min={1}
+            onDecrement={[Function]}
+            onIncrement={[Function]}
+            onValidate={[Function]}
+            step={1}
+            value="0"
+          />
+        </div>
+      </div>
     </div>
     <div
       className="settingsSection"
@@ -517,9 +543,9 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="settingsSectionLabel"
         >
           Enable cross-partition query
-          <Tooltip>
+          <InfoTooltip>
             Send more than one request while executing a query. More than one request is necessary if the query is not scoped to single partition key value.
-          </Tooltip>
+          </InfoTooltip>
         </div>
         <StyledCheckboxBase
           ariaLabel="Enable cross partition query"
@@ -533,7 +559,6 @@ exports[`Settings Pane should render Default properly 1`] = `
               },
             }
           }
-          tabIndex={0}
         />
       </div>
     </div>
@@ -547,28 +572,14 @@ exports[`Settings Pane should render Default properly 1`] = `
           className="settingsSectionLabel"
         >
           Max degree of parallelism
-          <Tooltip>
+          <InfoTooltip>
             Gets or sets the number of concurrent operations run client side during parallel query execution. A positive property value limits the number of concurrent operations to the set value. If it is set to less than 0, the system automatically decides the number of concurrent operations to run.
-          </Tooltip>
+          </InfoTooltip>
         </div>
-        <CustomizedSpinButton
+        <StyledSpinButton
           ariaLabel="Max degree of parallelism"
           className="textfontclr"
-          decrementButtonIcon={
-            Object {
-              "iconName": "ChevronDownSmall",
-            }
-          }
-          disabled={false}
           id="max-degree"
-          incrementButtonIcon={
-            Object {
-              "iconName": "ChevronUpSmall",
-            }
-          }
-          label=""
-          labelPosition={2}
-          max={100}
           min={-1}
           onDecrement={[Function]}
           onIncrement={[Function]}
@@ -595,10 +606,11 @@ exports[`Settings Pane should render Default properly 1`] = `
       </div>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;
 
 exports[`Settings Pane should render Gremlin properly 1`] = `
+<<<<<<< HEAD
 <GenericRightPaneComponent
   container={
     Explorer {
@@ -1058,14 +1070,14 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
+=======
+<RightPaneForm
+  expandConsole={[Function]}
+>>>>>>> d7c62ac7f17501f3c8b85943d3f190ac07ff1cf8
   formError=""
-  formErrorDetail=""
-  id="settingspane"
   isExecuting={false}
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Apply"
-  title="Setting"
 >
   <div
     className="paneMainContent"
@@ -1080,11 +1092,11 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
           className="settingsSectionLabel"
         >
           Display Gremlin query results as: 
-          <Tooltip>
+          <InfoTooltip>
             Select Graph to automatically visualize the query results as a Graph or JSON to display the results as JSON.
-          </Tooltip>
+          </InfoTooltip>
         </div>
-        <StyledChoiceGroupBase
+        <StyledChoiceGroup
           aria-label="Graph Auto-visualization"
           onChange={[Function]}
           options={
@@ -1118,5 +1130,5 @@ exports[`Settings Pane should render Gremlin properly 1`] = `
       </div>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;

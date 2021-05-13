@@ -1,4 +1,4 @@
-import { Checkbox, Text } from "office-ui-fabric-react";
+import { Checkbox, Text } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
@@ -32,7 +32,6 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   const [isAvailableColumnChecked, setIsAvailableColumnChecked] = useState<boolean>(true);
 
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
     formError: "",
     formErrorDetail: "",
     id: "querySelectPane",
@@ -41,6 +40,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
     submitButtonText: "OK",
     onClose: () => closePanel(),
     onSubmit: () => submit(),
+    expandConsole: () => explorer.expandConsole(),
   };
 
   const submit = (): void => {

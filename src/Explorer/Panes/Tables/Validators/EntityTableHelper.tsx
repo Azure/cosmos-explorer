@@ -1,4 +1,4 @@
-import { IImageProps, IStackProps } from "office-ui-fabric-react";
+import { IImageProps, IStackProps } from "@fluentui/react";
 import * as _ from "underscore";
 import * as TableConstants from "../../../Tables/Constants";
 import * as Entities from "../../../Tables/Entities";

@@ -1,14 +1,20 @@
 import {
   ChoiceGroup,
+  DefaultButton,
+  Dialog as FluentDialog,
+  DialogFooter,
+  DialogType,
   FontIcon,
+  IButtonProps,
   IChoiceGroupProps,
+  IDialogProps,
   IProgressIndicatorProps,
+  ITextFieldProps,
+  Link,
+  PrimaryButton,
   ProgressIndicator,
-} from "office-ui-fabric-react";
-import { DefaultButton, IButtonProps, PrimaryButton } from "office-ui-fabric-react/lib/Button";
-import { Dialog as FluentDialog, DialogFooter, DialogType, IDialogProps } from "office-ui-fabric-react/lib/Dialog";
-import { Link } from "office-ui-fabric-react/lib/Link";
-import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
+  TextField,
+} from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 
 export interface TextFieldProps extends ITextFieldProps {
@@ -97,7 +103,7 @@ export const Dialog: FunctionComponent<DialogProps> = ({
           text: secondaryButtonText,
           onClick: onSecondaryButtonClick,
         }
-      : undefined;
+      : {};
 
   return (
     <FluentDialog {...dialogProps}>

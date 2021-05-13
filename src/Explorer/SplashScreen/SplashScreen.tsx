@@ -1,7 +1,7 @@
 /**
  * Accordion top class
  */
-import { Link } from "office-ui-fabric-react/lib/Link";
+import { Link } from "@fluentui/react";
 import * as React from "react";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
@@ -292,7 +292,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: AddDatabaseIcon,
         title: this.container.addDatabaseText(),
         description: null,
-        onClick: () => this.container.addDatabasePane.open(),
+        onClick: () => this.container.openAddDatabasePane(),
       });
     }
 

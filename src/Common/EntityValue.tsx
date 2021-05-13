@@ -1,4 +1,4 @@
-import { DatePicker, TextField } from "office-ui-fabric-react";
+import { DatePicker, TextField } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 
 export interface TableEntityProps {

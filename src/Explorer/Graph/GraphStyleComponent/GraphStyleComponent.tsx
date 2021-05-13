@@ -1,11 +1,4 @@
-import {
-  ChoiceGroup,
-  Dropdown,
-  IChoiceGroupOption,
-  IDropdownOption,
-  IDropdownStyles,
-  Stack,
-} from "office-ui-fabric-react";
+import { ChoiceGroup, Dropdown, IChoiceGroupOption, IDropdownOption, IDropdownStyles, Stack } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { IGraphConfigUiData, NeighborType } from "../../../Contracts/ViewModels";
 import { IGraphConfig } from "../../Tabs/GraphTab";

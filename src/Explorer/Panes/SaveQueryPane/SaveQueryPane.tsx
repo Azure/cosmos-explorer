@@ -1,5 +1,5 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import { Text, TextField } from "office-ui-fabric-react";
+import { useBoolean } from "@fluentui/react-hooks";
+import { Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import { Areas, SavedQueries } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
@@ -32,7 +32,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
   const title = "Save Query";
   const { canSaveQueries } = explorer;
   const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
+    expandConsole: () => explorer.expandConsole(),
     formError: formError,
     formErrorDetail: formErrorsDetails,
     id: "saveQueryPane",
