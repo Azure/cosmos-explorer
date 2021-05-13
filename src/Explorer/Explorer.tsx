@@ -1988,7 +1988,7 @@ export default class Explorer {
         "Add " + getDatabaseName(),
         <AddDatabasePanel
           explorer={this}
-          openNotificationConsole={this.expandConsole}
+          openNotificationConsole={() => this.expandConsole()}
           closePanel={this.closeSidePanel}
         />
       );

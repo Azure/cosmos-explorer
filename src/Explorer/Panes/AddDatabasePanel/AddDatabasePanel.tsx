@@ -48,7 +48,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   const [databaseCreateNewShared, setDatabaseCreateNewShared] = useState<boolean>(
     subscriptionType !== SubscriptionType.EA && !isServerlessAccount()
   );
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>();
   const [formErrors, setFormErrors] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
@@ -128,7 +127,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     setIsExecuting(false);
     const errorMessage = getErrorMessage(error);
     setFormErrors(errorMessage);
-    setFormErrorsDetails(errorMessage);
     const addDatabasePaneFailedMessage = {
       ...addDatabasePaneMessage,
       offerThroughput,
@@ -167,7 +165,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   const props: RightPaneFormProps = {
     expandConsole: openNotificationConsole,
     formError: formErrors,
-    formErrorDetail: formErrorsDetails,
     isExecuting,
     submitButtonText: "OK",
     onSubmit,
