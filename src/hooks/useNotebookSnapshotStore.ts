@@ -8,8 +8,8 @@ export interface NotebookSnapshotHooks {
 }
 
 export const useNotebookSnapshotStore: UseStore<NotebookSnapshotHooks> = create((set) => ({
-  snapshot: undefined,
-  error: undefined,
+  snapshot: "",
+  error: "",
   setSnapshot: (imageSrc: string) => set((state) => ({ ...state, snapshot: imageSrc })),
   setError: (error: string) => set((state) => ({ ...state, error })),
 }));

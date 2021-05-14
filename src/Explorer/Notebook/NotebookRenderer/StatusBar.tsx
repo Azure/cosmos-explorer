@@ -2,6 +2,7 @@ import { AppState, ContentRef, selectors } from "@nteract/core";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import React from "react";
 import { connect } from "react-redux";
+import styled from "styled-components";
 import { StyleConstants } from "../../../Common/Constants";
 
 interface Props {
@@ -11,8 +12,6 @@ interface Props {
 }
 
 const NOT_CONNECTED = "not connected";
-
-import styled from "styled-components";
 
 export const LeftStatus = styled.div`
   float: left;
@@ -80,7 +79,7 @@ interface InitialProps {
   contentRef: ContentRef;
 }
 
-const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
+const makeMapStateToProps = (_initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
   const { contentRef } = initialProps;
 
   const mapStateToProps = (state: AppState) => {

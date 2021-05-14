@@ -12,16 +12,6 @@ describe("StringUtils", () => {
       expect(transformedString).toBe("abc");
     });
 
-    it("should return undefined if input is undefined", () => {
-      const transformedString: string = StringUtils.stripSpacesFromString(undefined);
-      expect(transformedString).toBeUndefined();
-    });
-
-    it("should return undefined if input is undefiend", () => {
-      const transformedString: string = StringUtils.stripSpacesFromString(undefined);
-      expect(transformedString).toBe(undefined);
-    });
-
     it("should return empty string if input is an empty string", () => {
       const transformedString: string = StringUtils.stripSpacesFromString("");
       expect(transformedString).toBe("");

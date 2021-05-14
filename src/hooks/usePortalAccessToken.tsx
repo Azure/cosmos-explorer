@@ -3,6 +3,14 @@ import { ApiEndpoints } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import { AccessInputMetadata } from "../Contracts/DataModels";
 
+const initialAccessInputMetadata = {
+  accountName: "",
+  apiEndpoint: "",
+  documentEndpoint: "",
+  expiryTimestamp: "",
+  apiKind: 0,
+};
+
 const url = `${configContext.BACKEND_ENDPOINT}${ApiEndpoints.guestRuntimeProxy}/accessinputmetadata?_=1609359229955`;
 
 export async function fetchAccessData(portalToken: string): Promise<AccessInputMetadata> {
@@ -25,7 +33,7 @@ export async function fetchAccessData(portalToken: string): Promise<AccessInputM
 }
 
 export function useTokenMetadata(token: string): AccessInputMetadata {
-  const [state, setState] = useState<AccessInputMetadata>();
+  const [state, setState] = useState<AccessInputMetadata>(initialAccessInputMetadata);
 
   useEffect(() => {
     if (token) {
