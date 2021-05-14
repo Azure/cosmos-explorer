@@ -8,7 +8,6 @@ export interface PanelInfoErrorProps {
   link?: string;
   linkText?: string;
   openNotificationConsole?: () => void;
-  formError?: boolean;
 }
 
 export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProps> = ({
@@ -18,9 +17,8 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
   link,
   linkText,
   openNotificationConsole,
-  formError = true,
 }: PanelInfoErrorProps): JSX.Element => {
-  let icon: JSX.Element;
+  let icon: JSX.Element = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
   if (messageType === "error") {
     icon = <Icon iconName="StatusErrorFull" className="panelErrorIcon" aria-label="error" />;
   } else if (messageType === "warning") {
@@ -30,31 +28,29 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
   }
 
   return (
-    formError && (
-      <Stack className="panelInfoErrorContainer" horizontal verticalAlign="center">
-        {icon}
-        <span className="panelWarningErrorDetailsLinkContainer">
-          <Text className="panelWarningErrorMessage" variant="small" aria-label="message">
-            {message}
-            {link && linkText && (
-              <Link target="_blank" href={link}>
-                {linkText}
-              </Link>
-            )}
-          </Text>
-          {showErrorDetails && (
-            <div
-              className="paneErrorLink"
-              role="link"
-              onClick={openNotificationConsole}
-              tabIndex={0}
-              onKeyDown={openNotificationConsole}
-            >
-              More details
-            </div>
+    <Stack className="panelInfoErrorContainer" horizontal verticalAlign="center">
+      {icon}
+      <span className="panelWarningErrorDetailsLinkContainer">
+        <Text className="panelWarningErrorMessage" variant="small" aria-label="message">
+          {message}
+          {link && linkText && (
+            <Link target="_blank" href={link}>
+              {linkText}
+            </Link>
           )}
-        </span>
-      </Stack>
-    )
+        </Text>
+        {showErrorDetails && (
+          <a
+            className="paneErrorLink"
+            role="link"
+            onClick={openNotificationConsole}
+            tabIndex={0}
+            onKeyDown={openNotificationConsole}
+          >
+            More details
+          </a>
+        )}
+      </span>
+    </Stack>
   );
 };

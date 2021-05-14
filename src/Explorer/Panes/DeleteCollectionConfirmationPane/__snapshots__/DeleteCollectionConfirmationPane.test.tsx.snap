@@ -28,27 +28,21 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
   >
     <div
       onKeyDown={[Function]}
-      role="button"
       tabIndex={-1}
     >
       <div
         className="contextual-pane-out"
         onClick={[Function]}
-        onKeyDown={[Function]}
-        role="button"
-        tabIndex={0}
       />
       <div
         className="contextual-pane"
         id="deleteCollectionpane"
         onKeyDown={[Function]}
-        role="button"
         style={
           Object {
             "height": NaN,
           }
         }
-        tabIndex={0}
       >
         <div
           className="panelContentWrapper"
@@ -1167,16 +1161,14 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   className="formErrors"
                   title=""
                 />
-                <div
-                  className="errorLink errorLinkColor"
+                <a
+                  className="errorLink"
                   hidden={true}
                   onClick={[Function]}
-                  onKeyDown={[Function]}
                   role="link"
-                  tabIndex={0}
                 >
                   More details
-                </div>
+                </a>
               </span>
             </div>
           </div>
@@ -3669,7 +3661,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
           hidden={true}
         >
           <img
-            alt="Loader img"
+            alt="loader"
             className="dataExplorerLoader"
             src=""
           />

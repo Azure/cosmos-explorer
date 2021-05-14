@@ -1,12 +1,11 @@
 import React, { FunctionComponent, ReactNode } from "react";
 import { PanelFooterComponent } from "../PanelFooterComponent";
-import { PanelInfoErrorComponent, PanelInfoErrorProps } from "../PanelInfoErrorComponent";
+import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
 
 export interface RightPaneFormProps {
   expandConsole: () => void;
   formError: string;
-  formErrorDetail: string;
   isExecuting: boolean;
   onSubmit: () => void;
   submitButtonText: string;
@@ -17,7 +16,6 @@ export interface RightPaneFormProps {
 export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   expandConsole,
   formError,
-  formErrorDetail,
   isExecuting,
   onSubmit,
   submitButtonText,
@@ -29,18 +27,17 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
     onSubmit();
   };
 
-  const panelInfoErrorProps: PanelInfoErrorProps = {
-    messageType: "error",
-    message: formError,
-    formError: formError !== "",
-    showErrorDetails: formErrorDetail !== "",
-    openNotificationConsole: expandConsole,
-  };
-
   return (
     <>
-      <PanelInfoErrorComponent {...panelInfoErrorProps} />
       <form className="panelFormWrapper" onSubmit={handleOnSubmit}>
+        {formError && (
+          <PanelInfoErrorComponent
+            messageType="error"
+            message={formError}
+            showErrorDetails={true}
+            openNotificationConsole={expandConsole}
+          />
+        )}
         {children}
         {!isSubmitButtonHidden && <PanelFooterComponent buttonLabel={submitButtonText} />}
       </form>

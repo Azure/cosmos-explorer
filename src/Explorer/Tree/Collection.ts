@@ -90,6 +90,7 @@ export default class Collection implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
+  private isOfferRead: boolean;
 
   constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
     this.nodeKind = "Collection";
@@ -201,6 +202,7 @@ export default class Collection implements ViewModels.Collection {
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);
     this.isUserDefinedFunctionsExpanded = ko.observable<boolean>(false);
     this.isTriggersExpanded = ko.observable<boolean>(false);
+    this.isOfferRead = false;
   }
 
   public expandCollapseCollection() {
@@ -509,7 +511,7 @@ export default class Collection implements ViewModels.Collection {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
     const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      description: "Mongo Schema node",
+      description: "Schema node",
       databaseName: this.databaseId,
       collectionName: this.id(),
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -1143,7 +1145,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.container.isServerlessEnabled() && !this.offer()) {
+    if (!this.isOfferRead && !this.container.isServerlessEnabled() && !this.offer()) {
       const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
         databaseName: this.databaseId,
         collectionName: this.id(),
@@ -1158,6 +1160,7 @@ export default class Collection implements ViewModels.Collection {
       try {
         this.offer(await readCollectionOffer(params));
         this.usageSizeInKB(await getCollectionUsageSizeInKB(this.databaseId, this.id()));
+        this.isOfferRead = true;
 
         TelemetryProcessor.traceSuccess(
           Action.LoadOffers,

@@ -25,6 +25,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           * 
         </span>
         <Text
+          aria-label="Throughput header"
           key=".0:$.1"
           style={
             Object {
@@ -35,6 +36,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
           variant="small"
         >
           <span
+            aria-label="Throughput header"
             className="css-54"
             style={
               Object {

@@ -17,8 +17,6 @@ export interface ThroughputInputProps {
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
   onCostAcknowledgeChange: (isAcknowledged: boolean) => void;
-  isAutoscaleSelected?: boolean;
-  throughput?: number;
 }
 
 export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
@@ -27,12 +25,16 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   setThroughputValue,
   setIsAutoscale,
   isSharded,
-  isAutoscaleSelected = true,
-  throughput = AutoPilotUtils.minAutoPilotThroughput,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
+  const [isAutoscaleSelected, setIsAutoScaleSelected] = useState<boolean>(true);
+  const [throughput, setThroughput] = useState<number>(AutoPilotUtils.minAutoPilotThroughput);
   const [isCostAcknowledged, setIsCostAcknowledged] = useState<boolean>(false);
   const [throughputError, setThroughputError] = useState<string>("");
+
+  setIsAutoscale(isAutoscaleSelected);
+  setThroughputValue(throughput);
+
   const getThroughputLabelText = (): string => {
     let throughputHeaderText: string;
     if (isAutoscaleSelected) {
@@ -49,6 +51,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const onThroughputValueChange = (newInput: string): void => {
     const newThroughput = parseInt(newInput);
+    setThroughput(newThroughput);
     setThroughputValue(newThroughput);
     if (!isSharded && newThroughput > 10000) {
       setThroughputError("Unsharded collections support up to 10,000 RUs");
@@ -82,9 +85,13 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   const handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
     if (mode === "Autoscale") {
+      setThroughput(AutoPilotUtils.minAutoPilotThroughput);
+      setIsAutoScaleSelected(true);
       setThroughputValue(AutoPilotUtils.minAutoPilotThroughput);
       setIsAutoscale(true);
     } else {
+      setThroughput(SharedConstants.CollectionCreation.DefaultCollectionRUs400);
+      setIsAutoScaleSelected(false);
       setThroughputValue(SharedConstants.CollectionCreation.DefaultCollectionRUs400);
       setIsAutoscale(false);
     }
@@ -94,7 +101,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     <div className="throughputInputContainer throughputInputSpacing">
       <Stack horizontal>
         <span className="mandatoryStar">*&nbsp;</span>
-        <Text variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+        <Text aria-label="Throughput header" variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
           {getThroughputLabelText()}
         </Text>
         <InfoTooltip>{PricingUtils.getRuToolTipText()}</InfoTooltip>
