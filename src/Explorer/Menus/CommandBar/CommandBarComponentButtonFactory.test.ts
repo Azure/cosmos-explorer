@@ -126,7 +126,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addDatabaseText = ko.observable("mockText");
       mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
@@ -221,7 +220,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addDatabaseText = ko.observable("mockText");
       mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {

@@ -33,7 +33,6 @@ export class CommandBarComponentAdapter implements ReactAdapter {
       container.deleteCollectionText,
       container.deleteDatabaseText,
       container.addCollectionText,
-      container.addDatabaseText,
       container.isDatabaseNodeOrNoneSelected,
       container.isDatabaseNodeSelected,
       container.isNoneSelected,
