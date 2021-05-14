@@ -52,7 +52,6 @@ import type NotebookManager from "./Notebook/NotebookManager";
 import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
-import AddDatabasePane from "./Panes/AddDatabasePane";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
@@ -101,7 +100,6 @@ export interface ExplorerParams {
 
 export default class Explorer {
   public addCollectionText: ko.Observable<string>;
-  public addDatabaseText: ko.Observable<string>;
   public collectionTitle: ko.Observable<string>;
   public deleteCollectionText: ko.Observable<string>;
   public deleteDatabaseText: ko.Observable<string>;
@@ -149,7 +147,6 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public addDatabasePane: AddDatabasePane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
@@ -208,7 +205,6 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.addCollectionText = ko.observable<string>("New Collection");
-    this.addDatabaseText = ko.observable<string>("New Database");
     this.collectionTitle = ko.observable<string>("Collections");
     this.collectionTreeNodeAltText = ko.observable<string>("Collection");
     this.deleteCollectionText = ko.observable<string>("Delete Collection");
@@ -401,13 +397,6 @@ export default class Explorer {
       }
     });
 
-    this.addDatabasePane = new AddDatabasePane({
-      id: "adddatabasepane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -423,7 +412,6 @@ export default class Explorer {
       }
     });
 
-    this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 
     document.addEventListener(
@@ -441,7 +429,6 @@ export default class Explorer {
     switch (userContext.apiType) {
       case "SQL":
         this.addCollectionText("New Container");
-        this.addDatabaseText("New Database");
         this.collectionTitle("SQL API");
         this.collectionTreeNodeAltText("Container");
         this.deleteCollectionText("Delete Container");
@@ -450,7 +437,6 @@ export default class Explorer {
         break;
       case "Mongo":
         this.addCollectionText("New Collection");
-        this.addDatabaseText("New Database");
         this.collectionTitle("Collections");
         this.collectionTreeNodeAltText("Collection");
         this.deleteCollectionText("Delete Collection");
@@ -459,7 +445,6 @@ export default class Explorer {
         break;
       case "Gremlin":
         this.addCollectionText("New Graph");
-        this.addDatabaseText("New Database");
         this.deleteCollectionText("Delete Graph");
         this.deleteDatabaseText("Delete Database");
         this.collectionTitle("Gremlin API");
@@ -468,7 +453,6 @@ export default class Explorer {
         break;
       case "Tables":
         this.addCollectionText("New Table");
-        this.addDatabaseText("New Database");
         this.deleteCollectionText("Delete Table");
         this.deleteDatabaseText("Delete Database");
         this.collectionTitle("Azure Table API");
@@ -478,7 +462,6 @@ export default class Explorer {
         break;
       case "Cassandra":
         this.addCollectionText("New Table");
-        this.addDatabaseText("New Keyspace");
         this.deleteCollectionText("Delete Table");
         this.deleteDatabaseText("Delete Keyspace");
         this.collectionTitle("Cassandra API");
@@ -1949,19 +1932,14 @@ export default class Explorer {
     );
   }
   public openAddDatabasePane(): void {
-    if (userContext.features.enableKOPanel) {
-      this.addDatabasePane.open();
-      document.getElementById("linkAddDatabase").focus();
-    } else {
-      this.openSidePanel(
-        "Add " + getDatabaseName(),
-        <AddDatabasePanel
-          explorer={this}
-          openNotificationConsole={() => this.expandConsole()}
-          closePanel={this.closeSidePanel}
-        />
-      );
-    }
+    this.openSidePanel(
+      "New " + getDatabaseName(),
+      <AddDatabasePanel
+        explorer={this}
+        openNotificationConsole={() => this.expandConsole()}
+        closePanel={this.closeSidePanel}
+      />
+    );
   }
 
   public openBrowseQueriesPanel(): void {
