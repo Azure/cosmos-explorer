@@ -62,7 +62,6 @@ import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfir
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
-import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
@@ -152,7 +151,6 @@ export default class Explorer {
 
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
-  public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
@@ -183,7 +181,6 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
-  private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -412,13 +409,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.graphStylingPane = new GraphStylingPane({
-      id: "graphstylingpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -434,7 +424,6 @@ export default class Explorer {
       }
     });
 
-    this._panes = [this.addDatabasePane, this.graphStylingPane, this.cassandraAddCollectionPane];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 
@@ -1057,10 +1046,6 @@ export default class Explorer {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  public closeAllPanes(): void {
-    this._panes.forEach((pane: ContextualPaneBase) => pane.close());
   }
 
   public isRunningOnNationalCloud(): boolean {
@@ -1856,7 +1841,6 @@ export default class Explorer {
 
   public async handleOpenFileAction(path: string): Promise<void> {
     if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
-      this.closeAllPanes();
       this._openSetupNotebooksPaneForQuickstart();
     }
 
