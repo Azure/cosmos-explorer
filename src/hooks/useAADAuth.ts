@@ -72,14 +72,10 @@ export function useAADAuth(): ReturnType {
     if (account && tenantId) {
       Promise.all([
         msalInstance.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://graph.windows.net//.default"],
         }),
         msalInstance.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"],
         }),
