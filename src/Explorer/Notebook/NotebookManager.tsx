@@ -22,13 +22,14 @@ import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
-// import { GitHubReposPane } from "../Panes/GitHubReposPane";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
+import { InMemoryContentProvider } from "./NotebookComponent/ContentProviders/InMemoryContentProvider";
 import { NotebookContentProvider } from "./NotebookComponent/NotebookContentProvider";
 import { SnapshotRequest } from "./NotebookComponent/types";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
+import { SchemaAnalyzerNotebook } from "./SchemaAnalyzer/SchemaAnalyzerUtils";
 
 type NotebookPaneContent = string | ImmutableNotebook;
 
@@ -50,6 +51,7 @@ export default class NotebookManager {
   public notebookClient: NotebookContainerClient;
   public notebookContentClient: NotebookContentClient;
 
+  private inMemoryContentProvider: InMemoryContentProvider;
   private gitHubContentProvider: GitHubContentProvider;
   public gitHubOAuthService: GitHubOAuthService;
   public gitHubClient: GitHubClient;
@@ -63,12 +65,20 @@ export default class NotebookManager {
     this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
     this.gitHubClient = new GitHubClient(this.onGitHubClientError);
 
+    this.inMemoryContentProvider = new InMemoryContentProvider({
+      [SchemaAnalyzerNotebook.path]: {
+        readonly: true,
+        content: SchemaAnalyzerNotebook,
+      },
+    });
+
     this.gitHubContentProvider = new GitHubContentProvider({
       gitHubClient: this.gitHubClient,
       promptForCommitMsg: this.promptForCommitMsg,
     });
 
     this.notebookContentProvider = new NotebookContentProvider(
+      this.inMemoryContentProvider,
       this.gitHubContentProvider,
       contents.JupyterContentProvider
     );

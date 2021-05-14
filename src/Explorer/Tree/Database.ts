@@ -30,6 +30,7 @@ export default class Database implements ViewModels.Database {
   public isDatabaseShared: ko.Computed<boolean>;
   public selectedSubnodeKind: ko.Observable<ViewModels.CollectionTabKind>;
   public junoClient: JunoClient;
+  private isOfferRead: boolean;
 
   constructor(container: Explorer, data: any) {
     this.nodeKind = "Database";
@@ -45,6 +46,7 @@ export default class Database implements ViewModels.Database {
       return this.offer && !!this.offer();
     });
     this.junoClient = new JunoClient();
+    this.isOfferRead = false;
   }
 
   public onSettingsClick = () => {
@@ -214,12 +216,13 @@ export default class Database implements ViewModels.Database {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.container.isServerlessEnabled() && !this.offer()) {
+    if (!this.isOfferRead && !this.container.isServerlessEnabled() && !this.offer()) {
       const params: DataModels.ReadDatabaseOfferParams = {
         databaseId: this.id(),
         databaseResourceId: this.self,
       };
       this.offer(await readDatabaseOffer(params));
+      this.isOfferRead = true;
     }
   }
 

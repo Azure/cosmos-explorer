@@ -1,3 +1,4 @@
+import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import CosmosDBIcon from "images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "images/delete.svg";
 import GalleryIcon from "images/GalleryIcon.svg";
@@ -9,7 +10,6 @@ import PublishIcon from "images/notebook/publish_content.svg";
 import RefreshIcon from "images/refresh-cosmos.svg";
 import CollectionIcon from "images/tree-collection.svg";
 import * as ko from "knockout";
-import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
@@ -273,7 +273,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
+    if (
+      userContext.apiType === "Mongo" &&
+      this.container.isNotebookEnabled() &&
+      userContext.features.enableSchemaAnalyzer
+    ) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),

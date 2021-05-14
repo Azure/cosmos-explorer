@@ -116,6 +116,7 @@ export enum Action {
   NotebooksGalleryPublishedCount,
   SelfServe,
   ExpandAddCollectionPaneAdvancedSection,
+  SchemaAnalyzerClickAnalyze,
 }
 
 export const ActionModifiers = {

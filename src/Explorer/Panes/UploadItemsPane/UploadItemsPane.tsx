@@ -15,15 +15,14 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
   const [files, setFiles] = useState<FileList>();
   const [uploadFileData, setUploadFileData] = useState<UploadDetailsRecord[]>([]);
   const [formError, setFormError] = useState<string>("");
-  const [formErrorDetail, setFormErrorDetail] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>();
 
   const onSubmit = () => {
     setFormError("");
     if (!files || files.length === 0) {
-      setFormError("No files specified");
-      setFormErrorDetail("No files were specified. Please input at least one file.");
+      setFormError("No files were specified. Please input at least one file.");
       logConsoleError("Could not upload items -- No files were specified. Please input at least one file.");
+      return;
     }
 
     const selectedCollection = explorer.findSelectedCollection();
@@ -40,7 +39,6 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
         (error: Error) => {
           const errorMessage = getErrorMessage(error);
           setFormError(errorMessage);
-          setFormErrorDetail(errorMessage);
         }
       )
       .finally(() => {
@@ -55,7 +53,6 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
   const genericPaneProps: RightPaneFormProps = {
     expandConsole: () => explorer.expandConsole(),
     formError,
-    formErrorDetail,
     isExecuting: isExecuting,
     submitButtonText: "Upload",
     onSubmit,

@@ -34,6 +34,7 @@ import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
+import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -60,7 +61,6 @@ import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfir
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
-import GraphStylingPane from "./Panes/GraphStylingPane";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
@@ -133,7 +133,6 @@ export default class Explorer {
   public databases: ko.ObservableArray<ViewModels.Database>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
-  public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
@@ -151,7 +150,6 @@ export default class Explorer {
 
   // Contextual panes
   public addDatabasePane: AddDatabasePane;
-  public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
   private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
@@ -163,7 +161,6 @@ export default class Explorer {
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
-
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -183,7 +180,6 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
-  private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -230,6 +226,7 @@ export default class Explorer {
         });
       }
     });
+
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
@@ -334,7 +331,6 @@ export default class Explorer {
       }
       return true;
     });
-    this.isLeftPaneExpanded = ko.observable<boolean>(true);
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
     this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
       // Make sure switching tabs restores tabs display
@@ -368,7 +364,7 @@ export default class Explorer {
         return false;
       }
 
-      return userContext.apiType === "Mongo";
+      return isCapabilityEnabled("EnableMongo");
     });
 
     this.isServerlessEnabled = ko.computed(
@@ -412,13 +408,6 @@ export default class Explorer {
       container: this,
     });
 
-    this.graphStylingPane = new GraphStylingPane({
-      id: "graphstylingpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -434,7 +423,6 @@ export default class Explorer {
       }
     });
 
-    this._panes = [this.addDatabasePane, this.graphStylingPane, this.cassandraAddCollectionPane];
     this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 
@@ -674,16 +662,8 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded(true);
   }
 
-  public toggleLeftPaneExpanded() {
-    this.isLeftPaneExpanded(!this.isLeftPaneExpanded());
-
-    if (this.isLeftPaneExpanded()) {
-      document.getElementById("expandToggleLeftPaneButton").focus();
-      this.splitter.expandLeft();
-    } else {
-      document.getElementById("collapseToggleLeftPaneButton").focus();
-      this.splitter.collapseLeft();
-    }
+  public collapseConsole(): void {
+    this.setIsNotificationConsoleExpanded(false);
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
@@ -800,14 +780,6 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     this.refreshNotebookList();
-  };
-
-  public toggleLeftPaneExpandedKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.toggleLeftPaneExpanded();
-      return false;
-    }
-    return true;
   };
 
   // Facade
@@ -1064,16 +1036,15 @@ export default class Explorer {
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
     }
+    if (flights.indexOf(Constants.Flights.SchemaAnalyzer) !== -1) {
+      userContext.features.enableSchemaAnalyzer = true;
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
     return (
       this.selectedNode().nodeKind === "Collection" ? this.selectedNode() : this.selectedNode().collection
     ) as ViewModels.Collection;
-  }
-
-  public closeAllPanes(): void {
-    this._panes.forEach((pane: ContextualPaneBase) => pane.close());
   }
 
   public isRunningOnNationalCloud(): boolean {
@@ -1870,7 +1841,6 @@ export default class Explorer {
 
   public async handleOpenFileAction(path: string): Promise<void> {
     if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
-      this.closeAllPanes();
       this._openSetupNotebooksPaneForQuickstart();
     }
 
@@ -1988,7 +1958,7 @@ export default class Explorer {
         "Add " + getDatabaseName(),
         <AddDatabasePanel
           explorer={this}
-          openNotificationConsole={this.expandConsole}
+          openNotificationConsole={() => this.expandConsole()}
           closePanel={this.closeSidePanel}
         />
       );

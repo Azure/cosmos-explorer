@@ -22,15 +22,12 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
 
   const [files, setFiles] = useState<FileList>();
   const [formErrors, setFormErrors] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   const submit = () => {
     setFormErrors("");
-    setFormErrorsDetails("");
     if (!files || files.length === 0) {
-      setFormErrors("No file specified");
-      setFormErrorsDetails("No file specified. Please input a file.");
+      setFormErrors("No file specified. Please input a file.");
       logConsoleError(`${errorMessage} -- No file specified. Please input a file.`);
       return;
     }
@@ -49,7 +46,6 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
         },
         (error: string) => {
           setFormErrors(errorMessage);
-          setFormErrorsDetails(`${errorMessage}: ${error}`);
           logConsoleError(`${errorMessage} ${file.name}: ${error}`);
         }
       )
@@ -85,7 +81,6 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
   const genericPaneProps: RightPaneFormProps = {
     expandConsole,
     formError: formErrors,
-    formErrorDetail: formErrorsDetails,
     isExecuting: isExecuting,
     submitButtonText: "Upload",
     onSubmit: submit,

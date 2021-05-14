@@ -9,7 +9,6 @@ const expandConsole = jest.fn();
 const props = {
   expandConsole,
   formError: "",
-  formErrorDetail: "",
   isExecuting: false,
   submitButtonText: "Load",
   onSubmit,
