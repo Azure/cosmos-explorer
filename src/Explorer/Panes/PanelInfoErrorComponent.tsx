@@ -32,7 +32,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
       {icon}
       <span className="panelWarningErrorDetailsLinkContainer">
         <Text className="panelWarningErrorMessage" variant="small" aria-label="message">
-          {message}
+          {message}{" "}
           {link && linkText && (
             <Link target="_blank" href={link}>
               {linkText}
