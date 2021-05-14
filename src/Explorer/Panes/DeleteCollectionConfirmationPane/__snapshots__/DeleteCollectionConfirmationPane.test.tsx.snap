@@ -33,6 +33,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
       <div
         className="contextual-pane-out"
         onClick={[Function]}
+        onKeyDown={[Function]}
       />
       <div
         className="contextual-pane"
@@ -1165,7 +1166,9 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   className="errorLink"
                   hidden={true}
                   onClick={[Function]}
+                  onKeyDown={[Function]}
                   role="link"
+                  tabIndex={0}
                 >
                   More details
                 </a>

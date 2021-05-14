@@ -24,6 +24,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
       <div
         className="contextual-pane-out"
         onClick={[Function]}
+        onKeyDown={[Function]}
       />
       <div
         className="contextual-pane"
@@ -1156,7 +1157,9 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   className="errorLink"
                   hidden={true}
                   onClick={[Function]}
+                  onKeyDown={[Function]}
                   role="link"
+                  tabIndex={0}
                 >
                   More details
                 </a>
