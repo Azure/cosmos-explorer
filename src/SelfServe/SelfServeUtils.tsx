@@ -19,7 +19,7 @@ import {
   RefreshParams,
   SelfServeDescriptor,
   SmartUiInput,
-  StringInput
+  StringInput,
 } from "./SelfServeTypes";
 
 /**
