@@ -109,7 +109,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
           label={inputLabel}
           name="collectionIdConfirmation"
           value={stringInput}
-          autoFocus
           required
           onChange={(event: FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string) =>
             setStringInput(newValue)

@@ -63,7 +63,6 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
         <TextField
           label={inputLabel && inputLabel}
           id="confirmCollectionId"
-          autoFocus
           value={paramValue}
           onChange={onParamValueChange}
         />

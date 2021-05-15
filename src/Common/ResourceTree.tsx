@@ -41,6 +41,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
                 tabIndex={0}
                 aria-label="Collapse Tree"
                 title="Collapse Tree"
+                onKeyDown={toggleLeftPaneExpanded}
               >
                 <img className="refreshcol1" src={arrowLeftImg} alt="Hide" />
               </span>

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import { IconButton, PrimaryButton } from "@fluentui/react";
 import React, { FunctionComponent, ReactNode } from "react";
 import ErrorRedIcon from "../../../../images/error_red.svg";
@@ -67,7 +68,14 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
             <span className="formErrors" title={formError}>
               {formError}
             </span>
-            <a className="errorLink" role="link" hidden={!formErrorDetail} onClick={expandConsole}>
+            <a
+              className="errorLink"
+              role="link"
+              hidden={!formErrorDetail}
+              onClick={expandConsole}
+              tabIndex={0}
+              onKeyDown={expandConsole}
+            >
               More details
             </a>
           </span>
@@ -97,7 +105,7 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
   const renderLoadingScreen = (): JSX.Element => {
     return (
       <div className="dataExplorerLoaderContainer dataExplorerPaneLoaderContainer" hidden={!isExecuting}>
-        <img className="dataExplorerLoader" src={LoadingIndicatorIcon} />
+        <img className="dataExplorerLoader" src={LoadingIndicatorIcon} alt="loader" />
       </div>
     );
   };
@@ -111,7 +119,7 @@ export const GenericRightPaneComponent: FunctionComponent<GenericRightPaneProps>
 
   return (
     <div tabIndex={-1} onKeyDown={onKeyDown}>
-      <div className="contextual-pane-out" onClick={onClose}></div>
+      <div className="contextual-pane-out" onClick={onClose} onKeyDown={onClose}></div>
       <div className="contextual-pane" id={id} style={{ height: panelHeight }} onKeyDown={onKeyDown}>
         <div className="panelContentWrapper">
           {renderPanelHeader()}

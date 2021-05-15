@@ -22,7 +22,6 @@ exports[`Load Query Pane should render Default properly 1`] = `
         horizontal={true}
       >
         <StyledTextFieldBase
-          autoFocus={true}
           id="confirmCollectionId"
           label="Select a query document"
           readOnly={true}

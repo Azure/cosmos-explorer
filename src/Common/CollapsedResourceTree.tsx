@@ -14,17 +14,23 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
     <div id="mini" className={!isLeftPaneExpanded ? "mini toggle-mini" : "hiddenMain"}>
       <div className="main-nav nav">
         <ul className="nav">
-          <li
-            className="resourceTreeCollapse"
-            id="collapseToggleLeftPaneButton"
-            role="button"
-            tabIndex={0}
-            aria-label="Expand Tree"
-          >
-            <span className="leftarrowCollapsed" onClick={toggleLeftPaneExpanded}>
+          <li className="resourceTreeCollapse" id="collapseToggleLeftPaneButton" aria-label="Expand Tree">
+            <span
+              className="leftarrowCollapsed"
+              onClick={toggleLeftPaneExpanded}
+              role="button"
+              tabIndex={0}
+              onKeyDown={toggleLeftPaneExpanded}
+            >
               <img className="arrowCollapsed" src={arrowLeftImg} alt="Expand" />
             </span>
-            <span className="collectionCollapsed" onClick={toggleLeftPaneExpanded}>
+            <span
+              className="collectionCollapsed"
+              onClick={toggleLeftPaneExpanded}
+              role="button"
+              tabIndex={0}
+              onKeyDown={toggleLeftPaneExpanded}
+            >
               <span data-bind="text: collectionTitle" />
             </span>
           </li>

@@ -1,5 +1,5 @@
-import { useBoolean } from "@fluentui/react-hooks";
 import { IImageProps, Image, ImageFit, Stack, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
@@ -115,7 +115,6 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
               id="confirmCollectionId"
               label="Select a query document"
               value={selectedFileName}
-              autoFocus
               readOnly
               styles={{ fieldGroup: { width: 300 } }}
             />

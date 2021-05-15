@@ -959,6 +959,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       <div
         className="contextual-pane-out"
         onClick={[Function]}
+        onKeyDown={[Function]}
       />
       <div
         className="contextual-pane"
@@ -2091,7 +2092,9 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                   className="errorLink"
                   hidden={true}
                   onClick={[Function]}
+                  onKeyDown={[Function]}
                   role="link"
+                  tabIndex={0}
                 >
                   More details
                 </a>
@@ -2103,7 +2106,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
           >
             <StyledTextFieldBase
               aria-label="Enter new directory name"
-              autoFocus={true}
               label="Enter new directory name"
               name="collectionIdConfirmation"
               onChange={[Function]}
@@ -2112,7 +2114,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
             >
               <TextFieldBase
                 aria-label="Enter new directory name"
-                autoFocus={true}
                 deferredValidationTime={200}
                 label="Enter new directory name"
                 name="collectionIdConfirmation"
@@ -2702,7 +2703,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       <input
                         aria-invalid={false}
                         aria-labelledby="TextFieldLabel5"
-                        autoFocus={true}
                         className="ms-TextField-field field-65"
                         id="TextField3"
                         name="collectionIdConfirmation"
@@ -4513,6 +4513,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
           hidden={true}
         >
           <img
+            alt="loader"
             className="dataExplorerLoader"
             src=""
           />

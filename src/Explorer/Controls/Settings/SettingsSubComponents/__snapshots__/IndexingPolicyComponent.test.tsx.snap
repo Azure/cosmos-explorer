@@ -13,6 +13,7 @@ exports[`IndexingPolicyComponent renders 1`] = `
   />
   <div
     className="settingsV2IndexingPolicyEditor"
+    role="button"
     tabIndex={0}
   />
 </Stack>

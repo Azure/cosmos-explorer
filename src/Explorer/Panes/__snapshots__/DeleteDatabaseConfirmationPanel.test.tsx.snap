@@ -1289,7 +1289,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           </span>
         </Text>
         <StyledTextFieldBase
-          autoFocus={true}
           id="confirmDatabaseId"
           onChange={[Function]}
           styles={
@@ -1301,7 +1300,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           }
         >
           <TextFieldBase
-            autoFocus={true}
             deferredValidationTime={200}
             id="confirmDatabaseId"
             onChange={[Function]}
@@ -1593,7 +1591,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                 >
                   <input
                     aria-invalid={false}
-                    autoFocus={true}
                     className="ms-TextField-field field-109"
                     id="confirmDatabaseId"
                     onBlur={[Function]}

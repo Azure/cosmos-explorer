@@ -139,7 +139,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 aria-checked={this.state.createNewDatabase}
                 name="databaseType"
                 type="radio"
-                role="radio"
                 id="databaseCreateNew"
                 tabIndex={0}
                 onChange={this.onCreateNewDatabaseRadioBtnChange.bind(this)}
@@ -153,7 +152,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 aria-checked={!this.state.createNewDatabase}
                 name="databaseType"
                 type="radio"
-                role="radio"
                 tabIndex={0}
                 onChange={this.onUseExistingDatabaseRadioBtnChange.bind(this)}
               />
@@ -175,7 +173,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   size={40}
                   className="panelTextField"
                   aria-label="New database id"
-                  autoFocus
                   value={this.state.newDatabaseId}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                     this.setState({ newDatabaseId: event.target.value })
@@ -287,7 +284,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   aria-label="Turn on indexing"
                   aria-checked={this.state.enableIndexing}
                   type="radio"
-                  role="radio"
                   tabIndex={0}
                   onChange={this.onTurnOnIndexing.bind(this)}
                 />
@@ -299,7 +295,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   aria-label="Turn off indexing"
                   aria-checked={!this.state.enableIndexing}
                   type="radio"
-                  role="radio"
                   tabIndex={0}
                   onChange={this.onTurnOffIndexing.bind(this)}
                 />
@@ -342,7 +337,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     aria-checked={!this.state.isSharded}
                     name="unsharded"
                     type="radio"
-                    role="radio"
                     id="unshardedOption"
                     tabIndex={0}
                     onChange={this.onUnshardedRadioBtnChange.bind(this)}
@@ -356,7 +350,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     aria-checked={this.state.isSharded}
                     name="sharded"
                     type="radio"
-                    role="radio"
                     id="shardedOption"
                     tabIndex={0}
                     onChange={this.onShardedRadioBtnChange.bind(this)}
@@ -480,7 +473,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                             : "Comma separated paths e.g. /firstName,/address/zipCode"
                         }
                         className="panelTextField"
-                        autoFocus
                         value={uniqueKey}
                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                           const uniqueKeys = this.state.uniqueKeys.map((uniqueKey: string, j: number) => {
@@ -594,7 +586,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         aria-checked={this.state.enableAnalyticalStore}
                         name="analyticalStore"
                         type="radio"
-                        role="radio"
                         id="enableAnalyticalStoreBtn"
                         tabIndex={0}
                         onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
@@ -609,7 +600,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         aria-checked={!this.state.enableAnalyticalStore}
                         name="analyticalStore"
                         type="radio"
-                        role="radio"
                         id="disableAnalyticalStoreBtn"
                         tabIndex={0}
                         onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
