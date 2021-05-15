@@ -60,7 +60,6 @@
     "./src/Explorer/Notebook/NotebookUtil.ts",
     "./src/Explorer/OpenFullScreen.test.tsx",
     "./src/Explorer/OpenFullScreen.tsx",
-    "./src/Explorer/Panes/PaneComponents.ts",
     "./src/Explorer/Panes/PanelFooterComponent.tsx",
     "./src/Explorer/Panes/PanelInfoErrorComponent.tsx",
     "./src/Explorer/Panes/PanelLoadingScreen.tsx",
