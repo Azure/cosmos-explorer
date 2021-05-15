@@ -879,6 +879,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "isSparkEnabledForAccount": [Function],
             "isSynapseLinkUpdating": [Function],
             "isTabsContentExpanded": [Function],
+            "isTerminalEnabled": [Function],
             "junoClient": JunoClient {
               "cachedPinnedRepos": [Function],
             },
