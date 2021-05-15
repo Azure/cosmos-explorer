@@ -63,52 +63,36 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     if (container.notebookManager?.gitHubOAuthService) {
       buttons.push(createManageGitHubAccountButton(container));
     }
-  }
 
-  if (!container.isRunningOnNationalCloud()) {
-    if (!container.isNotebookEnabled()) {
-      buttons.push(createEnableNotebooksButton(container));
-    }
+    buttons.push(createOpenTerminalButton(container));
 
-    if (
-      userContext.apiType === "Mongo" &&
-      !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
-      container.isDatabaseNodeOrNoneSelected()
-    ) {
+    buttons.push(createNotebookWorkspaceResetButton(container));
+    if (userContext.apiType === "Mongo" && container.isTerminalEnabled() && container.isDatabaseNodeOrNoneSelected()) {
       buttons.push(createOpenMongoTerminalButton(container));
     }
 
     if (userContext.apiType === "Cassandra") {
       buttons.push(createOpenCassandraTerminalButton(container));
     }
-  }
-
-  if (container.isNotebookEnabled()) {
-    buttons.push(createOpenTerminalButton(container));
-
-    buttons.push(createNotebookWorkspaceResetButton(container));
+  } else {
+    if (!container.isRunningOnNationalCloud()) {
+      buttons.push(createEnableNotebooksButton(container));
+    }
   }
 
   if (!container.isDatabaseNodeOrNoneSelected()) {
-    if (container.isNotebookEnabled()) {
-      buttons.push(createDivider());
-    }
-
     const isSqlQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+
     if (isSqlQuerySupported) {
+      buttons.push(createDivider());
       const newSqlQueryBtn = createNewSQLQueryButton(container);
       buttons.push(newSqlQueryBtn);
     }
 
-    const isSupportedOpenQueryApi =
-      userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Gremlin";
-    const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
-    if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
+    if (isSqlQuerySupported && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
       buttons.push(openQueryBtn);
-    } else if (isSupportedOpenQueryFromDiskApi && container.selectedNode() && container.findSelectedCollection()) {
-      buttons.push(createOpenQueryFromDiskButton(container));
     }
 
     if (areScriptsSupported()) {
@@ -138,15 +122,13 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const showMongoTerminal =
-      container.isNotebookEnabled() && !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled;
-    const label = showMongoTerminal ? "Open Mongo Shell" : "New Shell";
+    const label = container.isTerminalEnabled() ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        if (showMongoTerminal) {
+        if (container.isTerminalEnabled()) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();

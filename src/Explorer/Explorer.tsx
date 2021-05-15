@@ -196,6 +196,8 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
+  public isTerminalEnabled: ko.Observable<boolean>;
+
   private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
@@ -242,6 +244,7 @@ export default class Explorer {
         });
       }
     });
+    this.isTerminalEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
@@ -268,6 +271,12 @@ export default class Explorer {
                 ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
                   userContext.features.enableNotebooks)
             );
+            this.isTerminalEnabled(
+              this.isNotebookEnabled() &&
+                !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
+                userContext.databaseAccount.properties.ipRules.length === 0
+            );
+
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
               dataExplorerArea: Constants.Areas.Notebook,
@@ -1849,7 +1858,7 @@ export default class Explorer {
     }
 
     const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(ViewModels.CollectionTabKind.Terminal, (tab) =>
-      tab.hashLocation().includes(hashLocation)
+      tab.hashLocation().startsWith(hashLocation)
     ) as TerminalTab[];
 
     const index = terminalTabs.length + 1;

@@ -22,6 +22,7 @@ export interface DatabaseAccountExtendedProperties {
   enableFreeTier?: boolean;
   enableAnalyticalStorage?: boolean;
   isVirtualNetworkFilterEnabled?: boolean;
+  ipRules?: IpRule[];
 }
 
 export interface DatabaseAccountResponseLocation {
@@ -31,6 +32,10 @@ export interface DatabaseAccountResponseLocation {
   locationId: string;
   locationName: string;
   provisioningState: string;
+}
+
+export interface IpRule {
+  ipAddressOrRange: string;
 }
 
 export interface ConfigurationOverrides {
