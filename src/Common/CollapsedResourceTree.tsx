@@ -1,5 +1,5 @@
+import arrowLeftImg from "images/imgarrowlefticon.svg";
 import React, { FunctionComponent } from "react";
-import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 
 export interface CollapsedResourceTreeProps {
   toggleLeftPaneExpanded: () => void;

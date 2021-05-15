@@ -1,6 +1,6 @@
+import arrowLeftImg from "images/imgarrowlefticon.svg";
+import refreshImg from "images/refresh-cosmos.svg";
 import React, { FunctionComponent } from "react";
-import arrowLeftImg from "../../images/imgarrowlefticon.svg";
-import refreshImg from "../../images/refresh-cosmos.svg";
 import { AuthType } from "../AuthType";
 import { userContext } from "../UserContext";
 

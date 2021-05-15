@@ -633,40 +633,38 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       promise = Q.resolve(0);
     }
 
-    promise = promise.then(
-      (outEPairsNb: number): Q.Promise<number> => {
-        const inEdgesToFetch = totalEdgesToFetch - outEPairsNb;
-        if (!vertex._inEAllLoaded && inEdgesToFetch > 0) {
-          let start: number;
-          if (offsetIndex <= vertex._outEdgeIds.length) {
-            start = 0;
-          } else {
-            start = offsetIndex - vertex._outEdgeIds.length;
-          }
-
-          return this.fetchEdgeVertexPairs(false, vertex, start, inEdgesToFetch).then(
-            (pairs: EdgeVertexPair[]): number => {
-              vertex._inEAllLoaded = pairs.length < inEdgesToFetch;
-
-              const pairsToAdd = pairs.slice(0, GraphExplorer.LOAD_PAGE_SIZE - outEPairsNb);
-              pairsToAdd.forEach((p: EdgeVertexPair) => {
-                GraphData.GraphData.addInE(vertex, p.e.label, p.e);
-                GraphUtil.addRootChildToGraph(vertex, p.v, graphData);
-                graphData.addEdge(p.e);
-                vertex._inEdgeIds.push(p.e.id);
-
-                // Cache results (graphdata now contains a vertex with outE's filled in)
-                this.edgeInfoCache.addVertex(graphData.getVertexById(p.v.id));
-              });
-              addedEdgesNb += pairsToAdd.length;
-              return outEPairsNb + pairs.length;
-            }
-          );
+    promise = promise.then((outEPairsNb: number): Q.Promise<number> => {
+      const inEdgesToFetch = totalEdgesToFetch - outEPairsNb;
+      if (!vertex._inEAllLoaded && inEdgesToFetch > 0) {
+        let start: number;
+        if (offsetIndex <= vertex._outEdgeIds.length) {
+          start = 0;
         } else {
-          return Q.resolve(outEPairsNb);
+          start = offsetIndex - vertex._outEdgeIds.length;
         }
+
+        return this.fetchEdgeVertexPairs(false, vertex, start, inEdgesToFetch).then(
+          (pairs: EdgeVertexPair[]): number => {
+            vertex._inEAllLoaded = pairs.length < inEdgesToFetch;
+
+            const pairsToAdd = pairs.slice(0, GraphExplorer.LOAD_PAGE_SIZE - outEPairsNb);
+            pairsToAdd.forEach((p: EdgeVertexPair) => {
+              GraphData.GraphData.addInE(vertex, p.e.label, p.e);
+              GraphUtil.addRootChildToGraph(vertex, p.v, graphData);
+              graphData.addEdge(p.e);
+              vertex._inEdgeIds.push(p.e.id);
+
+              // Cache results (graphdata now contains a vertex with outE's filled in)
+              this.edgeInfoCache.addVertex(graphData.getVertexById(p.v.id));
+            });
+            addedEdgesNb += pairsToAdd.length;
+            return outEPairsNb + pairs.length;
+          }
+        );
+      } else {
+        return Q.resolve(outEPairsNb);
       }
-    );
+    });
 
     return promise.then((nbPairsFetched: number) => {
       if (offsetIndex >= GraphExplorer.LOAD_PAGE_SIZE || !vertex._outEAllLoaded || !vertex._inEAllLoaded) {
@@ -1221,16 +1219,13 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
   private getPossibleRootNodes(): LeftPane.CaptionId[] {
     const key = this.state.igraphConfig.nodeCaption;
-    return $.map(
-      this.state.rootMap,
-      (value: any, index: number): LeftPane.CaptionId => {
-        let result = GraphData.GraphData.getNodePropValue(value, key);
-        return {
-          caption: result !== undefined ? result : value.id,
-          id: value.id,
-        };
-      }
-    );
+    return $.map(this.state.rootMap, (value: any, index: number): LeftPane.CaptionId => {
+      let result = GraphData.GraphData.getNodePropValue(value, key);
+      return {
+        caption: result !== undefined ? result : value.id,
+        id: value.id,
+      };
+    });
   }
 
   /**
