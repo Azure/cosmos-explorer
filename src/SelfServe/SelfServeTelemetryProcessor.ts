@@ -8,7 +8,7 @@ import { trace, traceCancel, traceFailure, traceStart, traceSuccess } from "../S
 import { SelfServeTelemetryMessage } from "./SelfServeTypes";
 
 /**
- * Trace a self serve action.
+ * Log an action.
  * @param data Data to be sent as part of the Self Serve Telemetry.
  */
 export const selfServeTrace = (data: SelfServeTelemetryMessage): void => {
@@ -16,17 +16,17 @@ export const selfServeTrace = (data: SelfServeTelemetryMessage): void => {
 };
 
 /**
- * Start tracing a self serve action.
+ * Start logging an action.
  * @param data Data to be sent as part of the Self Serve Telemetry.
  * @returns Timestamp of the trace start, that can be used in other trace actions.
- * The timestamp is used to identify all the traces associated with an action.
+ * The timestamp is used to identify all the logs associated with an action.
  */
 export const selfServeTraceStart = (data: SelfServeTelemetryMessage): number => {
   return traceStart(Action.SelfServe, data, SelfServeMessageTypes.TelemetryInfo);
 };
 
 /**
- * Trace self serve action as a success.
+ * Log an action as a success.
  * @param data Data to be sent as part of the Self Serve Telemetry.
  * @param timestamp Timestamp of the action's start trace.
  */
@@ -35,7 +35,7 @@ export const selfServeTraceSuccess = (data: SelfServeTelemetryMessage, timestamp
 };
 
 /**
- * Trace self serve action as a failure.
+ * Log an action as a failure.
  * @param data Data to be sent as part of the Self Serve Telemetry.
  * @param timestamp Timestamp of the action's start trace.
  */
@@ -44,7 +44,7 @@ export const selfServeTraceFailure = (data: SelfServeTelemetryMessage, timestamp
 };
 
 /**
- * Trace self serve action as cancelled.
+ * Log an action as cancelled.
  * @param data Data to be sent as part of the Self Serve Telemetry.
  * @param timestamp Timestamp of the action's start trace.
  */

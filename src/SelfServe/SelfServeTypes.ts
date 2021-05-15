@@ -109,7 +109,7 @@ export abstract class SelfServeBaseClass {
   public abstract onSave: onSaveCallback;
 
   /**
-   * Callback that is triggered when the refresh button is clicked. Here, You should perform the your rest API
+   * Callback that is triggered when the refresh button is clicked. Here, you should perform the your rest API
    * call to check if the update action is completed.
    */
   public abstract onRefresh: () => Promise<RefreshResult>;
@@ -175,11 +175,11 @@ export enum NumberUiType {
 
 export type ChoiceItem = {
   /**
-   * Translation key corresponding to the label of the dropdown choice item
+   * Key used to pickup the string corresponding to the label of the dropdown choice item, from the strings JSON file.
    */
   labelTKey: string;
   /**
-   * key to uniquely identify the dropdown choice item
+   * Key used to pickup the string that uniquely identifies the dropdown choice item, from the strings JSON file.
    */
   key: string;
 };
@@ -191,7 +191,7 @@ export type InputType = number | string | boolean | ChoiceItem | Description;
  */
 export interface Info {
   /**
-   * Translation key corresponding to the text to be shown within the info bubble.
+   * Key used to pickup the string corresponding to the text to be shown within the info bubble, from the strings JSON file.
    */
   messageTKey: string;
   /**
@@ -203,7 +203,7 @@ export interface Info {
      */
     href: string;
     /**
-     * Translation key corresponding to the text of the link.
+     * Key used to pickup the string corresponding to the text of the link, from the strings JSON file.
      */
     textTKey: string;
   };
@@ -229,7 +229,7 @@ export enum DescriptionType {
  */
 export interface Description {
   /**
-   * Translation key corresponding to the text to be shown as part of the description.
+   * Key used to pickup the string corresponding to the text to be shown as part of the description, from the strings JSON file.
    */
   textTKey: string;
   type: DescriptionType;
@@ -242,7 +242,7 @@ export interface Description {
      */
     href: string;
     /**
-     * Translation key corresponding to the text of the link.
+     * Key used to pickup the string corresponding to the text of the link, from the strings JSON file.
      */
     textTKey: string;
   };
@@ -269,7 +269,7 @@ export interface OnSaveResult {
    */
   operationStatusUrl: string;
   /**
-   * Notifications that need to be shown on the portal for different scenarios.
+   * Notifications that need to be shown on the portal for different stages of a scenario (initialized, success/failure).
    */
   portalNotification?: {
     /**
@@ -277,11 +277,11 @@ export interface OnSaveResult {
      */
     initialize: {
       /**
-       * Translation key for the notification title.
+       * Key used to pickup the string corresponding to the notification title, from the strings JSON file.
        */
       titleTKey: string;
       /**
-       * Translation key for the notification message.
+       * Key used to pickup the string corresponding to the notification message, from the strings JSON file.
        */
       messageTKey: string;
     };
@@ -290,11 +290,11 @@ export interface OnSaveResult {
      */
     success: {
       /**
-       * Translation key for the notification title.
+       * Key used to pickup the string corresponding to the notification title, from the strings JSON file.
        */
       titleTKey: string;
       /**
-       * Translation key for the notification message.
+       * Key used to pickup the string corresponding to the notification message, from the strings JSON file.
        */
       messageTKey: string;
     };
@@ -303,11 +303,11 @@ export interface OnSaveResult {
      */
     failure: {
       /**
-       * Translation key for the notification title.
+       * Key used to pickup the string corresponding to the notification title, from the strings JSON file.
        */
       titleTKey: string;
       /**
-       * Translation key for the notification message.
+       * Key used to pickup the string corresponding to the notification message, from the strings JSON file.
        */
       messageTKey: string;
     };
@@ -321,7 +321,7 @@ export interface RefreshResult {
   isUpdateInProgress: boolean;
 
   /**
-   * The translation key corresponding to the message that will be shown on the UI if the update is still ongoing.
+   * Key used to pickup the string corresponding to the message that will be shown on the UI if the update is still ongoing, from the strings JSON file.
    * Will be shown only if {@linkcode isUpdateInProgress} is true.
    */
   updateInProgressMessageTKey: string;

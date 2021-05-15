@@ -37,11 +37,29 @@ export enum SelfServeType {
  * Portal Blade types
  */
 export enum BladeType {
+  /**
+   * Keys blade of a SQL API account.
+   */
   SqlKeys = "keys",
+  /**
+   * Keys blade of a Mongo API account.
+   */
   MongoKeys = "mongoDbKeys",
+  /**
+   * Keys blade of a Cassandra API account.
+   */
   CassandraKeys = "cassandraDbKeys",
+  /**
+   * Keys blade of a Gremlin API account.
+   */
   GremlinKeys = "keys",
+  /**
+   * Keys blade of a Table API account.
+   */
   TableKeys = "tableKeys",
+  /**
+   * Metrics blade of an Azure Cosmos DB account.
+   */
   Metrics = "metrics",
 }
 

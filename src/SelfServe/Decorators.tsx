@@ -13,13 +13,13 @@ interface Decorator {
 
 interface InputOptionsBase {
   /**
-   * Translation key corresponding to the label of the UI element
+   * Key used to pickup the string corresponding to the label of the UI element, from the strings JSON file.
    */
   labelTKey: string;
 }
 
 /**
- * Numeric input UI element is rendered.
+ * Numeric input UI element is rendered. The current options are to render it as a slider or a spinner.
  */
 export interface NumberInputOptions extends InputOptionsBase {
   /**
@@ -45,7 +45,7 @@ export interface NumberInputOptions extends InputOptionsBase {
  */
 export interface StringInputOptions extends InputOptionsBase {
   /**
-   * Translation key corresponding to the place holder text of the text box.
+   * Key used to pickup the string corresponding to the place holder text of the text box, from the strings JSON file.
    */
   placeholderTKey?: (() => Promise<string>) | string;
 }
@@ -55,11 +55,11 @@ export interface StringInputOptions extends InputOptionsBase {
  */
 export interface BooleanInputOptions extends InputOptionsBase {
   /**
-   * Translation key corresponding to the true label of the toggle
+   * Key used to pickup the string corresponding to the true label of the toggle, from the strings JSON file.
    */
   trueLabelTKey: (() => Promise<string>) | string;
   /**
-   * Translation key corresponding to the false label of the toggle
+   * Key used to pickup the string corresponding to the false label of the toggle, from the strings JSON file.
    */
   falseLabelTKey: (() => Promise<string>) | string;
 }
@@ -73,7 +73,7 @@ export interface ChoiceInputOptions extends InputOptionsBase {
    */
   choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   /**
-   * Translation key corresponding to the placeholder text of the dropdown.
+   * Key used to pickup the string corresponding to the placeholder text of the dropdown, from the strings JSON file.
    */
   placeholderTKey?: (() => Promise<string>) | string;
 }
@@ -83,7 +83,7 @@ export interface ChoiceInputOptions extends InputOptionsBase {
  */
 export interface DescriptionDisplayOptions {
   /**
-   * Optional label for the text description
+   * Optional heading for the text displayed by this description element.
    */
   labelTKey?: string;
   /**
@@ -96,6 +96,14 @@ export interface DescriptionDisplayOptions {
   isDynamicDescription?: boolean;
 }
 
+/**
+ * Interprets the type of the UI element and correspondingly renders
+ * - slider or spinner
+ * - text box
+ * - toggle
+ * - drop down
+ * - plain text or message bar
+ */
 export type InputOptions =
   | NumberInputOptions
   | StringInputOptions
@@ -147,7 +155,8 @@ export const OnChange = (onChange: OnChangeCallback): PropertyDecorator => {
 };
 
 /**
- * Indicates that the UI element corresponding to the property should have an Info bubble.
+ * Indicates that the UI element corresponding to the property should have an Info bubble. The Info
+ * bubble is the icon that looks like an "i" which users click on to get more information about the UI element.
  */
 export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecorator => {
   return addToMap({ name: "info", value: info });
@@ -201,7 +210,9 @@ export const IsDisplayable = (): ClassDecorator => {
 };
 
 /**
- * Indicates how often the auto refresh of the component should take place
+ * If there is a long running operation in your page after the {@linkcode onSave} action, the page can
+ * optionally auto refresh itself using the {@linkcode onRefresh} action. The 'RefreshOptions' indicate
+ * how often the auto refresh of the page occurs.
  */
 export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
   return (target) => {

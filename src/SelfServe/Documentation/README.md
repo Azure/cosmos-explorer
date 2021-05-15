@@ -117,7 +117,7 @@ import { configContext } from "../../ConfigContext";
 
 const apiVersion = "2020-06-01-preview";
 
-export const saveData = async (properties: RpDataModel): Promise<void> => {
+export const saveData = async (properties: RpDataModel): Promise<string> => {
   const path = `/subscriptions/${userContext.subscriptionId}/resourceGroups/${userContext.resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${userContext.databaseAccount.name}/<REST_OF_THE_PATH>`
   const body = {
       data : properties
@@ -129,6 +129,8 @@ export const saveData = async (properties: RpDataModel): Promise<void> => {
     apiVersion,
     body,
   });
+
+  return armRequestResult.operationStatusUrl;
 };
 
 ```
@@ -262,11 +264,66 @@ export default class FeatureName extends SelfServeBaseClass {
     const telemetryData = { ...propertiesToSave, selfServeClassName: FeatureName.name }
     const onSaveTimeStamp = selfServeTraceStart(telemetryData)
 
-    saveData(propertiesToSave)
+    await saveData(propertiesToSave)
 
     selfServeTraceSuccess(telemetryData, onSaveTimeStamp)
 
     // return required values
+  }
+
+  .
+  .
+  .
+
+  @Values(...)
+  stringProperty: string;
+
+  @Values(...)
+  booleanProperty: boolean;
+}
+```
+## Portal Notifications
+You can enable portal notifications for your feature by passing in the required strings as part of the [portalNotification](../interfaces/selfserve_selfservetypes.onsaveresult.html#portalnotification) property of the [onSaveResult](../interfaces/selfserve_selfservetypes.onsaveresult.html).
+
+```ts
+@IsDisplayable()
+export default class SqlX extends SelfServeBaseClass {
+
+.
+.
+.
+
+  public onSave = async (
+      currentValues: Map<string, SmartUiInput>,
+      baselineValues: Map<string, SmartUiInput>
+  ): Promise<OnSaveResult> => {
+
+    stringPropertyValue = currentValues.get("stringProperty")
+    booleanPropertyValue = currentValues.get("booleanProperty")
+    
+    const propertiesToSave : RpDataModel = { 
+      stringProperty: stringPropertyValue,
+      booleanProperty: booleanPropertyValue
+    }
+
+    const operationStatusUrl = await saveData(propertiesToSave);
+    return {
+      operationStatusUrl: operationStatusUrl,
+      portalNotification: {
+        initialize: {
+          titleTKey: "DeleteInitializeTitle",
+          messageTKey: "DeleteInitializeMessage",
+        },
+        success: {
+          titleTKey: "DeleteSuccessTitle",
+          messageTKey: "DeleteSuccesseMessage",
+        },
+        failure: {
+          titleTKey: "DeleteFailureTitle",
+          messageTKey: "DeleteFailureMessage",
+        },
+      },
+    };
   }
 
   .

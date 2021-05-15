@@ -31,6 +31,7 @@
   "typedocOptions": {
     "entryPoints": [
       "./src/SelfServe/Documentation/Documentation.ts",
+      "./src/SelfServe/Documentation/SupportedFeatures.ts",
       "./src/SelfServe/Decorators.tsx",
       "./src/SelfServe/SelfServeTypes.ts",
       "./src/SelfServe/SelfServeUtils.tsx",

@@ -106,6 +106,18 @@
 					<div class="tsd-signature tsd-kind-icon">Input<wbr>Options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/selfserve_decorators.numberinputoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">NumberInputOptions</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/selfserve_decorators.stringinputoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">StringInputOptions</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/selfserve_decorators.booleaninputoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">BooleanInputOptions</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/selfserve_decorators.choiceinputoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">ChoiceInputOptions</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/selfserve_decorators.descriptiondisplayoptions.html" class="tsd-signature-type" data-tsd-kind="Interface">DescriptionDisplayOptions</a></div>
 					<aside class="tsd-sources">
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Interprets the type of the UI element and correspondingly renders</p>
+							<ul>
+								<li>slider or spinner</li>
+								<li>text box</li>
+								<li>toggle</li>
+								<li>drop down</li>
+								<li>plain text or message bar</li>
+							</ul>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -141,7 +153,7 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Indicates the Callback to be fired when the UI element corresponding to the property is changed.</p>
+									<p>Indicates the callback to be fired when the UI element corresponding to the property is changed.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -166,7 +178,8 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Indicates that the UI element corresondign to the property should have an Info bubble.</p>
+									<p>Indicates that the UI element corresponding to the property should have an Info bubble. The Info
+									bubble is the icon that looks like an &quot;i&quot; which users click on to get more information about the UI element.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -191,7 +204,9 @@
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Indicates how often the auto refresh of the component should take place</p>
+									<p>If there is a long running operation in your page after the <a href="../classes/selfserve_selfservetypes.selfservebaseclass.html#onsave"><code>onSave</code></a> action, the page can
+										optionally auto refresh itself using the <a href="../classes/selfserve_selfservetypes.selfservebaseclass.html#onrefresh"><code>onRefresh</code></a> action. The &#39;RefreshOptions&#39; indicate
+									how often the auto refresh of the page occurs.</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -239,6 +254,9 @@
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="selfserve.html">Self<wbr>Serve</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="selfserve___what_is_currently_supported_.html">Self<wbr>Serve -<wbr> <wbr>What is currently supported?</a>
 					</li>
 					<li class="current tsd-kind-module">
 						<a href="selfserve_decorators.html">Self<wbr>Serve/<wbr>Decorators</a>
