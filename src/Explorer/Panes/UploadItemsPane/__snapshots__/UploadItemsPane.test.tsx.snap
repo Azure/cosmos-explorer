@@ -1,15 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upload Items Pane should render Default properly 1`] = `
-<GenericRightPaneComponent
+<RightPaneForm
   expandConsole={[Function]}
   formError=""
-  formErrorDetail=""
-  id="uploaditemspane"
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Upload"
-  title="Upload Items"
 >
   <div
     className="paneMainContent"
@@ -23,5 +19,5 @@ exports[`Upload Items Pane should render Default properly 1`] = `
       tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets."
     />
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;

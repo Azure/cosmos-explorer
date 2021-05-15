@@ -252,7 +252,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
       >
          capacity calculator
          
-        <Component
+        <FontIcon
           iconName="NavigateExternalInline"
         />
       </StyledLinkBase>
@@ -526,7 +526,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
       >
          capacity calculator
          
-        <Component
+        <FontIcon
           iconName="NavigateExternalInline"
         />
       </StyledLinkBase>

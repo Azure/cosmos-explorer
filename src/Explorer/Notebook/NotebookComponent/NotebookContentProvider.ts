@@ -1,11 +1,17 @@
-import { ServerConfig, IContentProvider, FileType, IContent, IGetParams } from "@nteract/core";
+import { FileType, IContent, IContentProvider, IGetParams, ServerConfig } from "@nteract/core";
 import { Observable } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
 import { GitHubContentProvider } from "../../../GitHub/GitHubContentProvider";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
+import { InMemoryContentProvider } from "./ContentProviders/InMemoryContentProvider";
+import * as InMemoryContentProviderUtils from "./ContentProviders/InMemoryContentProviderUtils";
 
 export class NotebookContentProvider implements IContentProvider {
-  constructor(private gitHubContentProvider: GitHubContentProvider, private jupyterContentProvider: IContentProvider) {}
+  constructor(
+    private inMemoryContentProvider: InMemoryContentProvider,
+    private gitHubContentProvider: GitHubContentProvider,
+    private jupyterContentProvider: IContentProvider
+  ) {}
 
   public remove(serverConfig: ServerConfig, path: string): Observable<AjaxResponse> {
     return this.getContentProvider(path).remove(serverConfig, path);
@@ -60,6 +66,10 @@ export class NotebookContentProvider implements IContentProvider {
   }
 
   private getContentProvider(path: string): IContentProvider {
+    if (InMemoryContentProviderUtils.fromContentUri(path)) {
+      return this.inMemoryContentProvider;
+    }
+
     if (GitHubUtils.fromContentUri(path)) {
       return this.gitHubContentProvider;
     }

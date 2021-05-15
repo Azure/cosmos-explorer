@@ -1,38 +1,7 @@
-import AddCollectionPaneTemplate from "./AddCollectionPane.html";
-import AddDatabasePaneTemplate from "./AddDatabasePane.html";
 import CassandraAddCollectionPaneTemplate from "./CassandraAddCollectionPane.html";
-import GraphStylingPaneTemplate from "./GraphStylingPane.html";
-
 export class PaneComponent {
   constructor(data: any) {
     return data.data;
-  }
-}
-
-export class AddDatabasePaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: AddDatabasePaneTemplate,
-    };
-  }
-}
-
-export class AddCollectionPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: AddCollectionPaneTemplate,
-    };
-  }
-}
-
-export class GraphStylingPaneComponent {
-  constructor() {
-    return {
-      viewModel: PaneComponent,
-      template: GraphStylingPaneTemplate,
-    };
   }
 }
 

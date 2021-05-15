@@ -1959,7 +1959,7 @@ exports[`test render renders with filters 1`] = `
                               </div>
                             </span>
                           </button>
-                          <Component />
+                          <FocusRects />
                         </BaseButton>
                       </DefaultButton>
                     </CustomizedDefaultButton>

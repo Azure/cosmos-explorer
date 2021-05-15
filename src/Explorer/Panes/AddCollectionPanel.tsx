@@ -25,7 +25,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getCollectionName } from "../../Utils/APITypeUtils";
-import { isCapabilityEnabled } from "../../Utils/CapabilityUtils";
+import { isCapabilityEnabled, isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { getUpsellMessage } from "../../Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
@@ -182,7 +182,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   }
                 />
 
-                {!this.isServerlessAccount() && (
+                {!isServerlessAccount() && (
                   <Stack horizontal>
                     <Checkbox
                       label={`Share throughput across ${getCollectionName(true).toLocaleLowerCase()}`}
@@ -207,7 +207,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   </Stack>
                 )}
 
-                {!this.isServerlessAccount() && this.state.isSharedThroughputChecked && (
+                {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
                   <ThroughputInput
                     showFreeTierExceedThroughputTooltip={
                       this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
@@ -396,7 +396,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   if (
                     userContext.apiType !== "Mongo" &&
-                    this.state.partitionKey === "" &&
+                    !this.state.partitionKey &&
                     !event.target.value.startsWith("/")
                   ) {
                     this.setState({ partitionKey: "/" + event.target.value });
@@ -408,7 +408,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
-          {!this.isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
+          {!isServerlessAccount() && !this.state.createNewDatabase && this.isSelectedDatabaseSharedThroughput() && (
             <Stack horizontal verticalAlign="center">
               <Checkbox
                 label={`Provision dedicated throughput for this ${getCollectionName().toLocaleLowerCase()}`}
@@ -751,14 +751,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return userContext.databaseAccount?.properties?.enableFreeTier;
   }
 
-  private isServerlessAccount(): boolean {
-    return userContext.databaseAccount.properties?.capabilities?.some(
-      (capability) => capability.name === Constants.CapabilityNames.EnableServerless
-    );
-  }
-
   private getSharedThroughputDefault(): boolean {
-    return userContext.subscriptionType !== SubscriptionType.EA && !this.isServerlessAccount();
+    return userContext.subscriptionType !== SubscriptionType.EA && !isServerlessAccount();
   }
 
   private getFreeTierIndexingText(): string {
@@ -796,7 +790,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private shouldShowCollectionThroughputInput(): boolean {
-    if (this.isServerlessAccount()) {
+    if (isServerlessAccount()) {
       return false;
     }
 
@@ -826,7 +820,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    if (this.isServerlessAccount()) {
+    if (isServerlessAccount()) {
       return false;
     }
 
@@ -917,6 +911,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getAnalyticalStorageTtl(): number {
+    if (!this.isSynapseLinkEnabled()) {
+      return undefined;
+    }
+
     if (!this.shouldShowAnalyticalStoreOptions()) {
       return undefined;
     }

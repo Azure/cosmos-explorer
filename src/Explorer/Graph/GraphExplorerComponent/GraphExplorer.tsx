@@ -19,7 +19,7 @@ import { EditorReact } from "../../Controls/Editor/EditorReact";
 import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 import * as TabComponent from "../../Controls/Tabs/TabComponent";
 import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import { GraphConfig } from "../../Tabs/GraphTab";
+import { IGraphConfig } from "../../Tabs/GraphTab";
 import { ArraysByKeyCache } from "./ArraysByKeyCache";
 import * as D3ForceGraph from "./D3ForceGraph";
 import { EdgeInfoCache } from "./EdgeInfoCache";
@@ -31,10 +31,10 @@ import * as LeftPane from "./LeftPaneComponent";
 import { MiddlePaneComponent } from "./MiddlePaneComponent";
 import * as NodeProperties from "./NodePropertiesComponent";
 import { QueryContainerComponent } from "./QueryContainerComponent";
-
 export interface GraphAccessor {
   applyFilter: () => void;
   addVertex: (v: ViewModels.NewVertexData) => Q.Promise<void>;
+  shareIGraphConfig: (igraphConfig: IGraphConfig) => void;
 }
 
 export interface GraphExplorerProps {
@@ -58,9 +58,10 @@ export interface GraphExplorerProps {
   onLoadStartKeyChange: (newKey: number) => void;
   resourceId: string;
 
-  /* TODO Figure out how to make this Knockout-free */
-  graphConfigUiData: ViewModels.GraphConfigUiData;
-  graphConfig?: GraphConfig;
+  igraphConfigUiData: ViewModels.IGraphConfigUiData;
+  igraphConfig: IGraphConfig;
+
+  setIConfigUiData?: (data: string[]) => void;
 }
 
 export interface GraphHighlightedNodeData {
@@ -121,6 +122,10 @@ interface GraphExplorerState {
   filterQueryError: string;
   filterQueryWarning: string;
   filterQueryStatus: FilterQueryStatus;
+  change: string;
+
+  igraphConfigUiData: ViewModels.IGraphConfigUiData;
+  igraphConfig: IGraphConfig;
 }
 
 export interface EditedProperties {
@@ -218,6 +223,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   private lastReportedIsPropertyEditing: boolean;
   private lastReportedIsNewVertexDisabled: boolean;
 
+  public getNodeProperties: string[];
+  public igraphConfigUi: ViewModels.IGraphConfigUiData;
   public constructor(props: GraphExplorerProps) {
     super(props);
     this.state = {
@@ -237,6 +244,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       filterQueryError: null,
       filterQueryWarning: null,
       filterQueryStatus: FilterQueryStatus.NoResult,
+      change: null,
+      igraphConfigUiData: this.props.igraphConfigUiData,
+      igraphConfig: this.props.igraphConfig,
     };
 
     // Not part of React state
@@ -284,40 +294,26 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       this.setGremlinParams();
     }
 
-    /* TODO Make this Knockout-free ! */
-    this.props.graphConfigUiData.nodeCaptionChoice.subscribe((key) => {
-      this.props.graphConfig.nodeCaption(key);
-      const selectedNode = this.state.highlightedNode;
-      if (selectedNode) {
-        this.updatePropertiesPane(selectedNode.id);
-      }
-
-      this.render();
-    });
-    this.props.graphConfigUiData.nodeColorKeyChoice.subscribe((val) => {
-      this.props.graphConfig.nodeColorKey(val === GraphExplorer.NONE_CHOICE ? null : val);
-      this.render();
-    });
-    this.props.graphConfigUiData.showNeighborType.subscribe((val) => {
-      this.props.graphConfig.showNeighborType(val);
-      this.render();
-    });
-
-    this.props.graphConfigUiData.nodeIconChoice.subscribe((val) => {
-      this.updateNodeIcons(val, this.props.graphConfigUiData.nodeIconSet());
-      this.render();
-    });
-    this.props.graphConfigUiData.nodeIconSet.subscribe((val) => {
-      this.updateNodeIcons(this.props.graphConfigUiData.nodeIconChoice(), val);
-      this.render();
-    });
-    /* *************************************** */
+    const selectedNode = this.state.highlightedNode;
 
     props.onGraphAccessorCreated({
       applyFilter: this.submitQuery.bind(this),
       addVertex: this.addVertex.bind(this),
+      shareIGraphConfig: this.shareIGraphConfig.bind(this),
     });
   } // constructor
+
+  public shareIGraphConfig(igraphConfig: IGraphConfig) {
+    this.setState({
+      igraphConfig: { ...igraphConfig },
+    });
+
+    const selectedNode = this.state.highlightedNode;
+    if (selectedNode) {
+      this.updatePropertiesPane(selectedNode.id);
+      this.setResultDisplay(GraphExplorer.TAB_INDEX_GRAPH);
+    }
+  }
 
   /**
    * If pk is a string, return ["pk", "id"]
@@ -408,7 +404,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
         // Update graph (in case property is being shown)
         this.updateInMemoryGraph(result.data);
-        this.updateGraphData(this.originalGraphData);
+        this.updateGraphData(this.originalGraphData, this.state.igraphConfig);
       })
       .then(
         () => {
@@ -446,7 +442,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         // Remove vertex from local cache
         const graphData = this.originalGraphData;
         graphData.removeVertex(id, false);
-        this.updateGraphData(graphData);
+        this.updateGraphData(graphData, this.state.igraphConfig);
         this.setState({ highlightedNode: null });
 
         // Remove from root map
@@ -582,7 +578,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       this.edgeInfoCache.addVertex(vertex);
 
       graphData.setAsRoot(vertex.id);
-      this.updateGraphData(graphData);
+      this.updateGraphData(graphData, this.state.igraphConfig);
     };
 
     vertex._outEdgeIds = vertex._outEdgeIds || [];
@@ -788,7 +784,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           graphData.getVertexById(edge.outV)._inEAllLoaded = false;
         }
 
-        this.updateGraphData(graphData);
+        this.updateGraphData(graphData, this.state.igraphConfig);
       },
       (error: string) => {
         GraphExplorer.reportToConsole(
@@ -809,7 +805,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       () => {
         let graphData = this.originalGraphData;
         graphData.removeEdge(edgeId, false);
-        this.updateGraphData(graphData);
+        this.updateGraphData(graphData, this.state.igraphConfig);
       },
       (error: string) => {
         GraphExplorer.reportToConsole(
@@ -858,7 +854,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
         if (vertices.length === 0) {
           // Clean graph
-          this.updateGraphData(new GraphData.GraphData());
+          this.updateGraphData(new GraphData.GraphData(), this.state.igraphConfig);
           this.setState({ highlightedNode: null });
           GraphExplorer.reportToConsole(ConsoleDataType.Info, "Query result is empty");
         }
@@ -940,7 +936,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         let vertex = vertices[0];
         const graphData = this.originalGraphData;
         graphData.addVertex(vertex);
-        this.updateGraphData(graphData);
+        this.updateGraphData(graphData, this.state.igraphConfig);
         this.collectNodeProperties(this.originalGraphData.vertices);
 
         // Keep new vertex selected
@@ -1121,8 +1117,13 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           return rootMap[id];
         })
       );
-      if (this.props.graphConfigUiData.nodeProperties().indexOf(GraphExplorer.DISPLAY_DEFAULT_PROPERTY_KEY) !== -1) {
-        this.props.graphConfigUiData.nodeCaptionChoice(GraphExplorer.DISPLAY_DEFAULT_PROPERTY_KEY);
+      if (this.state.igraphConfigUiData.nodeProperties.indexOf(GraphExplorer.DISPLAY_DEFAULT_PROPERTY_KEY) !== -1) {
+        this.setState({
+          igraphConfigUiData: {
+            ...this.state.igraphConfigUiData,
+            nodeCaptionChoice: GraphExplorer.DISPLAY_DEFAULT_PROPERTY_KEY,
+          },
+        });
       }
 
       // Let react instantiate and render graph, before updating
@@ -1139,7 +1140,12 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    */
   public updateNodeIcons(nodeProp: string, iconSet: string): void {
     if (nodeProp === GraphExplorer.NONE_CHOICE) {
-      this.props.graphConfig.nodeIconKey(null);
+      this.setState({
+        igraphConfig: {
+          ...this.state.igraphConfig,
+          nodeIconKey: undefined,
+        },
+      });
       return;
     }
 
@@ -1163,8 +1169,13 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         });
 
         // Update graph configuration
-        this.props.graphConfig.iconsMap(newIconsMap);
-        this.props.graphConfig.nodeIconKey(nodeProp);
+        this.setState({
+          igraphConfig: {
+            ...this.state.igraphConfig,
+            iconsMap: newIconsMap,
+            nodeIconKey: nodeProp,
+          },
+        });
       },
       () => {
         GraphExplorer.reportToConsole(ConsoleDataType.Error, `Failed to retrieve icons. iconSet:${iconSet}`);
@@ -1209,7 +1220,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   }
 
   private getPossibleRootNodes(): LeftPane.CaptionId[] {
-    const key = this.props.graphConfigUiData.nodeCaptionChoice();
+    const key = this.state.igraphConfig.nodeCaption;
     return $.map(
       this.state.rootMap,
       (value: any, index: number): LeftPane.CaptionId => {
@@ -1320,7 +1331,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return "";
     }
 
-    const nodeCaption = this.props.graphConfigUiData.nodeCaptionChoice();
+    const nodeCaption = this.state.igraphConfigUiData.nodeCaptionChoice;
     const node = this.originalGraphData.getVertexById(this.state.highlightedNode.id);
     return GraphData.GraphData.getNodePropValue(node, nodeCaption) as string;
   }
@@ -1410,7 +1421,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const highlightedNodeId = this.state.highlightedNode ? this.state.highlightedNode.id : null;
 
     const q = `SELECT c.id, c["${
-      this.props.graphConfigUiData.nodeCaptionChoice() || "id"
+      this.state.igraphConfigUiData.nodeCaptionChoice || "id"
     }"] AS p FROM c WHERE NOT IS_DEFINED(c._isEdge)`;
     return this.executeNonPagedDocDbQuery(q).then(
       (documents: DataModels.DocumentId[]) => {
@@ -1539,9 +1550,14 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     });
 
     const values = Object.keys(props);
-    this.props.graphConfigUiData.nodeProperties(values);
-    // TODO This should move out of GraphExplorer
-    this.props.graphConfigUiData.nodePropertiesWithNone([GraphExplorer.NONE_CHOICE].concat(values));
+    this.setState({
+      igraphConfigUiData: {
+        ...this.state.igraphConfigUiData,
+        nodeProperties: values,
+      },
+    });
+
+    this.props.setIConfigUiData(values);
   }
 
   /**
@@ -1566,9 +1582,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     let sources: NeighborVertexBasicInfo[] = [];
     let targets: NeighborVertexBasicInfo[] = [];
     this.props.onResetDefaultGraphConfigValues();
-    let nodeCaption = this.props.graphConfigUiData.nodeCaptionChoice();
+    let nodeCaption = this.state.igraphConfigUiData.nodeCaptionChoice;
     this.updateSelectedNodeNeighbors(data.id, nodeCaption, sources, targets);
-
     let sData: GraphHighlightedNodeData = {
       id: data.id,
       label: data.label,
@@ -1615,7 +1630,12 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           return;
         }
         let caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
-        sources.push({ name: caption, id: neighborId, edgeId: edge.id, edgeLabel: p });
+        sources.push({
+          name: caption,
+          id: neighborId,
+          edgeId: edge.id,
+          edgeLabel: p,
+        });
       });
     }
 
@@ -1629,7 +1649,12 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           return;
         }
         let caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
-        targets.push({ name: caption, id: neighborId, edgeId: edge.id, edgeLabel: p });
+        targets.push({
+          name: caption,
+          id: neighborId,
+          edgeId: edge.id,
+          edgeLabel: p,
+        });
       });
     }
 
@@ -1678,14 +1703,17 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   /**
    * Clone object and keep the original untouched (by d3)
    */
-  private updateGraphData(graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>) {
+  private updateGraphData(
+    graphData: GraphData.GraphData<GraphData.GremlinVertex, GraphData.GremlinEdge>,
+    igraphConfig?: IGraphConfig
+  ) {
     this.originalGraphData = graphData;
     let gd = JSON.parse(JSON.stringify(this.originalGraphData));
     if (!this.d3ForceGraph) {
       console.warn("Attempting to update graph, but d3ForceGraph not initialized, yet.");
       return;
     }
-    this.d3ForceGraph.updateGraph(gd);
+    this.d3ForceGraph.updateGraph(gd, igraphConfig);
   }
 
   public onMiddlePaneInitialized(instance: D3ForceGraph.GraphRenderer): void {
@@ -1694,10 +1722,12 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
   private renderMiddlePane(): JSX.Element {
     const forceGraphParams: D3ForceGraph.D3ForceGraphParameters = {
-      graphConfig: this.props.graphConfig,
+      igraphConfig: this.state.igraphConfig,
       onHighlightedNode: this.onHighlightedNode.bind(this),
       onLoadMoreData: this.onLoadMoreData.bind(this),
-      onInitialized: (instance: D3ForceGraph.GraphRenderer): void => this.onMiddlePaneInitialized(instance),
+      onInitialized: (instance: D3ForceGraph.GraphRenderer): void => {
+        this.onMiddlePaneInitialized(instance);
+      },
       onGraphUpdated: this.onGraphUpdated.bind(this),
     };
 

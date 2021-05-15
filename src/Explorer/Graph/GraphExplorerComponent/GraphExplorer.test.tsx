@@ -1,20 +1,20 @@
 jest.mock("../../../Common/dataAccess/queryDocuments");
 jest.mock("../../../Common/dataAccess/queryDocumentsPage");
-import React from "react";
-import * as sinon from "sinon";
 import { mount, ReactWrapper } from "enzyme";
 import * as Q from "q";
+import React from "react";
+import * as sinon from "sinon";
 import "../../../../externals/jquery.typeahead.min";
-import { GraphExplorer, GraphExplorerProps, GraphAccessor, GraphHighlightedNodeData } from "./GraphExplorer";
-import * as D3ForceGraph from "./D3ForceGraph";
-import { GraphData } from "./GraphData";
-import { TabComponent } from "../../Controls/Tabs/TabComponent";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as StorageUtility from "../../../Shared/StorageUtility";
-import GraphTab from "../../Tabs/GraphTab";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPage";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as StorageUtility from "../../../Shared/StorageUtility";
+import { TabComponent } from "../../Controls/Tabs/TabComponent";
+import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
+import GraphTab from "../../Tabs/GraphTab";
+import * as D3ForceGraph from "./D3ForceGraph";
+import { GraphData } from "./GraphData";
+import { GraphAccessor, GraphExplorer, GraphExplorerProps, GraphHighlightedNodeData } from "./GraphExplorer";
 
 describe("Check whether query result is vertex array", () => {
   it("should reject null as vertex array", () => {
@@ -146,8 +146,8 @@ describe("GraphExplorer", () => {
   const gremlinRU = 789.12;
 
   const createMockProps = (): GraphExplorerProps => {
-    const graphConfig = GraphTab.createGraphConfig();
-    const graphConfigUi = GraphTab.createGraphConfigUiData(graphConfig);
+    const igraphConfig = GraphTab.createIGraphConfig();
+    const igraphConfigUi = GraphTab.createIGraphConfigUiData(igraphConfig);
 
     return {
       onGraphAccessorCreated: (instance: GraphAccessor): void => {},
@@ -170,8 +170,9 @@ describe("GraphExplorer", () => {
       resourceId: "resourceId",
 
       /* TODO Figure out how to make this Knockout-free */
-      graphConfigUiData: graphConfigUi,
-      graphConfig: graphConfig,
+      igraphConfigUiData: igraphConfigUi,
+      igraphConfig: igraphConfig,
+      setIConfigUiData: (data: string[]): void => {},
     };
   };
 
