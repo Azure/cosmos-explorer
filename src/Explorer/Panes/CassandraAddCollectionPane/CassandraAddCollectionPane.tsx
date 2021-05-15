@@ -15,22 +15,19 @@ import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export interface CassandraAddCollectionPaneFProps {
+export interface CassandraAddCollectionPaneProps {
   explorer: Explorer;
   closePanel: () => void;
   cassandraApiClient: CassandraAPIDataClient;
 }
 
-export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollectionPaneFProps> = ({
+export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectionPaneProps> = ({
   explorer: container,
   closePanel,
   cassandraApiClient,
-}: CassandraAddCollectionPaneFProps) => {
+}: CassandraAddCollectionPaneProps) => {
   const throughputDefaults = container.collectionCreationDefaults.throughput;
   const [createTableQuery, setCreateTableQuery] = useState<string>("CREATE TABLE ");
   const [keyspaceId, setKeyspaceId] = useState<string>("");
@@ -187,7 +184,7 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     return true;
   };
 
-  const submit = async () => {
+  const onSubmit = async () => {
     if (!_isValid()) {
       return;
     }
@@ -278,19 +275,15 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
     setKeyspaceCreateNew(mode === "Create new");
   };
 
-  const genericPaneProps: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     expandConsole: () => container.expandConsole(),
     formError: formErrors,
-    formErrorDetail: "",
-    id: "cassandraaddcollectionpane",
     isExecuting,
-    title: "Add Table",
     submitButtonText: "Apply",
-    onClose: closePanel,
-    onSubmit: submit,
+    onSubmit,
   };
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneMainContent">
         <div className="seconddivpadding">
           <p>
@@ -366,8 +359,6 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
                 showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
                 isDatabase
                 isSharded
-                isAutoscaleSelected={isSharedAutoPilotSelected}
-                throughput={keyspaceThroughput}
                 setThroughputValue={(throughput: number) => setKeyspaceThroughput(throughput)}
                 setIsAutoscale={(isAutoscale: boolean) => setIsSharedAutoPilotSelected(isAutoscale)}
                 onCostAcknowledgeChange={(isAcknowledge: boolean) => {
@@ -436,8 +427,6 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
               showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
               isDatabase={false}
               isSharded={false}
-              isAutoscaleSelected={isAutoPilotSelected}
-              throughput={throughput}
               setThroughputValue={(throughput: number) => setThroughput(throughput)}
               setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
               onCostAcknowledgeChange={(isAcknowledge: boolean) => {
@@ -447,6 +436,6 @@ export const CassandraAddCollectionPaneF: FunctionComponent<CassandraAddCollecti
           </div>
         )}
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };
