@@ -1,5 +1,5 @@
+import { FocusZone } from "@fluentui/react";
 import * as React from "react";
-import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
 
 export interface CaptionId {

@@ -8,7 +8,7 @@ exports[`ConflictResolutionComponent Path text field displayed 1`] = `
     }
   }
 >
-  <StyledChoiceGroupBase
+  <StyledChoiceGroup
     label="Mode"
     onChange={[Function]}
     options={
@@ -80,7 +80,7 @@ exports[`ConflictResolutionComponent Sproc text field displayed 1`] = `
     }
   }
 >
-  <StyledChoiceGroupBase
+  <StyledChoiceGroup
     label="Mode"
     onChange={[Function]}
     options={

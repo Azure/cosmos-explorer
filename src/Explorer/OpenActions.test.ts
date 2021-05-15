@@ -3,7 +3,6 @@ import { ActionContracts } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "./Explorer";
 import { handleOpenAction } from "./OpenActions";
-import AddCollectionPane from "./Panes/AddCollectionPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 
 describe("OpenActions", () => {
@@ -15,11 +14,9 @@ describe("OpenActions", () => {
 
     beforeEach(() => {
       explorer = {} as Explorer;
-      explorer.addCollectionPane = {} as AddCollectionPane;
-      explorer.addCollectionPane.open = jest.fn();
+      explorer.onNewCollectionClicked = jest.fn();
       explorer.cassandraAddCollectionPane = {} as CassandraAddCollectionPane;
       explorer.cassandraAddCollectionPane.open = jest.fn();
-      explorer.closeAllPanes = () => {};
 
       database = {
         id: ko.observable("db"),
@@ -90,24 +87,24 @@ describe("OpenActions", () => {
       });
 
       describe("AddCollection pane kind", () => {
-        it("string value should call addCollectionPane.open", () => {
+        it("string value should call explorer.onNewCollectionClicked", () => {
           const action = {
             actionType: "OpenPane",
             paneKind: "AddCollection",
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
+          expect(explorer.onNewCollectionClicked).toHaveBeenCalled();
         });
 
-        it("enum value should call addCollectionPane.open", () => {
+        it("enum value should call explorer.onNewCollectionClicked", () => {
           const action = {
             actionType: "OpenPane",
             paneKind: ActionContracts.PaneKind.AddCollection,
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
+          expect(explorer.onNewCollectionClicked).toHaveBeenCalled();
         });
       });
     });

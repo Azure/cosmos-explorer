@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`test render renders with directories and default 1`] = `
-<StyledWithResponsiveMode
+<Dropdown
   className="defaultDirectoryDropdown"
   defaultSelectedKey="asdfghjklzxcvbnm9876543210"
   label="Set your default directory"
@@ -26,7 +26,7 @@ exports[`test render renders with directories and default 1`] = `
 `;
 
 exports[`test render renders with directories and last visit default 1`] = `
-<StyledWithResponsiveMode
+<Dropdown
   className="defaultDirectoryDropdown"
   defaultSelectedKey="lastVisited"
   label="Set your default directory"
@@ -51,7 +51,7 @@ exports[`test render renders with directories and last visit default 1`] = `
 `;
 
 exports[`test render renders with directories but no default 1`] = `
-<StyledWithResponsiveMode
+<Dropdown
   className="defaultDirectoryDropdown"
   defaultSelectedKey="lastVisited"
   label="Set your default directory"
@@ -76,7 +76,7 @@ exports[`test render renders with directories but no default 1`] = `
 `;
 
 exports[`test render renders with no directories 1`] = `
-<StyledWithResponsiveMode
+<Dropdown
   className="defaultDirectoryDropdown"
   defaultSelectedKey="lastVisited"
   label="Set your default directory"

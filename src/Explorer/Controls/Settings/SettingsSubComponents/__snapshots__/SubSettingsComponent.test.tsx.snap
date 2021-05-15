@@ -15,7 +15,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="timeToLive"
       label="Time to Live"
       onChange={[Function]}
@@ -85,7 +85,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
       value="1000"
     />
   </Stack>
-  <StyledChoiceGroupBase
+  <StyledChoiceGroup
     id="geoSpatialConfig"
     label="Geospatial Configuration"
     onChange={[Function]}
@@ -146,7 +146,7 @@ exports[`SubSettingsComponent analyticalTimeToLive hidden 1`] = `
         }
       />
     </StyledLabelBase>
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       aria-labelledby="settingsV2ChangeFeedLabelId"
       id="changeFeedPolicy"
       onChange={[Function]}
@@ -238,7 +238,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="timeToLive"
       label="Time to Live"
       onChange={[Function]}
@@ -308,7 +308,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       value="1000"
     />
   </Stack>
-  <StyledChoiceGroupBase
+  <StyledChoiceGroup
     id="geoSpatialConfig"
     label="Geospatial Configuration"
     onChange={[Function]}
@@ -355,7 +355,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="analyticalStorageTimeToLive"
       label="Analytical Storage Time to Live"
       onChange={[Function]}
@@ -422,7 +422,7 @@ exports[`SubSettingsComponent analyticalTimeToLiveSeconds hidden 1`] = `
         }
       />
     </StyledLabelBase>
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       aria-labelledby="settingsV2ChangeFeedLabelId"
       id="changeFeedPolicy"
       onChange={[Function]}
@@ -514,7 +514,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="timeToLive"
       label="Time to Live"
       onChange={[Function]}
@@ -584,7 +584,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       value="1000"
     />
   </Stack>
-  <StyledChoiceGroupBase
+  <StyledChoiceGroup
     id="geoSpatialConfig"
     label="Geospatial Configuration"
     onChange={[Function]}
@@ -631,7 +631,7 @@ exports[`SubSettingsComponent changeFeedPolicy hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="analyticalStorageTimeToLive"
       label="Analytical Storage Time to Live"
       onChange={[Function]}
@@ -753,7 +753,7 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="timeToLive"
       label="Time to Live"
       onChange={[Function]}
@@ -823,7 +823,7 @@ exports[`SubSettingsComponent renders 1`] = `
       value="1000"
     />
   </Stack>
-  <StyledChoiceGroupBase
+  <StyledChoiceGroup
     id="geoSpatialConfig"
     label="Geospatial Configuration"
     onChange={[Function]}
@@ -870,7 +870,7 @@ exports[`SubSettingsComponent renders 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="analyticalStorageTimeToLive"
       label="Analytical Storage Time to Live"
       onChange={[Function]}
@@ -962,7 +962,7 @@ exports[`SubSettingsComponent renders 1`] = `
         }
       />
     </StyledLabelBase>
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       aria-labelledby="settingsV2ChangeFeedLabelId"
       id="changeFeedPolicy"
       onChange={[Function]}
@@ -1054,7 +1054,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="timeToLive"
       label="Time to Live"
       onChange={[Function]}
@@ -1099,7 +1099,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     />
   </Stack>
-  <StyledChoiceGroupBase
+  <StyledChoiceGroup
     id="geoSpatialConfig"
     label="Geospatial Configuration"
     onChange={[Function]}
@@ -1146,7 +1146,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
       }
     }
   >
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       id="analyticalStorageTimeToLive"
       label="Analytical Storage Time to Live"
       onChange={[Function]}
@@ -1238,7 +1238,7 @@ exports[`SubSettingsComponent timeToLiveSeconds hidden 1`] = `
         }
       />
     </StyledLabelBase>
-    <StyledChoiceGroupBase
+    <StyledChoiceGroup
       aria-labelledby="settingsV2ChangeFeedLabelId"
       id="changeFeedPolicy"
       onChange={[Function]}

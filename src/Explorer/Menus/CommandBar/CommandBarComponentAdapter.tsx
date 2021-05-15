@@ -3,12 +3,13 @@
  * If the component signals a change through the callback passed in the properties, it must render the React component when appropriate
  * and update any knockout observables passed from the parent.
  */
+import { CommandBar, ICommandBarItemProps } from "@fluentui/react";
 import * as ko from "knockout";
-import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import { StyleConstants } from "../../../Common/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { userContext } from "../../../UserContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -32,14 +33,13 @@ export class CommandBarComponentAdapter implements ReactAdapter {
       container.deleteCollectionText,
       container.deleteDatabaseText,
       container.addCollectionText,
-      container.addDatabaseText,
       container.isDatabaseNodeOrNoneSelected,
       container.isDatabaseNodeSelected,
       container.isNoneSelected,
       container.isResourceTokenCollectionNodeSelected,
       container.isHostedDataExplorerEnabled,
       container.isSynapseLinkUpdating,
-      container.databaseAccount,
+      userContext?.databaseAccount,
       this.isNotebookTabActive,
       container.isServerlessEnabled,
     ];

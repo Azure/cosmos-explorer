@@ -16,19 +16,14 @@ test("Mongo CRUD", async () => {
 
   // Create new database and collection
   await explorer.click('[data-test="New Collection"]');
-  await explorer.click('[data-test="addCollection-newDatabaseId"]');
-  await explorer.fill('[data-test="addCollection-newDatabaseId"]', databaseId);
-  await explorer.click('[data-test="addCollection-collectionId"]');
-  await explorer.fill('[data-test="addCollection-collectionId"]', containerId);
-  await explorer.click('[data-test="addCollection-collectionId"]');
-  await explorer.fill('[data-test="addCollection-collectionId"]', containerId);
-  await explorer.click('[data-test="addCollection-partitionKeyValue"]');
-  await explorer.fill('[data-test="addCollection-partitionKeyValue"]', "/pk");
-  await explorer.click('[data-test="addCollection-createCollection"]');
+  await explorer.fill('[aria-label="New database id"]', databaseId);
+  await explorer.fill('[aria-label="Collection id"]', containerId);
+  await explorer.fill('[aria-label="Shard key"]', "/pk");
+  await explorer.click("#sidePanelOkButton");
   await safeClick(explorer, `.nodeItem >> text=${databaseId}`);
   await safeClick(explorer, `.nodeItem >> text=${containerId}`);
   // Create indexing policy
-  await safeClick(explorer, ".nodeItem >> text=Settings");
+  await safeClick(explorer, ".nodeItem >> text=Setting");
   await explorer.click('button[role="tab"]:has-text("Indexing Policy")');
   await explorer.click('[aria-label="Index Field Name 0"]');
   await explorer.fill('[aria-label="Index Field Name 0"]', "foo");

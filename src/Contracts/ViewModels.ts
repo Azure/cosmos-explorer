@@ -206,17 +206,14 @@ export enum NeighborType {
   BOTH,
 }
 
-/**
- * Set of observable related to graph configuration by user
- */
-export interface GraphConfigUiData {
-  showNeighborType: ko.Observable<NeighborType>;
-  nodeProperties: ko.ObservableArray<string>;
-  nodePropertiesWithNone: ko.ObservableArray<string>;
-  nodeCaptionChoice: ko.Observable<string>;
-  nodeColorKeyChoice: ko.Observable<string>;
-  nodeIconChoice: ko.Observable<string>;
-  nodeIconSet: ko.Observable<string>;
+export interface IGraphConfigUiData {
+  showNeighborType: NeighborType;
+  nodeProperties: string[];
+  nodePropertiesWithNone: string[];
+  nodeCaptionChoice: string;
+  nodeColorKeyChoice: string;
+  nodeIconChoice: string;
+  nodeIconSet: string;
 }
 
 /**

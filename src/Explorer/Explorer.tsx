@@ -1,25 +1,26 @@
+import { IChoiceGroupProps } from "@fluentui/react";
 import * as ko from "knockout";
-import { IChoiceGroupProps } from "office-ui-fabric-react";
-import * as path from "path";
 import Q from "q";
 import React from "react";
 import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics } from "../Common/Constants";
+import { ExplorerMetrics, HttpStatusCodes } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { sendCachedDataMessage, sendMessage } from "../Common/MessageHandler";
+import { sendCachedDataMessage } from "../Common/MessageHandler";
 import { QueriesClient } from "../Common/QueriesClient";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
-import { IGalleryItem } from "../Juno/JunoClient";
+import { GitHubClient } from "../GitHub/GitHubClient";
+import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
+import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
@@ -29,13 +30,14 @@ import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
+import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
+import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import * as PricingUtils from "../Utils/PricingUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
@@ -44,20 +46,20 @@ import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/Gallery
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
+import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
 import type NotebookManager from "./Notebook/NotebookManager";
 import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
-import AddCollectionPane from "./Panes/AddCollectionPane";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
-import AddDatabasePane from "./Panes/AddDatabasePane";
+import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
-import GraphStylingPane from "./Panes/GraphStylingPane";
+import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
@@ -89,7 +91,7 @@ export interface ExplorerParams {
   setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
@@ -98,7 +100,6 @@ export interface ExplorerParams {
 
 export default class Explorer {
   public addCollectionText: ko.Observable<string>;
-  public addDatabaseText: ko.Observable<string>;
   public collectionTitle: ko.Observable<string>;
   public deleteCollectionText: ko.Observable<string>;
   public deleteDatabaseText: ko.Observable<string>;
@@ -106,23 +107,8 @@ export default class Explorer {
   public refreshTreeTitle: ko.Observable<string>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  /**
-   * @deprecated
-   * Use userContext.databaseAccount instead
-   * */
-  public databaseAccount: ko.Observable<DataModels.DatabaseAccount>;
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
-  /**
-   * @deprecated
-   * Use userContext.apiType instead
-   * */
-  public defaultExperience: ko.Observable<string>;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  /**
-   * @deprecated
-   * Compare a string with userContext.apiType instead: userContext.apiType === "Mongo"
-   * */
-  public isEnableMongoCapabilityPresent: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
@@ -138,14 +124,13 @@ export default class Explorer {
 
   // Panes
   public contextPanes: ContextualPaneBase[];
-  public openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+  public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   public closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
-  public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
@@ -162,21 +147,17 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public addDatabasePane: AddDatabasePane;
-  public addCollectionPane: AddCollectionPane;
-  public graphStylingPane: GraphStylingPane;
   public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  public gitHubReposPane: ContextualPaneBase;
+  private gitHubClient: GitHubClient;
+  public gitHubOAuthService: GitHubOAuthService;
+  public junoClient: JunoClient;
 
   // features
-  public isGitHubPaneEnabled: ko.Observable<boolean>;
   public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  public isRightPanelV2Enabled: ko.Computed<boolean>;
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
   public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
-
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -198,7 +179,6 @@ export default class Explorer {
 
   public isTerminalEnabled: ko.Observable<boolean>;
 
-  private _panes: ContextualPaneBase[] = [];
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -213,6 +193,8 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
+    this.gitHubClient = new GitHubClient(this.onGitHubClientError);
+    this.junoClient = new JunoClient();
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
@@ -225,14 +207,12 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this.addCollectionText = ko.observable<string>("New Collection");
-    this.addDatabaseText = ko.observable<string>("New Database");
     this.collectionTitle = ko.observable<string>("Collections");
     this.collectionTreeNodeAltText = ko.observable<string>("Collection");
     this.deleteCollectionText = ko.observable<string>("Delete Collection");
     this.deleteDatabaseText = ko.observable<string>("Delete Database");
     this.refreshTreeTitle = ko.observable<string>("Refresh collections");
 
-    this.databaseAccount = ko.observable<DataModels.DatabaseAccount>();
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.arcadiaToken = ko.observable<string>();
@@ -268,7 +248,7 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(this.databaseAccount())) ||
+                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
                   userContext.features.enableNotebooks)
             );
             this.isTerminalEnabled(
@@ -283,7 +263,7 @@ export default class Explorer {
             });
 
             if (this.isNotebookEnabled()) {
-              await this.initNotebooks(this.databaseAccount());
+              await this.initNotebooks(userContext.databaseAccount);
               const workspaces = await this._getArcadiaWorkspaces();
               this.arcadiaWorkspaces(workspaces);
             } else if (this.notebookToImport) {
@@ -326,7 +306,6 @@ export default class Explorer {
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isGitHubPaneEnabled = ko.observable<boolean>(false);
     this.isMongoIndexingEnabled = ko.observable<boolean>(false);
     this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
 
@@ -356,7 +335,6 @@ export default class Explorer {
       }
       return true;
     });
-    this.isLeftPaneExpanded = ko.observable<boolean>(true);
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
     this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
       // Make sure switching tabs restores tabs display
@@ -380,52 +358,25 @@ export default class Explorer {
       bounds: splitterBounds,
       direction: SplitterDirection.Vertical,
     });
-    this.defaultExperience = ko.observable<string>();
-    // this.databaseAccount.subscribe((databaseAccount) => {
-    //   const defaultExperience: string = DefaultExperienceUtility.getDefaultExperienceFromDatabaseAccount(
-    //     databaseAccount
-    //   );
-    //   this.defaultExperience(defaultExperience);
-    //   // TODO. Remove this entirely
-    //   updateUserContext({
-    //     apiType: DefaultExperienceUtility.mapDefaultExperienceStringToEnum(defaultExperience),
-    //   });
-    // });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
       }
 
-      if (this.databaseAccount && !this.databaseAccount()) {
+      if (!userContext.databaseAccount) {
         return false;
       }
 
-      return this.isEnableMongoCapabilityPresent();
+      return isCapabilityEnabled("EnableMongo");
     });
 
     this.isServerlessEnabled = ko.computed(
       () =>
-        this.databaseAccount &&
-        this.databaseAccount()?.properties?.capabilities?.find(
+        userContext.databaseAccount?.properties?.capabilities?.find(
           (item) => item.name === Constants.CapabilityNames.EnableServerless
         ) !== undefined
     );
-
-    this.isEnableMongoCapabilityPresent = ko.computed(() => {
-      const capabilities = this.databaseAccount && this.databaseAccount()?.properties?.capabilities;
-      if (!capabilities) {
-        return false;
-      }
-
-      for (let i = 0; i < capabilities.length; i++) {
-        if (typeof capabilities[i] === "object" && capabilities[i].name === Constants.CapabilityNames.EnableMongo) {
-          return true;
-        }
-      }
-
-      return false;
-    });
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
@@ -433,7 +384,6 @@ export default class Explorer {
         !this.isRunningOnNationalCloud() &&
         userContext.apiType !== "Gremlin"
     );
-    this.isRightPanelV2Enabled = ko.computed<boolean>(() => userContext.features.enableRightPanelV2);
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -455,28 +405,6 @@ export default class Explorer {
       }
     });
 
-    this.addDatabasePane = new AddDatabasePane({
-      id: "adddatabasepane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.addCollectionPane = new AddCollectionPane({
-      isPreferredApiTable: ko.computed(() => userContext.apiType === "Tables"),
-      id: "addcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
-    this.graphStylingPane = new GraphStylingPane({
-      id: "graphstylingpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
       id: "cassandraaddcollectionpane",
       visible: ko.observable<boolean>(false),
@@ -492,13 +420,6 @@ export default class Explorer {
       }
     });
 
-    this._panes = [
-      this.addDatabasePane,
-      this.addCollectionPane,
-      this.graphStylingPane,
-      this.cassandraAddCollectionPane,
-    ];
-    this.addDatabaseText.subscribe((addDatabaseText: string) => this.addDatabasePane.title(addDatabaseText));
     this.isTabsContentExpanded = ko.observable(false);
 
     document.addEventListener(
@@ -516,67 +437,43 @@ export default class Explorer {
     switch (userContext.apiType) {
       case "SQL":
         this.addCollectionText("New Container");
-        this.addDatabaseText("New Database");
         this.collectionTitle("SQL API");
         this.collectionTreeNodeAltText("Container");
         this.deleteCollectionText("Delete Container");
         this.deleteDatabaseText("Delete Database");
-        this.addCollectionPane.title("Add Container");
-        this.addCollectionPane.collectionIdTitle("Container id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle(
-          "Provision dedicated throughput for this container"
-        );
         this.refreshTreeTitle("Refresh containers");
         break;
       case "Mongo":
         this.addCollectionText("New Collection");
-        this.addDatabaseText("New Database");
         this.collectionTitle("Collections");
         this.collectionTreeNodeAltText("Collection");
         this.deleteCollectionText("Delete Collection");
         this.deleteDatabaseText("Delete Database");
-        this.addCollectionPane.title("Add Collection");
-        this.addCollectionPane.collectionIdTitle("Collection id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle(
-          "Provision dedicated throughput for this collection"
-        );
         this.refreshTreeTitle("Refresh collections");
         break;
       case "Gremlin":
         this.addCollectionText("New Graph");
-        this.addDatabaseText("New Database");
         this.deleteCollectionText("Delete Graph");
         this.deleteDatabaseText("Delete Database");
         this.collectionTitle("Gremlin API");
         this.collectionTreeNodeAltText("Graph");
-        this.addCollectionPane.title("Add Graph");
-        this.addCollectionPane.collectionIdTitle("Graph id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this graph");
         this.refreshTreeTitle("Refresh graphs");
         break;
       case "Tables":
         this.addCollectionText("New Table");
-        this.addDatabaseText("New Database");
         this.deleteCollectionText("Delete Table");
         this.deleteDatabaseText("Delete Database");
         this.collectionTitle("Azure Table API");
         this.collectionTreeNodeAltText("Table");
-        this.addCollectionPane.title("Add Table");
-        this.addCollectionPane.collectionIdTitle("Table id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
         this.addCollectionText("New Table");
-        this.addDatabaseText("New Keyspace");
         this.deleteCollectionText("Delete Table");
         this.deleteDatabaseText("Delete Keyspace");
         this.collectionTitle("Cassandra API");
         this.collectionTreeNodeAltText("Table");
-        this.addCollectionPane.title("Add Table");
-        this.addCollectionPane.collectionIdTitle("Table id");
-        this.addCollectionPane.collectionWithThroughputInSharedTitle("Provision dedicated throughput for this table");
         this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
@@ -606,9 +503,6 @@ export default class Explorer {
           refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
           refreshNotebookList: () => this.refreshNotebookList(),
         });
-
-        this.gitHubReposPane = this.notebookManager.gitHubReposPane;
-        this.isGitHubPaneEnabled(true);
       }
 
       this.refreshCommandBarButtons();
@@ -656,6 +550,23 @@ export default class Explorer {
     }
   }
 
+  private onGitHubClientError = (error: any): void => {
+    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
+
+    if (error.status === HttpStatusCodes.Unauthorized) {
+      this.gitHubOAuthService.resetToken();
+
+      this.showOkCancelModalDialog(
+        undefined,
+        "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
+        "Connect to GitHub",
+        () => this.openGitHubReposPanel("Connect to GitHub"),
+        "Cancel",
+        undefined
+      );
+    }
+  };
+
   public openEnableSynapseLinkDialog(): void {
     const addSynapseLinkDialogProps: DialogProps = {
       linkProps: {
@@ -678,11 +589,11 @@ export default class Explorer {
         this.isSynapseLinkUpdating(true);
         this._closeSynapseLinkModalDialog();
 
-        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(this.databaseAccount().id);
+        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(userContext.databaseAccount.id);
 
         try {
           const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
-            this.databaseAccount().id,
+            userContext.databaseAccount.id,
             "2019-12-12",
             {
               properties: {
@@ -693,7 +604,7 @@ export default class Explorer {
           clearInProgressMessage();
           logConsoleInfo("Enabled Azure Synapse Link for this account");
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          this.databaseAccount(databaseAccount);
+          updateUserContext({ databaseAccount });
         } catch (error) {
           clearInProgressMessage();
           logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
@@ -744,18 +655,6 @@ export default class Explorer {
 
   public collapseConsole(): void {
     this.setIsNotificationConsoleExpanded(false);
-  }
-
-  public toggleLeftPaneExpanded() {
-    this.isLeftPaneExpanded(!this.isLeftPaneExpanded());
-
-    if (this.isLeftPaneExpanded()) {
-      document.getElementById("expandToggleLeftPaneButton").focus();
-      this.splitter.expandLeft();
-    } else {
-      document.getElementById("collapseToggleLeftPaneButton").focus();
-      this.splitter.collapseLeft();
-    }
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
@@ -872,14 +771,6 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     this.refreshNotebookList();
-  };
-
-  public toggleLeftPaneExpandedKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.toggleLeftPaneExpanded();
-      return false;
-    }
-    return true;
   };
 
   // Facade
@@ -1016,14 +907,14 @@ export default class Explorer {
   }
 
   private async ensureNotebookWorkspaceRunning() {
-    if (!this.databaseAccount()) {
+    if (!userContext.databaseAccount) {
       return;
     }
 
     let clearMessage;
     try {
       const notebookWorkspace = await this.notebookWorkspaceManager.getNotebookWorkspaceAsync(
-        this.databaseAccount().id,
+        userContext.databaseAccount.id,
         "default"
       );
       if (
@@ -1033,7 +924,7 @@ export default class Explorer {
         notebookWorkspace.properties.status.toLowerCase() === "stopped"
       ) {
         clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
-        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(this.databaseAccount().id, "default");
+        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(userContext.databaseAccount.id, "default");
       }
     } catch (error) {
       handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
@@ -1118,21 +1009,10 @@ export default class Explorer {
       if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
-
-      const databaseAccount = inputs.databaseAccount || null;
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.databaseAccount(databaseAccount);
       this.setFeatureFlagsFromFlights(inputs.flights);
-      TelemetryProcessor.traceSuccess(
-        Action.LoadDatabaseAccount,
-        {
-          dataExplorerArea: Constants.Areas.ResourceTree,
-        },
-        inputs.loadDatabaseAccountTimestamp
-      );
-
       this.isAccountReady(true);
     }
   }
@@ -1147,16 +1027,15 @@ export default class Explorer {
     if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
       this.isMongoIndexingEnabled(true);
     }
+    if (flights.indexOf(Constants.Flights.SchemaAnalyzer) !== -1) {
+      userContext.features.enableSchemaAnalyzer = true;
+    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  public closeAllPanes(): void {
-    this._panes.forEach((pane: ContextualPaneBase) => pane.close());
   }
 
   public isRunningOnNationalCloud(): boolean {
@@ -1170,38 +1049,6 @@ export default class Explorer {
   public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
     this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
   }
-
-  public signInAad = () => {
-    TelemetryProcessor.trace(Action.SignInAad, undefined, { area: "Explorer" });
-    sendMessage({
-      type: MessageTypes.AadSignIn,
-    });
-  };
-
-  public onSwitchToConnectionString = () => {
-    $("#connectWithAad").hide();
-    $("#connectWithConnectionString").show();
-  };
-
-  public clickHostedAccountSwitch = () => {
-    sendMessage({
-      type: MessageTypes.UpdateAccountSwitch,
-      click: true,
-    });
-  };
-
-  public clickHostedDirectorySwitch = () => {
-    sendMessage({
-      type: MessageTypes.UpdateDirectoryControl,
-      click: true,
-    });
-  };
-
-  public refreshDatabaseAccount = () => {
-    sendMessage({
-      type: MessageTypes.RefreshDatabaseAccount,
-    });
-  };
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
@@ -1386,10 +1233,18 @@ export default class Explorer {
   public async publishNotebook(
     name: string,
     content: NotebookPaneContent,
-    parentDomElement?: HTMLElement
+    notebookContentRef?: string,
+    onTakeSnapshot?: (request: SnapshotRequest) => void,
+    onClosePanel?: () => void
   ): Promise<void> {
     if (this.notebookManager) {
-      await this.notebookManager.openPublishNotebookPane(name, content, parentDomElement);
+      await this.notebookManager.openPublishNotebookPane(
+        name,
+        content,
+        notebookContentRef,
+        onTakeSnapshot,
+        onClosePanel
+      );
       this.isPublishNotebookPaneEnabled(true);
     }
   }
@@ -1622,7 +1477,7 @@ export default class Explorer {
   }
 
   private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
-    const authType = userContext.authType;
+    const { databaseAccount, authType } = userContext;
     if (
       authType === AuthType.EncryptedToken ||
       authType === AuthType.ResourceToken ||
@@ -1632,8 +1487,9 @@ export default class Explorer {
       return;
     }
 
-    const databaseAccount = this.databaseAccount();
-    const databaseAccountLocation = databaseAccount && databaseAccount.location.toLowerCase();
+    const firstWriteLocation =
+      databaseAccount?.properties?.writeLocations &&
+      databaseAccount?.properties?.writeLocations[0]?.locationName.toLowerCase();
     const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
     const authorizationHeader = getAuthorizationHeader();
     try {
@@ -1658,9 +1514,9 @@ export default class Explorer {
         this.isNotebooksEnabledForAccount(true);
         return;
       }
-      const isAccountInAllowedLocation = !disallowedLocations.some(
-        (disallowedLocation) => disallowedLocation === databaseAccountLocation
-      );
+
+      // firstWriteLocation should not be disallowed
+      const isAccountInAllowedLocation = firstWriteLocation && disallowedLocations.indexOf(firstWriteLocation) === -1;
       this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
@@ -1669,9 +1525,8 @@ export default class Explorer {
   }
 
   public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-    const subscriptionId = userContext.subscriptionId;
+    const { subscriptionId, authType } = userContext;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = userContext.authType;
     if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       this.isSparkEnabledForAccount(false);
@@ -1698,9 +1553,8 @@ export default class Explorer {
   };
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-    const subscriptionId = userContext.subscriptionId;
+    const { subscriptionId, authType } = userContext;
     const armEndpoint = configContext.ARM_ENDPOINT;
-    const authType = userContext.authType;
     if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
       // explorer is not aware of the database account yet
       return false;
@@ -1921,47 +1775,11 @@ export default class Explorer {
     }
   }
 
-  public async openNotebookViewer(notebookUrl: string) {
-    const title = path.basename(notebookUrl);
-    const hashLocation = notebookUrl;
-    const NotebookViewerTab = await (
-      await import(/* webpackChunkName: "NotebookViewerTab" */ "./Tabs/NotebookViewerTab")
-    ).default;
-
-    const notebookViewerTab = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2).find((tab) => {
-      return tab.hashLocation() == hashLocation && tab instanceof NotebookViewerTab && tab.notebookUrl === notebookUrl;
-    });
-
-    if (notebookViewerTab) {
-      this.tabsManager.activateNewTab(notebookViewerTab);
-    } else {
-      const notebookViewerTab = new NotebookViewerTab({
-        account: userContext.databaseAccount,
-        tabKind: ViewModels.CollectionTabKind.NotebookViewer,
-        node: null,
-        title: title,
-        tabPath: title,
-        collection: null,
-        hashLocation: hashLocation,
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        container: this,
-        notebookUrl,
-      });
-
-      this.tabsManager.activateNewTab(notebookViewerTab);
-    }
-  }
-
-  public onNewCollectionClicked(): void {
+  public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
       this.cassandraAddCollectionPane.open();
-    } else if (userContext.features.enableReactPane) {
-      this.openAddCollectionPanel();
     } else {
-      this.addCollectionPane.open(this.selectedDatabaseId());
-      document.getElementById("linkAddCollection").focus();
+      this.openAddCollectionPanel(databaseId);
     }
   }
 
@@ -2007,8 +1825,7 @@ export default class Explorer {
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(this.databaseAccount()))) {
-      this.closeAllPanes();
+    if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
       this._openSetupNotebooksPaneForQuickstart();
     }
 
@@ -2065,20 +1882,15 @@ export default class Explorer {
   }
 
   public openDeleteCollectionConfirmationPane(): void {
-    let collectionName = PricingUtils.getCollectionName(userContext.apiType);
     this.openSidePanel(
-      "Delete " + collectionName,
-      <DeleteCollectionConfirmationPane
-        explorer={this}
-        collectionName={collectionName}
-        closePanel={this.closeSidePanel}
-      />
+      "Delete " + getCollectionName(),
+      <DeleteCollectionConfirmationPane explorer={this} closePanel={this.closeSidePanel} />
     );
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
     this.openSidePanel(
-      "Delete Database",
+      "Delete " + getDatabaseName(),
       <DeleteDatabaseConfirmationPanel
         explorer={this}
         openNotificationConsole={this.expandConsole}
@@ -2089,12 +1901,12 @@ export default class Explorer {
   }
 
   public openUploadItemsPanePane(): void {
-    this.openSidePanel("Upload", <UploadItemsPane explorer={this} closePanel={this.closeSidePanel} />);
+    this.openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
   }
 
   public openSettingPane(): void {
     this.openSidePanel(
-      "Settings",
+      "Setting",
       <SettingsPane expandConsole={() => this.expandConsole()} closePanel={this.closeSidePanel} />
     );
   }
@@ -2110,14 +1922,25 @@ export default class Explorer {
     );
   }
 
-  public async openAddCollectionPanel(): Promise<void> {
+  public async openAddCollectionPanel(databaseId?: string): Promise<void> {
     await this.loadDatabaseOffers();
     this.openSidePanel(
-      "New Collection",
+      "New " + getCollectionName(),
       <AddCollectionPanel
         explorer={this}
         closePanel={() => this.closeSidePanel()}
         openNotificationConsole={() => this.expandConsole()}
+        databaseId={databaseId}
+      />
+    );
+  }
+  public openAddDatabasePane(): void {
+    this.openSidePanel(
+      "New " + getDatabaseName(),
+      <AddDatabasePanel
+        explorer={this}
+        openNotificationConsole={() => this.expandConsole()}
+        closePanel={this.closeSidePanel}
       />
     );
   }
@@ -2137,11 +1960,24 @@ export default class Explorer {
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     parent = parent || this.resourceTree.myNotebooksContentRoot;
     this.openSidePanel(
-      "Upload File",
+      "Upload file to notebook server",
       <UploadFilePane
         expandConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
+      />
+    );
+  }
+
+  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
+    this.openSidePanel(
+      header,
+      <GitHubReposPanel
+        explorer={this}
+        closePanel={this.closeSidePanel}
+        gitHubClientProp={this.notebookManager.gitHubClient}
+        junoClientProp={junoClient}
+        openNotificationConsole={() => this.expandConsole()}
       />
     );
   }

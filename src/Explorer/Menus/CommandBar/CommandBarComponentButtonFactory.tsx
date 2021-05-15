@@ -19,12 +19,10 @@ import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
 import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
-import { Areas } from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
+import { getDatabaseName } from "../../../Utils/APITypeUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
@@ -234,21 +232,11 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     return undefined;
   }
 
-  if (
-    container.databaseAccount &&
-    container.databaseAccount() &&
-    container.databaseAccount().properties &&
-    container.databaseAccount().properties.enableAnalyticalStorage
-  ) {
+  if (userContext?.databaseAccount?.properties?.enableAnalyticalStorage) {
     return undefined;
   }
 
-  const capabilities =
-    (container.databaseAccount &&
-      container.databaseAccount() &&
-      container.databaseAccount().properties &&
-      container.databaseAccount().properties.capabilities) ||
-    [];
+  const capabilities = userContext?.databaseAccount?.properties?.capabilities || [];
   if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
     return undefined;
   }
@@ -266,13 +254,12 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
 }
 
 function createNewDatabase(container: Explorer): CommandButtonComponentProps {
-  const label = container.addDatabaseText();
+  const label = "New " + getDatabaseName();
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
     onCommandClick: () => {
-      container.addDatabasePane.open();
-      document.getElementById("linkAddDatabase").focus();
+      container.openAddDatabasePane();
     },
     commandButtonLabel: label,
     ariaLabel: label,
@@ -530,14 +517,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () => {
-      if (!connectedToGitHub) {
-        TelemetryProcessor.trace(Action.NotebooksGitHubConnect, ActionModifiers.Mark, {
-          dataExplorerArea: Areas.Notebook,
-        });
-      }
-      container.gitHubReposPane.open();
-    },
+    onCommandClick: () => container.openGitHubReposPanel(label),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

@@ -150,7 +150,7 @@ exports[`SettingsUtils functions render 1`] = `
     </Text>
     <Text>
       <em>
-        *This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
+        This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account
       </em>
     </Text>
   </Stack>
@@ -338,7 +338,7 @@ exports[`SettingsUtils functions render 1`] = `
     </StyledLinkBase>
     are only used for sorting query results. If you need to add a compound index, you can create one using the Mongo shell.
   </Text>
-  <StyledMessageBarBase
+  <StyledMessageBar
     messageBarType={1}
   >
     <Text>
@@ -350,7 +350,7 @@ exports[`SettingsUtils functions render 1`] = `
         azure portal.
       </StyledLinkBase>
     </Text>
-  </StyledMessageBarBase>
+  </StyledMessageBar>
   <Stack
     horizontal={true}
     tokens={

@@ -1757,7 +1757,7 @@ input::-webkit-calendar-picker-indicator {
   cursor: pointer;
 }
 
-.contextual-pane .paneMainContent {
+.paneMainContent {
   flex: 1;
   padding-left: 34px;
   padding-right: 34px;
@@ -2099,7 +2099,7 @@ a:link {
   display: flex;
   flex: 1 1 auto;
   overflow-x: auto;
-  overflow-y: auto;
+  overflow-y: hidden;
   height: 100%;
 }
 
@@ -3084,4 +3084,8 @@ settings-pane {
     margin: auto 0;
     padding-left: @SmallSpace;
   }
+}
+.hiddenMain {
+  visibility: hidden;
+  height: 0px;
 }
