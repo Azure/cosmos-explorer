@@ -13,6 +13,4 @@ ko.components.register("dynamic-list", DynamicListComponent);
 ko.components.register("throughput-input-autopilot-v3", ThroughputInputComponentAutoPilotV3);
 
 // Panes
-
-ko.components.register("add-database-pane", new PaneComponents.AddDatabasePaneComponent());
 ko.components.register("cassandra-add-collection-pane", new PaneComponents.CassandraAddCollectionPaneComponent());
