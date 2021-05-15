@@ -447,6 +447,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isSparkEnabledForAccount": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
+      "isTerminalEnabled": [Function],
       "memoryUsageInfo": [Function],
       "notebookBasePath": [Function],
       "notebookServerInfo": [Function],

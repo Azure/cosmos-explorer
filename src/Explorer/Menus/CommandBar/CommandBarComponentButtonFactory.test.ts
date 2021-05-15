@@ -140,6 +140,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+      mockExplorer.isTerminalEnabled = ko.observable(true);
     });
 
     afterAll(() => {
@@ -155,6 +156,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
+      mockExplorer.isTerminalEnabled = ko.observable(true);
     });
 
     it("Mongo Api not available - button should be hidden", () => {
@@ -174,24 +176,18 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openMongoShellBtn).toBeUndefined();
     });
 
-    it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
+    it("Notebooks is not enabled and is unavailable - button should be hidden", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
-      expect(openMongoShellBtn).toBeDefined();
-      expect(openMongoShellBtn.disabled).toBe(true);
-      expect(openMongoShellBtn.tooltipText).toBe(
-        "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks."
-      );
+      expect(openMongoShellBtn).toBeUndefined();
     });
 
-    it("Notebooks is not enabled and is available - button should be shown and enabled", () => {
+    it("Notebooks is not enabled and is available - button should be hidden", () => {
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
-      expect(openMongoShellBtn).toBeDefined();
-      expect(openMongoShellBtn.disabled).toBe(false);
-      expect(openMongoShellBtn.tooltipText).toBe("");
+      expect(openMongoShellBtn).toBeUndefined();
     });
 
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
@@ -213,6 +209,16 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openMongoShellBtn).toBeDefined();
       expect(openMongoShellBtn.disabled).toBe(false);
       expect(openMongoShellBtn.tooltipText).toBe("");
+    });
+
+    it("Notebooks is enabled and is available, terminal is unavailable due to ipRules - button should be hidden", () => {
+      mockExplorer.isNotebookEnabled = ko.observable(true);
+      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
+      mockExplorer.isTerminalEnabled = ko.observable(false);
+
+      const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
+      const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
+      expect(openMongoShellBtn).toBeUndefined();
     });
   });
 
@@ -275,11 +281,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
-      expect(openCassandraShellBtn).toBeDefined();
-      expect(openCassandraShellBtn.disabled).toBe(true);
-      expect(openCassandraShellBtn.tooltipText).toBe(
-        "This feature is not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks."
-      );
+      expect(openCassandraShellBtn).toBeUndefined();
     });
 
     it("Notebooks is not enabled and is available - button should be shown and enabled", () => {
@@ -287,9 +289,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
-      expect(openCassandraShellBtn).toBeDefined();
-      expect(openCassandraShellBtn.disabled).toBe(false);
-      expect(openCassandraShellBtn.tooltipText).toBe("");
+      expect(openCassandraShellBtn).toBeUndefined();
     });
 
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {

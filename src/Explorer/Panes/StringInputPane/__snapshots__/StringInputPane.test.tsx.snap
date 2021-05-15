@@ -446,6 +446,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isSparkEnabledForAccount": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
+      "isTerminalEnabled": [Function],
       "memoryUsageInfo": [Function],
       "notebookBasePath": [Function],
       "notebookServerInfo": [Function],
