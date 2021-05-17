@@ -88,45 +88,42 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     setCreateTableQuery(`CREATE TABLE ${keyspaceId}.`);
   }, [keyspaceId]);
 
+  const addCollectionPaneOpenMessage = {
+    collection: {
+      id: tableId,
+      storage: Constants.BackendDefaults.multiPartitionStorageInGb,
+      offerThroughput: throughput,
+      partitionKey: "",
+      databaseId: keyspaceId,
+    },
+    subscriptionType: userContext.subscriptionType,
+    subscriptionQuotaId: userContext.quotaId,
+    defaultsCheck: {
+      storage: "u",
+      throughput,
+      flight: userContext.addCollectionFlight,
+    },
+    dataExplorerArea: Constants.Areas.ContextualPane,
+  };
+
   useEffect(() => {
     if (!container.isServerlessEnabled()) {
       setIsAutoPilotSelected(container.isAutoscaleDefaultEnabled());
     }
-    const addCollectionPaneOpenMessage = {
-      collection: {
-        id: tableId,
-        storage: Constants.BackendDefaults.multiPartitionStorageInGb,
-        offerThroughput: throughput,
-        partitionKey: "",
-        databaseId: keyspaceId,
-      },
-      subscriptionType: userContext.subscriptionType,
-      subscriptionQuotaId: userContext.quotaId,
-      defaultsCheck: {
-        storage: "u",
-        throughput: throughput,
-        flight: userContext.addCollectionFlight,
-      },
-      dataExplorerArea: Constants.Areas.ContextualPane,
-    };
+
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
   }, []);
 
   useEffect(() => {
     if (container) {
-      const updateKeyspaceIds: (keyspaces: ViewModels.Database[]) => void = (
-        newKeyspaceIds: ViewModels.Database[]
-      ): void => {
-        const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
-          if (keyspace && keyspace.offer && !!keyspace.offer()) {
-            keyspaceOffers.set(keyspace.id(), keyspace.offer());
-          }
-          return keyspace.id();
-        });
-        setKeyspaceIds(cachedKeyspaceIdsList);
-      };
-      container.databases.subscribe((newDatabases: ViewModels.Database[]) => updateKeyspaceIds(newDatabases));
-      updateKeyspaceIds(container.databases());
+      const newKeyspaceIds: ViewModels.Database[] = container.databases();
+      const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
+        if (keyspace && keyspace.offer && !!keyspace.offer()) {
+          keyspaceOffers.set(keyspace.id(), keyspace.offer());
+        }
+        return keyspace.id();
+      });
+      setKeyspaceIds(cachedKeyspaceIdsList);
     }
   }, []);
 
@@ -196,10 +193,9 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     const createKeyspaceQueryPrefix = `CREATE KEYSPACE ${keyspaceId.trim()} WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 }`;
     const createKeyspaceQuery: string = keyspaceHasSharedOffer
       ? useAutoPilotForKeyspace
-        ? `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${sharedAutoPilotThroughput};`
+        ? `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${keyspaceThroughput};`
         : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${keyspaceThroughput};`
       : `${createKeyspaceQueryPrefix};`;
-
     let tableQuery: string;
     const createTableQueryPrefix = `${createTableQuery}${tableId.trim()} ${userTableQuery}`;
 
@@ -214,25 +210,14 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     }
 
     const addCollectionPaneStartMessage = {
+      ...addCollectionPaneOpenMessage,
       collection: {
-        id: tableId,
-        storage: Constants.BackendDefaults.multiPartitionStorageInGb,
-        offerThroughput: throughput,
-        partitionKey: "",
-        databaseId: keyspaceId,
+        ...addCollectionPaneOpenMessage.collection,
         hasDedicatedThroughput: dedicateTableThroughput,
       },
-      keyspaceHasSharedOffer: keyspaceHasSharedOffer,
-      subscriptionType: userContext.subscriptionType,
-      subscriptionQuotaId: userContext.quotaId,
-      defaultsCheck: {
-        storage: "u",
-        throughput: throughput,
-        flight: userContext.addCollectionFlight,
-      },
-      dataExplorerArea: Constants.Areas.ContextualPane,
-      toCreateKeyspace: toCreateKeyspace,
-      createKeyspaceQuery: createKeyspaceQuery,
+      keyspaceHasSharedOffer,
+      toCreateKeyspace,
+      createKeyspaceQuery,
       createTableQuery: tableQuery,
     };
 
