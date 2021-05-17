@@ -1,9 +1,9 @@
 import { Dropdown, IDropdownProps, ITextFieldProps, Stack, Text, TextField } from "@fluentui/react";
 import { ImmutableNotebook } from "@nteract/commutable";
-import Html2Canvas from "html2canvas";
 import React, { FunctionComponent, useState } from "react";
 import { GalleryCardComponent } from "../../Controls/NotebookGallery/Cards/GalleryCardComponent";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
+import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
 import { NotebookUtil } from "../../Notebook/NotebookUtil";
 import "./styled.less";
 
@@ -11,17 +11,19 @@ export interface PublishNotebookPaneProps {
   notebookName: string;
   notebookAuthor: string;
   notebookTags: string;
-  imageSrc: string;
   notebookDescription: string;
   notebookCreatedDate: string;
   notebookObject: ImmutableNotebook;
-  notebookParentDomElement?: HTMLElement;
+  notebookContentRef: string;
+  imageSrc: string;
+
   onError: (formError: string, formErrorDetail: string, area: string) => void;
   clearFormError: () => void;
   setNotebookName: (newValue: string) => void;
   setNotebookDescription: (newValue: string) => void;
   setNotebookTags: (newValue: string) => void;
   setImageSrc: (newValue: string) => void;
+  onTakeSnapshot: (request: SnapshotRequest) => void;
 }
 
 enum ImageTypes {
@@ -34,18 +36,19 @@ enum ImageTypes {
 export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPaneProps> = ({
   notebookName,
   notebookTags,
-  imageSrc,
   notebookDescription,
   notebookAuthor,
   notebookCreatedDate,
   notebookObject,
-  notebookParentDomElement,
+  notebookContentRef,
+  imageSrc,
   onError,
   clearFormError,
   setNotebookName,
   setNotebookDescription,
   setNotebookTags,
   setImageSrc,
+  onTakeSnapshot,
 }: PublishNotebookPaneProps) => {
   const [type, setType] = useState<string>(ImageTypes.CustomImage);
   const CARD_WIDTH = 256;
@@ -63,25 +66,40 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
   )}" to the gallery?`;
 
   const options: ImageTypes[] = [ImageTypes.CustomImage, ImageTypes.Url];
+  if (onTakeSnapshot) {
+    options.push(ImageTypes.TakeScreenshot);
+    if (notebookObject) {
+      options.push(ImageTypes.UseFirstDisplayOutput);
+    }
+  }
+
   const thumbnailSelectorProps: IDropdownProps = {
     label: "Cover image",
-    defaultSelectedKey: ImageTypes.CustomImage,
+    selectedKey: type,
     ariaLabel: "Cover image",
     options: options.map((value: string) => ({ text: value, key: value })),
     onChange: async (event, options) => {
       setImageSrc("");
       clearFormError();
       if (options.text === ImageTypes.TakeScreenshot) {
-        try {
-          await takeScreenshot(notebookParentDomElement, screenshotErrorHandler);
-        } catch (error) {
-          screenshotErrorHandler(error);
-        }
+        onTakeSnapshot({
+          aspectRatio: cardHeightToWidthRatio,
+          requestId: new Date().getTime().toString(),
+          type: "notebook",
+          notebookContentRef,
+        });
       } else if (options.text === ImageTypes.UseFirstDisplayOutput) {
-        try {
-          await takeScreenshot(findFirstOutput(), firstOutputErrorHandler);
-        } catch (error) {
-          firstOutputErrorHandler(error);
+        const cellIds = NotebookUtil.findCodeCellWithDisplay(notebookObject);
+        if (cellIds.length > 0) {
+          onTakeSnapshot({
+            aspectRatio: cardHeightToWidthRatio,
+            requestId: new Date().getTime().toString(),
+            type: "celloutput",
+            cellId: cellIds[0],
+            notebookContentRef,
+          });
+        } else {
+          firstOutputErrorHandler(new Error("Output does not exist for any of the cells."));
         }
       }
       setType(options.text);
@@ -97,26 +115,12 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
     },
   };
 
-  const screenshotErrorHandler = (error: Error) => {
-    const formError = "Failed to take screen shot";
-    const formErrorDetail = `${error}`;
-    const area = "PublishNotebookPaneComponent/takeScreenshot";
-    onError(formError, formErrorDetail, area);
-  };
-
   const firstOutputErrorHandler = (error: Error) => {
     const formError = "Failed to capture first output";
     const formErrorDetail = `${error}`;
     const area = "PublishNotebookPaneComponent/UseFirstOutput";
     onError(formError, formErrorDetail, area);
   };
-
-  if (notebookParentDomElement) {
-    options.push(ImageTypes.TakeScreenshot);
-    if (notebookObject) {
-      options.push(ImageTypes.UseFirstDisplayOutput);
-    }
-  }
 
   const imageToBase64 = (file: File, updateImageSrc: (result: string) => void) => {
     const reader = new FileReader();
@@ -131,36 +135,6 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
       const area = "PublishNotebookPaneComponent/selectImageFile";
       onError(formError, formErrorDetail, area);
     };
-  };
-
-  const takeScreenshot = (target: HTMLElement, onError: (error: Error) => void): void => {
-    const updateImageSrcWithScreenshot = (canvasUrl: string): void => {
-      setImageSrc(canvasUrl);
-    };
-
-    target.scrollIntoView();
-    Html2Canvas(target, {
-      useCORS: true,
-      allowTaint: true,
-      scale: 1,
-      logging: true,
-    })
-      .then((canvas) => {
-        //redraw canvas to fit Card Cover Image dimensions
-        const originalImageData = canvas.toDataURL();
-        const requiredHeight = parseInt(canvas.style.width.split("px")[0]) * cardHeightToWidthRatio;
-        canvas.height = requiredHeight;
-        const context = canvas.getContext("2d");
-        const image = new Image();
-        image.src = originalImageData;
-        image.onload = () => {
-          context.drawImage(image, 0, 0);
-          updateImageSrcWithScreenshot(canvas.toDataURL());
-        };
-      })
-      .catch((error) => {
-        onError(error);
-      });
   };
 
   const renderThumbnailSelectors = (type: string) => {
@@ -196,12 +170,6 @@ export const PublishNotebookPaneComponent: FunctionComponent<PublishNotebookPane
       default:
         return <></>;
     }
-  };
-
-  const findFirstOutput = (): HTMLElement => {
-    const indexOfFirstCodeCellWithDisplay = NotebookUtil.findFirstCodeCellWithDisplay(notebookObject);
-    const cellOutputDomElements = notebookParentDomElement.querySelectorAll<HTMLElement>(".nteract-cell-outputs");
-    return cellOutputDomElements[indexOfFirstCodeCellWithDisplay];
   };
 
   return (

@@ -11,327 +11,9 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
-      "_panes": Array [
-        AddDatabasePane {
-          "autoPilotUsageCost": [Function],
-          "canConfigureThroughput": [Function],
-          "canExceedMaximumValue": [Function],
-          "canRequestSupport": [Function],
-          "container": [Circular],
-          "costsVisible": [Function],
-          "databaseCreateNewShared": [Function],
-          "databaseId": [Function],
-          "databaseIdLabel": [Function],
-          "databaseIdPlaceHolder": [Function],
-          "databaseIdTooltipText": [Function],
-          "databaseLevelThroughputTooltipText": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "freeTierExceedThroughputTooltip": [Function],
-          "id": "adddatabasepane",
-          "isAutoPilotSelected": [Function],
-          "isExecuting": [Function],
-          "isFreeTierAccount": [Function],
-          "isTemplateReady": [Function],
-          "maxAutoPilotThroughputSet": [Function],
-          "maxThroughputRU": [Function],
-          "maxThroughputRUText": [Function],
-          "minThroughputRU": [Function],
-          "onMoreDetailsKeyPress": [Function],
-          "requestUnitsUsageCost": [Function],
-          "ruToolTipText": [Function],
-          "showUpsellMessage": [Function],
-          "throughput": [Function],
-          "throughputRangeText": [Function],
-          "throughputSpendAck": [Function],
-          "throughputSpendAckText": [Function],
-          "throughputSpendAckVisible": [Function],
-          "title": [Function],
-          "upsellAnchorText": [Function],
-          "upsellAnchorUrl": [Function],
-          "upsellMessage": [Function],
-          "upsellMessageAriaLabel": [Function],
-          "visible": [Function],
-        },
-        AddCollectionPane {
-          "_isSynapseLinkEnabled": [Function],
-          "autoPilotThroughput": [Function],
-          "autoPilotUsageCost": [Function],
-          "canConfigureThroughput": [Function],
-          "canExceedMaximumValue": [Function],
-          "canRequestSupport": [Function],
-          "collectionId": [Function],
-          "collectionIdTitle": [Function],
-          "collectionWithThroughputInShared": [Function],
-          "collectionWithThroughputInSharedTitle": [Function],
-          "container": [Circular],
-          "costsVisible": [Function],
-          "databaseCreateNew": [Function],
-          "databaseCreateNewShared": [Function],
-          "databaseHasSharedOffer": [Function],
-          "databaseId": [Function],
-          "databaseIds": [Function],
-          "dedicatedRequestUnitsUsageCost": [Function],
-          "displayCollectionThroughput": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "formWarnings": [Function],
-          "freeTierExceedThroughputTooltip": [Function],
-          "id": "addcollectionpane",
-          "isAnalyticalStorageOn": [Function],
-          "isAutoPilotSelected": [Function],
-          "isEnableMongoCapabilityEnabled": [Function],
-          "isExecuting": [Function],
-          "isFixedStorageSelected": [Function],
-          "isFreeTierAccount": [Function],
-          "isNonTableApi": [Function],
-          "isPreferredApiTable": [Function],
-          "isSharedAutoPilotSelected": [Function],
-          "isSynapseLinkSupported": [Function],
-          "isSynapseLinkUpdating": [Function],
-          "isTemplateReady": [Function],
-          "isTryCosmosDBSubscription": [Function],
-          "isUnlimitedStorageSelected": [Function],
-          "largePartitionKey": [Function],
-          "lowerCasePartitionKeyName": [Function],
-          "maxCollectionsReached": [Function],
-          "maxCollectionsReachedMessage": [Function],
-          "maxThroughputRU": [Function],
-          "minThroughputRU": [Function],
-          "onMoreDetailsKeyPress": [Function],
-          "partitionKey": [Function],
-          "partitionKeyName": [Function],
-          "partitionKeyPattern": [Function],
-          "partitionKeyPlaceholder": [Function],
-          "partitionKeyTitle": [Function],
-          "partitionKeyVisible": [Function],
-          "requestUnitsUsageCost": [Function],
-          "ruToolTipText": [Function],
-          "sharedAutoPilotThroughput": [Function],
-          "sharedThroughputRangeText": [Function],
-          "shouldCreateMongoWildcardIndex": [Function],
-          "shouldUseDatabaseThroughput": [Function],
-          "showAnalyticalStore": [Function],
-          "showEnableSynapseLink": [Function],
-          "showIndexingOptionsForSharedThroughput": [Function],
-          "showUpsellMessage": [Function],
-          "storage": [Function],
-          "throughputDatabase": [Function],
-          "throughputMultiPartition": [Function],
-          "throughputRangeText": [Function],
-          "throughputSinglePartition": [Function],
-          "throughputSpendAck": [Function],
-          "throughputSpendAckText": [Function],
-          "throughputSpendAckVisible": [Function],
-          "title": [Function],
-          "ttl90DaysEnabled": [Function],
-          "uniqueKeys": [Function],
-          "uniqueKeysPlaceholder": [Function],
-          "uniqueKeysVisible": [Function],
-          "upsellAnchorText": [Function],
-          "upsellAnchorUrl": [Function],
-          "upsellMessage": [Function],
-          "upsellMessageAriaLabel": [Function],
-          "useIndexingForSharedThroughput": [Function],
-          "visible": [Function],
-        },
-        GraphStylingPane {
-          "container": [Circular],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "graphConfigUIData": Object {
-            "nodeCaptionChoice": [Function],
-            "nodeColorKeyChoice": [Function],
-            "nodeIconChoice": [Function],
-            "nodeIconSet": [Function],
-            "nodeProperties": [Function],
-            "nodePropertiesWithNone": [Function],
-            "showNeighborType": [Function],
-          },
-          "id": "graphstylingpane",
-          "isExecuting": [Function],
-          "isTemplateReady": [Function],
-          "title": [Function],
-          "visible": [Function],
-        },
-        CassandraAddCollectionPane {
-          "autoPilotUsageCost": [Function],
-          "canConfigureThroughput": [Function],
-          "canExceedMaximumValue": [Function],
-          "canRequestSupport": [Function],
-          "container": [Circular],
-          "costsVisible": [Function],
-          "createTableQuery": [Function],
-          "dedicateTableThroughput": [Function],
-          "firstFieldHasFocus": [Function],
-          "formErrors": [Function],
-          "formErrorsDetails": [Function],
-          "id": "cassandraaddcollectionpane",
-          "isAutoPilotSelected": [Function],
-          "isExecuting": [Function],
-          "isFreeTierAccount": [Function],
-          "isSharedAutoPilotSelected": [Function],
-          "isTemplateReady": [Function],
-          "keyspaceCreateNew": [Function],
-          "keyspaceHasSharedOffer": [Function],
-          "keyspaceId": [Function],
-          "keyspaceIds": [Function],
-          "keyspaceOffers": Map {},
-          "keyspaceThroughput": [Function],
-          "maxThroughputRU": [Function],
-          "minThroughputRU": [Function],
-          "requestUnitsUsageCostDedicated": [Function],
-          "requestUnitsUsageCostShared": [Function],
-          "ruToolTipText": [Function],
-          "selectedAutoPilotThroughput": [Function],
-          "sharedAutoPilotThroughput": [Function],
-          "sharedThroughputRangeText": [Function],
-          "sharedThroughputSpendAck": [Function],
-          "sharedThroughputSpendAckText": [Function],
-          "sharedThroughputSpendAckVisible": [Function],
-          "tableId": [Function],
-          "throughput": [Function],
-          "throughputRangeText": [Function],
-          "throughputSpendAck": [Function],
-          "throughputSpendAckText": [Function],
-          "throughputSpendAckVisible": [Function],
-          "title": [Function],
-          "userTableQuery": [Function],
-          "visible": [Function],
-        },
-      ],
       "_refreshSparkEnabledStateForAccount": [Function],
       "_resetNotebookWorkspace": [Function],
-      "addCollectionPane": AddCollectionPane {
-        "_isSynapseLinkEnabled": [Function],
-        "autoPilotThroughput": [Function],
-        "autoPilotUsageCost": [Function],
-        "canConfigureThroughput": [Function],
-        "canExceedMaximumValue": [Function],
-        "canRequestSupport": [Function],
-        "collectionId": [Function],
-        "collectionIdTitle": [Function],
-        "collectionWithThroughputInShared": [Function],
-        "collectionWithThroughputInSharedTitle": [Function],
-        "container": [Circular],
-        "costsVisible": [Function],
-        "databaseCreateNew": [Function],
-        "databaseCreateNewShared": [Function],
-        "databaseHasSharedOffer": [Function],
-        "databaseId": [Function],
-        "databaseIds": [Function],
-        "dedicatedRequestUnitsUsageCost": [Function],
-        "displayCollectionThroughput": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "formWarnings": [Function],
-        "freeTierExceedThroughputTooltip": [Function],
-        "id": "addcollectionpane",
-        "isAnalyticalStorageOn": [Function],
-        "isAutoPilotSelected": [Function],
-        "isEnableMongoCapabilityEnabled": [Function],
-        "isExecuting": [Function],
-        "isFixedStorageSelected": [Function],
-        "isFreeTierAccount": [Function],
-        "isNonTableApi": [Function],
-        "isPreferredApiTable": [Function],
-        "isSharedAutoPilotSelected": [Function],
-        "isSynapseLinkSupported": [Function],
-        "isSynapseLinkUpdating": [Function],
-        "isTemplateReady": [Function],
-        "isTryCosmosDBSubscription": [Function],
-        "isUnlimitedStorageSelected": [Function],
-        "largePartitionKey": [Function],
-        "lowerCasePartitionKeyName": [Function],
-        "maxCollectionsReached": [Function],
-        "maxCollectionsReachedMessage": [Function],
-        "maxThroughputRU": [Function],
-        "minThroughputRU": [Function],
-        "onMoreDetailsKeyPress": [Function],
-        "partitionKey": [Function],
-        "partitionKeyName": [Function],
-        "partitionKeyPattern": [Function],
-        "partitionKeyPlaceholder": [Function],
-        "partitionKeyTitle": [Function],
-        "partitionKeyVisible": [Function],
-        "requestUnitsUsageCost": [Function],
-        "ruToolTipText": [Function],
-        "sharedAutoPilotThroughput": [Function],
-        "sharedThroughputRangeText": [Function],
-        "shouldCreateMongoWildcardIndex": [Function],
-        "shouldUseDatabaseThroughput": [Function],
-        "showAnalyticalStore": [Function],
-        "showEnableSynapseLink": [Function],
-        "showIndexingOptionsForSharedThroughput": [Function],
-        "showUpsellMessage": [Function],
-        "storage": [Function],
-        "throughputDatabase": [Function],
-        "throughputMultiPartition": [Function],
-        "throughputRangeText": [Function],
-        "throughputSinglePartition": [Function],
-        "throughputSpendAck": [Function],
-        "throughputSpendAckText": [Function],
-        "throughputSpendAckVisible": [Function],
-        "title": [Function],
-        "ttl90DaysEnabled": [Function],
-        "uniqueKeys": [Function],
-        "uniqueKeysPlaceholder": [Function],
-        "uniqueKeysVisible": [Function],
-        "upsellAnchorText": [Function],
-        "upsellAnchorUrl": [Function],
-        "upsellMessage": [Function],
-        "upsellMessageAriaLabel": [Function],
-        "useIndexingForSharedThroughput": [Function],
-        "visible": [Function],
-      },
       "addCollectionText": [Function],
-      "addDatabasePane": AddDatabasePane {
-        "autoPilotUsageCost": [Function],
-        "canConfigureThroughput": [Function],
-        "canExceedMaximumValue": [Function],
-        "canRequestSupport": [Function],
-        "container": [Circular],
-        "costsVisible": [Function],
-        "databaseCreateNewShared": [Function],
-        "databaseId": [Function],
-        "databaseIdLabel": [Function],
-        "databaseIdPlaceHolder": [Function],
-        "databaseIdTooltipText": [Function],
-        "databaseLevelThroughputTooltipText": [Function],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "freeTierExceedThroughputTooltip": [Function],
-        "id": "adddatabasepane",
-        "isAutoPilotSelected": [Function],
-        "isExecuting": [Function],
-        "isFreeTierAccount": [Function],
-        "isTemplateReady": [Function],
-        "maxAutoPilotThroughputSet": [Function],
-        "maxThroughputRU": [Function],
-        "maxThroughputRUText": [Function],
-        "minThroughputRU": [Function],
-        "onMoreDetailsKeyPress": [Function],
-        "requestUnitsUsageCost": [Function],
-        "ruToolTipText": [Function],
-        "showUpsellMessage": [Function],
-        "throughput": [Function],
-        "throughputRangeText": [Function],
-        "throughputSpendAck": [Function],
-        "throughputSpendAckText": [Function],
-        "throughputSpendAckVisible": [Function],
-        "title": [Function],
-        "upsellAnchorText": [Function],
-        "upsellAnchorUrl": [Function],
-        "upsellMessage": [Function],
-        "upsellMessageAriaLabel": [Function],
-        "visible": [Function],
-      },
-      "addDatabaseText": [Function],
       "arcadiaToken": [Function],
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
@@ -1171,32 +853,11 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
           },
         },
       },
-      "graphStylingPane": GraphStylingPane {
-        "container": [Circular],
-        "firstFieldHasFocus": [Function],
-        "formErrors": [Function],
-        "formErrorsDetails": [Function],
-        "graphConfigUIData": Object {
-          "nodeCaptionChoice": [Function],
-          "nodeColorKeyChoice": [Function],
-          "nodeIconChoice": [Function],
-          "nodeIconSet": [Function],
-          "nodeProperties": [Function],
-          "nodePropertiesWithNone": [Function],
-          "showNeighborType": [Function],
-        },
-        "id": "graphstylingpane",
-        "isExecuting": [Function],
-        "isTemplateReady": [Function],
-        "title": [Function],
-        "visible": [Function],
-      },
       "hasStorageAnalyticsAfecFeature": [Function],
       "isAccountReady": [Function],
       "isAutoscaleDefaultEnabled": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
-      "isLeftPaneExpanded": [Function],
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
@@ -1263,7 +924,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         "activeTab": [Function],
         "openedTabs": [Function],
       },
-      "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
   inProgressMessage="Creating directory "
@@ -2365,7 +2025,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 >
                   <button
                     aria-label="Close pane"
-                    className="ms-Button ms-Button--icon closePaneBtn root-153"
+                    className="ms-Button ms-Button--icon closePaneBtn root-53"
                     data-is-focusable={true}
                     onClick={[Function]}
                     onKeyDown={[Function]}
@@ -2378,16 +2038,16 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                     type="button"
                   >
                     <span
-                      className="ms-Button-flexContainer flexContainer-154"
+                      className="ms-Button-flexContainer flexContainer-54"
                       data-automationid="splitbuttonprimary"
                     >
-                      <Component
-                        className="ms-Button-icon icon-156"
+                      <FontIcon
+                        className="ms-Button-icon icon-56"
                         iconName="Cancel"
                       >
                         <i
                           aria-hidden={true}
-                          className="ms-Icon root-37 css-161 ms-Button-icon icon-156"
+                          className="ms-Icon root-37 css-61 ms-Button-icon icon-56"
                           data-icon-name="Cancel"
                           style={
                             Object {
@@ -2397,10 +2057,10 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         >
                           
                         </i>
-                      </Component>
+                      </FontIcon>
                     </span>
                   </button>
-                  <Component />
+                  <FocusRects />
                 </BaseButton>
               </IconButton>
             </CustomizedIconButton>
@@ -2737,7 +2397,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                 value=""
               >
                 <div
-                  className="ms-TextField is-required root-163"
+                  className="ms-TextField is-required root-63"
                 >
                   <div
                     className="ms-TextField-wrapper"
@@ -3028,7 +2688,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                         }
                       >
                         <label
-                          className="ms-Label root-174"
+                          className="ms-Label root-74"
                           htmlFor="TextField3"
                           id="TextFieldLabel5"
                         >
@@ -3037,13 +2697,13 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       </LabelBase>
                     </StyledLabelBase>
                     <div
-                      className="ms-TextField-fieldGroup fieldGroup-164"
+                      className="ms-TextField-fieldGroup fieldGroup-64"
                     >
                       <input
                         aria-invalid={false}
                         aria-labelledby="TextFieldLabel5"
                         autoFocus={true}
-                        className="ms-TextField-field field-165"
+                        className="ms-TextField-field field-65"
                         id="TextField3"
                         name="collectionIdConfirmation"
                         onBlur={[Function]}
@@ -4805,7 +4465,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                       >
                         <button
                           aria-label="Submit"
-                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-175"
+                          className="ms-Button ms-Button--primary genericPaneSubmitBtn root-75"
                           data-is-focusable={true}
                           onClick={[Function]}
                           onKeyDown={[Function]}
@@ -4823,14 +4483,14 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                           type="button"
                         >
                           <span
-                            className="ms-Button-flexContainer flexContainer-154"
+                            className="ms-Button-flexContainer flexContainer-54"
                             data-automationid="splitbuttonprimary"
                           >
                             <span
-                              className="ms-Button-textContainer textContainer-155"
+                              className="ms-Button-textContainer textContainer-55"
                             >
                               <span
-                                className="ms-Button-label label-176"
+                                className="ms-Button-label label-76"
                                 id="id__6"
                                 key="id__6"
                               >
@@ -4839,7 +4499,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                             </span>
                           </span>
                         </button>
-                        <Component />
+                        <FocusRects />
                       </BaseButton>
                     </DefaultButton>
                   </CustomizedDefaultButton>

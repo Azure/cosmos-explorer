@@ -54,7 +54,6 @@ src/Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.ts
 src/Explorer/Controls/InputTypeahead/InputTypeahead.ts
 src/Explorer/Controls/JsonEditor/JsonEditorComponent.ts
 src/Explorer/Controls/Notebook/NotebookAppMessageHandler.ts
-src/Explorer/Controls/ThroughputInput/ThroughputInput.test.ts
 src/Explorer/Controls/ThroughputInput/ThroughputInputComponent.ts
 src/Explorer/Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3.ts
 src/Explorer/Controls/Toolbar/IToolbarAction.ts
@@ -85,8 +84,8 @@ src/Explorer/Graph/GraphExplorerComponent/GremlinClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.ts
-src/Explorer/Graph/GraphStyleComponent/GraphStyle.test.ts
-src/Explorer/Graph/GraphStyleComponent/GraphStyleComponent.ts
+# src/Explorer/Graph/GraphStyleComponent/GraphStyle.test.ts
+# src/Explorer/Graph/GraphStyleComponent/GraphStyleComponent.ts
 
 src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.test.ts
 src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.ts
@@ -109,16 +108,15 @@ src/Explorer/Notebook/NotebookUtil.ts
 src/Explorer/OpenActions.test.ts
 src/Explorer/OpenActions.ts
 src/Explorer/OpenActionsStubs.ts
-src/Explorer/Panes/AddCollectionPane.test.ts
-src/Explorer/Panes/AddCollectionPane.ts
-src/Explorer/Panes/AddDatabasePane.test.ts
 src/Explorer/Panes/AddDatabasePane.ts
+src/Explorer/Panes/AddDatabasePane.test.ts
 src/Explorer/Panes/BrowseQueriesPane.ts
 src/Explorer/Panes/CassandraAddCollectionPane.ts
 src/Explorer/Panes/ContextualPaneBase.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.test.ts
 src/Explorer/Panes/DeleteDatabaseConfirmationPane.ts
-src/Explorer/Panes/GraphStylingPane.ts
+# src/Explorer/Panes/GraphStylingPane.ts
+# src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/PaneComponents.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
 src/Explorer/Panes/SetupNotebooksPane.ts

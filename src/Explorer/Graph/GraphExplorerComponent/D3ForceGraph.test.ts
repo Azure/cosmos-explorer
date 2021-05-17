@@ -1,7 +1,7 @@
 ﻿import * as sinon from "sinon";
-import { D3ForceGraph, LoadMoreDataAction, D3GraphNodeData } from "./D3ForceGraph";
-import { D3Node, D3Link, GraphData } from "../GraphExplorerComponent/GraphData";
 import GraphTab from "../../Tabs/GraphTab";
+import { D3Link, D3Node, GraphData } from "../GraphExplorerComponent/GraphData";
+import { D3ForceGraph, D3GraphNodeData, LoadMoreDataAction } from "./D3ForceGraph";
 
 describe("D3ForceGraph", () => {
   const v1Id = "v1";
@@ -68,7 +68,7 @@ describe("D3ForceGraph", () => {
 
     beforeEach(() => {
       forceGraph = new D3ForceGraph({
-        graphConfig: GraphTab.createGraphConfig(),
+        igraphConfig: GraphTab.createIGraphConfig(),
         onHighlightedNode: sinon.spy(),
         onLoadMoreData: (action: LoadMoreDataAction): void => {},
 
@@ -141,6 +141,7 @@ describe("D3ForceGraph", () => {
         const mouseoverEvent = document.createEvent("Events");
         mouseoverEvent.initEvent("mouseover", true, false);
         $(rootNode).find(".node")[0].dispatchEvent(mouseoverEvent); // [0] is v1 vertex
+        expect($(rootNode).find(".node")[0]).toBe(1);
 
         // onHighlightedNode is always called once to clear the selection
         expect((forceGraph.params.onHighlightedNode as sinon.SinonSpy).calledTwice).toBe(true);
@@ -150,7 +151,7 @@ describe("D3ForceGraph", () => {
         expect(onHighlightedNode.id).toEqual(v1Id);
       };
 
-      forceGraph.updateGraph(newGraph);
+      forceGraph.updateGraph(newGraph, forceGraph.igraphConfig);
     });
   });
 });

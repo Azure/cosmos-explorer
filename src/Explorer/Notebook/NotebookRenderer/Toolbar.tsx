@@ -1,5 +1,5 @@
 import { ContextualMenuItemType, DirectionalHint, IconButton, IContextualMenuItem } from "@fluentui/react";
-import { CellId, CellType } from "@nteract/commutable";
+import { CellId, CellType, ImmutableCodeCell } from "@nteract/commutable";
 import { actions, AppState, DocumentRecordProps } from "@nteract/core";
 import * as selectors from "@nteract/selectors";
 import { CellToolbarContext } from "@nteract/stateful-components";
@@ -10,6 +10,8 @@ import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as cdbActions from "../NotebookComponent/actions";
+import { SnapshotRequest } from "../NotebookComponent/types";
+import { NotebookUtil } from "../NotebookUtil";
 
 export interface ComponentProps {
   contentRef: ContentRef;
@@ -26,12 +28,14 @@ interface DispatchProps {
   clearOutputs: () => void;
   deleteCell: () => void;
   traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) => void;
+  takeNotebookSnapshot: (payload: SnapshotRequest) => void;
 }
 
 interface StateProps {
   cellType: CellType;
   cellIdAbove: CellId;
   cellIdBelow: CellId;
+  hasCodeOutput: boolean;
 }
 
 class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & StateProps> {
@@ -58,11 +62,29 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
             this.props.traceNotebookTelemetry(Action.NotebooksClearOutputsFromMenu, ActionModifiers.Mark);
           },
         },
-        {
-          key: "Divider",
-          itemType: ContextualMenuItemType.Divider,
-        },
       ]);
+
+      if (this.props.hasCodeOutput) {
+        items.push({
+          key: "Export output to image",
+          text: "Export output to image",
+          onClick: () => {
+            this.props.takeNotebookSnapshot({
+              requestId: new Date().getTime().toString(),
+              aspectRatio: undefined,
+              type: "celloutput",
+              cellId: this.props.id,
+              notebookContentRef: this.props.contentRef,
+              downloadFilename: `celloutput-${this.props.contentRef}_${this.props.id}.png`,
+            });
+          },
+        });
+      }
+
+      items.push({
+        key: "Divider",
+        itemType: ContextualMenuItemType.Divider,
+      });
     }
 
     items = items.concat([
@@ -183,12 +205,13 @@ const mapDispatchToProps = (
   deleteCell: () => dispatch(actions.deleteCell({ id, contentRef })),
   traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) =>
     dispatch(cdbActions.traceNotebookTelemetry({ action, actionModifier, data })),
+  takeNotebookSnapshot: (request: SnapshotRequest) => dispatch(cdbActions.takeNotebookSnapshot(request)),
 });
 
 const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
   const mapStateToProps = (state: AppState) => {
-    const cellType = selectors.cell.cellFromState(state, { id: ownProps.id, contentRef: ownProps.contentRef })
-      .cell_type;
+    const cell = selectors.cell.cellFromState(state, { id: ownProps.id, contentRef: ownProps.contentRef });
+    const cellType = cell.cell_type;
     const model = selectors.model(state, { contentRef: ownProps.contentRef });
     const cellOrder = selectors.notebook.cellOrder(model as RecordOf<DocumentRecordProps>);
     const cellIndex = cellOrder.indexOf(ownProps.id);
@@ -199,6 +222,7 @@ const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state
       cellType,
       cellIdAbove,
       cellIdBelow,
+      hasCodeOutput: cellType === "code" && NotebookUtil.hasCodeCellOutput(cell as ImmutableCodeCell),
     };
   };
   return mapStateToProps;

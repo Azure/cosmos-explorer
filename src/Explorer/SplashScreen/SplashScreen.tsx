@@ -17,6 +17,7 @@ import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
+import { getDatabaseName } from "../../Utils/APITypeUtils";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
@@ -290,9 +291,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     } else {
       items.push({
         iconSrc: AddDatabaseIcon,
-        title: this.container.addDatabaseText(),
+        title: "New " + getDatabaseName(),
         description: null,
-        onClick: () => this.container.addDatabasePane.open(),
+        onClick: () => this.container.openAddDatabasePane(),
       });
     }
 

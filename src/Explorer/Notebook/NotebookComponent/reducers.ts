@@ -70,17 +70,32 @@ export const cdbReducer = (state: CdbRecord, action: Action) => {
       return state.set("hoveredCellId", typedAction.payload.cellId);
     }
 
-    case cdbActions.UPDATE_NOTEBOOK_PARENT_DOM_ELTS: {
-      const typedAction = action as cdbActions.UpdateNotebookParentDomEltAction;
-      var parentEltsMap = state.get("currentNotebookParentElements");
-      const contentRef = typedAction.payload.contentRef;
-      const parentElt = typedAction.payload.parentElt;
-      if (parentElt) {
-        parentEltsMap.set(contentRef, parentElt);
-      } else {
-        parentEltsMap.delete(contentRef);
-      }
-      return state.set("currentNotebookParentElements", parentEltsMap);
+    case cdbActions.STORE_CELL_OUTPUT_SNAPSHOT: {
+      const typedAction = action as cdbActions.StoreCellOutputSnapshotAction;
+      state.cellOutputSnapshots.set(typedAction.payload.cellId, typedAction.payload.snapshot);
+      // TODO Simpler datastructure to instantiate new Map?
+      return state.set("cellOutputSnapshots", new Map(state.cellOutputSnapshots));
+    }
+
+    case cdbActions.STORE_NOTEBOOK_SNAPSHOT: {
+      const typedAction = action as cdbActions.StoreNotebookSnapshotAction;
+      // Clear pending request
+      return state.set("notebookSnapshot", typedAction.payload).set("pendingSnapshotRequest", undefined);
+    }
+
+    case cdbActions.TAKE_NOTEBOOK_SNAPSHOT: {
+      const typedAction = action as cdbActions.TakeNotebookSnapshotAction;
+      // Clear previous snapshots
+      return state
+        .set("cellOutputSnapshots", new Map())
+        .set("notebookSnapshot", undefined)
+        .set("notebookSnapshotError", undefined)
+        .set("pendingSnapshotRequest", typedAction.payload);
+    }
+
+    case cdbActions.NOTEBOOK_SNAPSHOT_ERROR: {
+      const typedAction = action as cdbActions.NotebookSnapshotErrorAction;
+      return state.set("notebookSnapshotError", typedAction.payload.error);
     }
   }
   return state;

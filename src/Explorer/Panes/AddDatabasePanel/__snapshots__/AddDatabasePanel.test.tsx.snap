@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddDatabasePane Pane should render Default properly 1`] = `
+<RightPaneForm
+  expandConsole={[Function]}
+  formError=""
+  isExecuting={false}
+  onSubmit={[Function]}
+  submitButtonText="OK"
+>
+  <div
+    className="panelMainContent"
+  >
+    <div>
+      <Stack
+        horizontal={true}
+      >
+        <span
+          className="mandatoryStar"
+        >
+          *
+        </span>
+        <Text
+          variant="small"
+        >
+          Database id
+        </Text>
+        <InfoTooltip>
+          A database is a logical container of one or more collections
+        </InfoTooltip>
+      </Stack>
+      <StyledTextFieldBase
+        aria-label="Database id"
+        aria-required="true"
+        autoComplete="off"
+        autoFocus={true}
+        id="database-id"
+        onChange={[Function]}
+        pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+        placeholder="Type a new database id"
+        size={40}
+        style={
+          Object {
+            "fontSize": 12,
+          }
+        }
+        styles={
+          Object {
+            "root": Object {
+              "width": 300,
+            },
+          }
+        }
+        title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+        type="text"
+        value=""
+      />
+      <Stack
+        horizontal={true}
+      >
+        <StyledCheckboxBase
+          checked={true}
+          label="Provision throughput"
+          onChange={[Function]}
+          styles={
+            Object {
+              "checkbox": Object {
+                "height": 12,
+                "width": 12,
+              },
+              "label": Object {
+                "alignItems": "center",
+                "padding": 0,
+              },
+              "text": Object {
+                "fontSize": 12,
+              },
+            }
+          }
+          title="Provision shared throughput"
+        />
+        <InfoTooltip>
+          Provisioned throughput at the database level will be shared across all collections within the database.
+        </InfoTooltip>
+      </Stack>
+      <ThroughputInput
+        isDatabase={true}
+        isSharded={true}
+        onCostAcknowledgeChange={[Function]}
+        setIsAutoscale={[Function]}
+        setThroughputValue={[Function]}
+      />
+    </div>
+  </div>
+</RightPaneForm>
+`;
