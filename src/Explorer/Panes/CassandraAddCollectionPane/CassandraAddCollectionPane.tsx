@@ -309,6 +309,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             list={keyspaceCreateNew ? "" : "keyspacesList"}
             placeholder={keyspaceCreateNew ? "Type a new keyspace id" : "Choose existing keyspace id"}
             size={40}
+            data-test="addCollection-keyspaceId"
             value={keyspaceId}
             onChange={(e, newValue) => setKeyspaceId(newValue)}
             ariaLabel="Keyspace id"
