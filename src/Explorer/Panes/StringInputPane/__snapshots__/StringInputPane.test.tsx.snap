@@ -858,6 +858,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isAutoscaleDefaultEnabled": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
+      "isLeftPaneExpanded": [Function],
       "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
@@ -924,6 +925,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         "activeTab": [Function],
         "openedTabs": [Function],
       },
+      "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
   inProgressMessage="Creating directory "
