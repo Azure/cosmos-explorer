@@ -834,6 +834,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isAutoscaleDefaultEnabled": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isHostedDataExplorerEnabled": [Function],
+                "isLeftPaneExpanded": [Function],
                 "isMongoIndexingEnabled": [Function],
                 "isNotebookEnabled": [Function],
                 "isNotebooksEnabledForAccount": [Function],
@@ -900,6 +901,7 @@ exports[`SettingsComponent renders 1`] = `
                   "activeTab": [Function],
                   "openedTabs": [Function],
                 },
+                "toggleLeftPaneExpandedKeyPress": [Function],
               },
               "databaseId": "test",
               "defaultTtl": [Function],
@@ -1727,6 +1729,7 @@ exports[`SettingsComponent renders 1`] = `
               "isAutoscaleDefaultEnabled": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isHostedDataExplorerEnabled": [Function],
+              "isLeftPaneExpanded": [Function],
               "isMongoIndexingEnabled": [Function],
               "isNotebookEnabled": [Function],
               "isNotebooksEnabledForAccount": [Function],
@@ -1793,6 +1796,7 @@ exports[`SettingsComponent renders 1`] = `
                 "activeTab": [Function],
                 "openedTabs": [Function],
               },
+              "toggleLeftPaneExpandedKeyPress": [Function],
             }
           }
           isAutoPilotSelected={false}
@@ -2633,6 +2637,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isAutoscaleDefaultEnabled": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
                 "isHostedDataExplorerEnabled": [Function],
+                "isLeftPaneExpanded": [Function],
                 "isMongoIndexingEnabled": [Function],
                 "isNotebookEnabled": [Function],
                 "isNotebooksEnabledForAccount": [Function],
@@ -2699,6 +2704,7 @@ exports[`SettingsComponent renders 1`] = `
                   "activeTab": [Function],
                   "openedTabs": [Function],
                 },
+                "toggleLeftPaneExpandedKeyPress": [Function],
               },
               "databaseId": "test",
               "defaultTtl": [Function],
@@ -3526,6 +3532,7 @@ exports[`SettingsComponent renders 1`] = `
               "isAutoscaleDefaultEnabled": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
               "isHostedDataExplorerEnabled": [Function],
+              "isLeftPaneExpanded": [Function],
               "isMongoIndexingEnabled": [Function],
               "isNotebookEnabled": [Function],
               "isNotebooksEnabledForAccount": [Function],
@@ -3592,6 +3599,7 @@ exports[`SettingsComponent renders 1`] = `
                 "activeTab": [Function],
                 "openedTabs": [Function],
               },
+              "toggleLeftPaneExpandedKeyPress": [Function],
             }
           }
           geospatialConfigType="Geometry"
