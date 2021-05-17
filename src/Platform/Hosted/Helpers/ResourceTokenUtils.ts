@@ -7,11 +7,11 @@ export interface ParsedResourceTokenConnectionString {
 }
 
 export function parseResourceTokenConnectionString(connectionString: string): ParsedResourceTokenConnectionString {
-  let accountEndpoint: string;
-  let collectionId: string;
-  let databaseId: string;
-  let partitionKey: string;
-  let resourceToken: string;
+  let accountEndpoint = "";
+  let collectionId = "";
+  let databaseId = "";
+  let partitionKey = "";
+  let resourceToken = "";
   const connectionStringParts = connectionString.split(";");
   connectionStringParts.forEach((part: string) => {
     if (part.startsWith("type=resource")) {
@@ -39,5 +39,5 @@ export function parseResourceTokenConnectionString(connectionString: string): Pa
 }
 
 export function isResourceTokenConnectionString(connectionString: string): boolean {
-  return connectionString && connectionString.includes("type=resource");
+  return connectionString.includes("type=resource");
 }

@@ -10,7 +10,7 @@ describe("parseResourceTokenConnectionString", () => {
       accountEndpoint: "fakeEndpoint",
       collectionId: "fakeCollectionId",
       databaseId: "fakeDatabaseId",
-      partitionKey: undefined,
+      partitionKey: "",
       resourceToken: "type=resource&ver=1&sig=2dIP+CdIfT1ScwHWdv5GGw==;fakeToken;",
     });
   });

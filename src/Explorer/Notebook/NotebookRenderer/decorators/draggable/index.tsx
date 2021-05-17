@@ -11,7 +11,6 @@ import {
   DropTargetConnector,
   DropTargetMonitor,
 } from "react-dnd";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import styled, { StyledComponent } from "styled-components";
@@ -109,7 +108,7 @@ const DragHandleAnchor = styled.div`
   position: relative;
 `;
 
-export function isDragUpper(props: Props, monitor: DropTargetMonitor, el: HTMLElement): boolean {
+export function isDragUpper(_props: Props, monitor: DropTargetMonitor, el: HTMLElement): boolean {
   const hoverBoundingRect = el.getBoundingClientRect();
   const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
 
@@ -223,7 +222,7 @@ export class DraggableCellView extends React.Component<Props & DnDSourceProps & 
 const source = DragSource<Props, DnDSourceProps>("CELL", cellSource, collectSource);
 const target = DropTarget<Props, DnDTargetProps>("CELL", cellTarget, collectTarget);
 
-export const makeMapDispatchToProps = (initialDispatch: Dispatch) => {
+export const makeMapDispatchToProps = (_initialDispatch: Dispatch) => {
   const mapDispatchToProps = (dispatch: Dispatch) => ({
     moveCell: (payload: actions.MoveCell["payload"]) => dispatch(actions.moveCell(payload)),
     focusCell: (payload: actions.FocusCell["payload"]) => dispatch(actions.focusCell(payload)),
