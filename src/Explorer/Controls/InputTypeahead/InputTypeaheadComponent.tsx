@@ -6,9 +6,10 @@
  *   typeaheadOverrideOptions: { dynamic:false }
  *
  */
+import "jquery-typeahead";
 import * as React from "react";
-import "./InputTypeahead.less";
 import { KeyCodes } from "../../../Common/Constants";
+import "./InputTypeahead.less";
 
 export interface Item {
   caption: string;
@@ -86,7 +87,7 @@ interface Cache {
   selection: Item;
 }
 
-interface InputTypeaheadComponentState {}
+interface InputTypeaheadComponentState { }
 
 export class InputTypeaheadComponent extends React.Component<
   InputTypeaheadComponentProps,
