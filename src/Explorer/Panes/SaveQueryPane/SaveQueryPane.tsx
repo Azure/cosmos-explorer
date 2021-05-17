@@ -39,12 +39,10 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
     const query: string = queryTab && queryTab.sqlQueryEditorContent();
     if (!queryName || queryName.length === 0) {
       setFormError("No query name specified");
-      setFormErrorsDetails("No query name specified. Please specify a query name.");
       logConsoleError("Could not save query -- No query name specified. Please specify a query name.");
       return;
     } else if (!query || query.length === 0) {
       setFormError("Invalid query content specified");
-      setFormErrorsDetails("Invalid query content specified. Please enter query content.");
       logConsoleError("Could not save query -- Invalid query content specified. Please enter query content.");
       return;
     }
@@ -78,7 +76,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
       setLoadingFalse();
       const errorMessage = getErrorMessage(error);
       setFormError("Failed to save query");
-      setFormErrorsDetails(`Failed to save query: ${errorMessage}`);
+      logConsoleError(`Failed to save query: ${errorMessage}`);
       traceFailure(
         Action.SaveQuery,
         {
@@ -123,7 +121,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
         startKey
       );
       setFormError("Failed to setup a container for saved queries");
-      setFormErrorsDetails(`Failed to setup a container for saved queries: ${errorMessage}`);
+      logConsoleError(`Failed to setup a container for saved queries: ${errorMessage}`);
     } finally {
       setLoadingFalse();
     }
