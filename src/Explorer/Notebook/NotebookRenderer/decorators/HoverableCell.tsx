@@ -1,8 +1,7 @@
+import { ContentRef } from "@nteract/core";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { ContentRef } from "@nteract/core";
 import * as actions from "../../NotebookComponent/actions";
 
 interface ComponentProps {
@@ -29,12 +28,9 @@ class HoverableCell extends React.Component<ComponentProps & DispatchProps> {
   }
 }
 
-const mapDispatchToProps = (
-  dispatch: Dispatch,
-  { id, contentRef }: { id: string; contentRef: ContentRef }
-): DispatchProps => ({
+const mapDispatchToProps = (dispatch: Dispatch, { id }: { id: string }): DispatchProps => ({
   hover: () => dispatch(actions.setHoveredCell({ cellId: id })),
-  unHover: () => dispatch(actions.setHoveredCell({ cellId: undefined })),
+  unHover: () => dispatch(actions.setHoveredCell({ cellId: "" })),
 });
 
 export default connect(undefined, mapDispatchToProps)(HoverableCell);
