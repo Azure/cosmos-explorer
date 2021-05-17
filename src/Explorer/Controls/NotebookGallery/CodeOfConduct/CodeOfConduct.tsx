@@ -6,15 +6,15 @@ import { JunoClient } from "../../../../Juno/JunoClient";
 import { Action } from "../../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../../Shared/Telemetry/TelemetryProcessor";
 
-export interface CodeOfConductComponentProps {
+export interface CodeOfConductProps {
   junoClient: JunoClient;
   onAcceptCodeOfConduct: (result: boolean) => void;
 }
 
-export const CodeOfConductComponent: FunctionComponent<CodeOfConductComponentProps> = ({
+export const CodeOfConduct: FunctionComponent<CodeOfConductProps> = ({
   junoClient,
   onAcceptCodeOfConduct,
-}: CodeOfConductComponentProps) => {
+}: CodeOfConductProps) => {
   const descriptionPara1 = "Azure Cosmos DB Notebook Gallery - Code of Conduct";
   const descriptionPara2 = "The notebook public gallery contains notebook samples shared by users of Azure Cosmos DB.";
   const descriptionPara3 = "In order to view and publish your samples to the gallery, you must accept the ";
@@ -47,7 +47,7 @@ export const CodeOfConductComponent: FunctionComponent<CodeOfConductComponentPro
         startKey
       );
 
-      handleError(error, "CodeOfConductComponent/acceptCodeOfConduct", "Failed to accept code of conduct");
+      handleError(error, "CodeOfConduct/acceptCodeOfConduct", "Failed to accept code of conduct");
     }
   };
 

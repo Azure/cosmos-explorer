@@ -67,7 +67,7 @@ import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksP
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
-import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
+import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
@@ -1367,7 +1367,7 @@ export default class Explorer {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
       this.openSidePanel(
-        "",
+        "Rename Notebook",
         <StringInputPane
           explorer={this}
           closePanel={() => {
@@ -1398,7 +1398,7 @@ export default class Explorer {
     }
 
     this.openSidePanel(
-      "",
+      "Create new directory",
       <StringInputPane
         explorer={this}
         closePanel={() => {
@@ -1890,7 +1890,7 @@ export default class Explorer {
       "Delete " + getDatabaseName(),
       <DeleteDatabaseConfirmationPanel
         explorer={this}
-        openNotificationConsole={this.expandConsole}
+        openNotificationConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         selectedDatabase={this.findSelectedDatabase()}
       />

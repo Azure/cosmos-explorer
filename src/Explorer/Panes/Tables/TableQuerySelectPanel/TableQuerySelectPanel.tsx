@@ -4,10 +4,7 @@ import { userContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import * as Constants from "../../../Tables/Constants";
 import QueryViewModel from "../../../Tables/QueryBuilder/QueryViewModel";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../../RightPaneForm/RightPaneForm";
 
 interface TableQuerySelectPanelProps {
   explorer: Explorer;
@@ -31,22 +28,18 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   ]);
   const [isAvailableColumnChecked, setIsAvailableColumnChecked] = useState<boolean>(true);
 
-  const genericPaneProps: GenericRightPaneProps = {
-    formError: "",
-    formErrorDetail: "",
-    id: "querySelectPane",
-    isExecuting: false,
-    title: "Select Column",
-    submitButtonText: "OK",
-    onClose: () => closePanel(),
-    onSubmit: () => submit(),
-    expandConsole: () => explorer.expandConsole(),
-  };
-
-  const submit = (): void => {
+  const onSubmit = (): void => {
     queryViewModel.selectText(getParameters());
     queryViewModel.getSelectMessage();
     closePanel();
+  };
+
+  const props: RightPaneFormProps = {
+    formError: "",
+    isExecuting: false,
+    submitButtonText: "OK",
+    onSubmit,
+    expandConsole: () => explorer.expandConsole(),
   };
 
   const handleClick = (isChecked: boolean, selectedColumn: string): void => {
@@ -128,7 +121,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <Text>Select the columns that you want to query.</Text>
@@ -153,6 +146,6 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
           </div>
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

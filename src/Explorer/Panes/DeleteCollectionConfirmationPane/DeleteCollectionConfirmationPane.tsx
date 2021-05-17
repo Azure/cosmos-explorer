@@ -12,10 +12,7 @@ import { userContext } from "../../../UserContext";
 import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 export interface DeleteCollectionConfirmationPaneProps {
   explorer: Explorer;
   closePanel: () => void;
@@ -35,7 +32,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   };
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
-  const submit = async (): Promise<void> => {
+  const onSubmit = async (): Promise<void> => {
     const collection = explorer.findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
       const errorMessage = "Input " + collectionName + " name does not match the selected " + collectionName;
@@ -100,19 +97,15 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       );
     }
   };
-  const genericPaneProps: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     formError: formError,
-    formErrorDetail: formError,
-    id: "deleteCollectionpane",
     isExecuting,
-    title: paneTitle,
     submitButtonText: "OK",
-    onClose: closePanel,
-    onSubmit: submit,
+    onSubmit,
     expandConsole: () => explorer.expandConsole(),
   };
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
@@ -150,6 +143,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
           )}
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };
