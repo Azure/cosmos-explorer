@@ -1,8 +1,8 @@
+import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
-import { Account, Configuration, UserAgentApplication } from "msal";
 import * as React from "react";
 
-const config: Configuration = {
+const config: msal.Configuration = {
   cache: {
     cacheLocation: "localStorage",
   },
@@ -16,9 +16,9 @@ if (process.env.NODE_ENV === "development") {
   config.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
 }
 
-const msal = new UserAgentApplication(config);
+const msalInstance = new msal.PublicClientApplication(config);
 
-const cachedAccount = msal.getAllAccounts()?.[0];
+const cachedAccount = msalInstance.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
 
 interface ReturnType {
@@ -29,7 +29,7 @@ interface ReturnType {
   login: () => void;
   logout: () => void;
   tenantId: string;
-  account: Account;
+  account: msal.AccountInfo;
   switchTenant: (tenantId: string) => void;
 }
 
@@ -37,14 +37,15 @@ export function useAADAuth(): ReturnType {
   const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(
     Boolean(cachedAccount && cachedTenantId) || false
   );
-  const [account, setAccount] = React.useState<Account>(cachedAccount);
+  const [account, setAccount] = React.useState<msal.AccountInfo>(cachedAccount);
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
   const [aadToken, setAadToken] = React.useState<string>();
 
+  msalInstance.setActiveAccount(account);
   const login = React.useCallback(async () => {
-    const response = await msal.loginPopup();
+    const response = await msalInstance.loginPopup();
     setLoggedIn();
     setAccount(response.account);
     setTenantId(response.tenantId);
@@ -54,13 +55,14 @@ export function useAADAuth(): ReturnType {
   const logout = React.useCallback(() => {
     setLoggedOut();
     localStorage.removeItem("cachedTenantId");
-    msal.logout();
+    msalInstance.logoutRedirect();
   }, []);
 
   const switchTenant = React.useCallback(
     async (id) => {
-      const response = await msal.loginPopup({
+      const response = await msalInstance.loginPopup({
         authority: `https://login.microsoftonline.com/${id}`,
+        scopes: [],
       });
       setTenantId(response.tenantId);
       setAccount(response.account);
@@ -72,22 +74,15 @@ export function useAADAuth(): ReturnType {
     if (account && tenantId) {
       console.log(account)
       Promise.all([
-        msal.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
+        msalInstance.acquireTokenSilent({
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://graph.windows.net//.default"],
         }),
-        msal.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
+        msalInstance.acquireTokenSilent({
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"],
         }),
-        msal.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
-          claimsRequest: "{\"hasgroups\":{\"values\":[true]}}",
+        msalInstance.acquireTokenSilent({
           scopes: ["https://cosmos.azure.com/.default"],
         }),
       ]).then(([graphTokenResponse, armTokenResponse, aadTokenResponse]) => {
