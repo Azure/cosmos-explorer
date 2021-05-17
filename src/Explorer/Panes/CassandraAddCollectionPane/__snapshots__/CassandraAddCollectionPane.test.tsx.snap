@@ -61,6 +61,7 @@ exports[`CassandraAddCollectionPane  Pane should render Default properly 1`] = `
         ariaLabel="Keyspace id"
         autoComplete="off"
         autoFocus={true}
+        data-test="addCollection-keyspaceId"
         list=""
         onChange={[Function]}
         pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
