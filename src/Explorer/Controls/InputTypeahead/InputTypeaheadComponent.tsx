@@ -87,7 +87,7 @@ interface Cache {
   selection: Item;
 }
 
-interface InputTypeaheadComponentState { }
+interface InputTypeaheadComponentState {}
 
 export class InputTypeaheadComponent extends React.Component<
   InputTypeaheadComponentProps,
