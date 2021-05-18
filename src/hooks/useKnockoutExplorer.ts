@@ -15,14 +15,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken,
+  ResourceToken
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata,
+  getDatabaseAccountPropertiesFromMetadata
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -217,10 +217,6 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
           return;
         }
 
-        // if (event.isTrusted && event.isAAD) {
-        // handle the token, set to user context
-        // }
-
         // Check for init message
         const message: PortalMessage = event.data?.data;
         const inputs = message?.inputs;
@@ -237,7 +233,6 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
           updateContextsFromPortalMessage(inputs);
           const explorer = new Explorer(explorerParams);
           explorer.configure(inputs);
-          // send message to portal to get AAD token message
           resolve(explorer);
           if (openAction) {
             handleOpenAction(openAction, explorer.databases(), explorer);

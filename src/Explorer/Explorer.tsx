@@ -254,8 +254,8 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-                  userContext.features.enableNotebooks)
+              ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+                userContext.features.enableNotebooks)
             );
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
@@ -276,7 +276,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
+              userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
@@ -815,20 +815,6 @@ export default class Explorer {
   public provideFeedbackEmail = () => {
     window.open(Constants.Urls.feedbackEmail, "_blank");
   };
-
-  public async getAadToken(): Promise<string> {
-    return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
-      sendCachedDataMessage<string>(MessageTypes.GetAadToken, undefined /** params **/).then(
-        (token: string) => {
-          resolve(token);
-        },
-        (error: any) => {
-          Logger.logError(getErrorMessage(error), "Explorer/getAadToken");
-          resolve(undefined);
-        }
-      );
-    });
-  }
 
   public async getArcadiaToken(): Promise<string> {
     return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {

@@ -72,7 +72,6 @@ export function useAADAuth(): ReturnType {
 
   React.useEffect(() => {
     if (account && tenantId) {
-      console.log(account);
       Promise.all([
         msalInstance.acquireTokenSilent({
           authority: `https://login.microsoftonline.com/${tenantId}`,
