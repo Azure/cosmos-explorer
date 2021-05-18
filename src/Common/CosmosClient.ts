@@ -11,10 +11,9 @@ const _global = typeof self === "undefined" ? window : self;
 export const tokenProvider = async (requestInfo: RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
 
-  if (userContext.aadToken) {
+  if (userContext.features.fetchesAADToken && userContext.aadToken) {
     const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
     const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
-    console.log({ authorizationToken })
     return authorizationToken;
   }
 
