@@ -1,5 +1,5 @@
+import { CommandButton, FontIcon, FontWeights, ITextProps, Separator, Stack, Text } from "@fluentui/react";
 import * as React from "react";
-import { Stack, Text, Separator, FontIcon, CommandButton, FontWeights, ITextProps } from "@fluentui/react";
 
 export class GalleryHeaderComponent extends React.Component {
   private static readonly azureText = "Microsoft Azure";
@@ -61,7 +61,7 @@ export class GalleryHeaderComponent extends React.Component {
         <Stack.Item>
           {this.renderHeaderItem(
             GalleryHeaderComponent.galleryText,
-            undefined,
+            () => "",
             GalleryHeaderComponent.headerItemTextProps
           )}
         </Stack.Item>

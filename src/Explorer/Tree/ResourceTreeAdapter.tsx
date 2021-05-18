@@ -1,5 +1,5 @@
-import * as ko from "knockout";
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
+import * as ko from "knockout";
 import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -273,7 +273,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
+    if (
+      userContext.apiType === "Mongo" &&
+      this.container.isNotebookEnabled() &&
+      userContext.features.enableSchemaAnalyzer
+    ) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),
