@@ -23,7 +23,7 @@ const costPerHourValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
-    href: "https://azure.microsoft.com/en-us/pricing/details/cosmos-db/",
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
     textTKey: "DedicatedGatewayPricing",
   },
 };
@@ -50,7 +50,7 @@ const resizingDecisionValue: Description = {
   textTKey: "ResizingDecisionText",
   type: DescriptionType.Text,
   link: {
-    href: "aka.ms/cosmosdb-dedicatedgateway-monitor",
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
     textTKey: "ResizingDecisionLink",
   },
 };
@@ -320,7 +320,7 @@ export default class SqlX extends SelfServeBaseClass {
       textTKey: "DedicatedGatewayDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+        href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
         textTKey: "LearnAboutDedicatedGateway",
       },
     },
