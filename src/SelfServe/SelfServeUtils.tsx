@@ -206,13 +206,7 @@ const addToDescriptor = (
 const getInput = (value: DecoratorProperties): AnyDisplay => {
   switch (value.type) {
     case "number":
-      if (
-        !value.labelTKey ||
-        !value.uiType ||
-        value.step === undefined ||
-        value.min === undefined ||
-        value.max === undefined
-      ) {
+      if (!value.labelTKey || !value.uiType || !value.step || !value.max || value.min === undefined) {
         value.errorMessage = `labelTkey, step, min, max and uiType are required for number input '${value.id}'.`;
       }
       return value as NumberInput;
