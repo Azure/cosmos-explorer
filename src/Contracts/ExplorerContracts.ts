@@ -30,7 +30,6 @@ export enum MessageTypes {
   ExplorerClickEvent,
   LoadingStatus,
   GetArcadiaToken,
-  GetAadToken,
   CreateWorkspace,
   CreateSparkPool,
   RefreshDatabaseAccount,
