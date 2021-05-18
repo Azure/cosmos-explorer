@@ -44,7 +44,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   return {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
-    enableAadDataPlane: "true" === get("enableAadDataPlane"),
+    enableAadDataPlane: "true" === get("enableaaddataplane"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
