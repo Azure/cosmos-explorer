@@ -139,7 +139,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
-      mockExplorer.isTerminalEnabled = ko.observable(true);
+      mockExplorer.isShellEnabled = ko.observable(true);
     });
 
     afterAll(() => {
@@ -155,7 +155,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
-      mockExplorer.isTerminalEnabled = ko.observable(true);
+      mockExplorer.isShellEnabled = ko.observable(true);
     });
 
     it("Mongo Api not available - button should be hidden", () => {
@@ -213,7 +213,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is enabled and is available, terminal is unavailable due to ipRules - button should be hidden", () => {
       mockExplorer.isNotebookEnabled = ko.observable(true);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
-      mockExplorer.isTerminalEnabled = ko.observable(false);
+      mockExplorer.isShellEnabled = ko.observable(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);

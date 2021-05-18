@@ -65,12 +65,16 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     buttons.push(createOpenTerminalButton(container));
 
     buttons.push(createNotebookWorkspaceResetButton(container));
-    if (userContext.apiType === "Mongo" && container.isTerminalEnabled() && container.isDatabaseNodeOrNoneSelected()) {
-      buttons.push(createOpenMongoTerminalButton(container));
-    }
-
-    if (userContext.apiType === "Cassandra") {
-      buttons.push(createOpenCassandraTerminalButton(container));
+    if (
+      (userContext.apiType === "Mongo" && container.isShellEnabled() && container.isDatabaseNodeOrNoneSelected()) ||
+      userContext.apiType === "Cassandra"
+    ) {
+      buttons.push(createDivider());
+      if (userContext.apiType === "Cassandra") {
+        buttons.push(createOpenCassandraTerminalButton(container));
+      } else {
+        buttons.push(createOpenMongoTerminalButton(container));
+      }
     }
   } else {
     if (!container.isRunningOnNationalCloud()) {
@@ -79,15 +83,15 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
   }
 
   if (!container.isDatabaseNodeOrNoneSelected()) {
-    const isSqlQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
+    const isQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 
-    if (isSqlQuerySupported) {
+    if (isQuerySupported) {
       buttons.push(createDivider());
       const newSqlQueryBtn = createNewSQLQueryButton(container);
       buttons.push(newSqlQueryBtn);
     }
 
-    if (isSqlQuerySupported && container.selectedNode() && container.findSelectedCollection()) {
+    if (isQuerySupported && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
       buttons.push(openQueryBtn);
@@ -120,13 +124,13 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = container.isTerminalEnabled() ? "Open Mongo Shell" : "New Shell";
+    const label = container.isShellEnabled() ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        if (container.isTerminalEnabled()) {
+        if (container.isShellEnabled()) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();

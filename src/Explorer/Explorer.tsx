@@ -178,7 +178,7 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
-  public isTerminalEnabled: ko.Observable<boolean>;
+  public isShellEnabled: ko.Observable<boolean>;
 
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
@@ -225,7 +225,7 @@ export default class Explorer {
         });
       }
     });
-    this.isTerminalEnabled = ko.observable(false);
+    this.isShellEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
@@ -252,7 +252,7 @@ export default class Explorer {
               ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
                 userContext.features.enableNotebooks)
             );
-            this.isTerminalEnabled(
+            this.isShellEnabled(
               this.isNotebookEnabled() &&
               !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
               userContext.databaseAccount.properties.ipRules.length === 0
