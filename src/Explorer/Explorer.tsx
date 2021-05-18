@@ -131,6 +131,7 @@ export default class Explorer {
   public databases: ko.ObservableArray<ViewModels.Database>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
+  public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
@@ -248,13 +249,13 @@ export default class Explorer {
           async () => {
             this.isNotebookEnabled(
               userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-                  userContext.features.enableNotebooks)
+              ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+                userContext.features.enableNotebooks)
             );
             this.isTerminalEnabled(
               this.isNotebookEnabled() &&
-                !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
-                userContext.databaseAccount.properties.ipRules.length === 0
+              !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
+              userContext.databaseAccount.properties.ipRules.length === 0
             );
 
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
@@ -276,7 +277,7 @@ export default class Explorer {
                 this.isSparkEnabledForAccount() &&
                 this.arcadiaWorkspaces() &&
                 this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
+              userContext.features.enableSpark
             );
             if (this.isSparkEnabled()) {
               trackEvent(
@@ -335,6 +336,7 @@ export default class Explorer {
       }
       return true;
     });
+    this.isLeftPaneExpanded = ko.observable<boolean>(true);
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
     this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
       // Make sure switching tabs restores tabs display
@@ -653,8 +655,16 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded(true);
   }
 
-  public collapseConsole(): void {
-    this.setIsNotificationConsoleExpanded(false);
+  public toggleLeftPaneExpanded() {
+    this.isLeftPaneExpanded(!this.isLeftPaneExpanded());
+
+    if (this.isLeftPaneExpanded()) {
+      document.getElementById("expandToggleLeftPaneButton").focus();
+      this.splitter.expandLeft();
+    } else {
+      document.getElementById("collapseToggleLeftPaneButton").focus();
+      this.splitter.collapseLeft();
+    }
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
@@ -771,6 +781,14 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     this.refreshNotebookList();
+  };
+
+  public toggleLeftPaneExpandedKeyPress = (source: any, event: KeyboardEvent): boolean => {
+    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
+      this.toggleLeftPaneExpanded();
+      return false;
+    }
+    return true;
   };
 
   // Facade

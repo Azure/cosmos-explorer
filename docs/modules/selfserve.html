@@ -1,0 +1,498 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>SelfServe | cosmos-explorer</title>
+	<meta name="description" content="Documentation for cosmos-explorer">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">cosmos-explorer</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">cosmos-explorer</a>
+				</li>
+				<li>
+					<a href="selfserve.html">SelfServe</a>
+				</li>
+			</ul>
+			<h1>Module SelfServe</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<a href="#self-serve-model" id="self-serve-model" style="color: inherit; text-decoration: none;">
+							<h1>Self Serve Model</h1>
+						</a>
+						<p>The Self Serve Model allows you to write classes that auto generate UI components for your feature. The idea is to allow developers from other feature teams, who may not be familiar with writing UI, to develop and own UX components. This is accomplished by just writing simpler TypeScript classes for their features. </p>
+						<p>What this means for the feature team </p>
+						<ul>
+							<li>Can concentrate just on the logic behind showing, hiding and disabling UI components </li>
+							<li>Need not worry about specifics of the UI language or UX requirements (Accessibility, Localization, Themes, etc.)</li>
+							<li>Can own the REST API calls made as part of the feature, which can change in the future</li>
+							<li>Quicker turn around time for development and bug fixes since they have deeper knowledge of the feature</li>
+						</ul>
+						<p>What this means for the UI team</p>
+						<ul>
+							<li>No need to ramp up on the intricacies of every feature which requires UI changes</li>
+							<li>Own only the framework and not every feature, giving more bandwidth to prioritize inhouse features as well</li>
+						</ul>
+						<a href="#getting-started" id="getting-started" style="color: inherit; text-decoration: none;">
+							<h2>Getting Started</h2>
+						</a>
+						<p>Clone the cosmos-explorer repo and run</p>
+						<ul>
+							<li><code>npm install</code></li>
+							<li><code>npm run build</code></li>
+						</ul>
+						<p><a href="../index.html">Click here</a> for more info on setting up the cosmos-explorer repo.</p>
+						<a href="#code-changes" id="code-changes" style="color: inherit; text-decoration: none;">
+							<h2>Code Changes</h2>
+						</a>
+						<p>Code changes need to be made only in the following files</p>
+						<ul>
+							<li>A JSON file - for strings to be displayed</li>
+							<li>A Types File - for defining the data models</li>
+							<li>A RP file - for defining the REST calls</li>
+							<li>A Class file - for defining the UI</li>
+							<li><a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServeUtils.tsx">SelfServeUtils.tsx</a> and <a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx">SelfServe.tsx</a> - for defning the entrypoint for the UI</li>
+						</ul>
+						<a href="#1-json-file-for-ui-strings" id="1-json-file-for-ui-strings" style="color: inherit; text-decoration: none;">
+							<h3>1. JSON file for UI strings</h3>
+						</a>
+						<a href="#naming-convention" id="naming-convention" style="color: inherit; text-decoration: none;">
+							<h4>Naming Convention</h4>
+						</a>
+						<p><code>Localization/en/&lt;FEATURE_NAME&gt;.json</code><br>Please place your files only under &quot;Localization/en&quot; folder. If not, the UI strings will not be picked up by the framework.</p>
+						<a href="#example" id="example" style="color: inherit; text-decoration: none;">
+							<h4>Example</h4>
+						</a>
+						<p><a href="https://github.com/Azure/cosmos-explorer/blob/master/src/Localization/en/SelfServeExample.json">SelfServeExample.json</a></p>
+						<a href="#description" id="description" style="color: inherit; text-decoration: none;">
+							<h4>Description</h4>
+						</a>
+						<p>This is a JSON file where the values are the strings that needs to be displayed in the UI. These strings are referenced using their corresponding unique keys.</p>
+						<p>For example, If your class file defines properties as follows</p>
+						<pre><code class="language-ts"><span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">labelTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;stringPropertylabel&quot;</span>
+<span style="color: #000000">  })</span>
+<span style="color: #000000">  stringProperty: </span><span style="color: #001080">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">labelTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;booleanPropertyLabel&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">trueLabelTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;trueLabel&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">falseLabelTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;falseLabel&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  })</span>
+<span style="color: #000000">  booleanProperty: </span><span style="color: #001080">boolean</span><span style="color: #000000">;</span>
+</code></pre>
+						<p>Then the content of <code>Localization/en/FeatureName.json</code> should be </p>
+						<pre><code class="language-json"><span style="color: #000000">{</span>
+<span style="color: #000000">    </span><span style="color: #CD3131">stringPropertyLabel</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;string property&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #CD3131">booleanPropertyLabel</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;boolean property&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #CD3131">trueLabel</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Enable&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #CD3131">falseLabel</span><span style="color: #000000">: </span><span style="color: #A31515">&quot;Disable&quot;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						<p>You can learn more on how to define the class file <a href="./selfserve.html#4-class-file">here</a>.</p>
+						<a href="#2-types-file" id="2-types-file" style="color: inherit; text-decoration: none;">
+							<h3>2. Types file</h3>
+						</a>
+						<a href="#naming-convention-1" id="naming-convention-1" style="color: inherit; text-decoration: none;">
+							<h4>Naming Convention</h4>
+						</a>
+						<p><code>&lt;FEATURE_NAME&gt;.types.ts</code></p>
+						<a href="#example-1" id="example-1" style="color: inherit; text-decoration: none;">
+							<h4>Example</h4>
+						</a>
+						<p><a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/Example/SelfServeExample.types.ts">SelfServeExample.types.ts</a></p>
+						<a href="#description-1" id="description-1" style="color: inherit; text-decoration: none;">
+							<h4>Description</h4>
+						</a>
+						<p>This file contains the definitions of all the data models to be used in your Class file and RP file.</p>
+						<p>For example, if your RP call takes/returns the <code>stringProperty</code> and <code>booleanProperty</code> of your SelfServe class, then you can define an interface in your <code>FeatureName.types.ts</code> file like this.</p>
+						<pre><code class="language-ts"><span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #001080">RpDataModel</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #001080">stringProperty</span><span style="color: #000000">: </span><span style="color: #001080">string</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #001080">booleanProperty</span><span style="color: #000000">: </span><span style="color: #001080">boolean</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						<a href="#3-rp-file" id="3-rp-file" style="color: inherit; text-decoration: none;">
+							<h3>3. RP file</h3>
+						</a>
+						<a href="#naming-convention-2" id="naming-convention-2" style="color: inherit; text-decoration: none;">
+							<h4>Naming Convention</h4>
+						</a>
+						<p><code>&lt;FEATURE_NAME&gt;.rp.ts</code></p>
+						<a href="#example-2" id="example-2" style="color: inherit; text-decoration: none;">
+							<h4>Example</h4>
+						</a>
+						<p><a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/Example/SelfServeExample.rp.ts">SelfServeExample.rp.ts</a></p>
+						<a href="#description-2" id="description-2" style="color: inherit; text-decoration: none;">
+							<h4>Description</h4>
+						</a>
+						<p>The RP file will host the REST calls needed for the initialize, save and refresh functions. This decouples the view and the model of the feature.</p>
+						<p>To make the ARM call, we need some information about the Azure Cosmos DB databaseAccount - the subscription id, resource group name and database account name. These are readily available through the <code>userContext</code> object, exposed through</p>
+						<ul>
+							<li><code>userContext.subscriptionId</code></li>
+							<li><code>userContext.resourceGroup</code></li>
+							<li><code>userContext.databaseAccount.name</code></li>
+						</ul>
+						<p>You can use the <code>armRequestWithoutPolling</code> function to make the ARM api call.</p>
+						<p>Your <code>FeatureName.rp.ts</code> file can look like the following.</p>
+						<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">userContext</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;../../UserContext&quot;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">armRequestWithoutPolling</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;../../Utils/arm/request&quot;</span><span style="color: #000000">;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">configContext</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;../../ConfigContext&quot;</span><span style="color: #000000">;</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">apiVersion</span><span style="color: #000000"> = </span><span style="color: #A31515">&quot;2020-06-01-preview&quot;</span><span style="color: #000000">;</span>
+
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">saveData</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">properties</span><span style="color: #000000">: </span><span style="color: #267F99">RpDataModel</span><span style="color: #000000">): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">path</span><span style="color: #000000"> = </span><span style="color: #A31515">`/subscriptions/</span><span style="color: #0000FF">${</span><span style="color: #001080">userContext</span><span style="color: #000000FF">.</span><span style="color: #001080">subscriptionId</span><span style="color: #0000FF">}</span><span style="color: #A31515">/resourceGroups/</span><span style="color: #0000FF">${</span><span style="color: #001080">userContext</span><span style="color: #000000FF">.</span><span style="color: #001080">resourceGroup</span><span style="color: #0000FF">}</span><span style="color: #A31515">/providers/Microsoft.DocumentDB/databaseAccounts/</span><span style="color: #0000FF">${</span><span style="color: #001080">userContext</span><span style="color: #000000FF">.</span><span style="color: #001080">databaseAccount</span><span style="color: #000000FF">.</span><span style="color: #001080">name</span><span style="color: #0000FF">}</span><span style="color: #A31515">/&lt;REST_OF_THE_PATH&gt;`</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">body</span><span style="color: #000000"> = {</span>
+<span style="color: #000000">      </span><span style="color: #001080">data :</span><span style="color: #000000"> </span><span style="color: #001080">properties</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">  </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">armRequestResult</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">armRequestWithoutPolling</span><span style="color: #000000">({</span>
+<span style="color: #000000">    </span><span style="color: #001080">host:</span><span style="color: #000000"> </span><span style="color: #001080">configContext</span><span style="color: #000000">.</span><span style="color: #0070C1">ARM_ENDPOINT</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">path</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">method:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;PUT&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">apiVersion</span><span style="color: #000000">,</span>
+<span style="color: #000000">    </span><span style="color: #001080">body</span><span style="color: #000000">,</span>
+<span style="color: #000000">  });</span>
+
+<span style="color: #000000">  </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">armRequestResult</span><span style="color: #000000">.</span><span style="color: #001080">operationStatusUrl</span><span style="color: #000000">;</span>
+<span style="color: #000000">};</span>
+
+</code></pre>
+						<a href="#4-class-file" id="4-class-file" style="color: inherit; text-decoration: none;">
+							<h3>4. Class file</h3>
+						</a>
+						<a href="#naming-convention-3" id="naming-convention-3" style="color: inherit; text-decoration: none;">
+							<h4>Naming Convention</h4>
+						</a>
+						<p><code>&lt;FEATURE_NAME&gt;.tsx</code></p>
+						<a href="#example-3" id="example-3" style="color: inherit; text-decoration: none;">
+							<h4>Example</h4>
+						</a>
+						<p><a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/Example/SelfServeExample.tsx">SelfServeExample.tsx</a></p>
+						<a href="#description-3" id="description-3" style="color: inherit; text-decoration: none;">
+							<h4>Description</h4>
+						</a>
+						<p>This file will contain the actual code that is translated into the UI component by the Self Serve framework.</p>
+						<ul>
+							<li><p>Each Self Serve class</p>
+								<ul>
+									<li>Needs to extends the <a href="../classes/selfserve_selfservetypes.selfservebaseclass.html">SelfServeBase</a> class.</li>
+									<li>Needs to have the <a href="./selfserve_decorators.html#isdisplayable">@IsDisplayable()</a> decorator to tell the compiler that UI needs to be generated from this class.</li>
+									<li>Needs to define an <a href="../classes/selfserve_selfservetypes.selfservebaseclass.html#initialize">initialize()</a> function, to set default values for the inputs.</li>
+									<li>Needs to define an <a href="../classes/selfserve_selfservetypes.selfservebaseclass.html#onsave">onSave()</a> function, a callback for when the save button is clicked.</li>
+									<li>Needs to define an <a href="../classes/selfserve_selfservetypes.selfservebaseclass.html#onrefresh">onRefresh()</a> function, a callback for when the refresh button is clicked.</li>
+									<li>Can have an optional <a href="./selfserve_decorators.html#refreshoptions">@RefreshOptions()</a> decorator that determines how often the auto refresh of the UI component should take place.</li>
+								</ul>
+							</li>
+							<li><p>For every UI element needed, add a property to the Self Serve class. Each of these properties</p>
+								<ul>
+									<li>Needs to have a <a href="./selfserve_decorators.html#values">@Values()</a> decorator.</li>
+									<li>Can have an optional <a href="./selfserve_decorators.html#propertyinfo">@PropertyInfo()</a> decorator that describes it&#39;s info bubble.</li>
+									<li>Can have an optional <a href="./selfserve_decorators.html#onchange">@OnChange()</a> decorator that dictates the effects of the change of the UI element tied to this property.</li>
+								</ul>
+							</li>
+						</ul>
+						<p>Your <code>FeatureName.tsx</code> file will look like the following.</p>
+						<pre><code class="language-ts"><span style="color: #000000">@</span><span style="color: #795E26">IsDisplayable</span><span style="color: #000000">()</span>
+<span style="color: #000000">@</span><span style="color: #795E26">RefreshOptions</span><span style="color: #000000">({ </span><span style="color: #001080">retryIntervalInMs:</span><span style="color: #000000"> </span><span style="color: #098658">2000</span><span style="color: #000000"> })</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">FeatureName</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">SelfServeBaseClass</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">initialize</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// initialize RP call and processing logic</span>
+<span style="color: #000000">  }</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">onSave</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span>
+<span style="color: #000000">    </span><span style="color: #001080">currentValues</span><span style="color: #000000">: </span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;,</span>
+<span style="color: #000000">    </span><span style="color: #001080">baselineValues</span><span style="color: #000000">: </span><span style="color: #267F99">ReadonlyMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;</span>
+<span style="color: #000000">  ): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">OnSaveResult</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// onSave RP call and processing logic</span>
+<span style="color: #000000">  }</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">onRefresh</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">RefreshResult</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// refresh RP call and processing logic</span>
+<span style="color: #000000">  };</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  </span><span style="color: #001080">stringProperty</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">OnChange</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  @</span><span style="color: #795E26">PropertyInfo</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  </span><span style="color: #001080">booleanProperty</span><span style="color: #000000">: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						<a href="#5-update-selfservetype" id="5-update-selfservetype" style="color: inherit; text-decoration: none;">
+							<h3>5. Update SelfServeType</h3>
+						</a>
+						<p>Once you have written your Self Serve Class, add a corresponding type to <a href="../enums/selfserve_selfserveutils.selfservetype.html">SelfServeType</a></p>
+						<pre><code class="language-ts"><span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #0000FF">enum</span><span style="color: #000000"> </span><span style="color: #267F99">SelfServeType</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">invalid</span><span style="color: #000000"> = </span><span style="color: #A31515">&quot;invalid&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">example</span><span style="color: #000000"> = </span><span style="color: #A31515">&quot;example&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">  ...</span>
+<span style="color: #000000">  </span><span style="color: #008000">// Add the type for your new feature</span>
+<span style="color: #000000">  </span><span style="color: #0070C1">featureName</span><span style="color: #000000"> = </span><span style="color: #A31515">&quot;featurename&quot;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						<a href="#6-update-selfservetsx-landing-page" id="6-update-selfservetsx-landing-page" style="color: inherit; text-decoration: none;">
+							<h3>6. Update SelfServe.tsx (landing page)</h3>
+						</a>
+						<p>Once the SelfServeType has been updated, update <a href="https://github.com/Azure/cosmos-explorer/blob/master/src/SelfServe/SelfServe.tsx">SelfServe.tsx</a> for your feature. This ensures that the framework picks up your SelfServe Class.</p>
+						<pre><code class="language-ts"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #795E26">getDescriptor</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span><span style="color: #001080">selfServeType</span><span style="color: #000000">: </span><span style="color: #267F99">SelfServeType</span><span style="color: #000000">): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">SelfServeDescriptor</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+<span style="color: #000000">  </span><span style="color: #AF00DB">switch</span><span style="color: #000000"> (</span><span style="color: #001080">selfServeType</span><span style="color: #000000">) {</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">case</span><span style="color: #000000"> </span><span style="color: #001080">SelfServeType</span><span style="color: #000000">.</span><span style="color: #001080">example</span><span style="color: #000000">: {</span>
+<span style="color: #000000">        ....</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">    ...</span>
+<span style="color: #000000">    ...</span>
+<span style="color: #000000">    ...</span>
+<span style="color: #000000">    </span><span style="color: #008000">// Add this for your new feature</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">case</span><span style="color: #000000"> </span><span style="color: #001080">SelfServeType</span><span style="color: #000000">.</span><span style="color: #001080">featureName</span><span style="color: #000000">: {</span>
+<span style="color: #000000">      </span><span style="color: #008000">// The &#039;webpackChunkName&#039; is used during debugging, to identify if the correct class has been loaded</span>
+<span style="color: #000000">      </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">FeatureName</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">import</span><span style="color: #000000">(</span><span style="color: #008000">/* webpackChunkName: &quot;FeatureName&quot; */</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./FeatureName/FeatureName&quot;</span><span style="color: #000000">);</span>
+<span style="color: #000000">      </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">featureName</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">FeatureName</span><span style="color: #000000">.</span><span style="color: #795E26">default</span><span style="color: #000000">();</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">loadTranslations</span><span style="color: #000000">(</span><span style="color: #001080">featureName</span><span style="color: #000000">.</span><span style="color: #001080">constructor</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000">);</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #001080">featureName</span><span style="color: #000000">.</span><span style="color: #795E26">toSelfServeDescriptor</span><span style="color: #000000">();</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">    ...</span>
+<span style="color: #000000">    ...</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">default</span><span style="color: #000000">:</span>
+<span style="color: #000000">      </span><span style="color: #AF00DB">return</span><span style="color: #000000"> </span><span style="color: #0000FF">undefined</span><span style="color: #000000">;</span>
+<span style="color: #000000">  }</span>
+<span style="color: #000000">};</span>
+
+</code></pre>
+						<a href="#telemetry" id="telemetry" style="color: inherit; text-decoration: none;">
+							<h2>Telemetry</h2>
+						</a>
+						<p>You can add telemetry for your feature using the functions in <a href="./selfserve_selfservetelemetryprocessor.html">SelfServeTelemetryProcessor</a></p>
+						<p>For example, in your SelfServe class, you can call the trace method in your <code>onSave</code> function.</p>
+						<pre><code class="language-ts"><span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">saveData</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./FeatureName.rp&quot;</span>
+<span style="color: #AF00DB">import</span><span style="color: #000000"> { </span><span style="color: #001080">RpDataModel</span><span style="color: #000000"> } </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;./FeatureName.types&quot;</span>
+
+<span style="color: #000000">@</span><span style="color: #795E26">IsDisplayable</span><span style="color: #000000">()</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">FeatureName</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">SelfServeBaseClass</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">  .</span>
+<span style="color: #000000">  .</span>
+<span style="color: #000000">  .</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">onSave</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span>
+<span style="color: #000000">    </span><span style="color: #001080">currentValues</span><span style="color: #000000">: </span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;,</span>
+<span style="color: #000000">    </span><span style="color: #001080">baselineValues</span><span style="color: #000000">: </span><span style="color: #267F99">ReadonlyMap</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;</span>
+<span style="color: #000000">  ): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">OnSaveResult</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">    </span><span style="color: #001080">stringPropertyValue</span><span style="color: #000000"> = </span><span style="color: #001080">currentValues</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;stringProperty&quot;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #001080">booleanPropertyValue</span><span style="color: #000000"> = </span><span style="color: #001080">currentValues</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;booleanProperty&quot;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">propertiesToSave</span><span style="color: #000000"> : </span><span style="color: #267F99">RpDataModel</span><span style="color: #000000"> = { </span>
+<span style="color: #000000">      </span><span style="color: #001080">stringProperty:</span><span style="color: #000000"> </span><span style="color: #001080">stringPropertyValue</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #001080">booleanProperty:</span><span style="color: #000000"> </span><span style="color: #001080">booleanPropertyValue</span>
+<span style="color: #000000">    }</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">telemetryData</span><span style="color: #000000"> = { ...</span><span style="color: #001080">propertiesToSave</span><span style="color: #000000">, </span><span style="color: #001080">selfServeClassName:</span><span style="color: #000000"> </span><span style="color: #001080">FeatureName</span><span style="color: #000000">.</span><span style="color: #001080">name</span><span style="color: #000000"> }</span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">onSaveTimeStamp</span><span style="color: #000000"> = </span><span style="color: #795E26">selfServeTraceStart</span><span style="color: #000000">(</span><span style="color: #001080">telemetryData</span><span style="color: #000000">)</span>
+
+<span style="color: #000000">    </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">saveData</span><span style="color: #000000">(</span><span style="color: #001080">propertiesToSave</span><span style="color: #000000">)</span>
+
+<span style="color: #000000">    </span><span style="color: #795E26">selfServeTraceSuccess</span><span style="color: #000000">(</span><span style="color: #001080">telemetryData</span><span style="color: #000000">, </span><span style="color: #001080">onSaveTimeStamp</span><span style="color: #000000">)</span>
+
+<span style="color: #000000">    </span><span style="color: #008000">// return required values</span>
+<span style="color: #000000">  }</span>
+
+<span style="color: #000000">  .</span>
+<span style="color: #000000">  .</span>
+<span style="color: #000000">  .</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  </span><span style="color: #001080">stringProperty</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  </span><span style="color: #001080">booleanProperty</span><span style="color: #000000">: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						<a href="#portal-notifications" id="portal-notifications" style="color: inherit; text-decoration: none;">
+							<h2>Portal Notifications</h2>
+						</a>
+						<p>You can enable portal notifications for your feature by passing in the required strings as part of the <a href="../interfaces/selfserve_selfservetypes.onsaveresult.html#portalnotification">portalNotification</a> property of the <a href="../interfaces/selfserve_selfservetypes.onsaveresult.html">onSaveResult</a>.</p>
+						<pre><code class="language-ts"><span style="color: #000000">@</span><span style="color: #795E26">IsDisplayable</span><span style="color: #000000">()</span>
+<span style="color: #AF00DB">export</span><span style="color: #000000"> </span><span style="color: #AF00DB">default</span><span style="color: #000000"> </span><span style="color: #0000FF">class</span><span style="color: #000000"> </span><span style="color: #267F99">SqlX</span><span style="color: #000000"> </span><span style="color: #0000FF">extends</span><span style="color: #000000"> </span><span style="color: #267F99">SelfServeBaseClass</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">.</span>
+<span style="color: #000000">.</span>
+<span style="color: #000000">.</span>
+
+<span style="color: #000000">  </span><span style="color: #0000FF">public</span><span style="color: #000000"> </span><span style="color: #795E26">onSave</span><span style="color: #000000"> = </span><span style="color: #0000FF">async</span><span style="color: #000000"> (</span>
+<span style="color: #000000">      </span><span style="color: #001080">currentValues</span><span style="color: #000000">: </span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;,</span>
+<span style="color: #000000">      </span><span style="color: #001080">baselineValues</span><span style="color: #000000">: </span><span style="color: #267F99">Map</span><span style="color: #000000">&lt;</span><span style="color: #267F99">string</span><span style="color: #000000">, </span><span style="color: #267F99">SmartUiInput</span><span style="color: #000000">&gt;</span>
+<span style="color: #000000">  ): </span><span style="color: #267F99">Promise</span><span style="color: #000000">&lt;</span><span style="color: #267F99">OnSaveResult</span><span style="color: #000000">&gt; </span><span style="color: #0000FF">=&gt;</span><span style="color: #000000"> {</span>
+
+<span style="color: #000000">    </span><span style="color: #001080">stringPropertyValue</span><span style="color: #000000"> = </span><span style="color: #001080">currentValues</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;stringProperty&quot;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span><span style="color: #001080">booleanPropertyValue</span><span style="color: #000000"> = </span><span style="color: #001080">currentValues</span><span style="color: #000000">.</span><span style="color: #795E26">get</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;booleanProperty&quot;</span><span style="color: #000000">)</span>
+<span style="color: #000000">    </span>
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">propertiesToSave</span><span style="color: #000000"> : </span><span style="color: #267F99">RpDataModel</span><span style="color: #000000"> = { </span>
+<span style="color: #000000">      </span><span style="color: #001080">stringProperty:</span><span style="color: #000000"> </span><span style="color: #001080">stringPropertyValue</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #001080">booleanProperty:</span><span style="color: #000000"> </span><span style="color: #001080">booleanPropertyValue</span>
+<span style="color: #000000">    }</span>
+
+<span style="color: #000000">    </span><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">operationStatusUrl</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #795E26">saveData</span><span style="color: #000000">(</span><span style="color: #001080">propertiesToSave</span><span style="color: #000000">);</span>
+<span style="color: #000000">    </span><span style="color: #AF00DB">return</span><span style="color: #000000"> {</span>
+<span style="color: #000000">      </span><span style="color: #001080">operationStatusUrl:</span><span style="color: #000000"> </span><span style="color: #001080">operationStatusUrl</span><span style="color: #000000">,</span>
+<span style="color: #000000">      </span><span style="color: #001080">portalNotification:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">        </span><span style="color: #001080">initialize:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">          </span><span style="color: #001080">titleTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;DeleteInitializeTitle&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">          </span><span style="color: #001080">messageTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;DeleteInitializeMessage&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        },</span>
+<span style="color: #000000">        </span><span style="color: #001080">success:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">          </span><span style="color: #001080">titleTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;DeleteSuccessTitle&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">          </span><span style="color: #001080">messageTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;DeleteSuccesseMessage&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        },</span>
+<span style="color: #000000">        </span><span style="color: #001080">failure:</span><span style="color: #000000"> {</span>
+<span style="color: #000000">          </span><span style="color: #001080">titleTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;DeleteFailureTitle&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">          </span><span style="color: #001080">messageTKey:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;DeleteFailureMessage&quot;</span><span style="color: #000000">,</span>
+<span style="color: #000000">        },</span>
+<span style="color: #000000">      },</span>
+<span style="color: #000000">    };</span>
+<span style="color: #000000">  }</span>
+
+<span style="color: #000000">  .</span>
+<span style="color: #000000">  .</span>
+<span style="color: #000000">  .</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  </span><span style="color: #001080">stringProperty</span><span style="color: #000000">: </span><span style="color: #267F99">string</span><span style="color: #000000">;</span>
+
+<span style="color: #000000">  @</span><span style="color: #795E26">Values</span><span style="color: #000000">(...)</span>
+<span style="color: #000000">  </span><span style="color: #001080">booleanProperty</span><span style="color: #000000">: </span><span style="color: #267F99">boolean</span><span style="color: #000000">;</span>
+<span style="color: #000000">}</span>
+</code></pre>
+						<a href="#execution" id="execution" style="color: inherit; text-decoration: none;">
+							<h2>Execution</h2>
+						</a>
+						<a href="#watch-mode" id="watch-mode" style="color: inherit; text-decoration: none;">
+							<h3>Watch mode</h3>
+						</a>
+						<p>Run <code>npm start</code> to start the development server and automatically rebuild on changes</p>
+						<a href="#local-development" id="local-development" style="color: inherit; text-decoration: none;">
+							<h3>Local Development</h3>
+						</a>
+						<p>Ensure that you have made the <a href="./selfserve.html#code-changes">Code changes</a>.</p>
+						<ul>
+							<li>Go to <code>https://ms.portal.azure.com/</code></li>
+							<li>Add the query string <code>feature.showSelfServeExample=true&amp;feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3D&lt;SELF_SERVE_TYPE&gt;</code></li>
+							<li>Click on the <code>Self Serve Example</code> menu item on the left panel.</li>
+						</ul>
+						<p>For example, if you want to open up the the UI of a class with the type <code>sqlx</code>, then visit <code>https://ms.portal.azure.com/?feature.showSelfServeExample=true&amp;feature.selfServeSource=https://localhost:1234/selfServe.html?selfServeType%3Dsqlx</code></p>
+						<p><img src="https://sdkctlstore.blob.core.windows.net/exe/selfserveDev.PNG" alt=""></p>
+					</div>
+				</div>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Modules</a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="selfserve.html">Self<wbr>Serve</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="selfserve___what_is_currently_supported_.html">Self<wbr>Serve -<wbr> <wbr>What is currently supported?</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="selfserve_decorators.html">Self<wbr>Serve/<wbr>Decorators</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="selfserve_selfservetelemetryprocessor.html">Self<wbr>Serve/<wbr>Self<wbr>Serve<wbr>Telemetry<wbr>Processor</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="selfserve_selfservetypes.html">Self<wbr>Serve/<wbr>Self<wbr>Serve<wbr>Types</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="selfserve_selfserveutils.html">Self<wbr>Serve/<wbr>Self<wbr>Serve<wbr>Utils</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
