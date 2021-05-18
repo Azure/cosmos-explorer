@@ -83,6 +83,7 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   updateUserContext({
     authType: AuthType.AAD,
     authorizationToken: `Bearer ${config.authorizationToken}`,
+    aadToken: config.aadToken,
   });
   const account = config.databaseAccount;
   const accountResourceId = account.id;

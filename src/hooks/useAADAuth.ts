@@ -25,6 +25,7 @@ interface ReturnType {
   isLoggedIn: boolean;
   graphToken: string;
   armToken: string;
+  aadToken: string;
   login: () => void;
   logout: () => void;
   tenantId: string;
@@ -40,6 +41,7 @@ export function useAADAuth(): ReturnType {
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
+  const [aadToken, setAadToken] = React.useState<string>();
 
   msalInstance.setActiveAccount(account);
   const login = React.useCallback(async () => {
@@ -79,9 +81,13 @@ export function useAADAuth(): ReturnType {
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"],
         }),
-      ]).then(([graphTokenResponse, armTokenResponse]) => {
+        msalInstance.acquireTokenSilent({
+          scopes: ["https://cosmos.azure.com/.default"],
+        }),
+      ]).then(([graphTokenResponse, armTokenResponse, aadTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);
         setArmToken(armTokenResponse.accessToken);
+        setAadToken(aadTokenResponse.accessToken);
       });
     }
   }, [account, tenantId]);
@@ -92,6 +98,7 @@ export function useAADAuth(): ReturnType {
     isLoggedIn,
     graphToken,
     armToken,
+    aadToken,
     login,
     logout,
     switchTenant,
