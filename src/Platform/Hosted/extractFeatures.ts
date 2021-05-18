@@ -13,7 +13,7 @@ export type Features = {
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
-  readonly fetchesAADToken: boolean;
+  readonly enableAadDataPlane: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly livyEndpoint?: string;
@@ -44,6 +44,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   return {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
+    enableAadDataPlane: "true" === get("enableAadDataPlane"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
@@ -56,7 +57,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
-    fetchesAADToken: "true" === get("fetchesaadtoken"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
     junoEndpoint: get("junoendpoint"),
     livyEndpoint: get("livyendpoint"),
