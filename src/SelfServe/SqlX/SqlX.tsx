@@ -9,14 +9,14 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -78,7 +78,7 @@ const onNumberOfInstancesChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
           textTKey: "DedicatedGatewayPricing",
         },
       } as Description,
@@ -114,7 +114,7 @@ const onEnableDedicatedGatewayChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
           textTKey: "DedicatedGatewayPricing",
         },
       } as Description,
@@ -125,7 +125,7 @@ const onEnableDedicatedGatewayChange = (
       value: {
         textTKey: "WarningBannerOnDelete",
         link: {
-          href: "https://docs.microsoft.com/en-us/azure/cosmos-db/introduction",
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
           textTKey: "DeprovisioningDetailsText",
         },
       } as Description,
