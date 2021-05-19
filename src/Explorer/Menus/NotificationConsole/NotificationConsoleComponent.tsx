@@ -331,12 +331,8 @@ export const NotificationConsole: React.FC<
 }: Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">) => {
   const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
   const isExpanded = useNotificationConsole((state) => state.isExpanded);
-  // TODO Refactor PanelContainerComponent into a functional component and remove this wrapper
+  // TODO Refactor NotificationConsoleComponent into a functional component and remove this wrapper
   // This component only exists so we can use hooks and pass them down to a non-functional component
-  // isConsoleExpanded: boolean;
-  // consoleData: ConsoleData;
-  // inProgressConsoleDataIdToBeDeleted: string;
-  // setIsConsoleExpanded: (isExpanded: boolean) => void;
   return (
     <NotificationConsoleComponent
       consoleData={consoleData}
