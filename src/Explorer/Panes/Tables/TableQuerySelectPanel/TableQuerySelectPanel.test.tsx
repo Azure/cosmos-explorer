@@ -3,7 +3,7 @@ import * as ko from "knockout";
 import React from "react";
 import Explorer from "../../../Explorer";
 import QueryViewModel from "../../../Tables/QueryBuilder/QueryViewModel";
-import { TableQuerySelectPanel } from "./index";
+import { TableQuerySelectPanel } from "./TableQuerySelectPanel";
 
 describe("Table query select Panel", () => {
   const fakeExplorer = {} as Explorer;

@@ -54,7 +54,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
@@ -67,7 +67,7 @@ import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksP
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
-import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
+import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
@@ -148,7 +148,6 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public cassandraAddCollectionPane: CassandraAddCollectionPane;
   private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
   public junoClient: JunoClient;
@@ -177,6 +176,8 @@ export default class Explorer {
   public notebookManager?: NotebookManager;
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
+
+  public isShellEnabled: ko.Observable<boolean>;
 
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
@@ -223,6 +224,7 @@ export default class Explorer {
         });
       }
     });
+    this.isShellEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
@@ -249,6 +251,12 @@ export default class Explorer {
                 ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
                   userContext.features.enableNotebooks)
             );
+            this.isShellEnabled(
+              this.isNotebookEnabled() &&
+                !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
+                userContext.databaseAccount.properties.ipRules.length === 0
+            );
+
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
               dataExplorerArea: Constants.Areas.Notebook,
@@ -396,13 +404,6 @@ export default class Explorer {
         default:
           return "";
       }
-    });
-
-    this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
-      id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
     });
 
     this.tabsManager = params?.tabsManager ?? new TabsManager();
@@ -1138,7 +1139,10 @@ export default class Explorer {
 
   private getDeltaDatabases(
     updatedDatabaseList: DataModels.Database[]
-  ): { toAdd: ViewModels.Database[]; toDelete: ViewModels.Database[] } {
+  ): {
+    toAdd: ViewModels.Database[];
+    toDelete: ViewModels.Database[];
+  } {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         this.databases(),
@@ -1384,7 +1388,7 @@ export default class Explorer {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
       this.openSidePanel(
-        "",
+        "Rename Notebook",
         <StringInputPane
           explorer={this}
           closePanel={() => {
@@ -1415,7 +1419,7 @@ export default class Explorer {
     }
 
     this.openSidePanel(
-      "",
+      "Create new directory",
       <StringInputPane
         explorer={this}
         closePanel={() => {
@@ -1720,32 +1724,27 @@ export default class Explorer {
         throw new Error("Terminal kind: ${kind} not supported");
     }
 
-    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Terminal,
-      (tab) => tab.hashLocation() == hashLocation
+    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(ViewModels.CollectionTabKind.Terminal, (tab) =>
+      tab.hashLocation().startsWith(hashLocation)
     ) as TerminalTab[];
-    let terminalTab: TerminalTab = terminalTabs && terminalTabs[0];
 
-    if (terminalTab) {
-      this.tabsManager.activateTab(terminalTab);
-    } else {
-      const newTab = new TerminalTab({
-        account: userContext.databaseAccount,
-        tabKind: ViewModels.CollectionTabKind.Terminal,
-        node: null,
-        title: title,
-        tabPath: title,
-        collection: null,
-        hashLocation: hashLocation,
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        container: this,
-        kind: kind,
-      });
+    const index = terminalTabs.length + 1;
+    const newTab = new TerminalTab({
+      account: userContext.databaseAccount,
+      tabKind: ViewModels.CollectionTabKind.Terminal,
+      node: null,
+      title: `${title} ${index}`,
+      tabPath: `${title} ${index}`,
+      collection: null,
+      hashLocation: `${hashLocation} ${index}`,
+      isTabsContentExpanded: ko.observable(true),
+      onLoadStartKey: null,
+      onUpdateTabsButtons: this.onUpdateTabsButtons,
+      container: this,
+      kind: kind,
+    });
 
-      this.tabsManager.activateNewTab(newTab);
-    }
+    this.tabsManager.activateNewTab(newTab);
   }
 
   public async openGallery(
@@ -1791,7 +1790,7 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.cassandraAddCollectionPane.open();
+      this.openCassandraAddCollectionPane();
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1907,7 +1906,7 @@ export default class Explorer {
       "Delete " + getDatabaseName(),
       <DeleteDatabaseConfirmationPanel
         explorer={this}
-        openNotificationConsole={this.expandConsole}
+        openNotificationConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         selectedDatabase={this.findSelectedDatabase()}
       />
@@ -1983,6 +1982,16 @@ export default class Explorer {
     );
   }
 
+  public openCassandraAddCollectionPane(): void {
+    this.openSidePanel(
+      "Add Table",
+      <CassandraAddCollectionPane
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        cassandraApiClient={new CassandraAPIDataClient()}
+      />
+    );
+  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     this.openSidePanel(
       header,

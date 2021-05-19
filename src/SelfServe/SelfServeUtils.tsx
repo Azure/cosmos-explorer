@@ -207,8 +207,8 @@ const addToDescriptor = (
 const getInput = (value: DecoratorProperties): AnyDisplay => {
   switch (value.type) {
     case "number":
-      if (!value.labelTKey || !value.step || !value.uiType || !value.min || !value.max) {
-        value.errorMessage = `label, step, min, max and uiType are required for number input '${value.id}'.`;
+      if (!value.labelTKey || !value.uiType || !value.step || !value.max || value.min === undefined) {
+        value.errorMessage = `labelTkey, step, min, max and uiType are required for number input '${value.id}'.`;
       }
       return value as NumberInput;
     case "string":
@@ -219,17 +219,17 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
         return value as DescriptionDisplay;
       }
       if (!value.labelTKey) {
-        value.errorMessage = `label is required for string input '${value.id}'.`;
+        value.errorMessage = `labelTKey is required for string input '${value.id}'.`;
       }
       return value as StringInput;
     case "boolean":
       if (!value.labelTKey || !value.trueLabelTKey || !value.falseLabelTKey) {
-        value.errorMessage = `label, truelabel and falselabel are required for boolean input '${value.id}'.`;
+        value.errorMessage = `labelTkey, trueLabelTKey and falseLabelTKey are required for boolean input '${value.id}'.`;
       }
       return value as BooleanInput;
     default:
       if (!value.labelTKey || !value.choices) {
-        value.errorMessage = `label and choices are required for Choice input '${value.id}'.`;
+        value.errorMessage = `labelTKey and choices are required for Choice input '${value.id}'.`;
       }
       return value as ChoiceInput;
   }

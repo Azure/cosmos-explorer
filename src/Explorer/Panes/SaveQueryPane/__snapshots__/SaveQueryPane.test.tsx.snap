@@ -1,16 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Save Query Pane should render Default properly 1`] = `
-<GenericRightPaneComponent
+<RightPaneForm
   expandConsole={[Function]}
   formError=""
-  formErrorDetail=""
-  id="saveQueryPane"
   isExecuting={false}
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Complete setup"
-  title="Save Query"
 >
   <div
     className="panelFormWrapper"
@@ -25,5 +21,5 @@ exports[`Save Query Pane should render Default properly 1`] = `
       </Text>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;
