@@ -820,7 +820,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             },
             "hasStorageAnalyticsAfecFeature": [Function],
             "isAccountReady": [Function],
-            "isAutoscaleDefaultEnabled": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isHostedDataExplorerEnabled": [Function],
             "isLeftPaneExpanded": [Function],

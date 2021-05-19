@@ -157,7 +157,6 @@ export default class Explorer {
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isMongoIndexingEnabled: ko.Observable<boolean>;
   public canExceedMaximumValue: ko.Computed<boolean>;
-  public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -312,8 +311,6 @@ export default class Explorer {
     this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
 
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
-
-    this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
     this.canSaveQueries = ko.computed<boolean>(() => {
@@ -1026,23 +1023,7 @@ export default class Explorer {
       if (inputs.defaultCollectionThroughput) {
         this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
-      this.setFeatureFlagsFromFlights(inputs.flights);
       this.isAccountReady(true);
-    }
-  }
-
-  public setFeatureFlagsFromFlights(flights: readonly string[]): void {
-    if (!flights) {
-      return;
-    }
-    if (flights.indexOf(Constants.Flights.AutoscaleTest) !== -1) {
-      this.isAutoscaleDefaultEnabled(true);
-    }
-    if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
-      this.isMongoIndexingEnabled(true);
-    }
-    if (flights.indexOf(Constants.Flights.SchemaAnalyzer) !== -1) {
-      userContext.features.enableSchemaAnalyzer = true;
     }
   }
 
