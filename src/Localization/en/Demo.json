@@ -1,0 +1,16 @@
+{
+    "PreviousCommentsLabel": "Previous Comments",
+    "RatingLabel": "Rating",
+    "ShowCommentsLabel": "Have more Comments?",
+    "ShowCommentsTrueLabel": "Yes",
+    "ShowCommentsFalseLabel": "No",
+    "CommentsLabel": "Comments",
+    "CommentsPlaceholder": "Leave your comments here",
+    "IntializeMesssage": "Feedback is being submitted",
+    "IntializeTitle": "Feedback Submission",
+    "SuccessMesssage": "Feedback submitted successfully",
+    "SuccessTitle": "Feedback Submission",
+    "FailureMesssage": "Feedback submission failed",
+    "FailureTitle": "Feedback Submission",
+    "UpdateInProgressMessage": "Feedback submission in progress"
+}

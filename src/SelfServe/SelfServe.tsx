@@ -50,6 +50,12 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
       await loadTranslations(sqlX.constructor.name);
       return sqlX.toSelfServeDescriptor();
     }
+    case SelfServeType.demo: {
+      const Demo = await import(/* webpackChunkName: "Demo" */ "./Demo/Demo");
+      const demo = new Demo.default();
+      await loadTranslations(demo.constructor.name);
+      return demo.toSelfServeDescriptor();
+    }
     default:
       return undefined;
   }
