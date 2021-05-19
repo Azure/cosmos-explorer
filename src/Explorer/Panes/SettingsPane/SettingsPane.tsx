@@ -3,21 +3,17 @@ import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import { configContext } from "../../../ConfigContext";
+import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export interface SettingsPaneProps {
-  expandConsole: () => void;
-  closePanel: () => void;
-}
-
-export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
-  expandConsole,
-  closePanel,
-}: SettingsPaneProps) => {
+export const SettingsPane: FunctionComponent = () => {
+  const closePanel = useSidePanel((state) => state.closeSidePanel);
+  const expandConsole = useNotificationConsole((state) => state.expandConsole);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage

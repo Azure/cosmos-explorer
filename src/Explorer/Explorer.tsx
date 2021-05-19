@@ -55,14 +55,12 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
-import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
-import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
@@ -88,11 +86,8 @@ BindingHandlersRegisterer.registerBindingHandlers();
 var tmp = ComponentRegisterer;
 
 export interface ExplorerParams {
-  setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
-  closeSidePanel: () => void;
   closeDialog: () => void;
   openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
@@ -117,15 +112,8 @@ export default class Explorer {
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
 
-  // Notification Console
-  private setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   private setNotificationConsoleData: (consoleData: ConsoleData) => void;
   private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-
-  // Panes
-  public contextPanes: ContextualPaneBase[];
-  public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
-  public closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -193,11 +181,8 @@ export default class Explorer {
   constructor(params?: ExplorerParams) {
     this.gitHubClient = new GitHubClient(this.onGitHubClientError);
     this.junoClient = new JunoClient();
-    this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
-    this.openSidePanel = params?.openSidePanel;
-    this.closeSidePanel = params?.closeSidePanel;
     this.closeDialog = params?.closeDialog;
     this.openDialog = params?.openDialog;
 
@@ -632,10 +617,6 @@ export default class Explorer {
 
   public deleteInProgressConsoleDataWithId(id: string): void {
     this.setInProgressConsoleDataIdToBeDeleted(id);
-  }
-
-  public expandConsole(): void {
-    this.setIsNotificationConsoleExpanded(true);
   }
 
   public toggleLeftPaneExpanded() {
@@ -1911,13 +1892,6 @@ export default class Explorer {
 
   public openUploadItemsPanePane(): void {
     this.openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
-  }
-
-  public openSettingPane(): void {
-    this.openSidePanel(
-      "Setting",
-      <SettingsPane expandConsole={() => this.expandConsole()} closePanel={this.closeSidePanel} />
-    );
   }
 
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {

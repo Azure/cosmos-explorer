@@ -21,11 +21,13 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { getDatabaseName } from "../../../Utils/APITypeUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
+import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 
 let counter = 0;
 
@@ -156,7 +158,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
-      onCommandClick: () => container.openSettingPane(),
+      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane />),
       commandButtonLabel: undefined,
       ariaLabel: "Settings",
       tooltipText: "Settings",

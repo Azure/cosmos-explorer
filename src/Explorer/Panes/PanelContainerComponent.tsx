@@ -1,5 +1,6 @@
 import { IPanelProps, IRenderFunction, Panel, PanelType } from "@fluentui/react";
 import * as React from "react";
+import { useSidePanel } from "../../hooks/useSidePanel";
 
 export interface PanelContainerProps {
   headerText: string;
@@ -81,3 +82,21 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     return panelHeight + "px";
   };
 }
+
+export const SidePanel: React.FC = () => {
+  const isOpen = useSidePanel((state) => state.isOpen);
+  const closePanel = useSidePanel((state) => state.closeSidePanel);
+  const panelContent = useSidePanel((state) => state.panelContent);
+  const headerText = useSidePanel((state) => state.headerText);
+  // TODO Refactor PanelContainerComponent into a functional component and remove this wrapper
+  // This component only exists so we can use hooks and pass them down to a non-functional component
+  return (
+    <PanelContainerComponent
+      isOpen={isOpen}
+      panelContent={panelContent}
+      headerText={headerText}
+      isConsoleExpanded={false}
+      closePanel={closePanel}
+    />
+  );
+};

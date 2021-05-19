@@ -15,6 +15,7 @@ import LoadingIcon from "../../../../images/loading.svg";
 import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
 import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
+import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
 
 /**
@@ -319,5 +320,29 @@ const PrPreview = (props: { pr: string }) => {
         {ref}
       </a>
     </>
+  );
+};
+
+export const NotificationConsole: React.FC<
+  Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">
+> = ({
+  consoleData,
+  inProgressConsoleDataIdToBeDeleted,
+}: Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">) => {
+  const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
+  const isExpanded = useNotificationConsole((state) => state.isExpanded);
+  // TODO Refactor PanelContainerComponent into a functional component and remove this wrapper
+  // This component only exists so we can use hooks and pass them down to a non-functional component
+  // isConsoleExpanded: boolean;
+  // consoleData: ConsoleData;
+  // inProgressConsoleDataIdToBeDeleted: string;
+  // setIsConsoleExpanded: (isExpanded: boolean) => void;
+  return (
+    <NotificationConsoleComponent
+      consoleData={consoleData}
+      inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
+      isConsoleExpanded={isExpanded}
+      setIsConsoleExpanded={setIsExpanded}
+    />
   );
 };
