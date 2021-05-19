@@ -226,7 +226,6 @@ const App: React.FunctionComponent = () => {
         closePanel={closeSidePanel}
         isConsoleExpanded={isNotificationConsoleExpanded}
       />
-      <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
       {showDialog && <Dialog {...dialogProps} />}
     </div>
   );

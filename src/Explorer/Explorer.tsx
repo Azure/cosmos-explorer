@@ -54,7 +54,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
@@ -148,7 +148,6 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public cassandraAddCollectionPane: CassandraAddCollectionPane;
   private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
   public junoClient: JunoClient;
@@ -396,13 +395,6 @@ export default class Explorer {
         default:
           return "";
       }
-    });
-
-    this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
-      id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
     });
 
     this.tabsManager = params?.tabsManager ?? new TabsManager();
@@ -1138,7 +1130,10 @@ export default class Explorer {
 
   private getDeltaDatabases(
     updatedDatabaseList: DataModels.Database[]
-  ): { toAdd: ViewModels.Database[]; toDelete: ViewModels.Database[] } {
+  ): {
+    toAdd: ViewModels.Database[];
+    toDelete: ViewModels.Database[];
+  } {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         this.databases(),
@@ -1791,7 +1786,7 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.cassandraAddCollectionPane.open();
+      this.openCassandraAddCollectionPane();
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1983,6 +1978,16 @@ export default class Explorer {
     );
   }
 
+  public openCassandraAddCollectionPane(): void {
+    this.openSidePanel(
+      "Add Table",
+      <CassandraAddCollectionPane
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        cassandraApiClient={new CassandraAPIDataClient()}
+      />
+    );
+  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     this.openSidePanel(
       header,
