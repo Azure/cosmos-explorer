@@ -71,15 +71,15 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     );
   }
 
-  private _onFilterChanged = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text?: string): void => {
+  private _onFilterChanged = (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text?: string): void => {
     this.setState({
-      filterText: text,
+      filterText: text || "",
     });
   };
 
-  private _onRenderCell = (directory: ListTenant): JSX.Element => {
+  private _onRenderCell = (directory?: ListTenant): React.ReactNode => {
     const buttonProps: IButtonProps = {
-      disabled: directory.selected || false,
+      disabled: (directory && directory.selected) || false,
       className: "directoryListButton",
       onClick: this._onNewDirectoryClick,
       styles: {
@@ -106,8 +106,8 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
     return (
       <DefaultButton {...buttonProps}>
         <div className="directoryListItem" data-is-focusable={true}>
-          <div className="directoryListItemName">{directory.displayName}</div>
-          <div className="directoryListItemId">{directory.tenantId}</div>
+          <div className="directoryListItemName">{directory && directory.displayName}</div>
+          <div className="directoryListItemId">{directory && directory.tenantId}</div>
         </div>
       </DefaultButton>
     );
