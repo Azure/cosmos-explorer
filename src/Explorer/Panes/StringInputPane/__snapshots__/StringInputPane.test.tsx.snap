@@ -810,7 +810,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       },
       "hasStorageAnalyticsAfecFeature": [Function],
       "isAccountReady": [Function],
-      "isAutoscaleDefaultEnabled": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
       "isLeftPaneExpanded": [Function],

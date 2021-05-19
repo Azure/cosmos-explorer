@@ -808,7 +808,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       },
       "hasStorageAnalyticsAfecFeature": [Function],
       "isAccountReady": [Function],
-      "isAutoscaleDefaultEnabled": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
       "isLastCollection": [Function],
