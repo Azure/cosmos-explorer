@@ -542,6 +542,10 @@ export default class Explorer {
         ],
       });
     }
+
+    if (configContext.enableSchemaAnalyzer) {
+      userContext.features.enableSchemaAnalyzer = true;
+    }
   }
 
   private onGitHubClientError = (error: any): void => {
