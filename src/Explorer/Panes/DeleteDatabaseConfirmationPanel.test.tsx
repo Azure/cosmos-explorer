@@ -98,8 +98,8 @@ describe("Delete Database Confirmation Pane", () => {
         .find("#confirmDatabaseId")
         .hostNodes()
         .simulate("change", { target: { value: selectedDatabaseId } });
-      expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
-      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
+      expect(wrapper.exists("button")).toBe(true);
+      wrapper.find("button").hostNodes().simulate("submit");
       expect(deleteDatabase).toHaveBeenCalledWith(selectedDatabaseId);
       wrapper.unmount();
     });

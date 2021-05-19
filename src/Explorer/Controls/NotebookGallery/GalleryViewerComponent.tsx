@@ -30,7 +30,7 @@ import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import Explorer from "../../Explorer";
 import { Dialog, DialogProps } from "../Dialog";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
-import { CodeOfConductComponent } from "./CodeOfConductComponent";
+import { CodeOfConduct } from "./CodeOfConduct/CodeOfConduct";
 import "./GalleryViewerComponent.less";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
 
@@ -372,7 +372,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         {acceptedCodeOfConduct === false && (
           <Overlay isDarkThemed>
             <div className="publicGalleryTabOverlayContent">
-              <CodeOfConductComponent
+              <CodeOfConduct
                 junoClient={this.props.junoClient}
                 onAcceptCodeOfConduct={(result: boolean) => {
                   this.setState({ isCodeOfConductAccepted: result });

@@ -78,7 +78,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
     return uploadFile(file.name, fileContent);
   };
 
-  const genericPaneProps: RightPaneFormProps = {
+  const props: RightPaneFormProps = {
     expandConsole,
     formError: formErrors,
     isExecuting: isExecuting,
@@ -87,7 +87,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
   };
 
   return (
-    <RightPaneForm {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneMainContent">
         <Upload label="Select file to upload" accept={extensions} onUpload={updateSelectedFiles} />
       </div>
