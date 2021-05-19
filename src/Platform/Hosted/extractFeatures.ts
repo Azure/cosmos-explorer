@@ -8,11 +8,12 @@ export type Features = {
   readonly enableReactPane: boolean;
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
-  readonly enableSchemaAnalyzer: boolean;
+  enableSchemaAnalyzer: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
+  readonly enableAadDataPlane: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly livyEndpoint?: string;
@@ -43,6 +44,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   return {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
+    enableAadDataPlane: "true" === get("enableaaddataplane"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),

@@ -1,4 +1,4 @@
-import { shallow, ShallowWrapper } from "enzyme";
+import { mount, shallow, ShallowWrapper } from "enzyme";
 import React from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
@@ -36,7 +36,7 @@ describe("New Vertex Panel", () => {
   it("should call form submit method", () => {
     const onSubmitSpy = jest.fn();
 
-    const newWrapper = shallow(
+    const newWrapper = mount(
       <NewVertexPanel
         explorer={fakeExplorer}
         partitionKeyPropertyProp={undefined}
@@ -61,7 +61,7 @@ describe("New Vertex Panel", () => {
 
     const result = onSubmitSpy(fakeNewVertexData, onErrorSpy, onSuccessSpy);
 
-    const newWrapper = shallow(
+    const newWrapper = mount(
       <NewVertexPanel
         explorer={fakeExplorer}
         partitionKeyPropertyProp={undefined}

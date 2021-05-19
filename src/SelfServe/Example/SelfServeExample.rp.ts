@@ -2,19 +2,7 @@ import { SessionStorageUtility } from "../../Shared/StorageUtility";
 import { userContext } from "../../UserContext";
 import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
 import { RefreshResult } from "../SelfServeTypes";
-export enum Regions {
-  NorthCentralUS = "NorthCentralUS",
-  WestUS = "WestUS",
-  EastUS2 = "EastUS2",
-}
-
-export interface InitializeResponse {
-  regions: Regions;
-  enableLogging: boolean;
-  accountName: string;
-  collectionThroughput: number;
-  dbThroughput: number;
-}
+import { AccountProps, Regions } from "./SelfServeExample.types";
 
 export const getMaxCollectionThroughput = async (): Promise<number> => {
   return 10000;
@@ -32,21 +20,19 @@ export const getMinDatabaseThroughput = async (): Promise<number> => {
   return 400;
 };
 
-export const update = async (
-  regions: Regions,
-  enableLogging: boolean,
-  accountName: string,
-  collectionThroughput: number,
-  dbThoughput: number
-): Promise<void> => {
-  SessionStorageUtility.setEntry("regions", regions);
-  SessionStorageUtility.setEntry("enableLogging", enableLogging?.toString());
-  SessionStorageUtility.setEntry("accountName", accountName);
-  SessionStorageUtility.setEntry("collectionThroughput", collectionThroughput?.toString());
-  SessionStorageUtility.setEntry("dbThroughput", dbThoughput?.toString());
+export const update = async (accountProps: AccountProps): Promise<void> => {
+  // This is only an example. DO NOT store actual data in the Session/Local storage for your SelfServe feature.
+
+  SessionStorageUtility.setEntry("regions", accountProps.regions);
+  SessionStorageUtility.setEntry("enableLogging", accountProps.enableLogging?.toString());
+  SessionStorageUtility.setEntry("accountName", accountProps.accountName);
+  SessionStorageUtility.setEntry("collectionThroughput", accountProps.collectionThroughput?.toString());
+  SessionStorageUtility.setEntry("dbThroughput", accountProps.dbThroughput?.toString());
 };
 
-export const initialize = async (): Promise<InitializeResponse> => {
+export const initialize = async (): Promise<AccountProps> => {
+  // This is only an example. DO NOT store actual data in the Session/Local storage for your SelfServe feature.
+
   const regions = Regions[SessionStorageUtility.getEntry("regions") as keyof typeof Regions];
   const enableLogging = SessionStorageUtility.getEntry("enableLogging") === "true";
   const accountName = SessionStorageUtility.getEntry("accountName");
@@ -64,6 +50,8 @@ export const initialize = async (): Promise<InitializeResponse> => {
 };
 
 export const onRefreshSelfServeExample = async (): Promise<RefreshResult> => {
+  // This is only an example. DO NOT store actual data in the Session/Local storage for your SelfServe feature.
+
   const refreshCountString = SessionStorageUtility.getEntry("refreshCount");
   const refreshCount = refreshCountString ? parseInt(refreshCountString) : 0;
 

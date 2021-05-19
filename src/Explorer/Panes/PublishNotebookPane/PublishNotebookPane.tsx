@@ -2,18 +2,17 @@ import { ImmutableNotebook, toJS } from "@nteract/commutable";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
+import { useNotebookSnapshotStore } from "../../../hooks/useNotebookSnapshotStore";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { CodeOfConductComponent } from "../../Controls/NotebookGallery/CodeOfConductComponent";
+import { CodeOfConduct } from "../../Controls/NotebookGallery/CodeOfConduct/CodeOfConduct";
 import { GalleryTab } from "../../Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
 export interface PublishNotebookPaneAProps {
@@ -24,7 +23,8 @@ export interface PublishNotebookPaneAProps {
   name: string;
   author: string;
   notebookContent: string | ImmutableNotebook;
-  parentDomElement: HTMLElement;
+  notebookContentRef: string;
+  onTakeSnapshot: (request: SnapshotRequest) => void;
 }
 export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> = ({
   explorer: container,
@@ -33,7 +33,8 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   name,
   author,
   notebookContent,
-  parentDomElement,
+  notebookContentRef,
+  onTakeSnapshot,
 }: PublishNotebookPaneAProps): JSX.Element => {
   const [isCodeOfConductAccepted, setIsCodeOfConductAccepted] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
@@ -45,6 +46,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
   const [notebookDescription, setNotebookDescription] = useState<string>("");
   const [notebookTags, setNotebookTags] = useState<string>("");
   const [imageSrc, setImageSrc] = useState<string>();
+  const { snapshot: notebookSnapshot, error: notebookSnapshotError } = useNotebookSnapshotStore();
 
   const CodeOfConductAccepted = async () => {
     try {
@@ -73,6 +75,14 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     }
     setContent(newContent);
   }, []);
+
+  useEffect(() => {
+    setImageSrc(notebookSnapshot);
+  }, [notebookSnapshot]);
+
+  useEffect(() => {
+    setFormError(notebookSnapshotError);
+  }, [notebookSnapshotError]);
 
   const submit = async (): Promise<void> => {
     const clearPublishingMessage = NotificationConsoleUtils.logConsoleProgress(`Publishing ${name} to gallery`);
@@ -142,7 +152,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       clearPublishingMessage();
       setIsExecuting(false);
     }
-
     closePanel();
   };
 
@@ -157,15 +166,11 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     setFormErrorDetail("");
   };
 
-  const props: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     formError: formError,
-    formErrorDetail: formErrorDetail,
-    id: "publishnotebookpane",
     isExecuting: isExecuting,
-    title: "Publish to gallery",
     submitButtonText: "Publish",
     onSubmit: () => submit(),
-    onClose: closePanel,
     expandConsole: () => container.expandConsole(),
     isSubmitButtonHidden: !isCodeOfConductAccepted,
   };
@@ -178,19 +183,20 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     notebookAuthor: author,
     notebookCreatedDate: new Date().toISOString(),
     notebookObject: notebookObject,
-    notebookParentDomElement: parentDomElement,
+    notebookContentRef,
     onError: createFormError,
     clearFormError: clearFormError,
     setNotebookName,
     setNotebookDescription,
     setNotebookTags,
     setImageSrc,
+    onTakeSnapshot,
   };
   return (
-    <GenericRightPaneComponent {...props}>
+    <RightPaneForm {...props}>
       {!isCodeOfConductAccepted ? (
         <div style={{ padding: "25px", marginTop: "10px" }}>
-          <CodeOfConductComponent
+          <CodeOfConduct
             junoClient={junoClient}
             onAcceptCodeOfConduct={(isAccepted) => {
               setIsCodeOfConductAccepted(isAccepted);
@@ -200,6 +206,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       ) : (
         <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
       )}
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };
