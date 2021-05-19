@@ -2,8 +2,8 @@ import { useState } from "react";
 
 export interface SidePanelHooks {
   isPanelOpen: boolean;
-  panelContent: JSX.Element;
-  headerText: string;
+  panelContent?: JSX.Element;
+  headerText?: string;
   openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
 }
