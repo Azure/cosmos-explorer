@@ -822,6 +822,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isSchemaEnabled": [Function],
       "isSelectedDatabaseShared": [Function],
       "isServerlessEnabled": [Function],
+      "isShellEnabled": [Function],
       "isSparkEnabled": [Function],
       "isSparkEnabledForAccount": [Function],
       "isSynapseLinkUpdating": [Function],

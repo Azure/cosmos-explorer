@@ -177,6 +177,8 @@ export default class Explorer {
   public openDialog: ExplorerParams["openDialog"];
   public closeDialog: ExplorerParams["closeDialog"];
 
+  public isShellEnabled: ko.Observable<boolean>;
+
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
   private _arcadiaManager: ArcadiaResourceManager;
@@ -222,6 +224,7 @@ export default class Explorer {
         });
       }
     });
+    this.isShellEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
@@ -248,6 +251,12 @@ export default class Explorer {
                 ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
                   userContext.features.enableNotebooks)
             );
+            this.isShellEnabled(
+              this.isNotebookEnabled() &&
+                !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
+                userContext.databaseAccount.properties.ipRules.length === 0
+            );
+
             TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
               isNotebookEnabled: this.isNotebookEnabled(),
               dataExplorerArea: Constants.Areas.Notebook,
@@ -1715,32 +1724,27 @@ export default class Explorer {
         throw new Error("Terminal kind: ${kind} not supported");
     }
 
-    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Terminal,
-      (tab) => tab.hashLocation() == hashLocation
+    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(ViewModels.CollectionTabKind.Terminal, (tab) =>
+      tab.hashLocation().startsWith(hashLocation)
     ) as TerminalTab[];
-    let terminalTab: TerminalTab = terminalTabs && terminalTabs[0];
 
-    if (terminalTab) {
-      this.tabsManager.activateTab(terminalTab);
-    } else {
-      const newTab = new TerminalTab({
-        account: userContext.databaseAccount,
-        tabKind: ViewModels.CollectionTabKind.Terminal,
-        node: null,
-        title: title,
-        tabPath: title,
-        collection: null,
-        hashLocation: hashLocation,
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        container: this,
-        kind: kind,
-      });
+    const index = terminalTabs.length + 1;
+    const newTab = new TerminalTab({
+      account: userContext.databaseAccount,
+      tabKind: ViewModels.CollectionTabKind.Terminal,
+      node: null,
+      title: `${title} ${index}`,
+      tabPath: `${title} ${index}`,
+      collection: null,
+      hashLocation: `${hashLocation} ${index}`,
+      isTabsContentExpanded: ko.observable(true),
+      onLoadStartKey: null,
+      onUpdateTabsButtons: this.onUpdateTabsButtons,
+      container: this,
+      kind: kind,
+    });
 
-      this.tabsManager.activateNewTab(newTab);
-    }
+    this.tabsManager.activateNewTab(newTab);
   }
 
   public async openGallery(
