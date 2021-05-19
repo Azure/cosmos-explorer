@@ -1,0 +1,164 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CassandraAddCollectionPane  Pane should render Default properly 1`] = `
+<RightPaneForm
+  expandConsole={[Function]}
+  formError=""
+  onSubmit={[Function]}
+  submitButtonText="Apply"
+>
+  <div
+    className="paneMainContent"
+  >
+    <div
+      className="seconddivpadding"
+    >
+      <p>
+        <StyledLabelBase
+          required={true}
+        >
+          Keyspace name 
+          <InfoTooltip>
+            Select an existing keyspace or enter a new keyspace id.
+          </InfoTooltip>
+        </StyledLabelBase>
+      </p>
+      <Stack
+        horizontal={true}
+        verticalAlign="center"
+      >
+        <input
+          aria-label="Create new keyspace"
+          checked={true}
+          className="throughputInputRadioBtn"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <span
+          className="throughputInputRadioBtnLabel"
+        >
+          Create new
+        </span>
+        <input
+          aria-label="Use existing keyspace"
+          checked={false}
+          className="throughputInputRadioBtn"
+          onChange={[Function]}
+          role="radio"
+          tabIndex={0}
+          type="radio"
+        />
+        <span
+          className="throughputInputRadioBtnLabel"
+        >
+          Use existing
+        </span>
+      </Stack>
+      <StyledTextFieldBase
+        aria-required="true"
+        ariaLabel="Keyspace id"
+        autoComplete="off"
+        autoFocus={true}
+        data-test="addCollection-keyspaceId"
+        list=""
+        onChange={[Function]}
+        pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+        placeholder="Type a new keyspace id"
+        size={40}
+        title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+        value=""
+      />
+      <datalist
+        id="keyspacesList"
+      />
+      <div
+        className="databaseProvision"
+      >
+        <input
+          checked={false}
+          id="keyspaceSharedThroughput"
+          onChange={[Function]}
+          tabIndex={0}
+          title="Provision shared throughput"
+          type="checkbox"
+        />
+        <span
+          aria-label="Provision keyspace throughput"
+          className="databaseProvisionText"
+        >
+          Provision keyspace throughput
+        </span>
+        <InfoTooltip>
+          Provisioned throughput at the keyspace level will be shared across unlimited number of tables within the keyspace
+        </InfoTooltip>
+      </div>
+    </div>
+    <div
+      className="seconddivpadding"
+    >
+      <p>
+        <StyledLabelBase
+          required={true}
+        >
+          Enter CQL command to create the table.
+          <a
+            href="https://aka.ms/cassandra-create-table"
+            rel="noreferrer"
+            target="_blank"
+          >
+            Learn More
+          </a>
+        </StyledLabelBase>
+      </p>
+      <div
+        aria-label="CREATE TABLE "
+        style={
+          Object {
+            "float": "left",
+            "paddingRight": "3px",
+            "paddingTop": "3px",
+          }
+        }
+      >
+        CREATE TABLE 
+      </div>
+      <StyledTextFieldBase
+        aria-required="true"
+        ariaLabel="addCollection-tableId"
+        autoComplete="off"
+        className="textfontclr"
+        onChange={[Function]}
+        pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
+        placeholder="Enter tableId"
+        size={20}
+        style={
+          Object {
+            "marginBottom": "5px",
+          }
+        }
+        title="May not end with space nor contain characters '\\\\' '/' '#' '?'"
+        value=""
+      />
+      <StyledTextFieldBase
+        aria-label="Table Schema"
+        id="editor-area"
+        multiline={true}
+        onChange={[Function]}
+        rows={5}
+        value="(userid int, name text, email text, PRIMARY KEY (userid))"
+      />
+    </div>
+    <div>
+      <ThroughputInput
+        isDatabase={false}
+        isSharded={false}
+        onCostAcknowledgeChange={[Function]}
+        setIsAutoscale={[Function]}
+        setThroughputValue={[Function]}
+      />
+    </div>
+  </div>
+</RightPaneForm>
+`;

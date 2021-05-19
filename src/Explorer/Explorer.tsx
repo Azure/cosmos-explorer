@@ -54,7 +54,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
+import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
@@ -131,6 +131,7 @@ export default class Explorer {
   public databases: ko.ObservableArray<ViewModels.Database>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
+  public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
@@ -147,7 +148,6 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   // Contextual panes
-  public cassandraAddCollectionPane: CassandraAddCollectionPane;
   private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
   public junoClient: JunoClient;
@@ -222,7 +222,6 @@ export default class Explorer {
         });
       }
     });
-
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
     this.isSparkEnabledForAccount = ko.observable(false);
@@ -327,6 +326,7 @@ export default class Explorer {
       }
       return true;
     });
+    this.isLeftPaneExpanded = ko.observable<boolean>(true);
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
     this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
       // Make sure switching tabs restores tabs display
@@ -395,13 +395,6 @@ export default class Explorer {
         default:
           return "";
       }
-    });
-
-    this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
-      id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
     });
 
     this.tabsManager = params?.tabsManager ?? new TabsManager();
@@ -645,8 +638,16 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded(true);
   }
 
-  public collapseConsole(): void {
-    this.setIsNotificationConsoleExpanded(false);
+  public toggleLeftPaneExpanded() {
+    this.isLeftPaneExpanded(!this.isLeftPaneExpanded());
+
+    if (this.isLeftPaneExpanded()) {
+      document.getElementById("expandToggleLeftPaneButton").focus();
+      this.splitter.expandLeft();
+    } else {
+      document.getElementById("collapseToggleLeftPaneButton").focus();
+      this.splitter.collapseLeft();
+    }
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
@@ -763,6 +764,14 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     this.refreshNotebookList();
+  };
+
+  public toggleLeftPaneExpandedKeyPress = (source: any, event: KeyboardEvent): boolean => {
+    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
+      this.toggleLeftPaneExpanded();
+      return false;
+    }
+    return true;
   };
 
   // Facade
@@ -1121,7 +1130,10 @@ export default class Explorer {
 
   private getDeltaDatabases(
     updatedDatabaseList: DataModels.Database[]
-  ): { toAdd: ViewModels.Database[]; toDelete: ViewModels.Database[] } {
+  ): {
+    toAdd: ViewModels.Database[];
+    toDelete: ViewModels.Database[];
+  } {
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         this.databases(),
@@ -1774,7 +1786,7 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.cassandraAddCollectionPane.open();
+      this.openCassandraAddCollectionPane();
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1966,6 +1978,16 @@ export default class Explorer {
     );
   }
 
+  public openCassandraAddCollectionPane(): void {
+    this.openSidePanel(
+      "Add Table",
+      <CassandraAddCollectionPane
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        cassandraApiClient={new CassandraAPIDataClient()}
+      />
+    );
+  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     this.openSidePanel(
       header,

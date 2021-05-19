@@ -15,11 +15,11 @@ test("Cassandra keyspace and table CRUD", async () => {
   });
 
   await explorer.click('[data-test="New Table"]');
-  await explorer.click('[data-test="addCollection-keyspaceId"]');
-  await explorer.fill('[data-test="addCollection-keyspaceId"]', keyspaceId);
-  await explorer.click('[data-test="addCollection-tableId"]');
-  await explorer.fill('[data-test="addCollection-tableId"]', tableId);
-  await explorer.click('[aria-label="Add Table"] [data-test="addCollection-createCollection"]');
+  await explorer.click('[aria-label="Keyspace id"]');
+  await explorer.fill('[aria-label="Keyspace id"]', keyspaceId);
+  await explorer.click('[aria-label="addCollection-tableId"]');
+  await explorer.fill('[aria-label="addCollection-tableId"]', tableId);
+  await explorer.click("#sidePanelOkButton");
   await safeClick(explorer, `.nodeItem >> text=${keyspaceId}`);
   await safeClick(explorer, `[data-test="${tableId}"] [aria-label="More"]`);
   await safeClick(explorer, 'button[role="menuitem"]:has-text("Delete Table")');
