@@ -98,7 +98,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer">
-      <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
+      <div id="divExplorer" className="flexContainer hideOverflows">
         {/* Main Command Bar - Start */}
         <div data-bind="react: commandBarComponentAdapter" />
         {/* Collections Tree and Tabs - Begin */}
