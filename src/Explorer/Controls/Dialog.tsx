@@ -15,7 +15,22 @@ import {
   ProgressIndicator,
   TextField,
 } from "@fluentui/react";
-import React, { FunctionComponent } from "react";
+import React, { FC } from "react";
+import create, { UseStore } from "zustand";
+
+export interface DialogState {
+  visible: boolean;
+  dialogProps?: DialogProps;
+  openDialog: (props: DialogProps) => void;
+  closeDialog: () => void;
+}
+
+export const useDialog: UseStore<DialogState> = create((set) => ({
+  visible: false,
+  openDialog: (props: DialogProps) => set(() => ({ visible: true, dialogProps: props })),
+  closeDialog: () =>
+    set((state) => ({ visible: false, openDialog: state.openDialog, closeDialog: state.closeDialog }), true),
+}));
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;
@@ -35,7 +50,6 @@ export interface DialogProps {
   title: string;
   subText: string;
   isModal: boolean;
-  visible: boolean;
   choiceGroupProps?: IChoiceGroupProps;
   textFieldProps?: TextFieldProps;
   linkProps?: LinkProps;
@@ -56,24 +70,26 @@ const DIALOG_TITLE_FONT_SIZE = "17px";
 const DIALOG_TITLE_FONT_WEIGHT = 400;
 const DIALOG_SUBTEXT_FONT_SIZE = "15px";
 
-export const Dialog: FunctionComponent<DialogProps> = ({
-  title,
-  subText,
-  isModal,
-  visible,
-  choiceGroupProps,
-  textFieldProps,
-  linkProps,
-  progressIndicatorProps,
-  primaryButtonText,
-  secondaryButtonText,
-  onPrimaryButtonClick,
-  onSecondaryButtonClick,
-  primaryButtonDisabled,
-  type,
-  showCloseButton,
-  onDismiss,
-}: DialogProps) => {
+export const Dialog: FC = () => {
+  const { visible, dialogProps: props } = useDialog();
+  const {
+    title,
+    subText,
+    isModal,
+    choiceGroupProps,
+    textFieldProps,
+    linkProps,
+    progressIndicatorProps,
+    primaryButtonText,
+    secondaryButtonText,
+    onPrimaryButtonClick,
+    onSecondaryButtonClick,
+    primaryButtonDisabled,
+    type,
+    showCloseButton,
+    onDismiss,
+  } = props || {};
+
   const dialogProps: IDialogProps = {
     hidden: !visible,
     dialogContentProps: {
@@ -106,19 +122,21 @@ export const Dialog: FunctionComponent<DialogProps> = ({
       : {};
 
   return (
-    <FluentDialog {...dialogProps}>
-      {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
-      {textFieldProps && <TextField {...textFieldProps} />}
-      {linkProps && (
-        <Link href={linkProps.linkUrl} target="_blank">
-          {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
-        </Link>
-      )}
-      {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
-      <DialogFooter>
-        <PrimaryButton {...primaryButtonProps} />
-        {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
-      </DialogFooter>
-    </FluentDialog>
+    visible && (
+      <FluentDialog {...dialogProps}>
+        {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
+        {textFieldProps && <TextField {...textFieldProps} />}
+        {linkProps && (
+          <Link href={linkProps.linkUrl} target="_blank">
+            {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
+          </Link>
+        )}
+        {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
+        <DialogFooter>
+          <PrimaryButton {...primaryButtonProps} />
+          {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
+        </DialogFooter>
+      </FluentDialog>
+    )
   );
 };

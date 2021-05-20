@@ -41,7 +41,7 @@ import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/No
 import * as ComponentRegisterer from "./ComponentRegisterer";
 import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
-import { DialogProps, TextFieldProps } from "./Controls/Dialog";
+import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
@@ -93,8 +93,6 @@ export interface ExplorerParams {
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
-  closeDialog: () => void;
-  openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
 }
 
@@ -174,8 +172,6 @@ export default class Explorer {
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: NotebookManager;
-  public openDialog: ExplorerParams["openDialog"];
-  public closeDialog: ExplorerParams["closeDialog"];
 
   public isShellEnabled: ko.Observable<boolean>;
 
@@ -200,8 +196,6 @@ export default class Explorer {
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
     this.openSidePanel = params?.openSidePanel;
     this.closeSidePanel = params?.closeSidePanel;
-    this.closeDialog = params?.closeDialog;
-    this.openDialog = params?.openDialog;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -572,7 +566,6 @@ export default class Explorer {
         linkUrl: "https://aka.ms/cosmosdb-synapselink",
       },
       isModal: true,
-      visible: true,
       title: `Enable Azure Synapse Link on your Cosmos DB account`,
       subText: `Enable Azure Synapse Link to perform near real time analytical analytics on this account, without impacting the performance of your transactional workloads.
       Azure Synapse Link brings together Cosmos Db Analytical Store and Synapse Analytics`,
@@ -585,7 +578,7 @@ export default class Explorer {
           "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account."
         );
         this.isSynapseLinkUpdating(true);
-        this._closeSynapseLinkModalDialog();
+        useDialog.getState().closeDialog();
 
         const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(userContext.databaseAccount.id);
 
@@ -613,11 +606,11 @@ export default class Explorer {
       },
 
       onSecondaryButtonClick: () => {
-        this._closeSynapseLinkModalDialog();
+        useDialog.getState().closeDialog();
         TelemetryProcessor.traceCancel(Action.EnableAzureSynapseLink);
       },
     };
-    this.openDialog(addSynapseLinkDialogProps);
+    useDialog.getState().openDialog(addSynapseLinkDialogProps);
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
@@ -895,15 +888,14 @@ export default class Explorer {
 
     const resetConfirmationDialogProps: DialogProps = {
       isModal: true,
-      visible: true,
       title: "Reset Workspace",
       subText: "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?",
       primaryButtonText: "OK",
       secondaryButtonText: "Cancel",
       onPrimaryButtonClick: this._resetNotebookWorkspace,
-      onSecondaryButtonClick: this._closeModalDialog,
+      onSecondaryButtonClick: () => useDialog.getState().closeDialog(),
     };
-    this.openDialog(resetConfirmationDialogProps);
+    useDialog.getState().openDialog(resetConfirmationDialogProps);
   }
 
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
@@ -948,7 +940,7 @@ export default class Explorer {
   }
 
   private _resetNotebookWorkspace = async () => {
-    this._closeModalDialog();
+    useDialog.getState().closeDialog();
     const clearInProgressMessage = logConsoleProgress("Resetting notebook workspace");
     try {
       await this.notebookManager?.notebookClient.resetWorkspace();
@@ -964,14 +956,6 @@ export default class Explorer {
     } finally {
       clearInProgressMessage();
     }
-  };
-
-  private _closeModalDialog = () => {
-    this.closeDialog();
-  };
-
-  private _closeSynapseLinkModalDialog = () => {
-    this.closeDialog();
   };
 
   public findSelectedDatabase(): ViewModels.Database {
@@ -1271,14 +1255,15 @@ export default class Explorer {
   }
 
   public showOkModalDialog(title: string, msg: string): void {
-    this.openDialog({
+    useDialog.getState().openDialog({
       isModal: true,
-      visible: true,
       title,
       subText: msg,
       primaryButtonText: "Close",
       secondaryButtonText: undefined,
-      onPrimaryButtonClick: this._closeModalDialog,
+      onPrimaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+      },
       onSecondaryButtonClick: undefined,
     });
   }
@@ -1294,19 +1279,18 @@ export default class Explorer {
     textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    this.openDialog({
+    useDialog.getState().openDialog({
       isModal: true,
-      visible: true,
       title,
       subText: msg,
       primaryButtonText: okLabel,
       secondaryButtonText: cancelLabel,
       onPrimaryButtonClick: () => {
-        this._closeModalDialog();
+        useDialog.getState().closeDialog();
         onOk && onOk();
       },
       onSecondaryButtonClick: () => {
-        this._closeModalDialog();
+        useDialog.getState().closeDialog();
         onCancel && onCancel();
       },
       choiceGroupProps,
@@ -1624,14 +1608,13 @@ export default class Explorer {
     }
 
     if (item.type === NotebookContentItemType.Directory && item.children && item.children.length > 0) {
-      this.openDialog({
+      useDialog.getState().openDialog({
         isModal: true,
-        visible: true,
         title: "Unable to delete file",
         subText: "Directory is not empty.",
         primaryButtonText: "Close",
         secondaryButtonText: undefined,
-        onPrimaryButtonClick: this._closeModalDialog,
+        onPrimaryButtonClick: () => useDialog.getState().closeDialog(),
         onSecondaryButtonClick: undefined,
       });
       return Promise.reject();

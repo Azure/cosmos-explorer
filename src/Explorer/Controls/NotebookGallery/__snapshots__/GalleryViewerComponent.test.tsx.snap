@@ -183,5 +183,6 @@ exports[`GalleryViewerComponent renders 1`] = `
       </Stack>
     </PivotItem>
   </StyledPivot>
+  <Dialog />
 </div>
 `;

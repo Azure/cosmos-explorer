@@ -28,7 +28,7 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import Explorer from "../../Explorer";
-import { Dialog, DialogProps } from "../Dialog";
+import { Dialog } from "../Dialog";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import { CodeOfConduct } from "./CodeOfConduct/CodeOfConduct";
 import "./GalleryViewerComponent.less";
@@ -68,7 +68,6 @@ interface GalleryViewerComponentState {
   selectedTab: GalleryTab;
   sortBy: SortBy;
   searchText: string;
-  dialogProps: DialogProps;
   isCodeOfConductAccepted: boolean;
   isFetchingPublishedNotebooks: boolean;
   isFetchingFavouriteNotebooks: boolean;
@@ -119,7 +118,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       selectedTab: props.selectedTab,
       sortBy: props.sortBy,
       searchText: props.searchText,
-      dialogProps: undefined,
       isCodeOfConductAccepted: undefined,
       isFetchingFavouriteNotebooks: true,
       isFetchingPublishedNotebooks: true,
@@ -187,8 +185,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     return (
       <div className="galleryContainer">
         <Pivot {...pivotProps}>{pivotItems}</Pivot>
-
-        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
+        <Dialog />
       </div>
     );
   }
