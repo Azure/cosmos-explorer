@@ -1,44 +1,44 @@
-import * as React from "react";
 import {
   DetailsList,
   DetailsListLayoutMode,
-  Stack,
-  IconButton,
-  Text,
-  SelectionMode,
   IColumn,
+  IconButton,
   MessageBar,
   MessageBarType,
+  SelectionMode,
+  Separator,
   Spinner,
   SpinnerSize,
-  Separator,
+  Stack,
+  Text,
 } from "@fluentui/react";
+import * as React from "react";
+import { MongoIndex } from "../../../../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
 import {
   addMongoIndexStackProps,
-  customDetailsListStyles,
-  mongoIndexingPolicyDisclaimer,
-  mediumWidthStackStyles,
-  subComponentStackProps,
   createAndAddMongoIndexStackProps,
-  separatorStyles,
+  customDetailsListStyles,
   indexingPolicynUnsavedWarningMessage,
   infoAndToolTipTextStyle,
-  onRenderRow,
+  mediumWidthStackStyles,
   mongoCompoundIndexNotSupportedMessage,
+  mongoIndexingPolicyDisclaimer,
+  onRenderRow,
+  separatorStyles,
+  subComponentStackProps,
 } from "../../SettingsRenderUtils";
-import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
-  MongoIndexTypes,
   AddMongoIndexProps,
-  MongoIndexIdField,
-  MongoNotificationType,
   getMongoIndexType,
   getMongoIndexTypeText,
   isIndexTransforming,
+  MongoIndexIdField,
+  MongoIndexTypes,
+  MongoNotificationType,
 } from "../../SettingsUtils";
-import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
-import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
 import { IndexingPolicyRefreshComponent } from "../IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
+import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];

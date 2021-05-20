@@ -1,11 +1,11 @@
 import { AuthType } from "../../AuthType";
 import { Offer, ReadCollectionOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { getCassandraTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { getGremlinGraphThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { getTableThroughput } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { getCassandraTableThroughput } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/cassandraResources";
+import { getGremlinGraphThroughput } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/gremlinResources";
+import { getMongoDBCollectionThroughput } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/mongoDBResources";
+import { getSqlContainerThroughput } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
+import { getTableThroughput } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/tableResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";

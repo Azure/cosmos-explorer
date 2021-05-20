@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { deleteSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { deleteTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { deleteCassandraTable } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/cassandraResources";
+import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/gremlinResources";
+import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/mongoDBResources";
+import { deleteSqlContainer } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
+import { deleteTable } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/tableResources";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";

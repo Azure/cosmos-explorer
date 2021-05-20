@@ -1,7 +1,7 @@
-import * as ViewModels from "../../../Contracts/ViewModels";
-import * as DataModels from "../../../Contracts/DataModels";
 import * as Constants from "../../../Common/Constants";
-import { MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
 
 const zeroValue = 0;
 export type isDirtyTypes = boolean | string | number | DataModels.IndexingPolicy;

@@ -1,11 +1,11 @@
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { listCassandraTables } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { listGremlinGraphs } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { listMongoDBCollections } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { listTables } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/cassandraResources";
+import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/gremlinResources";
+import { listMongoDBCollections } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/mongoDBResources";
+import { listSqlContainers } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
+import { listTables } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/tableResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";

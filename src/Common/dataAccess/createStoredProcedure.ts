@@ -4,11 +4,11 @@ import { userContext } from "../../UserContext";
 import {
   createUpdateSqlStoredProcedure,
   getSqlStoredProcedure,
-} from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
 import {
   SqlStoredProcedureCreateUpdateParameters,
   SqlStoredProcedureResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";

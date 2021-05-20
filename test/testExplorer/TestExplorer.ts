@@ -3,7 +3,7 @@ import { ClientSecretCredential } from "@azure/identity";
 import "../../less/hostedexplorer.less";
 import { DataExplorerInputsFrame } from "../../src/Contracts/ViewModels";
 import { updateUserContext } from "../../src/UserContext";
-import { get, listKeys } from "../../src/Utils/arm/generatedClients/2020-04-01/databaseAccounts";
+import { get, listKeys } from "../../src/Utils/arm/generatedClients/cosmos/2021-04-15/databaseAccounts";
 
 const resourceGroup = process.env.RESOURCE_GROUP || "";
 const subscriptionId = process.env.SUBSCRIPTION_ID || "";

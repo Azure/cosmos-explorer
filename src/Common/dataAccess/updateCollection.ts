@@ -6,23 +6,26 @@ import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
   getCassandraTable,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/cassandraResources";
 import {
   createUpdateGremlinGraph,
   getGremlinGraph,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/gremlinResources";
 import {
   createUpdateMongoDBCollection,
   getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/mongoDBResources";
+import {
+  createUpdateSqlContainer,
+  getSqlContainer,
+} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
+import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/tableResources";
 import {
   ExtendedResourceProperties,
   MongoDBCollectionCreateUpdateParameters,
   SqlContainerCreateUpdateParameters,
   SqlContainerResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
