@@ -14,7 +14,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";

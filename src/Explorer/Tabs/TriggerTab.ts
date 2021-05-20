@@ -6,7 +6,7 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import Trigger from "../Tree/Trigger";
 import ScriptTabBase from "./ScriptTabBase";
 import template from "./TriggerTab.html";

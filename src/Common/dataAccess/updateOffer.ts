@@ -10,7 +10,7 @@ import {
   migrateCassandraTableToManualThroughput,
   updateCassandraKeyspaceThroughput,
   updateCassandraTableThroughput,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/cassandraResources";
+} from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import {
   migrateGremlinDatabaseToAutoscale,
   migrateGremlinDatabaseToManualThroughput,
@@ -18,7 +18,7 @@ import {
   migrateGremlinGraphToManualThroughput,
   updateGremlinDatabaseThroughput,
   updateGremlinGraphThroughput,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/gremlinResources";
+} from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import {
   migrateMongoDBCollectionToAutoscale,
   migrateMongoDBCollectionToManualThroughput,
@@ -26,7 +26,7 @@ import {
   migrateMongoDBDatabaseToManualThroughput,
   updateMongoDBCollectionThroughput,
   updateMongoDBDatabaseThroughput,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/mongoDBResources";
+} from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
 import {
   migrateSqlContainerToAutoscale,
   migrateSqlContainerToManualThroughput,
@@ -34,13 +34,13 @@ import {
   migrateSqlDatabaseToManualThroughput,
   updateSqlContainerThroughput,
   updateSqlDatabaseThroughput,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
+} from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import {
   migrateTableToAutoscale,
   migrateTableToManualThroughput,
   updateTableThroughput,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/tableResources";
-import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+} from "../../Utils/arm/generatedClients/cosmos/tableResources";
+import { ThroughputSettingsUpdateParameters } from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { HttpHeaders } from "../Constants";
 import { client } from "../CosmosClient";

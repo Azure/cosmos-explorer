@@ -6,26 +6,23 @@ import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraKeyspace,
   getCassandraKeyspace,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/cassandraResources";
+} from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import {
   createUpdateGremlinDatabase,
   getGremlinDatabase,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/gremlinResources";
+} from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import {
   createUpdateMongoDBDatabase,
   getMongoDBDatabase,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/mongoDBResources";
-import {
-  createUpdateSqlDatabase,
-  getSqlDatabase,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
+} from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import {
   CassandraKeyspaceCreateUpdateParameters,
   CreateUpdateOptions,
   GremlinDatabaseCreateUpdateParameters,
   MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";

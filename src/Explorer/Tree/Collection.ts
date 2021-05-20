@@ -18,7 +18,7 @@ import { UploadDetailsRecord } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
-import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";

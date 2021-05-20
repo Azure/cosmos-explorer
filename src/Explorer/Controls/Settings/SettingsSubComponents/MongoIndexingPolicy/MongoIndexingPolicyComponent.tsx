@@ -13,7 +13,7 @@ import {
   Text,
 } from "@fluentui/react";
 import * as React from "react";
-import { MongoIndex } from "../../../../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+import { MongoIndex } from "../../../../../Utils/arm/generatedClients/cosmos/types";
 import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
 import {
   addMongoIndexStackProps,

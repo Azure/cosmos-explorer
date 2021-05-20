@@ -1,11 +1,8 @@
 import { TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
-import {
-  SqlTriggerCreateUpdateParameters,
-  SqlTriggerResource,
-} from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
+import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { SqlTriggerCreateUpdateParameters, SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";

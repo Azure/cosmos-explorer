@@ -3635,7 +3635,7 @@ exports[`SettingsComponent renders 1`] = `
               "automatic": true,
               "excludedPaths": Array [],
               "includedPaths": Array [],
-              "indexingMode": "default",
+              "indexingMode": "consistent",
             }
           }
           indexingPolicyContentBaseline={
@@ -3643,7 +3643,7 @@ exports[`SettingsComponent renders 1`] = `
               "automatic": true,
               "excludedPaths": Array [],
               "includedPaths": Array [],
-              "indexingMode": "default",
+              "indexingMode": "consistent",
             }
           }
           logIndexingPolicySuccessMessage={[Function]}
