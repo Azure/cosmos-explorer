@@ -1035,7 +1035,7 @@ export interface SqlTriggerResource {
   /* Name of the Cosmos DB SQL trigger */
   id: string;
   /* Body of the Trigger */
-  body?: string;
+  body: string;
   /* Type of the Trigger */
   triggerType?: "Pre" | "Post";
 

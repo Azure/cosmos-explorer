@@ -167,7 +167,7 @@ export interface KeyResource {
 
 export interface IndexingPolicy {
   automatic: boolean;
-  indexingMode: string;
+  indexingMode: "consistent" | "lazy" | "none";
   includedPaths: any;
   excludedPaths: any;
   compositeIndexes?: any;
@@ -176,7 +176,7 @@ export interface IndexingPolicy {
 
 export interface PartitionKey {
   paths: string[];
-  kind: string;
+  kind: "Hash" | "Range" | "MultiHash";
   version: number;
   systemKey?: boolean;
 }

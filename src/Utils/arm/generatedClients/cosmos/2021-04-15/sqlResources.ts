@@ -6,9 +6,9 @@
   Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/2021-04-15/cosmos-db.json
 */
 
+import { configContext } from "../../../../../ConfigContext";
 import { armRequest } from "../../../request";
 import * as Types from "./types";
-import { configContext } from "../../../../../ConfigContext";
 const apiVersion = "2021-04-15";
 
 /* Lists the SQL databases under an existing Azure Cosmos DB database account. */
@@ -204,7 +204,7 @@ export async function listSqlStoredProcedures(
   accountName: string,
   databaseName: string,
   containerName: string
-): Promise<Types.SqlStoredProcedureListResult | Types.CloudError> {
+): Promise<Types.SqlStoredProcedureListResult> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/sqlDatabases/${databaseName}/containers/${containerName}/storedProcedures`;
   return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "GET", apiVersion });
 }

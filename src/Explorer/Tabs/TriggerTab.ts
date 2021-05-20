@@ -1,4 +1,3 @@
-import { Resource, TriggerDefinition, TriggerOperation, TriggerType } from "@azure/cosmos";
 import * as Constants from "../../Common/Constants";
 import { createTrigger } from "../../Common/dataAccess/createTrigger";
 import { updateTrigger } from "../../Common/dataAccess/updateTrigger";
@@ -7,6 +6,7 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
 import Trigger from "../Tree/Trigger";
 import ScriptTabBase from "./ScriptTabBase";
 import template from "./TriggerTab.html";
@@ -30,12 +30,12 @@ export default class TriggerTab extends ScriptTabBase {
     super.buildCommandBarOptions();
   }
 
-  public onSaveClick = (): Promise<TriggerDefinition & Resource> => {
-    return this._createTrigger({
+  public onSaveClick = (): void => {
+    this._createTrigger({
       id: this.id(),
       body: this.editorContent(),
-      triggerOperation: this.triggerOperation() as TriggerOperation,
-      triggerType: this.triggerType() as TriggerType,
+      triggerOperation: this.triggerOperation() as SqlTriggerResource["triggerOperation"],
+      triggerType: this.triggerType() as SqlTriggerResource["triggerType"],
     });
   };
 
@@ -50,8 +50,8 @@ export default class TriggerTab extends ScriptTabBase {
     return updateTrigger(this.collection.databaseId, this.collection.id(), {
       id: this.id(),
       body: this.editorContent(),
-      triggerOperation: this.triggerOperation() as TriggerOperation,
-      triggerType: this.triggerType() as TriggerType,
+      triggerOperation: this.triggerOperation() as SqlTriggerResource["triggerOperation"],
+      triggerType: this.triggerType() as SqlTriggerResource["triggerType"],
     })
       .then(
         (createdResource) => {
@@ -117,7 +117,7 @@ export default class TriggerTab extends ScriptTabBase {
     }
   }
 
-  private _createTrigger(resource: TriggerDefinition): Promise<TriggerDefinition & Resource> {
+  private _createTrigger(resource: SqlTriggerResource): void {
     this.isExecutionError(false);
     this.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateTrigger, {
@@ -125,7 +125,8 @@ export default class TriggerTab extends ScriptTabBase {
       tabTitle: this.tabTitle(),
     });
 
-    return createTrigger(this.collection.databaseId, this.collection.id(), resource)
+    resource.body = String(resource.body); // Ensure trigger body is converted to string
+    createTrigger(this.collection.databaseId, this.collection.id(), resource)
       .then(
         (createdResource) => {
           this.tabTitle(createdResource.id);

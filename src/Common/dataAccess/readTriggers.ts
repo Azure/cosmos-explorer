@@ -1,7 +1,8 @@
-import { Resource, TriggerDefinition } from "@azure/cosmos";
+import { TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
 import { listSqlTriggers } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/sqlResources";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/2021-04-15/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -9,7 +10,7 @@ import { handleError } from "../ErrorHandlingUtils";
 export async function readTriggers(
   databaseId: string,
   collectionId: string
-): Promise<(TriggerDefinition & Resource)[]> {
+): Promise<SqlTriggerResource[] | TriggerDefinition[]> {
   const clearMessage = logConsoleProgress(`Querying triggers for container ${collectionId}`);
   try {
     if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
@@ -20,7 +21,7 @@ export async function readTriggers(
         databaseId,
         collectionId
       );
-      return rpResponse?.value?.map((trigger) => trigger.properties?.resource as TriggerDefinition & Resource);
+      return rpResponse?.value?.map((trigger) => trigger.properties?.resource);
     }
 
     const response = await client().database(databaseId).container(collectionId).scripts.triggers.readAll().fetchAll();

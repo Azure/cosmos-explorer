@@ -193,7 +193,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     }
   }
 
-  public abstract onSaveClick: () => Promise<any>;
+  public abstract onSaveClick: () => void;
   public abstract onUpdateClick: () => Promise<any>;
 
   public onDiscard = (): Q.Promise<any> => {
@@ -204,16 +204,6 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
 
     return Q();
   };
-
-  public onSaveOrUpdateClick(): Promise<any> {
-    if (this.saveButton.visible()) {
-      return this.onSaveClick();
-    } else if (this.updateButton.visible()) {
-      return this.onUpdateClick();
-    }
-
-    return undefined;
-  }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
