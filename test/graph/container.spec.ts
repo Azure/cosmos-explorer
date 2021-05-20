@@ -26,7 +26,7 @@ test("Graph CRUD", async () => {
   await safeClick(explorer, `[data-test="${containerId}"] [aria-label="More"]`);
   await safeClick(explorer, 'button[role="menuitem"]:has-text("Delete Graph")');
   await explorer.fill('text=* Confirm by typing the graph id >> input[type="text"]', containerId);
-  await explorer.click('[aria-label="Submit"]');
+  await explorer.click('[aria-label="OK"]');
   await explorer.click(`[data-test="${databaseId}"] [aria-label="More"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Database")');
   await explorer.click('text=* Confirm by typing the database id >> input[type="text"]');

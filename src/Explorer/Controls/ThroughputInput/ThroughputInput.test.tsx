@@ -20,17 +20,13 @@ describe("ThroughputInput Pane", () => {
     expect(wrapper).toMatchSnapshot();
   });
 
-  it("test Autoscale Mode select", () => {
-    wrapper.setProps({ isAutoscaleSelected: true });
-    expect(wrapper.find('[aria-label="ruDescription"]').at(0).text()).toBe(
-      "Estimate your required RU/s with capacity calculator."
+  it("should switch mode properly", () => {
+    wrapper.find('[aria-label="Manual mode"]').simulate("change");
+    expect(wrapper.find('[aria-label="Throughput header"]').at(0).text()).toBe(
+      "Container throughput (400 - unlimited RU/s)"
     );
-    expect(wrapper.find('[aria-label="maxRUDescription"]').at(0).text()).toContain("Max RU/s");
-  });
 
-  it("test Manual Mode select", () => {
-    wrapper.setProps({ isAutoscaleSelected: false });
-    expect(wrapper.find('[aria-label="ruDescription"]').at(0).text()).toContain("Estimate your required RU/s with");
-    expect(wrapper.find('[aria-label="capacityLink"]').at(0).text()).toContain("capacity calculator");
+    wrapper.find('[aria-label="Autoscale mode"]').simulate("change");
+    expect(wrapper.find('[aria-label="Throughput header"]').at(0).text()).toBe("Container throughput (autoscale)");
   });
 });

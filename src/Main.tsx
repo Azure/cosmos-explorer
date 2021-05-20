@@ -30,7 +30,7 @@ import "../less/tree.less";
 import { AuthType } from "./AuthType";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
-import { Dialog, DialogProps } from "./Explorer/Controls/Dialog";
+import { Dialog } from "./Explorer/Controls/Dialog";
 import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
@@ -64,17 +64,6 @@ const App: React.FunctionComponent = () => {
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
 
-  const [dialogProps, setDialogProps] = useState<DialogProps>();
-  const [showDialog, setShowDialog] = useState<boolean>(false);
-
-  const openDialog = (props: DialogProps) => {
-    setDialogProps(props);
-    setShowDialog(true);
-  };
-  const closeDialog = () => {
-    setShowDialog(false);
-  };
-
   const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
   const { tabs, activeTab, tabsManager } = useTabs();
 
@@ -84,8 +73,6 @@ const App: React.FunctionComponent = () => {
     setInProgressConsoleDataIdToBeDeleted,
     openSidePanel,
     closeSidePanel,
-    openDialog,
-    closeDialog,
     tabsManager,
   };
 
@@ -98,7 +85,7 @@ const App: React.FunctionComponent = () => {
 
   return (
     <div className="flexContainer">
-      <div id="divExplorer" className="flexContainer hideOverflows" style={{ display: "none" }}>
+      <div id="divExplorer" className="flexContainer hideOverflows">
         {/* Main Command Bar - Start */}
         <div data-bind="react: commandBarComponentAdapter" />
         {/* Collections Tree and Tabs - Begin */}
@@ -226,10 +213,7 @@ const App: React.FunctionComponent = () => {
         closePanel={closeSidePanel}
         isConsoleExpanded={isNotificationConsoleExpanded}
       />
-      <div data-bind='component: { name: "add-database-pane", params: {data: addDatabasePane} }' />
-      <div data-bind='component: { name: "graph-styling-pane", params: { data: graphStylingPane} }' />
-      <div data-bind='component: { name: "cassandra-add-collection-pane", params: { data: cassandraAddCollectionPane} }' />
-      {showDialog && <Dialog {...dialogProps} />}
+      <Dialog />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
-import { AccountKind } from "../Common/Constants";
+import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { configContext, Platform, updateConfigContext } from "../ConfigContext";
@@ -83,6 +83,7 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   updateUserContext({
     authType: AuthType.AAD,
     authorizationToken: `Bearer ${config.authorizationToken}`,
+    aadToken: config.aadToken,
   });
   const account = config.databaseAccount;
   const accountResourceId = account.id;
@@ -301,6 +302,14 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
   });
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
+  }
+  if (inputs.flights) {
+    if (inputs.flights.indexOf(Flights.AutoscaleTest) !== -1) {
+      userContext.features.autoscaleDefault;
+    }
+    if (inputs.flights.indexOf(Flights.SchemaAnalyzer) !== -1) {
+      userContext.features.enableSchemaAnalyzer = true;
+    }
   }
 }
 

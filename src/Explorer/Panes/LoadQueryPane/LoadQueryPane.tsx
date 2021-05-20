@@ -1,5 +1,5 @@
-import { useBoolean } from "@fluentui/react-hooks";
 import { IImageProps, Image, ImageFit, Stack, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
@@ -8,10 +8,7 @@ import { userContext } from "../../../UserContext";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import QueryTab from "../../Tabs/QueryTab";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 interface LoadQueryPaneProps {
   explorer: Explorer;
@@ -24,7 +21,6 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
 }: LoadQueryPaneProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
   const [selectedFileName, setSelectedFileName] = useState<string>("");
   const [selectedFiles, setSelectedFiles] = useState<FileList>();
 
@@ -35,19 +31,6 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
     className: "fileIcon",
   };
 
-  const title = "Load Query";
-  const genericPaneProps: GenericRightPaneProps = {
-    expandConsole: () => explorer.expandConsole(),
-    formError: formError,
-    formErrorDetail: formErrorsDetails,
-    id: "loadQueryPane",
-    isExecuting: isLoading,
-    title,
-    submitButtonText: "Load",
-    onClose: () => closePanel(),
-    onSubmit: () => submit(),
-  };
-
   const onFileSelected = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { files } = e.target;
     setSelectedFiles(files);
@@ -56,10 +39,8 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
 
   const submit = async (): Promise<void> => {
     setFormError("");
-    setFormErrorsDetails("");
     if (!selectedFiles || selectedFiles.length === 0) {
       setFormError("No file specified");
-      setFormErrorsDetails("No file specified. Please input a file.");
       logConsoleError("Could not load query -- No file specified. Please input a file.");
       return;
     }
@@ -75,7 +56,6 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
     } catch (error) {
       setLoadingFalse();
       setFormError("Failed to load query");
-      setFormErrorsDetails(`Failed to load query: ${error}`);
       logConsoleError(`Failed to load query from file ${file.name}: ${error}`);
     }
   };
@@ -100,14 +80,20 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
 
     reader.onerror = (): void => {
       setFormError("Failed to load query");
-      setFormErrorsDetails(`Failed to load query`);
       logConsoleError(`Failed to load query from file ${file.name}`);
     };
     return reader.readAsText(file);
   };
+  const props: RightPaneFormProps = {
+    formError: formError,
+    isExecuting: isLoading,
+    submitButtonText: "Load",
+    onSubmit: () => submit(),
+    expandConsole: () => explorer.expandConsole(),
+  };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <Stack horizontal>
@@ -132,6 +118,6 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
           </Stack>
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

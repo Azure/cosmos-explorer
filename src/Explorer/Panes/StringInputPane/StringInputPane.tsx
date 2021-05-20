@@ -6,10 +6,7 @@ import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import NotebookV2Tab from "../../Tabs/NotebookV2Tab";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface StringInputPanelProps {
   explorer: Explorer;
@@ -40,7 +37,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
 }: StringInputPanelProps): JSX.Element => {
   const [stringInput, setStringInput] = useState<string>(defaultInput);
   const [formErrors, setFormErrors] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   const submit = async (): Promise<void> => {
@@ -51,7 +47,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
       return;
     } else {
       setFormErrors("");
-      setFormErrorsDetails("");
     }
 
     const clearMessage = logConsoleProgress(`${inProgressMessage} ${stringInput}`);
@@ -78,32 +73,26 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
         error = JSON.stringify(reason);
       }
 
-      // If it's an AjaxError (AjaxObservable), add more error
       if (reason?.response?.message) {
         error += `. ${reason.response.message}`;
       }
 
       setFormErrors(errorMessage);
-      setFormErrorsDetails(`${errorMessage}: ${error}`);
       logConsoleError(`${errorMessage} ${stringInput}: ${error}`);
     } finally {
       setIsExecuting(false);
       clearMessage();
     }
   };
-  const genericPaneProps: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     formError: formErrors,
-    formErrorDetail: formErrorsDetails,
-    id: "stringInputPane",
     isExecuting: isExecuting,
-    title: paneTitle,
     submitButtonText: submitButtonLabel,
-    onClose: closePanel,
     onSubmit: submit,
     expandConsole: () => container.expandConsole(),
   };
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneMainContent">
         <TextField
           label={inputLabel}
@@ -117,6 +106,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
           aria-label={inputLabel}
         />
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

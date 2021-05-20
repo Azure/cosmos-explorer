@@ -1,3 +1,4 @@
 {
- "JUNO_ENDPOINT": "https://tools-staging.cosmos.azure.com"
+  "JUNO_ENDPOINT": "https://tools-staging.cosmos.azure.com",
+  "enableSchemaAnalyzer": true
 }
