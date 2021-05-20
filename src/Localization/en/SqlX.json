@@ -46,7 +46,7 @@
     "ConnectionStringText": "To use the dedicated gateway, use the connection string shown in ",
     "KeysBlade": "the keys blade.",
     "MetricsString": "Metrics",
-    "MetricsText": "Monitor the CPU and Memory usage for the dedicated gateway instances in ",
+    "MetricsText": "Monitor the CPU and memory usage for the dedicated gateway instances in ",
     "MetricsBlade": "the metrics blade.",
     "MonitorUsage": "Monitor Usage",
     "ResizingDecisionText": "To understand if the dedicated gateway is the right size, ",
