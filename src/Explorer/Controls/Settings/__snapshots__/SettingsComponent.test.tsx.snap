@@ -28,8 +28,6 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_closeModalDialog": [Function],
-                "_closeSynapseLinkModalDialog": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_refreshSparkEnabledStateForAccount": [Function],
@@ -38,7 +36,6 @@ exports[`SettingsComponent renders 1`] = `
                 "arcadiaToken": [Function],
                 "canExceedMaximumValue": [Function],
                 "canSaveQueries": [Function],
-                "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
@@ -855,7 +852,6 @@ exports[`SettingsComponent renders 1`] = `
                 "onGitHubClientError": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -923,8 +919,6 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_closeModalDialog": [Function],
-              "_closeSynapseLinkModalDialog": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_refreshSparkEnabledStateForAccount": [Function],
@@ -933,7 +927,6 @@ exports[`SettingsComponent renders 1`] = `
               "arcadiaToken": [Function],
               "canExceedMaximumValue": [Function],
               "canSaveQueries": [Function],
-              "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
@@ -1750,7 +1743,6 @@ exports[`SettingsComponent renders 1`] = `
               "onGitHubClientError": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
@@ -1831,8 +1823,6 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_closeModalDialog": [Function],
-                "_closeSynapseLinkModalDialog": [Function],
                 "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_refreshSparkEnabledStateForAccount": [Function],
@@ -1841,7 +1831,6 @@ exports[`SettingsComponent renders 1`] = `
                 "arcadiaToken": [Function],
                 "canExceedMaximumValue": [Function],
                 "canSaveQueries": [Function],
-                "closeDialog": undefined,
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
                 "collectionCreationDefaults": Object {
@@ -2658,7 +2647,6 @@ exports[`SettingsComponent renders 1`] = `
                 "onGitHubClientError": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "openDialog": undefined,
                 "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
@@ -2726,8 +2714,6 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_closeModalDialog": [Function],
-              "_closeSynapseLinkModalDialog": [Function],
               "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_refreshSparkEnabledStateForAccount": [Function],
@@ -2736,7 +2722,6 @@ exports[`SettingsComponent renders 1`] = `
               "arcadiaToken": [Function],
               "canExceedMaximumValue": [Function],
               "canSaveQueries": [Function],
-              "closeDialog": undefined,
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
               "collectionCreationDefaults": Object {
@@ -3553,7 +3538,6 @@ exports[`SettingsComponent renders 1`] = `
               "onGitHubClientError": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "openDialog": undefined,
               "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
