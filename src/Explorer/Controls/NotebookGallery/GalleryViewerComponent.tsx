@@ -28,7 +28,6 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import Explorer from "../../Explorer";
-import { Dialog } from "../Dialog";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
 import { CodeOfConduct } from "./CodeOfConduct/CodeOfConduct";
 import "./GalleryViewerComponent.less";
@@ -185,7 +184,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     return (
       <div className="galleryContainer">
         <Pivot {...pivotProps}>{pivotItems}</Pivot>
-        <Dialog />
       </div>
     );
   }
