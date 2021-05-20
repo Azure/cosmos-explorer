@@ -121,22 +121,22 @@ export const Dialog: FC = () => {
         }
       : {};
 
-  return (
-    visible && (
-      <FluentDialog {...dialogProps}>
-        {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
-        {textFieldProps && <TextField {...textFieldProps} />}
-        {linkProps && (
-          <Link href={linkProps.linkUrl} target="_blank">
-            {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
-          </Link>
-        )}
-        {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
-        <DialogFooter>
-          <PrimaryButton {...primaryButtonProps} />
-          {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
-        </DialogFooter>
-      </FluentDialog>
-    )
+  return visible ? (
+    <FluentDialog {...dialogProps}>
+      {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
+      {textFieldProps && <TextField {...textFieldProps} />}
+      {linkProps && (
+        <Link href={linkProps.linkUrl} target="_blank">
+          {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
+        </Link>
+      )}
+      {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
+      <DialogFooter>
+        <PrimaryButton {...primaryButtonProps} />
+        {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
+      </DialogFooter>
+    </FluentDialog>
+  ) : (
+    <></>
   );
 };
