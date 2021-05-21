@@ -54,11 +54,11 @@ export const SET_HOVERED_CELL = "SET_HOVERED_CELL";
 export interface SetHoveredCellAction {
   type: "SET_HOVERED_CELL";
   payload: {
-    cellId: CellId;
+    cellId?: CellId;
   };
 }
 
-export const setHoveredCell = (payload: { cellId: CellId }): SetHoveredCellAction => {
+export const setHoveredCell = (payload: { cellId?: CellId }): SetHoveredCellAction => {
   return {
     type: SET_HOVERED_CELL,
     payload,

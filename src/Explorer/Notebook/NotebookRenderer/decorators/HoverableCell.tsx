@@ -30,7 +30,7 @@ class HoverableCell extends React.Component<ComponentProps & DispatchProps> {
 
 const mapDispatchToProps = (dispatch: Dispatch, { id }: { id: string }): DispatchProps => ({
   hover: () => dispatch(actions.setHoveredCell({ cellId: id })),
-  unHover: () => dispatch(actions.setHoveredCell({ cellId: "" })),
+  unHover: () => dispatch(actions.setHoveredCell({ cellId: undefined })),
 });
 
 export default connect(undefined, mapDispatchToProps)(HoverableCell);
