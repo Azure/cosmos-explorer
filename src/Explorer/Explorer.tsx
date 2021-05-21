@@ -6,19 +6,16 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics, HttpStatusCodes } from "../Common/Constants";
+import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { sendCachedDataMessage } from "../Common/MessageHandler";
 import { QueriesClient } from "../Common/QueriesClient";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
-import { GitHubClient } from "../GitHub/GitHubClient";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
@@ -142,8 +139,6 @@ export default class Explorer {
   public isTabsContentExpanded: ko.Observable<boolean>;
   public tabsManager: TabsManager;
 
-  // Contextual panes
-  private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
   public junoClient: JunoClient;
 
@@ -179,7 +174,6 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
-    this.gitHubClient = new GitHubClient(this.onGitHubClientError);
     this.junoClient = new JunoClient();
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
@@ -517,23 +511,6 @@ export default class Explorer {
     }
   }
 
-  private onGitHubClientError = (error: any): void => {
-    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
-
-    if (error.status === HttpStatusCodes.Unauthorized) {
-      this.gitHubOAuthService.resetToken();
-
-      this.showOkCancelModalDialog(
-        undefined,
-        "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
-        "Connect to GitHub",
-        () => this.openGitHubReposPanel("Connect to GitHub"),
-        "Cancel",
-        undefined
-      );
-    }
-  };
-
   public openEnableSynapseLinkDialog(): void {
     const addSynapseLinkDialogProps: DialogProps = {
       linkProps: {
@@ -792,14 +769,6 @@ export default class Explorer {
   //     return Promise.resolve([]);
   //   }
   // }
-
-  public async createWorkspace(): Promise<string> {
-    return sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
-  }
-
-  public async createSparkPool(workspaceId: string): Promise<string> {
-    return sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
-  }
 
   public async initNotebooks(databaseAccount: DataModels.DatabaseAccount): Promise<void> {
     if (!databaseAccount) {
@@ -1799,11 +1768,6 @@ export default class Explorer {
         this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
       }
     }
-  }
-
-  public async loadSelectedDatabaseOffer(): Promise<void> {
-    const database = this.findSelectedDatabase();
-    await database?.loadOffer();
   }
 
   public async loadDatabaseOffers(): Promise<void> {
