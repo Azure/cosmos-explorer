@@ -8,6 +8,7 @@
     "noUnusedParameters": true
   },
   "files": [
+    "src/Common/EntityValue.tsx",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",
@@ -114,6 +115,7 @@
     "./src/Utils/StyleUtils.ts",
     "./src/Utils/WindowUtils.test.ts",
     "./src/Utils/WindowUtils.ts",
+    "./src/hooks/useConfig.ts",
     "./src/hooks/useDirectories.tsx",
     "./src/hooks/useFullScreenURLs.tsx",
     "./src/hooks/useGraphPhoto.tsx",
