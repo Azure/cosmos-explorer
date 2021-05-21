@@ -32,7 +32,6 @@ export interface NotebookTabOptions extends NotebookTabBaseOptions {
 export default class NotebookTabV2 extends NotebookTabBase {
   public readonly html = '<div data-bind="react:notebookComponentAdapter" style="height: 100%"></div>';
   public notebookPath: ko.Observable<string>;
-  private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
 
   constructor(options: NotebookTabOptions) {
@@ -47,8 +46,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
       notebookClient: NotebookTabBase.clientManager,
       onUpdateKernelInfo: this.onKernelUpdate,
     });
-
-    this.selectedSparkPool = ko.observable<string>(null);
   }
 
   public onCloseTabButtonClick(): Q.Promise<any> {
