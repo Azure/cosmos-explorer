@@ -50,6 +50,7 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
   } catch (e) {
     const failureTelemetry = { ...body, e, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, updateTimeStamp);
+    throw e;
   }
   return armRequestResult?.operationStatusUrl;
 };
@@ -70,6 +71,7 @@ export const deleteDedicatedGatewayResource = async (): Promise<string> => {
   } catch (e) {
     const failureTelemetry = { e, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, deleteTimeStamp);
+    throw e;
   }
   return armRequestResult?.operationStatusUrl;
 };
@@ -90,6 +92,7 @@ export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource
   } catch (e) {
     const failureTelemetry = { e, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getResourceTimeStamp);
+    throw e;
   }
   return armRequestResult?.result;
 };
