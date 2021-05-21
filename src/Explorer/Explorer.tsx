@@ -193,16 +193,6 @@ export default class Explorer {
 
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
-    // TODO Maybe some day we will bring this feature back
-    // this.arcadiaToken = ko.observable<string>();
-    // this.arcadiaToken.subscribe((token: string) => {
-    //   if (token) {
-    //     const notebookTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2);
-    //     (notebookTabs || []).forEach((tab: NotebookV2Tab) => {
-    //       tab.reconfigureServiceEndpoints();
-    //     });
-    //   }
-    // });
     this.isShellEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
@@ -731,44 +721,6 @@ export default class Explorer {
   public provideFeedbackEmail = () => {
     window.open(Constants.Urls.feedbackEmail, "_blank");
   };
-
-  // public async getArcadiaToken(): Promise<string> {
-  //   return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
-  //     sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
-  //       (token: string) => {
-  //         resolve(token);
-  //       },
-  //       (error: any) => {
-  //         Logger.logError(getErrorMessage(error), "Explorer/getArcadiaToken");
-  //         resolve(undefined);
-  //       }
-  //     );
-  //   });
-  // }
-
-  // private async _getArcadiaWorkspaces(): Promise<ArcadiaWorkspaceItem[]> {
-  //   try {
-  //     const workspaces = await this._arcadiaManager.listWorkspacesAsync([userContext.subscriptionId]);
-  //     let workspaceItems: ArcadiaWorkspaceItem[] = new Array(workspaces.length);
-  //     const sparkPromises: Promise<void>[] = [];
-  //     workspaces.forEach((workspace, i) => {
-  //       let promise = this._arcadiaManager.listSparkPoolsAsync(workspaces[i].id).then(
-  //         (sparkpools) => {
-  //           workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
-  //         },
-  //         (error) => {
-  //           Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
-  //         }
-  //       );
-  //       sparkPromises.push(promise);
-  //     });
-
-  //     return Promise.all(sparkPromises).then(() => workspaceItems);
-  //   } catch (error) {
-  //     handleError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync", "Get Arcadia workspaces failed");
-  //     return Promise.resolve([]);
-  //   }
-  // }
 
   public async initNotebooks(databaseAccount: DataModels.DatabaseAccount): Promise<void> {
     if (!databaseAccount) {
@@ -1448,57 +1400,6 @@ export default class Explorer {
     }
   }
 
-  // public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-  //   const { subscriptionId, authType } = userContext;
-  //   const armEndpoint = configContext.ARM_ENDPOINT;
-  //   if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-  //     // explorer is not aware of the database account yet
-  //     this.isSparkEnabledForAccount(false);
-  //     return;
-  //   }
-
-  //   const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
-  //   const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
-  //   try {
-  //     const sparkNotebooksFeature: DataModels.AfecFeature = await resourceProviderClient.getAsync(
-  //       featureUri,
-  //       Constants.ArmApiVersions.armFeatures
-  //     );
-  //     const isEnabled =
-  //       (sparkNotebooksFeature &&
-  //         sparkNotebooksFeature.properties &&
-  //         sparkNotebooksFeature.properties.state === "Registered") ||
-  //       false;
-  //     this.isSparkEnabledForAccount(isEnabled);
-  //   } catch (error) {
-  //     Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
-  //     this.isSparkEnabledForAccount(false);
-  //   }
-  // };
-
-  // public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-  //   const { subscriptionId, authType } = userContext;
-  //   const armEndpoint = configContext.ARM_ENDPOINT;
-  //   if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-  //     // explorer is not aware of the database account yet
-  //     return false;
-  //   }
-
-  //   const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${featureName}`;
-  //   const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
-  //   try {
-  //     const featureStatus: DataModels.AfecFeature = await resourceProviderClient.getAsync(
-  //       featureUri,
-  //       Constants.ArmApiVersions.armFeatures
-  //     );
-  //     const isEnabled =
-  //       (featureStatus && featureStatus.properties && featureStatus.properties.state === "Registered") || false;
-  //     return isEnabled;
-  //   } catch (error) {
-  //     Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
-  //     return false;
-  //   }
-  // };
   private refreshNotebookList = async (): Promise<void> => {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       return;
@@ -1714,30 +1615,6 @@ export default class Explorer {
       this.onUpdateTabsButtons([]);
     }
   }
-
-  // private getTokenRefreshInterval(token: string): number {
-  //   let tokenRefreshInterval = Constants.ClientDefaults.arcadiaTokenRefreshInterval;
-  //   if (!token) {
-  //     return tokenRefreshInterval;
-  //   }
-
-  //   try {
-  //     const tokenPayload = decryptJWTToken(this.arcadiaToken());
-  //     if (tokenPayload && tokenPayload.hasOwnProperty("exp")) {
-  //       const expirationTime = tokenPayload.exp as number; // seconds since unix epoch
-  //       const now = new Date().getTime() / 1000;
-  //       const tokenExpirationIntervalInMs = (expirationTime - now) * 1000;
-  //       if (tokenExpirationIntervalInMs < tokenRefreshInterval) {
-  //         tokenRefreshInterval =
-  //           tokenExpirationIntervalInMs - Constants.ClientDefaults.arcadiaTokenRefreshIntervalPaddingMs;
-  //       }
-  //     }
-  //     return tokenRefreshInterval;
-  //   } catch (error) {
-  //     Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
-  //     return tokenRefreshInterval;
-  //   }
-  // }
 
   private _openSetupNotebooksPaneForQuickstart(): void {
     const title = "Enable Notebooks (Preview)";

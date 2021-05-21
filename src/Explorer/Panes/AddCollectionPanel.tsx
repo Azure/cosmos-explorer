@@ -861,7 +861,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     switch (userContext.apiType) {
       case "SQL":
       case "Mongo":
-      case "Cassandra":
         return true;
       default:
         return false;
