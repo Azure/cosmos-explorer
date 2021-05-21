@@ -28,7 +28,6 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
                 "addCollectionText": [Function],
@@ -915,7 +914,6 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_resetNotebookWorkspace": [Function],
               "addCollectionText": [Function],
@@ -1815,7 +1813,6 @@ exports[`SettingsComponent renders 1`] = `
               "changeFeedPolicy": [Function],
               "conflictResolutionPolicy": [Function],
               "container": Explorer {
-                "_isAfecFeatureRegistered": [Function],
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
                 "addCollectionText": [Function],
@@ -2702,7 +2699,6 @@ exports[`SettingsComponent renders 1`] = `
           }
           container={
             Explorer {
-              "_isAfecFeatureRegistered": [Function],
               "_isInitializingNotebooks": false,
               "_resetNotebookWorkspace": [Function],
               "addCollectionText": [Function],

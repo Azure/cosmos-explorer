@@ -17,7 +17,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
       addRepoProps={
         Object {
           "container": Explorer {
-            "_isAfecFeatureRegistered": [Function],
             "_isInitializingNotebooks": false,
             "_resetNotebookWorkspace": [Function],
             "addCollectionText": [Function],

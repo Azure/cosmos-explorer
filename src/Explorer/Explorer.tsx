@@ -22,14 +22,14 @@ import { GitHubClient } from "../GitHub/GitHubClient";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
-import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import * as SharedConstants from "../Shared/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
+import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -558,22 +558,17 @@ export default class Explorer {
         this.isSynapseLinkUpdating(true);
         useDialog.getState().closeDialog();
 
-        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(userContext.databaseAccount.id);
-
         try {
-          const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
-            userContext.databaseAccount.id,
-            "2019-12-12",
-            {
-              properties: {
-                enableAnalyticalStorage: true,
-              },
-            }
-          );
+          await update(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.id, {
+            properties: {
+              enableAnalyticalStorage: true,
+            },
+          });
+
           clearInProgressMessage();
           logConsoleInfo("Enabled Azure Synapse Link for this account");
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          updateUserContext({ databaseAccount });
+          userContext.databaseAccount.properties.enableAnalyticalStorage = true;
         } catch (error) {
           clearInProgressMessage();
           logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
@@ -1515,29 +1510,29 @@ export default class Explorer {
   //   }
   // };
 
-  public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-    const { subscriptionId, authType } = userContext;
-    const armEndpoint = configContext.ARM_ENDPOINT;
-    if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-      // explorer is not aware of the database account yet
-      return false;
-    }
+  // public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
+  //   const { subscriptionId, authType } = userContext;
+  //   const armEndpoint = configContext.ARM_ENDPOINT;
+  //   if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
+  //     // explorer is not aware of the database account yet
+  //     return false;
+  //   }
 
-    const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${featureName}`;
-    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
-    try {
-      const featureStatus: DataModels.AfecFeature = await resourceProviderClient.getAsync(
-        featureUri,
-        Constants.ArmApiVersions.armFeatures
-      );
-      const isEnabled =
-        (featureStatus && featureStatus.properties && featureStatus.properties.state === "Registered") || false;
-      return isEnabled;
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
-      return false;
-    }
-  };
+  //   const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${featureName}`;
+  //   const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
+  //   try {
+  //     const featureStatus: DataModels.AfecFeature = await resourceProviderClient.getAsync(
+  //       featureUri,
+  //       Constants.ArmApiVersions.armFeatures
+  //     );
+  //     const isEnabled =
+  //       (featureStatus && featureStatus.properties && featureStatus.properties.state === "Registered") || false;
+  //     return isEnabled;
+  //   } catch (error) {
+  //     Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
+  //     return false;
+  //   }
+  // };
   private refreshNotebookList = async (): Promise<void> => {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       return;

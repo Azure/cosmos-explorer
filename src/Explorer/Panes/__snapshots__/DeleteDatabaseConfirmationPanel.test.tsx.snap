@@ -5,7 +5,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
   closePanel={[Function]}
   explorer={
     Explorer {
-      "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
       "addCollectionText": [Function],
