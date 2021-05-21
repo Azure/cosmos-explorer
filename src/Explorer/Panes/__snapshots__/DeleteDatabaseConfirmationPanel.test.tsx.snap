@@ -7,10 +7,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
     Explorer {
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
-      "_refreshSparkEnabledStateForAccount": [Function],
       "_resetNotebookWorkspace": [Function],
       "addCollectionText": [Function],
-      "arcadiaToken": [Function],
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
       "closeSidePanel": undefined,
@@ -803,7 +801,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           },
         },
       },
-      "hasStorageAnalyticsAfecFeature": [Function],
       "isAccountReady": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
@@ -820,7 +817,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isServerlessEnabled": [Function],
       "isShellEnabled": [Function],
       "isSparkEnabled": [Function],
-      "isSparkEnabledForAccount": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
       "junoClient": JunoClient {

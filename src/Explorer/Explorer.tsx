@@ -24,22 +24,19 @@ import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { trackEvent } from "../Shared/appInsights";
 import * as SharedConstants from "../Shared/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
 import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
-import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
-import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
@@ -164,10 +161,6 @@ export default class Explorer {
   public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSparkEnabled: ko.Observable<boolean>;
-  public isSparkEnabledForAccount: ko.Observable<boolean>;
-  public arcadiaToken: ko.Observable<string>;
-  public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
-  public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: NotebookManager;
@@ -176,7 +169,6 @@ export default class Explorer {
 
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
-  private _arcadiaManager: ArcadiaResourceManager;
   private notebookToImport: {
     name: string;
     content: string;
@@ -208,22 +200,19 @@ export default class Explorer {
 
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
-    this.arcadiaToken = ko.observable<string>();
-    this.arcadiaToken.subscribe((token: string) => {
-      if (token) {
-        const notebookTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2);
-        (notebookTabs || []).forEach((tab: NotebookV2Tab) => {
-          tab.reconfigureServiceEndpoints();
-        });
-      }
-    });
+    // TODO Maybe some day we will bring this feature back
+    // this.arcadiaToken = ko.observable<string>();
+    // this.arcadiaToken.subscribe((token: string) => {
+    //   if (token) {
+    //     const notebookTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2);
+    //     (notebookTabs || []).forEach((tab: NotebookV2Tab) => {
+    //       tab.reconfigureServiceEndpoints();
+    //     });
+    //   }
+    // });
     this.isShellEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
-    this.isSparkEnabledForAccount = ko.observable(false);
-    this.isSparkEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
-    this.hasStorageAnalyticsAfecFeature = ko.observable(false);
-    this.hasStorageAnalyticsAfecFeature.subscribe((enabled: boolean) => this.refreshCommandBarButtons());
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
@@ -232,63 +221,55 @@ export default class Explorer {
           : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
-        this.arcadiaWorkspaces = ko.observableArray();
-        this._arcadiaManager = new ArcadiaResourceManager();
-        this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then((isRegistered) =>
-          this.hasStorageAnalyticsAfecFeature(isRegistered)
+        await this._refreshNotebooksEnabledStateForAccount();
+        this.isNotebookEnabled(
+          userContext.authType !== AuthType.ResourceToken &&
+            ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+              userContext.features.enableNotebooks)
         );
-        Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
-          async () => {
-            this.isNotebookEnabled(
-              userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-                  userContext.features.enableNotebooks)
-            );
-            this.isShellEnabled(
-              this.isNotebookEnabled() &&
-                !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
-                userContext.databaseAccount.properties.ipRules.length === 0
-            );
-
-            TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
-              isNotebookEnabled: this.isNotebookEnabled(),
-              dataExplorerArea: Constants.Areas.Notebook,
-            });
-
-            if (this.isNotebookEnabled()) {
-              await this.initNotebooks(userContext.databaseAccount);
-              const workspaces = await this._getArcadiaWorkspaces();
-              this.arcadiaWorkspaces(workspaces);
-            } else if (this.notebookToImport) {
-              // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
-              this._openSetupNotebooksPaneForQuickstart();
-            }
-
-            this.isSparkEnabled(
-              (this.isNotebookEnabled() &&
-                this.isSparkEnabledForAccount() &&
-                this.arcadiaWorkspaces() &&
-                this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
-            );
-            if (this.isSparkEnabled()) {
-              trackEvent(
-                { name: "LoadedWithSparkEnabled" },
-                {
-                  subscriptionId: userContext.subscriptionId,
-                  accountName: userContext.databaseAccount?.name,
-                  accountId: userContext.databaseAccount?.id,
-                  platform: configContext.platform,
-                }
-              );
-              const pollArcadiaTokenRefresh = async () => {
-                this.arcadiaToken(await this.getArcadiaToken());
-                setTimeout(() => pollArcadiaTokenRefresh(), this.getTokenRefreshInterval(this.arcadiaToken()));
-              };
-              await pollArcadiaTokenRefresh();
-            }
-          }
+        this.isShellEnabled(
+          this.isNotebookEnabled() &&
+            !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
+            userContext.databaseAccount.properties.ipRules.length === 0
         );
+
+        TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
+          isNotebookEnabled: this.isNotebookEnabled(),
+          dataExplorerArea: Constants.Areas.Notebook,
+        });
+
+        if (this.isNotebookEnabled()) {
+          await this.initNotebooks(userContext.databaseAccount);
+          // const workspaces = await this._getArcadiaWorkspaces();
+          // this.arcadiaWorkspaces(workspaces);
+        } else if (this.notebookToImport) {
+          // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
+          this._openSetupNotebooksPaneForQuickstart();
+        }
+
+        // this.isSparkEnabled(
+        //   (this.isNotebookEnabled() &&
+        //     this.isSparkEnabledForAccount() &&
+        //     this.arcadiaWorkspaces() &&
+        //     this.arcadiaWorkspaces().length > 0) ||
+        //     userContext.features.enableSpark
+        // );
+        // if (this.isSparkEnabled()) {
+        //   trackEvent(
+        //     { name: "LoadedWithSparkEnabled" },
+        //     {
+        //       subscriptionId: userContext.subscriptionId,
+        //       accountName: userContext.databaseAccount?.name,
+        //       accountId: userContext.databaseAccount?.id,
+        //       platform: configContext.platform,
+        //     }
+        //   );
+        //   const pollArcadiaTokenRefresh = async () => {
+        //     this.arcadiaToken(await this.getArcadiaToken());
+        //     setTimeout(() => pollArcadiaTokenRefresh(), this.getTokenRefreshInterval(this.arcadiaToken()));
+        //   };
+        //   await pollArcadiaTokenRefresh();
+        // }
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
@@ -782,43 +763,43 @@ export default class Explorer {
     window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
-  public async getArcadiaToken(): Promise<string> {
-    return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
-      sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
-        (token: string) => {
-          resolve(token);
-        },
-        (error: any) => {
-          Logger.logError(getErrorMessage(error), "Explorer/getArcadiaToken");
-          resolve(undefined);
-        }
-      );
-    });
-  }
+  // public async getArcadiaToken(): Promise<string> {
+  //   return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
+  //     sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
+  //       (token: string) => {
+  //         resolve(token);
+  //       },
+  //       (error: any) => {
+  //         Logger.logError(getErrorMessage(error), "Explorer/getArcadiaToken");
+  //         resolve(undefined);
+  //       }
+  //     );
+  //   });
+  // }
 
-  private async _getArcadiaWorkspaces(): Promise<ArcadiaWorkspaceItem[]> {
-    try {
-      const workspaces = await this._arcadiaManager.listWorkspacesAsync([userContext.subscriptionId]);
-      let workspaceItems: ArcadiaWorkspaceItem[] = new Array(workspaces.length);
-      const sparkPromises: Promise<void>[] = [];
-      workspaces.forEach((workspace, i) => {
-        let promise = this._arcadiaManager.listSparkPoolsAsync(workspaces[i].id).then(
-          (sparkpools) => {
-            workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
-          },
-          (error) => {
-            Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
-          }
-        );
-        sparkPromises.push(promise);
-      });
+  // private async _getArcadiaWorkspaces(): Promise<ArcadiaWorkspaceItem[]> {
+  //   try {
+  //     const workspaces = await this._arcadiaManager.listWorkspacesAsync([userContext.subscriptionId]);
+  //     let workspaceItems: ArcadiaWorkspaceItem[] = new Array(workspaces.length);
+  //     const sparkPromises: Promise<void>[] = [];
+  //     workspaces.forEach((workspace, i) => {
+  //       let promise = this._arcadiaManager.listSparkPoolsAsync(workspaces[i].id).then(
+  //         (sparkpools) => {
+  //           workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
+  //         },
+  //         (error) => {
+  //           Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
+  //         }
+  //       );
+  //       sparkPromises.push(promise);
+  //     });
 
-      return Promise.all(sparkPromises).then(() => workspaceItems);
-    } catch (error) {
-      handleError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync", "Get Arcadia workspaces failed");
-      return Promise.resolve([]);
-    }
-  }
+  //     return Promise.all(sparkPromises).then(() => workspaceItems);
+  //   } catch (error) {
+  //     handleError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync", "Get Arcadia workspaces failed");
+  //     return Promise.resolve([]);
+  //   }
+  // }
 
   public async createWorkspace(): Promise<string> {
     return sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
@@ -1506,33 +1487,33 @@ export default class Explorer {
     }
   }
 
-  public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-    const { subscriptionId, authType } = userContext;
-    const armEndpoint = configContext.ARM_ENDPOINT;
-    if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-      // explorer is not aware of the database account yet
-      this.isSparkEnabledForAccount(false);
-      return;
-    }
+  // public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
+  //   const { subscriptionId, authType } = userContext;
+  //   const armEndpoint = configContext.ARM_ENDPOINT;
+  //   if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
+  //     // explorer is not aware of the database account yet
+  //     this.isSparkEnabledForAccount(false);
+  //     return;
+  //   }
 
-    const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
-    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
-    try {
-      const sparkNotebooksFeature: DataModels.AfecFeature = await resourceProviderClient.getAsync(
-        featureUri,
-        Constants.ArmApiVersions.armFeatures
-      );
-      const isEnabled =
-        (sparkNotebooksFeature &&
-          sparkNotebooksFeature.properties &&
-          sparkNotebooksFeature.properties.state === "Registered") ||
-        false;
-      this.isSparkEnabledForAccount(isEnabled);
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
-      this.isSparkEnabledForAccount(false);
-    }
-  };
+  //   const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
+  //   const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
+  //   try {
+  //     const sparkNotebooksFeature: DataModels.AfecFeature = await resourceProviderClient.getAsync(
+  //       featureUri,
+  //       Constants.ArmApiVersions.armFeatures
+  //     );
+  //     const isEnabled =
+  //       (sparkNotebooksFeature &&
+  //         sparkNotebooksFeature.properties &&
+  //         sparkNotebooksFeature.properties.state === "Registered") ||
+  //       false;
+  //     this.isSparkEnabledForAccount(isEnabled);
+  //   } catch (error) {
+  //     Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
+  //     this.isSparkEnabledForAccount(false);
+  //   }
+  // };
 
   public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
     const { subscriptionId, authType } = userContext;
@@ -1773,29 +1754,29 @@ export default class Explorer {
     }
   }
 
-  private getTokenRefreshInterval(token: string): number {
-    let tokenRefreshInterval = Constants.ClientDefaults.arcadiaTokenRefreshInterval;
-    if (!token) {
-      return tokenRefreshInterval;
-    }
+  // private getTokenRefreshInterval(token: string): number {
+  //   let tokenRefreshInterval = Constants.ClientDefaults.arcadiaTokenRefreshInterval;
+  //   if (!token) {
+  //     return tokenRefreshInterval;
+  //   }
 
-    try {
-      const tokenPayload = decryptJWTToken(this.arcadiaToken());
-      if (tokenPayload && tokenPayload.hasOwnProperty("exp")) {
-        const expirationTime = tokenPayload.exp as number; // seconds since unix epoch
-        const now = new Date().getTime() / 1000;
-        const tokenExpirationIntervalInMs = (expirationTime - now) * 1000;
-        if (tokenExpirationIntervalInMs < tokenRefreshInterval) {
-          tokenRefreshInterval =
-            tokenExpirationIntervalInMs - Constants.ClientDefaults.arcadiaTokenRefreshIntervalPaddingMs;
-        }
-      }
-      return tokenRefreshInterval;
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
-      return tokenRefreshInterval;
-    }
-  }
+  //   try {
+  //     const tokenPayload = decryptJWTToken(this.arcadiaToken());
+  //     if (tokenPayload && tokenPayload.hasOwnProperty("exp")) {
+  //       const expirationTime = tokenPayload.exp as number; // seconds since unix epoch
+  //       const now = new Date().getTime() / 1000;
+  //       const tokenExpirationIntervalInMs = (expirationTime - now) * 1000;
+  //       if (tokenExpirationIntervalInMs < tokenRefreshInterval) {
+  //         tokenRefreshInterval =
+  //           tokenExpirationIntervalInMs - Constants.ClientDefaults.arcadiaTokenRefreshIntervalPaddingMs;
+  //       }
+  //     }
+  //     return tokenRefreshInterval;
+  //   } catch (error) {
+  //     Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
+  //     return tokenRefreshInterval;
+  //   }
+  // }
 
   private _openSetupNotebooksPaneForQuickstart(): void {
     const title = "Enable Notebooks (Preview)";

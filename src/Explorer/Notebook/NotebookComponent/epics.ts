@@ -767,7 +767,8 @@ const executeFocusedCellAndFocusNextEpic = (
 };
 
 function getUserPuid(): string {
-  const arcadiaToken = window.dataExplorer && window.dataExplorer.arcadiaToken();
+  // TODO: Figure out how to bring this feature back post move to React
+  const arcadiaToken: string = undefined; // window.dataExplorer && window.dataExplorer.arcadiaToken();
   if (!arcadiaToken) {
     return undefined;
   }

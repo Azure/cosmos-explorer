@@ -19,10 +19,8 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
           "container": Explorer {
             "_isAfecFeatureRegistered": [Function],
             "_isInitializingNotebooks": false,
-            "_refreshSparkEnabledStateForAccount": [Function],
             "_resetNotebookWorkspace": [Function],
             "addCollectionText": [Function],
-            "arcadiaToken": [Function],
             "canExceedMaximumValue": [Function],
             "canSaveQueries": [Function],
             "closeSidePanel": undefined,
@@ -815,7 +813,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
                 },
               },
             },
-            "hasStorageAnalyticsAfecFeature": [Function],
             "isAccountReady": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isHostedDataExplorerEnabled": [Function],
@@ -829,7 +826,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "isServerlessEnabled": [Function],
             "isShellEnabled": [Function],
             "isSparkEnabled": [Function],
-            "isSparkEnabledForAccount": [Function],
             "isSynapseLinkUpdating": [Function],
             "isTabsContentExpanded": [Function],
             "junoClient": JunoClient {

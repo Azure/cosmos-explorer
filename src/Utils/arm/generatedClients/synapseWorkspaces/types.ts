@@ -6,6 +6,8 @@
   Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/synapse/resource-manager/Microsoft.Synapse/stable/2021-03-01/workspace.json
 */
 
+import { ARMResourceProperties } from "../cosmos/types";
+
 /* Workspace active directory administrator properties */
 export interface AadAdminProperties {
   /* Tenant ID of the workspace active directory administrator */
@@ -113,13 +115,13 @@ export interface PurviewConfiguration {
 }
 
 /* Workspace active directory administrator */
-export type WorkspaceAadAdminInfo = unknown & {
+export type WorkspaceAadAdminInfo = ARMResourceProperties & {
   /* Workspace active directory administrator properties */
   properties?: AadAdminProperties;
 };
 
 /* A workspace */
-export type Workspace = unknown & {
+export type Workspace = ARMResourceProperties & {
   /* Workspace resource properties */
   properties?: WorkspaceProperties;
 
@@ -209,7 +211,7 @@ export interface WorkspacePatchProperties {
 }
 
 /* Sql Control Settings for workspace managed identity */
-export type ManagedIdentitySqlControlSettingsModel = unknown & {
+export type ManagedIdentitySqlControlSettingsModel = ARMResourceProperties & {
   /* Sql Control Settings for workspace managed identity */
   properties?: unknown;
 };
@@ -235,7 +237,7 @@ export interface RestorableDroppedSqlPoolProperties {
 }
 
 /* A restorable dropped Sql pool */
-export type RestorableDroppedSqlPool = unknown & {
+export type RestorableDroppedSqlPool = ARMResourceProperties & {
   /* The geo-location where the resource lives */
   readonly location?: string;
   /* The properties of a restorable dropped Sql pool */
