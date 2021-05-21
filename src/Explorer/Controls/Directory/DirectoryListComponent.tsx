@@ -19,7 +19,7 @@ export interface DirectoryListProps {
 }
 
 export interface DirectoryListComponentState {
-  filterText: string;
+  filterText?: string;
 }
 
 // onRenderCell is not called when selectedDirectoryId changed, so add a selected state to force render
@@ -73,7 +73,7 @@ export class DirectoryListComponent extends React.Component<DirectoryListProps, 
 
   private _onFilterChanged = (_event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, text?: string): void => {
     this.setState({
-      filterText: text || "",
+      filterText: text,
     });
   };
 
