@@ -223,36 +223,10 @@ export default class Explorer {
 
         if (this.isNotebookEnabled()) {
           await this.initNotebooks(userContext.databaseAccount);
-          // const workspaces = await this._getArcadiaWorkspaces();
-          // this.arcadiaWorkspaces(workspaces);
         } else if (this.notebookToImport) {
           // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
           this._openSetupNotebooksPaneForQuickstart();
         }
-
-        // this.isSparkEnabled(
-        //   (this.isNotebookEnabled() &&
-        //     this.isSparkEnabledForAccount() &&
-        //     this.arcadiaWorkspaces() &&
-        //     this.arcadiaWorkspaces().length > 0) ||
-        //     userContext.features.enableSpark
-        // );
-        // if (this.isSparkEnabled()) {
-        //   trackEvent(
-        //     { name: "LoadedWithSparkEnabled" },
-        //     {
-        //       subscriptionId: userContext.subscriptionId,
-        //       accountName: userContext.databaseAccount?.name,
-        //       accountId: userContext.databaseAccount?.id,
-        //       platform: configContext.platform,
-        //     }
-        //   );
-        //   const pollArcadiaTokenRefresh = async () => {
-        //     this.arcadiaToken(await this.getArcadiaToken());
-        //     setTimeout(() => pollArcadiaTokenRefresh(), this.getTokenRefreshInterval(this.arcadiaToken()));
-        //   };
-        //   await pollArcadiaTokenRefresh();
-        // }
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
