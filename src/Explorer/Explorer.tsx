@@ -160,7 +160,6 @@ export default class Explorer {
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
   public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
-  public isSparkEnabled: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: NotebookManager;
@@ -475,8 +474,6 @@ export default class Explorer {
       this.refreshNotebookList();
     });
 
-    this.isSparkEnabled = ko.observable(false);
-    this.isSparkEnabled.subscribe((isEnabled: boolean) => this.refreshCommandBarButtons());
     this.resourceTree = new ResourceTreeAdapter(this);
     this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
     this.notebookServerInfo = ko.observable<DataModels.NotebookWorkspaceConnectionInfo>({
