@@ -27,7 +27,7 @@ import {
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
+import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM

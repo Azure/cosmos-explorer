@@ -1,7 +1,7 @@
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { getMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { MongoDBCollectionResource } from "../../Utils/arm/generatedClients/2020-04-01/types";
+import { getMongoDBCollection } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { MongoDBCollectionResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { handleError } from "../ErrorHandlingUtils";
 
