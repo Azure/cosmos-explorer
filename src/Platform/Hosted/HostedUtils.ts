@@ -40,8 +40,8 @@ export function getDatabaseAccountKindFromExperience(apiExperience: typeof userC
   return AccountKind.GlobalDocumentDB;
 }
 
-export function extractMasterKeyfromConnectionString(connectionString: string): string {
+export function extractMasterKeyfromConnectionString(connectionString: string): string | undefined {
   // Only Gremlin uses the actual master key for connection to cosmos
   const matchedParts = connectionString.match("AccountKey=(.*);ApiKind=Gremlin;$");
-  return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || "";
+  return (matchedParts && matchedParts.length > 1 && matchedParts[1]) || undefined;
 }
