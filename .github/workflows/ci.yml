@@ -214,8 +214,8 @@ jobs:
         name: packages
         with:
           path: "*.nupkg"
-  waitforchecks:
-    name: "Wait for status checks"
+  allcheckspass:
+    name: "All Checks Pass"
     runs-on: ubuntu-latest
     steps:
       - uses: "WyriHaximus/github-action-wait-for-status@v2"
