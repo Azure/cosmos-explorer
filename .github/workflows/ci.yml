@@ -214,3 +214,8 @@ jobs:
         name: packages
         with:
           path: "*.nupkg"
+    waitforchecks:
+      name: "Wait for status checks"
+      uses: "WyriHaximus/github-action-wait-for-status@v2"
+      env:
+        GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
