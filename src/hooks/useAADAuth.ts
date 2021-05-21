@@ -111,14 +111,16 @@ export function useAADDataPlane(databaseAccount: DatabaseAccount): { aadToken: s
 
   React.useEffect(() => {
     if (databaseAccount?.properties?.documentEndpoint) {
-      const hrefEndpoint = new URL(databaseAccount.properties.documentEndpoint).href.replace(/\/$/, "/.default")
-      msalInstance.acquireTokenSilent({
-        scopes: [hrefEndpoint]
-      }).then((aadTokenResponse) => {
-        setAadToken(aadTokenResponse.accessToken)
-      })
+      const hrefEndpoint = new URL(databaseAccount.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+      msalInstance
+        .acquireTokenSilent({
+          scopes: [hrefEndpoint],
+        })
+        .then((aadTokenResponse) => {
+          setAadToken(aadTokenResponse.accessToken);
+        });
     }
-  }, [databaseAccount])
+  }, [databaseAccount]);
 
-  return { aadToken }
+  return { aadToken };
 }
