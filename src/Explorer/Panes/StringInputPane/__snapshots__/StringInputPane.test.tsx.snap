@@ -7,8 +7,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
   errorMessage="Could not create directory "
   explorer={
     Explorer {
-      "_closeModalDialog": [Function],
-      "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
       "_refreshSparkEnabledStateForAccount": [Function],
@@ -17,7 +15,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "arcadiaToken": [Function],
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
-      "closeDialog": undefined,
       "closeSidePanel": undefined,
       "collapsedResourceTreeWidth": 36,
       "collectionCreationDefaults": Object {
@@ -810,7 +807,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       },
       "hasStorageAnalyticsAfecFeature": [Function],
       "isAccountReady": [Function],
-      "isAutoscaleDefaultEnabled": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
       "isLeftPaneExpanded": [Function],
@@ -835,7 +831,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "onGitHubClientError": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
-      "openDialog": undefined,
       "openSidePanel": undefined,
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
