@@ -1024,13 +1024,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     let offerThroughput: number;
     let autoPilotMaxThroughput: number;
-    if (this.state.createNewDatabase) {
-      if (this.isNewDatabaseAutoscale) {
-        autoPilotMaxThroughput = this.newDatabaseThroughput;
-      } else {
-        offerThroughput = this.newDatabaseThroughput;
+
+    if (databaseLevelThroughput) {
+      if (this.state.createNewDatabase) {
+        if (this.isNewDatabaseAutoscale) {
+          autoPilotMaxThroughput = this.newDatabaseThroughput;
+        } else {
+          offerThroughput = this.newDatabaseThroughput;
+        }
       }
-    } else if (!databaseLevelThroughput) {
+    } else {
       if (this.isCollectionAutoscale) {
         autoPilotMaxThroughput = this.collectionThroughput;
       } else {

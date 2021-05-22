@@ -114,6 +114,7 @@
     "./src/Utils/StyleUtils.ts",
     "./src/Utils/WindowUtils.test.ts",
     "./src/Utils/WindowUtils.ts",
+    "./src/hooks/useConfig.ts",
     "./src/hooks/useDirectories.tsx",
     "./src/hooks/useFullScreenURLs.tsx",
     "./src/hooks/useGraphPhoto.tsx",
@@ -121,7 +122,8 @@
     "./src/i18n.ts",
     "./src/quickstart.ts",
     "./src/setupTests.ts",
-    "./src/userContext.test.ts"
+    "./src/userContext.test.ts",
+    "src/Common/EntityValue.tsx"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
@@ -135,6 +137,8 @@
     "src/Explorer/Controls/ResizeSensorReactComponent/**/*",
     "src/Explorer/Graph/GraphExplorerComponent/__mocks__/**/*",
     "src/Explorer/Notebook/NotebookComponent/__mocks__/**/*",
+    "src/Explorer/Notebook/NotebookRenderer/decorators/hijack-scroll/**/*",
+    "src/Explorer/Notebook/NotebookRenderer/decorators/kbd-shortcuts/**/*",
     "src/Explorer/Panes/RightPaneForm/**/*",
     "src/Libs/**/*",
     "src/Localization/**/*",
