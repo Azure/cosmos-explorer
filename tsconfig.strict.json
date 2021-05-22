@@ -8,7 +8,6 @@
     "noUnusedParameters": true
   },
   "files": [
-    "src/Common/EntityValue.tsx",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",
@@ -123,7 +122,8 @@
     "./src/i18n.ts",
     "./src/quickstart.ts",
     "./src/setupTests.ts",
-    "./src/userContext.test.ts"
+    "./src/userContext.test.ts",
+    "src/Common/EntityValue.tsx"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
@@ -137,6 +137,8 @@
     "src/Explorer/Controls/ResizeSensorReactComponent/**/*",
     "src/Explorer/Graph/GraphExplorerComponent/__mocks__/**/*",
     "src/Explorer/Notebook/NotebookComponent/__mocks__/**/*",
+    "src/Explorer/Notebook/NotebookRenderer/decorators/hijack-scroll/**/*",
+    "src/Explorer/Notebook/NotebookRenderer/decorators/kbd-shortcuts/**/*",
     "src/Explorer/Panes/RightPaneForm/**/*",
     "src/Libs/**/*",
     "src/Localization/**/*",
