@@ -55,6 +55,7 @@ import { useTabs } from "./hooks/useTabs";
 import "./Libs/jquery";
 import "./Shared/appInsights";
 import { userContext } from "./UserContext";
+import { getCollectionName } from "./Utils/APITypeUtils";
 
 initializeIcons();
 
@@ -83,6 +84,8 @@ const App: React.FunctionComponent = () => {
     return <LoadingExplorer />;
   }
 
+  const collectionTitle = `${getCollectionName()} API`;
+  const refreshTreeTitle = `Refresh ${getCollectionName()}`;
   return (
     <div className="flexContainer">
       <div id="divExplorer" className="flexContainer hideOverflows">
@@ -105,7 +108,7 @@ const App: React.FunctionComponent = () => {
                   {/* Collections Window Title/Command Bar - Start */}
                   <div className="collectiontitle">
                     <div className="coltitle">
-                      <span className="titlepadcol" data-bind="text: collectionTitle" />
+                      <span className="titlepadcol">{collectionTitle}</span>
                       <div className="float-right">
                         <span
                           className="padimgcolrefresh"
@@ -117,7 +120,7 @@ const App: React.FunctionComponent = () => {
                           aria-label="Refresh tree"
                           title="Refresh tree"
                         >
-                          <img className="refreshcol" src={refreshImg} data-bind="attr: { alt: refreshTreeTitle }" />
+                          <img className="refreshcol" src={refreshImg} alt={refreshTreeTitle} />
                         </span>
                         <span
                           className="padimgcolrefresh1"
@@ -172,10 +175,7 @@ const App: React.FunctionComponent = () => {
                         data-bind="
                                       click: toggleLeftPaneExpanded"
                       >
-                        <span
-                          data-bind="
-                                          text: collectionTitle"
-                        />
+                        <span>{collectionTitle}</span>
                       </span>
                     </li>
                   </ul>

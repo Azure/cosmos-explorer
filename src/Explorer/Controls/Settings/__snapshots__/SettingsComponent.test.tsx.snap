@@ -32,7 +32,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_isInitializingNotebooks": false,
                 "_refreshSparkEnabledStateForAccount": [Function],
                 "_resetNotebookWorkspace": [Function],
-                "addCollectionText": [Function],
                 "arcadiaToken": [Function],
                 "canExceedMaximumValue": [Function],
                 "canSaveQueries": [Function],
@@ -48,8 +47,6 @@ exports[`SettingsComponent renders 1`] = `
                     "unlimitedmin": 400,
                   },
                 },
-                "collectionTitle": [Function],
-                "collectionTreeNodeAltText": [Function],
                 "commandBarComponentAdapter": CommandBarComponentAdapter {
                   "container": [Circular],
                   "isNotebookTabActive": [Function],
@@ -57,8 +54,6 @@ exports[`SettingsComponent renders 1`] = `
                   "tabsButtons": Array [],
                 },
                 "databases": [Function],
-                "deleteCollectionText": [Function],
-                "deleteDatabaseText": [Function],
                 "gitHubClient": GitHubClient {
                   "errorCallback": [Function],
                   "ocktokit": OctokitWithDefaults {
@@ -858,7 +853,6 @@ exports[`SettingsComponent renders 1`] = `
                   "container": [Circular],
                 },
                 "refreshNotebookList": [Function],
-                "refreshTreeTitle": [Function],
                 "resourceTokenCollection": [Function],
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
@@ -923,7 +917,6 @@ exports[`SettingsComponent renders 1`] = `
               "_isInitializingNotebooks": false,
               "_refreshSparkEnabledStateForAccount": [Function],
               "_resetNotebookWorkspace": [Function],
-              "addCollectionText": [Function],
               "arcadiaToken": [Function],
               "canExceedMaximumValue": [Function],
               "canSaveQueries": [Function],
@@ -939,8 +932,6 @@ exports[`SettingsComponent renders 1`] = `
                   "unlimitedmin": 400,
                 },
               },
-              "collectionTitle": [Function],
-              "collectionTreeNodeAltText": [Function],
               "commandBarComponentAdapter": CommandBarComponentAdapter {
                 "container": [Circular],
                 "isNotebookTabActive": [Function],
@@ -948,8 +939,6 @@ exports[`SettingsComponent renders 1`] = `
                 "tabsButtons": Array [],
               },
               "databases": [Function],
-              "deleteCollectionText": [Function],
-              "deleteDatabaseText": [Function],
               "gitHubClient": GitHubClient {
                 "errorCallback": [Function],
                 "ocktokit": OctokitWithDefaults {
@@ -1749,7 +1738,6 @@ exports[`SettingsComponent renders 1`] = `
                 "container": [Circular],
               },
               "refreshNotebookList": [Function],
-              "refreshTreeTitle": [Function],
               "resourceTokenCollection": [Function],
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],
@@ -1827,7 +1815,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_isInitializingNotebooks": false,
                 "_refreshSparkEnabledStateForAccount": [Function],
                 "_resetNotebookWorkspace": [Function],
-                "addCollectionText": [Function],
                 "arcadiaToken": [Function],
                 "canExceedMaximumValue": [Function],
                 "canSaveQueries": [Function],
@@ -1843,8 +1830,6 @@ exports[`SettingsComponent renders 1`] = `
                     "unlimitedmin": 400,
                   },
                 },
-                "collectionTitle": [Function],
-                "collectionTreeNodeAltText": [Function],
                 "commandBarComponentAdapter": CommandBarComponentAdapter {
                   "container": [Circular],
                   "isNotebookTabActive": [Function],
@@ -1852,8 +1837,6 @@ exports[`SettingsComponent renders 1`] = `
                   "tabsButtons": Array [],
                 },
                 "databases": [Function],
-                "deleteCollectionText": [Function],
-                "deleteDatabaseText": [Function],
                 "gitHubClient": GitHubClient {
                   "errorCallback": [Function],
                   "ocktokit": OctokitWithDefaults {
@@ -2653,7 +2636,6 @@ exports[`SettingsComponent renders 1`] = `
                   "container": [Circular],
                 },
                 "refreshNotebookList": [Function],
-                "refreshTreeTitle": [Function],
                 "resourceTokenCollection": [Function],
                 "resourceTokenCollectionId": [Function],
                 "resourceTokenDatabaseId": [Function],
@@ -2718,7 +2700,6 @@ exports[`SettingsComponent renders 1`] = `
               "_isInitializingNotebooks": false,
               "_refreshSparkEnabledStateForAccount": [Function],
               "_resetNotebookWorkspace": [Function],
-              "addCollectionText": [Function],
               "arcadiaToken": [Function],
               "canExceedMaximumValue": [Function],
               "canSaveQueries": [Function],
@@ -2734,8 +2715,6 @@ exports[`SettingsComponent renders 1`] = `
                   "unlimitedmin": 400,
                 },
               },
-              "collectionTitle": [Function],
-              "collectionTreeNodeAltText": [Function],
               "commandBarComponentAdapter": CommandBarComponentAdapter {
                 "container": [Circular],
                 "isNotebookTabActive": [Function],
@@ -2743,8 +2722,6 @@ exports[`SettingsComponent renders 1`] = `
                 "tabsButtons": Array [],
               },
               "databases": [Function],
-              "deleteCollectionText": [Function],
-              "deleteDatabaseText": [Function],
               "gitHubClient": GitHubClient {
                 "errorCallback": [Function],
                 "ocktokit": OctokitWithDefaults {
@@ -3544,7 +3521,6 @@ exports[`SettingsComponent renders 1`] = `
                 "container": [Circular],
               },
               "refreshNotebookList": [Function],
-              "refreshTreeTitle": [Function],
               "resourceTokenCollection": [Function],
               "resourceTokenCollectionId": [Function],
               "resourceTokenDatabaseId": [Function],

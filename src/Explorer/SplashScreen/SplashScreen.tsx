@@ -17,7 +17,7 @@ import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
-import { getDatabaseName } from "../../Utils/APITypeUtils";
+import { getCollectionName, getDatabaseName } from "../../Utils/APITypeUtils";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
@@ -192,7 +192,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const heroes: SplashScreenItem[] = [
       {
         iconSrc: NewContainerIcon,
-        title: this.container.addCollectionText(),
+        title: `New ${getCollectionName()}`,
         description: "Create a new container for storage and throughput",
         onClick: () => this.container.onNewCollectionClicked(),
       },
