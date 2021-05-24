@@ -201,3 +201,8 @@ export class SubscriptionUtilMappings {
 export class AutopilotDocumentation {
   public static Url: string = "https://aka.ms/cosmos-autoscale-info";
 }
+
+export class FreeTierLimits {
+  public static RU: number = 1000;
+  public static Storage: number = 25;
+}

@@ -187,9 +187,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           <TooltipHost
             directionalHint={DirectionalHint.topLeftEdge}
             content={
-              showFreeTierExceedThroughputTooltip &&
-              throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs400
-                ? "The first 400 RU/s in this account are free. Billing will apply to any throughput beyond 400 RU/s."
+              showFreeTierExceedThroughputTooltip && throughput > SharedConstants.FreeTierLimits.RU
+                ? `The first ${SharedConstants.FreeTierLimits.RU} RU/s in this account are free. Billing will apply to any throughput beyond ${SharedConstants.FreeTierLimits.RU} RU/s.`
                 : undefined
             }
           >
