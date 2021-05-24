@@ -20,6 +20,8 @@ export interface DatabaseAccountExtendedProperties {
   writeLocations?: DatabaseAccountResponseLocation[];
   enableFreeTier?: boolean;
   enableAnalyticalStorage?: boolean;
+  isVirtualNetworkFilterEnabled?: boolean;
+  ipRules?: IpRule[];
 }
 
 export interface DatabaseAccountResponseLocation {
@@ -29,6 +31,10 @@ export interface DatabaseAccountResponseLocation {
   locationId: string;
   locationName: string;
   provisioningState: string;
+}
+
+export interface IpRule {
+  ipAddressOrRange: string;
 }
 
 export interface ConfigurationOverrides {
@@ -161,7 +167,7 @@ export interface KeyResource {
 
 export interface IndexingPolicy {
   automatic: boolean;
-  indexingMode: string;
+  indexingMode: "consistent" | "lazy" | "none";
   includedPaths: any;
   excludedPaths: any;
   compositeIndexes?: any;
@@ -170,7 +176,7 @@ export interface IndexingPolicy {
 
 export interface PartitionKey {
   paths: string[];
-  kind: string;
+  kind: "Hash" | "Range" | "MultiHash";
   version: number;
   systemKey?: boolean;
 }

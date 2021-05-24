@@ -1,5 +1,5 @@
-import { useBoolean } from "@fluentui/react-hooks";
 import { Text, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import { Areas } from "../../Common/Constants";
 import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
@@ -12,9 +12,8 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
-import { PanelFooterComponent } from "./PanelFooterComponent";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
-import { PanelLoadingScreen } from "./PanelLoadingScreen";
+import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
 interface DeleteDatabaseConfirmationPanelProps {
   explorer: Explorer;
@@ -23,36 +22,19 @@ interface DeleteDatabaseConfirmationPanelProps {
   selectedDatabase: Database;
 }
 
-export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = (
-  props: DeleteDatabaseConfirmationPanelProps
-): JSX.Element => {
+export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = ({
+  explorer,
+  openNotificationConsole,
+  closePanel,
+  selectedDatabase,
+}: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
 
   const [formError, setFormError] = useState<string>("");
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("");
 
-  const getPanelErrorProps = (): PanelInfoErrorProps => {
-    if (formError) {
-      return {
-        messageType: "error",
-        message: formError,
-        showErrorDetails: true,
-        openNotificationConsole: props.openNotificationConsole,
-      };
-    }
-
-    return {
-      messageType: "warning",
-      showErrorDetails: false,
-      message:
-        "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
-    };
-  };
-
-  const submit = async (event: React.FormEvent<HTMLFormElement>): Promise<void> => {
-    const { selectedDatabase, explorer } = props;
-    event.preventDefault();
+  const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
       setFormError("Input database name does not match the selected database");
       logConsoleError(`Error while deleting collection ${selectedDatabase && selectedDatabase.id()}`);
@@ -69,7 +51,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
 
     try {
       await deleteDatabase(selectedDatabase.id());
-      props.closePanel();
+      closePanel();
       explorer.refreshAllDatabases();
       explorer.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
       explorer.selectedNode(undefined);
@@ -121,13 +103,27 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   };
 
   const shouldRecordFeedback = (): boolean => {
-    const { explorer } = props;
     return explorer.isLastNonEmptyDatabase() || (explorer.isLastDatabase() && explorer.isSelectedDatabaseShared());
   };
 
+  const props: RightPaneFormProps = {
+    formError,
+    isExecuting: isLoading,
+    submitButtonText: "OK",
+    onSubmit: () => submit(),
+    expandConsole: openNotificationConsole,
+  };
+
+  const errorProps: PanelInfoErrorProps = {
+    messageType: "warning",
+    showErrorDetails: false,
+    message:
+      "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
+  };
+
   return (
-    <form className="panelFormWrapper" onSubmit={submit}>
-      <PanelInfoErrorComponent {...getPanelErrorProps()} />
+    <RightPaneForm {...props}>
+      {!formError && <PanelInfoErrorComponent {...errorProps} />}
       <div className="panelMainContent">
         <div className="confirmDeleteInput">
           <span className="mandatoryStar">* </span>
@@ -161,8 +157,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           </div>
         )}
       </div>
-      <PanelFooterComponent buttonLabel="OK" />
-      {isLoading && <PanelLoadingScreen />}
-    </form>
+    </RightPaneForm>
   );
 };

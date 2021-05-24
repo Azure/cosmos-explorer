@@ -9,10 +9,7 @@ import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUti
 import Explorer from "../../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../../Notebook/NotebookContentItem";
 import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
 
 interface Location {
@@ -42,7 +39,6 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
 }: CopyNotebookPanelProps) => {
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formError, setFormError] = useState<string>("");
-  const [formErrorDetail, setFormErrorDetail] = useState<string>("");
   const [pinnedRepos, setPinnedRepos] = useState<IPinnedRepo[]>();
   const [selectedLocation, setSelectedLocation] = useState<Location>();
 
@@ -92,7 +88,6 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       setFormError(`Failed to copy ${name} to ${destination}`);
-      setFormErrorDetail(`${errorMessage}`);
       handleError(errorMessage, "CopyNotebookPaneAdapter/submit", formError);
     } finally {
       clearMessage && clearMessage();
@@ -130,14 +125,10 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
     setSelectedLocation(option?.data);
   };
 
-  const genericPaneProps: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     formError,
-    formErrorDetail,
-    id: "copynotebookpane",
     isExecuting: isExecuting,
-    title: "Copy notebook",
     submitButtonText: "OK",
-    onClose: closePanel,
     onSubmit: () => submit(),
     expandConsole: () => container.expandConsole(),
   };
@@ -149,8 +140,8 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <CopyNotebookPaneComponent {...copyNotebookPaneProps} />
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

@@ -5,20 +5,20 @@ import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";
 import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
-import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
 import { DatabaseAccount } from "./Contracts/DataModels";
-import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
-import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
-import { useTokenMetadata } from "./hooks/usePortalAccessToken";
-import { MeControl } from "./Platform/Hosted/Components/MeControl";
-import "./Platform/Hosted/ConnectScreen.less";
-import "./Shared/appInsights";
-import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
 import { useAADAuth } from "./hooks/useAADAuth";
-import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
+import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
+import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
+import { ConnectExplorer } from "./Platform/Hosted/Components/ConnectExplorer";
+import { DirectoryPickerPanel } from "./Platform/Hosted/Components/DirectoryPickerPanel";
+import { FeedbackCommandButton } from "./Platform/Hosted/Components/FeedbackCommandButton";
+import { MeControl } from "./Platform/Hosted/Components/MeControl";
+import { SignInButton } from "./Platform/Hosted/Components/SignInButton";
+import "./Platform/Hosted/ConnectScreen.less";
 import { extractMasterKeyfromConnectionString } from "./Platform/Hosted/HostedUtils";
+import "./Shared/appInsights";
 
 initializeIcons();
 
@@ -31,7 +31,7 @@ const App: React.FunctionComponent = () => {
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
 
-  const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
+  const { isLoggedIn, armToken, graphToken, aadToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
@@ -50,6 +50,7 @@ const App: React.FunctionComponent = () => {
           authType: AuthType.AAD,
           databaseAccount,
           authorizationToken: armToken,
+          aadToken,
         };
       } else if (authType === AuthType.EncryptedToken) {
         frameWindow.hostedConfig = {

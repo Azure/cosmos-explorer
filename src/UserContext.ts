@@ -11,6 +11,7 @@ interface UserContext {
   readonly resourceGroup?: string;
   readonly databaseAccount?: DatabaseAccount;
   readonly endpoint?: string;
+  readonly aadToken?: string;
   readonly accessToken?: string;
   readonly authorizationToken?: string;
   readonly resourceToken?: string;

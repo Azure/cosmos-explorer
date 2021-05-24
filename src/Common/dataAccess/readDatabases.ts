@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { listGremlinDatabases } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { listSqlDatabases } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { listCassandraKeyspaces } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { listGremlinDatabases } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { listMongoDBDatabases } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { listSqlDatabases } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
