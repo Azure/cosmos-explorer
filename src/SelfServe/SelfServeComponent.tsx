@@ -166,7 +166,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     const { baselineValues } = this.state;
     for (const key of currentValues.keys()) {
       const baselineValue = baselineValues.get(key);
-      currentValues = currentValues.set(key, { ...baselineValue });
+      currentValues = currentValues.set(key, baselineValue ? { ...baselineValue } : baselineValue);
     }
     this.setState({ currentValues });
   };

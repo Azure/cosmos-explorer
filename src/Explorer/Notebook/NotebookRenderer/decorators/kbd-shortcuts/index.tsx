@@ -1,10 +1,9 @@
+import { CellId } from "@nteract/commutable";
+import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import Immutable from "immutable";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { CellId } from "@nteract/commutable";
-import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 
 interface ComponentProps {
   contentRef: ContentRef;
@@ -107,7 +106,7 @@ export class KeyboardShortcuts extends React.Component<Props> {
   }
 }
 
-export const makeMapStateToProps = (state: AppState, ownProps: ComponentProps) => {
+export const makeMapStateToProps = (_state: AppState, ownProps: ComponentProps) => {
   const { contentRef } = ownProps;
   const mapStateToProps = (state: AppState) => {
     const model = selectors.model(state, { contentRef });

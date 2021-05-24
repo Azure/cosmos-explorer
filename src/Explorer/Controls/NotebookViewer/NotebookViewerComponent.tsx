@@ -1,25 +1,25 @@
 /**
  * Wrapper around Notebook Viewer Read only content
  */
+import { IChoiceGroupProps, Icon, IProgressIndicatorProps, Link, ProgressIndicator } from "@fluentui/react";
 import { Notebook } from "@nteract/commutable";
 import { createContentRef } from "@nteract/core";
-import { IChoiceGroupProps, Icon, IProgressIndicatorProps, Link, ProgressIndicator } from "@fluentui/react";
 import * as React from "react";
 import { contents } from "rx-jupyter";
+import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
 import { IGalleryItem, JunoClient } from "../../../Juno/JunoClient";
+import { SessionStorageUtility } from "../../../Shared/StorageUtility";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
+import { DialogHost } from "../../../Utils/GalleryUtils";
+import Explorer from "../../Explorer";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
-import { Dialog, DialogProps, TextFieldProps } from "../Dialog";
+import { Dialog, TextFieldProps, useDialog } from "../Dialog";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
-import Explorer from "../../Explorer";
-import { SessionStorageUtility } from "../../../Shared/StorageUtility";
-import { DialogHost } from "../../../Utils/GalleryUtils";
-import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
-import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 
 export interface NotebookViewerComponentProps {
   container?: Explorer;
@@ -38,7 +38,6 @@ interface NotebookViewerComponentState {
   content: Notebook;
   galleryItem?: IGalleryItem;
   isFavorite?: boolean;
-  dialogProps: DialogProps;
   showProgressBar: boolean;
 }
 
@@ -70,7 +69,6 @@ export class NotebookViewerComponent
       content: undefined,
       galleryItem: props.galleryItem,
       isFavorite: props.isFavorite,
-      dialogProps: undefined,
       showProgressBar: true,
     };
 
@@ -166,8 +164,7 @@ export class NotebookViewerComponent
           hideInputs: this.props.hideInputs,
           hidePrompts: this.props.hidePrompts,
         })}
-
-        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
+        <Dialog />
       </div>
     );
   }
@@ -193,7 +190,6 @@ export class NotebookViewerComponent
     };
   }
 
-  // DialogHost
   showOkModalDialog(
     title: string,
     msg: string,
@@ -201,25 +197,21 @@ export class NotebookViewerComponent
     onOk: () => void,
     progressIndicatorProps?: IProgressIndicatorProps
   ): void {
-    this.setState({
-      dialogProps: {
-        isModal: true,
-        visible: true,
-        title,
-        subText: msg,
-        primaryButtonText: okLabel,
-        onPrimaryButtonClick: () => {
-          this.setState({ dialogProps: undefined });
-          onOk && onOk();
-        },
-        secondaryButtonText: undefined,
-        onSecondaryButtonClick: undefined,
-        progressIndicatorProps,
+    useDialog.getState().openDialog({
+      isModal: true,
+      title,
+      subText: msg,
+      primaryButtonText: okLabel,
+      onPrimaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        onOk && onOk();
       },
+      secondaryButtonText: undefined,
+      onSecondaryButtonClick: undefined,
+      progressIndicatorProps,
     });
   }
 
-  // DialogHost
   showOkCancelModalDialog(
     title: string,
     msg: string,
@@ -232,27 +224,24 @@ export class NotebookViewerComponent
     textFieldProps?: TextFieldProps,
     primaryButtonDisabled?: boolean
   ): void {
-    this.setState({
-      dialogProps: {
-        isModal: true,
-        visible: true,
-        title,
-        subText: msg,
-        primaryButtonText: okLabel,
-        secondaryButtonText: cancelLabel,
-        onPrimaryButtonClick: () => {
-          this.setState({ dialogProps: undefined });
-          onOk && onOk();
-        },
-        onSecondaryButtonClick: () => {
-          this.setState({ dialogProps: undefined });
-          onCancel && onCancel();
-        },
-        progressIndicatorProps,
-        choiceGroupProps,
-        textFieldProps,
-        primaryButtonDisabled,
+    useDialog.getState().openDialog({
+      isModal: true,
+      title,
+      subText: msg,
+      primaryButtonText: okLabel,
+      secondaryButtonText: cancelLabel,
+      onPrimaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        onOk && onOk();
       },
+      onSecondaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+        onCancel && onCancel();
+      },
+      progressIndicatorProps,
+      choiceGroupProps,
+      textFieldProps,
+      primaryButtonDisabled,
     });
   }
 

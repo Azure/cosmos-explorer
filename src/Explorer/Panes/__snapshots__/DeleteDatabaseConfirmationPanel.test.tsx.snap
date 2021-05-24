@@ -5,8 +5,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
   closePanel={[Function]}
   explorer={
     Explorer {
-      "_closeModalDialog": [Function],
-      "_closeSynapseLinkModalDialog": [Function],
       "_isAfecFeatureRegistered": [Function],
       "_isInitializingNotebooks": false,
       "_refreshSparkEnabledStateForAccount": [Function],
@@ -15,7 +13,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "arcadiaToken": [Function],
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
-      "closeDialog": undefined,
       "closeSidePanel": undefined,
       "collapsedResourceTreeWidth": 36,
       "collectionCreationDefaults": Object {
@@ -808,7 +805,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       },
       "hasStorageAnalyticsAfecFeature": [Function],
       "isAccountReady": [Function],
-      "isAutoscaleDefaultEnabled": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
       "isLastCollection": [Function],
@@ -835,7 +831,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "onGitHubClientError": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
-      "openDialog": undefined,
       "openSidePanel": undefined,
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {

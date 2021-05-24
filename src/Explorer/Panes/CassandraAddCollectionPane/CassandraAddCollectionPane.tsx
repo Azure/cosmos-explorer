@@ -36,10 +36,10 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     AddCollectionUtility.getMaxThroughput(container.collectionCreationDefaults, container)
   );
 
-  const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(container.isAutoscaleDefaultEnabled());
+  const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(userContext.features.autoscaleDefault);
 
   const [isSharedAutoPilotSelected, setIsSharedAutoPilotSelected] = useState<boolean>(
-    container.isAutoscaleDefaultEnabled()
+    userContext.features.autoscaleDefault
   );
 
   const [userTableQuery, setUserTableQuery] = useState<string>(
@@ -108,7 +108,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
 
   useEffect(() => {
     if (!container.isServerlessEnabled()) {
-      setIsAutoPilotSelected(container.isAutoscaleDefaultEnabled());
+      setIsAutoPilotSelected(userContext.features.autoscaleDefault);
     }
 
     TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);

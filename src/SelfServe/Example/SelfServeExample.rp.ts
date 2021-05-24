@@ -1,6 +1,6 @@
 import { SessionStorageUtility } from "../../Shared/StorageUtility";
 import { userContext } from "../../UserContext";
-import { get } from "../../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
+import { get } from "../../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { RefreshResult } from "../SelfServeTypes";
 import { AccountProps, Regions } from "./SelfServeExample.types";
 
