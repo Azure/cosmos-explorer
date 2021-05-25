@@ -1,5 +1,5 @@
-import { initializeIcons } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { initializeIcons } from "@fluentui/react";
 import * as React from "react";
 import { render } from "react-dom";
 import ChevronRight from "../images/chevron-right.svg";
@@ -7,7 +7,7 @@ import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
-import { useAADAuth, useAADDataPlane } from "./hooks/useAADAuth";
+import { useAADAuth } from "./hooks/useAADAuth";
 import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
@@ -31,9 +31,8 @@ const App: React.FunctionComponent = () => {
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
 
-  const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
+  const { isLoggedIn, armToken, graphToken, aadToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
-  const { aadToken } = useAADDataPlane(databaseAccount);
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
 
