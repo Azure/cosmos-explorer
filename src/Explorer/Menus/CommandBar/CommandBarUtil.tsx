@@ -14,7 +14,6 @@ import { StyleConstants } from "../../../Common/Constants";
 import { MemoryUsageInfo } from "../../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
 
@@ -166,10 +165,6 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               />
             );
           };
-        }
-
-        if (btn.isArcadiaPicker && btn.arcadiaProps) {
-          result.commandBarButtonAs = () => <ArcadiaMenuPicker {...btn.arcadiaProps} />;
         }
 
         return result;

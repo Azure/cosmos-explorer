@@ -36,7 +36,6 @@ import * as Constants from "../../../Common/Constants";
 import { Areas } from "../../../Common/Constants";
 import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import { logConsoleError, logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
@@ -103,11 +102,6 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
   }
   if (sessionId) {
     params.append("session_id", sessionId);
-  }
-
-  const userId = getUserPuid();
-  if (userId) {
-    params.append("user_id", userId);
   }
 
   const q = params.toString();
@@ -289,7 +283,6 @@ export const launchWebSocketKernelEpic = (
         return EMPTY;
       }
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
-      serverConfig.userPuid = getUserPuid();
 
       const {
         payload: { kernelSpecName, cwd, kernelRef, contentRef },
@@ -765,25 +758,6 @@ const executeFocusedCellAndFocusNextEpic = (
     })
   );
 };
-
-function getUserPuid(): string {
-  const arcadiaToken = window.dataExplorer && window.dataExplorer.arcadiaToken();
-  if (!arcadiaToken) {
-    return undefined;
-  }
-
-  let userPuid;
-  try {
-    const tokenPayload = decryptJWTToken(arcadiaToken);
-    if (tokenPayload && tokenPayload.hasOwnProperty("puid")) {
-      userPuid = tokenPayload.puid;
-    }
-  } catch (error) {
-    // ignore
-  }
-
-  return userPuid;
-}
 
 /**
  * Close tab if mimetype not supported
