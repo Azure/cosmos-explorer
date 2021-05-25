@@ -10,7 +10,6 @@ import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
 import { StyleConstants } from "../../../Common/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
-import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -31,9 +30,6 @@ export class CommandBarComponentAdapter implements ReactAdapter {
 
     // These are the parameters watched by the react binding that will trigger a renderComponent() if one of the ko mutates
     const toWatch = [
-      `Delete ${getCollectionName()}`,
-      `Delete ${getDatabaseName()}`,
-      `New ${getCollectionName()}`,
       container.isDatabaseNodeOrNoneSelected,
       container.isDatabaseNodeSelected,
       container.isNoneSelected,
