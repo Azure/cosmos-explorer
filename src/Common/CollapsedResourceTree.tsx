@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
-import { getCollectionName } from "../Utils/APITypeUtils";
+import { userContext } from "../UserContext";
 
 export interface CollapsedResourceTreeProps {
   toggleLeftPaneExpanded: () => void;
@@ -11,7 +11,6 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
   toggleLeftPaneExpanded,
   isLeftPaneExpanded,
 }: CollapsedResourceTreeProps): JSX.Element => {
-  const collectionTitle = `${getCollectionName()} API`;
   return (
     <div id="mini" className={!isLeftPaneExpanded ? "mini toggle-mini" : "hiddenMain"}>
       <div className="main-nav nav">
@@ -27,7 +26,7 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
               <img className="arrowCollapsed" src={arrowLeftImg} alt="Expand" />
             </span>
             <span className="collectionCollapsed" onClick={toggleLeftPaneExpanded}>
-              <span>{collectionTitle}</span>
+              <span>{userContext.apiType} API</span>
             </span>
           </li>
         </ul>
