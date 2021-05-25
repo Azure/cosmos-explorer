@@ -275,7 +275,6 @@ export interface TabOptions {
   title: string;
   tabPath: string;
   hashLocation: string;
-  // onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
   isTabsContentExpanded?: ko.Observable<boolean>;
   onLoadStartKey?: number;
 
