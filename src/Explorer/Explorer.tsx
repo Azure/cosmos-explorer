@@ -114,7 +114,6 @@ export default class Explorer {
   public databases: ko.ObservableArray<ViewModels.Database>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
-  public isLeftPaneExpanded: ko.Observable<boolean>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
@@ -238,7 +237,6 @@ export default class Explorer {
       }
       return true;
     });
-    this.isLeftPaneExpanded = ko.observable<boolean>(true);
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
     this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
       // Make sure switching tabs restores tabs display
@@ -493,16 +491,8 @@ export default class Explorer {
     this.setIsNotificationConsoleExpanded(true);
   }
 
-  public toggleLeftPaneExpanded() {
-    this.isLeftPaneExpanded(!this.isLeftPaneExpanded());
-
-    if (this.isLeftPaneExpanded()) {
-      document.getElementById("expandToggleLeftPaneButton").focus();
-      this.splitter.expandLeft();
-    } else {
-      document.getElementById("collapseToggleLeftPaneButton").focus();
-      this.splitter.collapseLeft();
-    }
+  public collapseConsole(): void {
+    this.setIsNotificationConsoleExpanded(false);
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
@@ -619,14 +609,6 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     this.refreshNotebookList();
-  };
-
-  public toggleLeftPaneExpandedKeyPress = (source: any, event: KeyboardEvent): boolean => {
-    if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.toggleLeftPaneExpanded();
-      return false;
-    }
-    return true;
   };
 
   // Facade

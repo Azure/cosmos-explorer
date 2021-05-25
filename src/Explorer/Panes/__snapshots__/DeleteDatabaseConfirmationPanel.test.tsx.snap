@@ -32,7 +32,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isHostedDataExplorerEnabled": [Function],
       "isLastCollection": [Function],
       "isLastNonEmptyDatabase": [Function],
-      "isLeftPaneExpanded": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
@@ -92,7 +91,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "activeTab": [Function],
         "openedTabs": [Function],
       },
-      "toggleLeftPaneExpandedKeyPress": [Function],
     }
   }
   openNotificationConsole={[Function]}
