@@ -49,7 +49,6 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
-import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
@@ -108,7 +107,6 @@ export default class Explorer {
   private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
 
   // Panes
-  public contextPanes: ContextualPaneBase[];
   public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   public closeSidePanel: () => void;
 
