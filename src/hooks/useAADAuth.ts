@@ -1,6 +1,7 @@
 import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
+import { DatabaseAccount } from "../Contracts/DataModels";
 
 const config: msal.Configuration = {
   cache: {
@@ -80,14 +81,10 @@ export function useAADAuth(): ReturnType {
         msalInstance.acquireTokenSilent({
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"],
-        }),
-        msalInstance.acquireTokenSilent({
-          scopes: ["https://cosmos.azure.com/.default"],
-        }),
-      ]).then(([graphTokenResponse, armTokenResponse, aadTokenResponse]) => {
+        })
+      ]).then(([graphTokenResponse, armTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);
         setArmToken(armTokenResponse.accessToken);
-        setAadToken(aadTokenResponse.accessToken);
       });
     }
   }, [account, tenantId]);
@@ -103,4 +100,24 @@ export function useAADAuth(): ReturnType {
     logout,
     switchTenant,
   };
+}
+
+export function useAADDataPlane(databaseAccount: DatabaseAccount): { aadToken: string } {
+  const [aadToken, setAadToken] = React.useState<string>();
+
+  React.useEffect(() => {
+    if (databaseAccount?.properties?.documentEndpoint) {
+      const hrefEndpoint = new URL(databaseAccount.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+      msalInstance
+        .acquireTokenSilent({
+          forceRefresh: true,
+          scopes: [hrefEndpoint],
+        })
+        .then((aadTokenResponse) => {
+          setAadToken(aadTokenResponse.accessToken);
+        });
+    }
+  }, [databaseAccount]);
+
+  return { aadToken };
 }
