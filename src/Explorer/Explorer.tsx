@@ -131,13 +131,9 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   public gitHubOAuthService: GitHubOAuthService;
-  public junoClient: JunoClient;
 
   // features
-  public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  public isMongoIndexingEnabled: ko.Observable<boolean>;
-  public canExceedMaximumValue: ko.Computed<boolean>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -165,7 +161,6 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
-    this.junoClient = new JunoClient();
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
@@ -221,11 +216,6 @@ export default class Explorer {
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isMongoIndexingEnabled = ko.observable<boolean>(false);
-    this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
-
-    this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
-
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -1043,7 +1033,6 @@ export default class Explorer {
         onTakeSnapshot,
         onClosePanel
       );
-      this.isPublishNotebookPaneEnabled(true);
     }
   }
 

@@ -7,7 +7,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
     Explorer {
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
-      "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
       "closeSidePanel": undefined,
       "collapsedResourceTreeWidth": 36,
@@ -34,10 +33,8 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isLastCollection": [Function],
       "isLastNonEmptyDatabase": [Function],
       "isLeftPaneExpanded": [Function],
-      "isMongoIndexingEnabled": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
-      "isPublishNotebookPaneEnabled": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isSchemaEnabled": [Function],
       "isSelectedDatabaseShared": [Function],
@@ -45,9 +42,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isShellEnabled": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
-      "junoClient": JunoClient {
-        "cachedPinnedRepos": [Function],
-      },
       "memoryUsageInfo": [Function],
       "notebookBasePath": [Function],
       "notebookServerInfo": [Function],
