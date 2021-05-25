@@ -22,7 +22,7 @@ import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
-import { getDatabaseName } from "../../../Utils/APITypeUtils";
+import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
@@ -215,7 +215,7 @@ function areScriptsSupported(): boolean {
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
-  const label = container.addCollectionText();
+  const label = `New ${getCollectionName()}`;
   return {
     iconSrc: AddCollectionIcon,
     iconAlt: label,

@@ -1,4 +1,3 @@
-import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
 import Explorer from "../Explorer";
 import Collection from "./Collection";
@@ -35,8 +34,6 @@ describe("Collection", () => {
     mockContainer.isDatabaseNodeOrNoneSelected = () => {
       return false;
     };
-
-    mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
 
     return generateCollection(mockContainer, "abc", data, {} as DataModels.Offer);
   }

@@ -19,7 +19,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
           "container": Explorer {
             "_isInitializingNotebooks": false,
             "_resetNotebookWorkspace": [Function],
-            "addCollectionText": [Function],
             "canExceedMaximumValue": [Function],
             "canSaveQueries": [Function],
             "closeSidePanel": undefined,
@@ -34,8 +33,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
                 "unlimitedmin": 400,
               },
             },
-            "collectionTitle": [Function],
-            "collectionTreeNodeAltText": [Function],
             "commandBarComponentAdapter": CommandBarComponentAdapter {
               "container": [Circular],
               "isNotebookTabActive": [Function],
@@ -43,8 +40,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
               "tabsButtons": Array [],
             },
             "databases": [Function],
-            "deleteCollectionText": [Function],
-            "deleteDatabaseText": [Function],
             "isAccountReady": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isHostedDataExplorerEnabled": [Function],
@@ -73,7 +68,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
               "container": [Circular],
             },
             "refreshNotebookList": [Function],
-            "refreshTreeTitle": [Function],
             "resourceTokenCollection": [Function],
             "resourceTokenCollectionId": [Function],
             "resourceTokenDatabaseId": [Function],

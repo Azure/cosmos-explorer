@@ -15,7 +15,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -57,7 +56,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -124,7 +122,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -223,7 +220,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -314,7 +310,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -375,7 +370,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
   describe("Resource token", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);

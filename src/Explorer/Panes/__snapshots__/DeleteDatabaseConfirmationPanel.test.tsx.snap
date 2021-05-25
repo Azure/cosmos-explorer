@@ -7,7 +7,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
     Explorer {
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
-      "addCollectionText": [Function],
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
       "closeSidePanel": undefined,
@@ -22,8 +21,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "unlimitedmin": 400,
         },
       },
-      "collectionTitle": [Function],
-      "collectionTreeNodeAltText": [Function],
       "commandBarComponentAdapter": CommandBarComponentAdapter {
         "container": [Circular],
         "isNotebookTabActive": [Function],
@@ -31,8 +28,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "tabsButtons": Array [],
       },
       "databases": [Function],
-      "deleteCollectionText": [Function],
-      "deleteDatabaseText": [Function],
       "isAccountReady": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isHostedDataExplorerEnabled": [Function],
@@ -65,7 +60,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       },
       "refreshAllDatabases": [Function],
       "refreshNotebookList": [Function],
-      "refreshTreeTitle": [Function],
       "resourceTokenCollection": [Function],
       "resourceTokenCollectionId": [Function],
       "resourceTokenDatabaseId": [Function],

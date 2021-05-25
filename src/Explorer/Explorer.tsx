@@ -91,12 +91,6 @@ export interface ExplorerParams {
 }
 
 export default class Explorer {
-  public addCollectionText: ko.Observable<string>;
-  public collectionTitle: ko.Observable<string>;
-  public deleteCollectionText: ko.Observable<string>;
-  public deleteDatabaseText: ko.Observable<string>;
-  public collectionTreeNodeAltText: ko.Observable<string>;
-  public refreshTreeTitle: ko.Observable<string>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
   public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
@@ -183,13 +177,6 @@ export default class Explorer {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    this.addCollectionText = ko.observable<string>("New Collection");
-    this.collectionTitle = ko.observable<string>("Collections");
-    this.collectionTreeNodeAltText = ko.observable<string>("Collection");
-    this.deleteCollectionText = ko.observable<string>("Delete Collection");
-    this.deleteDatabaseText = ko.observable<string>("Delete Database");
-    this.refreshTreeTitle = ko.observable<string>("Refresh collections");
-
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
     this.isShellEnabled = ko.observable(false);
@@ -357,46 +344,10 @@ export default class Explorer {
     });
 
     switch (userContext.apiType) {
-      case "SQL":
-        this.addCollectionText("New Container");
-        this.collectionTitle("SQL API");
-        this.collectionTreeNodeAltText("Container");
-        this.deleteCollectionText("Delete Container");
-        this.deleteDatabaseText("Delete Database");
-        this.refreshTreeTitle("Refresh containers");
-        break;
-      case "Mongo":
-        this.addCollectionText("New Collection");
-        this.collectionTitle("Collections");
-        this.collectionTreeNodeAltText("Collection");
-        this.deleteCollectionText("Delete Collection");
-        this.deleteDatabaseText("Delete Database");
-        this.refreshTreeTitle("Refresh collections");
-        break;
-      case "Gremlin":
-        this.addCollectionText("New Graph");
-        this.deleteCollectionText("Delete Graph");
-        this.deleteDatabaseText("Delete Database");
-        this.collectionTitle("Gremlin API");
-        this.collectionTreeNodeAltText("Graph");
-        this.refreshTreeTitle("Refresh graphs");
-        break;
       case "Tables":
-        this.addCollectionText("New Table");
-        this.deleteCollectionText("Delete Table");
-        this.deleteDatabaseText("Delete Database");
-        this.collectionTitle("Azure Table API");
-        this.collectionTreeNodeAltText("Table");
-        this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
-        this.addCollectionText("New Table");
-        this.deleteCollectionText("Delete Table");
-        this.deleteDatabaseText("Delete Keyspace");
-        this.collectionTitle("Cassandra API");
-        this.collectionTreeNodeAltText("Table");
-        this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }

@@ -30,9 +30,6 @@ export class CommandBarComponentAdapter implements ReactAdapter {
 
     // These are the parameters watched by the react binding that will trigger a renderComponent() if one of the ko mutates
     const toWatch = [
-      container.deleteCollectionText,
-      container.deleteDatabaseText,
-      container.addCollectionText,
       container.isDatabaseNodeOrNoneSelected,
       container.isDatabaseNodeSelected,
       container.isNoneSelected,
