@@ -12,7 +12,7 @@ export interface GremlinSimpleClientParameters {
   password: string;
   successCallback: (result: Result) => void;
   progressCallback: (result: Result) => void;
-  failureCallback: (result: Result, error: string) => void;
+  failureCallback: (result: Result | null, error: string) => void;
   infoCallback: (msg: string) => void;
 }
 
@@ -62,7 +62,6 @@ export class GremlinSimpleClient {
   private static readonly requestChargeHeader = "x-ms-request-charge";
 
   public params: GremlinSimpleClientParameters;
-  private protocols: string | string[];
   private ws: WebSocket;
 
   public requestsToSend: { [requestId: string]: GremlinRequestMessage };
@@ -72,6 +71,7 @@ export class GremlinSimpleClient {
     this.params = params;
     this.pendingRequests = {};
     this.requestsToSend = {};
+    this.ws = GremlinSimpleClient.createWebSocket(this.params.endpoint);
   }
 
   public connect() {
@@ -117,7 +117,7 @@ export class GremlinSimpleClient {
     }
   }
 
-  public decodeMessage(msg: MessageEvent): GremlinResponseMessage {
+  public decodeMessage(msg: MessageEvent): GremlinResponseMessage | null {
     if (msg.data === null) {
       return null;
     }
@@ -280,7 +280,7 @@ export class GremlinSimpleClient {
 
   public static utf8ToB64(utf8Str: string) {
     return btoa(
-      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+      encodeURIComponent(utf8Str).replace(/%([0-9A-F]{2})/g, function (_match, p1) {
         return String.fromCharCode(parseInt(p1, 16));
       })
     );
@@ -305,7 +305,7 @@ export class GremlinSimpleClient {
     return binaryMessage;
   }
 
-  private onOpen(event: any) {
+  private onOpen(_event: any) {
     this.executeRequestsToSend();
   }
 
