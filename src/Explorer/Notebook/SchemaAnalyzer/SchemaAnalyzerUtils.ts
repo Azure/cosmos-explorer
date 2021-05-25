@@ -1,5 +1,6 @@
 import { Notebook } from "@nteract/commutable";
 import { IContent } from "@nteract/types";
+import { userContext } from "../../../UserContext";
 import * as InMemoryContentProviderUtils from "../NotebookComponent/ContentProviders/InMemoryContentProviderUtils";
 
 const notebookName = "schema-analyzer-component-notebook.ipynb";
@@ -42,3 +43,12 @@ export const SchemaAnalyzerNotebook: IContent<"notebook"> = {
   content: notebook,
   format: "json",
 };
+
+export function isSchemaAnalyzerSupported(isNotebookEnabled: boolean): boolean {
+  return (
+    userContext.apiType === "Mongo" &&
+    isNotebookEnabled &&
+    !userContext.databaseAccount?.properties?.isVirtualNetworkFilterEnabled &&
+    !userContext.databaseAccount?.properties?.ipRules?.length
+  );
+}

@@ -29,6 +29,7 @@ import Explorer from "../Explorer";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
+import * as SchemaAnalyzerUtils from "../Notebook/SchemaAnalyzer/SchemaAnalyzerUtils";
 import TabsBase from "../Tabs/TabsBase";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
@@ -273,11 +274,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (
-      userContext.apiType === "Mongo" &&
-      this.container.isNotebookEnabled() &&
-      userContext.features.enableSchemaAnalyzer
-    ) {
+    if (SchemaAnalyzerUtils.isSchemaAnalyzerSupported(this.container.isNotebookEnabled())) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),
