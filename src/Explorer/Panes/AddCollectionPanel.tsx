@@ -862,8 +862,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       case "SQL":
       case "Mongo":
         return true;
-      case "Cassandra":
-        return this.props.explorer.hasStorageAnalyticsAfecFeature();
       default:
         return false;
     }

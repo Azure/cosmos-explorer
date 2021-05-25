@@ -15,7 +15,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -23,7 +22,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -58,7 +56,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -67,7 +64,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
         } as DatabaseAccount,
       });
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -126,7 +122,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -134,7 +129,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
@@ -226,7 +220,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -235,7 +228,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
         } as DatabaseAccount,
       });
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isSparkEnabled = ko.observable(true);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
@@ -318,7 +310,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       updateUserContext({
         databaseAccount: {
           properties: {
@@ -328,7 +319,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       });
 
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isSparkEnabled = ko.observable(true);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
@@ -380,7 +370,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
   describe("Resource token", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.addCollectionText = ko.observable("mockText");
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
       mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);

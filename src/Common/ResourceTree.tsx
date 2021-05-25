@@ -3,6 +3,7 @@ import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import refreshImg from "../../images/refresh-cosmos.svg";
 import { AuthType } from "../AuthType";
 import { userContext } from "../UserContext";
+import { getCollectionName } from "../Utils/APITypeUtils";
 
 export interface ResourceTreeProps {
   toggleLeftPaneExpanded: () => void;
@@ -13,6 +14,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
   toggleLeftPaneExpanded,
   isLeftPaneExpanded,
 }: ResourceTreeProps): JSX.Element => {
+  const collectionTitle = `${getCollectionName()} API`;
   return (
     <div id="main" className={isLeftPaneExpanded ? "main" : "hiddenMain"}>
       {/* Collections Window - - Start */}
@@ -20,7 +22,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
         {/* Collections Window Title/Command Bar - Start */}
         <div className="collectiontitle">
           <div className="coltitle">
-            <span className="titlepadcol" data-bind="text: collectionTitle" />
+            <span className="titlepadcol">{collectionTitle}</span>
             <div className="float-right">
               <span
                 className="padimgcolrefresh"
@@ -31,7 +33,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
                 aria-label="Refresh tree"
                 title="Refresh tree"
               >
-                <img className="refreshcol" src={refreshImg} alt="Refresh tree" />
+                <img className="refreshcol" src={refreshImg} alt="Refresh Tree" />
               </span>
               <span
                 className="padimgcolrefresh1"

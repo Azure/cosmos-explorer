@@ -36,7 +36,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
           {message}
           {link && linkText && (
             <Link target="_blank" href={link}>
-              {linkText}
+              {" " + linkText}
             </Link>
           )}
         </Text>
