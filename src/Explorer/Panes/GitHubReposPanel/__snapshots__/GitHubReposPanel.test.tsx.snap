@@ -32,12 +32,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
                 "unlimitedmin": 400,
               },
             },
-            "commandBarComponentAdapter": CommandBarComponentAdapter {
-              "container": [Circular],
-              "isNotebookTabActive": [Function],
-              "parameters": [Function],
-              "tabsButtons": Array [],
-            },
             "databases": [Function],
             "isAccountReady": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],

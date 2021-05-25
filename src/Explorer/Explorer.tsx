@@ -34,10 +34,9 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
-import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
 import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
-import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
+import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
@@ -153,9 +152,6 @@ export default class Explorer {
     name: string;
     content: string;
   };
-
-  // React adapters
-  private commandBarComponentAdapter: CommandBarComponentAdapter;
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
@@ -311,7 +307,7 @@ export default class Explorer {
     this.tabsManager.openedTabs.subscribe((tabs) => {
       if (tabs.length === 0) {
         this.selectedNode(undefined);
-        this.onUpdateTabsButtons([]);
+        useCommandBar.getState().setContextButtons([]);
       }
     });
 
@@ -337,8 +333,6 @@ export default class Explorer {
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
-
-    this.commandBarComponentAdapter = new CommandBarComponentAdapter(this);
 
     this._initSettings();
 
@@ -813,10 +807,6 @@ export default class Explorer {
     );
   }
 
-  public onUpdateTabsButtons(buttons: CommandButtonComponentProps[]): void {
-    this.commandBarComponentAdapter.onUpdateTabsButtons(buttons);
-  }
-
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
     // i.e addition of stored procedures, etc.
@@ -1108,7 +1098,6 @@ export default class Explorer {
         hashLocation: "notebooks",
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
         container: this,
         notebookContentItem,
       };
@@ -1443,7 +1432,6 @@ export default class Explorer {
       hashLocation: `${hashLocation} ${index}`,
       isTabsContentExpanded: ko.observable(true),
       onLoadStartKey: null,
-      onUpdateTabsButtons: this.onUpdateTabsButtons,
       container: this,
       kind: kind,
     });
@@ -1474,7 +1462,6 @@ export default class Explorer {
             title: title,
             tabPath: title,
             hashLocation: hashLocation,
-            onUpdateTabsButtons: this.onUpdateTabsButtons,
             onLoadStartKey: null,
             isTabsContentExpanded: ko.observable(true),
           },
@@ -1505,7 +1492,7 @@ export default class Explorer {
     if (activeTab) {
       activeTab.onActivate(); // TODO only update tabs buttons?
     } else {
-      this.onUpdateTabsButtons([]);
+      useCommandBar.getState().setContextButtons([]);
     }
   }
 

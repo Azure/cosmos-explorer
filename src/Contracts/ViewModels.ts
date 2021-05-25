@@ -5,7 +5,6 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
@@ -276,7 +275,7 @@ export interface TabOptions {
   title: string;
   tabPath: string;
   hashLocation: string;
-  onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
+  // onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
   isTabsContentExpanded?: ko.Observable<boolean>;
   onLoadStartKey?: number;
 

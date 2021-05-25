@@ -20,12 +20,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
           "unlimitedmin": 400,
         },
       },
-      "commandBarComponentAdapter": CommandBarComponentAdapter {
-        "container": [Circular],
-        "isNotebookTabActive": [Function],
-        "parameters": [Function],
-        "tabsButtons": Array [],
-      },
       "databases": [Function],
       "isAccountReady": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],

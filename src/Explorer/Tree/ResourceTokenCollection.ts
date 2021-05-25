@@ -3,13 +3,12 @@ import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import DocumentId from "./DocumentId";
-import DocumentsTab from "../Tabs/DocumentsTab";
-import Q from "q";
-import QueryTab from "../Tabs/QueryTab";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
+import DocumentsTab from "../Tabs/DocumentsTab";
+import QueryTab from "../Tabs/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
+import DocumentId from "./DocumentId";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
   public nodeKind: string;
@@ -96,7 +95,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       partitionKey: collection.partitionKey,
       resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
       onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
     this.container.tabsManager.activateNewTab(queryTab);
@@ -143,7 +141,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(documentsTab);

@@ -76,7 +76,6 @@ export default class StoredProcedure {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
     });
 
     source.container.tabsManager.activateNewTab(storedProcedureTab);
@@ -122,7 +121,6 @@ export default class StoredProcedure {
           this.collection.databaseId,
           this.collection.id()
         )}/sprocs/${this.id()}`,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(storedProcedureTab);
