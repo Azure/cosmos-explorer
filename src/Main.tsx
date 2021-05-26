@@ -30,7 +30,6 @@ import { ResourceTree } from "./Common/ResourceTree";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog } from "./Explorer/Controls/Dialog";
-import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
