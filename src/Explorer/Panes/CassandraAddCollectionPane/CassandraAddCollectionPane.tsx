@@ -28,12 +28,12 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   cassandraApiClient,
 }: CassandraAddCollectionPaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
-  const throughputDefaults = container.collectionCreationDefaults.throughput;
+  const throughputDefaults = userContext.collectionCreationDefaults.throughput;
   const [createTableQuery, setCreateTableQuery] = useState<string>("CREATE TABLE ");
   const [keyspaceId, setKeyspaceId] = useState<string>("");
   const [tableId, setTableId] = useState<string>("");
   const [throughput, setThroughput] = useState<number>(
-    AddCollectionUtility.getMaxThroughput(container.collectionCreationDefaults, container)
+    AddCollectionUtility.getMaxThroughput(userContext.collectionCreationDefaults, container)
   );
 
   const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(userContext.features.autoscaleDefault);

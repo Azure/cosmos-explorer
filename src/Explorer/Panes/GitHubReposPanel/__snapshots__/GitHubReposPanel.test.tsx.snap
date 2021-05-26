@@ -21,16 +21,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "_resetNotebookWorkspace": [Function],
             "canSaveQueries": [Function],
             "collapsedResourceTreeWidth": 36,
-            "collectionCreationDefaults": Object {
-              "storage": "100",
-              "throughput": Object {
-                "fixed": 400,
-                "shared": 400,
-                "unlimited": 400,
-                "unlimitedmax": 1000000,
-                "unlimitedmin": 400,
-              },
-            },
             "commandBarComponentAdapter": CommandBarComponentAdapter {
               "container": [Circular],
               "isNotebookTabActive": [Function],
