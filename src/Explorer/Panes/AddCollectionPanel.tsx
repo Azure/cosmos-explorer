@@ -20,6 +20,7 @@ import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils"
 import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { CollectionCreation, IndexingPolicies } from "../../Shared/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -36,8 +37,6 @@ import { PanelLoadingScreen } from "./PanelLoadingScreen";
 
 export interface AddCollectionPanelProps {
   explorer: Explorer;
-  closePanel: () => void;
-  openNotificationConsole: () => void;
   databaseId?: string;
 }
 
@@ -99,7 +98,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             message={this.state.errorMessage}
             messageType="error"
             showErrorDetails={this.state.showErrorDetails}
-            openNotificationConsole={this.props.openNotificationConsole}
           />
         )}
 
@@ -108,7 +106,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             message={getUpsellMessage(userContext.portalEnv, true, this.props.explorer.isFirstResourceCreated(), true)}
             messageType="info"
             showErrorDetails={false}
-            openNotificationConsole={this.props.openNotificationConsole}
             link={Constants.Urls.freeTierInformation}
             linkText="Learn more"
           />
@@ -1027,7 +1024,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       this.setState({ isExecuting: false });
       this.props.explorer.refreshAllDatabases();
       TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
-      this.props.closePanel();
+      useSidePanel.getState().closeSidePanel();
     } catch (error) {
       const errorMessage: string = getErrorMessage(error);
       this.setState({ isExecuting: false, errorMessage, showErrorDetails: true });

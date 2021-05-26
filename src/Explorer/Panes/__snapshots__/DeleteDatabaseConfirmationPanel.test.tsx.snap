@@ -16,7 +16,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
       "closeDialog": undefined,
-      "closeSidePanel": undefined,
       "collapsedResourceTreeWidth": 36,
       "collectionCreationDefaults": Object {
         "storage": "100",
@@ -836,7 +835,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
       "openDialog": undefined,
-      "openSidePanel": undefined,
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
         "container": [Circular],
@@ -863,7 +861,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "selectedDatabaseId": [Function],
       "selectedNode": [Function],
       "setInProgressConsoleDataIdToBeDeleted": undefined,
-      "setIsNotificationConsoleExpanded": undefined,
       "setNotificationConsoleData": undefined,
       "sparkClusterConnectionInfo": [Function],
       "splitter": Splitter {
@@ -894,7 +891,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
   }
 >
   <RightPaneForm
-    expandConsole={[Function]}
     formError=""
     isExecuting={false}
     onSubmit={[Function]}

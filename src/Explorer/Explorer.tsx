@@ -20,6 +20,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubClient } from "../GitHub/GitHubClient";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
+import { useSidePanel } from "../hooks/useSidePanel";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
@@ -59,8 +60,8 @@ import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfir
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
-import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
+import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
@@ -1359,12 +1360,12 @@ export default class Explorer {
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
-      this.openSidePanel(
+      useSidePanel.getState().openSidePanel(
         "Rename Notebook",
         <StringInputPane
           explorer={this}
           closePanel={() => {
-            this.closeSidePanel();
+            useSidePanel.getState().closeSidePanel();
             this.resourceTree.triggerRender();
           }}
           inputLabel="Enter new notebook name"
@@ -1390,12 +1391,12 @@ export default class Explorer {
       throw new Error(error);
     }
 
-    this.openSidePanel(
+    useSidePanel.getState().openSidePanel(
       "Create new directory",
       <StringInputPane
         explorer={this}
         closePanel={() => {
-          this.closeSidePanel();
+          useSidePanel.getState().closeSidePanel();
           this.resourceTree.triggerRender();
         }}
         errorMessage="Could not create directory "
@@ -1870,153 +1871,115 @@ export default class Explorer {
       return false;
     });
   }
-
   public openDeleteCollectionConfirmationPane(): void {
-    this.openSidePanel(
-      "Delete " + getCollectionName(),
-      <DeleteCollectionConfirmationPane explorer={this} closePanel={this.closeSidePanel} />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={this} />);
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
-    this.openSidePanel(
-      "Delete " + getDatabaseName(),
-      <DeleteDatabaseConfirmationPanel
-        explorer={this}
-        openNotificationConsole={() => this.expandConsole()}
-        closePanel={this.closeSidePanel}
-        selectedDatabase={this.findSelectedDatabase()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Delete " + getDatabaseName(),
+        <DeleteDatabaseConfirmationPanel explorer={this} selectedDatabase={this.findSelectedDatabase()} />
+      );
   }
-
   public openUploadItemsPanePane(): void {
-    this.openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
+    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
   }
-
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
-    this.openSidePanel(
-      "Input parameters",
-      <ExecuteSprocParamsPane
-        storedProcedure={storedProcedure}
-        expandConsole={() => this.expandConsole()}
-        closePanel={() => this.closeSidePanel()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
   public async openAddCollectionPanel(databaseId?: string): Promise<void> {
     await this.loadDatabaseOffers();
-    this.openSidePanel(
-      "New " + getCollectionName(),
-      <AddCollectionPanel
-        explorer={this}
-        closePanel={() => this.closeSidePanel()}
-        openNotificationConsole={() => this.expandConsole()}
-        databaseId={databaseId}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
   }
   public openAddDatabasePane(): void {
-    this.openSidePanel(
-      "New " + getDatabaseName(),
-      <AddDatabasePanel
-        explorer={this}
-        openNotificationConsole={() => this.expandConsole()}
-        closePanel={this.closeSidePanel}
-      />
-    );
+    useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this} />);
   }
 
   public openBrowseQueriesPanel(): void {
-    this.openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this} closePanel={this.closeSidePanel} />);
-  }
-
-  public openLoadQueryPanel(): void {
-    this.openSidePanel("Load Query", <LoadQueryPane explorer={this} closePanel={() => this.closeSidePanel()} />);
+    useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this} />);
   }
 
   public openSaveQueryPanel(): void {
-    this.openSidePanel("Save Query", <SaveQueryPane explorer={this} closePanel={() => this.closeSidePanel()} />);
+    useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this} />);
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     parent = parent || this.resourceTree.myNotebooksContentRoot;
-    this.openSidePanel(
-      "Upload file to notebook server",
-      <UploadFilePane
-        expandConsole={() => this.expandConsole()}
-        closePanel={this.closeSidePanel}
-        uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Upload file to notebook server",
+        <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />
+      );
   }
 
   public openCassandraAddCollectionPane(): void {
-    this.openSidePanel(
-      "Add Table",
-      <CassandraAddCollectionPane
-        explorer={this}
-        closePanel={() => this.closeSidePanel()}
-        cassandraApiClient={new CassandraAPIDataClient()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Add Table",
+        <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
+      );
   }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
-    this.openSidePanel(
-      header,
-      <GitHubReposPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        gitHubClientProp={this.notebookManager.gitHubClient}
-        junoClientProp={junoClient}
-        openNotificationConsole={() => this.expandConsole()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        header,
+        <GitHubReposPanel
+          explorer={this}
+          gitHubClientProp={this.notebookManager.gitHubClient}
+          junoClientProp={junoClient}
+        />
+      );
   }
 
   public openAddTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    this.openSidePanel(
-      "Add Table Entity",
-      <AddTableEntityPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        queryTablesTab={queryTablesTab}
-        tableEntityListViewModel={tableEntityListViewModel}
-        cassandraApiClient={new CassandraAPIDataClient()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Add Table Entity",
+        <AddTableEntityPanel
+          tableDataClient={this.tableDataClient}
+          queryTablesTab={queryTablesTab}
+          tableEntityListViewModel={tableEntityListViewModel}
+          cassandraApiClient={new CassandraAPIDataClient()}
+        />
+      );
   }
   public openSetupNotebooksPanel(title: string, description: string): void {
-    this.openSidePanel(
-      title,
-      <SetupNoteBooksPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        openNotificationConsole={() => this.expandConsole()}
-        panelTitle={title}
-        panelDescription={description}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
   }
 
   public openEditTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    this.openSidePanel(
-      "Edit Table Entity",
-      <EditTableEntityPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        queryTablesTab={queryTablesTab}
-        tableEntityListViewModel={tableEntityListViewModel}
-        cassandraApiClient={new CassandraAPIDataClient()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Edit Table Entity",
+        <EditTableEntityPanel
+          tableDataClient={this.tableDataClient}
+          queryTablesTab={queryTablesTab}
+          tableEntityListViewModel={tableEntityListViewModel}
+          cassandraApiClient={new CassandraAPIDataClient()}
+        />
+      );
   }
 
   public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
-    this.openSidePanel(
-      "Select Column",
-      <TableQuerySelectPanel explorer={this} closePanel={this.closeSidePanel} queryViewModel={queryViewModal} />
-    );
+    useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={queryViewModal} />);
+  }
+  public openSettingPane(): void {
+    useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
   }
 }

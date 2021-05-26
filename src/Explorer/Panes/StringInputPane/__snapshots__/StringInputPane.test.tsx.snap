@@ -18,7 +18,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "canExceedMaximumValue": [Function],
       "canSaveQueries": [Function],
       "closeDialog": undefined,
-      "closeSidePanel": undefined,
       "collapsedResourceTreeWidth": 36,
       "collectionCreationDefaults": Object {
         "storage": "100",
@@ -835,7 +834,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
       "openDialog": undefined,
-      "openSidePanel": undefined,
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
         "container": [Circular],
@@ -861,7 +859,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "selectedDatabaseId": [Function],
       "selectedNode": [Function],
       "setInProgressConsoleDataIdToBeDeleted": undefined,
-      "setIsNotificationConsoleExpanded": undefined,
       "setNotificationConsoleData": undefined,
       "sparkClusterConnectionInfo": [Function],
       "splitter": Splitter {
@@ -899,7 +896,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
   successMessage="Created directory "
 >
   <RightPaneForm
-    expandConsole={[Function]}
     formError=""
     isExecuting={false}
     onSubmit={[Function]}

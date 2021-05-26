@@ -7,7 +7,6 @@ export interface PanelContainerProps {
   panelContent: JSX.Element;
   isConsoleExpanded: boolean;
   isOpen: boolean;
-  closePanel: () => void;
   panelWidth?: string;
   onRenderNavigationContent?: IRenderFunction<IPanelProps>;
 }
@@ -70,7 +69,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     if ((ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
     } else {
-      this.props.closePanel();
+      useSidePanel.getState().closeSidePanel();
     }
   };
 
@@ -84,10 +83,13 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 }
 
 export const SidePanel: React.FC = () => {
-  const isOpen = useSidePanel((state) => state.isOpen);
-  const closePanel = useSidePanel((state) => state.closeSidePanel);
-  const panelContent = useSidePanel((state) => state.panelContent);
-  const headerText = useSidePanel((state) => state.headerText);
+  const { isOpen, panelContent, headerText } = useSidePanel((state) => {
+    return {
+      isOpen: state.isOpen,
+      panelContent: state.panelContent,
+      headerText: state.headerText,
+    };
+  });
   // TODO Refactor PanelContainerComponent into a functional component and remove this wrapper
   // This component only exists so we can use hooks and pass them down to a non-functional component
   return (
@@ -96,7 +98,6 @@ export const SidePanel: React.FC = () => {
       panelContent={panelContent}
       headerText={headerText}
       isConsoleExpanded={false}
-      closePanel={closePanel}
     />
   );
 };

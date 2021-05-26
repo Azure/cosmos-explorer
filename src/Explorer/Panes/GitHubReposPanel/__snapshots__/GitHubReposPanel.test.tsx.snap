@@ -28,7 +28,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "canExceedMaximumValue": [Function],
             "canSaveQueries": [Function],
             "closeDialog": undefined,
-            "closeSidePanel": undefined,
             "collapsedResourceTreeWidth": 36,
             "collectionCreationDefaults": Object {
               "storage": "100",
@@ -845,7 +844,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "onRefreshDatabasesKeyPress": [Function],
             "onRefreshResourcesClick": [Function],
             "openDialog": undefined,
-            "openSidePanel": undefined,
             "provideFeedbackEmail": [Function],
             "queriesClient": QueriesClient {
               "container": [Circular],
@@ -871,7 +869,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "selectedDatabaseId": [Function],
             "selectedNode": [Function],
             "setInProgressConsoleDataIdToBeDeleted": undefined,
-            "setIsNotificationConsoleExpanded": undefined,
             "setNotificationConsoleData": undefined,
             "sparkClusterConnectionInfo": [Function],
             "splitter": Splitter {

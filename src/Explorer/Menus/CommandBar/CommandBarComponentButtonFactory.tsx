@@ -27,7 +27,7 @@ import { getDatabaseName } from "../../../Utils/APITypeUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
-import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 
 let counter = 0;
 
@@ -158,7 +158,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
-      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane />),
+      onCommandClick: container.openSettingPane,
       commandButtonLabel: undefined,
       ariaLabel: "Settings",
       tooltipText: "Settings",
@@ -173,7 +173,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
       iconSrc: OpenInTabIcon,
       iconAlt: label,
       onCommandClick: () => {
-        container.openSidePanel("Open Full Screen", <OpenFullScreen />);
+        useSidePanel.getState().openSidePanel("Open Full Screen", <OpenFullScreen />);
       },
       commandButtonLabel: undefined,
       ariaLabel: label,
@@ -414,7 +414,7 @@ function createOpenQueryFromDiskButton(container: Explorer): CommandButtonCompon
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
-    onCommandClick: () => container.openLoadQueryPanel(),
+    onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

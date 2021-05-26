@@ -16,7 +16,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
   }
 >
   <RightPaneForm
-    expandConsole={[Function]}
     formError=""
     isExecuting={false}
     onSubmit={[Function]}

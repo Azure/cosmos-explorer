@@ -4,6 +4,7 @@ import React, { FunctionComponent, useState } from "react";
 import { Areas, SavedQueries } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Query } from "../../../Contracts/DataModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
@@ -13,13 +14,10 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 interface SaveQueryPaneProps {
   explorer: Explorer;
-  closePanel: () => void;
 }
 
-export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
-  explorer,
-  closePanel,
-}: SaveQueryPaneProps): JSX.Element => {
+export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer }: SaveQueryPaneProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
   const [queryName, setQueryName] = useState<string>("");
@@ -71,7 +69,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
         },
         startKey
       );
-      closePanel();
+      closeSidePanel();
     } catch (error) {
       setLoadingFalse();
       const errorMessage = getErrorMessage(error);
@@ -128,7 +126,6 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
   };
 
   const props: RightPaneFormProps = {
-    expandConsole: () => explorer.expandConsole(),
     formError: formError,
     isExecuting: isLoading,
     submitButtonText: canSaveQueries() ? "Save" : "Complete setup",

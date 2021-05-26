@@ -4,6 +4,7 @@ import NewVertexIcon from "../../../images/NewVertex.svg";
 import StyleIcon from "../../../images/Style.svg";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import {
   GraphAccessor,
@@ -159,12 +160,10 @@ export default class GraphTab extends TabsBase {
 
   /* Command bar */
   private showNewVertexEditor(): void {
-    this.collection.container.openSidePanel(
+    useSidePanel.getState().openSidePanel(
       "New Vertex",
       <NewVertexPanel
-        explorer={this.collection.container}
         partitionKeyPropertyProp={this.collectionPartitionKeyProperty}
-        openNotificationConsole={() => this.collection.container.expandConsole()}
         onSubmit={(
           result: ViewModels.NewVertexData,
           onError: (errorMessage: string) => void,
@@ -184,10 +183,9 @@ export default class GraphTab extends TabsBase {
     );
   }
   public openStyling(): void {
-    this.collection.container.openSidePanel(
+    useSidePanel.getState().openSidePanel(
       "Graph Style",
       <GraphStylingPanel
-        closePanel={this.collection.container.closeSidePanel}
         igraphConfigUiData={this.igraphConfigUiData}
         igraphConfig={this.igraphConfig}
         getValues={(igraphConfig?: IGraphConfig): void => {
