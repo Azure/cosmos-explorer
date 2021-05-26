@@ -299,6 +299,7 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     portalEnv: inputs.serverId as PortalEnv,
     hasWriteAccess: inputs.hasWriteAccess ?? true,
     addCollectionFlight: inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
+    collectionCreationDefaults: inputs.defaultCollectionThroughput,
   });
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));

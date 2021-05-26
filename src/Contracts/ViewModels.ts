@@ -15,6 +15,7 @@ import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
+import { CollectionCreationDefaults } from "../UserContext";
 import { SqlTriggerResource } from "../Utils/arm/generatedClients/cosmos/types";
 import * as DataModels from "./DataModels";
 import { SubscriptionType } from "./SubscriptionType";
@@ -409,25 +410,6 @@ export interface SelfServeFrameInputs {
   authorizationToken: string;
   csmEndpoint: string;
   flights?: readonly string[];
-}
-
-export interface CollectionCreationDefaults {
-  storage: string;
-  throughput: ThroughputDefaults;
-}
-
-export interface ThroughputDefaults {
-  fixed: number;
-  unlimited:
-    | number
-    | {
-        collectionThreshold: number;
-        lessThanOrEqualToThreshold: number;
-        greatThanThreshold: number;
-      };
-  unlimitedmax: number;
-  unlimitedmin: number;
-  shared: number;
 }
 
 export class MonacoEditorSettings {
