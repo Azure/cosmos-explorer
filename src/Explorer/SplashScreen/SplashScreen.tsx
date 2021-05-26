@@ -250,12 +250,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         });
       }
 
-      items.push({
-        iconSrc: OpenQueryIcon,
-        title: "Open Query",
-        description: null,
-        onClick: () => this.container.openBrowseQueriesPanel(),
-      });
+      if (userContext.apiType === "SQL") {
+        items.push({
+          iconSrc: OpenQueryIcon,
+          title: "Open Query",
+          description: null,
+          onClick: () => this.container.openBrowseQueriesPanel(),
+        });
+      }
 
       if (userContext.apiType !== "Cassandra") {
         items.push({
