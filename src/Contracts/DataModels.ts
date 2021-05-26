@@ -22,6 +22,7 @@ export interface DatabaseAccountExtendedProperties {
   enableAnalyticalStorage?: boolean;
   isVirtualNetworkFilterEnabled?: boolean;
   ipRules?: IpRule[];
+  privateEndpointConnections?: unknown[];
 }
 
 export interface DatabaseAccountResponseLocation {
