@@ -21,7 +21,7 @@ import { configContext, Platform } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { SubscriptionType } from "../../Contracts/SubscriptionType";
 import { useSidePanel } from "../../hooks/useSidePanel";
-import { CollectionCreation, IndexingPolicies } from "../../Shared/Constants";
+import { CollectionCreation } from "../../Shared/Constants";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -39,6 +39,40 @@ export interface AddCollectionPanelProps {
   explorer: Explorer;
   databaseId?: string;
 }
+
+const SharedDatabaseDefault: DataModels.IndexingPolicy = {
+  indexingMode: "consistent",
+  automatic: true,
+  includedPaths: [],
+  excludedPaths: [
+    {
+      path: "/*",
+    },
+  ],
+};
+
+const AllPropertiesIndexed: DataModels.IndexingPolicy = {
+  indexingMode: "consistent",
+  automatic: true,
+  includedPaths: [
+    {
+      path: "/*",
+      indexes: [
+        {
+          kind: "Range",
+          dataType: "Number",
+          precision: -1,
+        },
+        {
+          kind: "Range",
+          dataType: "String",
+          precision: -1,
+        },
+      ],
+    },
+  ],
+  excludedPaths: [],
+};
 
 export interface AddCollectionPanelState {
   createNewDatabase: boolean;
@@ -825,8 +859,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       case "SQL":
       case "Mongo":
         return true;
-      case "Cassandra":
-        return this.props.explorer.hasStorageAnalyticsAfecFeature();
       default:
         return false;
     }
@@ -952,14 +984,14 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
           paths: [partitionKeyString],
-          kind: Constants.BackendDefaults.partitionKeyKind,
+          kind: "Hash",
           version: partitionKeyVersion,
         }
       : undefined;
 
     const indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
-      ? IndexingPolicies.AllPropertiesIndexed
-      : IndexingPolicies.SharedDatabaseDefault;
+      ? AllPropertiesIndexed
+      : SharedDatabaseDefault;
 
     const telemetryData = {
       database: {
@@ -989,13 +1021,16 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     let offerThroughput: number;
     let autoPilotMaxThroughput: number;
-    if (this.state.createNewDatabase) {
-      if (this.isNewDatabaseAutoscale) {
-        autoPilotMaxThroughput = this.newDatabaseThroughput;
-      } else {
-        offerThroughput = this.newDatabaseThroughput;
+
+    if (databaseLevelThroughput) {
+      if (this.state.createNewDatabase) {
+        if (this.isNewDatabaseAutoscale) {
+          autoPilotMaxThroughput = this.newDatabaseThroughput;
+        } else {
+          offerThroughput = this.newDatabaseThroughput;
+        }
       }
-    } else if (!databaseLevelThroughput) {
+    } else {
       if (this.isCollectionAutoscale) {
         autoPilotMaxThroughput = this.collectionThroughput;
       } else {

@@ -1,9 +1,10 @@
-import { IsDisplayable, OnChange, RefreshOptions, Values } from "../Decorators";
+import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import { selfServeTrace } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
   DescriptionType,
+  Info,
   InputType,
   NumberUiType,
   OnSaveResult,
@@ -43,15 +44,6 @@ const metricsStringValue: Description = {
   link: {
     href: generateBladeLink(BladeType.Metrics),
     textTKey: "MetricsBlade",
-  },
-};
-
-const resizingDecisionValue: Description = {
-  textTKey: "ResizingDecisionText",
-  type: DescriptionType.Text,
-  link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
-    textTKey: "ResizingDecisionLink",
   },
 };
 
@@ -104,7 +96,6 @@ const onEnableDedicatedGatewayChange = (
     currentValues.set("warningBanner", baselineValues.get("warningBanner"));
     currentValues.set("connectionString", baselineValues.get("connectionString"));
     currentValues.set("metricsString", baselineValues.get("metricsString"));
-    currentValues.set("resizingDecisionString", baselineValues.get("resizingDecisionString"));
     return currentValues;
   }
 
@@ -157,11 +148,6 @@ const onEnableDedicatedGatewayChange = (
     hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
   });
 
-  currentValues.set("resizingDecisionString", {
-    value: resizingDecisionValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
-  });
-
   return currentValues;
 };
 
@@ -181,6 +167,14 @@ const getInstancesMin = async (): Promise<number> => {
 
 const getInstancesMax = async (): Promise<number> => {
   return 5;
+};
+
+const NumberOfInstancesDropdownInfo: Info = {
+  messageTKey: "ResizingDecisionText",
+  link: {
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
+    textTKey: "ResizingDecisionLink",
+  },
 };
 
 @IsDisplayable()
@@ -279,10 +273,6 @@ export default class SqlX extends SelfServeBaseClass {
       value: undefined,
       hidden: true,
     });
-    defaults.set("resizingDecisionString", {
-      value: undefined,
-      hidden: true,
-    });
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
@@ -299,13 +289,7 @@ export default class SqlX extends SelfServeBaseClass {
         value: metricsStringValue,
         hidden: false,
       });
-
-      defaults.set("resizingDecisionString", {
-        value: resizingDecisionValue,
-        hidden: false,
-      });
     }
-
     defaults.set("warningBanner", undefined);
     return defaults;
   };
@@ -344,6 +328,7 @@ export default class SqlX extends SelfServeBaseClass {
   sku: ChoiceItem;
 
   @OnChange(onNumberOfInstancesChange)
+  @PropertyInfo(NumberOfInstancesDropdownInfo)
   @Values({
     labelTKey: "NumberOfInstances",
     min: getInstancesMin,
@@ -352,16 +337,6 @@ export default class SqlX extends SelfServeBaseClass {
     uiType: NumberUiType.Spinner,
   })
   instances: number;
-
-  @Values({
-    description: metricsStringValue,
-  })
-  metricsString: string;
-
-  @Values({
-    description: resizingDecisionValue,
-  })
-  resizingDecisionString: string;
 
   @Values({
     labelTKey: "Cost",
@@ -374,4 +349,10 @@ export default class SqlX extends SelfServeBaseClass {
     isDynamicDescription: true,
   })
   connectionString: string;
+
+  @Values({
+    labelTKey: "MonitorUsage",
+    description: metricsStringValue,
+  })
+  metricsString: string;
 }

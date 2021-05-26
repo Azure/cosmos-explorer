@@ -1,11 +1,10 @@
 /* eslint jsx-a11y/no-static-element-interactions: 0 */
 /* eslint jsx-a11y/click-events-have-key-events: 0 */
 
+import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-
-import { actions, selectors, ContentRef, AppState } from "@nteract/core";
 
 interface ComponentProps {
   id: string;
@@ -70,7 +69,7 @@ export class HijackScroll extends React.Component<Props> {
   }
 }
 
-const makeMapStateToProps = (initialState: AppState, ownProps: ComponentProps) => {
+const makeMapStateToProps = (_initialState: AppState, ownProps: ComponentProps) => {
   const mapStateToProps = (state: AppState) => {
     const { id, contentRef } = ownProps;
     const model = selectors.model(state, { contentRef });
@@ -87,7 +86,7 @@ const makeMapStateToProps = (initialState: AppState, ownProps: ComponentProps) =
   return mapStateToProps;
 };
 
-const makeMapDispatchToProps = (initialDispatch: Dispatch, ownProps: ComponentProps) => {
+const makeMapDispatchToProps = (_initialDispatch: Dispatch, ownProps: ComponentProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => ({
     selectCell: () => dispatch(actions.focusCell({ id: ownProps.id, contentRef: ownProps.contentRef })),
   });

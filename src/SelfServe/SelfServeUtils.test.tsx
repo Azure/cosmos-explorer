@@ -190,7 +190,8 @@ describe("SelfServeUtils", () => {
               max: 5,
               step: 1,
               uiType: "Spinner",
-              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidThroughput'.",
+              errorMessage:
+                "labelTkey, trueLabelTKey and falseLabelTKey are required for boolean input 'invalidThroughput'.",
             },
             children: [] as Node[],
           },
@@ -225,7 +226,8 @@ describe("SelfServeUtils", () => {
               type: "boolean",
               labelTKey: "Invalid Enable Logging",
               placeholderTKey: "placeholder text",
-              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidEnableLogging'.",
+              errorMessage:
+                "labelTkey, trueLabelTKey and falseLabelTKey are required for boolean input 'invalidEnableLogging'.",
             },
             children: [] as Node[],
           },
@@ -252,7 +254,7 @@ describe("SelfServeUtils", () => {
               type: "object",
               labelTKey: "Invalid Regions",
               placeholderTKey: "placeholder text",
-              errorMessage: "label and choices are required for Choice input 'invalidRegions'.",
+              errorMessage: "labelTKey and choices are required for Choice input 'invalidRegions'.",
             },
             children: [] as Node[],
           },

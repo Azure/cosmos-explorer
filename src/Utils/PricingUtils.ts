@@ -267,9 +267,11 @@ export function getUpsellMessage(
   if (isFreeTier) {
     const collectionName = getCollectionName().toLocaleLowerCase();
     const resourceType = isCollection ? collectionName : "database";
+    const freeTierMaxRU = Constants.FreeTierLimits.RU;
+    const freeTierMaxStorage = Constants.FreeTierLimits.Storage;
     return isFirstResourceCreated
-      ? `The free tier discount of 400 RU/s has already been applied to a database or ${collectionName} in this account. Billing will apply to this ${resourceType} after it is created.`
-      : `With free tier, you'll get the first 400 RU/s and 5 GB of storage in this account for free. Billing will apply if you provision more than 400 RU/s of manual throughput, or if the ${resourceType} scales beyond 400 RU/s with autoscale.`;
+      ? `Your account currently has at least 1 database or ${collectionName} with provisioned RU/s. Billing will apply to this ${resourceType} if the total RU/s in your account exceeds ${freeTierMaxRU} RU/s.`
+      : `With free tier, you'll get the first ${freeTierMaxRU} RU/s and ${freeTierMaxStorage} GB of storage in this account for free. Billing will apply if you provision more than ${freeTierMaxRU} RU/s of manual throughput, or if the ${resourceType} scales beyond ${freeTierMaxRU} RU/s with autoscale.`;
   } else {
     let price: number = Constants.OfferPricing.MonthlyPricing.default.Standard.StartingPrice;
 

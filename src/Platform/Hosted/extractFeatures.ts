@@ -9,6 +9,7 @@ export type Features = {
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
   enableSchemaAnalyzer: boolean;
+  autoscaleDefault: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -68,5 +69,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     pr: get("pr"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
+    autoscaleDefault: "true" === get("autoscaledefault"),
   };
 }

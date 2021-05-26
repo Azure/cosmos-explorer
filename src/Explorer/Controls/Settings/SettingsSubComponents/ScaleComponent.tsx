@@ -202,10 +202,12 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   }
 
   private getFreeTierInfoMessage(): JSX.Element {
+    const freeTierLimits = SharedConstants.FreeTierLimits;
     return (
       <Text>
-        With free tier, you will get the first 400 RU/s and 5 GB of storage in this account for free. To keep your
-        account free, keep the total RU/s across all resources in the account to 400 RU/s.
+        With free tier, you will get the first {freeTierLimits.RU} RU/s and {freeTierLimits.Storage} GB of storage in
+        this account for free. To keep your account free, keep the total RU/s across all resources in the account to{" "}
+        {freeTierLimits.RU} RU/s.
         <Link
           href="https://docs.microsoft.com/en-us/azure/cosmos-db/understand-your-bill#billing-examples-with-free-tier-accounts"
           target="_blank"

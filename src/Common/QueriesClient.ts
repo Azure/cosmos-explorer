@@ -19,7 +19,7 @@ import { handleError } from "./ErrorHandlingUtils";
 export class QueriesClient {
   private static readonly PartitionKey: DataModels.PartitionKey = {
     paths: [`/${SavedQueries.PartitionKeyProperty}`],
-    kind: BackendDefaults.partitionKeyKind,
+    kind: "Hash",
     version: BackendDefaults.partitionKeyVersion,
   };
   private static readonly FetchQuery: string = "SELECT * FROM c";
