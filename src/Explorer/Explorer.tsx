@@ -9,6 +9,7 @@ import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
+import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
@@ -188,11 +189,8 @@ export default class Explorer {
             ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
               userContext.features.enableNotebooks)
         );
-        this.isShellEnabled(
-          this.isNotebookEnabled() &&
-            !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
-            userContext.databaseAccount.properties.ipRules.length === 0
-        );
+
+        this.isShellEnabled(this.isNotebookEnabled() && isPublicInternetAccessAllowed());
 
         TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
           isNotebookEnabled: this.isNotebookEnabled(),
