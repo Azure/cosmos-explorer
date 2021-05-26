@@ -12,6 +12,6 @@ function isPrivateEndpointConnectionsEnabled() {
   return userContext.databaseAccount?.properties?.privateEndpointConnections?.length > 0;
 }
 
-export function isPublicInternetAccessAllowed() {
+export function isPublicInternetAccessAllowed(): boolean {
   return !isVirtualNetworkFilterEnabled() && !isIpRulesEnabled() && !isPrivateEndpointConnectionsEnabled();
 }
