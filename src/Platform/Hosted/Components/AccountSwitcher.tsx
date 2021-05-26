@@ -6,7 +6,6 @@ import * as React from "react";
 import { FunctionComponent, useEffect, useState } from "react";
 import { StyleConstants } from "../../../Common/Constants";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
-import { useAADDataPlane } from "../../../hooks/useAADAuth";
 import { useDatabaseAccounts } from "../../../hooks/useDatabaseAccounts";
 import { useSubscriptions } from "../../../hooks/useSubscriptions";
 import { SwitchAccount } from "./SwitchAccount";
@@ -59,7 +58,6 @@ export const AccountSwitcher: FunctionComponent<Props> = ({ armToken, setDatabas
     localStorage.getItem("cachedDatabaseAccountName")
   );
   const selectedAccount = accounts?.find((account) => account.name === selectedAccountName);
-  useAADDataPlane(selectedAccount)
 
   useEffect(() => {
     if (selectedAccountName) {

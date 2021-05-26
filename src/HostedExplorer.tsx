@@ -7,7 +7,7 @@ import "../less/hostedexplorer.less";
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
-import { useAADAuth, useAADDataPlane } from "./hooks/useAADAuth";
+import { useAADAuth } from "./hooks/useAADAuth";
 import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
@@ -33,7 +33,6 @@ const App: React.FunctionComponent = () => {
 
   const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
-  const { aadToken } = useAADDataPlane(databaseAccount);
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
 
@@ -51,7 +50,6 @@ const App: React.FunctionComponent = () => {
           authType: AuthType.AAD,
           databaseAccount,
           authorizationToken: armToken,
-          aadToken,
         };
       } else if (authType === AuthType.EncryptedToken) {
         frameWindow.hostedConfig = {

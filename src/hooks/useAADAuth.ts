@@ -1,23 +1,9 @@
 import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
-import { DatabaseAccount } from "../Contracts/DataModels";
+import { getMsalInstance } from "../Utils/AuthorizationUtils";
 
-const config: msal.Configuration = {
-  cache: {
-    cacheLocation: "localStorage",
-  },
-  auth: {
-    authority: "https://login.microsoftonline.com/common",
-    clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-  },
-};
-
-if (process.env.NODE_ENV === "development") {
-  config.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
-}
-
-const msalInstance = new msal.PublicClientApplication(config);
+const msalInstance = getMsalInstance();
 
 const cachedAccount = msalInstance.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
@@ -26,7 +12,6 @@ interface ReturnType {
   isLoggedIn: boolean;
   graphToken: string;
   armToken: string;
-  aadToken: string;
   login: () => void;
   logout: () => void;
   tenantId: string;
@@ -42,7 +27,6 @@ export function useAADAuth(): ReturnType {
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
-  const [aadToken, setAadToken] = React.useState<string>();
 
   msalInstance.setActiveAccount(account);
   const login = React.useCallback(async () => {
@@ -81,7 +65,7 @@ export function useAADAuth(): ReturnType {
         msalInstance.acquireTokenSilent({
           authority: `https://login.microsoftonline.com/${tenantId}`,
           scopes: ["https://management.azure.com//.default"],
-        })
+        }),
       ]).then(([graphTokenResponse, armTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);
         setArmToken(armTokenResponse.accessToken);
@@ -95,29 +79,8 @@ export function useAADAuth(): ReturnType {
     isLoggedIn,
     graphToken,
     armToken,
-    aadToken,
     login,
     logout,
     switchTenant,
   };
-}
-
-export function useAADDataPlane(databaseAccount: DatabaseAccount): { aadToken: string } {
-  const [aadToken, setAadToken] = React.useState<string>();
-
-  React.useEffect(() => {
-    if (databaseAccount?.properties?.documentEndpoint) {
-      const hrefEndpoint = new URL(databaseAccount.properties.documentEndpoint).href.replace(/\/$/, "/.default");
-      msalInstance
-        .acquireTokenSilent({
-          forceRefresh: true,
-          scopes: [hrefEndpoint],
-        })
-        .then((aadTokenResponse) => {
-          setAadToken(aadTokenResponse.accessToken);
-        });
-    }
-  }, [databaseAccount]);
-
-  return { aadToken };
 }
