@@ -250,7 +250,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         });
       }
 
-      if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
+      if (userContext.apiType === "SQL") {
         items.push({
           iconSrc: OpenQueryIcon,
           title: "Open Query",
