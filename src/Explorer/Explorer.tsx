@@ -20,11 +20,10 @@ import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import * as SharedConstants from "../Shared/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
+import { updateUserContext, userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
@@ -92,7 +91,6 @@ export interface ExplorerParams {
 export default class Explorer {
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
@@ -793,7 +791,7 @@ export default class Explorer {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
       if (inputs.defaultCollectionThroughput) {
-        this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
+        updateUserContext({ collectionCreationDefaults: inputs.defaultCollectionThroughput });
       }
       this.isAccountReady(true);
     }

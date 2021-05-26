@@ -1,8 +1,9 @@
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
+import * as ViewModels from "./Contracts/ViewModels";
 import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
-import { CollectionCreation } from "./Shared/Constants";
+import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constants";
 
 interface UserContext {
   readonly authType?: AuthType;
@@ -26,6 +27,7 @@ interface UserContext {
   readonly features: Features;
   readonly addCollectionFlight: string;
   readonly hasWriteAccess: boolean;
+  collectionCreationDefaults: ViewModels.CollectionCreationDefaults;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";
@@ -43,6 +45,7 @@ const userContext: UserContext = {
   useSDKOperations,
   addCollectionFlight: CollectionCreation.DefaultAddCollectionDefaultFlight,
   subscriptionType: CollectionCreation.DefaultSubscriptionType,
+  collectionCreationDefaults: CollectionCreationDefaults,
 };
 
 function updateUserContext(newContext: Partial<UserContext>): void {

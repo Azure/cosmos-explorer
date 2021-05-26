@@ -33,16 +33,6 @@ exports[`SettingsComponent renders 1`] = `
                 "canSaveQueries": [Function],
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
-                "collectionCreationDefaults": Object {
-                  "storage": "100",
-                  "throughput": Object {
-                    "fixed": 400,
-                    "shared": 400,
-                    "unlimited": 400,
-                    "unlimitedmax": 1000000,
-                    "unlimitedmin": 400,
-                  },
-                },
                 "commandBarComponentAdapter": CommandBarComponentAdapter {
                   "container": [Circular],
                   "isNotebookTabActive": [Function],
@@ -136,16 +126,6 @@ exports[`SettingsComponent renders 1`] = `
               "canSaveQueries": [Function],
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
-              "collectionCreationDefaults": Object {
-                "storage": "100",
-                "throughput": Object {
-                  "fixed": 400,
-                  "shared": 400,
-                  "unlimited": 400,
-                  "unlimitedmax": 1000000,
-                  "unlimitedmin": 400,
-                },
-              },
               "commandBarComponentAdapter": CommandBarComponentAdapter {
                 "container": [Circular],
                 "isNotebookTabActive": [Function],
@@ -252,16 +232,6 @@ exports[`SettingsComponent renders 1`] = `
                 "canSaveQueries": [Function],
                 "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
-                "collectionCreationDefaults": Object {
-                  "storage": "100",
-                  "throughput": Object {
-                    "fixed": 400,
-                    "shared": 400,
-                    "unlimited": 400,
-                    "unlimitedmax": 1000000,
-                    "unlimitedmin": 400,
-                  },
-                },
                 "commandBarComponentAdapter": CommandBarComponentAdapter {
                   "container": [Circular],
                   "isNotebookTabActive": [Function],
@@ -355,16 +325,6 @@ exports[`SettingsComponent renders 1`] = `
               "canSaveQueries": [Function],
               "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
-              "collectionCreationDefaults": Object {
-                "storage": "100",
-                "throughput": Object {
-                  "fixed": 400,
-                  "shared": 400,
-                  "unlimited": 400,
-                  "unlimitedmax": 1000000,
-                  "unlimitedmin": 400,
-                },
-              },
               "commandBarComponentAdapter": CommandBarComponentAdapter {
                 "container": [Circular],
                 "isNotebookTabActive": [Function],
