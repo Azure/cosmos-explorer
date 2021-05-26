@@ -1,9 +1,26 @@
 import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import { SubscriptionType } from "./Contracts/SubscriptionType";
-import * as ViewModels from "./Contracts/ViewModels";
 import { extractFeatures, Features } from "./Platform/Hosted/extractFeatures";
 import { CollectionCreation, CollectionCreationDefaults } from "./Shared/Constants";
+
+interface ThroughputDefaults {
+  fixed: number;
+  unlimited:
+    | number
+    | {
+        collectionThreshold: number;
+        lessThanOrEqualToThreshold: number;
+        greatThanThreshold: number;
+      };
+  unlimitedmax: number;
+  unlimitedmin: number;
+  shared: number;
+}
+export interface CollectionCreationDefaults {
+  storage: string;
+  throughput: ThroughputDefaults;
+}
 
 interface UserContext {
   readonly authType?: AuthType;
@@ -27,7 +44,7 @@ interface UserContext {
   readonly features: Features;
   readonly addCollectionFlight: string;
   readonly hasWriteAccess: boolean;
-  collectionCreationDefaults: ViewModels.CollectionCreationDefaults;
+  collectionCreationDefaults: CollectionCreationDefaults;
 }
 
 export type ApiType = "SQL" | "Mongo" | "Gremlin" | "Tables" | "Cassandra";

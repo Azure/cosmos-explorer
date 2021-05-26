@@ -23,7 +23,7 @@ import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
@@ -789,9 +789,6 @@ export default class Explorer {
       // This allows webpack hot reload to funciton properly
       if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
-      }
-      if (inputs.defaultCollectionThroughput) {
-        updateUserContext({ collectionCreationDefaults: inputs.defaultCollectionThroughput });
       }
       this.isAccountReady(true);
     }
