@@ -1,4 +1,4 @@
-import * as msal from '@azure/msal-browser';
+import * as msal from "@azure/msal-browser";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
