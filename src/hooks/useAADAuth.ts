@@ -1,9 +1,6 @@
-import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
-import { getMsalInstance } from "../Utils/AuthorizationUtils";
-
-const msalInstance = getMsalInstance();
+import { msalInstance } from "../Utils/AuthorizationUtils";
 
 const cachedAccount = msalInstance.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
