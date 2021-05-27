@@ -90,16 +90,19 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   const accountResourceId = account.id;
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
-  const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
-  const msalInstance = getMsalInstance();
-  const cachedAccount = msalInstance.getAllAccounts()?.[0];
-  msalInstance.setActiveAccount(cachedAccount);
-  const aadTokenResponse = await msalInstance.acquireTokenSilent({
-    forceRefresh: true,
-    scopes: [hrefEndpoint],
-  });
-  const aadToken = aadTokenResponse.accessToken;
+  let aadToken;
   let keys: DatabaseAccountListKeysResult = {};
+  if (account.properties?.documentEndpoint) {
+    const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+    const msalInstance = getMsalInstance();
+    const cachedAccount = msalInstance.getAllAccounts()?.[0];
+    msalInstance.setActiveAccount(cachedAccount);
+    const aadTokenResponse = await msalInstance.acquireTokenSilent({
+      forceRefresh: true,
+      scopes: [hrefEndpoint],
+    });
+    aadToken = aadTokenResponse.accessToken;
+  }
   try {
     keys = await listKeys(subscriptionId, resourceGroup, account.name);
   } catch (e) {
