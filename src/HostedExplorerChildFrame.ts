@@ -7,7 +7,6 @@ export interface HostedExplorerChildFrame extends Window {
 }
 
 export interface AAD {
-  aadToken: string;
   authType: AuthType.AAD;
   databaseAccount: DatabaseAccount;
   authorizationToken: string;
