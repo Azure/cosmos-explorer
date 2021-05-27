@@ -132,6 +132,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 onLabelChange(event);
               }}
+              autoFocus
             />
             <div className="actionCol"></div>
           </div>

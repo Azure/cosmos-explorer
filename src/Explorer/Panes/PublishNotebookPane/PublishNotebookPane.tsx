@@ -7,15 +7,12 @@ import { JunoClient } from "../../../Juno/JunoClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { CodeOfConductComponent } from "../../Controls/NotebookGallery/CodeOfConductComponent";
+import { CodeOfConduct } from "../../Controls/NotebookGallery/CodeOfConduct/CodeOfConduct";
 import { GalleryTab } from "../../Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { SnapshotRequest } from "../../Notebook/NotebookComponent/types";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./PublishNotebookPaneComponent";
 
 export interface PublishNotebookPaneAProps {
@@ -155,7 +152,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       clearPublishingMessage();
       setIsExecuting(false);
     }
-
     closePanel();
   };
 
@@ -170,15 +166,11 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     setFormErrorDetail("");
   };
 
-  const props: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     formError: formError,
-    formErrorDetail: formErrorDetail,
-    id: "publishnotebookpane",
     isExecuting: isExecuting,
-    title: "Publish to gallery",
     submitButtonText: "Publish",
     onSubmit: () => submit(),
-    onClose: closePanel,
     expandConsole: () => container.expandConsole(),
     isSubmitButtonHidden: !isCodeOfConductAccepted,
   };
@@ -201,10 +193,10 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     onTakeSnapshot,
   };
   return (
-    <GenericRightPaneComponent {...props}>
+    <RightPaneForm {...props}>
       {!isCodeOfConductAccepted ? (
         <div style={{ padding: "25px", marginTop: "10px" }}>
-          <CodeOfConductComponent
+          <CodeOfConduct
             junoClient={junoClient}
             onAcceptCodeOfConduct={(isAccepted) => {
               setIsCodeOfConductAccepted(isAccepted);
@@ -214,6 +206,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       ) : (
         <PublishNotebookPaneComponent {...publishNotebookPaneProps} />
       )}
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

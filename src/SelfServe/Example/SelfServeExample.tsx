@@ -1,4 +1,5 @@
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
+import { selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
@@ -18,9 +19,9 @@ import {
   getMinDatabaseThroughput,
   initialize,
   onRefreshSelfServeExample,
-  Regions,
   update,
 } from "./SelfServeExample.rp";
+import { AccountProps, Regions } from "./SelfServeExample.types";
 
 const regionDropdownItems: ChoiceItem[] = [
   { labelTKey: "NorthCentralUS", key: Regions.NorthCentralUS },
@@ -73,61 +74,16 @@ const validate = (
   }
 };
 
-/*
-  This is an example self serve class that auto generates UI components for your feature.
-
-  Each self serve class
-    - Needs to extends the SelfServeBase class.
-    - Needs to have the @IsDisplayable() decorator to tell the compiler that UI needs to be generated from this class.
-    - Needs to define an onSave() function, a callback for when the submit button is clicked.
-    - Needs to define an initialize() function, to set default values for the inputs.
-    - Needs to define an onRefresh() function, a callback for when the refresh button is clicked.
-
-  You can test this self serve UI by using the featureflag '?feature.selfServeType=example'
-  and plumb in similar feature flags for your own self serve class.
-
-  All string to be used should be present in the "src/Localization" folder, in the language specific json files. The 
-  corresponding key should be given as the value for the fields like "label", the error message etc.
-*/
-
-/*
-  @IsDisplayable()
-    - role: Indicates to the compiler that UI should be generated from this class.
-*/
 @IsDisplayable()
-/*
-  @RefreshOptions()
-    - role: Passes the refresh options to be used by the self serve model.
-    - inputs: 
-        retryIntervalInMs - The time interval between refresh attempts when an update in ongoing.
-*/
 @RefreshOptions({ retryIntervalInMs: 2000 })
 export default class SelfServeExample extends SelfServeBaseClass {
-  /*
-  onRefresh()
-    - role : Callback that is triggerrd when the refresh button is clicked. You should perform the your rest API
-             call to check if the update action is completed.
-    - returns: 
-            RefreshResult -
-                isComponentUpdating: Indicated if the state is still being updated
-                notificationMessage: Notification message to be shown in case the component is still being updated
-                                     i.e, isComponentUpdating is true
-  */
   public onRefresh = async (): Promise<RefreshResult> => {
     return onRefreshSelfServeExample();
   };
 
   /*
-  onSave()
-    - input: (currentValues: Map<string, InputType>, baselineValues: ReadonlyMap<string, SmartUiInput>) => Promise<string>
-    - role: Callback that is triggerred when the submit button is clicked. You should perform your rest API
-            calls here using the data from the different inputs passed as a Map to this callback function.
-
-            In this example, the onSave callback simply sets the value for keys corresponding to the field name
-            in the SessionStorage. It uses the currentValues and baselineValues maps to perform custom validations
-            as well.
-
-    - returns: The initialize, success and failure messages to be displayed in the Portal Notification blade after the operation is completed.
+    In this example, the onSave callback simply sets the value for keys corresponding to the field name in the  SessionStorage. 
+    It uses the currentValues and baselineValues maps to perform custom validations as well.
   */
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
@@ -142,7 +98,13 @@ export default class SelfServeExample extends SelfServeBaseClass {
     let dbThroughput = currentValues.get("dbThroughput")?.value as number;
     dbThroughput = enableDbLevelThroughput ? dbThroughput : undefined;
     try {
-      await update(regions, enableLogging, accountName, collectionThroughput, dbThroughput);
+      const accountProps: AccountProps = { regions, enableLogging, accountName, collectionThroughput, dbThroughput };
+      const telemetryData = { ...accountProps, selfServeClassName: SelfServeExample.name };
+
+      const onSaveTimeStamp = selfServeTraceStart(telemetryData);
+      await update(accountProps);
+      selfServeTraceSuccess(telemetryData, onSaveTimeStamp);
+
       if (currentValues.get("regions") === baselineValues.get("regions")) {
         return {
           operationStatusUrl: undefined,
@@ -186,19 +148,8 @@ export default class SelfServeExample extends SelfServeBaseClass {
   };
 
   /*
-  initialize()
-    - role: Set default values for the properties of this class.
-
-            The properties of this class (namely regions, enableLogging, accountName, dbThroughput, collectionThroughput),
-            having the @Values decorator, will each correspond to an UI element. Their values can be of 'InputType'. Their 
-            defaults can be set by setting values in a Map corresponding to the field's name.
-
-            Typically, you can make rest calls in the async initialize function, to fetch the initial values for
-            these fields. This is called after the onSave callback, to reinitialize the defaults.
-
-            In this example, the initialize function simply reads the SessionStorage to fetch the default values
-            for these fields. These are then set when the changes are submitted.
-    - returns: () => Promise<Map<string, InputType>>
+    In this example, the initialize function simply reads the SessionStorage to fetch the default values
+    for these fields. These are then set when the changes are submitted.
   */
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
     const initializeResponse = await initialize();
@@ -215,16 +166,6 @@ export default class SelfServeExample extends SelfServeBaseClass {
     return defaults;
   };
 
-  /*
-  @Values() :
-    - input: NumberInputOptions | StringInputOptions | BooleanInputOptions | ChoiceInputOptions | DescriptionDisplay
-    - role: Specifies the required options to display the property as 
-            a) TextBox for text input
-            b) Spinner/Slider for number input
-            c) Radio buton/Toggle for boolean input
-            d) Dropdown for choice input
-            e) Text (with optional hyperlink) for descriptions
-  */
   @Values({
     labelTKey: "DescriptionLabel",
     description: {
@@ -244,28 +185,12 @@ export default class SelfServeExample extends SelfServeBaseClass {
   })
   currentRegionText: string;
 
-  /*
-  @PropertyInfo()
-    - optional
-    - input: Info | () => Promise<Info>
-    - role: Display an Info bar above the UI element for this property.
-  */
   @PropertyInfo(regionDropdownInfo)
 
   /*
-  @OnChange()
-    - optional
-    - input: (currentValues: Map<string, InputType>, newValue: InputType, baselineValues: ReadonlyMap<string, SmartUiInput>) => Map<string, InputType>
-    - role: Takes a Map of current values, the newValue for this property and a ReadonlyMap of baselineValues as inputs. This is called when a property,
-            say prop1, changes its value in the UI. This can be used to 
-            a) Change the value (and reflect it in the UI) for prop2 based on prop1.
-            b) Change the visibility for prop2 in the UI, based on prop1
-
-            The new Map of propertyName -> value is returned.
-
-            In this example, the onRegionsChange function sets the enableLogging property to false (and disables
-            the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for 
-            any other value of "regions"
+    In this example, the onRegionsChange function sets the enableLogging property to false (and disables
+    the corresponsing toggle UI) when "regions" is set to "North Central US", and enables the toggle for 
+    any other value of "regions"
   */
   @OnChange(onRegionsChange)
   @Values({ labelTKey: "Regions", choices: regionDropdownItems, placeholderTKey: "RegionsPlaceholder" })

@@ -31,7 +31,7 @@ const App: React.FunctionComponent = () => {
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
 
-  const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
+  const { isLoggedIn, armToken, graphToken, aadToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
   const [connectionString, setConnectionString] = React.useState<string>();
@@ -50,6 +50,7 @@ const App: React.FunctionComponent = () => {
           authType: AuthType.AAD,
           databaseAccount,
           authorizationToken: armToken,
+          aadToken,
         };
       } else if (authType === AuthType.EncryptedToken) {
         frameWindow.hostedConfig = {

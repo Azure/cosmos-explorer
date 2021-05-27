@@ -23,7 +23,7 @@ describe("ResourceTreeAdapter", () => {
 
   // TODO isDataNodeSelected needs a better design and refactor, but for now, we protect some of the code paths
   describe("isDataNodeSelected", () => {
-    it("it should not select if no selected node", () => {
+    it("if no selected node it should not select", () => {
       const explorer = mockContainer();
       explorer.selectedNode(undefined);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
@@ -31,13 +31,13 @@ describe("ResourceTreeAdapter", () => {
       expect(isDataNodeSelected).toBeFalsy();
     });
 
-    it("it should not select incorrect subnodekinds", () => {
+    it("incorrect subnodekinds it should not select", () => {
       const resourceTreeAdapter = new ResourceTreeAdapter(mockContainer());
       const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("foo", "bar", undefined);
       expect(isDataNodeSelected).toBeFalsy();
     });
 
-    it("it should not select if no active tab", () => {
+    it("if no active tab it should not select", () => {
       const explorer = mockContainer();
       explorer.tabsManager.activeTab(undefined);
       const resourceTreeAdapter = new ResourceTreeAdapter(explorer);

@@ -20,7 +20,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
         {/* Collections Window Title/Command Bar - Start */}
         <div className="collectiontitle">
           <div className="coltitle">
-            <span className="titlepadcol" data-bind="text: collectionTitle" />
+            <span className="titlepadcol">{userContext.apiType} API</span>
             <div className="float-right">
               <span
                 className="padimgcolrefresh"
@@ -31,7 +31,7 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
                 aria-label="Refresh tree"
                 title="Refresh tree"
               >
-                <img className="refreshcol" src={refreshImg} alt="Refresh tree" />
+                <img className="refreshcol" src={refreshImg} alt="Refresh Tree" />
               </span>
               <span
                 className="padimgcolrefresh1"

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { applyExplorerBindings } from "../applyExplorerBindings";
 import { AuthType } from "../AuthType";
-import { AccountKind } from "../Common/Constants";
+import { AccountKind, Flights } from "../Common/Constants";
 import { normalizeArmEndpoint } from "../Common/EnvironmentUtility";
 import { sendMessage, sendReadyMessage } from "../Common/MessageHandler";
 import { configContext, Platform, updateConfigContext } from "../ConfigContext";
@@ -27,7 +27,7 @@ import {
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext, userContext } from "../UserContext";
-import { listKeys } from "../Utils/arm/generatedClients/2020-04-01/databaseAccounts";
+import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
@@ -83,6 +83,7 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   updateUserContext({
     authType: AuthType.AAD,
     authorizationToken: `Bearer ${config.authorizationToken}`,
+    aadToken: config.aadToken,
   });
   const account = config.databaseAccount;
   const accountResourceId = account.id;
@@ -298,9 +299,18 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     portalEnv: inputs.serverId as PortalEnv,
     hasWriteAccess: inputs.hasWriteAccess ?? true,
     addCollectionFlight: inputs.addCollectionDefaultFlight || CollectionCreation.DefaultAddCollectionDefaultFlight,
+    collectionCreationDefaults: inputs.defaultCollectionThroughput,
   });
   if (inputs.features) {
     Object.assign(userContext.features, extractFeatures(new URLSearchParams(inputs.features)));
+  }
+  if (inputs.flights) {
+    if (inputs.flights.indexOf(Flights.AutoscaleTest) !== -1) {
+      userContext.features.autoscaleDefault;
+    }
+    if (inputs.flights.indexOf(Flights.SchemaAnalyzer) !== -1) {
+      userContext.features.enableSchemaAnalyzer = true;
+    }
   }
 }
 

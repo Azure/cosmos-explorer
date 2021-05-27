@@ -43,7 +43,7 @@ describe("Graph Style Component", () => {
     expect(asFragment).toMatchSnapshot();
   });
 
-  it("should render node properties dropdown list ", () => {
+  it("should render node properties dropdown list", () => {
     const dropDownList = screen.getByText("Show vertex (node) as");
     expect(dropDownList).toBeDefined();
   });

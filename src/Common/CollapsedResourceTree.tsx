@@ -1,5 +1,6 @@
 import arrowLeftImg from "images/imgarrowlefticon.svg";
 import React, { FunctionComponent } from "react";
+import { userContext } from "../UserContext";
 
 export interface CollapsedResourceTreeProps {
   toggleLeftPaneExpanded: () => void;
@@ -25,7 +26,7 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
               <img className="arrowCollapsed" src={arrowLeftImg} alt="Expand" />
             </span>
             <span className="collectionCollapsed" onClick={toggleLeftPaneExpanded}>
-              <span data-bind="text: collectionTitle" />
+              <span>{userContext.apiType} API</span>
             </span>
           </li>
         </ul>

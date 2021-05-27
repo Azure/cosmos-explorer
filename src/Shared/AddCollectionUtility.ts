@@ -1,6 +1,6 @@
 import { any } from "underscore";
-import { CollectionCreationDefaults } from "../Contracts/ViewModels";
 import Explorer from "../Explorer/Explorer";
+import { CollectionCreationDefaults } from "../UserContext";
 
 export const getMaxThroughput = (defaults: CollectionCreationDefaults, container: Explorer): number => {
   const throughput = defaults.throughput.unlimited;

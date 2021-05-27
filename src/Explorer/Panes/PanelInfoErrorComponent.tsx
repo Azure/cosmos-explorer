@@ -8,6 +8,7 @@ export interface PanelInfoErrorProps {
   link?: string;
   linkText?: string;
   openNotificationConsole?: () => void;
+  formError?: boolean;
 }
 
 export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProps> = ({
@@ -35,7 +36,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
           {message}
           {link && linkText && (
             <Link target="_blank" href={link}>
-              {linkText}
+              {" " + linkText}
             </Link>
           )}
         </Text>

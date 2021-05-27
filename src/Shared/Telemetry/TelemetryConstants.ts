@@ -117,6 +117,7 @@ export enum Action {
   SelfServe,
   ExpandAddCollectionPaneAdvancedSection,
   SchemaAnalyzerClickAnalyze,
+  SelfServeComponent,
 }
 
 export const ActionModifiers = {

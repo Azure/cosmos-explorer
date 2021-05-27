@@ -18,6 +18,7 @@ import { UploadDetailsRecord } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
@@ -962,7 +963,9 @@ export default class Collection implements ViewModels.Collection {
 
   public loadTriggers(): Promise<any> {
     return readTriggers(this.databaseId, this.id()).then((triggers) => {
-      const triggerNodes: ViewModels.TreeNode[] = triggers.map((trigger) => new Trigger(this.container, this, trigger));
+      const triggerNodes: ViewModels.TreeNode[] = triggers.map(
+        (trigger: SqlTriggerResource | TriggerDefinition) => new Trigger(this.container, this, trigger)
+      );
       const otherNodes = this.children().filter((node) => node.nodeKind !== "Trigger");
       const allNodes = otherNodes.concat(triggerNodes);
       this.children(allNodes);

@@ -6,42 +6,36 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics, HttpStatusCodes } from "../Common/Constants";
+import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
+import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
-import { sendCachedDataMessage } from "../Common/MessageHandler";
 import { QueriesClient } from "../Common/QueriesClient";
 import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
-import { GitHubClient } from "../GitHub/GitHubClient";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
-import { ResourceProviderClientFactory } from "../ResourceProvider/ResourceProviderClientFactory";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import { trackEvent } from "../Shared/appInsights";
-import * as SharedConstants from "../Shared/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
-import { ArcadiaResourceManager } from "../SparkClusterManager/ArcadiaResourceManager";
-import { updateUserContext, userContext } from "../UserContext";
+import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
-import { decryptJWTToken, getAuthorizationHeader } from "../Utils/AuthorizationUtils";
+import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import * as ComponentRegisterer from "./ComponentRegisterer";
-import { ArcadiaWorkspaceItem } from "./Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "./Controls/CommandButton/CommandButtonComponent";
-import { DialogProps, TextFieldProps } from "./Controls/Dialog";
+import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { CommandBarComponentAdapter } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
@@ -54,8 +48,7 @@ import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
-import { ContextualPaneBase } from "./Panes/ContextualPaneBase";
+import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
@@ -67,7 +60,7 @@ import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksP
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
-import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel";
+import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
@@ -93,26 +86,16 @@ export interface ExplorerParams {
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
-  closeDialog: () => void;
-  openDialog: (props: DialogProps) => void;
   tabsManager: TabsManager;
 }
 
 export default class Explorer {
-  public addCollectionText: ko.Observable<string>;
-  public collectionTitle: ko.Observable<string>;
-  public deleteCollectionText: ko.Observable<string>;
-  public deleteDatabaseText: ko.Observable<string>;
-  public collectionTreeNodeAltText: ko.Observable<string>;
-  public refreshTreeTitle: ko.Observable<string>;
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
-  public features: ko.Observable<any>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
@@ -123,7 +106,6 @@ export default class Explorer {
   private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
 
   // Panes
-  public contextPanes: ContextualPaneBase[];
   public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   public closeSidePanel: () => void;
 
@@ -146,18 +128,10 @@ export default class Explorer {
   public isTabsContentExpanded: ko.Observable<boolean>;
   public tabsManager: TabsManager;
 
-  // Contextual panes
-  public cassandraAddCollectionPane: CassandraAddCollectionPane;
-  private gitHubClient: GitHubClient;
   public gitHubOAuthService: GitHubOAuthService;
-  public junoClient: JunoClient;
 
   // features
-  public isPublishNotebookPaneEnabled: ko.Observable<boolean>;
   public isHostedDataExplorerEnabled: ko.Computed<boolean>;
-  public isMongoIndexingEnabled: ko.Observable<boolean>;
-  public canExceedMaximumValue: ko.Computed<boolean>;
-  public isAutoscaleDefaultEnabled: ko.Observable<boolean>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -166,20 +140,14 @@ export default class Explorer {
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
   public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
-  public isSparkEnabled: ko.Observable<boolean>;
-  public isSparkEnabledForAccount: ko.Observable<boolean>;
-  public arcadiaToken: ko.Observable<string>;
-  public arcadiaWorkspaces: ko.ObservableArray<ArcadiaWorkspaceItem>;
-  public hasStorageAnalyticsAfecFeature: ko.Observable<boolean>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: NotebookManager;
-  public openDialog: ExplorerParams["openDialog"];
-  public closeDialog: ExplorerParams["closeDialog"];
+
+  public isShellEnabled: ko.Observable<boolean>;
 
   private _isInitializingNotebooks: boolean;
   private notebookBasePath: ko.Observable<string>;
-  private _arcadiaManager: ArcadiaResourceManager;
   private notebookToImport: {
     name: string;
     content: string;
@@ -191,44 +159,20 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
-    this.gitHubClient = new GitHubClient(this.onGitHubClientError);
-    this.junoClient = new JunoClient();
     this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
     this.openSidePanel = params?.openSidePanel;
     this.closeSidePanel = params?.closeSidePanel;
-    this.closeDialog = params?.closeDialog;
-    this.openDialog = params?.openDialog;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    this.addCollectionText = ko.observable<string>("New Collection");
-    this.collectionTitle = ko.observable<string>("Collections");
-    this.collectionTreeNodeAltText = ko.observable<string>("Collection");
-    this.deleteCollectionText = ko.observable<string>("Delete Collection");
-    this.deleteDatabaseText = ko.observable<string>("Delete Database");
-    this.refreshTreeTitle = ko.observable<string>("Refresh collections");
-
     this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
-    this.arcadiaToken = ko.observable<string>();
-    this.arcadiaToken.subscribe((token: string) => {
-      if (token) {
-        const notebookTabs = this.tabsManager.getTabs(ViewModels.CollectionTabKind.NotebookV2);
-        (notebookTabs || []).forEach((tab: NotebookV2Tab) => {
-          tab.reconfigureServiceEndpoints();
-        });
-      }
-    });
-
+    this.isShellEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
     this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
-    this.isSparkEnabledForAccount = ko.observable(false);
-    this.isSparkEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
-    this.hasStorageAnalyticsAfecFeature = ko.observable(false);
-    this.hasStorageAnalyticsAfecFeature.subscribe((enabled: boolean) => this.refreshCommandBarButtons());
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
@@ -237,57 +181,26 @@ export default class Explorer {
           : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
         this.notebookWorkspaceManager = new NotebookWorkspaceManager();
-        this.arcadiaWorkspaces = ko.observableArray();
-        this._arcadiaManager = new ArcadiaResourceManager();
-        this._isAfecFeatureRegistered(Constants.AfecFeatures.StorageAnalytics).then((isRegistered) =>
-          this.hasStorageAnalyticsAfecFeature(isRegistered)
+        await this._refreshNotebooksEnabledStateForAccount();
+        this.isNotebookEnabled(
+          userContext.authType !== AuthType.ResourceToken &&
+            ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+              userContext.features.enableNotebooks)
         );
-        Promise.all([this._refreshNotebooksEnabledStateForAccount(), this._refreshSparkEnabledStateForAccount()]).then(
-          async () => {
-            this.isNotebookEnabled(
-              userContext.authType !== AuthType.ResourceToken &&
-                ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-                  userContext.features.enableNotebooks)
-            );
-            TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
-              isNotebookEnabled: this.isNotebookEnabled(),
-              dataExplorerArea: Constants.Areas.Notebook,
-            });
 
-            if (this.isNotebookEnabled()) {
-              await this.initNotebooks(userContext.databaseAccount);
-              const workspaces = await this._getArcadiaWorkspaces();
-              this.arcadiaWorkspaces(workspaces);
-            } else if (this.notebookToImport) {
-              // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
-              this._openSetupNotebooksPaneForQuickstart();
-            }
+        this.isShellEnabled(this.isNotebookEnabled() && isPublicInternetAccessAllowed());
 
-            this.isSparkEnabled(
-              (this.isNotebookEnabled() &&
-                this.isSparkEnabledForAccount() &&
-                this.arcadiaWorkspaces() &&
-                this.arcadiaWorkspaces().length > 0) ||
-                userContext.features.enableSpark
-            );
-            if (this.isSparkEnabled()) {
-              trackEvent(
-                { name: "LoadedWithSparkEnabled" },
-                {
-                  subscriptionId: userContext.subscriptionId,
-                  accountName: userContext.databaseAccount?.name,
-                  accountId: userContext.databaseAccount?.id,
-                  platform: configContext.platform,
-                }
-              );
-              const pollArcadiaTokenRefresh = async () => {
-                this.arcadiaToken(await this.getArcadiaToken());
-                setTimeout(() => pollArcadiaTokenRefresh(), this.getTokenRefreshInterval(this.arcadiaToken()));
-              };
-              await pollArcadiaTokenRefresh();
-            }
-          }
-        );
+        TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
+          isNotebookEnabled: this.isNotebookEnabled(),
+          dataExplorerArea: Constants.Areas.Notebook,
+        });
+
+        if (this.isNotebookEnabled()) {
+          await this.initNotebooks(userContext.databaseAccount);
+        } else if (this.notebookToImport) {
+          // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
+          this._openSetupNotebooksPaneForQuickstart();
+        }
       }
     });
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
@@ -298,14 +211,7 @@ export default class Explorer {
     this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.resourceTokenPartitionKey = ko.observable<string>();
-    this.isMongoIndexingEnabled = ko.observable<boolean>(false);
-    this.isPublishNotebookPaneEnabled = ko.observable<boolean>(false);
-
-    this.canExceedMaximumValue = ko.computed<boolean>(() => userContext.features.canExceedMaximumValue);
-
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
-
-    this.isAutoscaleDefaultEnabled = ko.observable<boolean>(false);
 
     this.databases = ko.observableArray<ViewModels.Database>();
     this.canSaveQueries = ko.computed<boolean>(() => {
@@ -397,13 +303,6 @@ export default class Explorer {
       }
     });
 
-    this.cassandraAddCollectionPane = new CassandraAddCollectionPane({
-      id: "cassandraaddcollectionpane",
-      visible: ko.observable<boolean>(false),
-
-      container: this,
-    });
-
     this.tabsManager = params?.tabsManager ?? new TabsManager();
     this.tabsManager.openedTabs.subscribe((tabs) => {
       if (tabs.length === 0) {
@@ -427,46 +326,10 @@ export default class Explorer {
     });
 
     switch (userContext.apiType) {
-      case "SQL":
-        this.addCollectionText("New Container");
-        this.collectionTitle("SQL API");
-        this.collectionTreeNodeAltText("Container");
-        this.deleteCollectionText("Delete Container");
-        this.deleteDatabaseText("Delete Database");
-        this.refreshTreeTitle("Refresh containers");
-        break;
-      case "Mongo":
-        this.addCollectionText("New Collection");
-        this.collectionTitle("Collections");
-        this.collectionTreeNodeAltText("Collection");
-        this.deleteCollectionText("Delete Collection");
-        this.deleteDatabaseText("Delete Database");
-        this.refreshTreeTitle("Refresh collections");
-        break;
-      case "Gremlin":
-        this.addCollectionText("New Graph");
-        this.deleteCollectionText("Delete Graph");
-        this.deleteDatabaseText("Delete Database");
-        this.collectionTitle("Gremlin API");
-        this.collectionTreeNodeAltText("Graph");
-        this.refreshTreeTitle("Refresh graphs");
-        break;
       case "Tables":
-        this.addCollectionText("New Table");
-        this.deleteCollectionText("Delete Table");
-        this.deleteDatabaseText("Delete Database");
-        this.collectionTitle("Azure Table API");
-        this.collectionTreeNodeAltText("Table");
-        this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new TablesAPIDataClient();
         break;
       case "Cassandra":
-        this.addCollectionText("New Table");
-        this.deleteCollectionText("Delete Table");
-        this.deleteDatabaseText("Delete Keyspace");
-        this.collectionTitle("Cassandra API");
-        this.collectionTreeNodeAltText("Table");
-        this.refreshTreeTitle("Refresh tables");
         this.tableDataClient = new CassandraAPIDataClient();
         break;
     }
@@ -501,8 +364,6 @@ export default class Explorer {
       this.refreshNotebookList();
     });
 
-    this.isSparkEnabled = ko.observable(false);
-    this.isSparkEnabled.subscribe((isEnabled: boolean) => this.refreshCommandBarButtons());
     this.resourceTree = new ResourceTreeAdapter(this);
     this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
     this.notebookServerInfo = ko.observable<DataModels.NotebookWorkspaceConnectionInfo>({
@@ -540,24 +401,11 @@ export default class Explorer {
         ],
       });
     }
-  }
 
-  private onGitHubClientError = (error: any): void => {
-    Logger.logError(getErrorMessage(error), "NotebookManager/onGitHubClientError");
-
-    if (error.status === HttpStatusCodes.Unauthorized) {
-      this.gitHubOAuthService.resetToken();
-
-      this.showOkCancelModalDialog(
-        undefined,
-        "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
-        "Connect to GitHub",
-        () => this.openGitHubReposPanel("Connect to GitHub"),
-        "Cancel",
-        undefined
-      );
+    if (configContext.enableSchemaAnalyzer) {
+      userContext.features.enableSchemaAnalyzer = true;
     }
-  };
+  }
 
   public openEnableSynapseLinkDialog(): void {
     const addSynapseLinkDialogProps: DialogProps = {
@@ -566,7 +414,6 @@ export default class Explorer {
         linkUrl: "https://aka.ms/cosmosdb-synapselink",
       },
       isModal: true,
-      visible: true,
       title: `Enable Azure Synapse Link on your Cosmos DB account`,
       subText: `Enable Azure Synapse Link to perform near real time analytical analytics on this account, without impacting the performance of your transactional workloads.
       Azure Synapse Link brings together Cosmos Db Analytical Store and Synapse Analytics`,
@@ -579,24 +426,19 @@ export default class Explorer {
           "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account."
         );
         this.isSynapseLinkUpdating(true);
-        this._closeSynapseLinkModalDialog();
-
-        const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(userContext.databaseAccount.id);
+        useDialog.getState().closeDialog();
 
         try {
-          const databaseAccount: DataModels.DatabaseAccount = await resourceProviderClient.patchAsync(
-            userContext.databaseAccount.id,
-            "2019-12-12",
-            {
-              properties: {
-                enableAnalyticalStorage: true,
-              },
-            }
-          );
+          await update(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.id, {
+            properties: {
+              enableAnalyticalStorage: true,
+            },
+          });
+
           clearInProgressMessage();
           logConsoleInfo("Enabled Azure Synapse Link for this account");
           TelemetryProcessor.traceSuccess(Action.EnableAzureSynapseLink, {}, startTime);
-          updateUserContext({ databaseAccount });
+          userContext.databaseAccount.properties.enableAnalyticalStorage = true;
         } catch (error) {
           clearInProgressMessage();
           logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
@@ -607,11 +449,11 @@ export default class Explorer {
       },
 
       onSecondaryButtonClick: () => {
-        this._closeSynapseLinkModalDialog();
+        useDialog.getState().closeDialog();
         TelemetryProcessor.traceCancel(Action.EnableAzureSynapseLink);
       },
     };
-    this.openDialog(addSynapseLinkDialogProps);
+    useDialog.getState().openDialog(addSynapseLinkDialogProps);
     TelemetryProcessor.traceStart(Action.EnableAzureSynapseLink);
 
     // TODO: return result
@@ -770,52 +612,6 @@ export default class Explorer {
     window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
-  public async getArcadiaToken(): Promise<string> {
-    return new Promise<string>((resolve: (token: string) => void, reject: (error: any) => void) => {
-      sendCachedDataMessage<string>(MessageTypes.GetArcadiaToken, undefined /** params **/).then(
-        (token: string) => {
-          resolve(token);
-        },
-        (error: any) => {
-          Logger.logError(getErrorMessage(error), "Explorer/getArcadiaToken");
-          resolve(undefined);
-        }
-      );
-    });
-  }
-
-  private async _getArcadiaWorkspaces(): Promise<ArcadiaWorkspaceItem[]> {
-    try {
-      const workspaces = await this._arcadiaManager.listWorkspacesAsync([userContext.subscriptionId]);
-      let workspaceItems: ArcadiaWorkspaceItem[] = new Array(workspaces.length);
-      const sparkPromises: Promise<void>[] = [];
-      workspaces.forEach((workspace, i) => {
-        let promise = this._arcadiaManager.listSparkPoolsAsync(workspaces[i].id).then(
-          (sparkpools) => {
-            workspaceItems[i] = { ...workspace, sparkPools: sparkpools };
-          },
-          (error) => {
-            Logger.logError(getErrorMessage(error), "Explorer/this._arcadiaManager.listSparkPoolsAsync");
-          }
-        );
-        sparkPromises.push(promise);
-      });
-
-      return Promise.all(sparkPromises).then(() => workspaceItems);
-    } catch (error) {
-      handleError(error, "Explorer/this._arcadiaManager.listWorkspacesAsync", "Get Arcadia workspaces failed");
-      return Promise.resolve([]);
-    }
-  }
-
-  public async createWorkspace(): Promise<string> {
-    return sendCachedDataMessage(MessageTypes.CreateWorkspace, undefined /** params **/);
-  }
-
-  public async createSparkPool(workspaceId: string): Promise<string> {
-    return sendCachedDataMessage(MessageTypes.CreateSparkPool, [workspaceId]);
-  }
-
   public async initNotebooks(databaseAccount: DataModels.DatabaseAccount): Promise<void> {
     if (!databaseAccount) {
       throw new Error("No database account specified");
@@ -873,15 +669,14 @@ export default class Explorer {
 
     const resetConfirmationDialogProps: DialogProps = {
       isModal: true,
-      visible: true,
       title: "Reset Workspace",
       subText: "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?",
       primaryButtonText: "OK",
       secondaryButtonText: "Cancel",
       onPrimaryButtonClick: this._resetNotebookWorkspace,
-      onSecondaryButtonClick: this._closeModalDialog,
+      onSecondaryButtonClick: () => useDialog.getState().closeDialog(),
     };
-    this.openDialog(resetConfirmationDialogProps);
+    useDialog.getState().openDialog(resetConfirmationDialogProps);
   }
 
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
@@ -926,7 +721,7 @@ export default class Explorer {
   }
 
   private _resetNotebookWorkspace = async () => {
-    this._closeModalDialog();
+    useDialog.getState().closeDialog();
     const clearInProgressMessage = logConsoleProgress("Resetting notebook workspace");
     try {
       await this.notebookManager?.notebookClient.resetWorkspace();
@@ -942,14 +737,6 @@ export default class Explorer {
     } finally {
       clearInProgressMessage();
     }
-  };
-
-  private _closeModalDialog = () => {
-    this.closeDialog();
-  };
-
-  private _closeSynapseLinkModalDialog = () => {
-    this.closeDialog();
   };
 
   public findSelectedDatabase(): ViewModels.Database {
@@ -1001,26 +788,7 @@ export default class Explorer {
       if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
       }
-      if (inputs.defaultCollectionThroughput) {
-        this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
-      }
-      this.setFeatureFlagsFromFlights(inputs.flights);
       this.isAccountReady(true);
-    }
-  }
-
-  public setFeatureFlagsFromFlights(flights: readonly string[]): void {
-    if (!flights) {
-      return;
-    }
-    if (flights.indexOf(Constants.Flights.AutoscaleTest) !== -1) {
-      this.isAutoscaleDefaultEnabled(true);
-    }
-    if (flights.indexOf(Constants.Flights.MongoIndexing) !== -1) {
-      this.isMongoIndexingEnabled(true);
-    }
-    if (flights.indexOf(Constants.Flights.SchemaAnalyzer) !== -1) {
-      userContext.features.enableSchemaAnalyzer = true;
     }
   }
 
@@ -1238,7 +1006,6 @@ export default class Explorer {
         onTakeSnapshot,
         onClosePanel
       );
-      this.isPublishNotebookPaneEnabled(true);
     }
   }
 
@@ -1247,14 +1014,15 @@ export default class Explorer {
   }
 
   public showOkModalDialog(title: string, msg: string): void {
-    this.openDialog({
+    useDialog.getState().openDialog({
       isModal: true,
-      visible: true,
       title,
       subText: msg,
       primaryButtonText: "Close",
       secondaryButtonText: undefined,
-      onPrimaryButtonClick: this._closeModalDialog,
+      onPrimaryButtonClick: () => {
+        useDialog.getState().closeDialog();
+      },
       onSecondaryButtonClick: undefined,
     });
   }
@@ -1270,19 +1038,18 @@ export default class Explorer {
     textFieldProps?: TextFieldProps,
     isPrimaryButtonDisabled?: boolean
   ): void {
-    this.openDialog({
+    useDialog.getState().openDialog({
       isModal: true,
-      visible: true,
       title,
       subText: msg,
       primaryButtonText: okLabel,
       secondaryButtonText: cancelLabel,
       onPrimaryButtonClick: () => {
-        this._closeModalDialog();
+        useDialog.getState().closeDialog();
         onOk && onOk();
       },
       onSecondaryButtonClick: () => {
-        this._closeModalDialog();
+        useDialog.getState().closeDialog();
         onCancel && onCancel();
       },
       choiceGroupProps,
@@ -1368,7 +1135,7 @@ export default class Explorer {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
       this.openSidePanel(
-        "",
+        "Rename Notebook",
         <StringInputPane
           explorer={this}
           closePanel={() => {
@@ -1399,7 +1166,7 @@ export default class Explorer {
     }
 
     this.openSidePanel(
-      "",
+      "Create new directory",
       <StringInputPane
         explorer={this}
         closePanel={() => {
@@ -1517,57 +1284,6 @@ export default class Explorer {
     }
   }
 
-  public _refreshSparkEnabledStateForAccount = async (): Promise<void> => {
-    const { subscriptionId, authType } = userContext;
-    const armEndpoint = configContext.ARM_ENDPOINT;
-    if (!subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-      // explorer is not aware of the database account yet
-      this.isSparkEnabledForAccount(false);
-      return;
-    }
-
-    const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${Constants.AfecFeatures.Spark}`;
-    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
-    try {
-      const sparkNotebooksFeature: DataModels.AfecFeature = await resourceProviderClient.getAsync(
-        featureUri,
-        Constants.ArmApiVersions.armFeatures
-      );
-      const isEnabled =
-        (sparkNotebooksFeature &&
-          sparkNotebooksFeature.properties &&
-          sparkNotebooksFeature.properties.state === "Registered") ||
-        false;
-      this.isSparkEnabledForAccount(isEnabled);
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
-      this.isSparkEnabledForAccount(false);
-    }
-  };
-
-  public _isAfecFeatureRegistered = async (featureName: string): Promise<boolean> => {
-    const { subscriptionId, authType } = userContext;
-    const armEndpoint = configContext.ARM_ENDPOINT;
-    if (!featureName || !subscriptionId || !armEndpoint || authType === AuthType.EncryptedToken) {
-      // explorer is not aware of the database account yet
-      return false;
-    }
-
-    const featureUri = `subscriptions/${subscriptionId}/providers/Microsoft.Features/providers/Microsoft.DocumentDb/features/${featureName}`;
-    const resourceProviderClient = new ResourceProviderClientFactory().getOrCreate(featureUri);
-    try {
-      const featureStatus: DataModels.AfecFeature = await resourceProviderClient.getAsync(
-        featureUri,
-        Constants.ArmApiVersions.armFeatures
-      );
-      const isEnabled =
-        (featureStatus && featureStatus.properties && featureStatus.properties.state === "Registered") || false;
-      return isEnabled;
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/isSparkEnabledForAccount");
-      return false;
-    }
-  };
   private refreshNotebookList = async (): Promise<void> => {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
       return;
@@ -1600,14 +1316,13 @@ export default class Explorer {
     }
 
     if (item.type === NotebookContentItemType.Directory && item.children && item.children.length > 0) {
-      this.openDialog({
+      useDialog.getState().openDialog({
         isModal: true,
-        visible: true,
         title: "Unable to delete file",
         subText: "Directory is not empty.",
         primaryButtonText: "Close",
         secondaryButtonText: undefined,
-        onPrimaryButtonClick: this._closeModalDialog,
+        onPrimaryButtonClick: () => useDialog.getState().closeDialog(),
         onSecondaryButtonClick: undefined,
       });
       return Promise.reject();
@@ -1704,32 +1419,27 @@ export default class Explorer {
         throw new Error("Terminal kind: ${kind} not supported");
     }
 
-    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Terminal,
-      (tab) => tab.hashLocation() == hashLocation
+    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(ViewModels.CollectionTabKind.Terminal, (tab) =>
+      tab.hashLocation().startsWith(hashLocation)
     ) as TerminalTab[];
-    let terminalTab: TerminalTab = terminalTabs && terminalTabs[0];
 
-    if (terminalTab) {
-      this.tabsManager.activateTab(terminalTab);
-    } else {
-      const newTab = new TerminalTab({
-        account: userContext.databaseAccount,
-        tabKind: ViewModels.CollectionTabKind.Terminal,
-        node: null,
-        title: title,
-        tabPath: title,
-        collection: null,
-        hashLocation: hashLocation,
-        isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
-        onUpdateTabsButtons: this.onUpdateTabsButtons,
-        container: this,
-        kind: kind,
-      });
+    const index = terminalTabs.length + 1;
+    const newTab = new TerminalTab({
+      account: userContext.databaseAccount,
+      tabKind: ViewModels.CollectionTabKind.Terminal,
+      node: null,
+      title: `${title} ${index}`,
+      tabPath: `${title} ${index}`,
+      collection: null,
+      hashLocation: `${hashLocation} ${index}`,
+      isTabsContentExpanded: ko.observable(true),
+      onLoadStartKey: null,
+      onUpdateTabsButtons: this.onUpdateTabsButtons,
+      container: this,
+      kind: kind,
+    });
 
-      this.tabsManager.activateNewTab(newTab);
-    }
+    this.tabsManager.activateNewTab(newTab);
   }
 
   public async openGallery(
@@ -1775,7 +1485,7 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.cassandraAddCollectionPane.open();
+      this.openCassandraAddCollectionPane();
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1787,30 +1497,6 @@ export default class Explorer {
       activeTab.onActivate(); // TODO only update tabs buttons?
     } else {
       this.onUpdateTabsButtons([]);
-    }
-  }
-
-  private getTokenRefreshInterval(token: string): number {
-    let tokenRefreshInterval = Constants.ClientDefaults.arcadiaTokenRefreshInterval;
-    if (!token) {
-      return tokenRefreshInterval;
-    }
-
-    try {
-      const tokenPayload = decryptJWTToken(this.arcadiaToken());
-      if (tokenPayload && tokenPayload.hasOwnProperty("exp")) {
-        const expirationTime = tokenPayload.exp as number; // seconds since unix epoch
-        const now = new Date().getTime() / 1000;
-        const tokenExpirationIntervalInMs = (expirationTime - now) * 1000;
-        if (tokenExpirationIntervalInMs < tokenRefreshInterval) {
-          tokenRefreshInterval =
-            tokenExpirationIntervalInMs - Constants.ClientDefaults.arcadiaTokenRefreshIntervalPaddingMs;
-        }
-      }
-      return tokenRefreshInterval;
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/getTokenRefreshInterval");
-      return tokenRefreshInterval;
     }
   }
 
@@ -1843,11 +1529,6 @@ export default class Explorer {
         this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
       }
     }
-  }
-
-  public async loadSelectedDatabaseOffer(): Promise<void> {
-    const database = this.findSelectedDatabase();
-    await database?.loadOffer();
   }
 
   public async loadDatabaseOffers(): Promise<void> {
@@ -1891,7 +1572,7 @@ export default class Explorer {
       "Delete " + getDatabaseName(),
       <DeleteDatabaseConfirmationPanel
         explorer={this}
-        openNotificationConsole={this.expandConsole}
+        openNotificationConsole={() => this.expandConsole()}
         closePanel={this.closeSidePanel}
         selectedDatabase={this.findSelectedDatabase()}
       />
@@ -1967,6 +1648,16 @@ export default class Explorer {
     );
   }
 
+  public openCassandraAddCollectionPane(): void {
+    this.openSidePanel(
+      "Add Table",
+      <CassandraAddCollectionPane
+        explorer={this}
+        closePanel={() => this.closeSidePanel()}
+        cassandraApiClient={new CassandraAPIDataClient()}
+      />
+    );
+  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     this.openSidePanel(
       header,

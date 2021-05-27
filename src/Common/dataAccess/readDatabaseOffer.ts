@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import { Offer, ReadDatabaseOfferParams } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { getCassandraKeyspaceThroughput } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { getGremlinDatabaseThroughput } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { getMongoDBDatabaseThroughput } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { getSqlDatabaseThroughput } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { handleError } from "../ErrorHandlingUtils";
 import { readOfferWithSDK } from "./readOfferWithSDK";

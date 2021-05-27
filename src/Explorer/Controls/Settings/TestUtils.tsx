@@ -1,7 +1,7 @@
+import ko from "knockout";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
-import ko from "knockout";
 
 export const container = new Explorer();
 
@@ -13,7 +13,7 @@ export const collection = {
   analyticalStorageTtl: ko.observable<number>(undefined),
   indexingPolicy: ko.observable<DataModels.IndexingPolicy>({
     automatic: true,
-    indexingMode: "default",
+    indexingMode: "consistent",
     includedPaths: [],
     excludedPaths: [],
   }),

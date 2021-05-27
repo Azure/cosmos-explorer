@@ -23,6 +23,20 @@
     "types": ["jest", "playwright", "jest-playwright-preset", "expect-playwright"],
     "baseUrl": "src"
   },
+  "typedocOptions": {
+    "entryPoints": [
+      "./src/SelfServe/Documentation/Documentation.ts",
+      "./src/SelfServe/Documentation/SupportedFeatures.ts",
+      "./src/SelfServe/Decorators.tsx",
+      "./src/SelfServe/SelfServeTypes.ts",
+      "./src/SelfServe/SelfServeUtils.tsx",
+      "./src/SelfServe/SelfServeTelemetryProcessor.ts"
+    ],
+    "out": "docs",
+    "excludeInternal": true,
+    "includes": "./src/SelfServe/Documentation",
+    "disableSources": true
+  },
   "include": [
     "./src/**/*",
     "./utils/**/*",

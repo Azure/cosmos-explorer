@@ -50,7 +50,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
     setFiles(event.target.files);
   };
 
-  const genericPaneProps: RightPaneFormProps = {
+  const props: RightPaneFormProps = {
     expandConsole: () => explorer.expandConsole(),
     formError,
     isExecuting: isExecuting,
@@ -89,7 +89,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
   };
 
   return (
-    <RightPaneForm {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneMainContent">
         <Upload
           label="Select JSON Files"

@@ -1,11 +1,4 @@
-import {
-  Dropdown,
-  ICommandBarItemProps,
-  IComponentAsProps,
-  IconType,
-  IDropdownOption,
-  IDropdownStyles,
-} from "@fluentui/react";
+import { ICommandBarItemProps, IconType, IDropdownOption, IDropdownStyles } from "@fluentui/react";
 import ChevronDownIcon from "images/Chevron_down.svg";
 import { Observable } from "knockout";
 import * as React from "react";
@@ -14,7 +7,6 @@ import { StyleConstants } from "../../../Common/Constants";
 import { MemoryUsageInfo } from "../../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
 
@@ -151,24 +143,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           TelemetryProcessor.trace(Action.ClickCommandBarButton, ActionModifiers.Mark, { label: option.text });
         };
 
-        result.commandBarButtonAs = (props: IComponentAsProps<ICommandBarItemProps>) => {
-          return (
-            <Dropdown
-              placeholder={btn.dropdownPlaceholder}
-              defaultSelectedKey={btn.dropdownSelectedKey}
-              onChange={onDropdownChange}
-              options={btn.children.map((child: CommandButtonComponentProps) => ({
-                key: child.dropdownItemKey,
-                text: child.commandButtonLabel,
-              }))}
-              styles={dropdownStyles}
-            />
-          );
-        };
-      }
-
-      if (btn.isArcadiaPicker && btn.arcadiaProps) {
-        result.commandBarButtonAs = () => <ArcadiaMenuPicker {...btn.arcadiaProps} />;
+        return result;
       }
 
       return result;
