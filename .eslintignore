@@ -111,9 +111,6 @@ src/Explorer/OpenActionsStubs.ts
 src/Explorer/Panes/AddDatabasePane.ts
 src/Explorer/Panes/AddDatabasePane.test.ts
 src/Explorer/Panes/BrowseQueriesPane.ts
-src/Explorer/Panes/ContextualPaneBase.ts
-# src/Explorer/Panes/GraphStylingPane.ts
-# src/Explorer/Panes/NewVertexPane.ts
 src/Explorer/Panes/RenewAdHocAccessPane.ts
 src/Explorer/Panes/SetupNotebooksPane.ts
 src/Explorer/Panes/SwitchDirectoryPane.ts

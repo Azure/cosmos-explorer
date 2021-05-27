@@ -20,7 +20,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "_isInitializingNotebooks": false,
             "_resetNotebookWorkspace": [Function],
             "canSaveQueries": [Function],
-            "closeSidePanel": undefined,
             "collapsedResourceTreeWidth": 36,
             "commandBarComponentAdapter": CommandBarComponentAdapter {
               "container": [Circular],
@@ -45,7 +44,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "notebookServerInfo": [Function],
             "onRefreshDatabasesKeyPress": [Function],
             "onRefreshResourcesClick": [Function],
-            "openSidePanel": undefined,
             "provideFeedbackEmail": [Function],
             "queriesClient": QueriesClient {
               "container": [Circular],
@@ -70,7 +68,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "selectedDatabaseId": [Function],
             "selectedNode": [Function],
             "setInProgressConsoleDataIdToBeDeleted": undefined,
-            "setIsNotificationConsoleExpanded": undefined,
             "setNotificationConsoleData": undefined,
             "sparkClusterConnectionInfo": [Function],
             "splitter": Splitter {

@@ -1,14 +1,12 @@
 import { Checkbox, Text } from "@fluentui/react";
 import React, { FunctionComponent, useEffect, useState } from "react";
+import { useSidePanel } from "../../../../hooks/useSidePanel";
 import { userContext } from "../../../../UserContext";
-import Explorer from "../../../Explorer";
 import * as Constants from "../../../Tables/Constants";
 import QueryViewModel from "../../../Tables/QueryBuilder/QueryViewModel";
 import { RightPaneForm, RightPaneFormProps } from "../../RightPaneForm/RightPaneForm";
 
 interface TableQuerySelectPanelProps {
-  explorer: Explorer;
-  closePanel: () => void;
   queryViewModel: QueryViewModel;
 }
 
@@ -19,10 +17,10 @@ interface ISelectColumn {
 }
 
 export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps> = ({
-  explorer,
-  closePanel,
   queryViewModel,
 }: TableQuerySelectPanelProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+
   const [columnOptions, setColumnOptions] = useState<ISelectColumn[]>([
     { columnName: "", selected: true, editable: false },
   ]);
@@ -31,7 +29,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   const onSubmit = (): void => {
     queryViewModel.selectText(getParameters());
     queryViewModel.getSelectMessage();
-    closePanel();
+    closeSidePanel();
   };
 
   const props: RightPaneFormProps = {
@@ -39,7 +37,6 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
     isExecuting: false,
     submitButtonText: "OK",
     onSubmit,
-    expandConsole: () => explorer.expandConsole(),
   };
 
   const handleClick = (isChecked: boolean, selectedColumn: string): void => {

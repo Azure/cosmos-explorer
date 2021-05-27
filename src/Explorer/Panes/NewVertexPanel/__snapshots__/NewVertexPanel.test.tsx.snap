@@ -2,7 +2,6 @@
 
 exports[`New Vertex Panel should render default property 1`] = `
 <RightPaneForm
-  expandConsole={[Function]}
   formError=""
   isExecuting={false}
   onSubmit={[Function]}

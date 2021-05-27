@@ -2,6 +2,7 @@ import React from "react";
 import { Areas, HttpStatusCodes } from "../../../Common/Constants";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import { GitHubClient, IGitHubPageInfo, IGitHubRepo } from "../../../GitHub/GitHubClient";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { IPinnedRepo, JunoClient } from "../../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -21,10 +22,8 @@ import { PanelLoadingScreen } from "../PanelLoadingScreen";
 
 interface IGitHubReposPanelProps {
   explorer: Explorer;
-  closePanel: () => void;
   gitHubClientProp: GitHubClient;
   junoClientProp: JunoClient;
-  openNotificationConsole: () => void;
 }
 
 interface IGitHubReposPanelState {
@@ -91,7 +90,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
         },
         resetConnection: (): void => this.setup(true),
         onOkClick: (): Promise<void> => this.submit(),
-        onCancelClick: (): void => this.props.closePanel(),
+        onCancelClick: (): void => useSidePanel.getState().closeSidePanel(),
       },
     };
     this.gitHubClient = this.props.gitHubClientProp;
@@ -439,7 +438,6 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
             message={this.state.errorMessage}
             messageType="error"
             showErrorDetails={this.state.showErrorDetails}
-            openNotificationConsole={this.props.openNotificationConsole}
           />
         )}
         <div className="panelMainContent" style={ContentMainStyle}>
