@@ -15,21 +15,21 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken,
+  ResourceToken
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata,
+  getDatabaseAccountPropertiesFromMetadata
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
-import { msalInstance } from "../Utils/AuthorizationUtils";
+import { getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
@@ -91,6 +91,7 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
   const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+  const msalInstance = getMsalInstance();
   const cachedAccount = msalInstance.getAllAccounts()?.[0];
   msalInstance.setActiveAccount(cachedAccount);
   const aadTokenResponse = await msalInstance.acquireTokenSilent({
