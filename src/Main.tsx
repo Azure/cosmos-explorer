@@ -41,15 +41,13 @@ import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import "./Explorer/Panes/PanelComponent.less";
-import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
+import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Tabs/QueryTab.less";
 import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
-import { useNotificationConsole } from "./hooks/useNotificationConsole";
-import { useSidePanel } from "./hooks/useSidePanel";
 import { useTabs } from "./hooks/useTabs";
 import "./Libs/jquery";
 import "./Shared/appInsights";
@@ -62,8 +60,6 @@ const App: React.FunctionComponent = () => {
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
 
-  const { isOpen: isPanelOpen, panelContent, headerText } = useSidePanel();
-  const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
   const { tabs, activeTab, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
@@ -129,12 +125,7 @@ const App: React.FunctionComponent = () => {
           />
         </div>
       </div>
-      <PanelContainerComponent
-        isOpen={isPanelOpen}
-        panelContent={panelContent}
-        headerText={headerText}
-        isConsoleExpanded={isConsoleExpanded}
-      />
+      <SidePanel />
       <Dialog />
     </div>
   );

@@ -1,5 +1,6 @@
 import { IPanelProps, IRenderFunction, Panel, PanelType } from "@fluentui/react";
 import * as React from "react";
+import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { useSidePanel } from "../../hooks/useSidePanel";
 
 export interface PanelContainerProps {
@@ -83,6 +84,7 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 }
 
 export const SidePanel: React.FC = () => {
+  const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
   const { isOpen, panelContent, headerText } = useSidePanel((state) => {
     return {
       isOpen: state.isOpen,
@@ -97,7 +99,7 @@ export const SidePanel: React.FC = () => {
       isOpen={isOpen}
       panelContent={panelContent}
       headerText={headerText}
-      isConsoleExpanded={false}
+      isConsoleExpanded={isConsoleExpanded}
     />
   );
 };

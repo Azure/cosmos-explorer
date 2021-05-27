@@ -12,9 +12,6 @@ import {
   GraphExplorerError,
   GraphExplorerProps,
 } from "../Graph/GraphExplorerComponent/GraphExplorer";
-// import { GraphAccessor, GraphExplorer, GraphExplorerError } from "../Graph/GraphExplorerComponent/GraphExplorer";
-// import { GraphExplorerAdapter } from "../Graph/GraphExplorerComponent/GraphExplorerAdapter";
-import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { GraphStylingPanel } from "../Panes/GraphStylingPanel/GraphStylingPanel";
 import { NewVertexPanel } from "../Panes/NewVertexPanel/NewVertexPanel";
 import TabsBase from "./TabsBase";
@@ -72,7 +69,6 @@ export default class GraphTab extends TabsBase {
   private isFilterQueryLoading: ko.Observable<boolean>;
   private isValidQuery: ko.Observable<boolean>;
   private collectionPartitionKeyProperty: string;
-  private contextualPane: ContextualPaneBase;
   public graphExplorer: GraphExplorer;
   public options: GraphTabOptions;
   constructor(options: GraphTabOptions) {
@@ -172,7 +168,7 @@ export default class GraphTab extends TabsBase {
           this.graphAccessor.addVertex(result).then(
             () => {
               onSuccess();
-              this.contextualPane.cancel();
+              useSidePanel.getState().closeSidePanel();
             },
             (error: GraphExplorerError) => {
               onError(error.title);

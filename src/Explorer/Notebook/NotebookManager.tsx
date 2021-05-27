@@ -21,7 +21,6 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
-import { ContextualPaneBase } from "../Panes/ContextualPaneBase";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
@@ -56,8 +55,6 @@ export default class NotebookManager {
   private gitHubContentProvider: GitHubContentProvider;
   public gitHubOAuthService: GitHubOAuthService;
   public gitHubClient: GitHubClient;
-
-  public gitHubReposPane: ContextualPaneBase;
 
   public initialize(params: NotebookManagerOptions): void {
     this.params = params;
