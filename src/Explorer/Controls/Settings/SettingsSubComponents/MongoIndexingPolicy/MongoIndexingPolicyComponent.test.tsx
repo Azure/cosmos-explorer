@@ -109,12 +109,13 @@ describe("MongoIndexingPolicyComponent", () => {
         expect(mongoIndexingPolicyComponent.isMongoIndexingPolicyDiscardable()).toEqual(
           isMongoIndexingPolicyDiscardable
         );
-        if (mongoWarningNotificationMessage) {
-          const elementAsString = renderToString(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage());
-          expect(elementAsString).toContain(mongoWarningNotificationMessage);
-        } else {
-          expect(mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()).toBeUndefined();
-        }
+
+        const warningNotificationElementAsString = renderToString(
+          mongoIndexingPolicyComponent.getMongoWarningNotificationMessage()
+        );
+        expect(warningNotificationElementAsString.includes(mongoWarningNotificationMessage)).toEqual(
+          !!mongoWarningNotificationMessage
+        );
       }
     );
   });
