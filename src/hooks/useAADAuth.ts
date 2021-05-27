@@ -1,4 +1,4 @@
-import * as msal from '@azure/msal-browser';
+import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
 import { msalInstance } from "../Utils/AuthorizationUtils";
