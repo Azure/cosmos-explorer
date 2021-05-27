@@ -21,7 +21,8 @@
     "resolveJsonModule": true,
     "noEmit": true,
     "types": ["jest", "playwright", "jest-playwright-preset", "expect-playwright"],
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "skipLibCheck": true
   },
   "typedocOptions": {
     "entryPoints": [
@@ -43,7 +44,7 @@
     "./test/testExplorer/TestExplorer.ts",
     "./**/*.ts",
     "./**/*.tsx",
-    "src/custom.d.ts"
+    "./src/*.d.ts"
   ],
   "exclude": ["./src/**/__mocks__/**/*"]
 }

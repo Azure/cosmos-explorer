@@ -1,14 +1,6 @@
-import { PageWaitForSelectorOptions, PlaywrightMatchers } from "expect-playwright";
 import Explorer from "./Explorer/Explorer";
 
 declare global {
-  namespace jest {
-    interface Matchers<R> extends PlaywrightMatchers<R> {
-      toHaveFocus(selector: string, options?: PageWaitForSelectorOptions): Promise<R>;
-      toHaveTextContent(htmlElement: string): object;
-      toHaveValue(value: string | string[] | number): object;
-    }
-  }
   interface Window {
     /**
      * @deprecated
