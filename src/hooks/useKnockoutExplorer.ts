@@ -106,7 +106,11 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   try {
     keys = await listKeys(subscriptionId, resourceGroup, account.name);
   } catch (e) {
-    console.warn(e);
+    if (userContext.features.enableAadDataPlane) {
+      console.warn(e);
+    } else {
+      throw new Error(`List keys failed: ${e.message}`);
+    }
   }
   updateUserContext({
     subscriptionId,
