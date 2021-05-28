@@ -31,7 +31,10 @@ export function useAADAuth(): ReturnType {
 
   msalInstance.setActiveAccount(account);
   const login = React.useCallback(async () => {
-    const response = await msalInstance.loginPopup();
+    const response = await msalInstance.loginPopup({
+      redirectUri: configContext.msalRedirectURI,
+      scopes: [],
+    });
     setLoggedIn();
     setAccount(response.account);
     setTenantId(response.tenantId);
