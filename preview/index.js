@@ -65,7 +65,7 @@ app.get("/pull/:pr(\\d+)", (req, res) => {
 app.get("/", (req, res) => {
   fetch("https://api.github.com/repos/Azure/cosmos-explorer/branches/master")
     .then((response) => response.json())
-    .then(({ commit: { ref, sha } }) => {
+    .then(({ commit: { sha } }) => {
       const explorer = new URL(
         "https://cosmos-explorer-preview.azurewebsites.net/commit/" + sha + "/hostedExplorer.html"
       );
