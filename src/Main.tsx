@@ -37,6 +37,7 @@ import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
+import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
@@ -88,7 +89,7 @@ const App: React.FunctionComponent = () => {
     <div className="flexContainer">
       <div id="divExplorer" className="flexContainer hideOverflows">
         {/* Main Command Bar - Start */}
-        <div data-bind="react: commandBarComponentAdapter" />
+        <CommandBar container={explorer} />
         {/* Collections Tree and Tabs - Begin */}
         <div className="resourceTreeAndTabs">
           {/* Collections Tree - Start */}

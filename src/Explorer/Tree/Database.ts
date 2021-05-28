@@ -81,7 +81,6 @@ export default class Database implements ViewModels.Database {
             database: this,
             hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
             onLoadStartKey: startKey,
-            onUpdateTabsButtons: this.container.onUpdateTabsButtons,
           };
           settingsTab = new DatabaseSettingsTabV2(tabOptions);
           settingsTab.pendingNotification(pendingNotification);

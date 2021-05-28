@@ -9,6 +9,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import { TabsManager } from "./TabsManager";
 
@@ -163,7 +164,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   protected updateNavbarWithTabsButtons = (): void => {
     if (this.isActive()) {
-      this.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   };
 }

@@ -2,7 +2,6 @@ import * as ko from "knockout";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import QueryTab from "./QueryTab";
 
@@ -26,7 +25,6 @@ describe("Query Tab", () => {
       title: "",
       tabPath: "",
       hashLocation: "",
-      onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
     });
   }
 
