@@ -30,7 +30,6 @@ import { ResourceTree } from "./Common/ResourceTree";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog } from "./Explorer/Controls/Dialog";
-import "./Explorer/Controls/DynamicList/DynamicListComponent.less";
 import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
@@ -41,16 +40,15 @@ import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
 import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
-import { NotificationConsoleComponent } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import "./Explorer/Panes/PanelComponent.less";
-import { PanelContainerComponent } from "./Explorer/Panes/PanelContainerComponent";
+import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
 import "./Explorer/Tabs/QueryTab.less";
 import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
-import { useSidePanel } from "./hooks/useSidePanel";
 import { useTabs } from "./hooks/useTabs";
 import "./Libs/jquery";
 import "./Shared/appInsights";
@@ -58,21 +56,16 @@ import "./Shared/appInsights";
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
-  const [isNotificationConsoleExpanded, setIsNotificationConsoleExpanded] = useState(false);
   const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
   //TODO: Refactor so we don't need to pass the id to remove a console data
   const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
 
-  const { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel } = useSidePanel();
   const { tabs, activeTab, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
-    setIsNotificationConsoleExpanded,
     setNotificationConsoleData,
     setInProgressConsoleDataIdToBeDeleted,
-    openSidePanel,
-    closeSidePanel,
     tabsManager,
   };
 
@@ -127,21 +120,13 @@ const App: React.FunctionComponent = () => {
           aria-label="Notification console"
           id="explorerNotificationConsole"
         >
-          <NotificationConsoleComponent
-            isConsoleExpanded={isNotificationConsoleExpanded}
+          <NotificationConsole
             consoleData={notificationConsoleData}
             inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
-            setIsConsoleExpanded={setIsNotificationConsoleExpanded}
           />
         </div>
       </div>
-      <PanelContainerComponent
-        isOpen={isPanelOpen}
-        panelContent={panelContent}
-        headerText={headerText}
-        closePanel={closeSidePanel}
-        isConsoleExpanded={isNotificationConsoleExpanded}
-      />
+      <SidePanel />
       <Dialog />
     </div>
   );

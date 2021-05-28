@@ -7,7 +7,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
   storedProcedure={Object {}}
 >
   <RightPaneForm
-    expandConsole={[Function]}
     formError=""
     isExecuting={false}
     onSubmit={[Function]}

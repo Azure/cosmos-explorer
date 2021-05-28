@@ -14,6 +14,7 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { Areas } from "../../Common/Constants";
+import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
@@ -274,11 +275,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (
-      userContext.apiType === "Mongo" &&
-      this.container.isNotebookEnabled() &&
-      userContext.features.enableSchemaAnalyzer
-    ) {
+    if (this.container.isNotebookEnabled() && userContext.apiType === "Mongo" && isPublicInternetAccessAllowed()) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),

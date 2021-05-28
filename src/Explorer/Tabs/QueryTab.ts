@@ -10,6 +10,7 @@ import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
 import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -198,7 +199,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   }
 
   public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
-    this.collection && this.collection.container.expandConsole();
+    useNotificationConsole.getState().expandConsole();
 
     return false;
   };

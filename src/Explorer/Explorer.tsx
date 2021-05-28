@@ -9,6 +9,7 @@ import * as Constants from "../Common/Constants";
 import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
+import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
@@ -17,10 +18,10 @@ import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
+import { useSidePanel } from "../hooks/useSidePanel";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
-import * as SharedConstants from "../Shared/Constants";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -52,7 +53,6 @@ import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfir
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
-import { LoadQueryPane } from "./Panes/LoadQueryPane/LoadQueryPane";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
@@ -80,18 +80,14 @@ BindingHandlersRegisterer.registerBindingHandlers();
 var tmp = ComponentRegisterer;
 
 export interface ExplorerParams {
-  setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   setNotificationConsoleData: (consoleData: ConsoleData) => void;
   setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
-  closeSidePanel: () => void;
   tabsManager: TabsManager;
 }
 
 export default class Explorer {
   public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 
-  public collectionCreationDefaults: ViewModels.CollectionCreationDefaults = SharedConstants.CollectionCreationDefaults;
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
@@ -100,14 +96,8 @@ export default class Explorer {
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
 
-  // Notification Console
-  private setIsNotificationConsoleExpanded: (isExpanded: boolean) => void;
   private setNotificationConsoleData: (consoleData: ConsoleData) => void;
   private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
-
-  // Panes
-  public openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
-  public closeSidePanel: () => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -156,11 +146,8 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
-    this.setIsNotificationConsoleExpanded = params?.setIsNotificationConsoleExpanded;
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
     this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
-    this.openSidePanel = params?.openSidePanel;
-    this.closeSidePanel = params?.closeSidePanel;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -184,11 +171,8 @@ export default class Explorer {
             ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
               userContext.features.enableNotebooks)
         );
-        this.isShellEnabled(
-          this.isNotebookEnabled() &&
-            !userContext.databaseAccount.properties.isVirtualNetworkFilterEnabled &&
-            userContext.databaseAccount.properties.ipRules.length === 0
-        );
+
+        this.isShellEnabled(this.isNotebookEnabled() && isPublicInternetAccessAllowed());
 
         TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
           isNotebookEnabled: this.isNotebookEnabled(),
@@ -479,14 +463,6 @@ export default class Explorer {
 
   public deleteInProgressConsoleDataWithId(id: string): void {
     this.setInProgressConsoleDataIdToBeDeleted(id);
-  }
-
-  public expandConsole(): void {
-    this.setIsNotificationConsoleExpanded(true);
-  }
-
-  public collapseConsole(): void {
-    this.setIsNotificationConsoleExpanded(false);
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
@@ -785,9 +761,6 @@ export default class Explorer {
       // This allows webpack hot reload to funciton properly
       if (process.env.NODE_ENV === "development") {
         sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
-      }
-      if (inputs.defaultCollectionThroughput) {
-        this.collectionCreationDefaults = inputs.defaultCollectionThroughput;
       }
       this.isAccountReady(true);
     }
@@ -1132,12 +1105,12 @@ export default class Explorer {
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
-      this.openSidePanel(
+      useSidePanel.getState().openSidePanel(
         "Rename Notebook",
         <StringInputPane
           explorer={this}
           closePanel={() => {
-            this.closeSidePanel();
+            useSidePanel.getState().closeSidePanel();
             this.resourceTree.triggerRender();
           }}
           inputLabel="Enter new notebook name"
@@ -1163,12 +1136,12 @@ export default class Explorer {
       throw new Error(error);
     }
 
-    this.openSidePanel(
+    useSidePanel.getState().openSidePanel(
       "Create new directory",
       <StringInputPane
         explorer={this}
         closePanel={() => {
-          this.closeSidePanel();
+          useSidePanel.getState().closeSidePanel();
           this.resourceTree.triggerRender();
         }}
         errorMessage="Could not create directory "
@@ -1555,160 +1528,115 @@ export default class Explorer {
       return false;
     });
   }
-
   public openDeleteCollectionConfirmationPane(): void {
-    this.openSidePanel(
-      "Delete " + getCollectionName(),
-      <DeleteCollectionConfirmationPane explorer={this} closePanel={this.closeSidePanel} />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={this} />);
   }
 
   public openDeleteDatabaseConfirmationPane(): void {
-    this.openSidePanel(
-      "Delete " + getDatabaseName(),
-      <DeleteDatabaseConfirmationPanel
-        explorer={this}
-        openNotificationConsole={() => this.expandConsole()}
-        closePanel={this.closeSidePanel}
-        selectedDatabase={this.findSelectedDatabase()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Delete " + getDatabaseName(),
+        <DeleteDatabaseConfirmationPanel explorer={this} selectedDatabase={this.findSelectedDatabase()} />
+      );
   }
-
   public openUploadItemsPanePane(): void {
-    this.openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
+    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
   }
-
-  public openSettingPane(): void {
-    this.openSidePanel(
-      "Setting",
-      <SettingsPane expandConsole={() => this.expandConsole()} closePanel={this.closeSidePanel} />
-    );
-  }
-
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
-    this.openSidePanel(
-      "Input parameters",
-      <ExecuteSprocParamsPane
-        storedProcedure={storedProcedure}
-        expandConsole={() => this.expandConsole()}
-        closePanel={() => this.closeSidePanel()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
   public async openAddCollectionPanel(databaseId?: string): Promise<void> {
     await this.loadDatabaseOffers();
-    this.openSidePanel(
-      "New " + getCollectionName(),
-      <AddCollectionPanel
-        explorer={this}
-        closePanel={() => this.closeSidePanel()}
-        openNotificationConsole={() => this.expandConsole()}
-        databaseId={databaseId}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
   }
   public openAddDatabasePane(): void {
-    this.openSidePanel(
-      "New " + getDatabaseName(),
-      <AddDatabasePanel
-        explorer={this}
-        openNotificationConsole={() => this.expandConsole()}
-        closePanel={this.closeSidePanel}
-      />
-    );
+    useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this} />);
   }
 
   public openBrowseQueriesPanel(): void {
-    this.openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this} closePanel={this.closeSidePanel} />);
-  }
-
-  public openLoadQueryPanel(): void {
-    this.openSidePanel("Load Query", <LoadQueryPane explorer={this} closePanel={() => this.closeSidePanel()} />);
+    useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this} />);
   }
 
   public openSaveQueryPanel(): void {
-    this.openSidePanel("Save Query", <SaveQueryPane explorer={this} closePanel={() => this.closeSidePanel()} />);
+    useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this} />);
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     parent = parent || this.resourceTree.myNotebooksContentRoot;
-    this.openSidePanel(
-      "Upload file to notebook server",
-      <UploadFilePane
-        expandConsole={() => this.expandConsole()}
-        closePanel={this.closeSidePanel}
-        uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Upload file to notebook server",
+        <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />
+      );
   }
 
   public openCassandraAddCollectionPane(): void {
-    this.openSidePanel(
-      "Add Table",
-      <CassandraAddCollectionPane
-        explorer={this}
-        closePanel={() => this.closeSidePanel()}
-        cassandraApiClient={new CassandraAPIDataClient()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Add Table",
+        <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
+      );
   }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
-    this.openSidePanel(
-      header,
-      <GitHubReposPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        gitHubClientProp={this.notebookManager.gitHubClient}
-        junoClientProp={junoClient}
-        openNotificationConsole={() => this.expandConsole()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        header,
+        <GitHubReposPanel
+          explorer={this}
+          gitHubClientProp={this.notebookManager.gitHubClient}
+          junoClientProp={junoClient}
+        />
+      );
   }
 
   public openAddTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    this.openSidePanel(
-      "Add Table Entity",
-      <AddTableEntityPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        queryTablesTab={queryTablesTab}
-        tableEntityListViewModel={tableEntityListViewModel}
-        cassandraApiClient={new CassandraAPIDataClient()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Add Table Entity",
+        <AddTableEntityPanel
+          tableDataClient={this.tableDataClient}
+          queryTablesTab={queryTablesTab}
+          tableEntityListViewModel={tableEntityListViewModel}
+          cassandraApiClient={new CassandraAPIDataClient()}
+        />
+      );
   }
   public openSetupNotebooksPanel(title: string, description: string): void {
-    this.openSidePanel(
-      title,
-      <SetupNoteBooksPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        openNotificationConsole={() => this.expandConsole()}
-        panelTitle={title}
-        panelDescription={description}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
   }
 
   public openEditTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    this.openSidePanel(
-      "Edit Table Entity",
-      <EditTableEntityPanel
-        explorer={this}
-        closePanel={this.closeSidePanel}
-        queryTablesTab={queryTablesTab}
-        tableEntityListViewModel={tableEntityListViewModel}
-        cassandraApiClient={new CassandraAPIDataClient()}
-      />
-    );
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Edit Table Entity",
+        <EditTableEntityPanel
+          tableDataClient={this.tableDataClient}
+          queryTablesTab={queryTablesTab}
+          tableEntityListViewModel={tableEntityListViewModel}
+          cassandraApiClient={new CassandraAPIDataClient()}
+        />
+      );
   }
 
   public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
-    this.openSidePanel(
-      "Select Column",
-      <TableQuerySelectPanel explorer={this} closePanel={this.closeSidePanel} queryViewModel={queryViewModal} />
-    );
+    useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={queryViewModal} />);
+  }
+  public openSettingPane(): void {
+    useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
   }
 }

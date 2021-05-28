@@ -20,18 +20,7 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "_isInitializingNotebooks": false,
             "_resetNotebookWorkspace": [Function],
             "canSaveQueries": [Function],
-            "closeSidePanel": undefined,
             "collapsedResourceTreeWidth": 36,
-            "collectionCreationDefaults": Object {
-              "storage": "100",
-              "throughput": Object {
-                "fixed": 400,
-                "shared": 400,
-                "unlimited": 400,
-                "unlimitedmax": 1000000,
-                "unlimitedmin": 400,
-              },
-            },
             "databases": [Function],
             "isAccountReady": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -49,7 +38,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "notebookServerInfo": [Function],
             "onRefreshDatabasesKeyPress": [Function],
             "onRefreshResourcesClick": [Function],
-            "openSidePanel": undefined,
             "provideFeedbackEmail": [Function],
             "queriesClient": QueriesClient {
               "container": [Circular],
@@ -74,7 +62,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "selectedDatabaseId": [Function],
             "selectedNode": [Function],
             "setInProgressConsoleDataIdToBeDeleted": undefined,
-            "setIsNotificationConsoleExpanded": undefined,
             "setNotificationConsoleData": undefined,
             "sparkClusterConnectionInfo": [Function],
             "splitter": Splitter {

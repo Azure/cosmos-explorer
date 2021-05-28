@@ -2,7 +2,6 @@
 
 exports[`CassandraAddCollectionPane  Pane should render Default properly 1`] = `
 <RightPaneForm
-  expandConsole={[Function]}
   formError=""
   onSubmit={[Function]}
   submitButtonText="Apply"

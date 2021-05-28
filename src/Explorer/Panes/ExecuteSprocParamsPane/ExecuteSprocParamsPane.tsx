@@ -2,15 +2,14 @@ import { IDropdownOption, IImageProps, Image, Stack, Text } from "@fluentui/reac
 import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import StoredProcedure from "../../Tree/StoredProcedure";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { InputParameter } from "./InputParameter";
 
 interface ExecuteSprocParamsPaneProps {
-  expandConsole: () => void;
   storedProcedure: StoredProcedure;
-  closePanel: () => void;
 }
 
 const imageProps: IImageProps = {
@@ -24,10 +23,9 @@ interface UnwrappedExecuteSprocParam {
 }
 
 export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
-  expandConsole,
   storedProcedure,
-  closePanel,
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [paramKeyValues, setParamKeyValues] = useState<UnwrappedExecuteSprocParam[]>([{ key: "string", text: "" }]);
   const [partitionValue, setPartitionValue] = useState<string>(); // Defaulting to undefined here is important. It is not the same partition key as ""
@@ -76,7 +74,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
       });
     storedProcedure.execute(sprocParams, partitionKey === "custom" ? JSON.parse(partitionValue) : partitionValue);
     setLoadingFalse();
-    closePanel();
+    closeSidePanel();
   };
 
   const deleteParamAtIndex = (indexToRemove: number): void => {
@@ -114,7 +112,6 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
   };
 
   const props: RightPaneFormProps = {
-    expandConsole,
     formError: formError,
     isExecuting: isLoading,
     submitButtonText: "Execute",

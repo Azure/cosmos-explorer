@@ -5,6 +5,7 @@ import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Collection } from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { DefaultExperienceUtility } from "../../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -15,13 +16,12 @@ import Explorer from "../../Explorer";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 export interface DeleteCollectionConfirmationPaneProps {
   explorer: Explorer;
-  closePanel: () => void;
 }
 
 export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectionConfirmationPaneProps> = ({
   explorer,
-  closePanel,
 }: DeleteCollectionConfirmationPaneProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
@@ -79,7 +79,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
         });
       }
 
-      closePanel();
+      closeSidePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
 
@@ -102,7 +102,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     isExecuting,
     submitButtonText: "OK",
     onSubmit,
-    expandConsole: () => explorer.expandConsole(),
   };
   return (
     <RightPaneForm {...props}>

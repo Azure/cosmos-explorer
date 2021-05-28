@@ -6,6 +6,7 @@ import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
 import DeleteFeedback from "../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { Collection, Database } from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -17,17 +18,14 @@ import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm
 
 interface DeleteDatabaseConfirmationPanelProps {
   explorer: Explorer;
-  closePanel: () => void;
-  openNotificationConsole: () => void;
   selectedDatabase: Database;
 }
 
 export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = ({
   explorer,
-  openNotificationConsole,
-  closePanel,
   selectedDatabase,
 }: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
 
   const [formError, setFormError] = useState<string>("");
@@ -51,7 +49,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
 
     try {
       await deleteDatabase(selectedDatabase.id());
-      closePanel();
+      closeSidePanel();
       explorer.refreshAllDatabases();
       explorer.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
       explorer.selectedNode(undefined);
@@ -111,7 +109,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     isExecuting: isLoading,
     submitButtonText: "OK",
     onSubmit: () => submit(),
-    expandConsole: openNotificationConsole,
   };
 
   const errorProps: PanelInfoErrorProps = {

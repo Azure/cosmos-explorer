@@ -89,7 +89,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
     isExecuting: isExecuting,
     submitButtonText: submitButtonLabel,
     onSubmit: submit,
-    expandConsole: () => container.expandConsole(),
   };
   return (
     <RightPaneForm {...props}>

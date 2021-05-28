@@ -6,6 +6,7 @@ import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUti
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import * as AddCollectionUtility from "../../../Shared/AddCollectionUtility";
 import * as SharedConstants from "../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
@@ -19,21 +20,20 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 export interface CassandraAddCollectionPaneProps {
   explorer: Explorer;
-  closePanel: () => void;
   cassandraApiClient: CassandraAPIDataClient;
 }
 
 export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectionPaneProps> = ({
   explorer: container,
-  closePanel,
   cassandraApiClient,
 }: CassandraAddCollectionPaneProps) => {
-  const throughputDefaults = container.collectionCreationDefaults.throughput;
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+  const throughputDefaults = userContext.collectionCreationDefaults.throughput;
   const [createTableQuery, setCreateTableQuery] = useState<string>("CREATE TABLE ");
   const [keyspaceId, setKeyspaceId] = useState<string>("");
   const [tableId, setTableId] = useState<string>("");
   const [throughput, setThroughput] = useState<number>(
-    AddCollectionUtility.getMaxThroughput(container.collectionCreationDefaults, container)
+    AddCollectionUtility.getMaxThroughput(userContext.collectionCreationDefaults, container)
   );
 
   const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(userContext.features.autoscaleDefault);
@@ -241,7 +241,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
       }
       container.refreshAllDatabases();
       setIsExecuting(false);
-      closePanel();
+      closeSidePanel();
 
       TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneStartMessage, startKey);
     } catch (error) {
@@ -261,7 +261,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   };
 
   const props: RightPaneFormProps = {
-    expandConsole: () => container.expandConsole(),
     formError: formErrors,
     isExecuting,
     submitButtonText: "Apply",
