@@ -15,14 +15,14 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken
+  ResourceToken,
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata
+  getDatabaseAccountPropertiesFromMetadata,
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
@@ -109,7 +109,7 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
     if (userContext.features.enableAadDataPlane) {
       console.warn(e);
     } else {
-      throw new Error(`List keys failed: ${e.message}`)
+      throw new Error(`List keys failed: ${e.message}`);
     }
   }
   updateUserContext({
