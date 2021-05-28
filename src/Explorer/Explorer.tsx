@@ -417,7 +417,7 @@ export default class Explorer {
         useDialog.getState().closeDialog();
 
         try {
-          await update(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.id, {
+          await update(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, {
             properties: {
               enableAnalyticalStorage: true,
             },
