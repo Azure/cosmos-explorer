@@ -52,7 +52,7 @@ class EditorViewModel extends JsonEditorViewModel {
     if (EditorViewModel.providerRegistered.indexOf("sql") < 0) {
       const { SqlCompletionItemProvider } = await import("@azure/cosmos-language-service");
       const monaco = await loadMonaco();
-      monaco.languages.registerCompletionItemProvider("sql", new SqlCompletionItemProvider());
+      monaco.languages.registerCompletionItemProvider("sql", new SqlCompletionItemProvider() as any);
       EditorViewModel.providerRegistered.push("sql");
     }
   }
