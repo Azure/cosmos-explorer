@@ -8,6 +8,7 @@ import { AuthType } from "./AuthType";
 import { DatabaseAccount } from "./Contracts/DataModels";
 import "./Explorer/Menus/NavBar/MeControlComponent.less";
 import { useAADAuth } from "./hooks/useAADAuth";
+import { useConfig } from "./hooks/useConfig";
 import { useTokenMetadata } from "./hooks/usePortalAccessToken";
 import { HostedExplorerChildFrame } from "./HostedExplorerChildFrame";
 import { AccountSwitcher } from "./Platform/Hosted/Components/AccountSwitcher";
@@ -30,7 +31,7 @@ const App: React.FunctionComponent = () => {
 
   // For showing/hiding panel
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);
-
+  const config = useConfig();
   const { isLoggedIn, armToken, graphToken, account, tenantId, logout, login, switchTenant } = useAADAuth();
   const [databaseAccount, setDatabaseAccount] = React.useState<DatabaseAccount>();
   const [authType, setAuthType] = React.useState<AuthType>(encryptedToken ? AuthType.EncryptedToken : undefined);
@@ -74,7 +75,7 @@ const App: React.FunctionComponent = () => {
   });
 
   const showExplorer =
-    (isLoggedIn && databaseAccount) ||
+    (config && isLoggedIn && databaseAccount) ||
     (encryptedTokenMetadata && encryptedTokenMetadata) ||
     (authType === AuthType.ResourceToken && connectionString);
 

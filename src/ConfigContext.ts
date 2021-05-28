@@ -28,6 +28,7 @@ export interface ConfigContext {
   armAPIVersion?: string;
   allowedJunoOrigins: string[];
   enableSchemaAnalyzer: boolean;
+  msalRedirectURI?: string;
 }
 
 // Default configuration
