@@ -1,5 +1,5 @@
-import { useBoolean } from "@fluentui/react-hooks";
 import { Text, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import { Areas, SavedQueries } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
@@ -8,7 +8,7 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import QueryTab from "../../Tabs/QueryTab";
+import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
 import {
   GenericRightPaneComponent,
   GenericRightPaneProps,
@@ -54,8 +54,9 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
       logConsoleError("Failed to save query: account not setup to save queries");
     }
 
-    const queryTab = explorer && (explorer.tabsManager.activeTab() as QueryTab);
-    const query: string = queryTab && queryTab.sqlQueryEditorContent();
+    const queryTab = explorer && (explorer.tabsManager.activeTab() as NewQueryTab);
+    const query: string = queryTab && queryTab.iTabAccessor.onSaveClickEvent();
+
     if (!queryName || queryName.length === 0) {
       setFormError("No query name specified");
       setFormErrorsDetails("No query name specified. Please specify a query name.");

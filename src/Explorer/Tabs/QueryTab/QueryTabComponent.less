@@ -1,0 +1,305 @@
+@import "../../../../less/Common/Constants.less";
+@import "../../../../less/Common/TabCommon.less";
+
+@MongoQueryEditorHeight: 50px;
+@ResultsTextFontWeight: 600;
+@ToggleHeight: 30px;
+@ToggleWidth: 250px;
+@QueryEngineExeInfo: 305px;
+
+.tab-pane {
+  .tabContentContainer();
+
+  .tabPaneContentContainer {
+    position: relative;
+    .tabContentContainer();
+
+    .mongoQueryHelper {
+      margin: @DefaultSpace 0px 0px 44px;
+      position: absolute;
+      top: 115px; //this is to avoid the jump of query editor
+    }
+
+    .splitter-layout {
+      .queryEditor {
+        .flex-display();
+        height: 100%;
+        width: 100%;
+        margin-top: @SmallSpace;
+
+        .jsonEditor {
+          border: none;
+          margin-top: @SmallSpace;
+        }
+      }
+
+      .queryEditor.mongoQueryEditor {
+        margin-top: 32px;
+        overflow: hidden;
+      }
+
+      .queryEditorHorizontalSplitter {
+        margin: auto;
+        display: block;
+      }
+    }
+
+    .queryErrorsHeaderContainer {
+      padding: 24px @LargeSpace 0px @MediumSpace;
+
+      .queryErrors {
+        font-size: @mediumFontSize;
+        list-style-type: none;
+        color: @BaseDark;
+        font-weight: bold;
+        margin-left: 24px;
+      }
+    }
+
+    .queryResultErrorContentContainer {
+      .flex-display();
+      .flex-direction();
+      font-size: @DefaultFontSize;
+      padding: @DefaultSpace;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+
+      .queryEditorWatermark {
+        text-align: center;
+        margin: auto;
+        height: 25vh; // this is to align the water mark in center of the layout.
+
+        p {
+          margin-bottom: @LargeSpace;
+          color: @BaseHigh;
+        }
+
+        .queryEditorWatermarkText {
+          color: @BaseHigh;
+          font-size: @DefaultFontSize;
+          font-family: @DataExplorerFont;
+        }
+      }
+
+      .queryResultsErrorsContent {
+        height: 100%;
+        margin-left: @MediumSpace;
+        .flex-display();
+        .flex-direction();
+
+        .togglesWithMetadata {
+          margin-top: @MediumSpace;
+
+          .toggles {
+            height: @ToggleHeight;
+            width: @ToggleWidth;
+            margin-left: @MediumSpace;
+
+            &:focus {
+              .focus();
+            }
+
+            .tab {
+              margin-right: @MediumSpace;
+            }
+
+            .toggleSwitch {
+              .toggleSwitch();
+            }
+
+            .selectedToggle {
+              .selectedToggle();
+            }
+
+            .unselectedToggle {
+              .unselectedToggle();
+            }
+          }
+        }
+
+        .result-metadata {
+          padding: @LargeSpace @SmallSpace @MediumSpace @MediumSpace;
+
+          .queryResultDivider {
+            margin-left: @SmallSpace;
+            margin-right: @SmallSpace;
+          }
+
+          .queryResultNextEnable {
+            color: @AccentMediumHigh;
+            font-size: @mediumFontSize;
+            cursor: pointer;
+
+            img {
+              height: @ImgHeight;
+              width: @ImgWidth;
+              margin-left: @SmallSpace;
+            }
+          }
+
+          .queryResultNextDisable {
+            color: @BaseMediumHigh;
+            opacity: 0.5;
+            font-size: @mediumFontSize;
+
+            img {
+              height: @ImgHeight;
+              width: @ImgWidth;
+              margin-left: @SmallSpace;
+            }
+          }
+        }
+
+        .tab-pane.active {
+          height: 100%;
+          width: 100%;
+        }
+
+        .errorContent {
+          .flex-display();
+          width: 60%;
+          white-space: nowrap;
+          font-size: @mediumFontSize;
+          padding: 0px @MediumSpace 0px @MediumSpace;
+
+          .errorMessage {
+            padding: @SmallSpace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+
+        .errorDetailsLink {
+          cursor: pointer;
+          padding: @SmallSpace;
+        }
+
+        .queryMetricsSummaryContainer {
+          .flex-display();
+          .flex-direction();
+          overflow: hidden;
+
+          .queryMetricsSummary {
+            margin: @LargeSpace @LargeSpace 0px @DefaultSpace;
+            table-layout: fixed;
+            display: block;
+            height: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
+
+            caption {
+              width: 100px;
+            }
+
+            .queryMetricsSummaryHead {
+              .flex-display();
+            }
+
+            .queryMetricsSummaryHeader.queryMetricsSummaryTuple {
+              font-size: 10px;
+            }
+
+            .queryMetricsSummaryBody {
+              .flex-display();
+              .flex-direction();
+            }
+
+            .queryMetricsSummaryTuple {
+              border-bottom: 1px solid @BaseMedium;
+              height: 32px;
+              font-size: 12px;
+              width: 100%;
+              .flex-display();
+              th,
+              td {
+                padding: @DefaultSpace;
+
+                &:nth-child(1) {
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                  white-space: nowrap;
+                  flex: 0 0 50%;
+                }
+
+                &:nth-child(3) {
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                  white-space: nowrap;
+                  flex: 0 0 50%;
+                }
+
+                .queryMetricInfoTooltip {
+                  .infoTooltip();
+
+                  &:hover .queryMetricTooltipText {
+                    .tooltipVisible();
+                  }
+
+                  &:focus .queryMetricTooltipText {
+                    .tooltipVisible();
+                  }
+
+                  .queryMetricTooltipText {
+                    top: -50px;
+                    width: auto;
+                    white-space: nowrap;
+                    left: 6px;
+                    visibility: hidden;
+                    background-color: @BaseHigh;
+                    color: @BaseLight;
+                    position: absolute;
+                    z-index: 1;
+                    padding: @MediumSpace;
+
+                    &::after {
+                      border-width: (2 * @MediumSpace) (2 * @MediumSpace) 0px 0px;
+                      bottom: -14px;
+                      .tooltipTextAfter();
+                    }
+                  }
+
+                  .queryEngineExeTimeInfo {
+                    width: @QueryEngineExeInfo;
+                    top: -85px;
+                    white-space: pre-wrap;
+                  }
+                }
+              }
+            }
+          }
+
+          .downloadMetricsLinkContainer {
+            margin: 24px 0px 24px @MediumSpace;
+
+            #downloadMetricsLink {
+              color: @BaseHigh;
+              padding: @DefaultSpace;
+              font-size: @mediumFontSize;
+              border: @ButtonBorderWidth solid @BaseLight;
+              cursor: pointer;
+
+              &:hover {
+                .hover();
+              }
+
+              &:active {
+                border: @ButtonBorderWidth dashed @AccentMedium;
+                .active();
+              }
+            }
+          }
+        }
+
+        json-editor {
+          .flex-display();
+          .flex-direction();
+          overflow: hidden;
+          height: 100%;
+          width: 100%;
+          padding: @SmallSpace 0px @SmallSpace @MediumSpace;
+        }
+      }
+    }
+  }
+}

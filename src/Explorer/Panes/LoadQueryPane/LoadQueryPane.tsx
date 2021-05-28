@@ -1,5 +1,5 @@
-import { useBoolean } from "@fluentui/react-hooks";
 import { IImageProps, Image, ImageFit, Stack, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
@@ -7,7 +7,6 @@ import { Collection } from "../../../Contracts/ViewModels";
 import { userContext } from "../../../UserContext";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import QueryTab from "../../Tabs/QueryTab";
 import {
   GenericRightPaneComponent,
   GenericRightPaneProps,
@@ -70,8 +69,8 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
     try {
       await loadQueryFromFile(file);
       logConsoleInfo(`Successfully loaded query from file ${file.name}`);
-      closePanel();
       setLoadingFalse();
+      closePanel();
     } catch (error) {
       setLoadingFalse();
       setFormError("Failed to load query");
@@ -82,20 +81,19 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
 
   const loadQueryFromFile = async (file: File): Promise<void> => {
     const selectedCollection: Collection = explorer?.findSelectedCollection();
-    if (!selectedCollection) {
-      logError("No collection was selected", "LoadQueryPane.loadQueryFromFile");
-    } else if (userContext.apiType === "Mongo") {
-      selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
-    } else {
-      selectedCollection.onNewQueryClick(selectedCollection, undefined);
-    }
     const reader = new FileReader();
+    let fileData: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reader.onload = (evt: any): void => {
-      const fileData: string = evt.target.result;
-      const queryTab = explorer.tabsManager.activeTab() as QueryTab;
-      queryTab.initialEditorContent(fileData);
-      queryTab.sqlQueryEditorContent(fileData);
+      fileData = evt.target.result;
+
+      if (!selectedCollection) {
+        logError("No collection was selected", "LoadQueryPane.loadQueryFromFile");
+      } else if (userContext.apiType === "Mongo") {
+        selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
+      } else {
+        selectedCollection.onNewQueryClick(selectedCollection, undefined, fileData);
+      }
     };
 
     reader.onerror = (): void => {
