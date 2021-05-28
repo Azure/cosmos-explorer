@@ -1,6 +1,7 @@
 import * as msal from "@azure/msal-browser";
 import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
+import { configContext } from "../ConfigContext";
 import { getMsalInstance } from "../Utils/AuthorizationUtils";
 
 const msalInstance = getMsalInstance();
@@ -46,6 +47,7 @@ export function useAADAuth(): ReturnType {
   const switchTenant = React.useCallback(
     async (id) => {
       const response = await msalInstance.loginPopup({
+        redirectUri: configContext.msalRedirectURI,
         authority: `https://login.microsoftonline.com/${id}`,
         scopes: [],
       });

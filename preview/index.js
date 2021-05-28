@@ -62,6 +62,17 @@ app.get("/pull/:pr(\\d+)", (req, res) => {
     })
     .catch(() => res.sendStatus(500));
 });
+app.get("/", (req, res) => {
+  fetch("https://api.github.com/repos/Azure/cosmos-explorer/branches/master")
+    .then((response) => response.json())
+    .then(({ commit: { ref, sha } }) => {
+      const explorer = new URL(
+        "https://cosmos-explorer-preview.azurewebsites.net/commit/" + sha + "/hostedExplorer.html"
+      );
+      return res.redirect(explorer.href);
+    })
+    .catch(() => res.sendStatus(500));
+});
 
 app.listen(port, () => {
   console.log(`Example app listening on port: ${port}`);
