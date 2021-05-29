@@ -1,3 +1,4 @@
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
@@ -13,6 +14,7 @@ export interface TerminalTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
   container: Explorer;
   kind: ViewModels.TerminalKind;
+  index: number;
 }
 
 /**
@@ -33,7 +35,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
         databaseAccount={this.getDatabaseAccount()}
       />
     ) : (
-      <></>
+      <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
   }
 }
@@ -42,16 +44,22 @@ export default class TerminalTab extends TabsBase {
   public readonly html = '<div style="height: 100%" data-bind="react:notebookTerminalComponentAdapter"></div>  ';
   private container: Explorer;
   private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
+  private index: number;
 
   constructor(options: TerminalTabOptions) {
     super(options);
+    this.index = options.index;
     this.container = options.container;
     this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
       () => this.getNotebookServerInfo(options),
       () => userContext?.databaseAccount
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-      if (this.isTemplateReady() && this.container.isNotebookEnabled()) {
+      if (
+        this.isTemplateReady() &&
+        this.container.isNotebookEnabled() &&
+        this.container.notebookServerInfo().notebookServerEndpoint
+      ) {
         return true;
       }
       return false;
@@ -60,6 +68,10 @@ export default class TerminalTab extends TabsBase {
 
   public getContainer(): Explorer {
     return this.container;
+  }
+
+  public getIndex(): number {
+    return this.index;
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {

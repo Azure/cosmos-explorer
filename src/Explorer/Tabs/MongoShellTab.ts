@@ -11,15 +11,21 @@ import Explorer from "../Explorer";
 import template from "./MongoShellTab.html";
 import TabsBase from "./TabsBase";
 
+export interface MongoShellTabOptions extends ViewModels.TabOptions {
+  index: number;
+}
+
 export default class MongoShellTab extends TabsBase {
   public readonly html = template;
   public url: ko.Computed<string>;
   private _container: Explorer;
   private _runtimeEndpoint: string;
   private _logTraces: Map<string, number>;
+  private index: number;
 
-  constructor(options: ViewModels.TabOptions) {
+  constructor(options: MongoShellTabOptions) {
     super(options);
+    this.index = options.index;
     this._logTraces = new Map();
     this._container = options.collection.container;
     this.url = ko.computed<string>(() => {
@@ -49,6 +55,10 @@ export default class MongoShellTab extends TabsBase {
     //         activeShell.focus();
     //     },2000);
     // }
+  }
+
+  public getIndex(): number {
+    return this.index;
   }
 
   public onTabClick(): void {
