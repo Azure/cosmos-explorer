@@ -1396,9 +1396,7 @@ export default class Explorer {
 
     let index = 1;
     if (terminalTabs.length > 0) {
-      index = terminalTabs
-        .map((tab) => tab.getIndex())
-        .reduce((prevMaxIndex, currentIndex) => Math.max(prevMaxIndex, currentIndex));
+      index = terminalTabs[terminalTabs.length - 1].getIndex() + 1;
     }
 
     const newTab = new TerminalTab({
@@ -1413,7 +1411,7 @@ export default class Explorer {
       onLoadStartKey: null,
       container: this,
       kind: kind,
-      index: index + 1,
+      index: index,
     });
 
     this.tabsManager.activateNewTab(newTab);

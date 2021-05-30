@@ -696,9 +696,7 @@ export default class Collection implements ViewModels.Collection {
 
     let index = 1;
     if (mongoShellTabs.length > 0) {
-      index = mongoShellTabs
-        .map((tab) => tab.getIndex())
-        .reduce((prevMaxIndex, currentIndex) => Math.max(prevMaxIndex, currentIndex));
+      index = mongoShellTabs[mongoShellTabs.length - 1].getIndex() + 1;
     }
 
     const mongoShellTab: MongoShellTab = new MongoShellTab({
@@ -708,7 +706,7 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      index: index + 1,
+      index: index,
     });
 
     this.container.tabsManager.activateNewTab(mongoShellTab);
