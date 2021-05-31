@@ -3,6 +3,7 @@ import { Areas } from "../../../Common/Constants";
 import { logError } from "../../../Common/Logger";
 import { Query } from "../../../Contracts/DataModels";
 import { Collection } from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
@@ -15,13 +16,12 @@ import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
 
 interface BrowseQueriesPaneProps {
   explorer: Explorer;
-  closePanel: () => void;
 }
 
 export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
   explorer,
-  closePanel,
 }: BrowseQueriesPaneProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const loadSavedQuery = (savedQuery: Query): void => {
     const selectedCollection: Collection = explorer && explorer.findSelectedCollection();
     if (!selectedCollection) {
@@ -43,7 +43,7 @@ export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
       queryName: savedQuery.queryName,
       paneTitle: "Open Saved Queries",
     });
-    closePanel();
+    closeSidePanel();
   };
 
   const props: QueriesGridComponentProps = {

@@ -39,7 +39,6 @@ describe("SettingsComponent", () => {
       tabPath: "",
       node: undefined,
       hashLocation: "settings",
-      onUpdateTabsButtons: undefined,
     }),
   };
 

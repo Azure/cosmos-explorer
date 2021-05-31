@@ -4,7 +4,6 @@ import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
 
 export interface RightPaneFormProps {
-  expandConsole: () => void;
   formError: string;
   isExecuting: boolean;
   onSubmit: () => void;
@@ -14,7 +13,6 @@ export interface RightPaneFormProps {
 }
 
 export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
-  expandConsole,
   formError,
   isExecuting,
   onSubmit,
@@ -30,14 +28,7 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   return (
     <>
       <form className="panelFormWrapper" onSubmit={handleOnSubmit}>
-        {formError && (
-          <PanelInfoErrorComponent
-            messageType="error"
-            message={formError}
-            showErrorDetails={true}
-            openNotificationConsole={expandConsole}
-          />
-        )}
+        {formError && <PanelInfoErrorComponent messageType="error" message={formError} showErrorDetails={true} />}
         {children}
         {!isSubmitButtonHidden && <PanelFooterComponent buttonLabel={submitButtonText} />}
       </form>

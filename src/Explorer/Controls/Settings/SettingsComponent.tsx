@@ -14,10 +14,11 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
+import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
@@ -222,13 +223,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 

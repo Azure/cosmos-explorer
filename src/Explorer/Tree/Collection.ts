@@ -18,8 +18,10 @@ import { UploadDetailsRecord } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
@@ -220,7 +222,7 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandCollection();
     }
-    this.container.onUpdateTabsButtons([]);
+    useCommandBar.getState().setContextButtons([]);
     this.container.tabsManager.refreshActiveTab(
       (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
     );
@@ -298,7 +300,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(documentsTab);
@@ -345,7 +346,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: `${this.databaseId}>${this.id()}>Conflicts`,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/conflicts`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(conflictsTab);
@@ -400,7 +400,6 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/entities`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(queryTablesTab);
@@ -453,7 +452,6 @@ export default class Collection implements ViewModels.Collection {
         databaseId: this.databaseId,
         isTabsContentExpanded: this.container.isTabsContentExpanded,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(graphTab);
@@ -500,7 +498,6 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
       this.container.tabsManager.activateNewTab(mongoDocumentsTab);
     }
@@ -546,7 +543,6 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/schemaAnalyzer`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       })
     );
   };
@@ -586,7 +582,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     };
 
     let settingsTabV2 = matchingTabs && (matchingTabs[0] as CollectionSettingsTabV2);
@@ -633,7 +628,6 @@ export default class Collection implements ViewModels.Collection {
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
-          onUpdateTabsButtons: this.container.onUpdateTabsButtons,
         },
         { container: this.container }
       )
@@ -662,7 +656,6 @@ export default class Collection implements ViewModels.Collection {
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
       partitionKey: collection.partitionKey,
       onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
     this.container.tabsManager.activateNewTab(mongoQueryTab);
@@ -694,7 +687,6 @@ export default class Collection implements ViewModels.Collection {
       databaseId: this.databaseId,
       isTabsContentExpanded: this.container.isTabsContentExpanded,
       onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
     this.container.tabsManager.activateNewTab(graphTab);
@@ -709,7 +701,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
     this.container.tabsManager.activateNewTab(mongoShellTab);
@@ -965,7 +956,9 @@ export default class Collection implements ViewModels.Collection {
 
   public loadTriggers(): Promise<any> {
     return readTriggers(this.databaseId, this.id()).then((triggers) => {
-      const triggerNodes: ViewModels.TreeNode[] = triggers.map((trigger) => new Trigger(this.container, this, trigger));
+      const triggerNodes: ViewModels.TreeNode[] = triggers.map(
+        (trigger: SqlTriggerResource | TriggerDefinition) => new Trigger(this.container, this, trigger)
+      );
       const otherNodes = this.children().filter((node) => node.nodeKind !== "Trigger");
       const allNodes = otherNodes.concat(triggerNodes);
       this.children(allNodes);

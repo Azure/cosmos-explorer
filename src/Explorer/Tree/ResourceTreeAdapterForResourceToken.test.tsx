@@ -1,19 +1,17 @@
+import { shallow } from "enzyme";
 import * as ko from "knockout";
-import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import React from "react";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import React from "react";
+import { TreeComponent, TreeComponentProps, TreeNode } from "../Controls/TreeComponent/TreeComponent";
+import Explorer from "../Explorer";
 import ResourceTokenCollection from "./ResourceTokenCollection";
 import { ResourceTreeAdapterForResourceToken } from "./ResourceTreeAdapterForResourceToken";
-import { shallow } from "enzyme";
-import { TreeComponent, TreeNode, TreeComponentProps } from "../Controls/TreeComponent/TreeComponent";
-import Explorer from "../Explorer";
 
 const createMockContainer = (): Explorer => {
   let mockContainer = {} as Explorer;
   mockContainer.resourceTokenCollection = createMockCollection(mockContainer);
   mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
-  mockContainer.onUpdateTabsButtons = () => {};
 
   return mockContainer;
 };

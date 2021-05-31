@@ -1,9 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`New Vertex Panel should render default property 1`] = `
-<form
-  className="panelFormWrapper"
+<RightPaneForm
+  formError=""
+  isExecuting={false}
   onSubmit={[Function]}
+  submitButtonText="OK"
 >
   <div
     className="panelMainContent"
@@ -13,8 +15,5 @@ exports[`New Vertex Panel should render default property 1`] = `
       partitionKeyPropertyProp=""
     />
   </div>
-  <PanelFooterComponent
-    buttonLabel="OK"
-  />
-</form>
+</RightPaneForm>
 `;

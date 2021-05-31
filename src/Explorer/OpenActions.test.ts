@@ -3,7 +3,6 @@ import { ActionContracts } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "./Explorer";
 import { handleOpenAction } from "./OpenActions";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 
 describe("OpenActions", () => {
   describe("handleOpenAction", () => {
@@ -15,8 +14,6 @@ describe("OpenActions", () => {
     beforeEach(() => {
       explorer = {} as Explorer;
       explorer.onNewCollectionClicked = jest.fn();
-      explorer.cassandraAddCollectionPane = {} as CassandraAddCollectionPane;
-      explorer.cassandraAddCollectionPane.open = jest.fn();
 
       database = {
         id: ko.observable("db"),
@@ -62,28 +59,6 @@ describe("OpenActions", () => {
         };
         const actionHandled = handleOpenAction(action, [], explorer);
         expect(actionHandled).toBe(true);
-      });
-
-      describe("CassandraAddCollection pane kind", () => {
-        it("string value should call cassandraAddCollectionPane.open", () => {
-          const action = {
-            actionType: "OpenPane",
-            paneKind: "CassandraAddCollection",
-          };
-
-          const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
-        });
-
-        it("enum value should call cassandraAddCollectionPane.open", () => {
-          const action = {
-            actionType: "OpenPane",
-            paneKind: ActionContracts.PaneKind.CassandraAddCollection,
-          };
-
-          const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
-        });
       });
 
       describe("AddCollection pane kind", () => {

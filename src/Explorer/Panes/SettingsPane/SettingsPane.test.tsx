@@ -3,13 +3,10 @@ import React from "react";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
 import { updateUserContext } from "../../../UserContext";
 import { SettingsPane } from "./SettingsPane";
-const props = {
-  expandConsole: (): void => undefined,
-  closePanel: (): void => undefined,
-};
+
 describe("Settings Pane", () => {
   it("should render Default properly", () => {
-    const wrapper = shallow(<SettingsPane {...props} />);
+    const wrapper = shallow(<SettingsPane />);
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -21,7 +18,7 @@ describe("Settings Pane", () => {
         },
       } as DatabaseAccount,
     });
-    const wrapper = shallow(<SettingsPane {...props} />);
+    const wrapper = shallow(<SettingsPane />);
     expect(wrapper).toMatchSnapshot();
   });
 });

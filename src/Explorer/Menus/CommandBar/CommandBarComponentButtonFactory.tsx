@@ -21,10 +21,13 @@ import { AuthType } from "../../../AuthType";
 import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
+import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
+import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 
 let counter = 0;
 
@@ -60,48 +63,40 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     if (container.notebookManager?.gitHubOAuthService) {
       buttons.push(createManageGitHubAccountButton(container));
     }
-  }
 
-  if (!container.isRunningOnNationalCloud()) {
-    if (!container.isNotebookEnabled()) {
-      buttons.push(createEnableNotebooksButton(container));
-    }
-
-    if (userContext.apiType === "Mongo") {
-      buttons.push(createOpenMongoTerminalButton(container));
-    }
-
-    if (userContext.apiType === "Cassandra") {
-      buttons.push(createOpenCassandraTerminalButton(container));
-    }
-  }
-
-  if (container.isNotebookEnabled()) {
     buttons.push(createOpenTerminalButton(container));
 
     buttons.push(createNotebookWorkspaceResetButton(container));
+    if (
+      (userContext.apiType === "Mongo" && container.isShellEnabled() && container.isDatabaseNodeOrNoneSelected()) ||
+      userContext.apiType === "Cassandra"
+    ) {
+      buttons.push(createDivider());
+      if (userContext.apiType === "Cassandra") {
+        buttons.push(createOpenCassandraTerminalButton(container));
+      } else {
+        buttons.push(createOpenMongoTerminalButton(container));
+      }
+    }
+  } else {
+    if (!container.isRunningOnNationalCloud()) {
+      buttons.push(createEnableNotebooksButton(container));
+    }
   }
 
   if (!container.isDatabaseNodeOrNoneSelected()) {
-    if (container.isNotebookEnabled()) {
-      buttons.push(createDivider());
-    }
+    const isQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 
-    const isSqlQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
-    if (isSqlQuerySupported) {
+    if (isQuerySupported) {
+      buttons.push(createDivider());
       const newSqlQueryBtn = createNewSQLQueryButton(container);
       buttons.push(newSqlQueryBtn);
     }
 
-    const isSupportedOpenQueryApi =
-      userContext.apiType === "SQL" || userContext.apiType === "Mongo" || userContext.apiType === "Gremlin";
-    const isSupportedOpenQueryFromDiskApi = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
-    if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
+    if (isQuerySupported && container.selectedNode() && container.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
       openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
       buttons.push(openQueryBtn);
-    } else if (isSupportedOpenQueryFromDiskApi && container.selectedNode() && container.findSelectedCollection()) {
-      buttons.push(createOpenQueryFromDiskButton(container));
     }
 
     if (areScriptsSupported()) {
@@ -131,13 +126,17 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = "New Shell";
+    const label = container.isShellEnabled() ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewMongoShellClick();
+        if (container.isShellEnabled()) {
+          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+        } else {
+          selectedCollection && selectedCollection.onNewMongoShellClick();
+        }
       },
       commandButtonLabel: label,
       ariaLabel: label,
@@ -155,7 +154,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
-      onCommandClick: () => container.openSettingPane(),
+      onCommandClick: container.openSettingPane,
       commandButtonLabel: undefined,
       ariaLabel: "Settings",
       tooltipText: "Settings",
@@ -170,7 +169,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
       iconSrc: OpenInTabIcon,
       iconAlt: label,
       onCommandClick: () => {
-        container.openSidePanel("Open Full Screen", <OpenFullScreen />);
+        useSidePanel.getState().openSidePanel("Open Full Screen", <OpenFullScreen />);
       },
       commandButtonLabel: undefined,
       ariaLabel: label,
@@ -218,7 +217,7 @@ function areScriptsSupported(): boolean {
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
-  const label = container.addCollectionText();
+  const label = `New ${getCollectionName()}`;
   return {
     iconSrc: AddCollectionIcon,
     iconAlt: label,
@@ -261,7 +260,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
 }
 
 function createNewDatabase(container: Explorer): CommandButtonComponentProps {
-  const label = container.addDatabaseText();
+  const label = "New " + getDatabaseName();
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
@@ -411,7 +410,7 @@ function createOpenQueryFromDiskButton(container: Explorer): CommandButtonCompon
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
-    onCommandClick: () => container.openLoadQueryPanel(),
+    onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

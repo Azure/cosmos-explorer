@@ -9,6 +9,7 @@ import { updateStoredProcedure } from "../../Common/dataAccess/updateStoredProce
 import editable from "../../Common/EditableUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
@@ -136,7 +137,7 @@ export default class StoredProcedureTab extends ScriptTabBase {
   }
 
   public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
-    this.collection && this.collection.container.expandConsole();
+    useNotificationConsole.getState().expandConsole();
 
     return false;
   };

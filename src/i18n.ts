@@ -8,8 +8,7 @@ i18n
   .init({
     fallbackLng: "en",
     detection: { order: ["navigator", "cookie", "localStorage", "sessionStorage", "querystring", "htmlTag"] },
-    // temporarily setting debug to true to investigate loading issues in prod
-    debug: true,
+    debug: process.env.NODE_ENV === "development",
     keySeparator: ".",
     interpolation: {
       formatSeparator: ",",

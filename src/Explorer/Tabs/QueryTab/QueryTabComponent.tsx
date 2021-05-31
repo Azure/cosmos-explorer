@@ -14,11 +14,13 @@ import { Splitter } from "../../../Common/Splitter";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import "../../../Explorer/Tabs/QueryTab.less";
+import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
+import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import TabsBase from "../TabsBase";
 import { TabsManager } from "../TabsManager";
 import "./QueryTabComponent.less";
@@ -31,6 +33,7 @@ enum ToggleState {
 export interface ITabAccessor {
   onTabClickEvent: () => void;
   onSaveClickEvent: () => string;
+  onCloseClickEvent: (isClicked: boolean) => void;
 }
 
 export interface Button {
@@ -75,7 +78,7 @@ interface IQueryTabStates {
   _isSaveQueriesEnabled: boolean;
   isExecutionError: boolean;
   isExecuting: boolean;
-  temp: number;
+  // isCloseClicked: boolean;
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
@@ -92,7 +95,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   private _resourceTokenPartitionKey: string;
   _partitionKey: DataModels.PartitionKey;
   public maybeSubQuery: boolean;
-
+  public isCloseClicked: boolean;
   constructor(props: IQueryTabComponentProps) {
     super(props);
     const defaultQueryText = props.queryText !== void 0 ? props.queryText : "SELECT * FROM c";
@@ -119,8 +122,9 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       _isSaveQueriesEnabled: userContext.apiType === "SQL" || userContext.apiType === "Gremlin",
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
-      temp: 0,
+      // isCloseClicked: false,
     };
+    this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this._partitionKey = props.partitionKey;
@@ -154,12 +158,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       visible: true,
     };
 
-    this.props.container.onUpdateTabsButtons(this.getTabsButtons());
     this._buildCommandBarOptions();
     props.onTabAccessor({
       onTabClickEvent: this.onTabClick.bind(this),
       onSaveClickEvent: this.getCurrentEditorQuery.bind(this),
+      onCloseClickEvent: this.onCloseClick.bind(this),
     });
+  }
+
+  public onCloseClick(isClicked: boolean): void {
+    this.isCloseClicked = isClicked;
   }
 
   public getCurrentEditorQuery(): string {
@@ -168,8 +176,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onTabClick(): void {
     setTimeout(() => {
-      this.props.container.onUpdateTabsButtons(this.getTabsButtons());
-    }, 100);
+      if (!this.isCloseClicked) {
+        useCommandBar.getState().setContextButtons(this.getTabsButtons());
+      } else {
+        this.isCloseClicked = false;
+      }
+    }, 0);
   }
 
   public onExecuteQueryClick = async (): Promise<void> => {
@@ -208,7 +220,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   //eslint-disable-next-line
   public onErrorDetailsClick = (): boolean => {
-    this.props.collection && this.props.collection.container.expandConsole();
+    useNotificationConsole.getState().expandConsole();
 
     return false;
   };
@@ -609,7 +621,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       sqlQueryEditorContent: newContent,
     });
 
-    this.props.container.onUpdateTabsButtons(this.getTabsButtons());
+    useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
   public onSelectedContent(selectedContent: string): void {
@@ -624,11 +636,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         _executeQueryButtonTitle: "Execute Query",
       });
     }
-    this.props.container.onUpdateTabsButtons(this.getTabsButtons());
+    useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
   render(): JSX.Element {
-    this.props.container.onUpdateTabsButtons(this.getTabsButtons());
+    useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
     return (
       <Fragment>

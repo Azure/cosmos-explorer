@@ -1,13 +1,14 @@
 import * as ko from "knockout";
-import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import * as React from "react";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { NotebookContentItem } from "../Notebook/NotebookContentItem";
-import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 import CollectionIcon from "../../../images/tree-collection.svg";
-import Explorer from "../Explorer";
+import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
+import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
+import Explorer from "../Explorer";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
+import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 
 export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public parameters: ko.Observable<number>;
@@ -59,7 +60,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       onClick: () => {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
-        this.container.onUpdateTabsButtons([]);
+        useCommandBar.getState().setContextButtons([]);
         this.container.tabsManager.refreshActiveTab(
           (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
         );

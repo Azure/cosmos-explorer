@@ -43,6 +43,11 @@ export class NewQueryTab extends TabsBase {
     this.iTabAccessor.onTabClickEvent();
   }
 
+  public onCloseTabButtonClick(): void {
+    this.manager?.closeTab(this);
+    this.iTabAccessor.onCloseClickEvent(true);
+  }
+
   public getContainer(): Explorer {
     return this.props.container;
   }

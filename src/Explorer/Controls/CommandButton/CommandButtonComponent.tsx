@@ -1,15 +1,12 @@
-import * as StringUtils from "../../../Utils/StringUtils";
-import { KeyCodes } from "../../../Common/Constants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import CollapseChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
-
 /**
  * React component for Command button component.
  */
-
 import * as React from "react";
-import { ArcadiaMenuPickerProps } from "../Arcadia/ArcadiaMenuPicker";
+import CollapseChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
+import { KeyCodes } from "../../../Common/Constants";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as StringUtils from "../../../Utils/StringUtils";
 
 /**
  * Options for this component
@@ -114,15 +111,6 @@ export interface CommandButtonComponentProps {
    * Aria-label for the button
    */
   ariaLabel: string;
-  //TODO: generalize customized command bar
-  /**
-   * If set to true, will render arcadia picker
-   */
-  isArcadiaPicker?: boolean;
-  /**
-   * props to render arcadia picker
-   */
-  arcadiaProps?: ArcadiaMenuPickerProps;
 }
 
 export class CommandButtonComponent extends React.Component<CommandButtonComponentProps> {

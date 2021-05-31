@@ -11,12 +11,12 @@ import DeleteUDFIcon from "../../images/DeleteUDF.svg";
 import HostedTerminalIcon from "../../images/Hosted-Terminal.svg";
 import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
+import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
-
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
   collectionId: string;
@@ -34,7 +34,7 @@ export class ResourceTreeContextMenuButtonFactory {
       {
         iconSrc: AddCollectionIcon,
         onClick: () => container.onNewCollectionClicked(databaseId),
-        label: container.addCollectionText(),
+        label: `New ${getCollectionName()}`,
       },
     ];
 
@@ -42,7 +42,7 @@ export class ResourceTreeContextMenuButtonFactory {
       items.push({
         iconSrc: DeleteDatabaseIcon,
         onClick: () => container.openDeleteDatabaseConfirmationPane(),
-        label: container.deleteDatabaseText(),
+        label: `Delete ${getDatabaseName()}`,
         styleClass: "deleteDatabaseMenuItem",
       });
     }
@@ -73,9 +73,13 @@ export class ResourceTreeContextMenuButtonFactory {
         iconSrc: HostedTerminalIcon,
         onClick: () => {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-          selectedCollection && selectedCollection.onNewMongoShellClick();
+          if (container.isShellEnabled()) {
+            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          } else {
+            selectedCollection && selectedCollection.onNewMongoShellClick();
+          }
         },
-        label: "New Shell",
+        label: container.isShellEnabled() ? "Open Mongo Shell" : "New Shell",
       });
     }
 
@@ -111,7 +115,7 @@ export class ResourceTreeContextMenuButtonFactory {
     items.push({
       iconSrc: DeleteCollectionIcon,
       onClick: () => container.openDeleteCollectionConfirmationPane(),
-      label: container.deleteCollectionText(),
+      label: `Delete ${getCollectionName()}`,
       styleClass: "deleteCollectionMenuItem",
     });
 

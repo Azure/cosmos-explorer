@@ -9,10 +9,12 @@ export type Features = {
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
   enableSchemaAnalyzer: boolean;
+  autoscaleDefault: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
+  readonly enableAadDataPlane: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly livyEndpoint?: string;
@@ -43,6 +45,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   return {
     canExceedMaximumValue: "true" === get("canexceedmaximumvalue"),
     cosmosdb: "true" === get("cosmosdb"),
+    enableAadDataPlane: "true" === get("enableaaddataplane"),
     enableChangeFeedPolicy: "true" === get("enablechangefeedpolicy"),
     enableFixedCollectionWithSharedThroughput: "true" === get("enablefixedcollectionwithsharedthroughput"),
     enableKOPanel: "true" === get("enablekopanel"),
@@ -66,5 +69,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     pr: get("pr"),
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
+    autoscaleDefault: "true" === get("autoscaledefault"),
   };
 }
