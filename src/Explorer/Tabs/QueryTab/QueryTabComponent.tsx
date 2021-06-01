@@ -10,10 +10,11 @@ import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPag
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
+import { queryIterator } from "../../../Common/MongoProxyClient";
+import MongoUtility from "../../../Common/MongoUtility";
 import { Splitter } from "../../../Common/Splitter";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import "../../../Explorer/Tabs/QueryTab.less";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
@@ -53,6 +54,9 @@ export interface IQueryTabComponentProps {
   activeTab?: TabsBase;
   tabManager?: TabsManager;
   onTabAccessor: (instance: ITabAccessor) => void;
+  isPreferredApiMongoDB?: boolean;
+  monacoEditorSetting?: string;
+  viewModelcollection?: ViewModels.Collection;
 }
 
 interface IQueryTabStates {
@@ -96,9 +100,14 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   _partitionKey: DataModels.PartitionKey;
   public maybeSubQuery: boolean;
   public isCloseClicked: boolean;
+  public defaultQueryText: string;
   constructor(props: IQueryTabComponentProps) {
     super(props);
-    const defaultQueryText = props.queryText !== void 0 ? props.queryText : "SELECT * FROM c";
+    if (this.props.isPreferredApiMongoDB) {
+      this.defaultQueryText = props.queryText;
+    } else {
+      this.defaultQueryText = props.queryText !== void 0 ? props.queryText : "SELECT * FROM c";
+    }
     this.state = {
       queryMetrics: new Map(),
       aggregatedQueryMetrics: undefined,
@@ -108,11 +117,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isQueryMetricsEnabled: userContext.apiType === "SQL" || false,
       showingDocumentsDisplayText: this.resultsDisplay,
       requestChargeDisplayText: "",
-      initialEditorContent: defaultQueryText,
-      sqlQueryEditorContent: defaultQueryText,
+      initialEditorContent: this.defaultQueryText,
+      sqlQueryEditorContent: this.defaultQueryText,
       selectedContent: "",
       _executeQueryButtonTitle: "Execute Query",
-      sqlStatementToExecute: defaultQueryText,
+      sqlStatementToExecute: this.defaultQueryText,
       queryResults: "",
       statusMessge: "",
       statusIcon: "",
@@ -122,20 +131,21 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       _isSaveQueriesEnabled: userContext.apiType === "SQL" || userContext.apiType === "Gremlin",
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
-      // isCloseClicked: false,
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this._partitionKey = props.partitionKey;
-    this.isPreferredApiMongoDB = false;
-    this.monacoSettings = new ViewModels.MonacoEditorSettings("sql", false);
+    this.isPreferredApiMongoDB = this.props.isPreferredApiMongoDB;
+    this.monacoSettings = new ViewModels.MonacoEditorSettings(this.props.monacoEditorSetting, false);
+
     this.executeQueryButton = {
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
     };
     const sql = this.state.sqlQueryEditorContent;
     this.maybeSubQuery = sql && /.*\(.*SELECT.*\)/i.test(sql);
+
     this.saveQueryButton = {
       enabled: this.state._isSaveQueriesEnabled,
       visible: this.state._isSaveQueriesEnabled,
@@ -295,13 +305,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     });
 
     if (this._iterator === undefined) {
-      this._initIterator();
+      if (this.isPreferredApiMongoDB) {
+        this._initIteratorMongo();
+      } else {
+        this._initIterator();
+      }
     }
 
     await this._queryDocumentsPage(firstItemIndex);
   }
 
   private async _queryDocumentsPage(firstItemIndex: number): Promise<void> {
+    let results: string;
+
     this.props.tabsBaseInstance.isExecutionError(false);
     this.setState({
       isExecutionError: false,
@@ -344,7 +360,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       }
 
       const documents = queryResults.documents;
-      const results = this.props.tabsBaseInstance.renderObjectForEditor(documents, undefined, 4);
+      if (this.isPreferredApiMongoDB) {
+        results = MongoUtility.tojson(documents, undefined, false);
+      } else {
+        results = this.props.tabsBaseInstance.renderObjectForEditor(documents, undefined, 4);
+      }
 
       const resultsDisplay: string =
         queryResults.itemCount > 0 ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}` : `0 - 0`;
@@ -490,6 +510,21 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     );
   }
 
+  protected _initIteratorMongo(): Promise<MinimalQueryIterator> {
+    //eslint-disable-next-line
+    const options: any = {};
+    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
+    this._iterator = queryIterator(
+      this.props.collection.databaseId,
+      this.props.viewModelcollection,
+      this.state.sqlStatementToExecute
+    );
+    const mongoPromise: Promise<MinimalQueryIterator> = new Promise((resolve) => {
+      resolve(this._iterator);
+    });
+    return mongoPromise;
+  }
+
   //eslint-disable-next-line
   public static getIteratorOptions(collection?: ViewModels.Collection): any {
     //eslint-disable-next-line
@@ -620,6 +655,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({
       sqlQueryEditorContent: newContent,
     });
+    if (this.isPreferredApiMongoDB) {
+      if (newContent.length > 0) {
+        this.executeQueryButton = {
+          enabled: true,
+          visible: true,
+        };
+      } else {
+        this.executeQueryButton = {
+          enabled: false,
+          visible: true,
+        };
+      }
+    }
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
@@ -646,27 +694,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       <Fragment>
         <div className="tab-pane" id={this.props.tabId} role="tabpanel">
           <div className="tabPaneContentContainer">
-            {this.isPreferredApiMongoDB && this.state.sqlQueryEditorContent.length === 0 && (
-              <div className="mongoQueryHelper">
-                Start by writing a Mongo query, for example: <strong>{{ id: "foo" }}</strong> or <strong>{}</strong> to
-                get all the documents.
-              </div>
-            )}
-            {this.maybeSubQuery && (
-              <div className="warningErrorContainer" aria-live="assertive">
-                <div className="warningErrorContent">
-                  <span>
-                    <img className="paneErrorIcon" src="/info_color.svg" alt="Error" />
-                  </span>
-                  <span className="warningErrorDetailsLinkContainer">
-                    We have detected you may be using a subquery. Non-correlated subqueries are not currently supported.
-                    <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery">
-                      Please see Cosmos sub query documentation for further information
-                    </a>
-                  </span>
-                </div>
-              </div>
-            )}
             <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
               <Fragment>
                 <div className="queryEditor" style={{ height: "100%" }}>
@@ -682,6 +709,33 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 </div>
               </Fragment>
               <Fragment>
+                {this.isPreferredApiMongoDB && this.state.sqlQueryEditorContent.length === 0 && (
+                  <div className="mongoQueryHelper">
+                    Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong>
+                    or
+                    <strong>
+                      {"{ "}
+                      {" }"}
+                    </strong>
+                    to get all the documents.
+                  </div>
+                )}
+                {this.maybeSubQuery && (
+                  <div className="warningErrorContainer" aria-live="assertive">
+                    <div className="warningErrorContent">
+                      <span>
+                        <img className="paneErrorIcon" src="images/info_color.svg" alt="Error" />
+                      </span>
+                      <span className="warningErrorDetailsLinkContainer">
+                        We have detected you may be using a subquery. Non-correlated subqueries are not currently
+                        supported.
+                        <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery">
+                          Please see Cosmos sub query documentation for further information
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                )}
                 {/* <!-- Query Errors Tab - Start--> */}
                 {!!this.state.error && (
                   <div className="active queryErrorsHeaderContainer">
