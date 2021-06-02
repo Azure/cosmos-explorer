@@ -1,5 +1,6 @@
 import { Icon, Link, Stack, Text } from "@fluentui/react";
 import React from "react";
+import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 
 export interface PanelInfoErrorProps {
   message: string;
@@ -7,7 +8,6 @@ export interface PanelInfoErrorProps {
   showErrorDetails: boolean;
   link?: string;
   linkText?: string;
-  openNotificationConsole?: () => void;
   formError?: boolean;
 }
 
@@ -17,8 +17,9 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
   showErrorDetails,
   link,
   linkText,
-  openNotificationConsole,
 }: PanelInfoErrorProps): JSX.Element => {
+  const expandConsole = useNotificationConsole((state) => state.expandConsole);
+
   let icon: JSX.Element = <Icon iconName="InfoSolid" className="panelLargeInfoIcon" aria-label="Infomation" />;
   if (messageType === "error") {
     icon = <Icon iconName="StatusErrorFull" className="panelErrorIcon" aria-label="error" />;
@@ -41,7 +42,7 @@ export const PanelInfoErrorComponent: React.FunctionComponent<PanelInfoErrorProp
           )}
         </Text>
         {showErrorDetails && (
-          <a className="paneErrorLink" role="link" onClick={openNotificationConsole}>
+          <a className="paneErrorLink" role="link" onClick={expandConsole}>
             More details
           </a>
         )}

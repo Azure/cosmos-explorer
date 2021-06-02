@@ -27,6 +27,7 @@ import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactor
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
@@ -211,7 +212,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           }
           databaseNode.isLoading = false;
           database.selectDatabase();
-          this.container.onUpdateTabsButtons([]);
+          useCommandBar.getState().setContextButtons([]);
           this.container.tabsManager.refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
         },
         onContextMenuOpen: () => this.container.selectedNode(database),
@@ -330,7 +331,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
-        this.container.onUpdateTabsButtons([]);
+        useCommandBar.getState().setContextButtons([]);
         this.container.tabsManager.refreshActiveTab(
           (tab: TabsBase) =>
             tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId

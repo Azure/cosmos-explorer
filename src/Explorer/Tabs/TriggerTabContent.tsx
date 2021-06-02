@@ -13,6 +13,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../Controls/Editor/EditorReact";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import TriggerTab from "./TriggerTab";
 
 const triggerTypeOptions: IDropdownOption[] = [
@@ -27,7 +28,7 @@ const triggerOperationOptions: IDropdownOption[] = [
   { key: "Replace", text: "Replace" },
 ];
 
-interface button {
+interface Ibutton {
   visible: boolean;
   enabled: boolean;
 }
@@ -41,9 +42,9 @@ interface ITriggerTabContentState {
 }
 
 export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentState> {
-  public saveButton: button;
-  public updateButton: button;
-  public discardButton: button;
+  public saveButton: Ibutton;
+  public updateButton: Ibutton;
+  public discardButton: Ibutton;
 
   constructor(props: TriggerTab) {
     super(props);
@@ -286,7 +287,8 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
   };
 
   render(): JSX.Element {
-    this.props.triggerTypeInstance.container.onUpdateTabsButtons(this.getTabsButtons());
+    useCommandBar.getState().setContextButtons(this.getTabsButtons());
+
     const { triggerId, triggerType, triggerOperation, triggerBody } = this.state;
     return (
       <div className="tab-pane flexContainer" role="tabpanel">

@@ -4,6 +4,7 @@ import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
 import { Collection } from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
@@ -12,13 +13,10 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 interface LoadQueryPaneProps {
   explorer: Explorer;
-  closePanel: () => void;
 }
 
-export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
-  explorer,
-  closePanel,
-}: LoadQueryPaneProps): JSX.Element => {
+export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({ explorer }: LoadQueryPaneProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
   const [selectedFileName, setSelectedFileName] = useState<string>("");
@@ -51,7 +49,7 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
     try {
       await loadQueryFromFile(file);
       logConsoleInfo(`Successfully loaded query from file ${file.name}`);
-      closePanel();
+      closeSidePanel();
       setLoadingFalse();
     } catch (error) {
       setLoadingFalse();
@@ -89,7 +87,6 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
     isExecuting: isLoading,
     submitButtonText: "Load",
     onSubmit: () => submit(),
-    expandConsole: () => explorer.expandConsole(),
   };
 
   return (

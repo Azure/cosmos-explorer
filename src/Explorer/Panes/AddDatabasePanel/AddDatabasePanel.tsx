@@ -6,6 +6,7 @@ import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUti
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../Contracts/SubscriptionType";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import * as SharedConstants from "../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -20,15 +21,12 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 export interface AddDatabasePaneProps {
   explorer: Explorer;
-  closePanel: () => void;
-  openNotificationConsole: () => void;
 }
 
 export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   explorer: container,
-  closePanel,
-  openNotificationConsole,
 }: AddDatabasePaneProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   let throughput: number;
   let isAutoscaleSelected: boolean;
   let isCostAcknowledged: boolean;
@@ -114,7 +112,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
   const _onCreateDatabaseSuccess = (offerThroughput: number, startKey: number): void => {
     setIsExecuting(false);
-    closePanel();
+    closeSidePanel();
     container.refreshAllDatabases();
     const addDatabasePaneSuccessMessage = {
       ...addDatabasePaneMessage,
@@ -163,7 +161,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   );
 
   const props: RightPaneFormProps = {
-    expandConsole: openNotificationConsole,
     formError: formErrors,
     isExecuting,
     submitButtonText: "OK",
@@ -177,7 +174,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
           message={getUpsellMessage(userContext.portalEnv, true, container.isFirstResourceCreated(), true)}
           messageType="info"
           showErrorDetails={false}
-          openNotificationConsole={openNotificationConsole}
           link={Constants.Urls.freeTierInformation}
           linkText="Learn more"
         />

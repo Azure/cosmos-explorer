@@ -28,11 +28,13 @@ import { CollectionCreation } from "../Shared/Constants";
 import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";
+import { getMsalInstance } from "../Utils/AuthorizationUtils";
 import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 
 // This hook will create a new instance of Explorer.ts and bind it to the DOM
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
-// Pleas tread carefully :)
+// Please tread carefully :)
 
 export function useKnockoutExplorer(platform: Platform, explorerParams: ExplorerParams): Explorer {
   const [explorer, setExplorer] = useState<Explorer>();
@@ -83,16 +85,37 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
   updateUserContext({
     authType: AuthType.AAD,
     authorizationToken: `Bearer ${config.authorizationToken}`,
-    aadToken: config.aadToken,
   });
   const account = config.databaseAccount;
   const accountResourceId = account.id;
   const subscriptionId = accountResourceId && accountResourceId.split("subscriptions/")[1].split("/")[0];
   const resourceGroup = accountResourceId && accountResourceId.split("resourceGroups/")[1].split("/")[0];
-  const keys = await listKeys(subscriptionId, resourceGroup, account.name);
+  let aadToken;
+  let keys: DatabaseAccountListKeysResult = {};
+  if (account.properties?.documentEndpoint) {
+    const hrefEndpoint = new URL(account.properties.documentEndpoint).href.replace(/\/$/, "/.default");
+    const msalInstance = getMsalInstance();
+    const cachedAccount = msalInstance.getAllAccounts()?.[0];
+    msalInstance.setActiveAccount(cachedAccount);
+    const aadTokenResponse = await msalInstance.acquireTokenSilent({
+      forceRefresh: true,
+      scopes: [hrefEndpoint],
+    });
+    aadToken = aadTokenResponse.accessToken;
+  }
+  try {
+    keys = await listKeys(subscriptionId, resourceGroup, account.name);
+  } catch (e) {
+    if (userContext.features.enableAadDataPlane) {
+      console.warn(e);
+    } else {
+      throw new Error(`List keys failed: ${e.message}`);
+    }
+  }
   updateUserContext({
     subscriptionId,
     resourceGroup,
+    aadToken,
     databaseAccount: config.databaseAccount,
     masterKey: keys.primaryMasterKey,
   });

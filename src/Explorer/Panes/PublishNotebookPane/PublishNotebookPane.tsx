@@ -3,6 +3,7 @@ import React, { FunctionComponent, useEffect, useState } from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../../../Common/ErrorHandlingUtils";
 import { useNotebookSnapshotStore } from "../../../hooks/useNotebookSnapshotStore";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { JunoClient } from "../../../Juno/JunoClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -17,8 +18,6 @@ import { PublishNotebookPaneComponent, PublishNotebookPaneProps } from "./Publis
 
 export interface PublishNotebookPaneAProps {
   explorer: Explorer;
-  closePanel: () => void;
-  openNotificationConsole: () => void;
   junoClient: JunoClient;
   name: string;
   author: string;
@@ -29,13 +28,14 @@ export interface PublishNotebookPaneAProps {
 export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> = ({
   explorer: container,
   junoClient,
-  closePanel,
   name,
   author,
   notebookContent,
   notebookContentRef,
   onTakeSnapshot,
 }: PublishNotebookPaneAProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+
   const [isCodeOfConductAccepted, setIsCodeOfConductAccepted] = useState<boolean>(false);
   const [content, setContent] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
@@ -152,7 +152,7 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
       clearPublishingMessage();
       setIsExecuting(false);
     }
-    closePanel();
+    closeSidePanel();
   };
 
   const createFormError = (formError: string, formErrorDetail: string, area: string): void => {
@@ -171,7 +171,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
     isExecuting: isExecuting,
     submitButtonText: "Publish",
     onSubmit: () => submit(),
-    expandConsole: () => container.expandConsole(),
     isSubmitButtonHidden: !isCodeOfConductAccepted,
   };
 

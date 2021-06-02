@@ -8,14 +8,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
       "canSaveQueries": [Function],
-      "closeSidePanel": undefined,
       "collapsedResourceTreeWidth": 36,
-      "commandBarComponentAdapter": CommandBarComponentAdapter {
-        "container": [Circular],
-        "isNotebookTabActive": [Function],
-        "parameters": [Function],
-        "tabsButtons": Array [],
-      },
       "databases": [Function],
       "isAccountReady": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -36,7 +29,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "notebookServerInfo": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
-      "openSidePanel": undefined,
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
         "container": [Circular],
@@ -62,7 +54,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "selectedDatabaseId": [Function],
       "selectedNode": [Function],
       "setInProgressConsoleDataIdToBeDeleted": undefined,
-      "setIsNotificationConsoleExpanded": undefined,
       "setNotificationConsoleData": undefined,
       "sparkClusterConnectionInfo": [Function],
       "splitter": Splitter {
@@ -92,7 +83,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
   }
 >
   <RightPaneForm
-    expandConsole={[Function]}
     formError=""
     isExecuting={false}
     onSubmit={[Function]}

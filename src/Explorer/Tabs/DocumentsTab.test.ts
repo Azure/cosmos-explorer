@@ -2,7 +2,6 @@ import * as ko from "knockout";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
 import DocumentsTab from "./DocumentsTab";
@@ -17,7 +16,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -93,7 +91,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -108,7 +105,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -123,7 +119,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -141,7 +136,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -156,7 +150,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

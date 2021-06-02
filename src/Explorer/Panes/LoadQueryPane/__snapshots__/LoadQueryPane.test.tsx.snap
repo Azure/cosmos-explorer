@@ -2,7 +2,6 @@
 
 exports[`Load Query Pane should render Default properly 1`] = `
 <RightPaneForm
-  expandConsole={[Function]}
   formError=""
   isExecuting={false}
   onSubmit={[Function]}

@@ -59,7 +59,6 @@ export default class Trigger {
         collection: source,
         node: source,
         hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
-        onUpdateTabsButtons: source.container.onUpdateTabsButtons,
       },
       { container: container }
     );
@@ -101,7 +100,6 @@ export default class Trigger {
             this.collection.databaseId,
             this.collection.id()
           )}/triggers/${this.id()}`,
-          onUpdateTabsButtons: this.container.onUpdateTabsButtons,
         },
         { container: this.container }
       );

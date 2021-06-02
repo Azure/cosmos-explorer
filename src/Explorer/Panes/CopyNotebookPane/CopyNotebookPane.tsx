@@ -3,6 +3,7 @@ import React, { FormEvent, FunctionComponent, useEffect, useState } from "react"
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { IPinnedRepo, JunoClient } from "../../../Juno/JunoClient";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
@@ -26,7 +27,6 @@ export interface CopyNotebookPanelProps {
   container: Explorer;
   junoClient: JunoClient;
   gitHubOAuthService: GitHubOAuthService;
-  closePanel: () => void;
 }
 
 export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
@@ -35,8 +35,8 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
   container,
   junoClient,
   gitHubOAuthService,
-  closePanel,
 }: CopyNotebookPanelProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formError, setFormError] = useState<string>("");
   const [pinnedRepos, setPinnedRepos] = useState<IPinnedRepo[]>();
@@ -84,7 +84,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
       }
 
       NotificationConsoleUtils.logConsoleInfo(`Successfully copied ${name} to ${destination}`);
-      closePanel();
+      closeSidePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       setFormError(`Failed to copy ${name} to ${destination}`);
@@ -130,7 +130,6 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
     isExecuting: isExecuting,
     submitButtonText: "OK",
     onSubmit: () => submit(),
-    expandConsole: () => container.expandConsole(),
   };
 
   const copyNotebookPaneProps: CopyNotebookPaneProps = {

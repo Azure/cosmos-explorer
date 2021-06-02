@@ -31,14 +31,7 @@ exports[`SettingsComponent renders 1`] = `
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
                 "canSaveQueries": [Function],
-                "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
-                "commandBarComponentAdapter": CommandBarComponentAdapter {
-                  "container": [Circular],
-                  "isNotebookTabActive": [Function],
-                  "parameters": [Function],
-                  "tabsButtons": Array [],
-                },
                 "databases": [Function],
                 "isAccountReady": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -56,7 +49,6 @@ exports[`SettingsComponent renders 1`] = `
                 "notebookServerInfo": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -81,7 +73,6 @@ exports[`SettingsComponent renders 1`] = `
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
-                "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
                 "sparkClusterConnectionInfo": [Function],
                 "splitter": Splitter {
@@ -124,14 +115,7 @@ exports[`SettingsComponent renders 1`] = `
               "_isInitializingNotebooks": false,
               "_resetNotebookWorkspace": [Function],
               "canSaveQueries": [Function],
-              "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
-              "commandBarComponentAdapter": CommandBarComponentAdapter {
-                "container": [Circular],
-                "isNotebookTabActive": [Function],
-                "parameters": [Function],
-                "tabsButtons": Array [],
-              },
               "databases": [Function],
               "isAccountReady": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -149,7 +133,6 @@ exports[`SettingsComponent renders 1`] = `
               "notebookServerInfo": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -174,7 +157,6 @@ exports[`SettingsComponent renders 1`] = `
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
               "setInProgressConsoleDataIdToBeDeleted": undefined,
-              "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,
               "sparkClusterConnectionInfo": [Function],
               "splitter": Splitter {
@@ -230,14 +212,7 @@ exports[`SettingsComponent renders 1`] = `
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
                 "canSaveQueries": [Function],
-                "closeSidePanel": undefined,
                 "collapsedResourceTreeWidth": 36,
-                "commandBarComponentAdapter": CommandBarComponentAdapter {
-                  "container": [Circular],
-                  "isNotebookTabActive": [Function],
-                  "parameters": [Function],
-                  "tabsButtons": Array [],
-                },
                 "databases": [Function],
                 "isAccountReady": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -255,7 +230,6 @@ exports[`SettingsComponent renders 1`] = `
                 "notebookServerInfo": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
-                "openSidePanel": undefined,
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -280,7 +254,6 @@ exports[`SettingsComponent renders 1`] = `
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
                 "setInProgressConsoleDataIdToBeDeleted": undefined,
-                "setIsNotificationConsoleExpanded": undefined,
                 "setNotificationConsoleData": undefined,
                 "sparkClusterConnectionInfo": [Function],
                 "splitter": Splitter {
@@ -323,14 +296,7 @@ exports[`SettingsComponent renders 1`] = `
               "_isInitializingNotebooks": false,
               "_resetNotebookWorkspace": [Function],
               "canSaveQueries": [Function],
-              "closeSidePanel": undefined,
               "collapsedResourceTreeWidth": 36,
-              "commandBarComponentAdapter": CommandBarComponentAdapter {
-                "container": [Circular],
-                "isNotebookTabActive": [Function],
-                "parameters": [Function],
-                "tabsButtons": Array [],
-              },
               "databases": [Function],
               "isAccountReady": [Function],
               "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -348,7 +314,6 @@ exports[`SettingsComponent renders 1`] = `
               "notebookServerInfo": [Function],
               "onRefreshDatabasesKeyPress": [Function],
               "onRefreshResourcesClick": [Function],
-              "openSidePanel": undefined,
               "provideFeedbackEmail": [Function],
               "queriesClient": QueriesClient {
                 "container": [Circular],
@@ -373,7 +338,6 @@ exports[`SettingsComponent renders 1`] = `
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
               "setInProgressConsoleDataIdToBeDeleted": undefined,
-              "setIsNotificationConsoleExpanded": undefined,
               "setNotificationConsoleData": undefined,
               "sparkClusterConnectionInfo": [Function],
               "splitter": Splitter {

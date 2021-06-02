@@ -18,6 +18,7 @@ import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/genera
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
+import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
@@ -222,13 +223,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 

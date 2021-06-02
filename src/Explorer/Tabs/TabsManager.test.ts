@@ -52,7 +52,6 @@ describe("Tabs manager tests", () => {
       title: "",
       tabPath: "",
       hashLocation: "",
-      onUpdateTabsButtons: undefined,
     });
 
     documentsTab = new DocumentsTab({
@@ -63,7 +62,6 @@ describe("Tabs manager tests", () => {
       title: "",
       tabPath: "",
       hashLocation: "",
-      onUpdateTabsButtons: undefined,
     });
 
     // make sure tabs have different tabId
