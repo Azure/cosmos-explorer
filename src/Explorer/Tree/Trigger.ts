@@ -40,7 +40,7 @@ export default class Trigger {
     });
   }
 
-  public static create(source: ViewModels.Collection, event: MouseEvent) {
+  public static create(container: Explorer, source: ViewModels.Collection, event: MouseEvent) {
     const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
     const trigger = <StoredProcedureDefinition>{
       id: "",
@@ -49,17 +49,20 @@ export default class Trigger {
       triggerType: "Pre",
     };
 
-    const triggerTab: TriggerTab = new TriggerTab({
-      resource: trigger,
-      isNew: true,
-      tabKind: ViewModels.CollectionTabKind.Triggers,
-      title: `New Trigger ${id}`,
-      tabPath: "",
-      collection: source,
-      node: source,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
-    });
+    const triggerTab: TriggerTab = new TriggerTab(
+      {
+        resource: trigger,
+        isNew: true,
+        tabKind: ViewModels.CollectionTabKind.Triggers,
+        title: `New Trigger ${id}`,
+        tabPath: "",
+        collection: source,
+        node: source,
+        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
+        onUpdateTabsButtons: source.container.onUpdateTabsButtons,
+      },
+      { container: container }
+    );
 
     source.container.tabsManager.activateNewTab(triggerTab);
   }
@@ -85,20 +88,23 @@ export default class Trigger {
         triggerType: this.triggerType(),
       };
 
-      triggerTab = new TriggerTab({
-        resource: triggerData,
-        isNew: false,
-        tabKind: ViewModels.CollectionTabKind.Triggers,
-        title: triggerData.id,
-        tabPath: "",
-        collection: this.collection,
-        node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-          this.collection.databaseId,
-          this.collection.id()
-        )}/triggers/${this.id()}`,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-      });
+      triggerTab = new TriggerTab(
+        {
+          resource: triggerData,
+          isNew: false,
+          tabKind: ViewModels.CollectionTabKind.Triggers,
+          title: triggerData.id,
+          tabPath: "",
+          collection: this.collection,
+          node: this,
+          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
+            this.collection.databaseId,
+            this.collection.id()
+          )}/triggers/${this.id()}`,
+          onUpdateTabsButtons: this.container.onUpdateTabsButtons,
+        },
+        { container: this.container }
+      );
 
       this.container.tabsManager.activateNewTab(triggerTab);
     }
