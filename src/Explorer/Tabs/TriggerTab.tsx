@@ -2,14 +2,9 @@ import { TriggerDefinition } from "@azure/cosmos";
 import React from "react";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
-import Explorer from "../Explorer";
 import Trigger from "../Tree/Trigger";
 import ScriptTabBase from "./ScriptTabBase";
 import { TriggerTabContent } from "./TriggerTabContent";
-
-interface ITriggerTabInstance {
-  container: Explorer;
-}
 
 export default class TriggerTab extends ScriptTabBase {
   public onSaveClick: () => void;
@@ -18,13 +13,11 @@ export default class TriggerTab extends ScriptTabBase {
   public node: Trigger;
   public triggerType: ViewModels.Editable<string>;
   public triggerOperation: ViewModels.Editable<string>;
-  public triggerTypeInstance: ITriggerTabInstance;
   public triggerOptions: ViewModels.ScriptTabOption;
 
-  constructor(options: ViewModels.ScriptTabOption, props: ITriggerTabInstance) {
+  constructor(options: ViewModels.ScriptTabOption) {
     super(options);
     super.onActivate.bind(this);
-    this.triggerTypeInstance = props;
     this.triggerOptions = options;
   }
 

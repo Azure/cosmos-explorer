@@ -144,7 +144,6 @@ export default class Explorer {
   };
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
-  onUpdateTabsButtons: any;
 
   constructor(params?: ExplorerParams) {
     this.setNotificationConsoleData = params?.setNotificationConsoleData;
