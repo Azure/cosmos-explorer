@@ -14,7 +14,6 @@ export interface TerminalTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
   container: Explorer;
   kind: ViewModels.TerminalKind;
-  index: number;
 }
 
 /**
@@ -44,11 +43,9 @@ export default class TerminalTab extends TabsBase {
   public readonly html = '<div style="height: 100%" data-bind="react:notebookTerminalComponentAdapter"></div>  ';
   private container: Explorer;
   private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
-  private index: number;
 
   constructor(options: TerminalTabOptions) {
     super(options);
-    this.index = options.index;
     this.container = options.container;
     this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
       () => this.getNotebookServerInfo(options),
@@ -68,10 +65,6 @@ export default class TerminalTab extends TabsBase {
 
   public getContainer(): Explorer {
     return this.container;
-  }
-
-  public getIndex(): number {
-    return this.index;
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
