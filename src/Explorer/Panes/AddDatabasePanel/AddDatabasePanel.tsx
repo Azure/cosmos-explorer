@@ -179,30 +179,32 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
         />
       )}
       <div className="panelMainContent">
-        <div>
-          <Stack horizontal>
-            <span className="mandatoryStar">*</span>
-            <Text variant="small">{databaseIdLabel}</Text>
-            <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
-          </Stack>
+        <Stack horizontal>
+          <span className="mandatoryStar">*&nbsp;</span>
+          <Text className="panelTextBold" variant="small">
+            {databaseIdLabel}
+          </Text>
+          <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
+        </Stack>
 
-          <TextField
-            id="database-id"
-            type="text"
-            aria-required="true"
-            autoComplete="off"
-            pattern="[^/?#\\]*[^/?# \\]"
-            title="May not end with space nor contain characters '\' '/' '#' '?'"
-            size={40}
-            aria-label={databaseIdLabel}
-            placeholder={databaseIdPlaceHolder}
-            value={databaseId}
-            onChange={handleonChangeDBId}
-            autoFocus
-            style={{ fontSize: 12 }}
-            styles={{ root: { width: 300 } }}
-          />
+        <TextField
+          id="database-id"
+          type="text"
+          aria-required="true"
+          autoComplete="off"
+          pattern="[^/?#\\]*[^/?# \\]"
+          title="May not end with space nor contain characters '\' '/' '#' '?'"
+          size={40}
+          aria-label={databaseIdLabel}
+          placeholder={databaseIdPlaceHolder}
+          value={databaseId}
+          onChange={handleonChangeDBId}
+          autoFocus
+          style={{ fontSize: 12 }}
+          styles={{ root: { width: 300 } }}
+        />
 
+        {!isServerlessAccount() && (
           <Stack horizontal>
             <Checkbox
               title="Provision shared throughput"
@@ -217,18 +219,18 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             />
             <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
           </Stack>
+        )}
 
-          {!isServerlessAccount() && databaseCreateNewShared && (
-            <ThroughputInput
-              showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
-              isDatabase={true}
-              isSharded={databaseCreateNewShared}
-              setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
-              setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
-              onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
-            />
-          )}
-        </div>
+        {!isServerlessAccount() && databaseCreateNewShared && (
+          <ThroughputInput
+            showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
+            isDatabase={true}
+            isSharded={databaseCreateNewShared}
+            setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
+            setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
+            onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
+          />
+        )}
       </div>
     </RightPaneForm>
   );
