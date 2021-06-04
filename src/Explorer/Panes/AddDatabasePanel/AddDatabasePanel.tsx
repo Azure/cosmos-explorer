@@ -179,47 +179,49 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
         />
       )}
       <div className="panelMainContent">
-        <Stack horizontal>
-          <span className="mandatoryStar">*&nbsp;</span>
-          <Text className="panelTextBold" variant="small">
-            {databaseIdLabel}
-          </Text>
-          <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
-        </Stack>
-
-        <TextField
-          id="database-id"
-          type="text"
-          aria-required="true"
-          autoComplete="off"
-          pattern="[^/?#\\]*[^/?# \\]"
-          title="May not end with space nor contain characters '\' '/' '#' '?'"
-          size={40}
-          aria-label={databaseIdLabel}
-          placeholder={databaseIdPlaceHolder}
-          value={databaseId}
-          onChange={handleonChangeDBId}
-          autoFocus
-          style={{ fontSize: 12 }}
-          styles={{ root: { width: 300 } }}
-        />
-
-        {!isServerlessAccount() && (
+        <Stack>
           <Stack horizontal>
-            <Checkbox
-              title="Provision shared throughput"
-              styles={{
-                text: { fontSize: 12 },
-                checkbox: { width: 12, height: 12 },
-                label: { padding: 0, alignItems: "center" },
-              }}
-              label="Provision throughput"
-              checked={databaseCreateNewShared}
-              onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
-            />
-            <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
+            <span className="mandatoryStar">*&nbsp;</span>
+            <Text className="panelTextBold" variant="small">
+              {databaseIdLabel}
+            </Text>
+            <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
           </Stack>
-        )}
+
+          <TextField
+            id="database-id"
+            type="text"
+            aria-required="true"
+            autoComplete="off"
+            pattern="[^/?#\\]*[^/?# \\]"
+            title="May not end with space nor contain characters '\' '/' '#' '?'"
+            size={40}
+            aria-label={databaseIdLabel}
+            placeholder={databaseIdPlaceHolder}
+            value={databaseId}
+            onChange={handleonChangeDBId}
+            autoFocus
+            style={{ fontSize: 12 }}
+            styles={{ root: { width: 300 } }}
+          />
+
+          {!isServerlessAccount() && (
+            <Stack horizontal>
+              <Checkbox
+                title="Provision shared throughput"
+                styles={{
+                  text: { fontSize: 12 },
+                  checkbox: { width: 12, height: 12 },
+                  label: { padding: 0, alignItems: "center" },
+                }}
+                label="Provision throughput"
+                checked={databaseCreateNewShared}
+                onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
+              />
+              <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
+            </Stack>
+          )}
+        </Stack>
 
         {!isServerlessAccount() && databaseCreateNewShared && (
           <ThroughputInput
