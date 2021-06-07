@@ -1396,7 +1396,7 @@ export default class Explorer {
 
     let index = 1;
     if (terminalTabs.length > 0) {
-      index = terminalTabs[terminalTabs.length - 1].getIndex() + 1;
+      index = terminalTabs[terminalTabs.length - 1].index + 1;
     }
 
     const newTab = new TerminalTab({

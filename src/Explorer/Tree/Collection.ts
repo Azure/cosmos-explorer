@@ -696,7 +696,7 @@ export default class Collection implements ViewModels.Collection {
 
     let index = 1;
     if (mongoShellTabs.length > 0) {
-      index = mongoShellTabs[mongoShellTabs.length - 1].getIndex() + 1;
+      index = mongoShellTabs[mongoShellTabs.length - 1].index + 1;
     }
 
     const mongoShellTab: MongoShellTab = new MongoShellTab({

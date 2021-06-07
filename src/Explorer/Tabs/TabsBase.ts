@@ -16,7 +16,7 @@ import { TabsManager } from "./TabsManager";
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
   private static id = 0;
-  private index: number;
+  public readonly index: number;
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;
@@ -61,10 +61,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
         return true;
       }),
     };
-  }
-
-  public getIndex(): number {
-    return this.index;
   }
 
   public onCloseTabButtonClick(): void {
