@@ -17,9 +17,10 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
         <span
           className="mandatoryStar"
         >
-          *
+          * 
         </span>
         <Text
+          className="panelTextBold"
           variant="small"
         >
           Database id
@@ -38,13 +39,16 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
         pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"
         placeholder="Type a new database id"
         size={40}
-        style={
-          Object {
-            "fontSize": 12,
-          }
-        }
         styles={
           Object {
+            "field": Object {
+              "fontSize": 12,
+              "selectors": Object {
+                "::placeholder": Object {
+                  "fontSize": 12,
+                },
+              },
+            },
             "root": Object {
               "width": 300,
             },

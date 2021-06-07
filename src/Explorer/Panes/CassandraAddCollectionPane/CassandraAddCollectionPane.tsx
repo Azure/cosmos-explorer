@@ -232,6 +232,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
 
           {!keyspaceCreateNew && (
             <Dropdown
+              ariaLabel="Choose existing keyspace id"
               styles={{ root: { width: 300 }, title: { fontSize: 12 }, dropdownItem: { fontSize: 12 } }}
               placeholder="Choose existing keyspace id"
               defaultSelectedKey={existingKeyspaceId}
