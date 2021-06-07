@@ -286,6 +286,7 @@ export interface TabOptions {
   rid?: string;
   node?: TreeNode;
   theme?: string;
+  index?: number;
 }
 
 export interface DocumentsTabOptions extends TabOptions {

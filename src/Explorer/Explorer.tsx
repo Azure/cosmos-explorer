@@ -1394,7 +1394,11 @@ export default class Explorer {
       tab.hashLocation().startsWith(hashLocation)
     ) as TerminalTab[];
 
-    const index = terminalTabs.length + 1;
+    let index = 1;
+    if (terminalTabs.length > 0) {
+      index = terminalTabs[terminalTabs.length - 1].index + 1;
+    }
+
     const newTab = new TerminalTab({
       account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Terminal,
@@ -1407,6 +1411,7 @@ export default class Explorer {
       onLoadStartKey: null,
       container: this,
       kind: kind,
+      index: index,
     });
 
     this.tabsManager.activateNewTab(newTab);
