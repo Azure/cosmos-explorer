@@ -40,7 +40,7 @@ export default class Trigger {
     });
   }
 
-  public static create(container: Explorer, source: ViewModels.Collection, event: MouseEvent) {
+  public static create(source: ViewModels.Collection, event: MouseEvent) {
     const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
     const trigger = <StoredProcedureDefinition>{
       id: "",

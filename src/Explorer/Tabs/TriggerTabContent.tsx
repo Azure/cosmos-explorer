@@ -34,11 +34,12 @@ interface Ibutton {
 }
 
 interface ITriggerTabContentState {
-  [key: string]: string;
+  [key: string]: string | boolean;
   triggerId: string;
   triggerBody: string;
   triggerType?: "Pre" | "Post";
   triggerOperation?: "All" | "Create" | "Update" | "Delete" | "Replace";
+  isIdEditable: boolean;
 }
 
 export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentState> {
@@ -68,6 +69,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
       triggerType: triggerType,
       triggerOperation: triggerOperation,
       triggerBody: body,
+      isIdEditable: props.isNew() ? true : false,
     };
   }
 
@@ -106,6 +108,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         );
         this.props.editorContent.setBaseline(createdResource.body as string);
         this.props.addNodeInCollection(createdResource);
+        this.setState({ isIdEditable: false });
         TelemetryProcessor.traceSuccess(
           Action.CreateTrigger,
           {
@@ -133,53 +136,53 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     }
   }
 
-  private onUpdateClick(): Promise<void> {
+  private async onUpdateClick(): Promise<void> {
     this.props.isExecutionError(false);
     this.props.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.UpdateTrigger, {
       tabTitle: this.props.tabTitle(),
     });
 
-    const { triggerId, triggerBody, triggerOperation, triggerType } = this.state;
-    return updateTrigger(this.props.collection.databaseId, this.props.collection.id(), {
-      id: triggerId,
-      body: triggerBody,
-      triggerOperation: triggerOperation as SqlTriggerResource["triggerOperation"],
-      triggerType: triggerType as SqlTriggerResource["triggerType"],
-    })
-      .then(
-        (createdResource) => {
-          this.props.resource(createdResource);
-          this.props.tabTitle(createdResource.id);
+    try {
+      const { triggerId, triggerBody, triggerOperation, triggerType } = this.state;
+      const createdResource = await updateTrigger(this.props.collection.databaseId, this.props.collection.id(), {
+        id: triggerId,
+        body: triggerBody,
+        triggerOperation: triggerOperation as SqlTriggerResource["triggerOperation"],
+        triggerType: triggerType as SqlTriggerResource["triggerType"],
+      });
+      if (createdResource) {
+        this.props.resource(createdResource);
+        this.props.tabTitle(createdResource.id);
 
-          this.props.node.id(createdResource.id);
-          this.props.node.body(createdResource.body as string);
-          this.props.node.triggerType(createdResource.triggerType);
-          this.props.node.triggerOperation(createdResource.triggerOperation);
-          TelemetryProcessor.traceSuccess(
-            Action.UpdateTrigger,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.props.tabTitle(),
-            },
-            startKey
-          );
+        this.props.node.id(createdResource.id);
+        this.props.node.body(createdResource.body as string);
+        this.props.node.triggerType(createdResource.triggerType);
+        this.props.node.triggerOperation(createdResource.triggerOperation);
+        TelemetryProcessor.traceSuccess(
+          Action.UpdateTrigger,
+          {
+            dataExplorerArea: Constants.Areas.Tab,
+            tabTitle: this.props.tabTitle(),
+          },
+          startKey
+        );
+        this.props.isExecuting(false);
+      }
+    } catch (createError) {
+      this.props.isExecutionError(true);
+      TelemetryProcessor.traceFailure(
+        Action.UpdateTrigger,
+        {
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.props.tabTitle(),
+          error: getErrorMessage(createError),
+          errorStack: getErrorStack(createError),
         },
-        (createError) => {
-          this.props.isExecutionError(true);
-          TelemetryProcessor.traceFailure(
-            Action.UpdateTrigger,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.props.tabTitle(),
-              error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError),
-            },
-            startKey
-          );
-        }
-      )
-      .finally(() => this.props.isExecuting(false));
+        startKey
+      );
+      this.props.isExecuting(false);
+    }
   }
 
   private onDiscard(): void {
@@ -224,6 +227,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     const label = "Save";
     if (this.saveButton.visible) {
       buttons.push({
+        setState: this.setState,
         ...this,
         iconSrc: SaveIcon,
         iconAlt: label,
@@ -288,8 +292,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
 
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
-
-    const { triggerId, triggerType, triggerOperation, triggerBody } = this.state;
+    const { triggerId, triggerType, triggerOperation, triggerBody, isIdEditable } = this.state;
     return (
       <div className="tab-pane flexContainer" role="tabpanel">
         <div className="trigger-form">
@@ -304,6 +307,7 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
             placeholder="Enter the new trigger id"
             size={40}
             value={triggerId}
+            disabled={!isIdEditable}
             onChange={this.handleTriggerIdChange}
           />
           <Dropdown

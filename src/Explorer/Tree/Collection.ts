@@ -712,7 +712,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onNewTriggerClick(source: ViewModels.Collection, event: MouseEvent) {
-    Trigger.create(this.container, source, event);
+    Trigger.create(source, event);
   }
 
   public createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure {
