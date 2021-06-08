@@ -1,31 +1,27 @@
-import { Text, TextField } from "office-ui-fabric-react";
+import { Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import { Areas } from "../../../Common/Constants";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Collection } from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { DefaultExperienceUtility } from "../../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
+import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 export interface DeleteCollectionConfirmationPaneProps {
   explorer: Explorer;
-  collectionName: string;
-  closePanel: () => void;
 }
 
 export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectionConfirmationPaneProps> = ({
   explorer,
-  closePanel,
-  collectionName,
 }: DeleteCollectionConfirmationPaneProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
@@ -34,8 +30,9 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   const shouldRecordFeedback = (): boolean => {
     return explorer.isLastCollection() && !explorer.isSelectedDatabaseShared();
   };
+  const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
-  const submit = async (): Promise<void> => {
+  const onSubmit = async (): Promise<void> => {
     const collection = explorer.findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
       const errorMessage = "Input " + collectionName + " name does not match the selected " + collectionName;
@@ -82,7 +79,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
         });
       }
 
-      closePanel();
+      closeSidePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
 
@@ -100,19 +97,14 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       );
     }
   };
-  const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
+  const props: RightPaneFormProps = {
     formError: formError,
-    formErrorDetail: formError,
-    id: "deleteCollectionpane",
     isExecuting,
-    title: paneTitle,
     submitButtonText: "OK",
-    onClose: closePanel,
-    onSubmit: submit,
+    onSubmit,
   };
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
@@ -150,6 +142,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
           )}
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

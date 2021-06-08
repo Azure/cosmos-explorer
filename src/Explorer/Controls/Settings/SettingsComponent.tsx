@@ -1,4 +1,4 @@
-import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "office-ui-fabric-react";
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
@@ -14,11 +14,12 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
+import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
@@ -226,22 +227,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
   public loadMongoIndexes = async (): Promise<void> => {
-    if (
-      userContext.apiType === "Mongo" &&
-      this.container.isEnableMongoCapabilityPresent() &&
-      this.container.databaseAccount()
-    ) {
+    if (userContext.apiType === "Mongo" && userContext?.databaseAccount) {
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
         this.collection.id()
@@ -304,8 +301,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
-    this.container?.databaseAccount &&
-    this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
+    userContext?.databaseAccount?.properties?.enableMultipleWriteLocations &&
     this.collection.conflictResolutionPolicy &&
     !!this.collection.conflictResolutionPolicy();
 
@@ -908,7 +904,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps
   ): JSX.Element => {
     if (userContext.authType === AuthType.AAD) {
-      if (this.container.isEnableMongoCapabilityPresent()) {
+      if (userContext.apiType === "Mongo") {
         return <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />;
       }
       return undefined;

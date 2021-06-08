@@ -2,7 +2,7 @@
  * React component for control bar
  */
 
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
+import { Dropdown, IDropdownOption } from "@fluentui/react";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
@@ -15,6 +15,7 @@ import LoadingIcon from "../../../../images/loading.svg";
 import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
 import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
+import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
 
 /**
@@ -319,5 +320,25 @@ const PrPreview = (props: { pr: string }) => {
         {ref}
       </a>
     </>
+  );
+};
+
+export const NotificationConsole: React.FC<
+  Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">
+> = ({
+  consoleData,
+  inProgressConsoleDataIdToBeDeleted,
+}: Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">) => {
+  const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
+  const isExpanded = useNotificationConsole((state) => state.isExpanded);
+  // TODO Refactor NotificationConsoleComponent into a functional component and remove this wrapper
+  // This component only exists so we can use hooks and pass them down to a non-functional component
+  return (
+    <NotificationConsoleComponent
+      consoleData={consoleData}
+      inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
+      isConsoleExpanded={isExpanded}
+      setIsConsoleExpanded={setIsExpanded}
+    />
   );
 };

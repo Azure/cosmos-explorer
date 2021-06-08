@@ -1,5 +1,5 @@
+import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as ko from "knockout";
-import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "office-ui-fabric-react";
 import * as React from "react";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
@@ -14,6 +14,7 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { Areas } from "../../Common/Constants";
+import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
@@ -26,6 +27,7 @@ import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactor
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
@@ -197,7 +199,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
         className: "databaseHeader",
         children: [],
         isSelected: () => this.isDataNodeSelected(database.id()),
-        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container),
+        contextMenu: ResourceTreeContextMenuButtonFactory.createDatabaseContextMenu(this.container, database.id()),
         onClick: async (isExpanded) => {
           // Rewritten version of expandCollapseDatabase():
           if (isExpanded) {
@@ -210,7 +212,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
           }
           databaseNode.isLoading = false;
           database.selectDatabase();
-          this.container.onUpdateTabsButtons([]);
+          useCommandBar.getState().setContextButtons([]);
           this.container.tabsManager.refreshActiveTab((tab: TabsBase) => tab.collection?.databaseId === database.id());
         },
         onContextMenuOpen: () => this.container.selectedNode(database),
@@ -273,7 +275,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (userContext.apiType === "Mongo" && userContext.features.enableSchemaAnalyzer) {
+    if (this.container.isNotebookEnabled() && userContext.apiType === "Mongo" && isPublicInternetAccessAllowed()) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),
@@ -306,10 +308,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     // This is a rewrite of showConflicts
     const showConflicts =
-      this.container.databaseAccount &&
-      this.container.databaseAccount() &&
-      this.container.databaseAccount().properties &&
-      this.container.databaseAccount().properties.enableMultipleWriteLocations &&
+      userContext?.databaseAccount?.properties.enableMultipleWriteLocations &&
       collection.rawDataModel &&
       !!collection.rawDataModel.conflictResolutionPolicy;
 
@@ -332,7 +331,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       onClick: () => {
         // Rewritten version of expandCollapseCollection
         this.container.selectedNode(collection);
-        this.container.onUpdateTabsButtons([]);
+        useCommandBar.getState().setContextButtons([]);
         this.container.tabsManager.refreshActiveTab(
           (tab: TabsBase) =>
             tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
@@ -607,7 +606,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.contextMenu = [
       {
         label: "Manage GitHub settings",
-        onClick: () => this.container.gitHubReposPane.open(),
+        onClick: () => this.container.openGitHubReposPanel("Manage GitHub settings"),
       },
       {
         label: "Disconnect from GitHub",

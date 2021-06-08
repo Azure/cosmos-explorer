@@ -1,8 +1,7 @@
 import * as ko from "knockout";
-import * as Constants from "../../Common/Constants";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
 import DocumentsTab from "./DocumentsTab";
@@ -17,7 +16,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -27,7 +25,13 @@ describe("Documents tab", () => {
   describe("showPartitionKey", () => {
     const explorer = new Explorer();
     const mongoExplorer = new Explorer();
-    mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableGremlin" }],
+        },
+      } as DatabaseAccount,
+    });
 
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
@@ -87,7 +91,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -102,7 +105,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -117,7 +119,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -135,7 +136,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -150,7 +150,6 @@ describe("Documents tab", () => {
         title: "",
         tabPath: "",
         hashLocation: "",
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

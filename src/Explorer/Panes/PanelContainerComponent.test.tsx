@@ -1,5 +1,5 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import { PanelContainerComponent, PanelContainerProps } from "./PanelContainerComponent";
 
 describe("PaneContainerComponent test", () => {
@@ -9,7 +9,6 @@ describe("PaneContainerComponent test", () => {
       panelContent: <div></div>,
       isOpen: true,
       isConsoleExpanded: false,
-      closePanel: undefined,
     };
     const wrapper = shallow(<PanelContainerComponent {...panelContainerProps} />);
     expect(wrapper).toMatchSnapshot();
@@ -21,7 +20,6 @@ describe("PaneContainerComponent test", () => {
       panelContent: undefined,
       isOpen: true,
       isConsoleExpanded: false,
-      closePanel: undefined,
     };
     const wrapper = shallow(<PanelContainerComponent {...panelContainerProps} />);
     expect(wrapper).toMatchSnapshot();
@@ -33,7 +31,6 @@ describe("PaneContainerComponent test", () => {
       panelContent: <div></div>,
       isOpen: true,
       isConsoleExpanded: true,
-      closePanel: undefined,
     };
     const wrapper = shallow(<PanelContainerComponent {...panelContainerProps} />);
     expect(wrapper).toMatchSnapshot();

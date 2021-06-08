@@ -1,5 +1,5 @@
+import { PrimaryButton } from "@fluentui/react";
 import { mount } from "enzyme";
-import { PrimaryButton } from "office-ui-fabric-react";
 import React from "react";
 import Explorer from "../../Explorer";
 import { SetupNoteBooksPanel } from "./SetupNotebooksPanel";

@@ -1,3 +1,7 @@
+/**
+ * @module SelfServe/SelfServeUtils
+ */
+
 import "reflect-metadata";
 import { userContext } from "../UserContext";
 import {
@@ -18,9 +22,10 @@ import {
   StringInput,
 } from "./SelfServeTypes";
 
+/**
+ * The type used to identify the Self Serve Class
+ */
 export enum SelfServeType {
-  // No self serve type passed, launch explorer
-  none = "none",
   // Unsupported self serve type passed as feature flag
   invalid = "invalid",
   // Add your self serve types here
@@ -28,14 +33,47 @@ export enum SelfServeType {
   sqlx = "sqlx",
 }
 
+/**
+ * Portal Blade types
+ */
 export enum BladeType {
+  /**
+   * Keys blade of a SQL API account.
+   */
   SqlKeys = "keys",
+  /**
+   * Keys blade of a Mongo API account.
+   */
   MongoKeys = "mongoDbKeys",
+  /**
+   * Keys blade of a Cassandra API account.
+   */
   CassandraKeys = "cassandraDbKeys",
+  /**
+   * Keys blade of a Gremlin API account.
+   */
   GremlinKeys = "keys",
+  /**
+   * Keys blade of a Table API account.
+   */
   TableKeys = "tableKeys",
+  /**
+   * Metrics blade of an Azure Cosmos DB account.
+   */
+  Metrics = "metrics",
 }
 
+/**
+ * Generate the URL corresponding to the portal blade for the current Azure Cosmos DB account
+ */
+export const generateBladeLink = (blade: BladeType): string => {
+  const subscriptionId = userContext.subscriptionId;
+  const resourceGroupName = userContext.resourceGroup;
+  const databaseAccountName = userContext.databaseAccount.name;
+  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
+};
+
+/**@internal */
 export interface DecoratorProperties {
   id: string;
   info?: (() => Promise<Info>) | Info;
@@ -61,6 +99,7 @@ export interface DecoratorProperties {
   ) => Map<string, SmartUiInput>;
 }
 
+/**@internal */
 const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   name: T,
   value: K,
@@ -69,10 +108,12 @@ const setValue = <T extends keyof DecoratorProperties, K extends DecoratorProper
   fieldObject[name] = value;
 };
 
+/**@internal */
 const getValue = <T extends keyof DecoratorProperties>(name: T, fieldObject: DecoratorProperties): unknown => {
   return fieldObject[name];
 };
 
+/**@internal */
 export const addPropertyToMap = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   target: unknown,
   propertyName: string,
@@ -87,6 +128,7 @@ export const addPropertyToMap = <T extends keyof DecoratorProperties, K extends 
   Reflect.defineMetadata(className, context, target);
 };
 
+/**@internal */
 export const updateContextWithDecorator = <T extends keyof DecoratorProperties, K extends DecoratorProperties[T]>(
   context: Map<string, DecoratorProperties>,
   propertyName: string,
@@ -110,12 +152,14 @@ export const updateContextWithDecorator = <T extends keyof DecoratorProperties, 
   context.set(propertyName, propertyObject);
 };
 
+/**@internal */
 export const buildSmartUiDescriptor = (className: string, target: unknown): void => {
   const context = Reflect.getMetadata(className, target) as Map<string, DecoratorProperties>;
   const smartUiDescriptor = mapToSmartUiDescriptor(context);
   Reflect.defineMetadata(className, smartUiDescriptor, target);
 };
 
+/**@internal */
 export const mapToSmartUiDescriptor = (context: Map<string, DecoratorProperties>): SelfServeDescriptor => {
   const inputNames: string[] = [];
   const root = context.get("root");
@@ -139,6 +183,7 @@ export const mapToSmartUiDescriptor = (context: Map<string, DecoratorProperties>
   return smartUiDescriptor;
 };
 
+/**@internal */
 const addToDescriptor = (
   context: Map<string, DecoratorProperties>,
   root: Node,
@@ -157,11 +202,12 @@ const addToDescriptor = (
   root.children.push(element);
 };
 
+/**@internal */
 const getInput = (value: DecoratorProperties): AnyDisplay => {
   switch (value.type) {
     case "number":
-      if (!value.labelTKey || !value.step || !value.uiType || !value.min || !value.max) {
-        value.errorMessage = `label, step, min, max and uiType are required for number input '${value.id}'.`;
+      if (!value.labelTKey || !value.uiType || !value.step || !value.max || value.min === undefined) {
+        value.errorMessage = `labelTkey, step, min, max and uiType are required for number input '${value.id}'.`;
       }
       return value as NumberInput;
     case "string":
@@ -172,25 +218,18 @@ const getInput = (value: DecoratorProperties): AnyDisplay => {
         return value as DescriptionDisplay;
       }
       if (!value.labelTKey) {
-        value.errorMessage = `label is required for string input '${value.id}'.`;
+        value.errorMessage = `labelTKey is required for string input '${value.id}'.`;
       }
       return value as StringInput;
     case "boolean":
       if (!value.labelTKey || !value.trueLabelTKey || !value.falseLabelTKey) {
-        value.errorMessage = `label, truelabel and falselabel are required for boolean input '${value.id}'.`;
+        value.errorMessage = `labelTkey, trueLabelTKey and falseLabelTKey are required for boolean input '${value.id}'.`;
       }
       return value as BooleanInput;
     default:
       if (!value.labelTKey || !value.choices) {
-        value.errorMessage = `label and choices are required for Choice input '${value.id}'.`;
+        value.errorMessage = `labelTKey and choices are required for Choice input '${value.id}'.`;
       }
       return value as ChoiceInput;
   }
-};
-
-export const generateBladeLink = (blade: BladeType): string => {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroupName = userContext.resourceGroup;
-  const databaseAccountName = userContext.databaseAccount.name;
-  return `${document.referrer}#@microsoft.onmicrosoft.com/resource/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDb/databaseAccounts/${databaseAccountName}/${blade}`;
 };

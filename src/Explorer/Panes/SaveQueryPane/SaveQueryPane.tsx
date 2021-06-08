@@ -1,56 +1,35 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import { Text, TextField } from "office-ui-fabric-react";
+import { Text, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import { Areas, SavedQueries } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Query } from "../../../Contracts/DataModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import QueryTab from "../../Tabs/QueryTab";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 interface SaveQueryPaneProps {
   explorer: Explorer;
-  closePanel: () => void;
 }
 
-export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
-  explorer,
-  closePanel,
-}: SaveQueryPaneProps): JSX.Element => {
+export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer }: SaveQueryPaneProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
   const [queryName, setQueryName] = useState<string>("");
 
   const setupSaveQueriesText = `For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “${SavedQueries.DatabaseName}”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.`;
   const title = "Save Query";
   const { canSaveQueries } = explorer;
-  const genericPaneProps: GenericRightPaneProps = {
-    container: explorer,
-    formError: formError,
-    formErrorDetail: formErrorsDetails,
-    id: "saveQueryPane",
-    isExecuting: isLoading,
-    title,
-    submitButtonText: canSaveQueries() ? "Save" : "Complete setup",
-    onClose: () => closePanel(),
-    onSubmit: () => {
-      canSaveQueries() ? submit() : setupQueries();
-    },
-  };
 
   const submit = async (): Promise<void> => {
     setFormError("");
-    setFormErrorsDetails("");
     if (!canSaveQueries()) {
       setFormError("Cannot save query");
-      setFormErrorsDetails("Failed to save query: account not set up to save queries");
       logConsoleError("Failed to save query: account not setup to save queries");
     }
 
@@ -58,12 +37,10 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
     const query: string = queryTab && queryTab.sqlQueryEditorContent();
     if (!queryName || queryName.length === 0) {
       setFormError("No query name specified");
-      setFormErrorsDetails("No query name specified. Please specify a query name.");
       logConsoleError("Could not save query -- No query name specified. Please specify a query name.");
       return;
     } else if (!query || query.length === 0) {
       setFormError("Invalid query content specified");
-      setFormErrorsDetails("Invalid query content specified. Please enter query content.");
       logConsoleError("Could not save query -- Invalid query content specified. Please enter query content.");
       return;
     }
@@ -92,12 +69,12 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
         },
         startKey
       );
-      closePanel();
+      closeSidePanel();
     } catch (error) {
       setLoadingFalse();
       const errorMessage = getErrorMessage(error);
       setFormError("Failed to save query");
-      setFormErrorsDetails(`Failed to save query: ${errorMessage}`);
+      logConsoleError(`Failed to save query: ${errorMessage}`);
       traceFailure(
         Action.SaveQuery,
         {
@@ -142,14 +119,22 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
         startKey
       );
       setFormError("Failed to setup a container for saved queries");
-      setFormErrorsDetails(`Failed to setup a container for saved queries: ${errorMessage}`);
+      logConsoleError(`Failed to setup a container for saved queries: ${errorMessage}`);
     } finally {
       setLoadingFalse();
     }
   };
 
+  const props: RightPaneFormProps = {
+    formError: formError,
+    isExecuting: isLoading,
+    submitButtonText: canSaveQueries() ? "Save" : "Complete setup",
+    onSubmit: () => {
+      canSaveQueries() ? submit() : setupQueries();
+    },
+  };
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           {!canSaveQueries() ? (
@@ -158,6 +143,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
             <TextField
               id="saveQueryInput"
               label="Name"
+              autoFocus
               styles={{ fieldGroup: { width: 300 } }}
               onChange={(event, newInput?: string) => {
                 setQueryName(newInput);
@@ -166,6 +152,6 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({
           )}
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

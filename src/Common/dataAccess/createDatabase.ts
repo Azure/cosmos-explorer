@@ -6,23 +6,23 @@ import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraKeyspace,
   getCassandraKeyspace,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+} from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
 import {
   createUpdateGremlinDatabase,
   getGremlinDatabase,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+} from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import {
   createUpdateMongoDBDatabase,
   getMongoDBDatabase,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+} from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import {
   CassandraKeyspaceCreateUpdateParameters,
   CreateUpdateOptions,
   GremlinDatabaseCreateUpdateParameters,
   MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -48,8 +48,9 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
 }
 
 async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  const defaultExperience = userContext.apiType;
-  switch (defaultExperience) {
+  const { apiType } = userContext;
+
+  switch (apiType) {
     case "SQL":
       return createSqlDatabase(params);
     case "Mongo":
@@ -59,7 +60,7 @@ async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): P
     case "Gremlin":
       return createGremlineDatabase(params);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }
 

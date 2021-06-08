@@ -44,7 +44,7 @@ export class ArmResourceTypes {
 }
 
 export class BackendDefaults {
-  public static partitionKeyKind: string = "Hash";
+  public static partitionKeyKind = "Hash";
   public static singlePartitionStorageInGb: string = "10";
   public static multiPartitionStorageInGb: string = "100";
   public static maxChangeFeedRetentionDuration: number = 10;
@@ -65,26 +65,16 @@ export class ClientDefaults {
   public static readonly arcadiaTokenRefreshIntervalPaddingMs: number = 2000;
 }
 
-export class AccountKind {
-  public static DocumentDB: string = "DocumentDB";
-  public static MongoDB: string = "MongoDB";
-  public static Parse: string = "Parse";
-  public static GlobalDocumentDB: string = "GlobalDocumentDB";
-  public static Default: string = AccountKind.DocumentDB;
+export enum AccountKind {
+  DocumentDB = "DocumentDB",
+  MongoDB = "MongoDB",
+  Parse = "Parse",
+  GlobalDocumentDB = "GlobalDocumentDB",
+  Default = "DocumentDB",
 }
 
 export class CorrelationBackend {
   public static Url: string = "https://aka.ms/cosmosdbanalytics";
-}
-
-export class DefaultAccountExperience {
-  public static DocumentDB: string = "DocumentDB";
-  public static Graph: string = "Graph";
-  public static MongoDB: string = "MongoDB";
-  public static ApiForMongoDB: string = "Azure Cosmos DB for MongoDB API";
-  public static Table: string = "Table";
-  public static Cassandra: string = "Cassandra";
-  public static Default: string = DefaultAccountExperience.DocumentDB;
 }
 
 export class CapabilityNames {
@@ -104,6 +94,7 @@ export class Flights {
   public static readonly MongoIndexEditor = "mongoindexeditor";
   public static readonly MongoIndexing = "mongoindexing";
   public static readonly AutoscaleTest = "autoscaletest";
+  public static readonly SchemaAnalyzer = "schemaanalyzer";
 }
 
 export class AfecFeatures {

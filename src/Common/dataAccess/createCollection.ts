@@ -10,18 +10,15 @@ import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
   getCassandraTable,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import {
-  createUpdateGremlinGraph,
-  getGremlinGraph,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+} from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { createUpdateGremlinGraph, getGremlinGraph } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import {
   createUpdateMongoDBCollection,
   getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/cosmos/tableResources";
+import * as ARMTypes from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -62,8 +59,8 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
 };
 
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  const defaultExperience = userContext.apiType;
-  switch (defaultExperience) {
+  const { apiType } = userContext;
+  switch (apiType) {
     case "SQL":
       return createSqlContainer(params);
     case "Mongo":
@@ -75,7 +72,7 @@ const createCollectionWithARM = async (params: DataModels.CreateCollectionParams
     case "Tables":
       return createTable(params);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 };
 

@@ -1,15 +1,36 @@
 import {
   ChoiceGroup,
+  DefaultButton,
+  Dialog as FluentDialog,
+  DialogFooter,
+  DialogType,
   FontIcon,
+  IButtonProps,
   IChoiceGroupProps,
+  IDialogProps,
   IProgressIndicatorProps,
+  ITextFieldProps,
+  Link,
+  PrimaryButton,
   ProgressIndicator,
-} from "office-ui-fabric-react";
-import { DefaultButton, IButtonProps, PrimaryButton } from "office-ui-fabric-react/lib/Button";
-import { Dialog as FluentDialog, DialogFooter, DialogType, IDialogProps } from "office-ui-fabric-react/lib/Dialog";
-import { Link } from "office-ui-fabric-react/lib/Link";
-import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
-import React, { FunctionComponent } from "react";
+  TextField,
+} from "@fluentui/react";
+import React, { FC } from "react";
+import create, { UseStore } from "zustand";
+
+export interface DialogState {
+  visible: boolean;
+  dialogProps?: DialogProps;
+  openDialog: (props: DialogProps) => void;
+  closeDialog: () => void;
+}
+
+export const useDialog: UseStore<DialogState> = create((set) => ({
+  visible: false,
+  openDialog: (props: DialogProps) => set(() => ({ visible: true, dialogProps: props })),
+  closeDialog: () =>
+    set((state) => ({ visible: false, openDialog: state.openDialog, closeDialog: state.closeDialog }), true),
+}));
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;
@@ -29,7 +50,6 @@ export interface DialogProps {
   title: string;
   subText: string;
   isModal: boolean;
-  visible: boolean;
   choiceGroupProps?: IChoiceGroupProps;
   textFieldProps?: TextFieldProps;
   linkProps?: LinkProps;
@@ -50,24 +70,26 @@ const DIALOG_TITLE_FONT_SIZE = "17px";
 const DIALOG_TITLE_FONT_WEIGHT = 400;
 const DIALOG_SUBTEXT_FONT_SIZE = "15px";
 
-export const Dialog: FunctionComponent<DialogProps> = ({
-  title,
-  subText,
-  isModal,
-  visible,
-  choiceGroupProps,
-  textFieldProps,
-  linkProps,
-  progressIndicatorProps,
-  primaryButtonText,
-  secondaryButtonText,
-  onPrimaryButtonClick,
-  onSecondaryButtonClick,
-  primaryButtonDisabled,
-  type,
-  showCloseButton,
-  onDismiss,
-}: DialogProps) => {
+export const Dialog: FC = () => {
+  const { visible, dialogProps: props } = useDialog();
+  const {
+    title,
+    subText,
+    isModal,
+    choiceGroupProps,
+    textFieldProps,
+    linkProps,
+    progressIndicatorProps,
+    primaryButtonText,
+    secondaryButtonText,
+    onPrimaryButtonClick,
+    onSecondaryButtonClick,
+    primaryButtonDisabled,
+    type,
+    showCloseButton,
+    onDismiss,
+  } = props || {};
+
   const dialogProps: IDialogProps = {
     hidden: !visible,
     dialogContentProps: {
@@ -97,9 +119,9 @@ export const Dialog: FunctionComponent<DialogProps> = ({
           text: secondaryButtonText,
           onClick: onSecondaryButtonClick,
         }
-      : undefined;
+      : {};
 
-  return (
+  return visible ? (
     <FluentDialog {...dialogProps}>
       {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
       {textFieldProps && <TextField {...textFieldProps} />}
@@ -114,5 +136,7 @@ export const Dialog: FunctionComponent<DialogProps> = ({
         {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
       </DialogFooter>
     </FluentDialog>
+  ) : (
+    <></>
   );
 };

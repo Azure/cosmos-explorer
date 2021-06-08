@@ -15,13 +15,12 @@ test("Tables CRUD", async () => {
   });
 
   await explorer.click('[data-test="New Table"]');
-  await explorer.click('[data-test="addCollection-collectionId"]');
-  await explorer.fill('[data-test="addCollection-collectionId"]', tableId);
-  await explorer.click('[data-test="addCollection-createCollection"]');
+  await explorer.fill('[aria-label="Table id"]', tableId);
+  await explorer.click("#sidePanelOkButton");
   await safeClick(explorer, `[data-test="TablesDB"]`);
   await safeClick(explorer, `[data-test="${tableId}"] [aria-label="More"]`);
   await safeClick(explorer, 'button[role="menuitem"]:has-text("Delete Table")');
   await explorer.fill('text=* Confirm by typing the table id >> input[type="text"]', tableId);
-  await explorer.click('[aria-label="Submit"]');
+  await explorer.click('[aria-label="OK"]');
   await expect(explorer).not.toHaveText(".dataResourceTree", tableId);
 });

@@ -3,17 +3,20 @@ import * as Constants from "../../Common/Constants";
 import * as ThemeUtility from "../../Common/ThemeUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { RouteHandler } from "../../RouteHandlers/RouteHandler";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import { TabsManager } from "./TabsManager";
 
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
   private static id = 0;
+  public readonly index: number;
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;
@@ -33,6 +36,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   constructor(options: ViewModels.TabOptions) {
     super();
+    this.index = options.index;
     this._theme = ThemeUtility.getMonacoTheme(options.theme);
     this.node = options.node;
     this.collection = options.collection;
@@ -122,8 +126,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
-    this.collection?.container?.expandConsole();
-    this.database?.container?.expandConsole();
+    useNotificationConsole.getState().expandConsole();
+    useNotificationConsole.getState().expandConsole();
     return false;
   };
 
@@ -162,7 +166,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   protected updateNavbarWithTabsButtons = (): void => {
     if (this.isActive()) {
-      this.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   };
 }

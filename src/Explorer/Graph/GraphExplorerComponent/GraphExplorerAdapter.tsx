@@ -1,9 +1,8 @@
 import * as React from "react";
 import { ReactAdapter } from "../../../Bindings/ReactBindingHandler";
-import { GraphConfig } from "../../Tabs/GraphTab";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { GraphExplorer, GraphAccessor } from "./GraphExplorer";
-
+import { IGraphConfig } from "../../Tabs/GraphTab";
+import { GraphAccessor, GraphExplorer } from "./GraphExplorer";
 interface Parameter {
   onIsNewVertexDisabledChange: (isEnabled: boolean) => void;
   onGraphAccessorCreated: (instance: GraphAccessor) => void;
@@ -12,9 +11,6 @@ interface Parameter {
   onIsPropertyEditing: (isEditing: boolean) => void;
   onIsGraphDisplayed: (isDisplayed: boolean) => void;
   onResetDefaultGraphConfigValues: () => void;
-
-  graphConfigUiData: ViewModels.GraphConfigUiData;
-  graphConfig?: GraphConfig;
 
   collectionPartitionKeyProperty: string;
   graphBackendEndpoint: string;
@@ -25,14 +21,29 @@ interface Parameter {
   onLoadStartKey: number;
   onLoadStartKeyChange: (newKey: number) => void;
   resourceId: string;
+
+  igraphConfigUiData: ViewModels.IGraphConfigUiData;
+  igraphConfig: IGraphConfig;
+  setIConfigUiData?: (data: string[]) => void;
 }
 
+interface IGraphExplorerProps {
+  isChanged: boolean;
+}
+
+interface IGraphExplorerStates {
+  isChangedState: boolean;
+}
+
+export interface GraphExplorerAdapter
+  extends ReactAdapter,
+    React.Component<IGraphExplorerProps, IGraphExplorerStates> {}
 export class GraphExplorerAdapter implements ReactAdapter {
   public params: Parameter;
   public parameters = {};
   public isNewVertexDisabled: boolean;
 
-  public constructor(params: Parameter) {
+  public constructor(params: Parameter, props?: IGraphExplorerProps) {
     this.params = params;
   }
 
@@ -54,9 +65,9 @@ export class GraphExplorerAdapter implements ReactAdapter {
         onLoadStartKey={this.params.onLoadStartKey}
         onLoadStartKeyChange={this.params.onLoadStartKeyChange}
         resourceId={this.params.resourceId}
-        /* TODO Figure out how to make this Knockout-free */
-        graphConfigUiData={this.params.graphConfigUiData}
-        graphConfig={this.params.graphConfig}
+        igraphConfigUiData={this.params.igraphConfigUiData}
+        igraphConfig={this.params.igraphConfig}
+        setIConfigUiData={this.params.setIConfigUiData}
       />
     );
   }

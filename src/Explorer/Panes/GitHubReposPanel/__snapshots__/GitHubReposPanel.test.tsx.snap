@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GitHub Repos Panel should render Default properly 1`] = `
+<form
+  className="panelFormWrapper"
+>
+  <div
+    className="panelMainContent"
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+      }
+    }
+  >
+    <GitHubReposComponent
+      addRepoProps={
+        Object {
+          "container": Explorer {
+            "_isInitializingNotebooks": false,
+            "_resetNotebookWorkspace": [Function],
+            "canSaveQueries": [Function],
+            "collapsedResourceTreeWidth": 36,
+            "databases": [Function],
+            "isAccountReady": [Function],
+            "isFixedCollectionWithSharedThroughputSupported": [Function],
+            "isHostedDataExplorerEnabled": [Function],
+            "isNotebookEnabled": [Function],
+            "isNotebooksEnabledForAccount": [Function],
+            "isResourceTokenCollectionNodeSelected": [Function],
+            "isSchemaEnabled": [Function],
+            "isServerlessEnabled": [Function],
+            "isShellEnabled": [Function],
+            "isSynapseLinkUpdating": [Function],
+            "isTabsContentExpanded": [Function],
+            "memoryUsageInfo": [Function],
+            "notebookBasePath": [Function],
+            "notebookServerInfo": [Function],
+            "onRefreshDatabasesKeyPress": [Function],
+            "onRefreshResourcesClick": [Function],
+            "provideFeedbackEmail": [Function],
+            "queriesClient": QueriesClient {
+              "container": [Circular],
+            },
+            "refreshNotebookList": [Function],
+            "resourceTokenCollection": [Function],
+            "resourceTokenCollectionId": [Function],
+            "resourceTokenDatabaseId": [Function],
+            "resourceTokenPartitionKey": [Function],
+            "resourceTree": ResourceTreeAdapter {
+              "container": [Circular],
+              "copyNotebook": [Function],
+              "databaseCollectionIdMap": Map {},
+              "koSubsCollectionIdMap": Map {},
+              "koSubsDatabaseIdMap": Map {},
+              "parameters": [Function],
+            },
+            "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
+              "container": [Circular],
+              "parameters": [Function],
+            },
+            "selectedDatabaseId": [Function],
+            "selectedNode": [Function],
+            "setInProgressConsoleDataIdToBeDeleted": undefined,
+            "setNotificationConsoleData": undefined,
+            "sparkClusterConnectionInfo": [Function],
+            "splitter": Splitter {
+              "bounds": Object {
+                "max": 400,
+                "min": 240,
+              },
+              "direction": "vertical",
+              "isCollapsed": [Function],
+              "leftSideId": "resourcetree",
+              "onResizeStart": [Function],
+              "onResizeStop": [Function],
+              "splitterId": "h_splitter1",
+            },
+            "tabsManager": TabsManager {
+              "activeTab": [Function],
+              "openedTabs": [Function],
+            },
+          },
+          "getRepo": [Function],
+          "pinRepo": [Function],
+        }
+      }
+      authorizeAccessProps={
+        Object {
+          "authorizeAccess": [Function],
+          "scope": "public_repo",
+        }
+      }
+      onCancelClick={[Function]}
+      onOkClick={[Function]}
+      reposListProps={
+        Object {
+          "branchesProps": Object {},
+          "pinRepo": [Function],
+          "pinnedReposProps": Object {
+            "repos": Array [],
+          },
+          "unpinRepo": [Function],
+          "unpinnedReposProps": Object {
+            "hasMore": true,
+            "isLoading": true,
+            "loadMore": [Function],
+            "repos": Array [],
+          },
+        }
+      }
+      resetConnection={[Function]}
+      showAuthorizeAccess={true}
+    />
+  </div>
+</form>
+`;

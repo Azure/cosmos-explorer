@@ -3,8 +3,6 @@ import { ActionContracts } from "../Contracts/ExplorerContracts";
 import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "./Explorer";
 import { handleOpenAction } from "./OpenActions";
-import AddCollectionPane from "./Panes/AddCollectionPane";
-import CassandraAddCollectionPane from "./Panes/CassandraAddCollectionPane";
 
 describe("OpenActions", () => {
   describe("handleOpenAction", () => {
@@ -15,11 +13,7 @@ describe("OpenActions", () => {
 
     beforeEach(() => {
       explorer = {} as Explorer;
-      explorer.addCollectionPane = {} as AddCollectionPane;
-      explorer.addCollectionPane.open = jest.fn();
-      explorer.cassandraAddCollectionPane = {} as CassandraAddCollectionPane;
-      explorer.cassandraAddCollectionPane.open = jest.fn();
-      explorer.closeAllPanes = () => {};
+      explorer.onNewCollectionClicked = jest.fn();
 
       database = {
         id: ko.observable("db"),
@@ -67,47 +61,25 @@ describe("OpenActions", () => {
         expect(actionHandled).toBe(true);
       });
 
-      describe("CassandraAddCollection pane kind", () => {
-        it("string value should call cassandraAddCollectionPane.open", () => {
-          const action = {
-            actionType: "OpenPane",
-            paneKind: "CassandraAddCollection",
-          };
-
-          const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
-        });
-
-        it("enum value should call cassandraAddCollectionPane.open", () => {
-          const action = {
-            actionType: "OpenPane",
-            paneKind: ActionContracts.PaneKind.CassandraAddCollection,
-          };
-
-          const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.cassandraAddCollectionPane.open).toHaveBeenCalled();
-        });
-      });
-
       describe("AddCollection pane kind", () => {
-        it("string value should call addCollectionPane.open", () => {
+        it("string value should call explorer.onNewCollectionClicked", () => {
           const action = {
             actionType: "OpenPane",
             paneKind: "AddCollection",
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
+          expect(explorer.onNewCollectionClicked).toHaveBeenCalled();
         });
 
-        it("enum value should call addCollectionPane.open", () => {
+        it("enum value should call explorer.onNewCollectionClicked", () => {
           const action = {
             actionType: "OpenPane",
             paneKind: ActionContracts.PaneKind.AddCollection,
           };
 
           const actionHandled = handleOpenAction(action, [], explorer);
-          expect(explorer.addCollectionPane.open).toHaveBeenCalled();
+          expect(explorer.onNewCollectionClicked).toHaveBeenCalled();
         });
       });
     });

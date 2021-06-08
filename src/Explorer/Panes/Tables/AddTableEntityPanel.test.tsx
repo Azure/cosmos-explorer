@@ -1,23 +1,20 @@
 import { mount } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
-import Explorer from "../../Explorer";
 import TableListViewModal from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
-import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
+import { CassandraAPIDataClient, TablesAPIDataClient } from "../../Tables/TableDataClient";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import { AddTableEntityPanel } from "./AddTableEntityPanel";
 
 describe("Excute Add Table Entity Pane", () => {
-  const fakeExplorer = {} as Explorer;
   const fakeQueryTablesTab = {} as QueryTablesTab;
   const fakeTableEntityListViewModel = {} as TableListViewModal;
   const fakeCassandraApiClient = {} as CassandraAPIDataClient;
   fakeTableEntityListViewModel.items = ko.observableArray<Entities.ITableEntity>();
   fakeTableEntityListViewModel.headers = [];
   const props = {
-    explorer: fakeExplorer,
-    closePanel: (): void => undefined,
+    tableDataClient: new TablesAPIDataClient(),
     queryTablesTab: fakeQueryTablesTab,
     tableEntityListViewModel: fakeTableEntityListViewModel,
     cassandraApiClient: fakeCassandraApiClient,

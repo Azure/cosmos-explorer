@@ -19,7 +19,7 @@ import {
   SpinnerSize,
   Stack,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import * as React from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
@@ -28,13 +28,11 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import * as GalleryUtils from "../../../Utils/GalleryUtils";
 import Explorer from "../../Explorer";
-import { Dialog, DialogProps } from "../Dialog";
 import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
-import { CodeOfConductComponent } from "./CodeOfConductComponent";
+import { CodeOfConduct } from "./CodeOfConduct/CodeOfConduct";
 import "./GalleryViewerComponent.less";
 import { InfoComponent } from "./InfoComponent/InfoComponent";
 
-const CARD_WIDTH = 256;
 export interface GalleryViewerComponentProps {
   container?: Explorer;
   junoClient: JunoClient;
@@ -69,7 +67,6 @@ interface GalleryViewerComponentState {
   selectedTab: GalleryTab;
   sortBy: SortBy;
   searchText: string;
-  dialogProps: DialogProps;
   isCodeOfConductAccepted: boolean;
   isFetchingPublishedNotebooks: boolean;
   isFetchingFavouriteNotebooks: boolean;
@@ -87,7 +84,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   public static readonly PublishedTitle = "My published work";
 
   private static readonly rowsPerPage = 5;
-
+  private static readonly CARD_WIDTH = 256;
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
   private static readonly mostFavoritedText = "Most favorited";
@@ -120,7 +117,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       selectedTab: props.selectedTab,
       sortBy: props.sortBy,
       searchText: props.searchText,
-      dialogProps: undefined,
       isCodeOfConductAccepted: undefined,
       isFetchingFavouriteNotebooks: true,
       isFetchingPublishedNotebooks: true,
@@ -188,8 +184,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     return (
       <div className="galleryContainer">
         <Pivot {...pivotProps}>{pivotItems}</Pivot>
-
-        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
       </div>
     );
   }
@@ -373,7 +367,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         {acceptedCodeOfConduct === false && (
           <Overlay isDarkThemed>
             <div className="publicGalleryTabOverlayContent">
-              <CodeOfConductComponent
+              <CodeOfConduct
                 junoClient={this.props.junoClient}
                 onAcceptCodeOfConduct={(result: boolean) => {
                   this.setState({ isCodeOfConductAccepted: result });
@@ -644,7 +638,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
     if (itemIndex === 0) {
-      this.columnCount = Math.floor(visibleRect.width / CARD_WIDTH) || this.columnCount;
+      this.columnCount = Math.floor(visibleRect.width / GalleryViewerComponent.CARD_WIDTH) || this.columnCount;
       this.rowCount = GalleryViewerComponent.rowsPerPage;
     }
 
@@ -672,7 +666,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     };
 
     return (
-      <div style={{ float: "left", padding: 10 }}>
+      <div style={{ float: "left", padding: 5 }}>
         <GalleryCardComponent {...props} />
       </div>
     );

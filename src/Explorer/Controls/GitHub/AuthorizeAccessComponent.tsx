@@ -1,10 +1,4 @@
-import {
-  ChoiceGroup,
-  IButtonProps,
-  IChoiceGroupProps,
-  PrimaryButton,
-  IChoiceGroupOption,
-} from "office-ui-fabric-react";
+import { ChoiceGroup, IButtonProps, IChoiceGroupProps, PrimaryButton, IChoiceGroupOption } from "@fluentui/react";
 import * as React from "react";
 import { ChildrenMargin } from "./GitHubStyleConstants";
 

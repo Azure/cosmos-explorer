@@ -1,4 +1,4 @@
-import { Dropdown, IDropdownOption, Stack, TextField } from "office-ui-fabric-react";
+import { Dropdown, IDropdownOption, Stack, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useRef, useState } from "react";
 import AddIcon from "../../../../images/Add-property.svg";
 import DeleteIcon from "../../../../images/delete.svg";
@@ -132,6 +132,7 @@ export const NewVertexComponent: FunctionComponent<INewVertexComponentProps> = (
               onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                 onLabelChange(event);
               }}
+              autoFocus
             />
             <div className="actionCol"></div>
           </div>

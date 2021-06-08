@@ -44,7 +44,6 @@ export default class UserDefinedFunction {
       collection: source,
       node: source,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
     });
 
     source.container.tabsManager.activateNewTab(userDefinedFunctionTab);
@@ -81,7 +80,6 @@ export default class UserDefinedFunction {
           this.collection.databaseId,
           this.collection.id()
         )}/udfs/${this.id()}`,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
       this.container.tabsManager.activateNewTab(userDefinedFunctionTab);

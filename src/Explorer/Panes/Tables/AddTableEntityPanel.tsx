@@ -1,26 +1,17 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import {
-  IDropdownOption,
-  Image,
-  IPanelProps,
-  IRenderFunction,
-  Label,
-  Stack,
-  Text,
-  TextField,
-} from "office-ui-fabric-react";
+import { IDropdownOption, Image, IPanelProps, IRenderFunction, Label, Stack, Text, TextField } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import RevertBackIcon from "../../../../images/RevertBack.svg";
 import { TableEntity } from "../../../Common/TableEntity";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
-import Explorer from "../../Explorer";
 import * as TableConstants from "../../Tables/Constants";
 import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
-import { CassandraAPIDataClient, CassandraTableKey } from "../../Tables/TableDataClient";
+import { CassandraAPIDataClient, CassandraTableKey, TableDataClient } from "../../Tables/TableDataClient";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import * as Utilities from "../../Tables/Utilities";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
@@ -46,8 +37,7 @@ import {
 } from "./Validators/EntityTableHelper";
 
 interface AddTableEntityPanelProps {
-  explorer: Explorer;
-  closePanel: () => void;
+  tableDataClient: TableDataClient;
   queryTablesTab: QueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
@@ -66,12 +56,12 @@ interface EntityRowType {
 }
 
 export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = ({
-  explorer,
-  closePanel,
+  tableDataClient,
   queryTablesTab,
   tableEntityListViewModel,
   cassandraApiClient,
 }: AddTableEntityPanelProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
@@ -115,15 +105,12 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     event.preventDefault();
 
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
-    const newEntity: Entities.ITableEntity = await explorer.tableDataClient.createDocument(
-      queryTablesTab.collection,
-      entity
-    );
+    const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
     await tableEntityListViewModel.addEntityToCache(newEntity);
     if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
       tableEntityListViewModel.redrawTableThrottled();
     }
-    closePanel();
+    closeSidePanel();
   };
 
   const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
@@ -305,7 +292,6 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
             }}
           />
         }
-        closePanel={() => closePanel()}
         isConsoleExpanded={false}
       />
     );
@@ -317,7 +303,6 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
       panelWidth="700px"
       isOpen={true}
       panelContent={renderPanelContent()}
-      closePanel={() => closePanel()}
       isConsoleExpanded={false}
     />
   );

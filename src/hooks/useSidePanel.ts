@@ -1,29 +1,15 @@
-import { useState } from "react";
+import create, { UseStore } from "zustand";
 
-export interface SidePanelHooks {
-  isPanelOpen: boolean;
-  panelContent: JSX.Element;
-  headerText: string;
-  openSidePanel: (headerText: string, panelContent: JSX.Element) => void;
+export interface SidePanelState {
+  isOpen: boolean;
+  panelContent?: JSX.Element;
+  headerText?: string;
+  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
   closeSidePanel: () => void;
 }
 
-export const useSidePanel = (): SidePanelHooks => {
-  const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
-  const [panelContent, setPanelContent] = useState<JSX.Element>();
-  const [headerText, setHeaderText] = useState<string>();
-
-  const openSidePanel = (headerText: string, panelContent: JSX.Element): void => {
-    setHeaderText(headerText);
-    setPanelContent(panelContent);
-    setIsPanelOpen(true);
-  };
-
-  const closeSidePanel = (): void => {
-    setHeaderText("");
-    setPanelContent(undefined);
-    setIsPanelOpen(false);
-  };
-
-  return { isPanelOpen, panelContent, headerText, openSidePanel, closeSidePanel };
-};
+export const useSidePanel: UseStore<SidePanelState> = create((set) => ({
+  isOpen: false,
+  openSidePanel: (headerText, panelContent) => set((state) => ({ ...state, headerText, panelContent, isOpen: true })),
+  closeSidePanel: () => set((state) => ({ ...state, isOpen: false })),
+}));

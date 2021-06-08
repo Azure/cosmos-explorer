@@ -1,7 +1,7 @@
 /**
  * Accordion top class
  */
-import { Link } from "office-ui-fabric-react/lib/Link";
+import { Link } from "@fluentui/react";
 import * as React from "react";
 import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
@@ -17,6 +17,7 @@ import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
+import { getCollectionName, getDatabaseName } from "../../Utils/APITypeUtils";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
@@ -191,7 +192,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const heroes: SplashScreenItem[] = [
       {
         iconSrc: NewContainerIcon,
-        title: this.container.addCollectionText(),
+        title: `New ${getCollectionName()}`,
         description: "Create a new container for storage and throughput",
         onClick: () => this.container.onNewCollectionClicked(),
       },
@@ -249,12 +250,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         });
       }
 
-      items.push({
-        iconSrc: OpenQueryIcon,
-        title: "Open Query",
-        description: null,
-        onClick: () => this.container.openBrowseQueriesPanel(),
-      });
+      if (userContext.apiType === "SQL") {
+        items.push({
+          iconSrc: OpenQueryIcon,
+          title: "Open Query",
+          description: null,
+          onClick: () => this.container.openBrowseQueriesPanel(),
+        });
+      }
 
       if (userContext.apiType !== "Cassandra") {
         items.push({
@@ -290,9 +293,9 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     } else {
       items.push({
         iconSrc: AddDatabaseIcon,
-        title: this.container.addDatabaseText(),
+        title: "New " + getDatabaseName(),
         description: null,
-        onClick: () => this.container.addDatabasePane.open(),
+        onClick: () => this.container.openAddDatabasePane(),
       });
     }
 

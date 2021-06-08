@@ -6,23 +6,20 @@ import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
   getCassandraTable,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import {
-  createUpdateGremlinGraph,
-  getGremlinGraph,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
+} from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { createUpdateGremlinGraph, getGremlinGraph } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import {
   createUpdateMongoDBCollection,
   getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+} from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import {
   ExtendedResourceProperties,
   MongoDBCollectionCreateUpdateParameters,
   SqlContainerCreateUpdateParameters,
   SqlContainerResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -63,12 +60,10 @@ async function updateCollectionWithARM(
   collectionId: string,
   newCollection: Partial<Collection>
 ): Promise<Collection> {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
-  switch (defaultExperience) {
+  switch (apiType) {
     case "SQL":
       return updateSqlContainer(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
     case "Cassandra":
@@ -87,7 +82,7 @@ async function updateCollectionWithARM(
         newCollection
       );
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }
 

@@ -1,27 +1,16 @@
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Upload } from "../../../Common/Upload/Upload";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface UploadFilePanelProps {
-  explorer: Explorer;
-  closePanel: () => void;
   uploadFile: (name: string, content: string) => Promise<NotebookContentItem>;
 }
 
-export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
-  explorer: container,
-  closePanel,
-  uploadFile,
-}: UploadFilePanelProps) => {
-  const title = "Upload file to notebook server";
-  const submitButtonLabel = "Upload";
-  const selectFileInputLabel = "Select file to upload";
+export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({ uploadFile }: UploadFilePanelProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const extensions: string = undefined; //ex. ".ipynb"
   const errorMessage = "Could not upload file";
   const inProgressMessage = "Uploading file to notebook server";
@@ -29,25 +18,19 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
 
   const [files, setFiles] = useState<FileList>();
   const [formErrors, setFormErrors] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   const submit = () => {
     setFormErrors("");
-    setFormErrorsDetails("");
     if (!files || files.length === 0) {
-      setFormErrors("No file specified");
-      setFormErrorsDetails("No file specified. Please input a file.");
+      setFormErrors("No file specified. Please input a file.");
       logConsoleError(`${errorMessage} -- No file specified. Please input a file.`);
       return;
     }
 
     const file: File = files.item(0);
-    // const id: string = logConsoleProgress(
-    //   `${inProgressMessage}: ${file.name}`
-    // );
 
-    logConsoleProgress(`${inProgressMessage}: ${file.name}`);
+    const clearMessage = logConsoleProgress(`${inProgressMessage}: ${file.name}`);
 
     setIsExecuting(true);
 
@@ -55,17 +38,16 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
       .then(
         () => {
           logConsoleInfo(`${successMessage} ${file.name}`);
-          closePanel();
+          closeSidePanel();
         },
         (error: string) => {
           setFormErrors(errorMessage);
-          setFormErrorsDetails(`${errorMessage}: ${error}`);
           logConsoleError(`${errorMessage} ${file.name}: ${error}`);
         }
       )
       .finally(() => {
         setIsExecuting(false);
-        // clearInProgressMessageWithId(id);
+        clearMessage();
       });
   };
 
@@ -92,23 +74,18 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
     return uploadFile(file.name, fileContent);
   };
 
-  const genericPaneProps: GenericRightPaneProps = {
-    container: container,
+  const props: RightPaneFormProps = {
     formError: formErrors,
-    formErrorDetail: formErrorsDetails,
-    id: "uploadFilePane",
     isExecuting: isExecuting,
-    title,
-    submitButtonText: submitButtonLabel,
-    onClose: closePanel,
+    submitButtonText: "Upload",
     onSubmit: submit,
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneMainContent">
-        <Upload label={selectFileInputLabel} accept={extensions} onUpload={updateSelectedFiles} />
+        <Upload label="Select file to upload" accept={extensions} onUpload={updateSelectedFiles} />
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

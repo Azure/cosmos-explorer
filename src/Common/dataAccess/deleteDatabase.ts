@@ -1,9 +1,9 @@
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -30,12 +30,10 @@ export async function deleteDatabase(databaseId: string): Promise<void> {
 }
 
 function deleteDatabaseWithARM(databaseId: string): Promise<void> {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
-  switch (defaultExperience) {
+  switch (apiType) {
     case "SQL":
       return deleteSqlDatabase(subscriptionId, resourceGroup, accountName, databaseId);
     case "Mongo":
@@ -45,6 +43,6 @@ function deleteDatabaseWithARM(databaseId: string): Promise<void> {
     case "Gremlin":
       return deleteGremlinDatabase(subscriptionId, resourceGroup, accountName, databaseId);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }

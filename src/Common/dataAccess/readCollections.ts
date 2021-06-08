@@ -1,11 +1,11 @@
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { listCassandraTables } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { listGremlinGraphs } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { listMongoDBCollections } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { listTables } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { listMongoDBCollections } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { listSqlContainers } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { listTables } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -29,12 +29,11 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
 async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Collection[]> {
   let rpResponse;
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
 
-  switch (defaultExperience) {
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
+
+  switch (apiType) {
     case "SQL":
       rpResponse = await listSqlContainers(subscriptionId, resourceGroup, accountName, databaseId);
       break;
@@ -51,7 +50,7 @@ async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Co
       rpResponse = await listTables(subscriptionId, resourceGroup, accountName);
       break;
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 
   return rpResponse?.value?.map((collection) => collection.properties?.resource as DataModels.Collection);

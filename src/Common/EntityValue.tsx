@@ -1,4 +1,4 @@
-import { DatePicker, TextField } from "office-ui-fabric-react";
+import { DatePicker, TextField } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 
 export interface TableEntityProps {
@@ -32,7 +32,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
         <DatePicker
           className="addEntityDatePicker"
           placeholder={entityValuePlaceholder}
-          value={entityValue && new Date(entityValue)}
+          value={entityValue ? new Date(entityValue) : new Date()}
           ariaLabel={entityValuePlaceholder}
           onSelectDate={onSelectDate}
           disabled={isEntityValueDisable}
@@ -59,7 +59,7 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
       disabled={isEntityValueDisable}
       type={entityValueType}
       placeholder={entityValuePlaceholder}
-      value={typeof entityValue === "string" && entityValue}
+      value={typeof entityValue === "string" ? entityValue : ""}
       onChange={onEntityValueChange}
     />
   );

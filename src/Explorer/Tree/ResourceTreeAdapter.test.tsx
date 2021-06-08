@@ -1,12 +1,12 @@
+import { shallow } from "enzyme";
 import * as ko from "knockout";
+import React from "react";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import React from "react";
-import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
-import { shallow } from "enzyme";
-import { TreeComponent, TreeNode, TreeComponentProps } from "../Controls/TreeComponent/TreeComponent";
+import { TreeComponent, TreeComponentProps, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
 import Collection from "./Collection";
+import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 
 const schema: DataModels.ISchema = {
   id: "fakeSchemaId",
@@ -211,9 +211,6 @@ const schema: DataModels.ISchema = {
 const createMockContainer = (): Explorer => {
   const mockContainer = new Explorer();
   mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
-  mockContainer.onUpdateTabsButtons = () => {
-    return;
-  };
 
   return mockContainer;
 };

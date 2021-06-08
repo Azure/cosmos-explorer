@@ -1,27 +1,28 @@
-import { DefaultAccountExperience, CapabilityNames, AccountKind } from "../../Common/Constants";
+import { AccountKind, CapabilityNames } from "../../Common/Constants";
 import { AccessInputMetadata, ApiKind } from "../../Contracts/DataModels";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
+import { userContext } from "../../UserContext";
 
 export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMetadata): unknown {
   let properties = { documentEndpoint: metadata.documentEndpoint };
-  const apiExperience: string = DefaultExperienceUtility.getDefaultExperienceFromApiKind(metadata.apiKind);
+  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(metadata.apiKind);
 
-  if (apiExperience === DefaultAccountExperience.Cassandra) {
+  if (apiExperience === "Cassandra") {
     properties = Object.assign(properties, {
       cassandraEndpoint: metadata.apiEndpoint,
       capabilities: [{ name: CapabilityNames.EnableCassandra }],
     });
-  } else if (apiExperience === DefaultAccountExperience.Table) {
+  } else if (apiExperience === "Tables") {
     properties = Object.assign(properties, {
       tableEndpoint: metadata.apiEndpoint,
       capabilities: [{ name: CapabilityNames.EnableTable }],
     });
-  } else if (apiExperience === DefaultAccountExperience.Graph) {
+  } else if (apiExperience === "Gremlin") {
     properties = Object.assign(properties, {
       gremlinEndpoint: metadata.apiEndpoint,
       capabilities: [{ name: CapabilityNames.EnableGremlin }],
     });
-  } else if (apiExperience === DefaultAccountExperience.MongoDB) {
+  } else if (apiExperience === "Mongo") {
     if (metadata.apiKind === ApiKind.MongoDBCompute) {
       properties = Object.assign(properties, {
         mongoEndpoint: metadata.mongoEndpoint,
@@ -31,12 +32,8 @@ export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMe
   return properties;
 }
 
-export function getDatabaseAccountKindFromExperience(apiExperience: string): string {
-  if (apiExperience === DefaultAccountExperience.MongoDB) {
-    return AccountKind.MongoDB;
-  }
-
-  if (apiExperience === DefaultAccountExperience.ApiForMongoDB) {
+export function getDatabaseAccountKindFromExperience(apiExperience: typeof userContext.apiType): AccountKind {
+  if (apiExperience === "Mongo") {
     return AccountKind.MongoDB;
   }
 

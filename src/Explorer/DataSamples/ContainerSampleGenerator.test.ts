@@ -14,7 +14,6 @@ describe("ContainerSampleGenerator", () => {
   const createExplorerStub = (database: ViewModels.Database): Explorer => {
     const explorerStub = {} as Explorer;
     explorerStub.databases = ko.observableArray<ViewModels.Database>([database]);
-    explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
     explorerStub.findDatabaseWithId = () => database;
     explorerStub.refreshAllDatabases = () => Q.resolve();
     return explorerStub;
@@ -79,7 +78,6 @@ describe("ContainerSampleGenerator", () => {
         location: "foo",
         type: "foo",
         kind: "foo",
-        tags: [],
         properties: {
           documentEndpoint: "bar",
           gremlinEndpoint: "foo",

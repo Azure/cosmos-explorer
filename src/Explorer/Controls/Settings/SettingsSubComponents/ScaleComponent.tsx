@@ -1,4 +1,4 @@
-import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "office-ui-fabric-react";
+import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
 import { configContext, Platform } from "../../../../ConfigContext";
@@ -54,8 +54,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   }
 
   public isAutoScaleEnabled = (): boolean => {
-    const accountCapabilities: DataModels.Capability[] = this.props.container?.databaseAccount()?.properties
-      ?.capabilities;
+    const accountCapabilities: DataModels.Capability[] = userContext?.databaseAccount?.properties?.capabilities;
     const enableAutoScaleCapability =
       accountCapabilities &&
       accountCapabilities.find((capability: DataModels.Capability) => {
@@ -170,7 +169,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   private getThroughputInputComponent = (): JSX.Element => (
     <ThroughputInputAutoPilotV3Component
-      databaseAccount={this.props.container.databaseAccount()}
+      databaseAccount={userContext?.databaseAccount}
       databaseName={this.databaseId}
       collectionName={this.collectionId}
       throughput={this.props.throughput}
@@ -199,15 +198,16 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   );
 
   private isFreeTierAccount(): boolean {
-    const databaseAccount = this.props.container?.databaseAccount();
-    return databaseAccount?.properties?.enableFreeTier;
+    return userContext?.databaseAccount?.properties?.enableFreeTier;
   }
 
   private getFreeTierInfoMessage(): JSX.Element {
+    const freeTierLimits = SharedConstants.FreeTierLimits;
     return (
       <Text>
-        With free tier, you will get the first 400 RU/s and 5 GB of storage in this account for free. To keep your
-        account free, keep the total RU/s across all resources in the account to 400 RU/s.
+        With free tier, you will get the first {freeTierLimits.RU} RU/s and {freeTierLimits.Storage} GB of storage in
+        this account for free. To keep your account free, keep the total RU/s across all resources in the account to{" "}
+        {freeTierLimits.RU} RU/s.
         <Link
           href="https://docs.microsoft.com/en-us/azure/cosmos-db/understand-your-bill#billing-examples-with-free-tier-accounts"
           target="_blank"
