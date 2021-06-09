@@ -6,14 +6,12 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -83,15 +81,12 @@ export interface ExplorerParams {
 }
 
 export default class Explorer {
-  public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
-
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
-  public splitter: Splitter;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -219,17 +214,6 @@ export default class Explorer {
         this.resourceTokenCollection() &&
         this.selectedNode().id() === this.resourceTokenCollection().id()
       );
-    });
-
-    const splitterBounds: SplitterBounds = {
-      min: ExplorerMetrics.SplitterMinWidth,
-      max: ExplorerMetrics.SplitterMaxWidth,
-    };
-    this.splitter = new Splitter({
-      splitterId: "h_splitter1",
-      leftId: "resourcetree",
-      bounds: splitterBounds,
-      direction: SplitterDirection.Vertical,
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {

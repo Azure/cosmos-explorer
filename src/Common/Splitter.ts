@@ -1,7 +1,3 @@
-import * as ko from "knockout";
-
-import { SplitterMetrics } from "./Constants";
-
 export enum SplitterDirection {
   Horizontal = "horizontal",
   Vertical = "vertical",
@@ -28,14 +24,12 @@ export class Splitter {
   public lastX!: number;
   public lastWidth!: number;
 
-  private isCollapsed: ko.Observable<boolean>;
   private bounds: SplitterBounds;
   private direction: SplitterDirection;
 
   constructor(options: SplitterOptions) {
     this.splitterId = options.splitterId;
     this.leftSideId = options.leftId;
-    this.isCollapsed = ko.observable<boolean>(false);
     this.bounds = options.bounds;
     this.direction = options.direction;
     this.initialize();
@@ -83,23 +77,4 @@ export class Splitter {
   };
 
   private onResizeStop: JQueryUI.ResizableEvent = () => $("iframe").css("pointer-events", "auto");
-
-  public collapseLeft() {
-    this.lastX = $(this.splitter).position().left;
-    this.lastWidth = $(this.leftSide).width();
-    $(this.splitter).css("left", SplitterMetrics.CollapsedPositionLeft);
-    $(this.leftSide).css("width", "");
-    $(this.leftSide).resizable("option", "disabled", true).removeClass("ui-resizable-disabled"); // remove class so splitter is visible
-    $(this.splitter).removeClass("ui-resizable-e");
-    this.isCollapsed(true);
-  }
-
-  public expandLeft() {
-    $(this.splitter).addClass("ui-resizable-e");
-    $(this.leftSide).css("width", this.lastWidth);
-    $(this.splitter).css("left", this.lastX);
-    $(this.splitter).css("left", ""); // this ensures the splitter's position is not fixed and enables movement during resizing
-    $(this.leftSide).resizable("enable");
-    this.isCollapsed(false);
-  }
 }
