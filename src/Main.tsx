@@ -105,9 +105,6 @@ const App: React.FunctionComponent = () => {
               />
               {/* Collections Tree Collapsed - End */}
             </div>
-            {/* Splitter - Start */}
-            <div className="splitter ui-resizable-handle ui-resizable-e" id="h_splitter1" />
-            {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
           {tabs.length === 0 && <SplashScreen explorer={explorer} />}
