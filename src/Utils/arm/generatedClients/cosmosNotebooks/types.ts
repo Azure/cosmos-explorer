@@ -6,6 +6,8 @@
   Generated from: https://raw.githubusercontent.com/Azure/azure-rest-api-specs/master/specification/cosmos-db/resource-manager/Microsoft.DocumentDB/stable/2021-04-15/notebook.json
 */
 
+import { ARMResourceProperties } from "../cosmos/types";
+
 /* Parameters to create a notebook workspace resource */
 export type NotebookWorkspaceCreateUpdateParameters = unknown;
 
@@ -16,7 +18,7 @@ export interface NotebookWorkspaceListResult {
 }
 
 /* A notebook workspace resource */
-export type NotebookWorkspace = unknown & {
+export type NotebookWorkspace = ARMResourceProperties & {
   /* Resource properties. */
   properties?: NotebookWorkspaceProperties;
 };
