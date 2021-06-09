@@ -97,7 +97,9 @@ export default class NotebookManager {
       this.gitHubClient.setToken(token?.access_token);
       if (this?.gitHubOAuthService.isLoggedIn()) {
         useSidePanel.getState().closeSidePanel();
-        this.params.container.openGitHubReposPanel("Manager GitHub settings", this.junoClient);
+        setTimeout(() => {
+          this.params.container.openGitHubReposPanel("Manager GitHub settings", this.junoClient);
+        }, 200);
       }
 
       this.params.refreshCommandBarButtons();

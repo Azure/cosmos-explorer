@@ -144,11 +144,18 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
 
   private setup(forceShowConnectToGitHub = false): void {
     forceShowConnectToGitHub || !this.props.explorer.notebookManager?.gitHubOAuthService.isLoggedIn()
-      ? this.setupForConnectToGitHub()
+      ? this.setupForConnectToGitHub(forceShowConnectToGitHub)
       : this.setupForManageRepos();
   }
 
-  private setupForConnectToGitHub(): void {
+  private setupForConnectToGitHub(forceShowConnectToGitHub: boolean): void {
+    if (forceShowConnectToGitHub) {
+      const newState = { ...this.state.gitHubReposState };
+      newState.showAuthorizeAccess = forceShowConnectToGitHub;
+      this.setState({
+        gitHubReposState: newState,
+      });
+    }
     this.setState({
       isExecuting: false,
     });
