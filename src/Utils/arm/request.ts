@@ -144,7 +144,7 @@ async function getOperationStatus(operationStatusUrl: string) {
 
   const body = await response.json();
   const status = body.status;
-  if (!status && response.status === 200) {
+  if (response.status === 200) {
     return body;
   }
   if (status === "Canceled" || status === "Failed") {
