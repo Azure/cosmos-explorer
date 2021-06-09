@@ -8,7 +8,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
       "canSaveQueries": [Function],
-      "collapsedResourceTreeWidth": 36,
       "databases": [Function],
       "isAccountReady": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
@@ -56,18 +55,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "setInProgressConsoleDataIdToBeDeleted": undefined,
       "setNotificationConsoleData": undefined,
       "sparkClusterConnectionInfo": [Function],
-      "splitter": Splitter {
-        "bounds": Object {
-          "max": 400,
-          "min": 240,
-        },
-        "direction": "vertical",
-        "isCollapsed": [Function],
-        "leftSideId": "resourcetree",
-        "onResizeStart": [Function],
-        "onResizeStop": [Function],
-        "splitterId": "h_splitter1",
-      },
       "tabsManager": TabsManager {
         "activeTab": [Function],
         "openedTabs": [Function],
