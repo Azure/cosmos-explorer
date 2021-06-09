@@ -60,8 +60,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             },
             "selectedDatabaseId": [Function],
             "selectedNode": [Function],
-            "setInProgressConsoleDataIdToBeDeleted": undefined,
-            "setNotificationConsoleData": undefined,
             "sparkClusterConnectionInfo": [Function],
             "tabsManager": TabsManager {
               "activeTab": [Function],

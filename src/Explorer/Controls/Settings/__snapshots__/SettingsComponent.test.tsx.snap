@@ -71,8 +71,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
-                "setInProgressConsoleDataIdToBeDeleted": undefined,
-                "setNotificationConsoleData": undefined,
                 "sparkClusterConnectionInfo": [Function],
                 "tabsManager": TabsManager {
                   "activeTab": [Function],
@@ -142,8 +140,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
-              "setInProgressConsoleDataIdToBeDeleted": undefined,
-              "setNotificationConsoleData": undefined,
               "sparkClusterConnectionInfo": [Function],
               "tabsManager": TabsManager {
                 "activeTab": [Function],
@@ -226,8 +222,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "selectedDatabaseId": [Function],
                 "selectedNode": [Function],
-                "setInProgressConsoleDataIdToBeDeleted": undefined,
-                "setNotificationConsoleData": undefined,
                 "sparkClusterConnectionInfo": [Function],
                 "tabsManager": TabsManager {
                   "activeTab": [Function],
@@ -297,8 +291,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "selectedDatabaseId": [Function],
               "selectedNode": [Function],
-              "setInProgressConsoleDataIdToBeDeleted": undefined,
-              "setNotificationConsoleData": undefined,
               "sparkClusterConnectionInfo": [Function],
               "tabsManager": TabsManager {
                 "activeTab": [Function],
