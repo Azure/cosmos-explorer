@@ -603,7 +603,7 @@ export default class Explorer {
     const connectionInfo = await listConnectionInfo(
       userContext.subscriptionId,
       userContext.resourceGroup,
-      databaseAccount.id,
+      databaseAccount.name,
       "default"
     );
 
