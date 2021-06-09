@@ -60,7 +60,7 @@ export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = 
       await createOrUpdate(
         userContext.subscriptionId,
         userContext.resourceGroup,
-        userContext.databaseAccount && userContext.databaseAccount.id,
+        userContext.databaseAccount.name,
         "default"
       );
       explorer.isAccountReady.valueHasMutated(); // re-trigger init notebooks

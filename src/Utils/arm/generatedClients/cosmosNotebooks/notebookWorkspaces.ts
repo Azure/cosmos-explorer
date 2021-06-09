@@ -40,7 +40,7 @@ export async function createOrUpdate(
   notebookWorkspaceName: string
 ): Promise<Types.NotebookWorkspace> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/notebookWorkspaces/${notebookWorkspaceName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion });
+  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PUT", apiVersion, body: {} });
 }
 
 /* Deletes the notebook workspace for a Cosmos DB account. */
