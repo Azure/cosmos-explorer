@@ -1,5 +1,3 @@
-import * as ko from "knockout";
-
 export enum SplitterDirection {
   Horizontal = "horizontal",
   Vertical = "vertical",
@@ -26,14 +24,12 @@ export class Splitter {
   public lastX!: number;
   public lastWidth!: number;
 
-  private isCollapsed: ko.Observable<boolean>;
   private bounds: SplitterBounds;
   private direction: SplitterDirection;
 
   constructor(options: SplitterOptions) {
     this.splitterId = options.splitterId;
     this.leftSideId = options.leftId;
-    this.isCollapsed = ko.observable<boolean>(false);
     this.bounds = options.bounds;
     this.direction = options.direction;
     this.initialize();
