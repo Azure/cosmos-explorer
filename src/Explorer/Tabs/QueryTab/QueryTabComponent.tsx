@@ -1049,7 +1049,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                             <span className="errorMessage">{this.state.error}</span>
                             <span className="errorDetailsLink">
                               <a
-                                data-bind="click: $parent.onErrorDetailsClick, event: { keypress: $parent.onErrorDetailsKeyPress }"
                                 onClick={() => this.onErrorDetailsClick()}
                                 onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) =>
                                   this.onErrorDetailsKeyPress(event)
