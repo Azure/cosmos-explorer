@@ -1,10 +1,10 @@
 import create, { UseStore } from "zustand";
-import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
 
 export interface NotificationConsoleState {
   isExpanded: boolean;
   inProgressConsoleDataIdToBeDeleted: string;
-  consoleData: ConsoleData;
+  consoleData: ConsoleData | undefined;
   expandConsole: () => void;
   // TODO Remove this method. Add a `closeConsole` method instead
   setIsExpanded: (isExpanded: boolean) => void;

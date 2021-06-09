@@ -17,25 +17,7 @@ import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
-
-/**
- * Log levels
- */
-export enum ConsoleDataType {
-  Info = 0,
-  Error = 1,
-  InProgress = 2,
-}
-
-/**
- * Interface for the data/content that will be recorded
- */
-export interface ConsoleData {
-  type: ConsoleDataType;
-  date: string;
-  message: string;
-  id?: string;
-}
+import { ConsoleData, ConsoleDataType } from "./ConsoleData";
 
 export interface NotificationConsoleComponentProps {
   isConsoleExpanded: boolean;
