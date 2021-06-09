@@ -1,5 +1,6 @@
 import * as _ from "underscore";
 import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { useNotificationConsole } from "../hooks/useNotificationConsole";
 
 const _global = typeof self === "undefined" ? window : self;
 
@@ -13,8 +14,8 @@ function log(type: ConsoleDataType, message: string): () => void {
       minute: "numeric",
     }).format(new Date());
 
-    dataExplorer.logConsoleData({ type, date, message, id });
-    return () => dataExplorer.deleteInProgressConsoleDataWithId(id);
+    useNotificationConsole.getState().setNotificationConsoleData({ type, date, message, id });
+    return () => useNotificationConsole.getState().setInProgressConsoleDataIdToBeDeleted(id);
   }
 
   return () => undefined;

@@ -56,16 +56,10 @@ import "./Shared/appInsights";
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
-  const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
-  //TODO: Refactor so we don't need to pass the id to remove a console data
-  const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
-
   const { tabs, activeTab, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
-    setNotificationConsoleData,
-    setInProgressConsoleDataIdToBeDeleted,
     tabsManager,
   };
 
@@ -105,9 +99,6 @@ const App: React.FunctionComponent = () => {
               />
               {/* Collections Tree Collapsed - End */}
             </div>
-            {/* Splitter - Start */}
-            <div className="splitter ui-resizable-handle ui-resizable-e" id="h_splitter1" />
-            {/* Splitter - End */}
           </div>
           {/* Collections Tree - End */}
           {tabs.length === 0 && <SplashScreen explorer={explorer} />}
@@ -120,10 +111,7 @@ const App: React.FunctionComponent = () => {
           aria-label="Notification console"
           id="explorerNotificationConsole"
         >
-          <NotificationConsole
-            consoleData={notificationConsoleData}
-            inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
-          />
+          <NotificationConsole />
         </div>
       </div>
       <SidePanel />

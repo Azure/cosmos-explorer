@@ -53,8 +53,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       },
       "selectedDatabaseId": [Function],
       "selectedNode": [Function],
-      "setInProgressConsoleDataIdToBeDeleted": undefined,
-      "setNotificationConsoleData": undefined,
       "sparkClusterConnectionInfo": [Function],
       "splitter": Splitter {
         "bounds": Object {

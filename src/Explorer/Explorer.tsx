@@ -38,7 +38,6 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
@@ -80,8 +79,6 @@ BindingHandlersRegisterer.registerBindingHandlers();
 var tmp = ComponentRegisterer;
 
 export interface ExplorerParams {
-  setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   tabsManager: TabsManager;
 }
 
@@ -95,9 +92,6 @@ export default class Explorer {
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
   public splitter: Splitter;
-
-  private setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -146,9 +140,6 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
-    this.setNotificationConsoleData = params?.setNotificationConsoleData;
-    this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
-
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -455,14 +446,6 @@ export default class Explorer {
 
   public isNoneSelected(): boolean {
     return this.selectedNode() == null;
-  }
-
-  public logConsoleData(consoleData: ConsoleData): void {
-    this.setNotificationConsoleData(consoleData);
-  }
-
-  public deleteInProgressConsoleDataWithId(id: string): void {
-    this.setInProgressConsoleDataIdToBeDeleted(id);
   }
 
   public refreshDatabaseForResourceToken(): Q.Promise<any> {

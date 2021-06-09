@@ -323,14 +323,13 @@ const PrPreview = (props: { pr: string }) => {
   );
 };
 
-export const NotificationConsole: React.FC<
-  Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">
-> = ({
-  consoleData,
-  inProgressConsoleDataIdToBeDeleted,
-}: Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">) => {
+export const NotificationConsole: React.FC = () => {
   const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
   const isExpanded = useNotificationConsole((state) => state.isExpanded);
+  const consoleData = useNotificationConsole((state) => state.consoleData);
+  const inProgressConsoleDataIdToBeDeleted = useNotificationConsole(
+    (state) => state.inProgressConsoleDataIdToBeDeleted
+  );
   // TODO Refactor NotificationConsoleComponent into a functional component and remove this wrapper
   // This component only exists so we can use hooks and pass them down to a non-functional component
   return (
