@@ -144,13 +144,13 @@ async function getOperationStatus(operationStatusUrl: string) {
 
   const body = await response.json();
   const status = body.status;
-  if (response.status === 200) {
-    return body;
-  }
   if (status === "Canceled" || status === "Failed") {
     const errorMessage = body.error ? JSON.stringify(body.error) : "Operation could not be completed";
     const error = new Error(errorMessage);
     throw new AbortError(error);
+  }
+  if (response.status === 200) {
+    return body;
   }
   throw new Error(`Operation Response: ${JSON.stringify(body)}. Retrying.`);
 }
