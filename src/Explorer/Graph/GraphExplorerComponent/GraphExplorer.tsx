@@ -18,7 +18,7 @@ import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Ut
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 import * as TabComponent from "../../Controls/Tabs/TabComponent";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleDataType } from "../../Menus/NotificationConsole/ConsoleData";
 import { IGraphConfig } from "../../Tabs/GraphTab";
 import { ArraysByKeyCache } from "./ArraysByKeyCache";
 import * as D3ForceGraph from "./D3ForceGraph";
