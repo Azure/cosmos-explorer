@@ -54,9 +54,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "refreshNotebookList": [Function],
                 "resourceTokenCollection": [Function],
-                "resourceTokenCollectionId": [Function],
-                "resourceTokenDatabaseId": [Function],
-                "resourceTokenPartitionKey": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
@@ -123,9 +120,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "refreshNotebookList": [Function],
               "resourceTokenCollection": [Function],
-              "resourceTokenCollectionId": [Function],
-              "resourceTokenDatabaseId": [Function],
-              "resourceTokenPartitionKey": [Function],
               "resourceTree": ResourceTreeAdapter {
                 "container": [Circular],
                 "copyNotebook": [Function],
@@ -205,9 +199,6 @@ exports[`SettingsComponent renders 1`] = `
                 },
                 "refreshNotebookList": [Function],
                 "resourceTokenCollection": [Function],
-                "resourceTokenCollectionId": [Function],
-                "resourceTokenDatabaseId": [Function],
-                "resourceTokenPartitionKey": [Function],
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
@@ -274,9 +265,6 @@ exports[`SettingsComponent renders 1`] = `
               },
               "refreshNotebookList": [Function],
               "resourceTokenCollection": [Function],
-              "resourceTokenCollectionId": [Function],
-              "resourceTokenDatabaseId": [Function],
-              "resourceTokenPartitionKey": [Function],
               "resourceTree": ResourceTreeAdapter {
                 "container": [Circular],
                 "copyNotebook": [Function],
