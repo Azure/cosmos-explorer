@@ -158,16 +158,6 @@ export class DocumentsGridMetrics {
   public static DocumentEditorMaxWidthRatio: number = 0.4;
 }
 
-export class ExplorerMetrics {
-  public static SplitterMinWidth: number = 240;
-  public static SplitterMaxWidth: number = 400;
-  public static CollapsedResourceTreeWidth: number = 36;
-}
-
-export class SplitterMetrics {
-  public static CollapsedPositionLeft: number = ExplorerMetrics.CollapsedResourceTreeWidth;
-}
-
 export class Areas {
   public static ResourceTree: string = "Resource Tree";
   public static ContextualPane: string = "Contextual Pane";

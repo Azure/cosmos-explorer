@@ -15,6 +15,7 @@ import { TabsManager } from "./TabsManager";
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
   private static id = 0;
+  public readonly index: number;
   public closeTabButton: ViewModels.Button;
   public node: ViewModels.TreeNode;
   public collection: ViewModels.CollectionBase;
@@ -34,6 +35,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   constructor(options: ViewModels.TabOptions) {
     super();
+    this.index = options.index;
     this._theme = ThemeUtility.getMonacoTheme(options.theme);
     this.node = options.node;
     this.collection = options.collection;

@@ -6,21 +6,18 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -28,6 +25,12 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import {
+  get as getWorkspace,
+  listByDatabaseAccount,
+  listConnectionInfo,
+  start,
+} from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -38,7 +41,6 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
@@ -80,24 +82,16 @@ BindingHandlersRegisterer.registerBindingHandlers();
 var tmp = ComponentRegisterer;
 
 export interface ExplorerParams {
-  setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   tabsManager: TabsManager;
 }
 
 export default class Explorer {
-  public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
-
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
-  public splitter: Splitter;
-
-  private setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -128,7 +122,6 @@ export default class Explorer {
   public isNotebookEnabled: ko.Observable<boolean>;
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
@@ -146,9 +139,6 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
-    this.setNotificationConsoleData = params?.setNotificationConsoleData;
-    this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
-
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -164,7 +154,6 @@ export default class Explorer {
           ? this.refreshDatabaseForResourceToken()
           : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
-        this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         await this._refreshNotebooksEnabledStateForAccount();
         this.isNotebookEnabled(
           userContext.authType !== AuthType.ResourceToken &&
@@ -228,17 +217,6 @@ export default class Explorer {
         this.resourceTokenCollection() &&
         this.selectedNode().id() === this.resourceTokenCollection().id()
       );
-    });
-
-    const splitterBounds: SplitterBounds = {
-      min: ExplorerMetrics.SplitterMinWidth,
-      max: ExplorerMetrics.SplitterMaxWidth,
-    };
-    this.splitter = new Splitter({
-      splitterId: "h_splitter1",
-      leftId: "resourcetree",
-      bounds: splitterBounds,
-      direction: SplitterDirection.Vertical,
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
@@ -457,14 +435,6 @@ export default class Explorer {
     return this.selectedNode() == null;
   }
 
-  public logConsoleData(consoleData: ConsoleData): void {
-    this.setNotificationConsoleData(consoleData);
-  }
-
-  public deleteInProgressConsoleDataWithId(id: string): void {
-    this.setInProgressConsoleDataIdToBeDeleted(id);
-  }
-
   public refreshDatabaseForResourceToken(): Q.Promise<any> {
     const databaseId = this.resourceTokenDatabaseId();
     const collectionId = this.resourceTokenCollectionId();
@@ -597,37 +567,19 @@ export default class Explorer {
     this._isInitializingNotebooks = true;
 
     await this.ensureNotebookWorkspaceRunning();
-    let connectionInfo: DataModels.NotebookWorkspaceConnectionInfo = {
-      authToken: undefined,
-      notebookServerEndpoint: undefined,
-    };
-    try {
-      connectionInfo = await this.notebookWorkspaceManager.getNotebookConnectionInfoAsync(
-        databaseAccount.id,
-        "default"
-      );
-    } catch (error) {
-      this._isInitializingNotebooks = false;
-      handleError(
-        error,
-        "initNotebooks/getNotebookConnectionInfoAsync",
-        `Failed to get notebook workspace connection info: ${getErrorMessage(error)}`
-      );
-      throw error;
-    } finally {
-      // Overwrite with feature flags
-      if (userContext.features.notebookServerUrl) {
-        connectionInfo.notebookServerEndpoint = userContext.features.notebookServerUrl;
-      }
+    const connectionInfo = await listConnectionInfo(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      databaseAccount.name,
+      "default"
+    );
 
-      if (userContext.features.notebookServerToken) {
-        connectionInfo.authToken = userContext.features.notebookServerToken;
-      }
-
-      this.notebookServerInfo(connectionInfo);
-      this.notebookServerInfo.valueHasMutated();
-      this.refreshNotebookList();
-    }
+    this.notebookServerInfo({
+      notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
+      authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+    });
+    this.notebookServerInfo.valueHasMutated();
+    this.refreshNotebookList();
 
     this._isInitializingNotebooks = false;
   }
@@ -659,7 +611,11 @@ export default class Explorer {
     }
 
     try {
-      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
+      const { value: workspaces } = await listByDatabaseAccount(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name
+      );
       return workspaces && workspaces.length > 0 && workspaces.some((workspace) => workspace.name === "default");
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
@@ -674,8 +630,10 @@ export default class Explorer {
 
     let clearMessage;
     try {
-      const notebookWorkspace = await this.notebookWorkspaceManager.getNotebookWorkspaceAsync(
-        userContext.databaseAccount.id,
+      const notebookWorkspace = await getWorkspace(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
         "default"
       );
       if (
@@ -685,7 +643,7 @@ export default class Explorer {
         notebookWorkspace.properties.status.toLowerCase() === "stopped"
       ) {
         clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
-        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(userContext.databaseAccount.id, "default");
+        await start(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
       }
     } catch (error) {
       handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
@@ -1394,7 +1352,11 @@ export default class Explorer {
       tab.hashLocation().startsWith(hashLocation)
     ) as TerminalTab[];
 
-    const index = terminalTabs.length + 1;
+    let index = 1;
+    if (terminalTabs.length > 0) {
+      index = terminalTabs[terminalTabs.length - 1].index + 1;
+    }
+
     const newTab = new TerminalTab({
       account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Terminal,
@@ -1407,6 +1369,7 @@ export default class Explorer {
       onLoadStartKey: null,
       container: this,
       kind: kind,
+      index: index,
     });
 
     this.tabsManager.activateNewTab(newTab);

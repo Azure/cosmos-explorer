@@ -699,14 +699,23 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onNewMongoShellClick() {
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.MongoShell).length + 1;
+    const mongoShellTabs = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.MongoShell
+    ) as MongoShellTab[];
+
+    let index = 1;
+    if (mongoShellTabs.length > 0) {
+      index = mongoShellTabs[mongoShellTabs.length - 1].index + 1;
+    }
+
     const mongoShellTab: MongoShellTab = new MongoShellTab({
       tabKind: ViewModels.CollectionTabKind.MongoShell,
-      title: "Shell " + id,
+      title: "Shell " + index,
       tabPath: "",
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
+      index: index,
     });
 
     this.container.tabsManager.activateNewTab(mongoShellTab);

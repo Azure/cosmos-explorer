@@ -85,7 +85,6 @@
     "./src/Platform/Hosted/extractFeatures.test.ts",
     "./src/Platform/Hosted/extractFeatures.ts",
     "./src/ReactDevTools.ts",
-    "./src/ResourceProvider/IResourceProviderClient.ts",
     "./src/SelfServe/Example/SelfServeExample.types.ts",
     "./src/SelfServe/SelfServeStyles.tsx",
     "./src/SelfServe/SqlX/SqlxTypes.ts",

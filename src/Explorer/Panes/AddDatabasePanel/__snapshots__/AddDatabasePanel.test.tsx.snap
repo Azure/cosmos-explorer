@@ -10,16 +10,17 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
   <div
     className="panelMainContent"
   >
-    <div>
+    <Stack>
       <Stack
         horizontal={true}
       >
         <span
           className="mandatoryStar"
         >
-          *
+          * 
         </span>
         <Text
+          className="panelTextBold"
           variant="small"
         >
           Database id
@@ -82,14 +83,14 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
           Provisioned throughput at the database level will be shared across all collections within the database.
         </InfoTooltip>
       </Stack>
-      <ThroughputInput
-        isDatabase={true}
-        isSharded={true}
-        onCostAcknowledgeChange={[Function]}
-        setIsAutoscale={[Function]}
-        setThroughputValue={[Function]}
-      />
-    </div>
+    </Stack>
+    <ThroughputInput
+      isDatabase={true}
+      isSharded={true}
+      onCostAcknowledgeChange={[Function]}
+      setIsAutoscale={[Function]}
+      setThroughputValue={[Function]}
+    />
   </div>
 </RightPaneForm>
 `;
