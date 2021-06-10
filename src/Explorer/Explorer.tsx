@@ -364,6 +364,7 @@ export default class Explorer {
     if (configContext.enableSchemaAnalyzer) {
       userContext.features.enableSchemaAnalyzer = true;
     }
+    this.isAccountReady(true);
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -710,17 +711,6 @@ export default class Explorer {
     }
 
     return false;
-  }
-
-  public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
-    if (inputs != null) {
-      // In development mode, save the iframe message from the portal in session storage.
-      // This allows webpack hot reload to funciton properly
-      if (process.env.NODE_ENV === "development") {
-        sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
-      }
-      this.isAccountReady(true);
-    }
   }
 
   public findSelectedCollection(): ViewModels.Collection {
