@@ -160,13 +160,13 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
     authType: AuthType.ResourceToken,
     resourceToken: parsedResourceToken.resourceToken,
     endpoint: parsedResourceToken.accountEndpoint,
+    parsedResourceToken: {
+      databaseId: parsedResourceToken.databaseId,
+      collectionId: parsedResourceToken.collectionId,
+      partitionKey: parsedResourceToken.partitionKey,
+    },
   });
   const explorer = new Explorer(explorerParams);
-  explorer.resourceTokenDatabaseId(parsedResourceToken.databaseId);
-  explorer.resourceTokenCollectionId(parsedResourceToken.collectionId);
-  if (parsedResourceToken.partitionKey) {
-    explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
-  }
   return explorer;
 }
 
