@@ -9,7 +9,7 @@ import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import Explorer, { ExplorerParams } from "../Explorer/Explorer";
-import { handleOpenAction } from "../Explorer/OpenActions";
+import { handleOpenAction } from "../Explorer/OpenActions/OpenActions";
 import {
   AAD,
   ConnectionString,

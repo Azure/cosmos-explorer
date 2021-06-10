@@ -28,6 +28,7 @@ import { CommandButtonComponentProps } from "../../Controls/CommandButton/Comman
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
+import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 
 let counter = 0;
 
@@ -154,7 +155,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
-      onCommandClick: container.openSettingPane,
+      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane />),
       commandButtonLabel: undefined,
       ariaLabel: "Settings",
       tooltipText: "Settings",
