@@ -711,12 +711,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
               <Fragment>
                 {this.isPreferredApiMongoDB && this.state.sqlQueryEditorContent.length === 0 && (
                   <div className="mongoQueryHelper">
-                    Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong>
-                    or
+                    Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong> or{" "}
                     <strong>
                       {"{ "}
                       {" }"}
-                    </strong>
+                    </strong>{" "}
                     to get all the documents.
                   </div>
                 )}
