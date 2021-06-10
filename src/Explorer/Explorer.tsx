@@ -61,11 +61,9 @@ import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksP
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
 import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
-import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
-import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import QueryTablesTab from "./Tabs/QueryTablesTab";
@@ -1596,9 +1594,6 @@ export default class Explorer {
       );
   }
 
-  public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
-    useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={queryViewModal} />);
-  }
   public openSettingPane(): void {
     useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
   }

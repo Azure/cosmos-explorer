@@ -1,16 +1,18 @@
 import * as ko from "knockout";
+import React from "react";
 import * as _ from "underscore";
 import { KeyCodes } from "../../../Common/Constants";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
+import { TableQuerySelectPanel } from "../../Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
 import QueryBuilderViewModel from "./QueryBuilderViewModel";
-import QueryClauseViewModel from "./QueryClauseViewModel";
 
 export default class QueryViewModel {
-  public topValueLimitMessage: string = "Please input a number between 0 and 1000.";
+  public readonly topValueLimitMessage: string = "Please input a number between 0 and 1000.";
   public queryBuilderViewModel = ko.observable<QueryBuilderViewModel>();
   public isHelperActive = ko.observable<boolean>(true);
   public isEditorActive = ko.observable<boolean>(false);
@@ -49,7 +51,7 @@ export default class QueryViewModel {
     this.queryTextIsReadOnly = ko.computed<boolean>(() => {
       return userContext.apiType !== "Cassandra";
     });
-    let initialOptions = this._tableEntityListViewModel.headers;
+    const initialOptions = this._tableEntityListViewModel.headers;
     this.columnOptions = ko.observableArray<string>(initialOptions);
     this.focusTopResult = ko.observable<boolean>(false);
     this.focusExpandIcon = ko.observable<boolean>(false);
@@ -63,12 +65,12 @@ export default class QueryViewModel {
         this.topValue() !== this.unchangedSaveTop()
     );
 
-    this.queryBuilderViewModel().clauseArray.subscribe((value) => {
+    this.queryBuilderViewModel().clauseArray.subscribe(() => {
       this.setFilter();
     });
 
     this.isExceedingLimit = ko.computed<boolean>(() => {
-      var currentTopValue: number = this.topValue();
+      const currentTopValue: number = this.topValue();
       return currentTopValue < 0 || currentTopValue > 1000;
     });
 
@@ -111,7 +113,7 @@ export default class QueryViewModel {
     DataTableUtilities.forceRecalculateTableSize(); // Fix for 261924, forces the resize event so DataTableBindingManager will redo the calculation on table size.
   };
 
-  public ontoggleAdvancedOptionsKeyDown = (source: any, event: KeyboardEvent): boolean => {
+  public ontoggleAdvancedOptionsKeyDown = (event: KeyboardEvent): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
       this.toggleAdvancedOptions();
       event.stopPropagation();
@@ -125,31 +127,29 @@ export default class QueryViewModel {
   };
 
   private setFilter = (): string => {
-    var queryString = this.isEditorActive()
+    const queryString = this.isEditorActive()
       ? this.queryText()
       : userContext.apiType === "Cassandra"
       ? this.queryBuilderViewModel().getCqlFilterFromClauses()
       : this.queryBuilderViewModel().getODataFilterFromClauses();
-    var filter = queryString;
+    const filter = queryString;
     this.queryText(filter);
     return this.queryText();
   };
 
   private setSqlFilter = (): string => {
-    var filter = this.queryBuilderViewModel().getSqlFilterFromClauses();
-    return filter;
+    return this.queryBuilderViewModel().getSqlFilterFromClauses();
   };
 
   private setCqlFilter = (): string => {
-    var filter = this.queryBuilderViewModel().getCqlFilterFromClauses();
-    return filter;
+    return this.queryBuilderViewModel().getCqlFilterFromClauses();
   };
 
   public isHelperEnabled = ko
     .computed<boolean>(() => {
       return (
         this.queryText() === this.unchangedText() ||
-        this.queryText() === null ||
+        this.queryText() === undefined ||
         this.queryText() === "" ||
         this.isHelperActive()
       );
@@ -159,13 +159,13 @@ export default class QueryViewModel {
     });
 
   public runQuery = (): DataTables.DataTable => {
-    var filter = this.setFilter();
+    let filter = this.setFilter();
     if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
     }
-    var top = this.topValue();
-    var selectOptions = this._getSelectedResults();
-    var select = selectOptions;
+    const top = this.topValue();
+    const selectOptions = this._getSelectedResults();
+    const select = selectOptions;
     this._tableEntityListViewModel.tableQuery.filter = filter;
     this._tableEntityListViewModel.tableQuery.top = top;
     this._tableEntityListViewModel.tableQuery.select = select;
@@ -177,16 +177,16 @@ export default class QueryViewModel {
   };
 
   public clearQuery = (): DataTables.DataTable => {
-    this.queryText(null);
-    this.topValue(null);
-    this.selectText(null);
+    this.queryText();
+    this.topValue();
+    this.selectText();
     this.selectMessage("");
     // clears the queryBuilder and adds a new blank clause
     this.queryBuilderViewModel().queryClauses.removeAll();
     this.queryBuilderViewModel().addNewClause();
-    this._tableEntityListViewModel.tableQuery.filter = null;
-    this._tableEntityListViewModel.tableQuery.top = null;
-    this._tableEntityListViewModel.tableQuery.select = null;
+    this._tableEntityListViewModel.tableQuery.filter = undefined;
+    this._tableEntityListViewModel.tableQuery.top = undefined;
+    this._tableEntityListViewModel.tableQuery.select = undefined;
     this._tableEntityListViewModel.oDataQuery("");
     this._tableEntityListViewModel.sqlQuery("SELECT * FROM c");
     this._tableEntityListViewModel.cqlQuery(
@@ -197,12 +197,11 @@ export default class QueryViewModel {
     return this._tableEntityListViewModel.reloadTable(false);
   };
 
-  public selectQueryOptions(): Promise<any> {
-    this.queryTablesTab.container.openTableSelectQueryPanel(this);
-    return null;
+  public selectQueryOptions() {
+    useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={this} />);
   }
 
-  public onselectQueryOptionsKeyDown = (source: any, event: KeyboardEvent): boolean => {
+  public onselectQueryOptionsKeyDown = (event: KeyboardEvent): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
       this.selectQueryOptions();
       event.stopPropagation();
@@ -212,7 +211,7 @@ export default class QueryViewModel {
   };
 
   public getSelectMessage(): void {
-    if (_.isEmpty(this.selectText()) || this.selectText() === null) {
+    if (_.isEmpty(this.selectText()) || this.selectText() === undefined) {
       this.selectMessage("");
     } else {
       this.selectMessage(`${this.selectText().length} of ${this.columnOptions().length} columns selected.`);
@@ -220,7 +219,7 @@ export default class QueryViewModel {
   }
 
   public isSelected = ko.computed<boolean>(() => {
-    return !(_.isEmpty(this.selectText()) || this.selectText() === null);
+    return !(_.isEmpty(this.selectText()) || this.selectText() === undefined);
   });
 
   private setCheckToSave(): void {
@@ -230,7 +229,7 @@ export default class QueryViewModel {
     this.isSaveEnabled(false);
   }
 
-  public checkIfBuilderChanged(clause: QueryClauseViewModel): void {
+  public checkIfBuilderChanged(): void {
     this.setFilter();
   }
 }
