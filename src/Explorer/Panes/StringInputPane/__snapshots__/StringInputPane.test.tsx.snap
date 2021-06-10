@@ -18,7 +18,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isNotebooksEnabledForAccount": [Function],
       "isResourceTokenCollectionNodeSelected": [Function],
       "isSchemaEnabled": [Function],
-      "isServerlessEnabled": [Function],
       "isShellEnabled": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],

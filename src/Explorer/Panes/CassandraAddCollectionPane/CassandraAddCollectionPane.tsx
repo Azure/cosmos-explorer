@@ -13,6 +13,7 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
@@ -75,7 +76,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
 
   const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
-  const canConfigureThroughput = !container.isServerlessEnabled();
+  const canConfigureThroughput = !isServerlessAccount();
 
   const keyspaceOffers = new Map();
   const [isExecuting, setIsExecuting] = useState<boolean>();
@@ -107,7 +108,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   };
 
   useEffect(() => {
-    if (!container.isServerlessEnabled()) {
+    if (!isServerlessAccount()) {
       setIsAutoPilotSelected(userContext.features.autoscaleDefault);
     }
 
