@@ -1,7 +1,7 @@
 import * as ko from "knockout";
-import { ActionContracts } from "../Contracts/ExplorerContracts";
-import * as ViewModels from "../Contracts/ViewModels";
-import Explorer from "./Explorer";
+import { ActionContracts } from "../../Contracts/ExplorerContracts";
+import * as ViewModels from "../../Contracts/ViewModels";
+import Explorer from "../Explorer";
 import { handleOpenAction } from "./OpenActions";
 
 describe("OpenActions", () => {
@@ -9,7 +9,6 @@ describe("OpenActions", () => {
     let explorer: Explorer;
     let database: ViewModels.Database;
     let collection: ViewModels.Collection;
-    let databases: ViewModels.Database[];
 
     beforeEach(() => {
       explorer = {} as Explorer;
@@ -19,7 +18,6 @@ describe("OpenActions", () => {
         id: ko.observable("db"),
         collections: ko.observableArray<ViewModels.Collection>([]),
       } as ViewModels.Database;
-      databases = [database];
       collection = {
         id: ko.observable("coll"),
       } as ViewModels.Collection;
@@ -68,7 +66,7 @@ describe("OpenActions", () => {
             paneKind: "AddCollection",
           };
 
-          const actionHandled = handleOpenAction(action, [], explorer);
+          handleOpenAction(action, [], explorer);
           expect(explorer.onNewCollectionClicked).toHaveBeenCalled();
         });
 
@@ -78,7 +76,7 @@ describe("OpenActions", () => {
             paneKind: ActionContracts.PaneKind.AddCollection,
           };
 
-          const actionHandled = handleOpenAction(action, [], explorer);
+          handleOpenAction(action, [], explorer);
           expect(explorer.onNewCollectionClicked).toHaveBeenCalled();
         });
       });

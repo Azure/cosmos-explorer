@@ -56,7 +56,6 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
-import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
@@ -1598,8 +1597,5 @@ export default class Explorer {
 
   public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
     useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={queryViewModal} />);
-  }
-  public openSettingPane(): void {
-    useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
   }
 }
