@@ -19,7 +19,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "isResourceTokenCollectionNodeSelected": [Function],
       "isSchemaEnabled": [Function],
       "isSelectedDatabaseShared": [Function],
-      "isServerlessEnabled": [Function],
       "isShellEnabled": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],

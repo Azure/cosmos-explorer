@@ -24,6 +24,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
+import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
@@ -235,7 +236,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     return undefined;
   }
 
-  if (container.isServerlessEnabled()) {
+  if (isServerlessAccount()) {
     return undefined;
   }
 
