@@ -113,7 +113,7 @@ export default class QueryViewModel {
     DataTableUtilities.forceRecalculateTableSize(); // Fix for 261924, forces the resize event so DataTableBindingManager will redo the calculation on table size.
   };
 
-  public ontoggleAdvancedOptionsKeyDown = (event: KeyboardEvent): boolean => {
+  public ontoggleAdvancedOptionsKeyDown = (source: string, event: KeyboardEvent): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
       this.toggleAdvancedOptions();
       event.stopPropagation();
@@ -201,7 +201,7 @@ export default class QueryViewModel {
     useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={this} />);
   }
 
-  public onselectQueryOptionsKeyDown = (event: KeyboardEvent): boolean => {
+  public onselectQueryOptionsKeyDown = (source: string, event: KeyboardEvent): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
       this.selectQueryOptions();
       event.stopPropagation();
