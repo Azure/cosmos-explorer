@@ -37,7 +37,7 @@ describe("Query Tab", () => {
     } as ViewModels.Collection;
 
     it("no container with system pk, should not set partition key option", () => {
-      const iteratorOptions = QueryTab.getIteratorOptions(collection);
+      const iteratorOptions = QueryTab.getIteratorOptions();
       expect(iteratorOptions.initialHeaders).toBeUndefined();
     });
   });

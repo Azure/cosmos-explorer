@@ -16,12 +16,14 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { userContext } from "../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../Utils/APITypeUtils";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -255,7 +257,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           iconSrc: OpenQueryIcon,
           title: "Open Query",
           description: null,
-          onClick: () => this.container.openBrowseQueriesPanel(),
+          onClick: () =>
+            useSidePanel
+              .getState()
+              .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.container} />),
         });
       }
 

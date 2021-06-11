@@ -1,4 +1,6 @@
+import { CosmosHeaders, FeedOptions } from "@azure/cosmos";
 import * as ko from "knockout";
+import React from "react";
 import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import SaveQueryIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
@@ -11,11 +13,14 @@ import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitt
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../hooks/useNotificationConsole";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { SaveQueryPane } from "../Panes/SaveQueryPane/SaveQueryPane";
 import template from "./QueryTab.html";
 import TabsBase from "./TabsBase";
 
@@ -23,6 +28,8 @@ enum ToggleState {
   Result,
   QueryMetrics,
 }
+
+type optionType = { enableCrossPartitionQuery: boolean; partitionKey?: string; initialHeaders?: CosmosHeaders };
 
 export default class QueryTab extends TabsBase implements ViewModels.WaitsForTemplate {
   public readonly html = template;
@@ -67,7 +74,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.queryEditorId = `queryeditor${this.tabId}`;
     this.showingDocumentsDisplayText = ko.observable<string>();
     this.requestChargeDisplayText = ko.observable<string>();
-    const defaultQueryText = options.queryText != void 0 ? options.queryText : "SELECT * FROM c";
+    const defaultQueryText = options.queryText !== void 0 ? options.queryText : "SELECT * FROM c";
     this.initialEditorContent = ko.observable<string>(defaultQueryText);
     this.sqlQueryEditorContent = ko.observable<string>(defaultQueryText);
     this._executeQueryButtonTitle = ko.observable<string>("Execute Query");
@@ -113,7 +120,6 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     };
 
     this._isSaveQueriesEnabled = ko.computed<boolean>(() => {
-      const container = this.collection && this.collection.container;
       return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     });
 
@@ -182,11 +188,13 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   };
 
   public onSaveQueryClick = (): void => {
-    this.collection && this.collection.container && this.collection.container.openSaveQueryPanel();
+    useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this.collection?.container} />);
   };
 
   public onSavedQueriesClick = (): void => {
-    this.collection && this.collection.container && this.collection.container.openBrowseQueriesPanel();
+    useSidePanel
+      .getState()
+      .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.collection?.container} />);
   };
 
   public async onFetchNextPageClick(): Promise<void> {
@@ -198,15 +206,14 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     await this._executeQueryDocumentsPage(firstResultIndex + itemCount - 1);
   }
 
-  public onErrorDetailsClick = (src: any, event: MouseEvent): boolean => {
+  public onErrorDetailsClick = (): boolean => {
     useNotificationConsole.getState().expandConsole();
-
     return false;
   };
 
-  public onErrorDetailsKeyPress = (src: any, event: KeyboardEvent): boolean => {
+  public onErrorDetailsKeyPress = (src: string, event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onErrorDetailsClick(src, null);
+      this.onErrorDetailsClick();
       return false;
     }
 
@@ -222,7 +229,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     this.toggleState(ToggleState.QueryMetrics);
   }
 
-  public onToggleKeyDown = (source: any, event: KeyboardEvent): boolean => {
+  public onToggleKeyDown = (source: string, event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.LeftArrow) {
       this.toggleResult();
       event.stopPropagation();
@@ -249,12 +256,12 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     return this.toggleState() === ToggleState.QueryMetrics;
   }
 
-  public onDownloadQueryMetricsCsvClick = (source: any, event: MouseEvent): boolean => {
+  public onDownloadQueryMetricsCsvClick = (): boolean => {
     this._downloadQueryMetricsCsvData();
     return false;
   };
 
-  public onDownloadQueryMetricsCsvKeyPress = (source: any, event: KeyboardEvent): boolean => {
+  public onDownloadQueryMetricsCsvKeyPress = (source: string, event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.Space || Constants.KeyCodes.Enter) {
       this._downloadQueryMetricsCsvData();
       return false;
@@ -263,7 +270,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     return true;
   };
 
-  private async _executeQueryDocumentsPage(firstItemIndex: number): Promise<any> {
+  private async _executeQueryDocumentsPage(firstItemIndex: number): Promise<void> {
     this.error("");
     this.roundTrips(undefined);
     if (this._iterator === undefined) {
@@ -281,8 +288,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
       dataExplorerArea: Constants.Areas.Tab,
       tabTitle: this.tabTitle(),
     });
-    let options: any = {};
-    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
+    QueryTab.getIteratorOptions();
 
     const queryDocuments = async (firstItemIndex: number) =>
       await queryDocumentsPage(this.collection && this.collection.id(), this._iterator, firstItemIndex);
@@ -307,14 +313,14 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
 
       this._updateQueryMetricsMap(queryResults.headers[Constants.HttpHeaders.queryMetrics]);
 
-      if (queryResults.itemCount == 0 && metadata != null && metadata.itemCount >= 0) {
+      if (queryResults.itemCount === 0 && metadata !== undefined && metadata.itemCount >= 0) {
         // we let users query for the next page because the SDK sometimes specifies there are more elements
         // even though there aren't any so we should not update the prior query results.
         return;
       }
 
-      const documents: any[] = queryResults.documents;
-      const results = this.renderObjectForEditor(documents, null, 4);
+      const documents = queryResults.documents;
+      const results = this.renderObjectForEditor(documents, undefined, 4);
 
       const resultsDisplay: string =
         queryResults.itemCount > 0 ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}` : `0 - 0`;
@@ -364,7 +370,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
 
   private _aggregateQueryMetrics(metricsMap: Map<string, DataModels.QueryMetrics>): DataModels.QueryMetrics {
     if (!metricsMap) {
-      return null;
+      return undefined;
     }
 
     const aggregatedMetrics: DataModels.QueryMetrics = this.aggregatedQueryMetrics();
@@ -454,7 +460,7 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
   }
 
   protected _initIterator(): void {
-    const options: any = QueryTab.getIteratorOptions(this.collection);
+    const options: FeedOptions = QueryTab.getIteratorOptions();
     if (this._resourceTokenPartitionKey) {
       options.partitionKey = this._resourceTokenPartitionKey;
     }
@@ -467,10 +473,8 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
     );
   }
 
-  public static getIteratorOptions(container: ViewModels.CollectionBase): any {
-    let options: any = {};
-    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
-    return options;
+  public static getIteratorOptions(): optionType {
+    return { enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey() };
   }
 
   private _normalize(value: number): number {
@@ -505,12 +509,12 @@ export default class QueryTab extends TabsBase implements ViewModels.WaitsForTem
 
   private _generateQueryMetricsCsvData(): string {
     if (!this.queryMetrics()) {
-      return null;
+      return undefined;
     }
 
     const queryMetrics = this.queryMetrics();
-    let csvData: string = "";
-    const columnHeaders: string =
+    let csvData = "";
+    const columnHeaders =
       [
         "Partition key range id",
         "Retrieved document count",
