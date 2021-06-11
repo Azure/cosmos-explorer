@@ -94,57 +94,6 @@ exports[`SettingsComponent renders 1`] = `
               "usageSizeInKB": [Function],
             }
           }
-          container={
-            Explorer {
-              "_isInitializingNotebooks": false,
-              "_resetNotebookWorkspace": [Function],
-              "canSaveQueries": [Function],
-              "databases": [Function],
-              "isAccountReady": [Function],
-              "isFixedCollectionWithSharedThroughputSupported": [Function],
-              "isHostedDataExplorerEnabled": [Function],
-              "isNotebookEnabled": [Function],
-              "isNotebooksEnabledForAccount": [Function],
-              "isResourceTokenCollectionNodeSelected": [Function],
-              "isSchemaEnabled": [Function],
-              "isShellEnabled": [Function],
-              "isSynapseLinkUpdating": [Function],
-              "isTabsContentExpanded": [Function],
-              "memoryUsageInfo": [Function],
-              "notebookBasePath": [Function],
-              "notebookServerInfo": [Function],
-              "onRefreshDatabasesKeyPress": [Function],
-              "onRefreshResourcesClick": [Function],
-              "provideFeedbackEmail": [Function],
-              "queriesClient": QueriesClient {
-                "container": [Circular],
-              },
-              "refreshNotebookList": [Function],
-              "resourceTokenCollection": [Function],
-              "resourceTokenCollectionId": [Function],
-              "resourceTokenDatabaseId": [Function],
-              "resourceTokenPartitionKey": [Function],
-              "resourceTree": ResourceTreeAdapter {
-                "container": [Circular],
-                "copyNotebook": [Function],
-                "databaseCollectionIdMap": Map {},
-                "koSubsCollectionIdMap": Map {},
-                "koSubsDatabaseIdMap": Map {},
-                "parameters": [Function],
-              },
-              "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-                "container": [Circular],
-                "parameters": [Function],
-              },
-              "selectedDatabaseId": [Function],
-              "selectedNode": [Function],
-              "sparkClusterConnectionInfo": [Function],
-              "tabsManager": TabsManager {
-                "activeTab": [Function],
-                "openedTabs": [Function],
-              },
-            }
-          }
           isAutoPilotSelected={false}
           isFixedContainer={false}
           onAutoPilotSelected={[Function]}
@@ -241,57 +190,6 @@ exports[`SettingsComponent renders 1`] = `
               "readSettings": [Function],
               "uniqueKeyPolicy": Object {},
               "usageSizeInKB": [Function],
-            }
-          }
-          container={
-            Explorer {
-              "_isInitializingNotebooks": false,
-              "_resetNotebookWorkspace": [Function],
-              "canSaveQueries": [Function],
-              "databases": [Function],
-              "isAccountReady": [Function],
-              "isFixedCollectionWithSharedThroughputSupported": [Function],
-              "isHostedDataExplorerEnabled": [Function],
-              "isNotebookEnabled": [Function],
-              "isNotebooksEnabledForAccount": [Function],
-              "isResourceTokenCollectionNodeSelected": [Function],
-              "isSchemaEnabled": [Function],
-              "isShellEnabled": [Function],
-              "isSynapseLinkUpdating": [Function],
-              "isTabsContentExpanded": [Function],
-              "memoryUsageInfo": [Function],
-              "notebookBasePath": [Function],
-              "notebookServerInfo": [Function],
-              "onRefreshDatabasesKeyPress": [Function],
-              "onRefreshResourcesClick": [Function],
-              "provideFeedbackEmail": [Function],
-              "queriesClient": QueriesClient {
-                "container": [Circular],
-              },
-              "refreshNotebookList": [Function],
-              "resourceTokenCollection": [Function],
-              "resourceTokenCollectionId": [Function],
-              "resourceTokenDatabaseId": [Function],
-              "resourceTokenPartitionKey": [Function],
-              "resourceTree": ResourceTreeAdapter {
-                "container": [Circular],
-                "copyNotebook": [Function],
-                "databaseCollectionIdMap": Map {},
-                "koSubsCollectionIdMap": Map {},
-                "koSubsDatabaseIdMap": Map {},
-                "parameters": [Function],
-              },
-              "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-                "container": [Circular],
-                "parameters": [Function],
-              },
-              "selectedDatabaseId": [Function],
-              "selectedNode": [Function],
-              "sparkClusterConnectionInfo": [Function],
-              "tabsManager": TabsManager {
-                "activeTab": [Function],
-                "openedTabs": [Function],
-              },
             }
           }
           geospatialConfigType="Geometry"
