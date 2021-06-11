@@ -34,9 +34,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "refreshAllDatabases": [Function],
       "refreshNotebookList": [Function],
       "resourceTokenCollection": [Function],
-      "resourceTokenCollectionId": [Function],
-      "resourceTokenDatabaseId": [Function],
-      "resourceTokenPartitionKey": [Function],
       "resourceTree": ResourceTreeAdapter {
         "container": [Circular],
         "copyNotebook": [Function],
