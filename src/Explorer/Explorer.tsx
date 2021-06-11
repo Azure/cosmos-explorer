@@ -718,7 +718,7 @@ export default class Explorer {
     const databasesToLoad =
       this.databases().length <= Explorer.MaxNbDatabasesToAutoExpand
         ? this.databases()
-        : this.databases().filter((db) => db.isDatabaseExpanded());
+        : this.databases().filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
 
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
       dataExplorerArea: Constants.Areas.ResourceTree,
