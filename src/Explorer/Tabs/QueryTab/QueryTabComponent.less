@@ -19,15 +19,18 @@
     }
 
     .splitter-layout {
-      .queryEditor {
-        .flex-display();
-        height: 100%;
-        width: 100%;
-        margin-top: @SmallSpace;
-
-        .jsonEditor {
-          border: none;
+      .layout-pane-primary {
+        overflow: hidden !important;
+        .queryEditor {
+          .flex-display();
+          height: 100%;
+          width: 100%;
           margin-top: @SmallSpace;
+
+          .jsonEditor {
+            border: none;
+            margin-top: @SmallSpace;
+          }
         }
       }
 
@@ -86,39 +89,16 @@
         .flex-display();
         .flex-direction();
 
-        .togglesWithMetadata {
-          margin-top: @MediumSpace;
-
-          .toggles {
-            height: @ToggleHeight;
-            width: @ToggleWidth;
-            margin-left: @MediumSpace;
-
-            &:focus {
-              .focus();
-            }
-
-            .tab {
-              margin-right: @MediumSpace;
-            }
-
-            .toggleSwitch {
-              .toggleSwitch();
-            }
-
-            .selectedToggle {
-              .selectedToggle();
-            }
-
-            .unselectedToggle {
-              .unselectedToggle();
-            }
+        div[role="tabpanel"] {
+          height: 100%;
+          div:nth-child(1) {
+            height: 100%;
           }
         }
 
         .result-metadata {
           padding: @LargeSpace @SmallSpace @MediumSpace @MediumSpace;
-
+          height: auto !important;
           .queryResultDivider {
             margin-left: @SmallSpace;
             margin-right: @SmallSpace;
@@ -177,12 +157,14 @@
           .flex-display();
           .flex-direction();
           overflow: hidden;
+          position: relative;
+          height: 100%;
 
           .queryMetricsSummary {
             margin: @LargeSpace @LargeSpace 0px @DefaultSpace;
             table-layout: fixed;
             display: block;
-            height: auto;
+            height: 100%;
             overflow-y: auto;
             overflow-x: hidden;
 
@@ -268,8 +250,8 @@
           }
 
           .downloadMetricsLinkContainer {
-            margin: 24px 0px 24px @MediumSpace;
-
+            margin: 24px 0px 50px @MediumSpace;
+            position: sticky;
             #downloadMetricsLink {
               color: @BaseHigh;
               padding: @DefaultSpace;

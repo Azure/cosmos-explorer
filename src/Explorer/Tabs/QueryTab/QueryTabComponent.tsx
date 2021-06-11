@@ -1,3 +1,4 @@
+import { DetailsList, DetailsListLayoutMode, IColumn, Pivot, PivotItem, SelectionMode } from "@fluentui/react";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
@@ -13,6 +14,7 @@ import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
 import { queryIterator } from "../../../Common/MongoProxyClient";
 import MongoUtility from "../../../Common/MongoUtility";
 import { Splitter } from "../../../Common/Splitter";
+import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
@@ -29,6 +31,13 @@ import "./QueryTabComponent.less";
 enum ToggleState {
   Result,
   QueryMetrics,
+}
+
+export interface IDocument {
+  metric: string;
+  value: string;
+  toolTip: string;
+  isQueryMetricsEnabled: boolean;
 }
 
 export interface ITabAccessor {
@@ -82,7 +91,8 @@ interface IQueryTabStates {
   _isSaveQueriesEnabled: boolean;
   isExecutionError: boolean;
   isExecuting: boolean;
-  // isCloseClicked: boolean;
+  columns: IColumn[];
+  items: IDocument[];
 }
 
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
@@ -100,14 +110,43 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   _partitionKey: DataModels.PartitionKey;
   public maybeSubQuery: boolean;
   public isCloseClicked: boolean;
+  public allItems: IDocument[];
   public defaultQueryText: string;
+
   constructor(props: IQueryTabComponentProps) {
     super(props);
+    const columns: IColumn[] = [
+      {
+        key: "column1",
+        name: "",
+        minWidth: 16,
+        maxWidth: 16,
+        data: String,
+        fieldName: "toolTip",
+        onRender: this.onRenderColumnItem,
+      },
+      {
+        key: "column2",
+        name: "METRIC",
+        minWidth: 200,
+        data: String,
+        fieldName: "metric",
+      },
+      {
+        key: "column3",
+        name: "VALUE",
+        minWidth: 200,
+        data: String,
+        fieldName: "value",
+      },
+    ];
+
     if (this.props.isPreferredApiMongoDB) {
       this.defaultQueryText = props.queryText;
     } else {
       this.defaultQueryText = props.queryText !== void 0 ? props.queryText : "SELECT * FROM c";
     }
+
     this.state = {
       queryMetrics: new Map(),
       aggregatedQueryMetrics: undefined,
@@ -131,6 +170,8 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       _isSaveQueriesEnabled: userContext.apiType === "SQL" || userContext.apiType === "Gremlin",
       isExecutionError: this.props.isExecutionError,
       isExecuting: false,
+      columns: columns,
+      items: [],
     };
     this.isCloseClicked = false;
     this.splitterId = this.props.tabId + "_splitter";
@@ -174,6 +215,160 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       onSaveClickEvent: this.getCurrentEditorQuery.bind(this),
       onCloseClickEvent: this.onCloseClick.bind(this),
     });
+  }
+
+  public onRenderColumnItem(item: IDocument): JSX.Element {
+    if (item.toolTip !== "") {
+      return <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>;
+    } else {
+      return undefined;
+    }
+  }
+
+  public generateDetailsList(): IDocument[] {
+    const items: IDocument[] = [];
+    const allItems: IDocument[] = [
+      {
+        metric: "Request Charge",
+        value: this.state.requestChargeDisplayText,
+        toolTip: "",
+        isQueryMetricsEnabled: true,
+      },
+      {
+        metric: "Showing Results",
+        value: this.state.showingDocumentsDisplayText,
+        toolTip: "",
+        isQueryMetricsEnabled: true,
+      },
+      {
+        metric: "Retrieved document count",
+        value:
+          this.state.aggregatedQueryMetrics.retrievedDocumentCount !== undefined
+            ? this.state.aggregatedQueryMetrics.retrievedDocumentCount.toString()
+            : "",
+        toolTip: "Total number of retrieved documents",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Retrieved document size",
+        value:
+          this.state.aggregatedQueryMetrics.retrievedDocumentSize !== undefined
+            ? this.state.aggregatedQueryMetrics.retrievedDocumentSize.toString() + " bytes"
+            : "",
+        toolTip: "Total size of retrieved documents in bytes",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Output document count",
+        value:
+          this.state.aggregatedQueryMetrics.outputDocumentCount !== undefined
+            ? this.state.aggregatedQueryMetrics.outputDocumentCount.toString()
+            : "",
+        toolTip: "Number of output documents",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Output document size",
+        value:
+          this.state.aggregatedQueryMetrics.outputDocumentSize !== undefined
+            ? this.state.aggregatedQueryMetrics.outputDocumentSize.toString() + " bytes"
+            : "",
+        toolTip: "Total size of output documents in bytes",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Index hit document count",
+        value:
+          this.state.aggregatedQueryMetrics.indexHitDocumentCount !== undefined
+            ? this.state.aggregatedQueryMetrics.indexHitDocumentCount.toString()
+            : "",
+        toolTip: "Total number of documents matched by the filter",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Index lookup time",
+        value:
+          this.state.aggregatedQueryMetrics.indexLookupTime !== undefined
+            ? this.state.aggregatedQueryMetrics.indexLookupTime.toString() + " ms"
+            : "",
+        toolTip: "Time spent in physical index layer",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Document load time",
+        value:
+          this.state.aggregatedQueryMetrics.documentLoadTime !== undefined
+            ? this.state.aggregatedQueryMetrics.documentLoadTime.toString() + " ms"
+            : "",
+        toolTip: "Time spent in loading documents",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Query engine execution time",
+        value:
+          this.state.aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime !== undefined
+            ? this.state.aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime.toString() + " ms"
+            : "",
+        toolTip:
+          "Time spent by the query engine to execute the query expression (excludes other execution times like load documents or write results)",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "System function execution time",
+        value:
+          this.state.aggregatedQueryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime !== undefined
+            ? this.state.aggregatedQueryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime.toString() + " ms"
+            : "",
+        toolTip: "Total time spent executing system (built-in) functions",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "User defined function execution time",
+        value:
+          this.state.aggregatedQueryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime !== undefined
+            ? this.state.aggregatedQueryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime.toString() +
+              " ms"
+            : "",
+        toolTip: "Total time spent executing user-defined functions",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Document write time",
+        value:
+          this.state.aggregatedQueryMetrics.documentWriteTime !== undefined
+            ? this.state.aggregatedQueryMetrics.documentWriteTime.toString() + " ms"
+            : "",
+        toolTip: "Time spent to write query result set to response buffer",
+        isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
+      },
+      {
+        metric: "Round Trips",
+        value: this.state.roundTrips ? this.state.roundTrips.toString() : "",
+        toolTip: "",
+        isQueryMetricsEnabled: true,
+      },
+      {
+        metric: "Activity id",
+        value: this.state.activityId ? this.state.activityId : "",
+        toolTip: "",
+        isQueryMetricsEnabled: true,
+      },
+    ];
+
+    allItems.forEach((item) => {
+      if (item.metric === "Round Trips" || item.metric === "Activity id") {
+        if (item.metric === "Round Trips" && this.state.roundTrips !== undefined) {
+          items.push(item);
+        } else if (item.metric === "Activity id" && this.state.activityId !== undefined) {
+          items.push(item);
+        }
+      } else {
+        if (item.isQueryMetricsEnabled) {
+          items.push(item);
+        }
+      }
+    });
+    return items;
   }
 
   public onCloseClick(isClicked: boolean): void {
@@ -351,14 +546,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         roundTrips: queryResults.roundTrips,
       });
 
-      this._updateQueryMetricsMap(queryResults.headers[Constants.HttpHeaders.queryMetrics]);
-
-      if (queryResults.itemCount === 0 && metadata !== undefined && metadata.itemCount >= 0) {
-        // we let users query for the next page because the SDK sometimes specifies there are more elements
-        // even though there aren't any so we should not update the prior query results.
-        return;
-      }
-
       const documents = queryResults.documents;
       if (this.isPreferredApiMongoDB) {
         results = MongoUtility.tojson(documents, undefined, false);
@@ -374,6 +561,14 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
         requestChargeDisplayText: `${queryResults.requestCharge} RUs`,
         queryResults: results,
       });
+
+      this._updateQueryMetricsMap(queryResults.headers[Constants.HttpHeaders.queryMetrics]);
+
+      if (queryResults.itemCount === 0 && metadata !== undefined && metadata.itemCount >= 0) {
+        // we let users query for the next page because the SDK sometimes specifies there are more elements
+        // even though there aren't any so we should not update the prior query results.
+        return;
+      }
     } catch (error) {
       this.props.tabsBaseInstance.isExecutionError(true);
       this.setState({
@@ -396,13 +591,22 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   private _updateQueryMetricsMap(metricsMap: { [partitionKeyRange: string]: DataModels.QueryMetrics }): void {
     if (!metricsMap) {
+      this.allItems = this.generateDetailsList();
+      this.setState({
+        items: this.allItems,
+      });
       return;
     }
 
     Object.keys(metricsMap).forEach((key: string) => {
       this.state.queryMetrics.set(key, metricsMap[key]);
     });
+
     this._aggregateQueryMetrics(this.state.queryMetrics);
+    this.allItems = this.generateDetailsList();
+    this.setState({
+      items: this.allItems,
+    });
   }
 
   private _aggregateQueryMetrics(metricsMap: Map<string, DataModels.QueryMetrics>): DataModels.QueryMetrics {
@@ -760,340 +964,96 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                   {(this.state.allResultsMetadata.length > 0 || !!this.state.error || this.state.queryResults) && (
                     <div className="queryResultsErrorsContent">
                       {!this.state.error && (
-                        <>
-                          <div className="togglesWithMetadata">
-                            <div
-                              className="toggles"
-                              aria-label="Successful execution"
-                              id="execute-query-toggles"
-                              onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onToggleKeyDown(event)}
-                              tabIndex={0}
-                            >
-                              <div className="tab">
-                                <input type="radio" className="radio" value="result" />
-                                <span
-                                  className={`toggleSwitch ${
-                                    this.isResultToggled() ? "selectedToggle" : "unselectedToggle"
-                                  }`}
-                                  role="button"
-                                  tabIndex={0}
-                                  onClick={() => this.toggleResult()}
-                                  aria-label="Results"
-                                >
-                                  Results
+                        <Pivot aria-label="Successful execution" style={{ height: "100%" }}>
+                          <PivotItem
+                            headerText="Results"
+                            headerButtonProps={{
+                              "data-order": 1,
+                              "data-title": "Results",
+                            }}
+                            style={{ height: "100%" }}
+                          >
+                            <div className="result-metadata">
+                              <span>
+                                <span>{this.state.showingDocumentsDisplayText}</span>
+                              </span>
+                              {this.fetchNextPageButton.enabled && <span className="queryResultDivider">|</span>}
+                              {this.fetchNextPageButton.enabled && (
+                                <span className="queryResultNextEnable">
+                                  <a onClick={this.onFetchNextPageClick}>
+                                    <span>Load more</span>
+                                    <img
+                                      className="queryResultnextImg"
+                                      src="images/Query-Editor-Next.svg"
+                                      alt="Fetch next page"
+                                    />
+                                  </a>
                                 </span>
-                              </div>
-                              <div className="tab">
-                                <input type="radio" className="radio" value="logs" />
-                                <span
-                                  className={`toggleSwitch ${
-                                    this.isMetricsToggled() ? "selectedToggle" : "unselectedToggle"
-                                  }`}
-                                  role="button"
-                                  tabIndex={0}
-                                  onClick={() => this.toggleMetrics()}
-                                  aria-label="Query stats"
-                                >
-                                  Query Stats
-                                </span>
-                              </div>
+                              )}
                             </div>
-                            {this.isResultToggled() && (
-                              <div className="result-metadata">
-                                <span>
-                                  <span>{this.state.showingDocumentsDisplayText}</span>
-                                </span>
-                                {this.fetchNextPageButton.enabled && <span className="queryResultDivider">|</span>}
-                                {this.fetchNextPageButton.enabled && (
-                                  <span className="queryResultNextEnable">
-                                    <a onClick={this.onFetchNextPageClick}>
-                                      <span>Load more</span>
+                            {this.state.queryResults &&
+                              this.state.queryResults.length > 0 &&
+                              this.state.allResultsMetadata.length > 0 &&
+                              !this.state.error && (
+                                <div
+                                  style={{
+                                    paddingBottom: "100px",
+                                    height: "100%",
+                                  }}
+                                >
+                                  <EditorReact
+                                    language={"json"}
+                                    content={this.state.queryResults}
+                                    isReadOnly={true}
+                                    ariaLabel={"Query results"}
+                                  />
+                                </div>
+                              )}
+                          </PivotItem>
+                          <PivotItem
+                            headerText="Query Stats"
+                            headerButtonProps={{
+                              "data-order": 2,
+                              "data-title": "Query Stats",
+                            }}
+                            style={{ height: "100%" }}
+                          >
+                            {this.state.allResultsMetadata.length > 0 && !this.state.error && (
+                              <div className="queryMetricsSummaryContainer">
+                                <div className="queryMetricsSummary">
+                                  <caption>Query Statistics</caption>
+                                  <DetailsList
+                                    items={this.state.items}
+                                    columns={this.state.columns}
+                                    selectionMode={SelectionMode.none}
+                                    layoutMode={DetailsListLayoutMode.justified}
+                                    compact={true}
+                                  />
+                                </div>
+                                {this.state.isQueryMetricsEnabled && (
+                                  <div className="downloadMetricsLinkContainer">
+                                    <a
+                                      id="downloadMetricsLink"
+                                      role="button"
+                                      tabIndex={0}
+                                      onClick={() => this.onDownloadQueryMetricsCsvClick()}
+                                      onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) =>
+                                        this.onDownloadQueryMetricsCsvKeyPress(event)
+                                      }
+                                    >
                                       <img
-                                        className="queryResultnextImg"
-                                        src="images/Query-Editor-Next.svg"
-                                        alt="Fetch next page"
+                                        className="downloadCsvImg"
+                                        src="images/DownloadQuery.svg"
+                                        alt="download query metrics csv"
                                       />
+                                      <span>Per-partition query metrics (CSV)</span>
                                     </a>
-                                  </span>
+                                  </div>
                                 )}
                               </div>
                             )}
-                          </div>
-                          {this.state.queryResults &&
-                            this.state.queryResults.length > 0 &&
-                            this.isResultToggled() &&
-                            this.state.allResultsMetadata.length > 0 &&
-                            !this.state.error && (
-                              <EditorReact
-                                language={"json"}
-                                content={this.state.queryResults}
-                                isReadOnly={true}
-                                ariaLabel={"Query results"}
-                              />
-                            )}
-                        </>
-                      )}
-                      {this.isMetricsToggled() && this.state.allResultsMetadata.length > 0 && !this.state.error && (
-                        <div className="queryMetricsSummaryContainer">
-                          <table className="queryMetricsSummary">
-                            <caption>Query Statistics</caption>
-                            <thead className="queryMetricsSummaryHead">
-                              <tr className="queryMetricsSummaryHeader queryMetricsSummaryTuple">
-                                <th title="METRIC" scope="col">
-                                  METRIC
-                                </th>
-                                <th title="VALUE" scope="col">
-                                  VALUE
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody className="queryMetricsSummaryBody">
-                              <tr className="queryMetricsSummaryTuple">
-                                <td title="Request Charge">Request Charge</td>
-                                <td>
-                                  <span>{this.state.requestChargeDisplayText}</span>
-                                </td>
-                              </tr>
-                              <tr className="queryMetricsSummaryTuple">
-                                <td title="Showing Results">Showing Results</td>
-                                <td>
-                                  <span>{this.state.showingDocumentsDisplayText}</span>
-                                </td>
-                              </tr>
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Retrieved document count">Retrieved document count</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">
-                                        Total number of retrieved documents
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.retrievedDocumentCount}</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Retrieved document size">Retrieved document size</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">
-                                        Total size of retrieved documents in bytes
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.retrievedDocumentSize}</span>
-                                    <span>bytes</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Output document count">Output document count</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">Number of output documents</span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.outputDocumentCount}</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Output document size">Output document size</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">
-                                        Total size of output documents in bytes
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.outputDocumentSize}</span>
-                                    <span>bytes</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Index hit document count">Index hit document count</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">
-                                        Total number of documents matched by the filter
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.indexHitDocumentCount}</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Index lookup time">Index lookup time</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">Time spent in physical index layer</span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.indexLookupTime}</span>
-                                    <span>ms</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Document load time">Document load time</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">Time spent in loading documents</span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.documentLoadTime}</span>
-                                    <span>ms</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Query engine execution time">Query engine execution time</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText queryEngineExeTimeInfo">
-                                        Time spent by the query engine to execute the query expression (excludes other
-                                        execution times like load documents or write results)
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>
-                                      {this.state.aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime}
-                                    </span>
-                                    <span>ms</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="System function execution time">System function execution time</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">
-                                        Total time spent executing system (built-in) functions
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>
-                                      {
-                                        this.state.aggregatedQueryMetrics.runtimeExecutionTimes
-                                          .systemFunctionExecutionTime
-                                      }
-                                    </span>
-                                    <span>ms</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="User defined function execution time">
-                                      User defined function execution time
-                                    </span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">
-                                        Total time spent executing user-defined functions
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>
-                                      {
-                                        this.state.aggregatedQueryMetrics.runtimeExecutionTimes
-                                          .userDefinedFunctionExecutionTime
-                                      }
-                                    </span>
-                                    <span>ms</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.isQueryMetricsEnabled && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td>
-                                    <span title="Document write time">Document write time</span>
-                                    <span className="queryMetricInfoTooltip" role="tooltip" tabIndex={0}>
-                                      <img className="infoImg" src="images/info-bubble.svg" alt="More information" />
-                                      <span className="queryMetricTooltipText">
-                                        Time spent to write query result set to response buffer
-                                      </span>
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <span>{this.state.aggregatedQueryMetrics.documentWriteTime}</span>
-                                    <span>ms</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {this.state.roundTrips !== undefined && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td title="Round Trips">Round Trips</td>
-                                  <td>
-                                    <span>{this.state.roundTrips}</span>
-                                  </td>
-                                </tr>
-                              )}
-                              {/* <!-- TODO: Report activity id for mongo queries --> */}
-                              {this.state.activityId !== undefined && (
-                                <tr className="queryMetricsSummaryTuple">
-                                  <td title="Activity id">Activity id</td>
-                                  <td></td>
-                                  <td>
-                                    <span>{this.state.activityId}</span>
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-                          {this.state.isQueryMetricsEnabled && (
-                            <div className="downloadMetricsLinkContainer">
-                              <a
-                                id="downloadMetricsLink"
-                                role="button"
-                                tabIndex={0}
-                                onClick={() => this.onDownloadQueryMetricsCsvClick()}
-                                onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) =>
-                                  this.onDownloadQueryMetricsCsvKeyPress(event)
-                                }
-                              >
-                                <img
-                                  className="downloadCsvImg"
-                                  src="images/DownloadQuery.svg"
-                                  alt="download query metrics csv"
-                                />
-                                <span>Per-partition query metrics (CSV)</span>
-                              </a>
-                            </div>
-                          )}
-                        </div>
+                          </PivotItem>
+                        </Pivot>
                       )}
                       {/* <!-- Query Errors Content - Start--> */}
                       {!!this.state.error && (
@@ -1102,7 +1062,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                             <span className="errorMessage">{this.state.error}</span>
                             <span className="errorDetailsLink">
                               <a
-                                data-bind="click: $parent.onErrorDetailsClick, event: { keypress: $parent.onErrorDetailsKeyPress }"
                                 onClick={() => this.onErrorDetailsClick()}
                                 onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) =>
                                   this.onErrorDetailsKeyPress(event)
