@@ -4,6 +4,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
@@ -134,7 +135,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
       documentsTab = new DocumentsTab({
         partitionKey: this.partitionKey,
-        resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
+        resourceTokenPartitionKey: userContext.parsedResourceToken.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",

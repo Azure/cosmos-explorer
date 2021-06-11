@@ -34,6 +34,7 @@ import {
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
+import { isRunningOnNationalCloud } from "../Utils/CloudUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -56,7 +57,6 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
-import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
@@ -87,7 +87,6 @@ export interface ExplorerParams {
 
 export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public queriesClient: QueriesClient;
@@ -101,10 +100,7 @@ export default class Explorer {
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
-  public resourceTokenDatabaseId: ko.Observable<string>;
-  public resourceTokenCollectionId: ko.Observable<string>;
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
-  public resourceTokenPartitionKey: ko.Observable<string>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
   public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
@@ -179,11 +175,7 @@ export default class Explorer {
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
     this.queriesClient = new QueriesClient(this);
-
-    this.resourceTokenDatabaseId = ko.observable<string>();
-    this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
-    this.resourceTokenPartitionKey = ko.observable<string>();
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -231,18 +223,9 @@ export default class Explorer {
       return isCapabilityEnabled("EnableMongo");
     });
 
-    this.isServerlessEnabled = ko.computed(
-      () =>
-        userContext.databaseAccount?.properties?.capabilities?.find(
-          (item) => item.name === Constants.CapabilityNames.EnableServerless
-        ) !== undefined
-    );
-
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal &&
-        !this.isRunningOnNationalCloud() &&
-        userContext.apiType !== "Gremlin"
+        configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin"
     );
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
@@ -365,6 +348,7 @@ export default class Explorer {
     if (configContext.enableSchemaAnalyzer) {
       userContext.features.enableSchemaAnalyzer = true;
     }
+    this.isAccountReady(true);
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -435,21 +419,17 @@ export default class Explorer {
     return this.selectedNode() == null;
   }
 
-  public refreshDatabaseForResourceToken(): Q.Promise<any> {
-    const databaseId = this.resourceTokenDatabaseId();
-    const collectionId = this.resourceTokenCollectionId();
+  public refreshDatabaseForResourceToken(): Promise<void> {
+    const databaseId = userContext.parsedResourceToken?.databaseId;
+    const collectionId = userContext.parsedResourceToken?.collectionId;
     if (!databaseId || !collectionId) {
-      return Q.reject();
+      return Promise.reject();
     }
 
-    const deferred: Q.Deferred<void> = Q.defer();
-    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
+    return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
       this.selectedNode(this.resourceTokenCollection());
-      deferred.resolve();
     });
-
-    return deferred.promise;
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
@@ -713,29 +693,10 @@ export default class Explorer {
     return false;
   }
 
-  public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
-    if (inputs != null) {
-      // In development mode, save the iframe message from the portal in session storage.
-      // This allows webpack hot reload to funciton properly
-      if (process.env.NODE_ENV === "development") {
-        sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
-      }
-      this.isAccountReady(true);
-    }
-  }
-
   public findSelectedCollection(): ViewModels.Collection {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  public isRunningOnNationalCloud(): boolean {
-    return (
-      userContext.portalEnv === "blackforest" ||
-      userContext.portalEnv === "fairfax" ||
-      userContext.portalEnv === "mooncake"
-    );
   }
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
@@ -748,7 +709,7 @@ export default class Explorer {
     const databasesToLoad =
       this.databases().length <= Explorer.MaxNbDatabasesToAutoExpand
         ? this.databases()
-        : this.databases().filter((db) => db.isDatabaseExpanded());
+        : this.databases().filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
 
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -1417,7 +1378,12 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.openCassandraAddCollectionPane();
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          "Add Table",
+          <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
+        );
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1542,14 +1508,6 @@ export default class Explorer {
       );
   }
 
-  public openCassandraAddCollectionPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Add Table",
-        <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
-      );
-  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     useSidePanel
       .getState()
@@ -1598,8 +1556,5 @@ export default class Explorer {
 
   public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
     useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={queryViewModal} />);
-  }
-  public openSettingPane(): void {
-    useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
   }
 }
