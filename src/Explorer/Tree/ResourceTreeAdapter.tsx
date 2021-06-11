@@ -22,6 +22,7 @@ import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
@@ -286,9 +287,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     }
 
-    if (userContext.apiType !== "Cassandra" || !this.container.isServerlessEnabled()) {
+    if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
       children.push({
-        label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
+        label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
         isSelected: () =>
           this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Settings]),

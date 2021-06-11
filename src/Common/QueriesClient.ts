@@ -1,4 +1,3 @@
-import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as _ from "underscore";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -7,13 +6,11 @@ import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { userContext } from "../UserContext";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
-import * as QueryUtils from "../Utils/QueryUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
 import { createCollection } from "./dataAccess/createCollection";
 import { createDocument } from "./dataAccess/createDocument";
 import { deleteDocument } from "./dataAccess/deleteDocument";
 import { queryDocuments } from "./dataAccess/queryDocuments";
-import { queryDocumentsPage } from "./dataAccess/queryDocumentsPage";
 import { handleError } from "./ErrorHandlingUtils";
 
 export class QueriesClient {
@@ -100,45 +97,35 @@ export class QueriesClient {
 
     const options: any = { enableCrossPartitionQuery: true };
     const clearMessage = NotificationConsoleUtils.logConsoleProgress("Fetching saved queries");
-    const queryIterator: QueryIterator<ItemDefinition & Resource> = queryDocuments(
+    const results = await queryDocuments(
       SavedQueries.DatabaseName,
       SavedQueries.CollectionName,
       this.fetchQueriesQuery(),
       options
-    );
-    const fetchQueries = async (firstItemIndex: number): Promise<ViewModels.QueryResults> =>
-      await queryDocumentsPage(queriesCollection.id(), queryIterator, firstItemIndex);
-    return QueryUtils.queryAllPages(fetchQueries)
-      .then(
-        (results: ViewModels.QueryResults) => {
-          let queries: DataModels.Query[] = _.map(results.documents, (document: DataModels.Query) => {
-            if (!document) {
-              return undefined;
-            }
-            const { id, resourceId, query, queryName } = document;
-            const parsedQuery: DataModels.Query = {
-              resourceId: resourceId,
-              queryName: queryName,
-              query: query,
-              id: id,
-            };
-            try {
-              this.validateQuery(parsedQuery);
-              return parsedQuery;
-            } catch (error) {
-              return undefined;
-            }
-          });
-          queries = _.reject(queries, (parsedQuery: DataModels.Query) => !parsedQuery);
-          NotificationConsoleUtils.logConsoleInfo("Successfully fetched saved queries");
-          return Promise.resolve(queries);
-        },
-        (error: any) => {
-          handleError(error, "getSavedQueries", "Failed to fetch saved queries");
-          return Promise.reject(error);
-        }
-      )
-      .finally(() => clearMessage());
+    ).fetchAll();
+
+    let queries: DataModels.Query[] = _.map(results.resources, (document: DataModels.Query) => {
+      if (!document) {
+        return undefined;
+      }
+      const { id, resourceId, query, queryName } = document;
+      const parsedQuery: DataModels.Query = {
+        resourceId: resourceId,
+        queryName: queryName,
+        query: query,
+        id: id,
+      };
+      try {
+        this.validateQuery(parsedQuery);
+        return parsedQuery;
+      } catch (error) {
+        return undefined;
+      }
+    });
+    queries = _.reject(queries, (parsedQuery: DataModels.Query) => !parsedQuery);
+    NotificationConsoleUtils.logConsoleInfo("Successfully fetched saved queries");
+    clearMessage();
+    return queries;
   }
 
   public async deleteQuery(query: DataModels.Query): Promise<void> {

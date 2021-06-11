@@ -142,7 +142,7 @@ export class TabRouteHandler {
         databaseId,
         collectionId
       );
-      userContext.apiType === "SQL" && collection.onDocumentDBDocumentsClick();
+      userContext.apiType === "SQL" && collection?.onDocumentDBDocumentsClick();
     });
   }
 

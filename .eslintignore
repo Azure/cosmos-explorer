@@ -105,8 +105,6 @@ src/Explorer/Notebook/NotebookContainerClient.ts
 src/Explorer/Notebook/NotebookContentClient.ts
 src/Explorer/Notebook/NotebookContentItem.ts
 src/Explorer/Notebook/NotebookUtil.ts
-src/Explorer/OpenActions.test.ts
-src/Explorer/OpenActions.ts
 src/Explorer/OpenActionsStubs.ts
 src/Explorer/Panes/AddDatabasePane.ts
 src/Explorer/Panes/AddDatabasePane.test.ts
