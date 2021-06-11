@@ -31,8 +31,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Account is not serverless - button should be visible", () => {
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
-
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
@@ -41,8 +39,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Account is serverless - button should be hidden", () => {
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => true);
-
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableServerless" }],
+          },
+        } as DatabaseAccount,
+      });
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
@@ -67,7 +70,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     it("Notebooks is already enabled - button should be hidden", () => {
@@ -132,7 +134,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+
       mockExplorer.isShellEnabled = ko.observable(true);
     });
 
@@ -230,7 +232,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     beforeEach(() => {
@@ -324,7 +325,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isRunningOnNationalCloud = ko.observable(false);
       mockExplorer.notebookManager = new NotebookManager();
       mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     beforeEach(() => {
@@ -372,7 +372,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer = {} as Explorer;
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+
       updateUserContext({
         authType: AuthType.ResourceToken,
       });

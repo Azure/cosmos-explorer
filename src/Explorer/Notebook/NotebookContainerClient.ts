@@ -6,6 +6,7 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export class NotebookContainerClient {
@@ -130,16 +131,18 @@ export class NotebookContainerClient {
   }
 
   private async recreateNotebookWorkspaceAsync(): Promise<void> {
-    const explorer = window.dataExplorer;
     const { databaseAccount } = userContext;
     if (!databaseAccount?.id) {
       throw new Error("DataExplorer not initialized");
     }
-
-    const notebookWorkspaceManager = explorer.notebookWorkspaceManager;
     try {
-      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(databaseAccount?.id, "default");
-      await notebookWorkspaceManager.createNotebookWorkspaceAsync(databaseAccount?.id, "default");
+      await destroy(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
+      await createOrUpdate(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
+        "default"
+      );
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);

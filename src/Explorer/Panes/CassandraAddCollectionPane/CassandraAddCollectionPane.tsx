@@ -8,6 +8,7 @@ import * as SharedConstants from "../../../Shared/Constants";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
@@ -40,6 +41,33 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   const [isKeyspaceShared, setIsKeyspaceShared] = useState<boolean>(false);
   const [keyspaceCreateNew, setKeyspaceCreateNew] = useState<boolean>(true);
   const [dedicateTableThroughput, setDedicateTableThroughput] = useState<boolean>(false);
+  const [throughputSpendAck, setThroughputSpendAck] = useState<boolean>(false);
+  const [sharedThroughputSpendAck, setSharedThroughputSpendAck] = useState<boolean>(false);
+
+  const { minAutoPilotThroughput: selectedAutoPilotThroughput } = AutoPilotUtils;
+  const { minAutoPilotThroughput: sharedAutoPilotThroughput } = AutoPilotUtils;
+
+  const _getAutoPilot = (): DataModels.AutoPilotCreationSettings => {
+    if (keyspaceCreateNew && keyspaceHasSharedOffer && isSharedAutoPilotSelected && sharedAutoPilotThroughput) {
+      return {
+        maxThroughput: sharedAutoPilotThroughput * 1,
+      };
+    }
+
+    if (selectedAutoPilotThroughput) {
+      return {
+        maxThroughput: selectedAutoPilotThroughput * 1,
+      };
+    }
+
+    return undefined;
+  };
+
+  const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
+
+  const canConfigureThroughput = !isServerlessAccount();
+
+  const keyspaceOffers = new Map();
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formError, setFormError] = useState<string>("");
   const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
@@ -60,6 +88,81 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
       flight: userContext.addCollectionFlight,
     },
     dataExplorerArea: Constants.Areas.ContextualPane,
+  };
+
+  useEffect(() => {
+    if (!isServerlessAccount()) {
+      setIsAutoPilotSelected(userContext.features.autoscaleDefault);
+    }
+
+    TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
+  }, []);
+
+  useEffect(() => {
+    if (container) {
+      const newKeyspaceIds: ViewModels.Database[] = container.databases();
+      const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
+        if (keyspace && keyspace.offer && !!keyspace.offer()) {
+          keyspaceOffers.set(keyspace.id(), keyspace.offer());
+        }
+        return keyspace.id();
+      });
+      setKeyspaceIds(cachedKeyspaceIdsList);
+    }
+  }, []);
+
+  const _isValid = () => {
+    const sharedAutoscaleThroughput = sharedAutoPilotThroughput * 1;
+    if (
+      isSharedAutoPilotSelected &&
+      sharedAutoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
+      !sharedThroughputSpendAck
+    ) {
+      setFormErrors(`Please acknowledge the estimated monthly spend.`);
+      return false;
+    }
+
+    const dedicatedAutoscaleThroughput = selectedAutoPilotThroughput * 1;
+    if (
+      isAutoPilotSelected &&
+      dedicatedAutoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
+      !throughputSpendAck
+    ) {
+      setFormErrors(`Please acknowledge the estimated monthly spend.`);
+      return false;
+    }
+
+    if ((keyspaceCreateNew && keyspaceHasSharedOffer && isSharedAutoPilotSelected) || isAutoPilotSelected) {
+      const autoPilot = _getAutoPilot();
+      if (
+        !autoPilot ||
+        !autoPilot.maxThroughput ||
+        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
+      ) {
+        setFormErrors(
+          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
+        );
+        return false;
+      }
+      return true;
+    }
+
+    if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !throughputSpendAck) {
+      setFormErrors(`Please acknowledge the estimated daily spend.`);
+      return false;
+    }
+
+    if (
+      keyspaceHasSharedOffer &&
+      keyspaceCreateNew &&
+      keyspaceThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
+      !sharedThroughputSpendAck
+    ) {
+      setFormErrors("Please acknowledge the estimated daily spend");
+      return false;
+    }
+
+    return true;
   };
 
   const onSubmit = async () => {

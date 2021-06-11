@@ -13,11 +13,6 @@ declare global {
      * No new usage of jQuery ($)
      * */
     $: any;
-    /**
-     * @deprecated
-     * No new usage of jQuery
-     * */
-    jQuery: any;
     gitSha: string;
   }
 }
