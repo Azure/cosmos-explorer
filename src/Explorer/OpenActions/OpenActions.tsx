@@ -4,7 +4,9 @@ import { ActionContracts } from "../../Contracts/ExplorerContracts";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useSidePanel } from "../../hooks/useSidePanel";
 import Explorer from "../Explorer";
+import { CassandraAddCollectionPane } from "../Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { SettingsPane } from "../Panes/SettingsPane/SettingsPane";
+import { CassandraAPIDataClient } from "../Tables/TableDataClient";
 
 function generateQueryText(action: ActionContracts.OpenQueryTab, partitionKeyProperty: string): string {
   if (!action.query) {
@@ -142,7 +144,12 @@ function openPane(action: ActionContracts.OpenPane, explorer: Explorer) {
     action.paneKind === ActionContracts.PaneKind.CassandraAddCollection ||
     action.paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.CassandraAddCollection]
   ) {
-    explorer.openCassandraAddCollectionPane();
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Add Table",
+        <CassandraAddCollectionPane explorer={explorer} cassandraApiClient={new CassandraAPIDataClient()} />
+      );
   } else if (
     action.paneKind === ActionContracts.PaneKind.GlobalSettings ||
     action.paneKind === ActionContracts.PaneKind[ActionContracts.PaneKind.GlobalSettings]
