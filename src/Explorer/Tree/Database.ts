@@ -13,6 +13,7 @@ import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
@@ -215,7 +216,7 @@ export default class Database implements ViewModels.Database {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.isOfferRead && !this.container.isServerlessEnabled() && !this.offer()) {
+    if (!this.isOfferRead && !isServerlessAccount() && !this.offer()) {
       const params: DataModels.ReadDatabaseOfferParams = {
         databaseId: this.id(),
         databaseResourceId: this.self,

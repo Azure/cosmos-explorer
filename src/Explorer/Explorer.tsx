@@ -86,7 +86,6 @@ export interface ExplorerParams {
 
 export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public queriesClient: QueriesClient;
@@ -222,13 +221,6 @@ export default class Explorer {
 
       return isCapabilityEnabled("EnableMongo");
     });
-
-    this.isServerlessEnabled = ko.computed(
-      () =>
-        userContext.databaseAccount?.properties?.capabilities?.find(
-          (item) => item.name === Constants.CapabilityNames.EnableServerless
-        ) !== undefined
-    );
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
