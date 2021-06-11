@@ -34,6 +34,7 @@ import {
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
+import { isRunningOnNationalCloud } from "../Utils/CloudUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -224,9 +225,7 @@ export default class Explorer {
 
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal &&
-        !this.isRunningOnNationalCloud() &&
-        userContext.apiType !== "Gremlin"
+        configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin"
     );
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
@@ -698,14 +697,6 @@ export default class Explorer {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  public isRunningOnNationalCloud(): boolean {
-    return (
-      userContext.portalEnv === "blackforest" ||
-      userContext.portalEnv === "fairfax" ||
-      userContext.portalEnv === "mooncake"
-    );
   }
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {

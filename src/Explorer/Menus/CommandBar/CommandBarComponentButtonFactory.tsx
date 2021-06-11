@@ -25,6 +25,7 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
+import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
@@ -81,7 +82,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       }
     }
   } else {
-    if (!container.isRunningOnNationalCloud()) {
+    if (!isRunningOnNationalCloud()) {
       buttons.push(createEnableNotebooksButton(container));
     }
   }
