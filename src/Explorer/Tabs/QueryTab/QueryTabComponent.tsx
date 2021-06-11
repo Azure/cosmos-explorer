@@ -1021,7 +1021,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                             {this.state.allResultsMetadata.length > 0 && !this.state.error && (
                               <div className="queryMetricsSummaryContainer">
                                 <div className="queryMetricsSummary">
-                                  <caption>Query Statistics</caption>
+                                  <h5>Query Statistics</h5>
                                   <DetailsList
                                     items={this.state.items}
                                     columns={this.state.columns}
