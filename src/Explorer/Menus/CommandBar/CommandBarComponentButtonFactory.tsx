@@ -24,10 +24,13 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
+import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
+import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
+import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 
 let counter = 0;
 
@@ -79,7 +82,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
       }
     }
   } else {
-    if (!container.isRunningOnNationalCloud()) {
+    if (!isRunningOnNationalCloud()) {
       buttons.push(createEnableNotebooksButton(container));
     }
   }
@@ -154,7 +157,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     {
       iconSrc: SettingsIcon,
       iconAlt: "Settings",
-      onCommandClick: container.openSettingPane,
+      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane />),
       commandButtonLabel: undefined,
       ariaLabel: "Settings",
       tooltipText: "Settings",
@@ -234,7 +237,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     return undefined;
   }
 
-  if (container.isServerlessEnabled()) {
+  if (isServerlessAccount()) {
     return undefined;
   }
 

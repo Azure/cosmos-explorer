@@ -27,12 +27,9 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-      mockExplorer.isRunningOnNationalCloud = () => false;
     });
 
     it("Account is not serverless - button should be visible", () => {
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
-
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
@@ -41,8 +38,13 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Account is serverless - button should be hidden", () => {
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => true);
-
+      updateUserContext({
+        databaseAccount: {
+          properties: {
+            capabilities: [{ name: "EnableServerless" }],
+          },
+        } as DatabaseAccount,
+      });
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableAzureSynapseLinkBtn = buttons.find(
         (button) => button.commandButtonLabel === enableAzureSynapseLinkBtnLabel
@@ -57,6 +59,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     beforeAll(() => {
       mockExplorer = {} as Explorer;
       updateUserContext({
+        portalEnv: "prod",
         databaseAccount: {
           properties: {
             capabilities: [{ name: "EnableTable" }],
@@ -67,13 +70,17 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+    });
+
+    afterEach(() => {
+      updateUserContext({
+        portalEnv: "prod",
+      });
     });
 
     it("Notebooks is already enabled - button should be hidden", () => {
       mockExplorer.isNotebookEnabled = ko.observable(true);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
-      mockExplorer.isRunningOnNationalCloud = ko.observable(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
@@ -83,7 +90,9 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Account is running on one of the national clouds - button should be hidden", () => {
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-      mockExplorer.isRunningOnNationalCloud = ko.observable(true);
+      updateUserContext({
+        portalEnv: "mooncake",
+      });
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
@@ -93,7 +102,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is not enabled but is available - button should be shown and enabled", () => {
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
-      mockExplorer.isRunningOnNationalCloud = ko.observable(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
@@ -105,7 +113,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-      mockExplorer.isRunningOnNationalCloud = ko.observable(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
@@ -132,7 +139,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+
       mockExplorer.isShellEnabled = ko.observable(true);
     });
 
@@ -148,7 +155,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       });
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-      mockExplorer.isRunningOnNationalCloud = ko.observable(false);
+
       mockExplorer.isShellEnabled = ko.observable(true);
     });
 
@@ -162,7 +169,9 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Running on a national cloud - button should be hidden", () => {
-      mockExplorer.isRunningOnNationalCloud = ko.observable(true);
+      updateUserContext({
+        portalEnv: "mooncake",
+      });
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
@@ -230,7 +239,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
 
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     beforeEach(() => {
@@ -243,7 +251,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
       });
       mockExplorer.isNotebookEnabled = ko.observable(false);
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-      mockExplorer.isRunningOnNationalCloud = ko.observable(false);
     });
 
     it("Cassandra Api not available - button should be hidden", () => {
@@ -261,7 +268,9 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Running on a national cloud - button should be hidden", () => {
-      mockExplorer.isRunningOnNationalCloud = ko.observable(true);
+      updateUserContext({
+        portalEnv: "mooncake",
+      });
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
@@ -321,10 +330,9 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer.isSynapseLinkUpdating = ko.observable(false);
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-      mockExplorer.isRunningOnNationalCloud = ko.observable(false);
+
       mockExplorer.notebookManager = new NotebookManager();
       mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
     });
 
     beforeEach(() => {
@@ -372,7 +380,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       mockExplorer = {} as Explorer;
       mockExplorer.isDatabaseNodeOrNoneSelected = () => true;
       mockExplorer.isResourceTokenCollectionNodeSelected = ko.computed(() => true);
-      mockExplorer.isServerlessEnabled = ko.computed<boolean>(() => false);
+
       updateUserContext({
         authType: AuthType.ResourceToken,
       });

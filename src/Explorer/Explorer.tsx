@@ -6,21 +6,18 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ExplorerMetrics } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { Splitter, SplitterBounds, SplitterDirection } from "../Common/Splitter";
 import { configContext, Platform } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -28,9 +25,16 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import {
+  get as getWorkspace,
+  listByDatabaseAccount,
+  listConnectionInfo,
+  start,
+} from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
+import { isRunningOnNationalCloud } from "../Utils/CloudUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -38,7 +42,6 @@ import * as ComponentRegisterer from "./ComponentRegisterer";
 import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
-import { ConsoleData } from "./Menus/NotificationConsole/NotificationConsoleComponent";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
 import { SnapshotRequest } from "./Notebook/NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./Notebook/NotebookContentItem";
@@ -54,7 +57,6 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
-import { SettingsPane } from "./Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
@@ -80,24 +82,15 @@ BindingHandlersRegisterer.registerBindingHandlers();
 var tmp = ComponentRegisterer;
 
 export interface ExplorerParams {
-  setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
   tabsManager: TabsManager;
 }
 
 export default class Explorer {
-  public collapsedResourceTreeWidth: number = ExplorerMetrics.CollapsedResourceTreeWidth;
-
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  public isServerlessEnabled: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
   public canSaveQueries: ko.Computed<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
-  public splitter: Splitter;
-
-  private setNotificationConsoleData: (consoleData: ConsoleData) => void;
-  private setInProgressConsoleDataIdToBeDeleted: (id: string) => void;
 
   // Resource Tree
   public databases: ko.ObservableArray<ViewModels.Database>;
@@ -107,10 +100,7 @@ export default class Explorer {
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
-  public resourceTokenDatabaseId: ko.Observable<string>;
-  public resourceTokenCollectionId: ko.Observable<string>;
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
-  public resourceTokenPartitionKey: ko.Observable<string>;
   public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
   public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
@@ -128,7 +118,6 @@ export default class Explorer {
   public isNotebookEnabled: ko.Observable<boolean>;
   public isNotebooksEnabledForAccount: ko.Observable<boolean>;
   public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  public notebookWorkspaceManager: NotebookWorkspaceManager;
   public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
   public isSynapseLinkUpdating: ko.Observable<boolean>;
   public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
@@ -146,9 +135,6 @@ export default class Explorer {
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
   constructor(params?: ExplorerParams) {
-    this.setNotificationConsoleData = params?.setNotificationConsoleData;
-    this.setInProgressConsoleDataIdToBeDeleted = params?.setInProgressConsoleDataIdToBeDeleted;
-
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -164,7 +150,6 @@ export default class Explorer {
           ? this.refreshDatabaseForResourceToken()
           : this.refreshAllDatabases(true);
         RouteHandler.getInstance().initHandler();
-        this.notebookWorkspaceManager = new NotebookWorkspaceManager();
         await this._refreshNotebooksEnabledStateForAccount();
         this.isNotebookEnabled(
           userContext.authType !== AuthType.ResourceToken &&
@@ -190,11 +175,7 @@ export default class Explorer {
     this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
 
     this.queriesClient = new QueriesClient(this);
-
-    this.resourceTokenDatabaseId = ko.observable<string>();
-    this.resourceTokenCollectionId = ko.observable<string>();
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
-    this.resourceTokenPartitionKey = ko.observable<string>();
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     this.databases = ko.observableArray<ViewModels.Database>();
@@ -230,17 +211,6 @@ export default class Explorer {
       );
     });
 
-    const splitterBounds: SplitterBounds = {
-      min: ExplorerMetrics.SplitterMinWidth,
-      max: ExplorerMetrics.SplitterMaxWidth,
-    };
-    this.splitter = new Splitter({
-      splitterId: "h_splitter1",
-      leftId: "resourcetree",
-      bounds: splitterBounds,
-      direction: SplitterDirection.Vertical,
-    });
-
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
       if (userContext.features.enableFixedCollectionWithSharedThroughput) {
         return true;
@@ -253,18 +223,9 @@ export default class Explorer {
       return isCapabilityEnabled("EnableMongo");
     });
 
-    this.isServerlessEnabled = ko.computed(
-      () =>
-        userContext.databaseAccount?.properties?.capabilities?.find(
-          (item) => item.name === Constants.CapabilityNames.EnableServerless
-        ) !== undefined
-    );
-
     this.isHostedDataExplorerEnabled = ko.computed<boolean>(
       () =>
-        configContext.platform === Platform.Portal &&
-        !this.isRunningOnNationalCloud() &&
-        userContext.apiType !== "Gremlin"
+        configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin"
     );
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
@@ -387,6 +348,7 @@ export default class Explorer {
     if (configContext.enableSchemaAnalyzer) {
       userContext.features.enableSchemaAnalyzer = true;
     }
+    this.isAccountReady(true);
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -457,29 +419,17 @@ export default class Explorer {
     return this.selectedNode() == null;
   }
 
-  public logConsoleData(consoleData: ConsoleData): void {
-    this.setNotificationConsoleData(consoleData);
-  }
-
-  public deleteInProgressConsoleDataWithId(id: string): void {
-    this.setInProgressConsoleDataIdToBeDeleted(id);
-  }
-
-  public refreshDatabaseForResourceToken(): Q.Promise<any> {
-    const databaseId = this.resourceTokenDatabaseId();
-    const collectionId = this.resourceTokenCollectionId();
+  public refreshDatabaseForResourceToken(): Promise<void> {
+    const databaseId = userContext.parsedResourceToken?.databaseId;
+    const collectionId = userContext.parsedResourceToken?.collectionId;
     if (!databaseId || !collectionId) {
-      return Q.reject();
+      return Promise.reject();
     }
 
-    const deferred: Q.Deferred<void> = Q.defer();
-    readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
+    return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
       this.selectedNode(this.resourceTokenCollection());
-      deferred.resolve();
     });
-
-    return deferred.promise;
   }
 
   public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
@@ -597,37 +547,19 @@ export default class Explorer {
     this._isInitializingNotebooks = true;
 
     await this.ensureNotebookWorkspaceRunning();
-    let connectionInfo: DataModels.NotebookWorkspaceConnectionInfo = {
-      authToken: undefined,
-      notebookServerEndpoint: undefined,
-    };
-    try {
-      connectionInfo = await this.notebookWorkspaceManager.getNotebookConnectionInfoAsync(
-        databaseAccount.id,
-        "default"
-      );
-    } catch (error) {
-      this._isInitializingNotebooks = false;
-      handleError(
-        error,
-        "initNotebooks/getNotebookConnectionInfoAsync",
-        `Failed to get notebook workspace connection info: ${getErrorMessage(error)}`
-      );
-      throw error;
-    } finally {
-      // Overwrite with feature flags
-      if (userContext.features.notebookServerUrl) {
-        connectionInfo.notebookServerEndpoint = userContext.features.notebookServerUrl;
-      }
+    const connectionInfo = await listConnectionInfo(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      databaseAccount.name,
+      "default"
+    );
 
-      if (userContext.features.notebookServerToken) {
-        connectionInfo.authToken = userContext.features.notebookServerToken;
-      }
-
-      this.notebookServerInfo(connectionInfo);
-      this.notebookServerInfo.valueHasMutated();
-      this.refreshNotebookList();
-    }
+    this.notebookServerInfo({
+      notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
+      authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+    });
+    this.notebookServerInfo.valueHasMutated();
+    this.refreshNotebookList();
 
     this._isInitializingNotebooks = false;
   }
@@ -659,7 +591,11 @@ export default class Explorer {
     }
 
     try {
-      const workspaces = await this.notebookWorkspaceManager.getNotebookWorkspacesAsync(databaseAccount?.id);
+      const { value: workspaces } = await listByDatabaseAccount(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name
+      );
       return workspaces && workspaces.length > 0 && workspaces.some((workspace) => workspace.name === "default");
     } catch (error) {
       Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
@@ -674,8 +610,10 @@ export default class Explorer {
 
     let clearMessage;
     try {
-      const notebookWorkspace = await this.notebookWorkspaceManager.getNotebookWorkspaceAsync(
-        userContext.databaseAccount.id,
+      const notebookWorkspace = await getWorkspace(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
         "default"
       );
       if (
@@ -685,7 +623,7 @@ export default class Explorer {
         notebookWorkspace.properties.status.toLowerCase() === "stopped"
       ) {
         clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
-        await this.notebookWorkspaceManager.startNotebookWorkspaceAsync(userContext.databaseAccount.id, "default");
+        await start(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
       }
     } catch (error) {
       handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
@@ -755,29 +693,10 @@ export default class Explorer {
     return false;
   }
 
-  public configure(inputs: ViewModels.DataExplorerInputsFrame): void {
-    if (inputs != null) {
-      // In development mode, save the iframe message from the portal in session storage.
-      // This allows webpack hot reload to funciton properly
-      if (process.env.NODE_ENV === "development") {
-        sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(inputs));
-      }
-      this.isAccountReady(true);
-    }
-  }
-
   public findSelectedCollection(): ViewModels.Collection {
     return (this.selectedNode().nodeKind === "Collection"
       ? this.selectedNode()
       : this.selectedNode().collection) as ViewModels.Collection;
-  }
-
-  public isRunningOnNationalCloud(): boolean {
-    return (
-      userContext.portalEnv === "blackforest" ||
-      userContext.portalEnv === "fairfax" ||
-      userContext.portalEnv === "mooncake"
-    );
   }
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
@@ -790,7 +709,7 @@ export default class Explorer {
     const databasesToLoad =
       this.databases().length <= Explorer.MaxNbDatabasesToAutoExpand
         ? this.databases()
-        : this.databases().filter((db) => db.isDatabaseExpanded());
+        : this.databases().filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
 
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -1459,7 +1378,12 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.openCassandraAddCollectionPane();
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          "Add Table",
+          <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
+        );
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1584,14 +1508,6 @@ export default class Explorer {
       );
   }
 
-  public openCassandraAddCollectionPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Add Table",
-        <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
-      );
-  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     useSidePanel
       .getState()
@@ -1640,8 +1556,5 @@ export default class Explorer {
 
   public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
     useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={queryViewModal} />);
-  }
-  public openSettingPane(): void {
-    useSidePanel.getState().openSidePanel("Settings", <SettingsPane />);
   }
 }

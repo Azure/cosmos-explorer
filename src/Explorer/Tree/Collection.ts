@@ -19,6 +19,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
+import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
@@ -1150,7 +1151,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.isOfferRead && !this.container.isServerlessEnabled() && !this.offer()) {
+    if (!this.isOfferRead && !isServerlessAccount() && !this.offer()) {
       const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
         databaseName: this.databaseId,
         collectionName: this.id(),
