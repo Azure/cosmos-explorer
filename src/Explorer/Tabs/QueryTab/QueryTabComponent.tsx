@@ -11,11 +11,12 @@ import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPag
 import { getErrorMessage } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
 import { MinimalQueryIterator } from "../../../Common/IteratorUtilities";
+import { queryIterator } from "../../../Common/MongoProxyClient";
+import MongoUtility from "../../../Common/MongoUtility";
 import { Splitter } from "../../../Common/Splitter";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import "../../../Explorer/Tabs/QueryTab.less";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
@@ -62,6 +63,9 @@ export interface IQueryTabComponentProps {
   activeTab?: TabsBase;
   tabManager?: TabsManager;
   onTabAccessor: (instance: ITabAccessor) => void;
+  isPreferredApiMongoDB?: boolean;
+  monacoEditorSetting?: string;
+  viewModelcollection?: ViewModels.Collection;
 }
 
 interface IQueryTabStates {
@@ -107,10 +111,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   public maybeSubQuery: boolean;
   public isCloseClicked: boolean;
   public allItems: IDocument[];
+  public defaultQueryText: string;
 
   constructor(props: IQueryTabComponentProps) {
     super(props);
-    const defaultQueryText = props.queryText !== void 0 ? props.queryText : "SELECT * FROM c";
     const columns: IColumn[] = [
       {
         key: "column1",
@@ -137,6 +141,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       },
     ];
 
+    if (this.props.isPreferredApiMongoDB) {
+      this.defaultQueryText = props.queryText;
+    } else {
+      this.defaultQueryText = props.queryText !== void 0 ? props.queryText : "SELECT * FROM c";
+    }
+
     this.state = {
       queryMetrics: new Map(),
       aggregatedQueryMetrics: undefined,
@@ -146,11 +156,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       isQueryMetricsEnabled: userContext.apiType === "SQL" || false,
       showingDocumentsDisplayText: this.resultsDisplay,
       requestChargeDisplayText: "",
-      initialEditorContent: defaultQueryText,
-      sqlQueryEditorContent: defaultQueryText,
+      initialEditorContent: this.defaultQueryText,
+      sqlQueryEditorContent: this.defaultQueryText,
       selectedContent: "",
       _executeQueryButtonTitle: "Execute Query",
-      sqlStatementToExecute: defaultQueryText,
+      sqlStatementToExecute: this.defaultQueryText,
       queryResults: "",
       statusMessge: "",
       statusIcon: "",
@@ -167,14 +177,16 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.splitterId = this.props.tabId + "_splitter";
     this.queryEditorId = `queryeditor${this.props.tabId}`;
     this._partitionKey = props.partitionKey;
-    this.isPreferredApiMongoDB = false;
-    this.monacoSettings = new ViewModels.MonacoEditorSettings("sql", false);
+    this.isPreferredApiMongoDB = this.props.isPreferredApiMongoDB;
+    this.monacoSettings = new ViewModels.MonacoEditorSettings(this.props.monacoEditorSetting, false);
+
     this.executeQueryButton = {
       enabled: !!this.state.sqlQueryEditorContent && this.state.sqlQueryEditorContent.length > 0,
       visible: true,
     };
     const sql = this.state.sqlQueryEditorContent;
     this.maybeSubQuery = sql && /.*\(.*SELECT.*\)/i.test(sql);
+
     this.saveQueryButton = {
       enabled: this.state._isSaveQueriesEnabled,
       visible: this.state._isSaveQueriesEnabled,
@@ -230,69 +242,102 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       },
       {
         metric: "Retrieved document count",
-        value: this.state.aggregatedQueryMetrics.retrievedDocumentCount.toString(),
+        value:
+          this.state.aggregatedQueryMetrics.retrievedDocumentCount !== undefined
+            ? this.state.aggregatedQueryMetrics.retrievedDocumentCount.toString()
+            : "",
         toolTip: "Total number of retrieved documents",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Retrieved document size",
-        value: this.state.aggregatedQueryMetrics.retrievedDocumentSize.toString() + " bytes",
+        value:
+          this.state.aggregatedQueryMetrics.retrievedDocumentSize !== undefined
+            ? this.state.aggregatedQueryMetrics.retrievedDocumentSize.toString() + " bytes"
+            : "",
         toolTip: "Total size of retrieved documents in bytes",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Output document count",
-        value: this.state.aggregatedQueryMetrics.outputDocumentCount.toString(),
+        value:
+          this.state.aggregatedQueryMetrics.outputDocumentCount !== undefined
+            ? this.state.aggregatedQueryMetrics.outputDocumentCount.toString()
+            : "",
         toolTip: "Number of output documents",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Output document size",
-        value: this.state.aggregatedQueryMetrics.outputDocumentSize.toString() + " bytes",
+        value:
+          this.state.aggregatedQueryMetrics.outputDocumentSize !== undefined
+            ? this.state.aggregatedQueryMetrics.outputDocumentSize.toString() + " bytes"
+            : "",
         toolTip: "Total size of output documents in bytes",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Index hit document count",
-        value: this.state.aggregatedQueryMetrics.indexHitDocumentCount.toString(),
+        value:
+          this.state.aggregatedQueryMetrics.indexHitDocumentCount !== undefined
+            ? this.state.aggregatedQueryMetrics.indexHitDocumentCount.toString()
+            : "",
         toolTip: "Total number of documents matched by the filter",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Index lookup time",
-        value: this.state.aggregatedQueryMetrics.indexLookupTime.toString() + " ms",
+        value:
+          this.state.aggregatedQueryMetrics.indexLookupTime !== undefined
+            ? this.state.aggregatedQueryMetrics.indexLookupTime.toString() + " ms"
+            : "",
         toolTip: "Time spent in physical index layer",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Document load time",
-        value: this.state.aggregatedQueryMetrics.documentLoadTime.toString() + " ms",
+        value:
+          this.state.aggregatedQueryMetrics.documentLoadTime !== undefined
+            ? this.state.aggregatedQueryMetrics.documentLoadTime.toString() + " ms"
+            : "",
         toolTip: "Time spent in loading documents",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Query engine execution time",
-        value: this.state.aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime.toString() + " ms",
+        value:
+          this.state.aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime !== undefined
+            ? this.state.aggregatedQueryMetrics.runtimeExecutionTimes.queryEngineExecutionTime.toString() + " ms"
+            : "",
         toolTip:
           "Time spent by the query engine to execute the query expression (excludes other execution times like load documents or write results)",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "System function execution time",
-        value: this.state.aggregatedQueryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime.toString() + " ms",
+        value:
+          this.state.aggregatedQueryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime !== undefined
+            ? this.state.aggregatedQueryMetrics.runtimeExecutionTimes.systemFunctionExecutionTime.toString() + " ms"
+            : "",
         toolTip: "Total time spent executing system (built-in) functions",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "User defined function execution time",
         value:
-          this.state.aggregatedQueryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime.toString() + " ms",
+          this.state.aggregatedQueryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime !== undefined
+            ? this.state.aggregatedQueryMetrics.runtimeExecutionTimes.userDefinedFunctionExecutionTime.toString() +
+              " ms"
+            : "",
         toolTip: "Total time spent executing user-defined functions",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
       {
         metric: "Document write time",
-        value: this.state.aggregatedQueryMetrics.documentWriteTime.toString() + " ms",
+        value:
+          this.state.aggregatedQueryMetrics.documentWriteTime !== undefined
+            ? this.state.aggregatedQueryMetrics.documentWriteTime.toString() + " ms"
+            : "",
         toolTip: "Time spent to write query result set to response buffer",
         isQueryMetricsEnabled: this.state.isQueryMetricsEnabled,
       },
@@ -455,13 +500,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     });
 
     if (this._iterator === undefined) {
-      this._initIterator();
+      if (this.isPreferredApiMongoDB) {
+        this._initIteratorMongo();
+      } else {
+        this._initIterator();
+      }
     }
 
     await this._queryDocumentsPage(firstItemIndex);
   }
 
   private async _queryDocumentsPage(firstItemIndex: number): Promise<void> {
+    let results: string;
+
     this.props.tabsBaseInstance.isExecutionError(false);
     this.setState({
       isExecutionError: false,
@@ -496,7 +547,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       });
 
       const documents = queryResults.documents;
-      const results = this.props.tabsBaseInstance.renderObjectForEditor(documents, undefined, 4);
+      if (this.isPreferredApiMongoDB) {
+        results = MongoUtility.tojson(documents, undefined, false);
+      } else {
+        results = this.props.tabsBaseInstance.renderObjectForEditor(documents, undefined, 4);
+      }
 
       const resultsDisplay: string =
         queryResults.itemCount > 0 ? `${queryResults.firstItemIndex} - ${queryResults.lastItemIndex}` : `0 - 0`;
@@ -536,6 +591,10 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   private _updateQueryMetricsMap(metricsMap: { [partitionKeyRange: string]: DataModels.QueryMetrics }): void {
     if (!metricsMap) {
+      this.allItems = this.generateDetailsList();
+      this.setState({
+        items: this.allItems,
+      });
       return;
     }
 
@@ -653,6 +712,21 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       this.state.sqlStatementToExecute,
       options
     );
+  }
+
+  protected _initIteratorMongo(): Promise<MinimalQueryIterator> {
+    //eslint-disable-next-line
+    const options: any = {};
+    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
+    this._iterator = queryIterator(
+      this.props.collection.databaseId,
+      this.props.viewModelcollection,
+      this.state.sqlStatementToExecute
+    );
+    const mongoPromise: Promise<MinimalQueryIterator> = new Promise((resolve) => {
+      resolve(this._iterator);
+    });
+    return mongoPromise;
   }
 
   //eslint-disable-next-line
@@ -785,6 +859,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.setState({
       sqlQueryEditorContent: newContent,
     });
+    if (this.isPreferredApiMongoDB) {
+      if (newContent.length > 0) {
+        this.executeQueryButton = {
+          enabled: true,
+          visible: true,
+        };
+      } else {
+        this.executeQueryButton = {
+          enabled: false,
+          visible: true,
+        };
+      }
+    }
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
@@ -811,27 +898,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
       <Fragment>
         <div className="tab-pane" id={this.props.tabId} role="tabpanel">
           <div className="tabPaneContentContainer">
-            {this.isPreferredApiMongoDB && this.state.sqlQueryEditorContent.length === 0 && (
-              <div className="mongoQueryHelper">
-                Start by writing a Mongo query, for example: <strong>{{ id: "foo" }}</strong> or <strong>{}</strong> to
-                get all the documents.
-              </div>
-            )}
-            {this.maybeSubQuery && (
-              <div className="warningErrorContainer" aria-live="assertive">
-                <div className="warningErrorContent">
-                  <span>
-                    <img className="paneErrorIcon" src="/info_color.svg" alt="Error" />
-                  </span>
-                  <span className="warningErrorDetailsLinkContainer">
-                    We have detected you may be using a subquery. Non-correlated subqueries are not currently supported.
-                    <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery">
-                      Please see Cosmos sub query documentation for further information
-                    </a>
-                  </span>
-                </div>
-              </div>
-            )}
             <SplitterLayout vertical={true} primaryIndex={0} primaryMinSize={100} secondaryMinSize={200}>
               <Fragment>
                 <div className="queryEditor" style={{ height: "100%" }}>
@@ -847,6 +913,32 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                 </div>
               </Fragment>
               <Fragment>
+                {this.isPreferredApiMongoDB && this.state.sqlQueryEditorContent.length === 0 && (
+                  <div className="mongoQueryHelper">
+                    Start by writing a Mongo query, for example: <strong>{"{'id':'foo'}"}</strong> or{" "}
+                    <strong>
+                      {"{ "}
+                      {" }"}
+                    </strong>{" "}
+                    to get all the documents.
+                  </div>
+                )}
+                {this.maybeSubQuery && (
+                  <div className="warningErrorContainer" aria-live="assertive">
+                    <div className="warningErrorContent">
+                      <span>
+                        <img className="paneErrorIcon" src="images/info_color.svg" alt="Error" />
+                      </span>
+                      <span className="warningErrorDetailsLinkContainer">
+                        We have detected you may be using a subquery. Non-correlated subqueries are not currently
+                        supported.
+                        <a href="https://docs.microsoft.com/en-us/azure/cosmos-db/sql-query-subquery">
+                          Please see Cosmos sub query documentation for further information
+                        </a>
+                      </span>
+                    </div>
+                  </div>
+                )}
                 {/* <!-- Query Errors Tab - Start--> */}
                 {!!this.state.error && (
                   <div className="active queryErrorsHeaderContainer">
@@ -877,7 +969,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                             headerText="Results"
                             headerButtonProps={{
                               "data-order": 1,
-                              "data-title": "My Files Title",
+                              "data-title": "Results",
                             }}
                             style={{ height: "100%" }}
                           >
@@ -903,12 +995,19 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                               this.state.queryResults.length > 0 &&
                               this.state.allResultsMetadata.length > 0 &&
                               !this.state.error && (
-                                <EditorReact
-                                  language={"json"}
-                                  content={this.state.queryResults}
-                                  isReadOnly={true}
-                                  ariaLabel={"Query results"}
-                                />
+                                <div
+                                  style={{
+                                    paddingBottom: "100px",
+                                    height: "100%",
+                                  }}
+                                >
+                                  <EditorReact
+                                    language={"json"}
+                                    content={this.state.queryResults}
+                                    isReadOnly={true}
+                                    ariaLabel={"Query results"}
+                                  />
+                                </div>
                               )}
                           </PivotItem>
                           <PivotItem

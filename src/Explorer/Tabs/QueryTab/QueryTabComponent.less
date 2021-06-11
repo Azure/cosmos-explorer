@@ -16,20 +16,21 @@
 
     .mongoQueryHelper {
       margin: @DefaultSpace 0px 0px 44px;
-      position: absolute;
-      top: 115px; //this is to avoid the jump of query editor
     }
 
     .splitter-layout {
-      .queryEditor {
-        .flex-display();
-        height: 100%;
-        width: 100%;
-        margin-top: @SmallSpace;
-
-        .jsonEditor {
-          border: none;
+      .layout-pane-primary {
+        overflow: hidden !important;
+        .queryEditor {
+          .flex-display();
+          height: 100%;
+          width: 100%;
           margin-top: @SmallSpace;
+
+          .jsonEditor {
+            border: none;
+            margin-top: @SmallSpace;
+          }
         }
       }
 
@@ -97,7 +98,7 @@
 
         .result-metadata {
           padding: @LargeSpace @SmallSpace @MediumSpace @MediumSpace;
-
+          height: auto !important;
           .queryResultDivider {
             margin-left: @SmallSpace;
             margin-right: @SmallSpace;
