@@ -23,7 +23,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "databases": [Function],
             "isAccountReady": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
-            "isHostedDataExplorerEnabled": [Function],
             "isNotebookEnabled": [Function],
             "isNotebooksEnabledForAccount": [Function],
             "isResourceTokenCollectionNodeSelected": [Function],
