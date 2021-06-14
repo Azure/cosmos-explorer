@@ -281,7 +281,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
-  protected renderObjectForEditor(value: any, replacer: any, space: string | number): string {
+  public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return MongoUtility.tojson(value, null, false);
   }
 

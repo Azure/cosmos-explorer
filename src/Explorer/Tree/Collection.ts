@@ -28,9 +28,9 @@ import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
-import MongoQueryTab from "../Tabs/MongoQueryTab";
+import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
-import QueryTab from "../Tabs/QueryTab";
+import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import ConflictId from "./ConflictId";
@@ -617,19 +617,22 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const queryTab: QueryTab = new QueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
-      queryText: queryText,
-      partitionKey: collection.partitionKey,
-      onLoadStartKey: startKey,
-    });
-
-    this.container.tabsManager.activateNewTab(queryTab);
+    this.container.tabsManager.activateNewTab(
+      new NewQueryTab(
+        {
+          tabKind: ViewModels.CollectionTabKind.Query,
+          title: title,
+          tabPath: "",
+          collection: this,
+          node: this,
+          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
+          queryText: queryText,
+          partitionKey: collection.partitionKey,
+          onLoadStartKey: startKey,
+        },
+        { container: this.container }
+      )
+    );
   }
 
   public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
@@ -645,18 +648,24 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const mongoQueryTab: MongoQueryTab = new MongoQueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
-      partitionKey: collection.partitionKey,
-      onLoadStartKey: startKey,
-    });
+    const newMongoQueryTab: NewMongoQueryTab = new NewMongoQueryTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.Query,
+        title: title,
+        tabPath: "",
+        collection: this,
+        node: this,
+        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
+        partitionKey: collection.partitionKey,
+        onLoadStartKey: startKey,
+      },
+      {
+        container: this.container,
+        viewModelcollection: this,
+      }
+    );
 
-    this.container.tabsManager.activateNewTab(mongoQueryTab);
+    this.container.tabsManager.activateNewTab(newMongoQueryTab);
   }
 
   public onNewGraphClick() {

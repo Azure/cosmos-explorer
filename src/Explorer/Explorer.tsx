@@ -12,7 +12,7 @@ import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility"
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { configContext, Platform } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
@@ -34,7 +34,6 @@ import {
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
-import { isRunningOnNationalCloud } from "../Utils/CloudUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -105,9 +104,6 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   public gitHubOAuthService: GitHubOAuthService;
-
-  // features
-  public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -218,11 +214,6 @@ export default class Explorer {
 
       return isCapabilityEnabled("EnableMongo");
     });
-
-    this.isHostedDataExplorerEnabled = ko.computed<boolean>(
-      () =>
-        configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin"
-    );
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -1374,7 +1365,12 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.openCassandraAddCollectionPane();
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          "Add Table",
+          <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
+        );
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1499,14 +1495,6 @@ export default class Explorer {
       );
   }
 
-  public openCassandraAddCollectionPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Add Table",
-        <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
-      );
-  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     useSidePanel
       .getState()

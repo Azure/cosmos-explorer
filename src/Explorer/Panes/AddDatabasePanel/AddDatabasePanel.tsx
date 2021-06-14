@@ -17,6 +17,7 @@ import { getUpsellMessage } from "../../../Utils/PricingUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
+import { getTextFieldStyles } from "../PanelStyles";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface AddDatabasePaneProps {
@@ -201,8 +202,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             value={databaseId}
             onChange={handleonChangeDBId}
             autoFocus
-            style={{ fontSize: 12 }}
-            styles={{ root: { width: 300 } }}
+            styles={getTextFieldStyles()}
           />
 
           {!isServerlessAccount() && (
