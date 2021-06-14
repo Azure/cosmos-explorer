@@ -7,7 +7,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import DocumentsTab from "../Tabs/DocumentsTab";
-import QueryTab from "../Tabs/QueryTab";
+import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
 import DocumentId from "./DocumentId";
 
@@ -85,20 +85,22 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       tabTitle: title,
     });
 
-    const queryTab: QueryTab = new QueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
-      queryText: queryText,
-      partitionKey: collection.partitionKey,
-      resourceTokenPartitionKey: userContext.parsedResourceToken.partitionKey,
-      onLoadStartKey: startKey,
-    });
-
-    this.container.tabsManager.activateNewTab(queryTab);
+    this.container.tabsManager.activateNewTab(
+      new NewQueryTab(
+        {
+          tabKind: ViewModels.CollectionTabKind.Query,
+          title: title,
+          tabPath: "",
+          collection: this,
+          node: this,
+          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
+          queryText: queryText,
+          partitionKey: collection.partitionKey,
+          onLoadStartKey: startKey,
+        },
+        { container: this.container }
+      )
+    );
   }
 
   public onDocumentDBDocumentsClick() {

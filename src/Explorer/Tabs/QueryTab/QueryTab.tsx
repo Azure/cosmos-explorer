@@ -31,6 +31,7 @@ export class NewQueryTab extends TabsBase {
       onTabAccessor: (instance: ITabAccessor): void => {
         this.iTabAccessor = instance;
       },
+      isPreferredApiMongoDB: false,
     };
   }
 
@@ -45,7 +46,9 @@ export class NewQueryTab extends TabsBase {
 
   public onCloseTabButtonClick(): void {
     this.manager?.closeTab(this);
-    this.iTabAccessor.onCloseClickEvent(true);
+    if (this.iTabAccessor) {
+      this.iTabAccessor.onCloseClickEvent(true);
+    }
   }
 
   public getContainer(): Explorer {
