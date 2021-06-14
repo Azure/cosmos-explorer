@@ -7,6 +7,7 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
+import { createOrUpdate } from "../../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
@@ -56,8 +57,10 @@ export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = 
 
     try {
       setLoadingTrue();
-      await explorer.notebookWorkspaceManager.createNotebookWorkspaceAsync(
-        userContext.databaseAccount && userContext.databaseAccount.id,
+      await createOrUpdate(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
         "default"
       );
       explorer.isAccountReady.valueHasMutated(); // re-trigger init notebooks

@@ -7,20 +7,17 @@ import * as SharedConstants from "../../../../Shared/Constants";
 import { updateUserContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import { throughputUnit } from "../SettingsRenderUtils";
-import { collection, container } from "../TestUtils";
+import { collection } from "../TestUtils";
 import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
 import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 describe("ScaleComponent", () => {
   const nonNationalCloudContainer = new Explorer();
-  nonNationalCloudContainer.isRunningOnNationalCloud = () => false;
-
   const targetThroughput = 6000;
 
   const baseProps: ScaleComponentProps = {
     collection: collection,
     database: undefined,
-    container: container,
     isFixedContainer: false,
     onThroughputChange: () => {
       return;
@@ -111,7 +108,7 @@ describe("ScaleComponent", () => {
     let scaleComponent = new ScaleComponent(baseProps);
     expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - unlimited RU/s)");
 
-    let newProps = { ...baseProps, container: nonNationalCloudContainer };
+    let newProps = { ...baseProps };
     scaleComponent = new ScaleComponent(newProps);
     expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - unlimited RU/s)");
 
@@ -124,7 +121,7 @@ describe("ScaleComponent", () => {
     let scaleComponent = new ScaleComponent(baseProps);
     expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
 
-    const newProps = { ...baseProps, container: nonNationalCloudContainer };
+    const newProps = { ...baseProps };
     scaleComponent = new ScaleComponent(newProps);
     expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
   });

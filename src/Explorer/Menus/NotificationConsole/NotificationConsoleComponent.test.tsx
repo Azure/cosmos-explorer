@@ -1,10 +1,7 @@
 import { shallow } from "enzyme";
 import React from "react";
-import {
-  ConsoleDataType,
-  NotificationConsoleComponent,
-  NotificationConsoleComponentProps,
-} from "./NotificationConsoleComponent";
+import { ConsoleDataType } from "./ConsoleData";
+import { NotificationConsoleComponent, NotificationConsoleComponentProps } from "./NotificationConsoleComponent";
 
 describe("NotificationConsoleComponent", () => {
   const createBlankProps = (): NotificationConsoleComponentProps => {

@@ -1,3 +1,4 @@
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import * as ko from "knockout";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
@@ -33,7 +34,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
         databaseAccount={this.getDatabaseAccount()}
       />
     ) : (
-      <></>
+      <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
   }
 }
@@ -51,7 +52,11 @@ export default class TerminalTab extends TabsBase {
       () => userContext?.databaseAccount
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-      if (this.isTemplateReady() && this.container.isNotebookEnabled()) {
+      if (
+        this.isTemplateReady() &&
+        this.container.isNotebookEnabled() &&
+        this.container.notebookServerInfo().notebookServerEndpoint
+      ) {
         return true;
       }
       return false;
