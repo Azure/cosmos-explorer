@@ -12,7 +12,6 @@ import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import { TabsManager } from "./TabsManager";
-
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
   private static id = 0;
@@ -149,7 +148,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
-  protected renderObjectForEditor(value: any, replacer: any, space: string | number): string {
+  public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return JSON.stringify(value, replacer, space);
   }
 
@@ -164,7 +163,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return [];
   }
 
-  protected updateNavbarWithTabsButtons = (): void => {
+  public updateNavbarWithTabsButtons = (): void => {
     if (this.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }

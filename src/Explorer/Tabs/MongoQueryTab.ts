@@ -1,10 +1,10 @@
-import * as ViewModels from "../../Contracts/ViewModels";
 import Q from "q";
-import MongoUtility from "../../Common/MongoUtility";
-import QueryTab from "./QueryTab";
 import * as HeadersUtility from "../../Common/HeadersUtility";
-import { queryIterator } from "../../Common/MongoProxyClient";
 import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
+import { queryIterator } from "../../Common/MongoProxyClient";
+import MongoUtility from "../../Common/MongoUtility";
+import * as ViewModels from "../../Contracts/ViewModels";
+import QueryTab from "./QueryTab";
 
 export default class MongoQueryTab extends QueryTab {
   public collection: ViewModels.Collection;
@@ -16,7 +16,7 @@ export default class MongoQueryTab extends QueryTab {
     this.monacoSettings = new ViewModels.MonacoEditorSettings("plaintext", false);
   }
   /** Renders a Javascript object to be displayed inside Monaco Editor */
-  protected renderObjectForEditor(value: any, replacer: any, space: string | number): string {
+  public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return MongoUtility.tojson(value, null, false);
   }
 
