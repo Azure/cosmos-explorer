@@ -11,7 +11,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
       "databases": [Function],
       "isAccountReady": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
-      "isHostedDataExplorerEnabled": [Function],
       "isLastCollection": [Function],
       "isLastNonEmptyDatabase": [Function],
       "isNotebookEnabled": [Function],

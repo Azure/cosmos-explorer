@@ -12,7 +12,7 @@ import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility"
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { configContext, Platform } from "../ConfigContext";
+import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
@@ -34,7 +34,6 @@ import {
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
-import { isRunningOnNationalCloud } from "../Utils/CloudUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
@@ -59,14 +58,10 @@ import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
-import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
-import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
-import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
-import QueryTablesTab from "./Tabs/QueryTablesTab";
 import { TabsManager } from "./Tabs/TabsManager";
 import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
@@ -107,9 +102,6 @@ export default class Explorer {
   public tabsManager: TabsManager;
 
   public gitHubOAuthService: GitHubOAuthService;
-
-  // features
-  public isHostedDataExplorerEnabled: ko.Computed<boolean>;
   public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
@@ -220,11 +212,6 @@ export default class Explorer {
 
       return isCapabilityEnabled("EnableMongo");
     });
-
-    this.isHostedDataExplorerEnabled = ko.computed<boolean>(
-      () =>
-        configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin"
-    );
     this.selectedDatabaseId = ko.computed<string>(() => {
       const selectedNode = this.selectedNode();
       if (!selectedNode) {
@@ -1376,7 +1363,12 @@ export default class Explorer {
 
   public onNewCollectionClicked(databaseId?: string): void {
     if (userContext.apiType === "Cassandra") {
-      this.openCassandraAddCollectionPane();
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          "Add Table",
+          <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
+        );
     } else {
       this.openAddCollectionPanel(databaseId);
     }
@@ -1501,14 +1493,6 @@ export default class Explorer {
       );
   }
 
-  public openCassandraAddCollectionPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Add Table",
-        <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
-      );
-  }
   public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
     useSidePanel
       .getState()
@@ -1522,36 +1506,9 @@ export default class Explorer {
       );
   }
 
-  public openAddTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Add Table Entity",
-        <AddTableEntityPanel
-          tableDataClient={this.tableDataClient}
-          queryTablesTab={queryTablesTab}
-          tableEntityListViewModel={tableEntityListViewModel}
-          cassandraApiClient={new CassandraAPIDataClient()}
-        />
-      );
-  }
   public openSetupNotebooksPanel(title: string, description: string): void {
     useSidePanel
       .getState()
       .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
-  }
-
-  public openEditTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Edit Table Entity",
-        <EditTableEntityPanel
-          tableDataClient={this.tableDataClient}
-          queryTablesTab={queryTablesTab}
-          tableEntityListViewModel={tableEntityListViewModel}
-          cassandraApiClient={new CassandraAPIDataClient()}
-        />
-      );
   }
 }

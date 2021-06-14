@@ -142,12 +142,9 @@ src/Explorer/Tabs/DocumentsTab.test.ts
 src/Explorer/Tabs/DocumentsTab.ts
 src/Explorer/Tabs/GraphTab.ts
 src/Explorer/Tabs/MongoDocumentsTab.ts
-src/Explorer/Tabs/MongoQueryTab.ts
+# src/Explorer/Tabs/MongoQueryTab.ts
 src/Explorer/Tabs/MongoShellTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
-src/Explorer/Tabs/QueryTab.test.ts
-src/Explorer/Tabs/QueryTab.ts
-src/Explorer/Tabs/QueryTablesTab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
 src/Explorer/Tabs/StoredProcedureTab.ts
 src/Explorer/Tabs/TabComponents.ts
