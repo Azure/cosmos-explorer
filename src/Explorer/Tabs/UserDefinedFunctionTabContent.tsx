@@ -1,4 +1,4 @@
-import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
+import { UserDefinedFunctionDefinition } from "@azure/cosmos";
 import { Label, TextField } from "@fluentui/react";
 import React, { Component } from "react";
 import DiscardIcon from "../../../images/discard.svg";
@@ -18,6 +18,7 @@ import UserDefinedFunctionTab from "./UserDefinedFunctionTab";
 interface IUserDefinedFunctionTabContentState {
   udfId: string;
   udfBody: string;
+  isUdfIdEditable: boolean;
 }
 
 interface Ibutton {
@@ -54,6 +55,7 @@ export default class UserDefinedFunctionTabContent extends Component<
     this.state = {
       udfId: id,
       udfBody: body,
+      isUdfIdEditable: props.isNew() ? true : false,
     };
   }
 
@@ -75,6 +77,7 @@ export default class UserDefinedFunctionTabContent extends Component<
     if (this.saveButton.visible) {
       buttons.push({
         ...this,
+        setState: this.setState,
         iconSrc: SaveIcon,
         iconAlt: label,
         onCommandClick: this.onSaveClick,
@@ -116,12 +119,13 @@ export default class UserDefinedFunctionTabContent extends Component<
     return buttons;
   }
 
-  private onSaveClick(): Promise<UserDefinedFunctionDefinition & Resource> {
+  private async onSaveClick(): Promise<void> {
     const { udfId, udfBody } = this.state;
     const resource: UserDefinedFunctionDefinition = {
       id: udfId,
       body: udfBody,
     };
+
     this.props.isExecutionError(false);
     this.props.isExecuting(true);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateUDF, {
@@ -129,51 +133,54 @@ export default class UserDefinedFunctionTabContent extends Component<
       tabTitle: this.props.tabTitle(),
     });
 
-    return createUserDefinedFunction(this.props.collection.databaseId, this.props.collection.id(), resource)
-      .then(
-        (createdResource) => {
-          this.props.tabTitle(createdResource.id);
-          this.props.isNew(false);
-          this.props.resource(createdResource);
-          this.props.hashLocation(
-            `${Constants.HashRoutePrefixes.collectionsWithIds(
-              this.props.collection.databaseId,
-              this.props.collection.id()
-            )}/udfs/${createdResource.id}`
-          );
-          this.props.addNodeInCollection(createdResource);
+    try {
+      const createdResource = await createUserDefinedFunction(
+        this.props.collection.databaseId,
+        this.props.collection.id(),
+        resource
+      );
+      if (createdResource) {
+        this.props.tabTitle(createdResource.id);
+        this.props.isNew(false);
+        this.props.resource(createdResource);
+        this.props.hashLocation(
+          `${Constants.HashRoutePrefixes.collectionsWithIds(
+            this.props.collection.databaseId,
+            this.props.collection.id()
+          )}/udfs/${createdResource.id}`
+        );
+        this.props.addNodeInCollection(createdResource);
+        this.setState({ isUdfIdEditable: false });
+        this.props.isExecuting(false);
+        TelemetryProcessor.traceSuccess(
+          Action.CreateUDF,
+          {
+            dataExplorerArea: Constants.Areas.Tab,
 
-          TelemetryProcessor.traceSuccess(
-            Action.CreateUDF,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-
-              tabTitle: this.props.tabTitle(),
-            },
-            startKey
-          );
-          this.props.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
-          return createdResource;
+            tabTitle: this.props.tabTitle(),
+          },
+          startKey
+        );
+        this.props.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
+      }
+    } catch (createError) {
+      this.props.isExecutionError(true);
+      TelemetryProcessor.traceFailure(
+        Action.CreateUDF,
+        {
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.props.tabTitle(),
+          error: getErrorMessage(createError),
+          errorStack: getErrorStack(createError),
         },
-        (createError: Error) => {
-          this.props.isExecutionError(true);
-          TelemetryProcessor.traceFailure(
-            Action.CreateUDF,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.props.tabTitle(),
-              error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError),
-            },
-            startKey
-          );
-          return Promise.reject(createError);
-        }
-      )
-      .finally(() => this.props.isExecuting(false));
+        startKey
+      );
+      this.props.isExecuting(false);
+      return Promise.reject(createError);
+    }
   }
 
-  private onUpdateClick(): Promise<void> {
+  private async onUpdateClick(): Promise<void> {
     const { udfId, udfBody } = this.state;
     const resource: UserDefinedFunctionDefinition = {
       id: udfId,
@@ -186,44 +193,43 @@ export default class UserDefinedFunctionTabContent extends Component<
       tabTitle: this.props.tabTitle(),
     });
 
-    return updateUserDefinedFunction(this.props.collection.databaseId, this.props.collection.id(), resource)
-      .then(
-        (createdResource: UserDefinedFunctionDefinition) => {
-          this.props.resource(createdResource);
-          this.props.tabTitle(createdResource.id);
-
-          this.props.node.id(createdResource.id);
-          this.props.node.body(createdResource.body as string);
-          TelemetryProcessor.traceSuccess(
-            Action.UpdateUDF,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.props.tabTitle(),
-            },
-            startKey
-          );
-
-          this.props.setBaselines();
-
-          const editorModel = this.props.editor().getModel();
-          editorModel.setValue(createdResource.body as string);
-          this.props.editorContent.setBaseline(createdResource.body as string);
+    try {
+      const createdResource = await updateUserDefinedFunction(
+        this.props.collection.databaseId,
+        this.props.collection.id(),
+        resource
+      );
+      this.props.resource(createdResource);
+      this.props.tabTitle(createdResource.id);
+      this.props.node.id(createdResource.id);
+      this.props.node.body(createdResource.body as string);
+      this.props.isExecuting(false);
+      TelemetryProcessor.traceSuccess(
+        Action.UpdateUDF,
+        {
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.props.tabTitle(),
         },
-        (createError) => {
-          this.props.isExecutionError(true);
-          TelemetryProcessor.traceFailure(
-            Action.UpdateUDF,
-            {
-              dataExplorerArea: Constants.Areas.Tab,
-              tabTitle: this.props.tabTitle(),
-              error: getErrorMessage(createError),
-              errorStack: getErrorStack(createError),
-            },
-            startKey
-          );
-        }
-      )
-      .finally(() => this.props.isExecuting(false));
+        startKey
+      );
+
+      const editorModel = this.props.editor().getModel();
+      editorModel.setValue(createdResource.body as string);
+      this.props.editorContent.setBaseline(createdResource.body as string);
+    } catch (createError) {
+      this.props.isExecutionError(true);
+      TelemetryProcessor.traceFailure(
+        Action.UpdateUDF,
+        {
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.props.tabTitle(),
+          error: getErrorMessage(createError),
+          errorStack: getErrorStack(createError),
+        },
+        startKey
+      );
+      this.props.isExecuting(false);
+    }
   }
 
   private onDiscard(): void {
@@ -269,32 +275,31 @@ export default class UserDefinedFunctionTabContent extends Component<
   }
 
   render(): JSX.Element {
-    const { udfId, udfBody } = this.state;
+    const { udfId, udfBody, isUdfIdEditable } = this.state;
     return (
-      <div className="tab-pane flexContainer" role="tabpanel">
-        <div className="trigger-form">
-          <TextField
-            className="trigger-field"
-            label="User Defined Function Id"
-            id="entityTimeId"
-            autoFocus
-            required
-            type="text"
-            pattern="[^/?#\\]*[^/?# \\]"
-            placeholder="Enter the new trigger id"
-            size={40}
-            value={udfId}
-            onChange={this.handleUdfIdChange}
-          />
-          <Label className="trigger-field">User Defined Function Body</Label>
-          <EditorReact
-            language={"json"}
-            content={udfBody}
-            isReadOnly={false}
-            ariaLabel={"Graph JSON"}
-            onContentChanged={this.handleUdfBodyChange}
-          />
-        </div>
+      <div className="tab-pane flexContainer trigger-form" role="tabpanel">
+        <TextField
+          className="trigger-field"
+          label="User Defined Function Id"
+          id="entityTimeId"
+          autoFocus
+          required
+          readOnly={!isUdfIdEditable}
+          type="text"
+          pattern="[^/?#\\]*[^/?# \\]"
+          placeholder="Enter the new trigger id"
+          size={40}
+          value={udfId}
+          onChange={this.handleUdfIdChange}
+        />
+        <Label className="trigger-field">User Defined Function Body</Label>
+        <EditorReact
+          language={"json"}
+          content={udfBody}
+          isReadOnly={false}
+          ariaLabel={"Graph JSON"}
+          onContentChanged={this.handleUdfBodyChange}
+        />
       </div>
     );
   }
