@@ -108,6 +108,8 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         );
         this.props.editorContent.setBaseline(createdResource.body as string);
         this.props.addNodeInCollection(createdResource);
+        this.saveButton.visible = false;
+        this.updateButton.visible = true;
         this.setState({ isIdEditable: false });
         TelemetryProcessor.traceSuccess(
           Action.CreateTrigger,
@@ -294,49 +296,47 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
     const { triggerId, triggerType, triggerOperation, triggerBody, isIdEditable } = this.state;
     return (
-      <div className="tab-pane flexContainer" role="tabpanel">
-        <div className="trigger-form">
-          <TextField
-            className="trigger-field"
-            label="Trigger Id"
-            id="entityTimeId"
-            autoFocus
-            required
-            type="text"
-            pattern="[^/?#\\]*[^/?# \\]"
-            placeholder="Enter the new trigger id"
-            size={40}
-            value={triggerId}
-            disabled={!isIdEditable}
-            onChange={this.handleTriggerIdChange}
-          />
-          <Dropdown
-            placeholder="Trigger Type"
-            label="Trigger Type"
-            options={triggerTypeOptions}
-            selectedKey={triggerType}
-            className="trigger-field"
-            onChange={(event, selectedKey) => this.handleTriggerTypeOprationChange(event, selectedKey, "triggerType")}
-          />
-          <Dropdown
-            placeholder="Trigger Operation"
-            label="Trigger Operation"
-            selectedKey={triggerOperation}
-            options={triggerOperationOptions}
-            className="trigger-field"
-            onChange={(event, selectedKey) =>
-              this.handleTriggerTypeOprationChange(event, selectedKey, "triggerOperation")
-            }
-          />
-          <Label className="trigger-field">Trigger Body</Label>
-          <EditorReact
-            language={"json"}
-            content={triggerBody}
-            isReadOnly={false}
-            ariaLabel={"Graph JSON"}
-            onContentChanged={this.handleTriggerBodyChange}
-          />
-        </div>
+      <div className="tab-pane flexContainer trigger-form" role="tabpanel">
+        <TextField
+          className="trigger-field"
+          label="Trigger Id"
+          id="entityTimeId"
+          autoFocus
+          required
+          type="text"
+          pattern="[^/?#\\]*[^/?# \\]"
+          placeholder="Enter the new trigger id"
+          size={40}
+          value={triggerId}
+          readOnly={!isIdEditable}
+          onChange={this.handleTriggerIdChange}
+        />
+        <Dropdown
+          placeholder="Trigger Type"
+          label="Trigger Type"
+          options={triggerTypeOptions}
+          selectedKey={triggerType}
+          className="trigger-field"
+          onChange={(event, selectedKey) => this.handleTriggerTypeOprationChange(event, selectedKey, "triggerType")}
+        />
+        <Dropdown
+          placeholder="Trigger Operation"
+          label="Trigger Operation"
+          selectedKey={triggerOperation}
+          options={triggerOperationOptions}
+          className="trigger-field"
+          onChange={(event, selectedKey) =>
+            this.handleTriggerTypeOprationChange(event, selectedKey, "triggerOperation")
+          }
+        />
+        <Label className="trigger-field">Trigger Body</Label>
+        <EditorReact
+          language={"json"}
+          content={triggerBody}
+          isReadOnly={false}
+          ariaLabel={"Graph JSON"}
+          onContentChanged={this.handleTriggerBodyChange}
+        />
       </div>
     );
   }
