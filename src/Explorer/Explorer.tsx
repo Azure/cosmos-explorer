@@ -58,16 +58,10 @@ import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
-import { AddTableEntityPanel } from "./Panes/Tables/AddTableEntityPanel";
-import { EditTableEntityPanel } from "./Panes/Tables/EditTableEntityPanel";
-import { TableQuerySelectPanel } from "./Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
-import TableListViewModal from "./Tables/DataTable/TableEntityListViewModel";
-import QueryViewModel from "./Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
-import QueryTablesTab from "./Tabs/QueryTablesTab";
 import { TabsManager } from "./Tabs/TabsManager";
 import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
@@ -1512,40 +1506,9 @@ export default class Explorer {
       );
   }
 
-  public openAddTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Add Table Entity",
-        <AddTableEntityPanel
-          tableDataClient={this.tableDataClient}
-          queryTablesTab={queryTablesTab}
-          tableEntityListViewModel={tableEntityListViewModel}
-          cassandraApiClient={new CassandraAPIDataClient()}
-        />
-      );
-  }
   public openSetupNotebooksPanel(title: string, description: string): void {
     useSidePanel
       .getState()
       .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
-  }
-
-  public openEditTableEntityPanel(queryTablesTab: QueryTablesTab, tableEntityListViewModel: TableListViewModal): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Edit Table Entity",
-        <EditTableEntityPanel
-          tableDataClient={this.tableDataClient}
-          queryTablesTab={queryTablesTab}
-          tableEntityListViewModel={tableEntityListViewModel}
-          cassandraApiClient={new CassandraAPIDataClient()}
-        />
-      );
-  }
-
-  public openTableSelectQueryPanel(queryViewModal: QueryViewModel): void {
-    useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={queryViewModal} />);
   }
 }
