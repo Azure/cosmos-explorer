@@ -2,12 +2,14 @@ import { TextField } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
+import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import NotebookV2Tab from "../../Tabs/NotebookV2Tab";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface StringInputPanelProps {
+  explorer: Explorer;
   closePanel: () => void;
   errorMessage: string;
   inProgressMessage: string;
