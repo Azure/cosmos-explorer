@@ -2,7 +2,11 @@ import { DetailsList, DetailsListLayoutMode, IColumn, Pivot, PivotItem, Selectio
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
+import DownloadQueryMetrics from "../../../../images/DownloadQuery.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
+import InfoColor from "../../../../images/info_color.svg";
+import QueryEditorNext from "../../../../images/Query-Editor-Next.svg";
+import RunQuery from "../../../../images/RunQuery.png";
 import SaveQueryIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
 import { NormalizedEventKey } from "../../../Common/Constants";
@@ -927,7 +931,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                   <div className="warningErrorContainer" aria-live="assertive">
                     <div className="warningErrorContent">
                       <span>
-                        <img className="paneErrorIcon" src="images/info_color.svg" alt="Error" />
+                        <img className="paneErrorIcon" src={InfoColor} alt="Error" />
                       </span>
                       <span className="warningErrorDetailsLinkContainer">
                         We have detected you may be using a subquery. Non-correlated subqueries are not currently
@@ -956,7 +960,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                     !this.props.tabsBaseInstance.isExecuting() && (
                       <div className="queryEditorWatermark">
                         <p>
-                          <img src="images/RunQuery.png" alt="Execute Query Watermark" />
+                          <img src={RunQuery} alt="Execute Query Watermark" />
                         </p>
                         <p className="queryEditorWatermarkText">Execute a query to see the results</p>
                       </div>
@@ -982,11 +986,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                                 <span className="queryResultNextEnable">
                                   <a onClick={this.onFetchNextPageClick}>
                                     <span>Load more</span>
-                                    <img
-                                      className="queryResultnextImg"
-                                      src="images/Query-Editor-Next.svg"
-                                      alt="Fetch next page"
-                                    />
+                                    <img className="queryResultnextImg" src={QueryEditorNext} alt="Fetch next page" />
                                   </a>
                                 </span>
                               )}
@@ -1043,7 +1043,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                                     >
                                       <img
                                         className="downloadCsvImg"
-                                        src="images/DownloadQuery.svg"
+                                        src={DownloadQueryMetrics}
                                         alt="download query metrics csv"
                                       />
                                       <span>Per-partition query metrics (CSV)</span>
