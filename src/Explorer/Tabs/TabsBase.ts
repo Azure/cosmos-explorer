@@ -147,7 +147,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
-  protected renderObjectForEditor(value: any, replacer: any, space: string | number): string {
+  public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return JSON.stringify(value, replacer, space);
   }
 
