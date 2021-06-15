@@ -4,14 +4,12 @@ import { DatabaseAccount } from "../../../../Contracts/DataModels";
 import { updateUserContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
 import { ChangeFeedPolicyState, GeospatialConfigType, TtlOff, TtlOn, TtlOnNoDefault, TtlType } from "../SettingsUtils";
-import { collection, container } from "../TestUtils";
+import { collection } from "../TestUtils";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
 
 describe("SubSettingsComponent", () => {
   const baseProps: SubSettingsComponentProps = {
     collection: collection,
-    container: container,
-
     timeToLive: TtlType.On,
     timeToLiveBaseline: TtlType.On,
     onTtlChange: () => {

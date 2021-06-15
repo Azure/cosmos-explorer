@@ -792,7 +792,7 @@ export default class QueryBuilderViewModel {
     return null;
   }
 
-  public checkIfClauseChanged(clause: QueryClauseViewModel): void {
-    this._queryViewModel.checkIfBuilderChanged(clause);
+  public checkIfClauseChanged(): void {
+    this._queryViewModel.checkIfBuilderChanged();
   }
 }

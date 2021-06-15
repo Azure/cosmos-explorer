@@ -111,7 +111,7 @@ export function queryDocuments(
           headers: response.headers,
         };
       }
-      errorHandling(response, "querying documents", params);
+      await errorHandling(response, "querying documents", params);
       return undefined;
     });
 }
@@ -153,11 +153,11 @@ export function readDocument(
         ),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "reading document", params);
+      return await errorHandling(response, "reading document", params);
     });
 }
 
@@ -192,11 +192,11 @@ export function createDocument(
         ...authHeaders(),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "creating document", params);
+      return await errorHandling(response, "creating document", params);
     });
 }
 
@@ -238,11 +238,11 @@ export function updateDocument(
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "updating document", params);
+      return await errorHandling(response, "updating document", params);
     });
 }
 
@@ -278,11 +278,11 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return undefined;
       }
-      return errorHandling(response, "deleting document", params);
+      return await errorHandling(response, "deleting document", params);
     });
 }
 
@@ -325,11 +325,11 @@ export function createMongoCollectionWithProxy(
         },
       }
     )
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "creating collection", mongoParams);
+      return await errorHandling(response, "creating collection", mongoParams);
     });
 }
 

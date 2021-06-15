@@ -19,7 +19,8 @@ export const GraphStylingPanel: FunctionComponent<GraphStylingProps> = ({
 
   const buttonLabel = "Ok";
 
-  const submit = () => {
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     closeSidePanel();
   };
 

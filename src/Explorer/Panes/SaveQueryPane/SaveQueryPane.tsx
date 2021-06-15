@@ -9,7 +9,7 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import QueryTab from "../../Tabs/QueryTab";
+import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 interface SaveQueryPaneProps {
@@ -33,8 +33,9 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
       logConsoleError("Failed to save query: account not setup to save queries");
     }
 
-    const queryTab = explorer && (explorer.tabsManager.activeTab() as QueryTab);
-    const query: string = queryTab && queryTab.sqlQueryEditorContent();
+    const queryTab = explorer && (explorer.tabsManager.activeTab() as NewQueryTab);
+    const query: string = queryTab && queryTab.iTabAccessor.onSaveClickEvent();
+
     if (!queryName || queryName.length === 0) {
       setFormError("No query name specified");
       logConsoleError("Could not save query -- No query name specified. Please specify a query name.");

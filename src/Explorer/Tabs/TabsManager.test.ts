@@ -3,8 +3,9 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
+import { container } from "./../Controls/Settings/TestUtils";
 import DocumentsTab from "./DocumentsTab";
-import QueryTab from "./QueryTab";
+import { NewQueryTab } from "./QueryTab/QueryTab";
 import { TabsManager } from "./TabsManager";
 
 describe("Tabs manager tests", () => {
@@ -12,10 +13,10 @@ describe("Tabs manager tests", () => {
   let explorer: Explorer;
   let database: ViewModels.Database;
   let collection: ViewModels.Collection;
-  let queryTab: QueryTab;
+  let queryTab: NewQueryTab;
   let documentsTab: DocumentsTab;
 
-  beforeAll(() => {
+  beforeEach(() => {
     explorer = new Explorer();
     updateUserContext({
       databaseAccount: {
@@ -45,14 +46,22 @@ describe("Tabs manager tests", () => {
     collection.isCollectionExpanded = ko.observable<boolean>(true);
     collection.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
 
-    queryTab = new QueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      collection,
-      database,
-      title: "",
-      tabPath: "",
-      hashLocation: "",
-    });
+    queryTab = new NewQueryTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.Query,
+        collection,
+        database,
+        title: "",
+        tabPath: "",
+        hashLocation: "",
+        queryText: "",
+        partitionKey: collection.partitionKey,
+        onLoadStartKey: 1,
+      },
+      {
+        container: container,
+      }
+    );
 
     documentsTab = new DocumentsTab({
       partitionKey: undefined,

@@ -5,7 +5,6 @@ import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { updateUserContext } from "../UserContext";
 import { deleteDocument, getEndpoint, queryDocuments, readDocument, updateDocument } from "./MongoProxyClient";
-jest.mock("../ResourceProvider/ResourceProviderClient.ts");
 
 const databaseId = "testDB";
 
