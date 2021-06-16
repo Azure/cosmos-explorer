@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { configContext } from "../ConfigContext";
 import { Tenant } from "../Contracts/DataModels";
 
 interface TenantListResult {
