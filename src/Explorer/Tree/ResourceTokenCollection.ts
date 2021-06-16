@@ -6,7 +6,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
-import DocumentsTab from "../Tabs/DocumentsTab";
+import DocumentsTab from "../Tabs/DocumentsTab1";
 import QueryTab from "../Tabs/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
 import DocumentId from "./DocumentId";

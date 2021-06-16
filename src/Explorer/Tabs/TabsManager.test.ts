@@ -3,7 +3,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
-import DocumentsTab from "./DocumentsTab";
+import DocumentsTab from "./DocumentsTab1";
 import QueryTab from "./QueryTab";
 import { TabsManager } from "./TabsManager";
 

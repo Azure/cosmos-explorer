@@ -1,6 +1,6 @@
 import * as ko from "knockout";
+import DocumentsTab from "../Tabs/DocumentsTab1";
 import DocumentId from "./DocumentId";
-import DocumentsTab from "../Tabs/DocumentsTab";
 
 export default class ObjectId extends DocumentId {
   constructor(container: DocumentsTab, data: any, partitionKeyValue: any) {

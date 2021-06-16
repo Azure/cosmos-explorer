@@ -9,7 +9,7 @@ import {
   deleteDocument,
   queryDocuments,
   readDocument,
-  updateDocument,
+  updateDocument
 } from "../../Common/MongoProxyClient";
 import MongoUtility from "../../Common/MongoUtility";
 import * as DataModels from "../../Contracts/DataModels";
@@ -18,7 +18,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import DocumentId from "../Tree/DocumentId";
 import ObjectId from "../Tree/ObjectId";
-import DocumentsTab from "./DocumentsTab";
+import DocumentsTab from "./DocumentsTab1";
 
 export default class MongoDocumentsTab extends DocumentsTab {
   public collection: ViewModels.Collection;
