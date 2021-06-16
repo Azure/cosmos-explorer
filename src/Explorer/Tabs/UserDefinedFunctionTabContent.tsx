@@ -201,10 +201,10 @@ export default class UserDefinedFunctionTabContent extends Component<
         this.props.collection.id(),
         resource
       );
+
       this.props.resource(createdResource);
       this.props.tabTitle(createdResource.id);
-      this.props.node.id(createdResource.id);
-      this.props.node.body(createdResource.body as string);
+      this.props.updateNodeInCollection(createdResource)
       this.props.isExecuting(false);
       TelemetryProcessor.traceSuccess(
         Action.UpdateUDF,
@@ -215,8 +215,6 @@ export default class UserDefinedFunctionTabContent extends Component<
         startKey
       );
 
-      const editorModel = this.props.editor().getModel();
-      editorModel.setValue(createdResource.body as string);
       this.props.editorContent.setBaseline(createdResource.body as string);
     } catch (createError) {
       this.props.isExecutionError(true);

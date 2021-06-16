@@ -22,11 +22,17 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
     this.node = this.collection.createUserDefinedFunctionNode(createdResource);
   }
 
+  updateNodeInCollection(updateResource: Resource & UserDefinedFunctionDefinition): void {
+    this.node.id(updateResource.id);
+    this.node.body(updateResource.body as string);
+  }
+
   render(): JSX.Element {
     return (
       <UserDefinedFunctionTabContent
         {...this}
         addNodeInCollection={(createdResource) => this.addNodeInCollection(createdResource)}
+        updateNodeInCollection={(updateResource: Resource & UserDefinedFunctionDefinition) => this.updateNodeInCollection(updateResource)}
       />
     );
   }
