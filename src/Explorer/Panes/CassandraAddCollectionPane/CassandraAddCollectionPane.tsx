@@ -1,21 +1,18 @@
-import { Label, Stack, TextField } from "@fluentui/react";
-import React, { FunctionComponent, useEffect, useState } from "react";
-import * as _ from "underscore";
+import { Checkbox, Dropdown, IDropdownOption, Link, Stack, Text, TextField } from "@fluentui/react";
+import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
-import * as AddCollectionUtility from "../../../Shared/AddCollectionUtility";
 import * as SharedConstants from "../../../Shared/Constants";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
+import { getTextFieldStyles } from "../PanelStyles";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface CassandraAddCollectionPaneProps {
@@ -27,183 +24,73 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   explorer: container,
   cassandraApiClient,
 }: CassandraAddCollectionPaneProps) => {
+  let newKeySpaceThroughput: number;
+  let isNewKeySpaceAutoscale: boolean;
+  let tableThroughput: number;
+  let isTableAutoscale: boolean;
+  let isCostAcknowledged: boolean;
+
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
-  const throughputDefaults = userContext.collectionCreationDefaults.throughput;
-  const [createTableQuery, setCreateTableQuery] = useState<string>("CREATE TABLE ");
-  const [keyspaceId, setKeyspaceId] = useState<string>("");
+  const [newKeyspaceId, setNewKeyspaceId] = useState<string>("");
+  const [existingKeyspaceId, setExistingKeyspaceId] = useState<string>("");
   const [tableId, setTableId] = useState<string>("");
-  const [throughput, setThroughput] = useState<number>(
-    AddCollectionUtility.getMaxThroughput(userContext.collectionCreationDefaults, container)
-  );
-
-  const [isAutoPilotSelected, setIsAutoPilotSelected] = useState<boolean>(userContext.features.autoscaleDefault);
-
-  const [isSharedAutoPilotSelected, setIsSharedAutoPilotSelected] = useState<boolean>(
-    userContext.features.autoscaleDefault
-  );
-
   const [userTableQuery, setUserTableQuery] = useState<string>(
     "(userid int, name text, email text, PRIMARY KEY (userid))"
   );
-
-  const [keyspaceHasSharedOffer, setKeyspaceHasSharedOffer] = useState<boolean>(false);
-  const [keyspaceIds, setKeyspaceIds] = useState<string[]>([]);
-  const [keyspaceThroughput, setKeyspaceThroughput] = useState<number>(throughputDefaults.shared);
+  const [isKeyspaceShared, setIsKeyspaceShared] = useState<boolean>(false);
   const [keyspaceCreateNew, setKeyspaceCreateNew] = useState<boolean>(true);
   const [dedicateTableThroughput, setDedicateTableThroughput] = useState<boolean>(false);
-  const [throughputSpendAck, setThroughputSpendAck] = useState<boolean>(false);
-  const [sharedThroughputSpendAck, setSharedThroughputSpendAck] = useState<boolean>(false);
-
-  const { minAutoPilotThroughput: selectedAutoPilotThroughput } = AutoPilotUtils;
-  const { minAutoPilotThroughput: sharedAutoPilotThroughput } = AutoPilotUtils;
-
-  const _getAutoPilot = (): DataModels.AutoPilotCreationSettings => {
-    if (keyspaceCreateNew && keyspaceHasSharedOffer && isSharedAutoPilotSelected && sharedAutoPilotThroughput) {
-      return {
-        maxThroughput: sharedAutoPilotThroughput * 1,
-      };
-    }
-
-    if (selectedAutoPilotThroughput) {
-      return {
-        maxThroughput: selectedAutoPilotThroughput * 1,
-      };
-    }
-
-    return undefined;
-  };
-
-  const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
-
-  const canConfigureThroughput = !container.isServerlessEnabled();
-
-  const keyspaceOffers = new Map();
   const [isExecuting, setIsExecuting] = useState<boolean>();
-  const [formErrors, setFormErrors] = useState<string>("");
-
-  useEffect(() => {
-    if (keyspaceIds.indexOf(keyspaceId) >= 0) {
-      setKeyspaceHasSharedOffer(keyspaceOffers.has(keyspaceId));
-    }
-    setCreateTableQuery(`CREATE TABLE ${keyspaceId}.`);
-  }, [keyspaceId]);
+  const [formError, setFormError] = useState<string>("");
+  const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
   const addCollectionPaneOpenMessage = {
     collection: {
       id: tableId,
       storage: Constants.BackendDefaults.multiPartitionStorageInGb,
-      offerThroughput: throughput,
+      offerThroughput: newKeySpaceThroughput || tableThroughput,
       partitionKey: "",
-      databaseId: keyspaceId,
+      databaseId: keyspaceCreateNew ? newKeyspaceId : existingKeyspaceId,
     },
     subscriptionType: userContext.subscriptionType,
     subscriptionQuotaId: userContext.quotaId,
     defaultsCheck: {
       storage: "u",
-      throughput,
+      throughput: newKeySpaceThroughput || tableThroughput,
       flight: userContext.addCollectionFlight,
     },
     dataExplorerArea: Constants.Areas.ContextualPane,
   };
 
-  useEffect(() => {
-    if (!container.isServerlessEnabled()) {
-      setIsAutoPilotSelected(userContext.features.autoscaleDefault);
-    }
-
-    TelemetryProcessor.trace(Action.CreateCollection, ActionModifiers.Open, addCollectionPaneOpenMessage);
-  }, []);
-
-  useEffect(() => {
-    if (container) {
-      const newKeyspaceIds: ViewModels.Database[] = container.databases();
-      const cachedKeyspaceIdsList = _.map(newKeyspaceIds, (keyspace: ViewModels.Database) => {
-        if (keyspace && keyspace.offer && !!keyspace.offer()) {
-          keyspaceOffers.set(keyspace.id(), keyspace.offer());
-        }
-        return keyspace.id();
-      });
-      setKeyspaceIds(cachedKeyspaceIdsList);
-    }
-  }, []);
-
-  const _isValid = () => {
-    const sharedAutoscaleThroughput = sharedAutoPilotThroughput * 1;
-    if (
-      isSharedAutoPilotSelected &&
-      sharedAutoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
-      !sharedThroughputSpendAck
-    ) {
-      setFormErrors(`Please acknowledge the estimated monthly spend.`);
-      return false;
-    }
-
-    const dedicatedAutoscaleThroughput = selectedAutoPilotThroughput * 1;
-    if (
-      isAutoPilotSelected &&
-      dedicatedAutoscaleThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
-      !throughputSpendAck
-    ) {
-      setFormErrors(`Please acknowledge the estimated monthly spend.`);
-      return false;
-    }
-
-    if ((keyspaceCreateNew && keyspaceHasSharedOffer && isSharedAutoPilotSelected) || isAutoPilotSelected) {
-      const autoPilot = _getAutoPilot();
-      if (
-        !autoPilot ||
-        !autoPilot.maxThroughput ||
-        !AutoPilotUtils.isValidAutoPilotThroughput(autoPilot.maxThroughput)
-      ) {
-        setFormErrors(
-          `Please enter a value greater than ${AutoPilotUtils.minAutoPilotThroughput} for autopilot throughput`
-        );
-        return false;
-      }
-      return true;
-    }
-
-    if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !throughputSpendAck) {
-      setFormErrors(`Please acknowledge the estimated daily spend.`);
-      return false;
-    }
-
-    if (
-      keyspaceHasSharedOffer &&
-      keyspaceCreateNew &&
-      keyspaceThroughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K &&
-      !sharedThroughputSpendAck
-    ) {
-      setFormErrors("Please acknowledge the estimated daily spend");
-      return false;
-    }
-
-    return true;
-  };
-
   const onSubmit = async () => {
-    if (!_isValid()) {
+    const throughput = keyspaceCreateNew ? newKeySpaceThroughput : tableThroughput;
+    const keyspaceId = keyspaceCreateNew ? newKeyspaceId : existingKeyspaceId;
+
+    if (throughput > SharedConstants.CollectionCreation.DefaultCollectionRUs100K && !isCostAcknowledged) {
+      const errorMessage =
+        isNewKeySpaceAutoscale || isTableAutoscale
+          ? "Please acknowledge the estimated monthly spend."
+          : "Please acknowledge the estimated daily spend.";
+      setFormError(errorMessage);
       return;
     }
+
     setIsExecuting(true);
     const autoPilotCommand = `cosmosdb_autoscale_max_throughput`;
-
-    const toCreateKeyspace: boolean = keyspaceCreateNew;
-    const useAutoPilotForKeyspace: boolean = isSharedAutoPilotSelected && !!sharedAutoPilotThroughput;
     const createKeyspaceQueryPrefix = `CREATE KEYSPACE ${keyspaceId.trim()} WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 3 }`;
-    const createKeyspaceQuery: string = keyspaceHasSharedOffer
-      ? useAutoPilotForKeyspace
-        ? `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${keyspaceThroughput};`
-        : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${keyspaceThroughput};`
+    const createKeyspaceQuery: string = isKeyspaceShared
+      ? isNewKeySpaceAutoscale
+        ? `${createKeyspaceQueryPrefix} AND ${autoPilotCommand}=${newKeySpaceThroughput};`
+        : `${createKeyspaceQueryPrefix} AND cosmosdb_provisioned_throughput=${newKeySpaceThroughput};`
       : `${createKeyspaceQueryPrefix};`;
     let tableQuery: string;
-    const createTableQueryPrefix = `${createTableQuery}${tableId.trim()} ${userTableQuery}`;
+    const createTableQueryPrefix = `CREATE TABLE ${keyspaceId}.${tableId.trim()} ${userTableQuery}`;
 
-    if (canConfigureThroughput && (dedicateTableThroughput || !keyspaceHasSharedOffer)) {
-      if (isAutoPilotSelected && selectedAutoPilotThroughput) {
-        tableQuery = `${createTableQueryPrefix} WITH ${autoPilotCommand}=${throughput};`;
+    if (tableThroughput) {
+      if (isTableAutoscale) {
+        tableQuery = `${createTableQueryPrefix} WITH ${autoPilotCommand}=${tableThroughput};`;
       } else {
-        tableQuery = `${createTableQueryPrefix} WITH cosmosdb_provisioned_throughput=${throughput};`;
+        tableQuery = `${createTableQueryPrefix} WITH cosmosdb_provisioned_throughput=${tableThroughput};`;
       }
     } else {
       tableQuery = `${createTableQueryPrefix};`;
@@ -215,15 +102,15 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
         ...addCollectionPaneOpenMessage.collection,
         hasDedicatedThroughput: dedicateTableThroughput,
       },
-      keyspaceHasSharedOffer,
-      toCreateKeyspace,
+      isKeyspaceShared,
+      keyspaceCreateNew,
       createKeyspaceQuery,
       createTableQuery: tableQuery,
     };
 
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateCollection, addCollectionPaneStartMessage);
     try {
-      if (toCreateKeyspace) {
+      if (keyspaceCreateNew) {
         await cassandraApiClient.createTableAndKeyspace(
           userContext?.databaseAccount?.properties?.cassandraEndpoint,
           userContext?.databaseAccount?.id,
@@ -246,7 +133,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
       TelemetryProcessor.traceSuccess(Action.CreateCollection, addCollectionPaneStartMessage, startKey);
     } catch (error) {
       const errorMessage = getErrorMessage(error);
-      setFormErrors(errorMessage);
+      setFormError(errorMessage);
       setIsExecuting(false);
       const addCollectionPaneFailedMessage = {
         ...addCollectionPaneStartMessage,
@@ -256,129 +143,158 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
       TelemetryProcessor.traceFailure(Action.CreateCollection, addCollectionPaneFailedMessage, startKey);
     }
   };
-  const handleOnChangeKeyspaceType = (ev: React.FormEvent<HTMLInputElement>, mode: string): void => {
-    setKeyspaceCreateNew(mode === "Create new");
-  };
 
   const props: RightPaneFormProps = {
-    formError: formErrors,
+    formError,
     isExecuting,
-    submitButtonText: "Apply",
+    submitButtonText: "OK",
     onSubmit,
   };
+
   return (
     <RightPaneForm {...props}>
-      <div className="paneMainContent">
-        <div className="seconddivpadding">
-          <p>
-            <Label required>
+      <div className="panelMainContent">
+        <Stack>
+          <Stack horizontal>
+            <span className="mandatoryStar">*&nbsp;</span>
+            <Text className="panelTextBold" variant="small">
               Keyspace name <InfoTooltip>Select an existing keyspace or enter a new keyspace id.</InfoTooltip>
-            </Label>
-          </p>
+            </Text>
+          </Stack>
 
           <Stack horizontal verticalAlign="center">
             <input
-              className="throughputInputRadioBtn"
+              className="panelRadioBtn"
               aria-label="Create new keyspace"
               checked={keyspaceCreateNew}
               type="radio"
               role="radio"
               tabIndex={0}
-              onChange={(e) => handleOnChangeKeyspaceType(e, "Create new")}
+              onChange={() => {
+                setKeyspaceCreateNew(true);
+                setIsKeyspaceShared(false);
+                setExistingKeyspaceId("");
+              }}
             />
-            <span className="throughputInputRadioBtnLabel">Create new</span>
+            <span className="panelRadioBtnLabel">Create new</span>
 
             <input
-              className="throughputInputRadioBtn"
+              className="panelRadioBtn"
               aria-label="Use existing keyspace"
               checked={!keyspaceCreateNew}
               type="radio"
               role="radio"
               tabIndex={0}
-              onChange={(e) => handleOnChangeKeyspaceType(e, "Use existing")}
+              onChange={() => {
+                setKeyspaceCreateNew(false);
+                setIsKeyspaceShared(false);
+              }}
             />
-            <span className="throughputInputRadioBtnLabel">Use existing</span>
+            <span className="panelRadioBtnLabel">Use existing</span>
+          </Stack>
+
+          {keyspaceCreateNew && (
+            <Stack className="panelGroupSpacing">
+              <TextField
+                aria-required="true"
+                autoComplete="off"
+                styles={getTextFieldStyles()}
+                pattern="[^/?#\\]*[^/?# \\]"
+                title="May not end with space nor contain characters '\' '/' '#' '?'"
+                placeholder="Type a new keyspace id"
+                size={40}
+                value={newKeyspaceId}
+                onChange={(e, newValue) => setNewKeyspaceId(newValue)}
+                ariaLabel="Keyspace id"
+                autoFocus
+              />
+
+              {!isServerlessAccount() && (
+                <Stack horizontal>
+                  <Checkbox
+                    label="Provision shared throughput"
+                    checked={isKeyspaceShared}
+                    styles={{
+                      text: { fontSize: 12 },
+                      checkbox: { width: 12, height: 12 },
+                      label: { padding: 0, alignItems: "center" },
+                    }}
+                    onChange={(ev: React.FormEvent<HTMLElement>, isChecked: boolean) => setIsKeyspaceShared(isChecked)}
+                  />
+                  <InfoTooltip>
+                    Provisioned throughput at the keyspace level will be shared across unlimited number of tables within
+                    the keyspace
+                  </InfoTooltip>
+                </Stack>
+              )}
+            </Stack>
+          )}
+
+          {!keyspaceCreateNew && (
+            <Dropdown
+              ariaLabel="Choose existing keyspace id"
+              styles={{ root: { width: 300 }, title: { fontSize: 12 }, dropdownItem: { fontSize: 12 } }}
+              placeholder="Choose existing keyspace id"
+              defaultSelectedKey={existingKeyspaceId}
+              options={container?.databases()?.map((keyspace) => ({
+                key: keyspace.id(),
+                text: keyspace.id(),
+                data: {
+                  isShared: !!keyspace.offer(),
+                },
+              }))}
+              onChange={(event: React.FormEvent<HTMLDivElement>, option: IDropdownOption) => {
+                setExistingKeyspaceId(option.key as string);
+                setIsKeyspaceShared(option.data.isShared);
+              }}
+              responsiveMode={999}
+            />
+          )}
+
+          {!isServerlessAccount() && keyspaceCreateNew && isKeyspaceShared && (
+            <ThroughputInput
+              showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
+              isDatabase
+              isSharded
+              setThroughputValue={(throughput: number) => (newKeySpaceThroughput = throughput)}
+              setIsAutoscale={(isAutoscale: boolean) => (isNewKeySpaceAutoscale = isAutoscale)}
+              onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
+            />
+          )}
+        </Stack>
+
+        <Stack>
+          <Stack horizontal>
+            <span className="mandatoryStar">*&nbsp;</span>
+            <Text className="panelTextBold" variant="small">
+              Enter CQL command to create the table.{" "}
+              <Link href="https://aka.ms/cassandra-create-table" target="_blank">
+                Learn More
+              </Link>
+            </Text>
+          </Stack>
+
+          <Stack horizontal verticalAlign="center">
+            <Text variant="small" style={{ marginRight: 4 }}>
+              {`CREATE TABLE ${keyspaceCreateNew ? newKeyspaceId : existingKeyspaceId}.`}
+            </Text>
+            <TextField
+              underlined
+              styles={getTextFieldStyles({ fontSize: 12, width: 150 })}
+              aria-required="true"
+              ariaLabel="addCollection-tableId"
+              autoComplete="off"
+              pattern="[^/?#\\]*[^/?# \\]"
+              title="May not end with space nor contain characters '\' '/' '#' '?'"
+              placeholder="Enter table Id"
+              size={20}
+              value={tableId}
+              onChange={(e, newValue) => setTableId(newValue)}
+            />
           </Stack>
 
           <TextField
-            aria-required="true"
-            autoComplete="off"
-            pattern="[^/?#\\]*[^/?# \\]"
-            title="May not end with space nor contain characters '\' '/' '#' '?'"
-            list={keyspaceCreateNew ? "" : "keyspacesList"}
-            placeholder={keyspaceCreateNew ? "Type a new keyspace id" : "Choose existing keyspace id"}
-            size={40}
-            data-test="addCollection-keyspaceId"
-            value={keyspaceId}
-            onChange={(e, newValue) => setKeyspaceId(newValue)}
-            ariaLabel="Keyspace id"
-            autoFocus
-          />
-          <datalist id="keyspacesList">
-            {keyspaceIds?.map((id: string, index: number) => (
-              <option key={index}>{id}</option>
-            ))}
-          </datalist>
-          {canConfigureThroughput && keyspaceCreateNew && (
-            <div className="databaseProvision">
-              <input
-                tabIndex={0}
-                type="checkbox"
-                id="keyspaceSharedThroughput"
-                title="Provision shared throughput"
-                checked={keyspaceHasSharedOffer}
-                onChange={(e) => setKeyspaceHasSharedOffer(e.target.checked)}
-              />
-              <span className="databaseProvisionText" aria-label="Provision keyspace throughput">
-                Provision keyspace throughput
-              </span>
-              <InfoTooltip>
-                Provisioned throughput at the keyspace level will be shared across unlimited number of tables within the
-                keyspace
-              </InfoTooltip>
-            </div>
-          )}
-          {canConfigureThroughput && keyspaceCreateNew && keyspaceHasSharedOffer && (
-            <div>
-              <ThroughputInput
-                showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
-                isDatabase
-                isSharded
-                setThroughputValue={(throughput: number) => setKeyspaceThroughput(throughput)}
-                setIsAutoscale={(isAutoscale: boolean) => setIsSharedAutoPilotSelected(isAutoscale)}
-                onCostAcknowledgeChange={(isAcknowledge: boolean) => {
-                  setSharedThroughputSpendAck(isAcknowledge);
-                }}
-              />
-            </div>
-          )}
-        </div>
-        <div className="seconddivpadding">
-          <p>
-            <Label required>
-              Enter CQL command to create the table.
-              <a href="https://aka.ms/cassandra-create-table" target="_blank" rel="noreferrer">
-                Learn More
-              </a>
-            </Label>
-          </p>
-          <div aria-label={createTableQuery} style={{ float: "left", paddingTop: "3px", paddingRight: "3px" }}>
-            {createTableQuery}
-          </div>
-          <TextField
-            aria-required="true"
-            ariaLabel="addCollection-tableId"
-            autoComplete="off"
-            pattern="[^/?#\\]*[^/?# \\]"
-            title="May not end with space nor contain characters '\' '/' '#' '?'"
-            placeholder="Enter tableId"
-            size={20}
-            className="textfontclr"
-            value={tableId}
-            onChange={(e, newValue) => setTableId(newValue)}
-            style={{ marginBottom: "5px" }}
-          />
-          <TextField
+            styles={getTextFieldStyles()}
             multiline
             id="editor-area"
             rows={5}
@@ -386,10 +302,10 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             value={userTableQuery}
             onChange={(e, newValue) => setUserTableQuery(newValue)}
           />
-        </div>
+        </Stack>
 
-        {canConfigureThroughput && keyspaceHasSharedOffer && !keyspaceCreateNew && (
-          <div className="seconddivpadding">
+        {!isServerlessAccount() && isKeyspaceShared && !keyspaceCreateNew && (
+          <Stack>
             <input
               type="checkbox"
               id="tableSharedThroughput"
@@ -404,21 +320,17 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               does not count towards the throughput you provisioned for the keyspace. This throughput amount will be
               billed in addition to the throughput amount you provisioned at the keyspace level.
             </InfoTooltip>
-          </div>
+          </Stack>
         )}
-        {canConfigureThroughput && (!keyspaceHasSharedOffer || dedicateTableThroughput) && (
-          <div>
-            <ThroughputInput
-              showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
-              isDatabase={false}
-              isSharded={false}
-              setThroughputValue={(throughput: number) => setThroughput(throughput)}
-              setIsAutoscale={(isAutoscale: boolean) => setIsAutoPilotSelected(isAutoscale)}
-              onCostAcknowledgeChange={(isAcknowledge: boolean) => {
-                setThroughputSpendAck(isAcknowledge);
-              }}
-            />
-          </div>
+        {!isServerlessAccount() && (!isKeyspaceShared || dedicateTableThroughput) && (
+          <ThroughputInput
+            showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
+            isDatabase={false}
+            isSharded={false}
+            setThroughputValue={(throughput: number) => (tableThroughput = throughput)}
+            setIsAutoscale={(isAutoscale: boolean) => (isTableAutoscale = isAutoscale)}
+            onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
+          />
         )}
       </div>
     </RightPaneForm>

@@ -7,7 +7,7 @@ import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as SharedConstants from "../../../../Shared/Constants";
 import { userContext } from "../../../../UserContext";
 import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import Explorer from "../../../Explorer";
+import { isRunningOnNationalCloud } from "../../../../Utils/CloudUtils";
 import {
   getTextFieldStyles,
   getThroughputApplyLongDelayMessage,
@@ -23,7 +23,6 @@ import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
   database: ViewModels.Database;
-  container: Explorer;
   isFixedContainer: boolean;
   onThroughputChange: (newThroughput: number) => void;
   throughput: number;
@@ -109,11 +108,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public canThroughputExceedMaximumValue = (): boolean => {
-    return (
-      !this.props.isFixedContainer &&
-      configContext.platform === Platform.Portal &&
-      !this.props.container.isRunningOnNationalCloud()
-    );
+    return !this.props.isFixedContainer && configContext.platform === Platform.Portal && !isRunningOnNationalCloud();
   };
 
   public getInitialNotificationElement = (): JSX.Element => {

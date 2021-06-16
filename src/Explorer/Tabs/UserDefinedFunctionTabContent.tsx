@@ -142,6 +142,8 @@ export default class UserDefinedFunctionTabContent extends Component<
       if (createdResource) {
         this.props.tabTitle(createdResource.id);
         this.props.isNew(false);
+        this.updateButton.visible = true;
+        this.saveButton.visible = false;
         this.props.resource(createdResource);
         this.props.hashLocation(
           `${Constants.HashRoutePrefixes.collectionsWithIds(
@@ -294,7 +296,7 @@ export default class UserDefinedFunctionTabContent extends Component<
         />
         <Label className="trigger-field">User Defined Function Body</Label>
         <EditorReact
-          language={"json"}
+          language={"javascript"}
           content={udfBody}
           isReadOnly={false}
           ariaLabel={"Graph JSON"}

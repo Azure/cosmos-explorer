@@ -9,7 +9,7 @@ import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import Explorer, { ExplorerParams } from "../Explorer/Explorer";
-import { handleOpenAction } from "../Explorer/OpenActions";
+import { handleOpenAction } from "../Explorer/OpenActions/OpenActions";
 import {
   AAD,
   ConnectionString,
@@ -120,9 +120,6 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
     masterKey: keys.primaryMasterKey,
   });
   const explorer = new Explorer(explorerParams);
-  explorer.configure({
-    databaseAccount: account,
-  });
   return explorer;
 }
 
@@ -145,9 +142,6 @@ function configureHostedWithConnectionString(config: ConnectionString, explorerP
     masterKey: config.masterKey,
   });
   const explorer = new Explorer(explorerParams);
-  explorer.configure({
-    databaseAccount,
-  });
   return explorer;
 }
 
@@ -166,33 +160,31 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
     authType: AuthType.ResourceToken,
     resourceToken: parsedResourceToken.resourceToken,
     endpoint: parsedResourceToken.accountEndpoint,
+    parsedResourceToken: {
+      databaseId: parsedResourceToken.databaseId,
+      collectionId: parsedResourceToken.collectionId,
+      partitionKey: parsedResourceToken.partitionKey,
+    },
   });
   const explorer = new Explorer(explorerParams);
-  explorer.resourceTokenDatabaseId(parsedResourceToken.databaseId);
-  explorer.resourceTokenCollectionId(parsedResourceToken.collectionId);
-  if (parsedResourceToken.partitionKey) {
-    explorer.resourceTokenPartitionKey(parsedResourceToken.partitionKey);
-  }
-  explorer.configure({ databaseAccount });
   return explorer;
 }
 
 function configureHostedWithEncryptedToken(config: EncryptedToken, explorerParams: ExplorerParams): Explorer {
+  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   updateUserContext({
     authType: AuthType.EncryptedToken,
     accessToken: encodeURIComponent(config.encryptedToken),
-  });
-  const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
-  const explorer = new Explorer(explorerParams);
-  explorer.configure({
     databaseAccount: {
       id: "",
+      location: "",
+      type: "",
       name: config.encryptedTokenMetadata.accountName,
       kind: getDatabaseAccountKindFromExperience(apiExperience),
       properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
-      tags: {},
     },
   });
+  const explorer = new Explorer(explorerParams);
   return explorer;
 }
 
@@ -223,7 +215,11 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
         console.dir(message);
         updateContextsFromPortalMessage(message);
         const explorer = new Explorer(explorerParams);
-        explorer.configure(message);
+        // In development mode, save the iframe message from the portal in session storage.
+        // This allows webpack hot reload to funciton properly
+        if (process.env.NODE_ENV === "development") {
+          sessionStorage.setItem("portalDataExplorerInitMessage", JSON.stringify(message));
+        }
         resolve(explorer);
       }
     }
@@ -255,7 +251,6 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
 
           updateContextsFromPortalMessage(inputs);
           const explorer = new Explorer(explorerParams);
-          explorer.configure(inputs);
           resolve(explorer);
           if (openAction) {
             handleOpenAction(openAction, explorer.databases(), explorer);

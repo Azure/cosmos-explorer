@@ -19,6 +19,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
+import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
@@ -27,9 +28,9 @@ import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
-import MongoQueryTab from "../Tabs/MongoQueryTab";
+import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
 import MongoShellTab from "../Tabs/MongoShellTab";
-import QueryTab from "../Tabs/QueryTab";
+import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import ConflictId from "./ConflictId";
@@ -616,19 +617,22 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const queryTab: QueryTab = new QueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
-      queryText: queryText,
-      partitionKey: collection.partitionKey,
-      onLoadStartKey: startKey,
-    });
-
-    this.container.tabsManager.activateNewTab(queryTab);
+    this.container.tabsManager.activateNewTab(
+      new NewQueryTab(
+        {
+          tabKind: ViewModels.CollectionTabKind.Query,
+          title: title,
+          tabPath: "",
+          collection: this,
+          node: this,
+          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
+          queryText: queryText,
+          partitionKey: collection.partitionKey,
+          onLoadStartKey: startKey,
+        },
+        { container: this.container }
+      )
+    );
   }
 
   public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
@@ -644,18 +648,24 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const mongoQueryTab: MongoQueryTab = new MongoQueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
-      partitionKey: collection.partitionKey,
-      onLoadStartKey: startKey,
-    });
+    const newMongoQueryTab: NewMongoQueryTab = new NewMongoQueryTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.Query,
+        title: title,
+        tabPath: "",
+        collection: this,
+        node: this,
+        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
+        partitionKey: collection.partitionKey,
+        onLoadStartKey: startKey,
+      },
+      {
+        container: this.container,
+        viewModelcollection: this,
+      }
+    );
 
-    this.container.tabsManager.activateNewTab(mongoQueryTab);
+    this.container.tabsManager.activateNewTab(newMongoQueryTab);
   }
 
   public onNewGraphClick() {
@@ -690,14 +700,23 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onNewMongoShellClick() {
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.MongoShell).length + 1;
+    const mongoShellTabs = this.container.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.MongoShell
+    ) as MongoShellTab[];
+
+    let index = 1;
+    if (mongoShellTabs.length > 0) {
+      index = mongoShellTabs[mongoShellTabs.length - 1].index + 1;
+    }
+
     const mongoShellTab: MongoShellTab = new MongoShellTab({
       tabKind: ViewModels.CollectionTabKind.MongoShell,
-      title: "Shell " + id,
+      title: "Shell " + index,
       tabPath: "",
       collection: this,
       node: this,
       hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
+      index: index,
     });
 
     this.container.tabsManager.activateNewTab(mongoShellTab);
@@ -1138,7 +1157,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.isOfferRead && !this.container.isServerlessEnabled() && !this.offer()) {
+    if (!this.isOfferRead && !isServerlessAccount() && !this.offer()) {
       const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
         databaseName: this.databaseId,
         collectionName: this.id(),

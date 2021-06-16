@@ -44,6 +44,11 @@ interface UserContext {
   readonly features: Features;
   readonly addCollectionFlight: string;
   readonly hasWriteAccess: boolean;
+  readonly parsedResourceToken?: {
+    databaseId: string;
+    collectionId: string;
+    partitionKey?: string;
+  };
   collectionCreationDefaults: CollectionCreationDefaults;
 }
 
