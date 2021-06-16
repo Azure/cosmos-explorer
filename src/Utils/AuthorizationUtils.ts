@@ -43,12 +43,14 @@ export function decryptJWTToken(token: string) {
 }
 
 export function getMsalInstance() {
+  const params = new URLSearchParams(window.location.search);
+  const authority = params.get("msalAuthority") || "https://login.microsoftonline.com/common";
   const config: msal.Configuration = {
     cache: {
       cacheLocation: "localStorage",
     },
     auth: {
-      authority: "https://login.microsoftonline.com/common",
+      authority,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
     },
   };
