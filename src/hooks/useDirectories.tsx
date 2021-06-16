@@ -13,7 +13,7 @@ export async function fetchDirectories(accessToken: string): Promise<Tenant[]> {
   headers.append("Authorization", bearer);
 
   let tenents: Array<Tenant> = [];
-  let nextLink = `https://management.azure.com/tenants?api-version=2020-01-01`;
+  let nextLink = `${configContext.ARM_ENDPOINT}/tenants?api-version=2020-01-01`;
 
   while (nextLink) {
     const response = await fetch(nextLink, { headers });

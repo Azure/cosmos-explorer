@@ -2,6 +2,7 @@ import * as msal from "@azure/msal-browser";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
+import { configContext } from "../ConfigContext";
 import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 
@@ -43,14 +44,12 @@ export function decryptJWTToken(token: string) {
 }
 
 export function getMsalInstance() {
-  const params = new URLSearchParams(window.location.search);
-  const authority = params.get("msalAuthority") || "https://login.microsoftonline.com/common";
   const config: msal.Configuration = {
     cache: {
       cacheLocation: "localStorage",
     },
     auth: {
-      authority,
+      authority: `${configContext.AAD_ENDPOINT}common`,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
     },
   };
