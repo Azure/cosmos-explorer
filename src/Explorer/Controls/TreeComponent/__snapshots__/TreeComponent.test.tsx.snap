@@ -3,6 +3,7 @@
 exports[`TreeComponent renders a simple tree 1`] = `
 <div
   className="treeComponent tree"
+  role="tree"
 >
   <TreeNodeComponent
     generation={0}
@@ -37,6 +38,7 @@ exports[`TreeNodeComponent does not render children by default 1`] = `
   className=" main2 nodeItem "
   onClick={[Function]}
   onKeyPress={[Function]}
+  role="treeitem"
 >
   <div
     className="treeNodeHeader "
@@ -137,6 +139,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
   className="nodeClassname main12 nodeItem "
   onClick={[Function]}
   onKeyPress={[Function]}
+  role="treeitem"
 >
   <div
     className="treeNodeHeader "
@@ -285,6 +288,7 @@ exports[`TreeNodeComponent renders loading icon 1`] = `
   className=" main2 nodeItem "
   onClick={[Function]}
   onKeyPress={[Function]}
+  role="treeitem"
 >
   <div
     className="treeNodeHeader "
@@ -356,6 +360,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
   className="nodeClassname main12 nodeItem "
   onClick={[Function]}
   onKeyPress={[Function]}
+  role="treeitem"
 >
   <div
     className="treeNodeHeader "
@@ -523,6 +528,7 @@ exports[`TreeNodeComponent renders unsorted children by default 1`] = `
   className=" main2 nodeItem "
   onClick={[Function]}
   onKeyPress={[Function]}
+  role="treeitem"
 >
   <div
     className="treeNodeHeader "
