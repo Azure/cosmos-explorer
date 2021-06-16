@@ -58,7 +58,7 @@ export interface TreeComponentProps {
 export class TreeComponent extends React.Component<TreeComponentProps> {
   public render(): JSX.Element {
     return (
-      <div style={this.props.style} className={`treeComponent ${this.props.className}`}>
+      <div style={this.props.style} className={`treeComponent ${this.props.className}`} role="tree">
         <TreeNodeComponent paddingLeft={0} node={this.props.rootNode} generation={0} />
       </div>
     );
@@ -172,6 +172,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
         className={`${this.props.node.className || ""} main${generation} nodeItem ${showSelected ? "selected" : ""}`}
         onClick={(event: React.MouseEvent<HTMLDivElement>) => this.onNodeClick(event, node)}
         onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) => this.onNodeKeyPress(event, node)}
+        role="treeitem"
       >
         <div
           className={`treeNodeHeader ${this.state.isMenuShowing ? "showingMenu" : ""}`}
