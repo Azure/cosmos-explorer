@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { configContext } from "../ConfigContext";
 import { Subscription } from "../Contracts/DataModels";
 
 interface SubscriptionListResult {
@@ -13,7 +14,7 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
   headers.append("Authorization", bearer);
 
   let subscriptions: Array<Subscription> = [];
-  let nextLink = `https://management.azure.com/subscriptions?api-version=2020-01-01`;
+  let nextLink = `${configContext.ARM_ENDPOINT}subscriptions?api-version=2020-01-01`;
 
   while (nextLink) {
     const response = await fetch(nextLink, { headers });
