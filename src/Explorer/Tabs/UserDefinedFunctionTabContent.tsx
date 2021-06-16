@@ -204,7 +204,7 @@ export default class UserDefinedFunctionTabContent extends Component<
 
       this.props.resource(createdResource);
       this.props.tabTitle(createdResource.id);
-      this.props.updateNodeInCollection(createdResource)
+      this.props.updateNodeInCollection(createdResource);
       this.props.isExecuting(false);
       TelemetryProcessor.traceSuccess(
         Action.UpdateUDF,

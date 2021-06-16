@@ -32,7 +32,9 @@ export default class UserDefinedFunctionTab extends ScriptTabBase {
       <UserDefinedFunctionTabContent
         {...this}
         addNodeInCollection={(createdResource) => this.addNodeInCollection(createdResource)}
-        updateNodeInCollection={(updateResource: Resource & UserDefinedFunctionDefinition) => this.updateNodeInCollection(updateResource)}
+        updateNodeInCollection={(updateResource: Resource & UserDefinedFunctionDefinition) =>
+          this.updateNodeInCollection(updateResource)
+        }
       />
     );
   }
