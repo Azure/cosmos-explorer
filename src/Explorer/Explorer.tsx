@@ -69,6 +69,7 @@ import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
+import { useDatabases } from "./useDatabases";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -81,12 +82,10 @@ export interface ExplorerParams {
 export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
   public isAccountReady: ko.Observable<boolean>;
-  public canSaveQueries: ko.Computed<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
 
   // Resource Tree
-  public databases: ko.ObservableArray<ViewModels.Database>;
   public selectedDatabaseId: ko.Computed<string>;
   public selectedCollectionId: ko.Computed<string>;
   public selectedNode: ko.Observable<ViewModels.TreeNode>;
@@ -168,26 +167,6 @@ export default class Explorer {
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
-    this.databases = ko.observableArray<ViewModels.Database>();
-    this.canSaveQueries = ko.computed<boolean>(() => {
-      const savedQueriesDatabase: ViewModels.Database = _.find(
-        this.databases(),
-        (database: ViewModels.Database) => database.id() === Constants.SavedQueries.DatabaseName
-      );
-      if (!savedQueriesDatabase) {
-        return false;
-      }
-      const savedQueriesCollection: ViewModels.Collection =
-        savedQueriesDatabase &&
-        _.find(
-          savedQueriesDatabase.collections(),
-          (collection: ViewModels.Collection) => collection.id() === Constants.SavedQueries.CollectionName
-        );
-      if (!savedQueriesCollection) {
-        return false;
-      }
-      return true;
-    });
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
     this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
       // Make sure switching tabs restores tabs display
@@ -641,32 +620,12 @@ export default class Explorer {
       return null;
     }
     if (this.selectedNode().nodeKind === "Database") {
-      return _.find(this.databases(), (database: ViewModels.Database) => database.id() === this.selectedNode().id());
+      return _.find(
+        useDatabases.getState().databases,
+        (database: ViewModels.Database) => database.id() === this.selectedNode().id()
+      );
     }
     return this.findSelectedCollection().database;
-  }
-
-  public findDatabaseWithId(databaseId: string): ViewModels.Database {
-    return _.find(this.databases(), (database: ViewModels.Database) => database.id() === databaseId);
-  }
-
-  public isLastNonEmptyDatabase(): boolean {
-    if (
-      this.isLastDatabase() &&
-      this.databases()[0] &&
-      this.databases()[0].collections &&
-      this.databases()[0].collections().length > 0
-    ) {
-      return true;
-    }
-    return false;
-  }
-
-  public isLastDatabase(): boolean {
-    if (this.databases().length > 1) {
-      return false;
-    }
-    return true;
   }
 
   public isSelectedDatabaseShared(): boolean {
@@ -691,10 +650,11 @@ export default class Explorer {
     let loadCollectionPromises: Q.Promise<void>[] = [];
 
     // If the user has a lot of databases, only load expanded databases.
+    const databases = useDatabases.getState().databases;
     const databasesToLoad =
-      this.databases().length <= Explorer.MaxNbDatabasesToAutoExpand
-        ? this.databases()
-        : this.databases().filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
+      databases.length <= Explorer.MaxNbDatabasesToAutoExpand
+        ? databases
+        : databases.filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
 
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
       dataExplorerArea: Constants.Areas.ResourceTree,
@@ -739,37 +699,16 @@ export default class Explorer {
     }
   }
 
-  public findCollection(databaseId: string, collectionId: string): ViewModels.Collection {
-    const database: ViewModels.Database = this.databases().find(
-      (database: ViewModels.Database) => database.id() === databaseId
-    );
-    return database?.collections().find((collection: ViewModels.Collection) => collection.id() === collectionId);
-  }
-
-  public isLastCollection(): boolean {
-    let collectionCount = 0;
-    if (this.databases().length == 0) {
-      return false;
-    }
-    for (let i = 0; i < this.databases().length; i++) {
-      const database = this.databases()[i];
-      collectionCount += database.collections().length;
-      if (collectionCount > 1) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   private getDeltaDatabases(
     updatedDatabaseList: DataModels.Database[]
   ): {
     toAdd: ViewModels.Database[];
     toDelete: ViewModels.Database[];
   } {
+    const databases = useDatabases.getState().databases;
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
-        this.databases(),
+        databases,
         (existingDatabase: ViewModels.Database) => existingDatabase.id() === database.id
       );
       return !databaseExists;
@@ -779,7 +718,7 @@ export default class Explorer {
     );
 
     let databasesToDelete: ViewModels.Database[] = [];
-    ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
+    ko.utils.arrayForEach(databases, (database: ViewModels.Database) => {
       const databasePresentInUpdatedList = _.some(
         updatedDatabaseList,
         (db: DataModels.Database) => db.id === database.id()
@@ -793,24 +732,12 @@ export default class Explorer {
   }
 
   private addDatabasesToList(databases: ViewModels.Database[]): void {
-    this.databases(
-      this.databases()
-        .concat(databases)
-        .sort((database1, database2) => database1.id().localeCompare(database2.id()))
-    );
+    useDatabases.getState().addDatabases(databases);
   }
 
   private deleteDatabasesFromList(databasesToRemove: ViewModels.Database[]): void {
-    const databasesToKeep: ViewModels.Database[] = [];
-
-    ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
-      const shouldRemoveDatabase = _.some(databasesToRemove, (db: ViewModels.Database) => db.id === database.id);
-      if (!shouldRemoveDatabase) {
-        databasesToKeep.push(database);
-      }
-    });
-
-    this.databases(databasesToKeep);
+    const deleteDatabase = useDatabases.getState().deleteDatabase;
+    databasesToRemove.forEach((database) => deleteDatabase(database));
   }
 
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
@@ -1414,34 +1341,6 @@ export default class Explorer {
     }
   }
 
-  public async loadDatabaseOffers(): Promise<void> {
-    await Promise.all(
-      this.databases()?.map(async (database: ViewModels.Database) => {
-        await database.loadOffer();
-      })
-    );
-  }
-
-  public isFirstResourceCreated(): boolean {
-    const databases: ViewModels.Database[] = this.databases();
-
-    if (!databases || databases.length === 0) {
-      return false;
-    }
-
-    return databases.some((database) => {
-      // user has created at least one collection
-      if (database.collections()?.length > 0) {
-        return true;
-      }
-      // user has created a database with shared throughput
-      if (database.offer()) {
-        return true;
-      }
-      // use has created an empty database without shared throughput
-      return false;
-    });
-  }
   public openDeleteCollectionConfirmationPane(): void {
     useSidePanel
       .getState()
@@ -1466,7 +1365,7 @@ export default class Explorer {
   }
 
   public async openAddCollectionPanel(databaseId?: string): Promise<void> {
-    await this.loadDatabaseOffers();
+    await useDatabases.getState().loadDatabaseOffers();
     useSidePanel
       .getState()
       .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);

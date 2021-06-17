@@ -13,6 +13,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
 import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
@@ -26,6 +27,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   selectedDatabase,
 }: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+  const isLastNonEmptyDatabase = useDatabases((state) => state.isLastNonEmptyDatabase);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
 
   const [formError, setFormError] = useState<string>("");
@@ -70,7 +72,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         startKey
       );
 
-      if (shouldRecordFeedback()) {
+      if (isLastNonEmptyDatabase()) {
         const deleteFeedback = new DeleteFeedback(
           userContext?.databaseAccount.id,
           userContext?.databaseAccount.name,
@@ -98,10 +100,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         startKey
       );
     }
-  };
-
-  const shouldRecordFeedback = (): boolean => {
-    return explorer.isLastNonEmptyDatabase() || (explorer.isLastDatabase() && explorer.isSelectedDatabaseShared());
   };
 
   const props: RightPaneFormProps = {
@@ -134,7 +132,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
             }}
           />
         </div>
-        {shouldRecordFeedback() && (
+        {isLastNonEmptyDatabase() && (
           <div className="deleteDatabaseFeedback">
             <Text variant="small" block>
               Help us improve Azure Cosmos DB!

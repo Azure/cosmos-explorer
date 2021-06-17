@@ -26,7 +26,7 @@ exports[`Browse queries panel Should render Default properly 1`] = `
             "getQueries": [Function],
           }
         }
-        saveQueryEnabled={true}
+        saveQueryEnabled={false}
       >
         <div
           id="emptyQueryBanner"
