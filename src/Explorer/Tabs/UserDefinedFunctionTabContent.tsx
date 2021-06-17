@@ -287,7 +287,7 @@ export default class UserDefinedFunctionTabContent extends Component<
           readOnly={!isUdfIdEditable}
           type="text"
           pattern="[^/?#\\]*[^/?# \\]"
-          placeholder="Enter the new trigger id"
+          placeholder="Enter the new user defined function id"
           size={40}
           value={udfId}
           onChange={this.handleUdfIdChange}
