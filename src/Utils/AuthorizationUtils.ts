@@ -2,6 +2,7 @@ import * as msal from "@azure/msal-browser";
 import { AuthType } from "../AuthType";
 import * as Constants from "../Common/Constants";
 import * as Logger from "../Common/Logger";
+import { configContext } from "../ConfigContext";
 import * as ViewModels from "../Contracts/ViewModels";
 import { userContext } from "../UserContext";
 
@@ -48,7 +49,7 @@ export function getMsalInstance() {
       cacheLocation: "localStorage",
     },
     auth: {
-      authority: "https://login.microsoftonline.com/common",
+      authority: `${configContext.AAD_ENDPOINT}common`,
       clientId: "203f1145-856a-4232-83d4-a43568fba23d",
     },
   };
