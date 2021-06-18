@@ -20,7 +20,17 @@ interface DatabasesState {
 
 export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   databases: [],
-  updateDatabase: (database: ViewModels.Database) => set((state) => ({ databases: replaceDatabase(state, database) })),
+  updateDatabase: (updatedDatabase: ViewModels.Database) =>
+    set((state) => {
+      const updatedDatabases = state.databases.map((database: ViewModels.Database) => {
+        if (database.id() === updatedDatabase.id()) {
+          return updatedDatabase;
+        }
+
+        return database;
+      });
+      return { databases: updatedDatabases };
+    }),
   addDatabases: (databases: ViewModels.Database[]) =>
     set((state) => ({
       databases: [...state.databases, ...databases].sort((db1, db2) => db1.id().localeCompare(db2.id())),
@@ -28,7 +38,25 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   deleteDatabase: (database: ViewModels.Database) =>
     set((state) => ({ databases: state.databases.filter((db) => database.id() !== db.id()) })),
   clearDatabases: () => set(() => ({ databases: [] })),
-  isSaveQueryEnabled: () => findSaveQueryDatabaseAndCollection(get().databases),
+  isSaveQueryEnabled: () => {
+    const savedQueriesDatabase: ViewModels.Database = _.find(
+      get().databases,
+      (database: ViewModels.Database) => database.id() === Constants.SavedQueries.DatabaseName
+    );
+    if (!savedQueriesDatabase) {
+      return false;
+    }
+    const savedQueriesCollection: ViewModels.Collection =
+      savedQueriesDatabase &&
+      _.find(
+        savedQueriesDatabase.collections(),
+        (collection: ViewModels.Collection) => collection.id() === Constants.SavedQueries.CollectionName
+      );
+    if (!savedQueriesCollection) {
+      return false;
+    }
+    return true;
+  },
   findDatabaseWithId: (databaseId: string) => get().databases.find((db) => databaseId === db.id()),
   isLastNonEmptyDatabase: () => {
     const databases = get().databases;
@@ -83,33 +111,3 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     });
   },
 }));
-
-const replaceDatabase = (state: DatabasesState, updatedDatabase: ViewModels.Database) => {
-  return state.databases.map((database: ViewModels.Database) => {
-    if (database.id() === updatedDatabase.id()) {
-      return updatedDatabase;
-    }
-
-    return database;
-  });
-};
-
-const findSaveQueryDatabaseAndCollection = (databases: ViewModels.Database[]): boolean => {
-  const savedQueriesDatabase: ViewModels.Database = _.find(
-    databases,
-    (database: ViewModels.Database) => database.id() === Constants.SavedQueries.DatabaseName
-  );
-  if (!savedQueriesDatabase) {
-    return false;
-  }
-  const savedQueriesCollection: ViewModels.Collection =
-    savedQueriesDatabase &&
-    _.find(
-      savedQueriesDatabase.collections(),
-      (collection: ViewModels.Collection) => collection.id() === Constants.SavedQueries.CollectionName
-    );
-  if (!savedQueriesCollection) {
-    return false;
-  }
-  return true;
-};
