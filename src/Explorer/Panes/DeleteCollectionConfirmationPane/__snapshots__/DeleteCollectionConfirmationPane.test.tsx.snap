@@ -7,7 +7,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
   explorer={
     Object {
       "findSelectedCollection": [Function],
-      "isLastCollection": [Function],
       "isSelectedDatabaseShared": [Function],
       "refreshAllDatabases": [Function],
       "selectedCollectionId": [Function],

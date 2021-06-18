@@ -8,6 +8,7 @@ interface DatabasesState {
   updateDatabase: (database: ViewModels.Database) => void;
   addDatabases: (databases: ViewModels.Database[]) => void;
   deleteDatabase: (database: ViewModels.Database) => void;
+  clearDatabases: () => void;
   isSaveQueryEnabled: () => boolean;
   findDatabaseWithId: (databaseId: string) => ViewModels.Database;
   isLastNonEmptyDatabase: () => boolean;
@@ -26,6 +27,7 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     })),
   deleteDatabase: (database: ViewModels.Database) =>
     set((state) => ({ databases: state.databases.filter((db) => database.id() !== db.id()) })),
+  clearDatabases: () => set(() => ({ databases: [] })),
   isSaveQueryEnabled: () => findSaveQueryDatabaseAndCollection(get().databases),
   findDatabaseWithId: (databaseId: string) => get().databases.find((db) => databaseId === db.id()),
   isLastNonEmptyDatabase: () => {
