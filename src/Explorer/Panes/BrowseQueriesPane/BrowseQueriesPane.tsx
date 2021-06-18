@@ -13,6 +13,7 @@ import {
 } from "../../Controls/QueriesGridReactComponent/QueriesGridComponent";
 import Explorer from "../../Explorer";
 import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
+import { useDatabases } from "../../useDatabases";
 
 interface BrowseQueriesPaneProps {
   explorer: Explorer;
@@ -45,12 +46,13 @@ export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
     });
     closeSidePanel();
   };
+  const isSaveQueryEnabled = useDatabases((state) => state.isSaveQueryEnabled);
 
   const props: QueriesGridComponentProps = {
     queriesClient: explorer.queriesClient,
     onQuerySelect: loadSavedQuery,
     containerVisible: true,
-    saveQueryEnabled: explorer.canSaveQueries(),
+    saveQueryEnabled: isSaveQueryEnabled(),
   };
 
   return (

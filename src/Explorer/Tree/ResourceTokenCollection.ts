@@ -9,6 +9,7 @@ import Explorer from "../Explorer";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
+import { useDatabases } from "../useDatabases";
 import DocumentId from "./DocumentId";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
@@ -151,6 +152,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   }
 
   public getDatabase(): ViewModels.Database {
-    return this.container.findDatabaseWithId(this.databaseId);
+    return useDatabases.getState().findDatabaseWithId(this.databaseId);
   }
 }

@@ -11,19 +11,20 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
+import { TabsManager } from "../Tabs/TabsManager";
+import { useDatabases } from "../useDatabases";
 import { DeleteDatabaseConfirmationPanel } from "./DeleteDatabaseConfirmationPanel";
 
 describe("Delete Database Confirmation Pane", () => {
   describe("shouldRecordFeedback()", () => {
     it("should return true if last non empty database or is last database that has shared throughput, else false", () => {
-      const fakeExplorer = new Explorer();
+      const fakeExplorer = {} as Explorer;
       fakeExplorer.refreshAllDatabases = () => undefined;
-      fakeExplorer.isLastCollection = () => true;
       fakeExplorer.isSelectedDatabaseShared = () => false;
 
       const database = {} as Database;
-      database.collections = ko.observableArray<Collection>([{} as Collection]);
-      database.id = ko.observable<string>("testDatabse");
+      database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
+      database.id = ko.observable<string>("testDatabase");
 
       const props = {
         explorer: fakeExplorer,
@@ -33,29 +34,26 @@ describe("Delete Database Confirmation Pane", () => {
       };
 
       const wrapper = shallow(<DeleteDatabaseConfirmationPanel {...props} />);
-      props.explorer.isLastNonEmptyDatabase = () => true;
+      expect(wrapper.exists(".deleteDatabaseFeedback")).toBe(false);
+
+      useDatabases.getState().addDatabases([database]);
+
       wrapper.setProps(props);
       expect(wrapper.exists(".deleteDatabaseFeedback")).toBe(true);
-
-      props.explorer.isLastNonEmptyDatabase = () => false;
-      props.explorer.isLastDatabase = () => false;
-      wrapper.setProps(props);
-      expect(wrapper.exists(".deleteDatabaseFeedback")).toBe(false);
-
-      props.explorer.isLastNonEmptyDatabase = () => false;
-      props.explorer.isLastDatabase = () => true;
-      props.explorer.isSelectedDatabaseShared = () => false;
-      wrapper.setProps(props);
-      expect(wrapper.exists(".deleteDatabaseFeedback")).toBe(false);
+      useDatabases.getState().clearDatabases();
     });
   });
 
   describe("submit()", () => {
     const selectedDatabaseId = "testDatabse";
-    const fakeExplorer = new Explorer();
+    const database = { id: ko.observable("testDatabase") } as Database;
+    database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
+    database.id = ko.observable<string>(selectedDatabaseId);
+    const fakeExplorer = {} as Explorer;
     fakeExplorer.refreshAllDatabases = () => undefined;
-    fakeExplorer.isLastCollection = () => true;
     fakeExplorer.isSelectedDatabaseShared = () => false;
+    fakeExplorer.tabsManager = new TabsManager();
+    fakeExplorer.selectedNode = ko.observable();
 
     let wrapper: ReactWrapper;
     beforeAll(() => {
@@ -71,13 +69,10 @@ describe("Delete Database Confirmation Pane", () => {
       });
       (deleteDatabase as jest.Mock).mockResolvedValue(undefined);
       (TelemetryProcessor.trace as jest.Mock).mockReturnValue(undefined);
+      useDatabases.getState().addDatabases([database]);
     });
 
     beforeEach(() => {
-      const database = {} as Database;
-      database.collections = ko.observableArray<Collection>([{} as Collection]);
-      database.id = ko.observable<string>(selectedDatabaseId);
-
       const props = {
         explorer: fakeExplorer,
         closePanel: (): void => undefined,
@@ -86,9 +81,9 @@ describe("Delete Database Confirmation Pane", () => {
       };
 
       wrapper = mount(<DeleteDatabaseConfirmationPanel {...props} />);
-      props.explorer.isLastNonEmptyDatabase = () => true;
-      wrapper.setProps(props);
     });
+
+    afterAll(() => useDatabases.getState().clearDatabases());
 
     it("Should call delete database", () => {
       expect(wrapper).toMatchSnapshot();

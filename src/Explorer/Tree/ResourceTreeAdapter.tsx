@@ -33,6 +33,7 @@ import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import TabsBase from "../Tabs/TabsBase";
+import { useDatabases } from "../useDatabases";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
@@ -66,15 +67,18 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.koSubsCollectionIdMap = new ArrayHashMap();
     this.databaseCollectionIdMap = new ArrayHashMap();
 
-    this.container.databases.subscribe((databases: ViewModels.Database[]) => {
-      // Clean up old databases
-      this.cleanupDatabasesKoSubs();
+    useDatabases.subscribe(
+      (databases: ViewModels.Database[]) => {
+        // Clean up old databases
+        this.cleanupDatabasesKoSubs();
 
-      databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
-      this.triggerRender();
-    });
+        databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
+        this.triggerRender();
+      },
+      (state) => state.databases
+    );
 
-    this.container.databases().forEach((database: ViewModels.Database) => this.watchDatabase(database));
+    useDatabases.getState().databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
     this.triggerRender();
   }
 
@@ -192,7 +196,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private buildDataTree(): TreeNode {
-    const databaseTreeNodes: TreeNode[] = this.container.databases().map((database: ViewModels.Database) => {
+    const databaseTreeNodes: TreeNode[] = useDatabases.getState().databases.map((database: ViewModels.Database) => {
       const databaseNode: TreeNode = {
         label: database.id(),
         iconSrc: CosmosDBIcon,
@@ -882,7 +886,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.addKoSubToCollectionId(
       databaseId,
       collection.id(),
-      collection.storedProcedures.subscribe(() => {
+      collection.storedProcedures?.subscribe(() => {
         this.triggerRender();
       })
     );
@@ -890,7 +894,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.addKoSubToCollectionId(
       databaseId,
       collection.id(),
-      collection.isCollectionExpanded.subscribe(() => {
+      collection.isCollectionExpanded?.subscribe(() => {
         this.triggerRender();
       })
     );
@@ -898,7 +902,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.addKoSubToCollectionId(
       databaseId,
       collection.id(),
-      collection.isStoredProceduresExpanded.subscribe(() => {
+      collection.isStoredProceduresExpanded?.subscribe(() => {
         this.triggerRender();
       })
     );

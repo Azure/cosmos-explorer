@@ -33,6 +33,7 @@ import MongoShellTab from "../Tabs/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
+import { useDatabases } from "../useDatabases";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -1153,7 +1154,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public getDatabase(): ViewModels.Database {
-    return this.container.findDatabaseWithId(this.databaseId);
+    return useDatabases.getState().findDatabaseWithId(this.databaseId);
   }
 
   public async loadOffer(): Promise<void> {

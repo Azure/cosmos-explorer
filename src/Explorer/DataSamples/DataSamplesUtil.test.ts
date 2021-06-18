@@ -2,6 +2,7 @@ import * as ko from "knockout";
 import * as sinon from "sinon";
 import { Collection, Database } from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import { DataSamplesUtil } from "./DataSamplesUtil";
 
@@ -16,8 +17,8 @@ describe("DataSampleUtils", () => {
       collections: ko.observableArray<Collection>([collection]),
     } as Database;
     const explorer = {} as Explorer;
-    explorer.databases = ko.observableArray<Database>([database]);
     explorer.showOkModalDialog = () => {};
+    useDatabases.getState().addDatabases([database]);
     const dataSamplesUtil = new DataSamplesUtil(explorer);
 
     const fakeGenerator = sinon.createStubInstance<ContainerSampleGenerator>(ContainerSampleGenerator as any);
