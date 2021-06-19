@@ -6,12 +6,13 @@ import React from "react";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { ApiKind, DatabaseAccount } from "../../../Contracts/DataModels";
-import { Collection, Database, TreeNode } from "../../../Contracts/ViewModels";
+import { Collection, Database } from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
+import { useSelectedNode } from "../../useSelectedNode";
 import { DeleteCollectionConfirmationPane } from "./DeleteCollectionConfirmationPane";
 
 describe("Delete Collection Confirmation Pane", () => {
@@ -54,7 +55,6 @@ describe("Delete Collection Confirmation Pane", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
       const fakeExplorer = new Explorer();
       fakeExplorer.refreshAllDatabases = () => undefined;
-      fakeExplorer.isSelectedDatabaseShared = () => false;
 
       const props = {
         explorer: fakeExplorer,
@@ -70,7 +70,11 @@ describe("Delete Collection Confirmation Pane", () => {
       wrapper.setProps(props);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
 
-      props.explorer.isSelectedDatabaseShared = () => true;
+      useSelectedNode.getState().setSelectedNode({
+        id: ko.observable("testDB"),
+        nodeKind: "Database",
+        isDatabaseShared: () => true,
+      } as Database);
       wrapper.setProps(props);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
     });
@@ -81,17 +85,12 @@ describe("Delete Collection Confirmation Pane", () => {
     const selectedCollectionId = "testCol";
     const databaseId = "testDatabase";
     const fakeExplorer = {} as Explorer;
-    fakeExplorer.findSelectedCollection = () => {
-      return {
-        id: ko.observable<string>(selectedCollectionId),
-        databaseId,
-        rid: "test",
-      } as Collection;
-    };
-    fakeExplorer.selectedCollectionId = ko.computed<string>(() => selectedCollectionId);
-    fakeExplorer.selectedNode = ko.observable<TreeNode>();
+    useSelectedNode.getState().setSelectedNode({
+      id: ko.observable<string>(selectedCollectionId),
+      databaseId,
+      rid: "test",
+    } as Collection);
     fakeExplorer.refreshAllDatabases = () => undefined;
-    fakeExplorer.isSelectedDatabaseShared = () => false;
     const database = { id: ko.observable("testDB") } as Database;
     database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
     useDatabases.getState().addDatabases([database]);

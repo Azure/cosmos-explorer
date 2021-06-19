@@ -5,9 +5,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
   closePanel={[Function]}
   explorer={
     Object {
-      "isSelectedDatabaseShared": [Function],
       "refreshAllDatabases": [Function],
-      "selectedNode": [Function],
       "tabsManager": TabsManager {
         "activeTab": [Function],
         "openedTabs": [Function],

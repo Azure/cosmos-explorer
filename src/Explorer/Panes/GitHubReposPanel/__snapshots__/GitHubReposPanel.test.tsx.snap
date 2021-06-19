@@ -23,7 +23,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "isFixedCollectionWithSharedThroughputSupported": [Function],
             "isNotebookEnabled": [Function],
             "isNotebooksEnabledForAccount": [Function],
-            "isResourceTokenCollectionNodeSelected": [Function],
             "isSchemaEnabled": [Function],
             "isShellEnabled": [Function],
             "isSynapseLinkUpdating": [Function],
@@ -51,8 +50,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
               "container": [Circular],
               "parameters": [Function],
             },
-            "selectedDatabaseId": [Function],
-            "selectedNode": [Function],
             "sparkClusterConnectionInfo": [Function],
             "tabsManager": TabsManager {
               "activeTab": [Function],

@@ -91,7 +91,6 @@ export default class Explorer {
 
   // Resource Token
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
-  public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
   public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
