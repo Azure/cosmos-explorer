@@ -10,6 +10,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
+import { useSelectedNode } from "../useSelectedNode";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
 import { TabsManager } from "./TabsManager";
 // TODO: Use specific actions for logging telemetry data
@@ -78,12 +79,13 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   protected updateSelectedNode(): void {
     const relatedDatabase = (this.collection && this.collection.getDatabase()) || this.database;
+    const setSelectedNode = useSelectedNode.getState().setSelectedNode;
     if (relatedDatabase && !relatedDatabase.isDatabaseExpanded()) {
-      this.getContainer().selectedNode(relatedDatabase);
+      setSelectedNode(relatedDatabase);
     } else if (this.collection && !this.collection.isCollectionExpanded()) {
-      this.getContainer().selectedNode(this.collection);
+      setSelectedNode(this.collection);
     } else {
-      this.getContainer().selectedNode(this.node);
+      setSelectedNode(this.node);
     }
   }
 

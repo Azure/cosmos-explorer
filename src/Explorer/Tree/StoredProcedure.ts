@@ -11,6 +11,7 @@ import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import StoredProcedureTab from "../Tabs/StoredProcedureTab";
 import TabsBase from "../Tabs/TabsBase";
+import { useSelectedNode } from "../useSelectedNode";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -82,7 +83,7 @@ export default class StoredProcedure {
   }
 
   public select() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Stored procedure node",
 

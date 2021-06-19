@@ -7,6 +7,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
+import { useSelectedNode } from "../useSelectedNode";
 
 export default class UserDefinedFunction {
   public nodeKind: string;
@@ -87,7 +88,7 @@ export default class UserDefinedFunction {
   };
 
   public select() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "UDF item node",
 

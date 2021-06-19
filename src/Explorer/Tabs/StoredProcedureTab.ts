@@ -14,6 +14,7 @@ import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import StoredProcedure from "../Tree/StoredProcedure";
+import { useSelectedNode } from "../useSelectedNode";
 import ScriptTabBase from "./ScriptTabBase";
 import template from "./StoredProcedureTab.html";
 
@@ -189,12 +190,13 @@ export default class StoredProcedureTab extends ScriptTabBase {
     }
 
     const database: ViewModels.Database = this.collection.getDatabase();
+    const setSelectedNode = useSelectedNode.getState().setSelectedNode;
     if (!database.isDatabaseExpanded()) {
-      this.collection.container.selectedNode(database);
+      setSelectedNode(database);
     } else if (!this.collection.isCollectionExpanded() || !this.collection.isStoredProceduresExpanded()) {
-      this.collection.container.selectedNode(this.collection);
+      setSelectedNode(this.collection);
     } else {
-      this.collection.container.selectedNode(this.node);
+      setSelectedNode(this.node);
     }
   }
 

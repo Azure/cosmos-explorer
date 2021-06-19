@@ -20,7 +20,6 @@ describe("Delete Database Confirmation Pane", () => {
     it("should return true if last non empty database or is last database that has shared throughput, else false", () => {
       const fakeExplorer = {} as Explorer;
       fakeExplorer.refreshAllDatabases = () => undefined;
-      fakeExplorer.isSelectedDatabaseShared = () => false;
 
       const database = {} as Database;
       database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
@@ -51,9 +50,7 @@ describe("Delete Database Confirmation Pane", () => {
     database.id = ko.observable<string>(selectedDatabaseId);
     const fakeExplorer = {} as Explorer;
     fakeExplorer.refreshAllDatabases = () => undefined;
-    fakeExplorer.isSelectedDatabaseShared = () => false;
     fakeExplorer.tabsManager = new TabsManager();
-    fakeExplorer.selectedNode = ko.observable();
 
     let wrapper: ReactWrapper;
     beforeAll(() => {

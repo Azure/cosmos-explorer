@@ -17,6 +17,7 @@ import Explorer from "./Explorer";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import { useSelectedNode } from "./useSelectedNode";
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
   collectionId: string;
@@ -72,7 +73,7 @@ export class ResourceTreeContextMenuButtonFactory {
       items.push({
         iconSrc: HostedTerminalIcon,
         onClick: () => {
-          const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           if (container.isShellEnabled()) {
             container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
           } else {
@@ -87,7 +88,7 @@ export class ResourceTreeContextMenuButtonFactory {
       items.push({
         iconSrc: AddStoredProcedureIcon,
         onClick: () => {
-          const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
         },
         label: "New Stored Procedure",
@@ -96,7 +97,7 @@ export class ResourceTreeContextMenuButtonFactory {
       items.push({
         iconSrc: AddUdfIcon,
         onClick: () => {
-          const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection, null);
         },
         label: "New UDF",
@@ -105,7 +106,7 @@ export class ResourceTreeContextMenuButtonFactory {
       items.push({
         iconSrc: AddTriggerIcon,
         onClick: () => {
-          const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, null);
         },
         label: "New Trigger",
