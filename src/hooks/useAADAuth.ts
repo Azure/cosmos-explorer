@@ -51,7 +51,7 @@ export function useAADAuth(): ReturnType {
     async (id) => {
       const response = await msalInstance.loginPopup({
         redirectUri: configContext.msalRedirectURI,
-        authority: `https://login.microsoftonline.com/${id}`,
+        authority: `${configContext.AAD_ENDPOINT}${id}`,
         scopes: [],
       });
       setTenantId(response.tenantId);
@@ -64,12 +64,12 @@ export function useAADAuth(): ReturnType {
     if (account && tenantId) {
       Promise.all([
         msalInstance.acquireTokenSilent({
-          authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://graph.windows.net//.default"],
+          authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
+          scopes: [`${configContext.GRAPH_ENDPOINT}/.default`],
         }),
         msalInstance.acquireTokenSilent({
-          authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://management.azure.com//.default"],
+          authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
+          scopes: [`${configContext.ARM_ENDPOINT}/.default`],
         }),
       ]).then(([graphTokenResponse, armTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);

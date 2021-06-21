@@ -167,7 +167,10 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
     },
   ];
 
-  if (container.isHostedDataExplorerEnabled()) {
+  const showOpenFullScreen =
+    configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
+
+  if (showOpenFullScreen) {
     const label = "Open Full Screen";
     const fullScreenButton: CommandButtonComponentProps = {
       iconSrc: OpenInTabIcon,
@@ -179,7 +182,7 @@ export function createControlCommandBarButtons(container: Explorer): CommandButt
       ariaLabel: label,
       tooltipText: label,
       hasPopup: false,
-      disabled: !container.isHostedDataExplorerEnabled(),
+      disabled: !showOpenFullScreen,
       className: "OpenFullScreen",
     };
     buttons.push(fullScreenButton);

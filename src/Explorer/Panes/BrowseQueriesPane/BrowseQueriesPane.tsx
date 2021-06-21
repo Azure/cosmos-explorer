@@ -12,7 +12,8 @@ import {
   QueriesGridComponentProps,
 } from "../../Controls/QueriesGridReactComponent/QueriesGridComponent";
 import Explorer from "../../Explorer";
-import QueryTab from "../../Tabs/QueryTab";
+import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
+import { useDatabases } from "../../useDatabases";
 
 interface BrowseQueriesPaneProps {
   explorer: Explorer;
@@ -31,13 +32,13 @@ export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
     } else if (userContext.apiType === "Mongo") {
       selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
     } else {
-      selectedCollection.onNewQueryClick(selectedCollection, undefined);
+      selectedCollection.onNewQueryClick(selectedCollection, undefined, savedQuery.query);
     }
-    const queryTab = explorer.tabsManager.activeTab() as QueryTab;
+
+    const queryTab = explorer && (explorer.tabsManager.activeTab() as NewQueryTab);
     queryTab.tabTitle(savedQuery.queryName);
     queryTab.tabPath(`${selectedCollection.databaseId}>${selectedCollection.id()}>${savedQuery.queryName}`);
-    queryTab.initialEditorContent(savedQuery.query);
-    queryTab.sqlQueryEditorContent(savedQuery.query);
+
     trace(Action.LoadSavedQuery, ActionModifiers.Mark, {
       dataExplorerArea: Areas.ContextualPane,
       queryName: savedQuery.queryName,
@@ -45,12 +46,13 @@ export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
     });
     closeSidePanel();
   };
+  const isSaveQueryEnabled = useDatabases((state) => state.isSaveQueryEnabled);
 
   const props: QueriesGridComponentProps = {
     queriesClient: explorer.queriesClient,
     onQuerySelect: loadSavedQuery,
     containerVisible: true,
-    saveQueryEnabled: explorer.canSaveQueries(),
+    saveQueryEnabled: isSaveQueryEnabled(),
   };
 
   return (

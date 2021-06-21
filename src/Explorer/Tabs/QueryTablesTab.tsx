@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import Q from "q";
+import React from "react";
 import AddEntityIcon from "../../../images/AddEntity.svg";
 import DeleteEntitiesIcon from "../../../images/DeleteEntities.svg";
 import EditEntityIcon from "../../../images/Edit-entity.svg";
@@ -7,13 +7,16 @@ import ExecuteQueryIcon from "../../../images/ExecuteQuery.svg";
 import QueryBuilderIcon from "../../../images/Query-Builder.svg";
 import QueryTextIcon from "../../../images/Query-Text.svg";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
+import { AddTableEntityPanel } from "../Panes/Tables/AddTableEntityPanel";
+import { EditTableEntityPanel } from "../Panes/Tables/EditTableEntityPanel";
 import TableCommands from "../Tables/DataTable/TableCommands";
 import TableEntityListViewModel from "../Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "../Tables/QueryBuilder/QueryViewModel";
-import { TableDataClient } from "../Tables/TableDataClient";
+import { CassandraAPIDataClient, TableDataClient } from "../Tables/TableDataClient";
 import template from "./QueryTablesTab.html";
 import TabsBase from "./TabsBase";
 
@@ -130,34 +133,36 @@ export default class QueryTablesTab extends TabsBase {
     this.buildCommandBarOptions();
   }
 
-  public onExecuteQueryClick = (): Q.Promise<any> => {
-    this.queryViewModel().runQuery();
-    return null;
+  public onAddEntityClick = (): void => {
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Add Table Entity",
+        <AddTableEntityPanel
+          tableDataClient={this.tableDataClient}
+          queryTablesTab={this}
+          tableEntityListViewModel={this.tableEntityListViewModel()}
+          cassandraApiClient={new CassandraAPIDataClient()}
+        />
+      );
   };
 
-  public onQueryBuilderClick = (): Q.Promise<any> => {
-    this.queryViewModel().selectHelper();
-    return null;
+  public onEditEntityClick = (): void => {
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Edit Table Entity",
+        <EditTableEntityPanel
+          tableDataClient={this.tableDataClient}
+          queryTablesTab={this}
+          tableEntityListViewModel={this.tableEntityListViewModel()}
+          cassandraApiClient={new CassandraAPIDataClient()}
+        />
+      );
   };
 
-  public onQueryTextClick = (): Q.Promise<any> => {
-    this.queryViewModel().selectEditor();
-    return null;
-  };
-
-  public onAddEntityClick = (): Q.Promise<any> => {
-    this.container.openAddTableEntityPanel(this, this.tableEntityListViewModel());
-    return null;
-  };
-
-  public onEditEntityClick = (): Q.Promise<any> => {
-    this.container.openEditTableEntityPanel(this, this.tableEntityListViewModel());
-    return null;
-  };
-
-  public onDeleteEntityClick = (): Q.Promise<any> => {
+  public onDeleteEntityClick = (): void => {
     this.tableCommands.deleteEntitiesCommand(this.tableEntityListViewModel());
-    return null;
   };
 
   public onActivate(): void {
@@ -166,7 +171,7 @@ export default class QueryTablesTab extends TabsBase {
       !!this.tableEntityListViewModel() &&
       !!this.tableEntityListViewModel().table &&
       this.tableEntityListViewModel().table.columns;
-    if (!!columns) {
+    if (columns) {
       columns.adjust();
       $(window).resize();
     }
@@ -179,7 +184,7 @@ export default class QueryTablesTab extends TabsBase {
       buttons.push({
         iconSrc: QueryBuilderIcon,
         iconAlt: label,
-        onCommandClick: this.onQueryBuilderClick,
+        onCommandClick: () => this.queryViewModel().selectHelper(),
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -193,7 +198,7 @@ export default class QueryTablesTab extends TabsBase {
       buttons.push({
         iconSrc: QueryTextIcon,
         iconAlt: label,
-        onCommandClick: this.onQueryTextClick,
+        onCommandClick: () => this.queryViewModel().selectEditor(),
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,
@@ -207,7 +212,7 @@ export default class QueryTablesTab extends TabsBase {
       buttons.push({
         iconSrc: ExecuteQueryIcon,
         iconAlt: label,
-        onCommandClick: this.onExecuteQueryClick,
+        onCommandClick: () => this.queryViewModel().runQuery(),
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: false,

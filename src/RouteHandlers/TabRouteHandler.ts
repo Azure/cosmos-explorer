@@ -5,6 +5,7 @@ import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
 import ScriptTabBase from "../Explorer/Tabs/ScriptTabBase";
 import TabsBase from "../Explorer/Tabs/TabsBase";
+import { useDatabases } from "../Explorer/useDatabases";
 import { userContext } from "../UserContext";
 
 export class TabRouteHandler {
@@ -248,12 +249,11 @@ export class TabRouteHandler {
 
   private _openDatabaseSettingsTabForResource(databaseId: string): void {
     this._executeActionHelper(() => {
-      const explorer = window.dataExplorer;
       const database: ViewModels.Database = _.find(
-        explorer.databases(),
+        useDatabases.getState().databases,
         (database: ViewModels.Database) => database.id() === databaseId
       );
-      database && database.onSettingsClick();
+      database?.onSettingsClick();
     });
   }
 
@@ -391,7 +391,7 @@ export class TabRouteHandler {
 
   private _findMatchingCollectionForResource(databaseId: string, collectionId: string): ViewModels.Collection {
     const explorer = window.dataExplorer;
-    const matchedDatabase: ViewModels.Database = explorer.findDatabaseWithId(databaseId);
+    const matchedDatabase: ViewModels.Database = useDatabases.getState().findDatabaseWithId(databaseId);
     const matchedCollection: ViewModels.Collection =
       matchedDatabase && matchedDatabase.findCollectionWithId(collectionId);
 

@@ -30,11 +30,8 @@ exports[`SettingsComponent renders 1`] = `
               "container": Explorer {
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
-                "canSaveQueries": [Function],
-                "databases": [Function],
                 "isAccountReady": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
-                "isHostedDataExplorerEnabled": [Function],
                 "isNotebookEnabled": [Function],
                 "isNotebooksEnabledForAccount": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],
@@ -125,11 +122,8 @@ exports[`SettingsComponent renders 1`] = `
               "container": Explorer {
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
-                "canSaveQueries": [Function],
-                "databases": [Function],
                 "isAccountReady": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
-                "isHostedDataExplorerEnabled": [Function],
                 "isNotebookEnabled": [Function],
                 "isNotebooksEnabledForAccount": [Function],
                 "isResourceTokenCollectionNodeSelected": [Function],

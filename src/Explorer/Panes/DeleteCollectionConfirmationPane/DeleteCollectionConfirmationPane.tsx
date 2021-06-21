@@ -13,7 +13,9 @@ import { userContext } from "../../../UserContext";
 import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
+import { useDatabases } from "../../useDatabases";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
+
 export interface DeleteCollectionConfirmationPaneProps {
   explorer: Explorer;
 }
@@ -22,13 +24,14 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   explorer,
 }: DeleteCollectionConfirmationPaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+  const isLastCollection = useDatabases((state) => state.isLastCollection);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState(false);
 
   const shouldRecordFeedback = (): boolean => {
-    return explorer.isLastCollection() && !explorer.isSelectedDatabaseShared();
+    return isLastCollection() && !explorer.isSelectedDatabaseShared();
   };
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;

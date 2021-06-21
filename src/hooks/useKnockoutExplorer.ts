@@ -10,6 +10,7 @@ import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
 import Explorer, { ExplorerParams } from "../Explorer/Explorer";
 import { handleOpenAction } from "../Explorer/OpenActions/OpenActions";
+import { useDatabases } from "../Explorer/useDatabases";
 import {
   AAD,
   ConnectionString,
@@ -253,7 +254,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
           const explorer = new Explorer(explorerParams);
           resolve(explorer);
           if (openAction) {
-            handleOpenAction(openAction, explorer.databases(), explorer);
+            handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);

@@ -129,7 +129,6 @@ src/Explorer/Tables/QueryBuilder/ClauseGroupViewModel.ts
 src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
 src/Explorer/Tables/QueryBuilder/QueryBuilderViewModel.ts
 src/Explorer/Tables/QueryBuilder/QueryClauseViewModel.ts
-src/Explorer/Tables/QueryBuilder/QueryViewModel.ts
 src/Explorer/Tables/TableDataClient.ts
 src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
@@ -139,10 +138,9 @@ src/Explorer/Tabs/DocumentsTab.test.ts
 src/Explorer/Tabs/DocumentsTab.ts
 src/Explorer/Tabs/GraphTab.ts
 src/Explorer/Tabs/MongoDocumentsTab.ts
-src/Explorer/Tabs/MongoQueryTab.ts
+# src/Explorer/Tabs/MongoQueryTab.ts
 src/Explorer/Tabs/MongoShellTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
-src/Explorer/Tabs/QueryTablesTab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
 src/Explorer/Tabs/StoredProcedureTab.ts
 src/Explorer/Tabs/TabComponents.ts
