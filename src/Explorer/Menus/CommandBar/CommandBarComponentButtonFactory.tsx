@@ -30,6 +30,7 @@ import { CommandButtonComponentProps } from "../../Controls/CommandButton/Comman
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
 import { SetupNoteBooksPanel } from "../../Panes/SetupNotebooksPanel/SetupNotebooksPanel";
@@ -548,7 +549,17 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () => container.openGitHubReposPanel(label),
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <GitHubReposPanel
+            explorer={container}
+            gitHubClientProp={container.notebookManager.gitHubClient}
+            junoClientProp={undefined}
+          />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

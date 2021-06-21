@@ -22,6 +22,7 @@ import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
+import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { InMemoryContentProvider } from "./NotebookComponent/ContentProviders/InMemoryContentProvider";
@@ -97,7 +98,16 @@ export default class NotebookManager {
       this.gitHubClient.setToken(token?.access_token);
       if (this?.gitHubOAuthService.isLoggedIn()) {
         useSidePanel.getState().closeSidePanel();
-        this.params.container.openGitHubReposPanel("Manager GitHub settings", this.junoClient);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            "Manager GitHub settings",
+            <GitHubReposPanel
+              explorer={this.params.container}
+              gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+              junoClientProp={this.junoClient}
+            />
+          );
       }
 
       this.params.refreshCommandBarButtons();
@@ -170,7 +180,17 @@ export default class NotebookManager {
         undefined,
         "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
         "Connect to GitHub",
-        () => this.params.container.openGitHubReposPanel("Connect to GitHub"),
+        () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Connect to GitHub",
+              <GitHubReposPanel
+                explorer={this.params.container}
+                gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+                junoClientProp={undefined}
+              />
+            ),
         "Cancel",
         undefined
       );

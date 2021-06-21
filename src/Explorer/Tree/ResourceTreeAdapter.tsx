@@ -17,6 +17,7 @@ import { Areas } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
@@ -32,6 +33,7 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
+import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import StoredProcedure from "./StoredProcedure";
@@ -611,7 +613,17 @@ export class ResourceTreeAdapter implements ReactAdapter {
     gitHubNotebooksTree.contextMenu = [
       {
         label: "Manage GitHub settings",
-        onClick: () => this.container.openGitHubReposPanel("Manage GitHub settings"),
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Manage GitHub settings",
+              <GitHubReposPanel
+                explorer={this.container}
+                gitHubClientProp={this.container.notebookManager.gitHubClient}
+                junoClientProp={undefined}
+              />
+            ),
       },
       {
         label: "Disconnect from GitHub",

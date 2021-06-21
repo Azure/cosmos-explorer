@@ -17,7 +17,7 @@ import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
+import { IGalleryItem } from "../Juno/JunoClient";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -52,7 +52,6 @@ import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/C
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
-import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
@@ -1374,19 +1373,6 @@ export default class Explorer {
       .openSidePanel(
         "Upload file to notebook server",
         <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />
-      );
-  }
-
-  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        header,
-        <GitHubReposPanel
-          explorer={this}
-          gitHubClientProp={this.notebookManager.gitHubClient}
-          junoClientProp={junoClient}
-        />
       );
   }
 }
