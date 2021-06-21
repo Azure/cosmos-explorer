@@ -29,6 +29,7 @@ import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
+import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
@@ -273,9 +274,8 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
-    onCommandClick: () => {
-      container.openAddDatabasePane();
-    },
+    onCommandClick: () =>
+      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

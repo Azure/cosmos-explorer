@@ -47,7 +47,6 @@ import type NotebookManager from "./Notebook/NotebookManager";
 import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
-import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
@@ -1361,9 +1360,6 @@ export default class Explorer {
     useSidePanel
       .getState()
       .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
-  }
-  public openAddDatabasePane(): void {
-    useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this} />);
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {

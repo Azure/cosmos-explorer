@@ -23,6 +23,7 @@ import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLaunc
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { AddDatabasePanel } from "../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { useDatabases } from "../useDatabases";
 
@@ -301,7 +302,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: AddDatabaseIcon,
         title: "New " + getDatabaseName(),
         description: undefined,
-        onClick: () => this.container.openAddDatabasePane(),
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
       });
     }
 
