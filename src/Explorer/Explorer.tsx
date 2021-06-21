@@ -272,6 +272,7 @@ export default class Explorer {
       case "Cassandra":
         this.tableDataClient = new CassandraAPIDataClient();
         break;
+      default:
     }
 
     this._initSettings();
@@ -523,7 +524,7 @@ export default class Explorer {
   };
 
   // Facade
-  public provideFeedbackEmail = () => {
+  public provideFeedbackEmail = (): void => {
     window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
@@ -555,7 +556,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public resetNotebookWorkspace() {
+  public resetNotebookWorkspace(): void {
     if (!this.isNotebookEnabled() || !this.notebookManager?.notebookClient) {
       handleError(
         "Attempt to reset notebook workspace, but notebook is not enabled",
@@ -1276,7 +1277,7 @@ export default class Explorer {
     return this.notebookBasePath();
   }
 
-  public openNotebookTerminal(kind: ViewModels.TerminalKind) {
+  public openNotebookTerminal(kind: ViewModels.TerminalKind): void {
     let title: string;
     let hashLocation: string;
 
