@@ -38,7 +38,6 @@ import { isRunningOnNationalCloud } from "../Utils/CloudUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import * as ComponentRegisterer from "./ComponentRegisterer";
 import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
@@ -76,8 +75,6 @@ import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterF
 import StoredProcedure from "./Tree/StoredProcedure";
 
 BindingHandlersRegisterer.registerBindingHandlers();
-// Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
-var tmp = ComponentRegisterer;
 
 export interface ExplorerParams {
   tabsManager: TabsManager;
@@ -140,7 +137,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
     this.isShellEnabled = ko.observable(false);
     this.isNotebooksEnabledForAccount = ko.observable(false);
-    this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
+    this.isNotebooksEnabledForAccount.subscribe(() => this.refreshCommandBarButtons());
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
@@ -197,7 +194,7 @@ export default class Explorer {
       return true;
     });
     this.selectedNode = ko.observable<ViewModels.TreeNode>();
-    this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
+    this.selectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
       this.isTabsContentExpanded(false);
     });
@@ -258,13 +255,13 @@ export default class Explorer {
 
     document.addEventListener(
       "contextmenu",
-      function (e) {
+      (e) => {
         e.preventDefault();
       },
       false
     );
 
-    $(function () {
+    $(() => {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });
 
@@ -414,7 +411,7 @@ export default class Explorer {
   }
 
   public isNoneSelected(): boolean {
-    return this.selectedNode() == null;
+    return this.selectedNode() === undefined;
   }
 
   public refreshDatabaseForResourceToken(): Promise<void> {
@@ -430,11 +427,11 @@ export default class Explorer {
     });
   }
 
-  public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
+  public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<void> {
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    let resourceTreeStartKey: number = null;
+    let resourceTreeStartKey: number;
     if (isInitialLoad) {
       resourceTreeStartKey = TelemetryProcessor.traceStart(Action.LoadResourceTree, {
         dataExplorerArea: Constants.Areas.ResourceTree,
@@ -442,7 +439,7 @@ export default class Explorer {
     }
 
     // TODO: Refactor
-    const deferred: Q.Deferred<any> = Q.defer();
+    const deferred: Q.Deferred<void> = Q.defer();
     readDatabases().then(
       (databases: DataModels.Database[]) => {
         TelemetryProcessor.traceSuccess(
@@ -484,7 +481,7 @@ export default class Explorer {
 
     return deferred.promise.then(
       () => {
-        if (resourceTreeStartKey != null) {
+        if (resourceTreeStartKey !== undefined) {
           TelemetryProcessor.traceSuccess(
             Action.LoadResourceTree,
             {
@@ -495,7 +492,7 @@ export default class Explorer {
         }
       },
       (error) => {
-        if (resourceTreeStartKey != null) {
+        if (resourceTreeStartKey !== undefined) {
           TelemetryProcessor.traceFailure(
             Action.LoadResourceTree,
             {
@@ -510,19 +507,15 @@ export default class Explorer {
     );
   }
 
-  public onRefreshDatabasesKeyPress = (source: any, event: KeyboardEvent): boolean => {
+  public onRefreshDatabasesKeyPress = (source: string, event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onRefreshResourcesClick(source, null);
+      this.onRefreshResourcesClick();
       return false;
     }
     return true;
   };
 
-  public onRefreshResourcesClick = (source: any, event: MouseEvent): void => {
-    const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
-      description: "Refresh button clicked",
-      dataExplorerArea: Constants.Areas.ResourceTree,
-    });
+  public onRefreshResourcesClick = (): void => {
     userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
@@ -651,7 +644,7 @@ export default class Explorer {
 
   public findSelectedDatabase(): ViewModels.Database {
     if (!this.selectedNode()) {
-      return null;
+      return undefined;
     }
     if (this.selectedNode().nodeKind === "Database") {
       return _.find(this.databases(), (database: ViewModels.Database) => database.id() === this.selectedNode().id());
@@ -684,7 +677,7 @@ export default class Explorer {
 
   public isSelectedDatabaseShared(): boolean {
     const database = this.findSelectedDatabase();
-    if (!!database) {
+    if (database) {
       return database.offer && !!database.offer();
     }
 
@@ -701,7 +694,7 @@ export default class Explorer {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
     // i.e addition of stored procedures, etc.
     const deferred: Q.Deferred<void> = Q.defer<void>();
-    let loadCollectionPromises: Q.Promise<void>[] = [];
+    const loadCollectionPromises: Q.Promise<void>[] = [];
 
     // If the user has a lot of databases, only load expanded databases.
     const databasesToLoad =
@@ -730,7 +723,7 @@ export default class Explorer {
           startKey
         );
       },
-      (error: any) => {
+      (error) => {
         deferred.reject(error);
         TelemetryProcessor.traceFailure(
           Action.LoadCollections,
@@ -761,7 +754,7 @@ export default class Explorer {
 
   public isLastCollection(): boolean {
     let collectionCount = 0;
-    if (this.databases().length == 0) {
+    if (this.databases().length === 0) {
       return false;
     }
     for (let i = 0; i < this.databases().length; i++) {
@@ -791,7 +784,7 @@ export default class Explorer {
       (newDatabase: DataModels.Database) => new Database(this, newDatabase)
     );
 
-    let databasesToDelete: ViewModels.Database[] = [];
+    const databasesToDelete: ViewModels.Database[] = [];
     ko.utils.arrayForEach(this.databases(), (database: ViewModels.Database) => {
       const databasePresentInUpdatedList = _.some(
         updatedDatabaseList,
@@ -836,7 +829,7 @@ export default class Explorer {
     const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent);
     promise
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason: any) => this.showOkModalDialog("Unable to upload file", reason));
+      .catch((reason) => this.showOkModalDialog("Unable to upload file", reason));
     return promise;
   }
 
@@ -980,14 +973,14 @@ export default class Explorer {
       const options: NotebookTabOptions = {
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookV2,
-        node: null,
+        node: undefined,
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
-        collection: null,
+        collection: undefined,
         masterKey: userContext.masterKey || "",
         hashLocation: "notebooks",
         isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
+        onLoadStartKey: undefined,
         container: this,
         notebookContentItem,
       };
@@ -1117,7 +1110,7 @@ export default class Explorer {
 
         clearMessage();
       },
-      (error: any) => {
+      (error) => {
         logConsoleError(`Could not download notebook ${getErrorMessage(error)}`);
         clearMessage();
       }
@@ -1218,7 +1211,7 @@ export default class Explorer {
 
     return this.notebookManager?.notebookContentClient.deleteContentItem(item).then(
       () => logConsoleInfo(`Successfully deleted: ${item.path}`),
-      (reason: any) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
+      (reason) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
     );
   }
 
@@ -1253,7 +1246,7 @@ export default class Explorer {
         return this.openNotebook(newFile);
       })
       .then(() => this.resourceTree.triggerRender())
-      .catch((error: any) => {
+      .catch((error) => {
         const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
         logConsoleError(errorMessage);
         TelemetryProcessor.traceFailure(
@@ -1319,13 +1312,13 @@ export default class Explorer {
     const newTab = new TerminalTab({
       account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Terminal,
-      node: null,
+      node: undefined,
       title: `${title} ${index}`,
       tabPath: `${title} ${index}`,
-      collection: null,
+      collection: undefined,
       hashLocation: `${hashLocation} ${index}`,
       isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
+      onLoadStartKey: undefined,
       container: this,
       kind: kind,
       index: index,
@@ -1345,7 +1338,7 @@ export default class Explorer {
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
     const galleryTab = this.tabsManager
       .getTabs(ViewModels.CollectionTabKind.Gallery)
-      .find((tab) => tab.hashLocation() == hashLocation);
+      .find((tab) => tab.hashLocation() === hashLocation);
 
     if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
@@ -1357,7 +1350,7 @@ export default class Explorer {
             title: title,
             tabPath: title,
             hashLocation: hashLocation,
-            onLoadStartKey: null,
+            onLoadStartKey: undefined,
             isTabsContentExpanded: ko.observable(true),
           },
           {

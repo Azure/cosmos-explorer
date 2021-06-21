@@ -167,7 +167,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </li>
                 ))}
                 <li>
-                  <a role="link" href={SplashScreen.seeMoreItemUrl} target="_blank" tabIndex={0}>
+                  <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
                     {SplashScreen.seeMoreItemTitle}
                   </a>
                 </li>
@@ -235,20 +235,20 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           iconSrc: NewQueryIcon,
           onClick: () => {
             const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null);
+            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined);
           },
           title: "New SQL Query",
-          description: null,
+          description: undefined,
         });
       } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
             const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null);
+            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
           },
           title: "New Query",
-          description: null,
+          description: undefined,
         });
       }
 
@@ -256,7 +256,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         items.push({
           iconSrc: OpenQueryIcon,
           title: "Open Query",
-          description: null,
+          description: undefined,
           onClick: () =>
             useSidePanel
               .getState()
@@ -268,10 +268,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         items.push({
           iconSrc: NewStoredProcedureIcon,
           title: "New Stored Procedure",
-          description: null,
+          description: undefined,
           onClick: () => {
             const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
+            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
           },
         });
       }
@@ -289,7 +289,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       items.push({
         iconSrc: ScaleAndSettingsIcon,
         title: label,
-        description: null,
+        description: undefined,
         onClick: () => {
           const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
           selectedCollection && selectedCollection.onSettingsClick();
@@ -299,7 +299,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       items.push({
         iconSrc: AddDatabaseIcon,
         title: "New " + getDatabaseName(),
-        description: null,
+        description: undefined,
         onClick: () => this.container.openAddDatabasePane(),
       });
     }
@@ -351,19 +351,19 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private createTipsItems(): SplashScreenItem[] {
     return [
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Data Modeling",
         description: "Learn more about modeling",
         onClick: () => window.open(SplashScreen.dataModelingUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Cost & Throughput Calculation",
         description: "Learn more about cost calculation",
         onClick: () => window.open(SplashScreen.throughputEstimatorUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Configure automatic failover",
         description: "Learn more about Cosmos DB high-availability",
         onClick: () => window.open(SplashScreen.failoverUrl),

@@ -6,7 +6,7 @@ import Explorer from "../Explorer";
 import QueryTab from "./QueryTab";
 
 describe("Query Tab", () => {
-  function getNewQueryTabForContainer(container: Explorer): QueryTab {
+  const getNewQueryTabForContainer = (container: Explorer): QueryTab => {
     const database = {
       container: container,
       id: ko.observable<string>("test"),
@@ -29,13 +29,6 @@ describe("Query Tab", () => {
   }
 
   describe("shouldSetSystemPartitionKeyContainerPartitionKeyValueUndefined", () => {
-    const collection = {
-      id: ko.observable<string>("withoutsystempk"),
-      partitionKey: {
-        systemKey: true,
-      },
-    } as ViewModels.Collection;
-
     it("no container with system pk, should not set partition key option", () => {
       const iteratorOptions = QueryTab.getIteratorOptions();
       expect(iteratorOptions.initialHeaders).toBeUndefined();
