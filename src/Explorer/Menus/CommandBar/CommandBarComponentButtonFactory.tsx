@@ -32,6 +32,7 @@ import { OpenFullScreen } from "../../OpenFullScreen";
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { SetupNoteBooksPanel } from "../../Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 
 let counter = 0;
 
@@ -438,7 +439,13 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
   return {
     iconSrc: EnableNotebooksIcon,
     iconAlt: label,
-    onCommandClick: () => container.openSetupNotebooksPanel(label, description),
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <SetupNoteBooksPanel explorer={container} panelTitle={label} panelDescription={description} />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: !container.isNotebooksEnabledForAccount(),
@@ -475,7 +482,12 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
-        container.openSetupNotebooksPanel(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,
@@ -501,7 +513,12 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
       if (container.isNotebookEnabled()) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
-        container.openSetupNotebooksPanel(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,

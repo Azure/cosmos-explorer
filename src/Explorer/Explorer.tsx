@@ -1306,8 +1306,9 @@ export default class Explorer {
     const title = "Enable Notebooks (Preview)";
     const description =
       "You have not yet created a notebooks workspace for this account. To proceed and start using notebooks, we'll need to create a default notebooks workspace in this account.";
-
-    this.openSetupNotebooksPanel(title, description);
+    useSidePanel
+      .getState()
+      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
@@ -1387,11 +1388,5 @@ export default class Explorer {
           junoClientProp={junoClient}
         />
       );
-  }
-
-  public openSetupNotebooksPanel(title: string, description: string): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
   }
 }
