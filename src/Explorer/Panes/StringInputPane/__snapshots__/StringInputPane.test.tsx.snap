@@ -32,9 +32,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "resourceTree": ResourceTreeAdapter {
         "container": [Circular],
         "copyNotebook": [Function],
-        "databaseCollectionIdMap": Map {},
-        "koSubsCollectionIdMap": Map {},
-        "koSubsDatabaseIdMap": Map {},
         "parameters": [Function],
       },
       "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
