@@ -12,7 +12,6 @@ import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { Areas } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
@@ -52,20 +51,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
 
-  private koSubsDatabaseIdMap: ArrayHashMap<ko.Subscription>; // database id -> ko subs
-  private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
-  private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
-
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
     this.container.tabsManager.activeTab.subscribe((newValue: TabsBase) => this.triggerRender());
     this.container.isNotebookEnabled.subscribe((newValue) => this.triggerRender());
-
-    this.koSubsDatabaseIdMap = new ArrayHashMap();
-    this.koSubsCollectionIdMap = new ArrayHashMap();
-    this.databaseCollectionIdMap = new ArrayHashMap();
 
     useDatabases.subscribe(() => this.triggerRender());
     this.triggerRender();
