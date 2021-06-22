@@ -247,7 +247,10 @@ export class NotebookClientV2 {
       configOption("autoSaveInterval").action(params.autoSaveInterval ?? Constants.Notebook.autoSaveIntervalMs)
     );
     this.store.dispatch(configOption("codeMirror.lineNumbers").action(true));
-    if (params.isReadOnly) {
+
+    const readOnlyConfigOption = configOption("codeMirror.readOnly");
+    const readOnlyValue = params.isReadOnly ? "nocursor" : undefined;
+    if (!readOnlyConfigOption) {
       defineConfigOption({
         label: "Read-only",
         key: "codeMirror.readOnly",
@@ -255,8 +258,10 @@ export class NotebookClientV2 {
           { label: "Read-Only", value: "nocursor" },
           { label: "Not read-only", value: undefined },
         ],
-        defaultValue: "nocursor",
+        defaultValue: readOnlyValue,
       });
+    } else {
+      this.store.dispatch(readOnlyConfigOption.action(readOnlyValue));
     }
   }
 
