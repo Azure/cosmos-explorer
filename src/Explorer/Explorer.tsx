@@ -1288,7 +1288,7 @@ export default class Explorer {
     }
   }
 
-  public onNewCollectionClicked(databaseId?: string): void {
+  public async onNewCollectionClicked(databaseId?: string): Promise<void> {
     if (userContext.apiType === "Cassandra") {
       useSidePanel
         .getState()
@@ -1297,7 +1297,10 @@ export default class Explorer {
           <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
         );
     } else {
-      this.openAddCollectionPanel(databaseId);
+      await useDatabases.getState().loadDatabaseOffers();
+      useSidePanel
+        .getState()
+        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
     }
   }
 
@@ -1364,12 +1367,6 @@ export default class Explorer {
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
-  public async openAddCollectionPanel(databaseId?: string): Promise<void> {
-    await useDatabases.getState().loadDatabaseOffers();
-    useSidePanel
-      .getState()
-      .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
-  }
   public openAddDatabasePane(): void {
     useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this} />);
   }
