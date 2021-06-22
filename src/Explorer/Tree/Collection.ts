@@ -175,6 +175,19 @@ export default class Collection implements ViewModels.Collection {
     });
 
     this.children = ko.observableArray<ViewModels.TreeNode>([]);
+    this.children.subscribe(() => {
+      // update the database in zustand store
+      const database = this.getDatabase();
+      database.collections(
+        database.collections()?.map((collection) => {
+          if (collection.id() === this.id()) {
+            return this;
+          }
+          return collection;
+        })
+      );
+      useDatabases.getState().updateDatabase(database);
+    });
 
     this.storedProcedures = ko.computed(() => {
       return this.children()
