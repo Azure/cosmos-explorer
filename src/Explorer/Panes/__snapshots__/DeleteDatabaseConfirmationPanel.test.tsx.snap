@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Delete Database Confirmation Pane submit() Should call delete database 1`] = `
+exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
 <DeleteDatabaseConfirmationPanel
-  closePanel={[Function]}
   explorer={
     Object {
       "refreshAllDatabases": [Function],
@@ -10,13 +9,6 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
         "activeTab": [Function],
         "openedTabs": [Function],
       },
-    }
-  }
-  openNotificationConsole={[Function]}
-  selectedDatabase={
-    Object {
-      "collections": [Function],
-      "id": [Function],
     }
   }
 >

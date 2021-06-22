@@ -1,6 +1,6 @@
 jest.mock("../../../Common/dataAccess/deleteCollection");
 jest.mock("../../../Shared/Telemetry/TelemetryProcessor");
-import { mount, ReactWrapper, shallow } from "enzyme";
+import { mount, shallow } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
@@ -56,44 +56,38 @@ describe("Delete Collection Confirmation Pane", () => {
       const fakeExplorer = new Explorer();
       fakeExplorer.refreshAllDatabases = () => undefined;
 
-      const props = {
-        explorer: fakeExplorer,
-        closePanel: (): void => undefined,
-        collectionName: "container",
-      };
-      const wrapper = shallow(<DeleteCollectionConfirmationPane {...props} />);
+      const wrapper = shallow(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
 
       const database = { id: ko.observable("testDB") } as Database;
       database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
+      database.nodeKind = "Database";
+      database.isDatabaseShared = ko.computed(() => false);
       useDatabases.getState().addDatabases([database]);
-      wrapper.setProps(props);
+      useSelectedNode.getState().setSelectedNode(database);
+      wrapper.setProps({ explorer: fakeExplorer });
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
 
-      useSelectedNode.getState().setSelectedNode({
-        id: ko.observable("testDB"),
-        nodeKind: "Database",
-        isDatabaseShared: () => true,
-      } as Database);
-      wrapper.setProps(props);
+      database.isDatabaseShared = ko.computed(() => true);
+      wrapper.setProps({ explorer: fakeExplorer });
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
     });
   });
 
   describe("submit()", () => {
-    let wrapper: ReactWrapper;
     const selectedCollectionId = "testCol";
     const databaseId = "testDatabase";
     const fakeExplorer = {} as Explorer;
-    useSelectedNode.getState().setSelectedNode({
-      id: ko.observable<string>(selectedCollectionId),
-      databaseId,
-      rid: "test",
-    } as Collection);
     fakeExplorer.refreshAllDatabases = () => undefined;
-    const database = { id: ko.observable("testDB") } as Database;
-    database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
-    useDatabases.getState().addDatabases([database]);
+    const database = { id: ko.observable(databaseId) } as Database;
+    const collection = {
+      id: ko.observable(selectedCollectionId),
+      nodeKind: "Collection",
+      database,
+      databaseId,
+    } as Collection;
+    database.collections = ko.observableArray<Collection>([collection]);
+    database.isDatabaseShared = ko.computed(() => false);
 
     beforeAll(() => {
       updateUserContext({
@@ -111,15 +105,17 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     beforeEach(() => {
-      const props = {
-        explorer: fakeExplorer,
-        closePanel: (): void => undefined,
-        collectionName: "container",
-      };
-      wrapper = mount(<DeleteCollectionConfirmationPane {...props} />);
+      useDatabases.getState().addDatabases([database]);
+      useSelectedNode.getState().setSelectedNode(collection);
+    });
+
+    afterEach(() => {
+      useDatabases.getState().clearDatabases();
+      useSelectedNode.getState().setSelectedNode(undefined);
     });
 
     it("should call delete collection", () => {
+      const wrapper = mount(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
       expect(wrapper).toMatchSnapshot();
 
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
@@ -136,6 +132,7 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should record feedback", async () => {
+      const wrapper = mount(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
       wrapper
         .find("#confirmCollectionId")

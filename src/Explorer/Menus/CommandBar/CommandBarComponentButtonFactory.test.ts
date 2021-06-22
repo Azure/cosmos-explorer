@@ -12,6 +12,8 @@ import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFa
 describe("CommandBarComponentButtonFactory tests", () => {
   let mockExplorer: Explorer;
 
+  afterEach(() => useSelectedNode.getState().setSelectedNode(undefined));
+
   describe("Enable Azure Synapse Link Button", () => {
     const enableAzureSynapseLinkBtnLabel = "Enable Azure Synapse Link";
     const selectedNodeState = useSelectedNode.getState();

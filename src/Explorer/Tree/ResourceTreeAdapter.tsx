@@ -952,7 +952,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       return;
     }
 
-    this.koSubsCollectionIdMap.get(collectionId).forEach((sub: ko.Subscription) => sub.dispose());
+    this.koSubsCollectionIdMap.get(collectionId).forEach((sub: ko.Subscription) => sub?.dispose());
     this.koSubsCollectionIdMap.delete(collectionId);
     this.databaseCollectionIdMap.remove(databaseId, collectionId);
   }

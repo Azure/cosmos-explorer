@@ -25,14 +25,14 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   explorer,
 }: DeleteCollectionConfirmationPaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
-  const isLastCollection = useDatabases((state) => state.isLastCollection);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState(false);
 
   const shouldRecordFeedback = (): boolean =>
-    isLastCollection() && !useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
+    useDatabases.getState().isLastCollection() &&
+    !useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
 
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
