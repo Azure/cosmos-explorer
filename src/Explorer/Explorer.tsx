@@ -52,7 +52,6 @@ import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
-import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
@@ -1347,14 +1346,6 @@ export default class Explorer {
       .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={this} />);
   }
 
-  public openDeleteDatabaseConfirmationPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Delete " + getDatabaseName(),
-        <DeleteDatabaseConfirmationPanel explorer={this} selectedDatabase={this.findSelectedDatabase()} />
-      );
-  }
   public openUploadItemsPanePane(): void {
     useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
   }

@@ -44,7 +44,6 @@ src/Definitions/png.d.ts
 src/Definitions/svg.d.ts
 src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
-src/Explorer/ContextMenuButtonFactory.ts
 src/Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.ts
 src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
 src/Explorer/Controls/DynamicList/DynamicList.test.ts
