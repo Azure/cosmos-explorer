@@ -53,9 +53,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
-                  "databaseCollectionIdMap": Map {},
-                  "koSubsCollectionIdMap": Map {},
-                  "koSubsDatabaseIdMap": Map {},
                   "parameters": [Function],
                 },
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
@@ -145,9 +142,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
-                  "databaseCollectionIdMap": Map {},
-                  "koSubsCollectionIdMap": Map {},
-                  "koSubsDatabaseIdMap": Map {},
                   "parameters": [Function],
                 },
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
