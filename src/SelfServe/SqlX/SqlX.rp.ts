@@ -128,3 +128,50 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
     return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
   }
 };
+
+// Data model for Read Regions Query
+interface ReadRegionsResponse {
+  locations: Array<ReadRegionItem>
+  location: string
+}
+
+interface ReadRegionItem {
+  locationName: string
+}
+
+// Construct path to query arm about cosmos db account as a whole
+const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
+};
+
+// Query ARM to get regions 
+export const getReadRegions = async (): Promise<Array<string>> => {
+  try {
+    var readRegions = new Array<string>();
+
+    // Query ARM
+    const response = await armRequestWithoutPolling<ReadRegionsResponse>(
+      {
+        host: configContext.ARM_ENDPOINT,
+        path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
+        method: "GET",
+        apiVersion: "2021-04-01-preview",
+      });
+
+    // Parse ARM Response to determine read regions
+    if (response.result.location != undefined) {
+      readRegions.push(response.result.location);
+    }
+    else {
+      for (var i = 0; i < response.result.locations.length; i++) {
+        readRegions.push(response.result.locations[i].locationName)
+      }
+    }
+    return readRegions;
+  }
+  catch (err) {
+    alert(err)
+    // TODO: Log some failure
+    return new Array<string>();
+  }
+}
