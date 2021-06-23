@@ -102,7 +102,6 @@ interface IQueryTabStates {
 export default class QueryTabComponent extends React.Component<IQueryTabComponentProps, IQueryTabStates> {
   public queryEditorId: string;
   public executeQueryButton: Button;
-  public fetchNextPageButton: Button;
   public saveQueryButton: Button;
   public splitterId: string;
   public splitter: Splitter;
@@ -194,23 +193,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     this.saveQueryButton = {
       enabled: this.state._isSaveQueriesEnabled,
       visible: this.state._isSaveQueriesEnabled,
-    };
-    this.fetchNextPageButton = {
-      enabled: (() => {
-        const allResultsMetadata = this.state.allResultsMetadata || [];
-        const numberOfResultsMetadata = allResultsMetadata.length;
-
-        if (numberOfResultsMetadata === 0) {
-          return false;
-        }
-
-        if (allResultsMetadata[numberOfResultsMetadata - 1].hasMoreResults) {
-          return true;
-        }
-
-        return false;
-      })(),
-      visible: true,
     };
 
     this._buildCommandBarOptions();
@@ -981,14 +963,17 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                               <span>
                                 <span>{this.state.showingDocumentsDisplayText}</span>
                               </span>
-                              {this.fetchNextPageButton.enabled && <span className="queryResultDivider">|</span>}
-                              {this.fetchNextPageButton.enabled && (
-                                <span className="queryResultNextEnable">
-                                  <a onClick={this.onFetchNextPageClick}>
-                                    <span>Load more</span>
-                                    <img className="queryResultnextImg" src={QueryEditorNext} alt="Fetch next page" />
-                                  </a>
-                                </span>
+                              {this.state.allResultsMetadata[this.state.allResultsMetadata.length - 1]
+                                .hasMoreResults && (
+                                <>
+                                  <span className="queryResultDivider">|</span>
+                                  <span className="queryResultNextEnable">
+                                    <a onClick={this.onFetchNextPageClick.bind(this)}>
+                                      <span>Load more</span>
+                                      <img className="queryResultnextImg" src={QueryEditorNext} alt="Fetch next page" />
+                                    </a>
+                                  </span>
+                                </>
                               )}
                             </div>
                             {this.state.queryResults &&

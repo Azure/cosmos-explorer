@@ -1,67 +1,101 @@
-import * as ko from "knockout";
-import * as Constants from "../../Common/Constants";
-import { configContext, Platform } from "../../ConfigContext";
-import * as ViewModels from "../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
-import { isInvalidParentFrameOrigin, isReadyMessage } from "../../Utils/MessageValidation";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import Explorer from "../Explorer";
-import template from "./MongoShellTab.html";
-import TabsBase from "./TabsBase";
+import React, { Component } from "react";
+import * as Constants from "../../../Common/Constants";
+import { configContext, Platform } from "../../../ConfigContext";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../UserContext";
+import { isInvalidParentFrameOrigin, isReadyMessage } from "../../../Utils/MessageValidation";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
+import Explorer from "../../Explorer";
+import TabsBase from "../TabsBase";
 
-export default class MongoShellTab extends TabsBase {
-  public readonly html = template;
-  public url: ko.Computed<string>;
-  private _container: Explorer;
+//eslint-disable-next-line
+class MessageType {
+  static IframeReady = "iframeready";
+  static Notification = "notification";
+  static Log = "log";
+}
+
+//eslint-disable-next-line
+class LogType {
+  static Information = "information";
+  static Warning = "warning";
+  static Verbose = "verbose";
+  static InProgress = "inprogress";
+  static StartTrace = "start";
+  static SuccessTrace = "success";
+  static FailureTrace = "failure";
+}
+
+export interface IMongoShellTabAccessor {
+  onTabClickEvent: () => void;
+}
+
+export interface IMongoShellTabComponentStates {
+  url: string;
+}
+
+export interface IMongoShellTabComponentProps {
+  collection: ViewModels.CollectionBase;
+  tabsBaseInstance: TabsBase;
+  container: Explorer;
+  onMongoShellTabAccessor: (instance: IMongoShellTabAccessor) => void;
+}
+
+export default class MongoShellTabComponent extends Component<
+  IMongoShellTabComponentProps,
+  IMongoShellTabComponentStates
+> {
   private _runtimeEndpoint: string;
   private _logTraces: Map<string, number>;
 
-  constructor(options: ViewModels.TabOptions) {
-    super(options);
+  constructor(props: IMongoShellTabComponentProps) {
+    super(props);
     this._logTraces = new Map();
-    this._container = options.collection.container;
-    this.url = ko.computed<string>(() => {
-      const { databaseAccount: account } = userContext;
-      const resourceId = account?.id;
-      const accountName = account?.name;
-      const mongoEndpoint = account?.properties?.mongoEndpoint || account?.properties?.documentEndpoint;
 
-      this._runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
-      const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
-      let baseUrl = "/content/mongoshell/dist/";
-      if (userContext.portalEnv === "localhost") {
-        baseUrl = "/content/mongoshell/";
-      }
+    this.state = {
+      url: this.getURL(),
+    };
 
-      return `${extensionEndpoint}${baseUrl}index.html?resourceId=${resourceId}&accountName=${accountName}&mongoEndpoint=${mongoEndpoint}`;
+    props.onMongoShellTabAccessor({
+      onTabClickEvent: this.onTabClick.bind(this),
     });
 
     window.addEventListener("message", this.handleMessage.bind(this), false);
   }
 
-  public setContentFocus(event: any): any {
-    // TODO: Work around cross origin security issue in Hosted Data Explorer by using Shell <-> Data Explorer messaging (253527)
-    // if(event.type === "load" && window.dataExplorerPlatform != PlatformType.Hosted) {
-    //     let activeShell = event.target.contentWindow && event.target.contentWindow.mongo && event.target.contentWindow.mongo.shells && event.target.contentWindow.mongo.shells[0];
-    //     activeShell && setTimeout(function(){
-    //         activeShell.focus();
-    //     },2000);
-    // }
+  public getURL(): string {
+    const { databaseAccount: account } = userContext;
+    const resourceId = account?.id;
+    const accountName = account?.name;
+    const mongoEndpoint = account?.properties?.mongoEndpoint || account?.properties?.documentEndpoint;
+
+    this._runtimeEndpoint = configContext.platform === Platform.Hosted ? configContext.BACKEND_ENDPOINT : "";
+    const extensionEndpoint: string = configContext.BACKEND_ENDPOINT || this._runtimeEndpoint || "";
+    let baseUrl = "/content/mongoshell/dist/";
+    if (userContext.portalEnv === "localhost") {
+      baseUrl = "/content/mongoshell/";
+    }
+
+    return `${extensionEndpoint}${baseUrl}index.html?resourceId=${resourceId}&accountName=${accountName}&mongoEndpoint=${mongoEndpoint}`;
   }
+
+  //eslint-disable-next-line
+  public setContentFocus(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {}
 
   public onTabClick(): void {
-    super.onTabClick();
-    this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
+    this.props.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
   }
 
-  public handleMessage(event: MessageEvent) {
+  public handleMessage(event: MessageEvent): void {
     if (isInvalidParentFrameOrigin(event)) {
       return;
     }
 
-    const shellIframe: HTMLIFrameElement = <HTMLIFrameElement>document.getElementById(this.tabId);
+    const shellIframe: HTMLIFrameElement = document.getElementById(
+      this.props.tabsBaseInstance.tabId
+    ) as HTMLIFrameElement;
 
     if (!shellIframe) {
       return;
@@ -73,9 +107,9 @@ export default class MongoShellTab extends TabsBase {
       return;
     }
 
-    if (event.data.eventType == MessageType.IframeReady) {
+    if (event.data.eventType === MessageType.IframeReady) {
       this.handleReadyMessage(event, shellIframe);
-    } else if (event.data.eventType == MessageType.Notification) {
+    } else if (event.data.eventType === MessageType.Notification) {
       this.handleNotificationMessage(event, shellIframe);
     } else {
       this.handleLogMessage(event, shellIframe);
@@ -98,8 +132,8 @@ export default class MongoShellTab extends TabsBase {
         documentEndpoint.length -
           (Constants.MongoDBAccounts.protocol.length + 2 + Constants.MongoDBAccounts.defaultPort.length)
       ) + Constants.MongoDBAccounts.defaultPort.toString();
-    const databaseId = this.collection.databaseId;
-    const collectionId = this.collection.id();
+    const databaseId = this.props.collection.databaseId;
+    const collectionId = this.props.collection.id();
     const apiEndpoint = configContext.BACKEND_ENDPOINT;
     const encryptedAuthToken: string = userContext.accessToken;
 
@@ -121,6 +155,7 @@ export default class MongoShellTab extends TabsBase {
     );
   }
 
+  //eslint-disable-next-line
   private handleLogMessage(event: MessageEvent, shellIframe: HTMLIFrameElement) {
     if (!("logType" in event.data.data) || typeof event.data.data["logType"] !== "string") {
       return;
@@ -144,6 +179,7 @@ export default class MongoShellTab extends TabsBase {
         TelemetryProcessor.trace(Action.MongoShell, ActionModifiers.Mark, dataToLog);
         break;
       case LogType.StartTrace:
+        //eslint-disable-next-line
         const telemetryTraceId: number = TelemetryProcessor.traceStart(Action.MongoShell, dataToLog);
         this._logTraces.set(shellTraceId, telemetryTraceId);
         break;
@@ -168,6 +204,7 @@ export default class MongoShellTab extends TabsBase {
     }
   }
 
+  //eslint-disable-next-line
   private handleNotificationMessage(event: MessageEvent, shellIframe: HTMLIFrameElement) {
     if (!("logType" in event.data.data) || typeof event.data.data["logType"] !== "string") {
       return;
@@ -188,20 +225,19 @@ export default class MongoShellTab extends TabsBase {
         return logConsoleProgress(dataToLog);
     }
   }
-}
 
-class MessageType {
-  static IframeReady: string = "iframeready";
-  static Notification: string = "notification";
-  static Log: string = "log";
-}
-
-class LogType {
-  static Information: string = "information";
-  static Warning: string = "warning";
-  static Verbose: string = "verbose";
-  static InProgress: string = "inprogress";
-  static StartTrace: string = "start";
-  static SuccessTrace: string = "success";
-  static FailureTrace: string = "failure";
+  render(): JSX.Element {
+    return (
+      <iframe
+        name="explorer"
+        className="iframe"
+        style={{ width: "100%", height: "100%", border: 0, padding: 0, margin: 0, overflow: "hidden" }}
+        src={this.state.url}
+        id={this.props.tabsBaseInstance.tabId}
+        onLoad={(event) => this.setContentFocus(event)}
+        title="Mongo Shell"
+        role="tabpanel"
+      ></iframe>
+    );
+  }
 }
