@@ -1,4 +1,5 @@
 import React from "react";
+import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProcedure";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
@@ -22,8 +23,7 @@ export class NewStoredProcedureTab extends ScriptTabBase {
   public iStoreProcAccessor: IStorProcTabComponentAccessor;
   public node: StoredProcedure;
   public onSaveClick: () => void;
-  //eslint-disable-next-line
-  public onUpdateClick: () => Promise<any>;
+  public onUpdateClick: () => Promise<void>;
 
   constructor(options: ViewModels.ScriptTabOption, private props: IStoredProcTabProps) {
     super(options);
@@ -60,9 +60,8 @@ export class NewStoredProcedureTab extends ScriptTabBase {
     this.manager?.closeTab(this);
   }
 
-  //eslint-disable-next-line
-  public onExecuteSprocsResult(result: any, logsData: any): void {
-    this.iStoreProcAccessor.onExecuteSprocsResultEvent(result, logsData);
+  public onExecuteSprocsResult(result: ExecuteSprocResult): void {
+    this.iStoreProcAccessor.onExecuteSprocsResultEvent(result);
   }
 
   public onExecuteSprocsError(error: string): void {

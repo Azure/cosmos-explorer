@@ -162,10 +162,10 @@ export default class StoredProcedure {
     this.container &&
       executeStoredProcedure(this.collection, this, partitionKeyValue, params)
         .then(
-          (result: any) => {
-            sprocTab.onExecuteSprocsResult(result, result.scriptLogs);
+          (result) => {
+            sprocTab.onExecuteSprocsResult(result);
           },
-          (error: any) => {
+          (error) => {
             sprocTab.onExecuteSprocsError(getErrorMessage(error));
           }
         )

@@ -7,6 +7,7 @@ import SaveIcon from "../../../../images/save-cosmos.svg";
 import * as Constants from "../../../Common/Constants";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { createStoredProcedure } from "../../../Common/dataAccess/createStoredProcedure";
+import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProcedure";
 import { updateStoredProcedure } from "../../../Common/dataAccess/updateStoredProcedure";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
@@ -18,7 +19,7 @@ import StoredProcedure from "../../Tree/StoredProcedure";
 import ScriptTabBase from "../ScriptTabBase";
 
 export interface IStorProcTabComponentAccessor {
-  onExecuteSprocsResultEvent: (result: string, logsData: string) => void;
+  onExecuteSprocsResultEvent: (result: ExecuteSprocResult) => void;
   onExecuteSprocsErrorEvent: (error: string) => void;
   onTabClickEvent: () => void;
 }
@@ -242,17 +243,15 @@ export default class StoredProcedureTabComponent extends React.Component<
           });
           useCommandBar.getState().setContextButtons(this.getTabsButtons());
         },
-        //eslint-disable-next-line
-        (error: Error) => {
+        () => {
           this.props.scriptTabBaseInstance.isExecutionError(true);
         }
       )
       .finally(() => this.props.scriptTabBaseInstance.isExecuting(false));
   };
 
-  //eslint-disable-next-line
-  public onExecuteSprocsResult(result: any, logsData: any): void {
-    const resultData: string = this.props.scriptTabBaseInstance.renderObjectForEditor(result, undefined, 4);
+  public onExecuteSprocsResult(result: ExecuteSprocResult): void {
+    const resultData: string = this.props.scriptTabBaseInstance.renderObjectForEditor(result.result, undefined, 4);
     const scriptLogs: string = (result.scriptLogs && decodeURIComponent(result.scriptLogs)) || "";
     const logs: string = this.props.scriptTabBaseInstance.renderObjectForEditor(scriptLogs, undefined, 4);
 
@@ -280,8 +279,7 @@ export default class StoredProcedureTabComponent extends React.Component<
     });
   }
 
-  //eslint-disable-next-line
-  public onErrorDetailsClick = (event: React.MouseEvent<HTMLAnchorElement>): boolean => {
+  public onErrorDetailsClick = (): boolean => {
     useNotificationConsole.getState().expandConsole();
 
     return false;
@@ -289,7 +287,7 @@ export default class StoredProcedureTabComponent extends React.Component<
 
   public onErrorDetailsKeyPress = (event: React.KeyboardEvent<HTMLAnchorElement>): boolean => {
     if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
-      this.onErrorDetailsClick(undefined);
+      this.onErrorDetailsClick();
       return false;
     }
 
@@ -590,7 +588,7 @@ export default class StoredProcedureTabComponent extends React.Component<
                 <span className="errorDetailsLink">
                   <a
                     aria-label="Error details link"
-                    onClick={(event: React.MouseEvent<HTMLAnchorElement>) => this.onErrorDetailsClick(event)}
+                    onClick={() => this.onErrorDetailsClick()}
                     onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) => this.onErrorDetailsKeyPress(event)}
                   >
                     More details
