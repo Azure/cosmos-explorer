@@ -51,7 +51,6 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
-import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
@@ -1338,12 +1337,6 @@ export default class Explorer {
         this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
       }
     }
-  }
-
-  public openDeleteCollectionConfirmationPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={this} />);
   }
 
   public openUploadItemsPanePane(): void {

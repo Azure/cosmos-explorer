@@ -16,6 +16,7 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
+import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
@@ -123,7 +124,10 @@ export const createCollectionContextMenuButton = (
 
   items.push({
     iconSrc: DeleteCollectionIcon,
-    onClick: () => container.openDeleteCollectionConfirmationPane(),
+    onClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={container} />),
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });
