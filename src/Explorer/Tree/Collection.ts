@@ -29,7 +29,7 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
 import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
-import MongoShellTab from "../Tabs/MongoShellTab";
+import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
@@ -703,22 +703,27 @@ export default class Collection implements ViewModels.Collection {
   public onNewMongoShellClick() {
     const mongoShellTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.MongoShell
-    ) as MongoShellTab[];
+    ) as NewMongoShellTab[];
 
     let index = 1;
     if (mongoShellTabs.length > 0) {
       index = mongoShellTabs[mongoShellTabs.length - 1].index + 1;
     }
 
-    const mongoShellTab: MongoShellTab = new MongoShellTab({
-      tabKind: ViewModels.CollectionTabKind.MongoShell,
-      title: "Shell " + index,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      index: index,
-    });
+    const mongoShellTab: NewMongoShellTab = new NewMongoShellTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.MongoShell,
+        title: "Shell " + index,
+        tabPath: "",
+        collection: this,
+        node: this,
+        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
+        index: index,
+      },
+      {
+        container: this.container,
+      }
+    );
 
     this.container.tabsManager.activateNewTab(mongoShellTab);
   }
