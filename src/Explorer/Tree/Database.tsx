@@ -75,7 +75,9 @@ export default class Database implements ViewModels.Database {
         tabTitle: "Scale",
       });
       pendingNotificationsPromise.then(
-        (pendingNotification: DataModels.Notification) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (data: any) => {
+          const pendingNotification: DataModels.Notification = data?.[0];
           const tabOptions: ViewModels.TabOptions = {
             tabKind,
             title: "Scale",
