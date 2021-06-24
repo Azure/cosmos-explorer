@@ -199,9 +199,6 @@ src/ResourceProvider/IResourceProviderClient.test.ts
 src/ResourceProvider/IResourceProviderClient.ts
 src/ResourceProvider/ResourceProviderClient.ts
 src/ResourceProvider/ResourceProviderClientFactory.ts
-src/RouteHandlers/RouteHandler.ts
-src/RouteHandlers/TabRouteHandler.test.ts
-src/RouteHandlers/TabRouteHandler.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
