@@ -1,12 +1,18 @@
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
+import { getErrorMessage, handleError } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
+import {
+  get as getWorkspace,
+  listConnectionInfo,
+  start,
+} from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 
 interface NotebookState {
   isNotebookEnabled: boolean;
@@ -17,6 +23,7 @@ interface NotebookState {
   memoryUsageInfo: DataModels.MemoryUsageInfo;
   isShellEnabled: boolean;
   notebookBasePath: string;
+  isInitializingNotebooks: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -26,6 +33,7 @@ interface NotebookState {
   setIsShellEnabled: (isShellEnabled: boolean) => void;
   setNotebookBasePath: (notebookBasePath: string) => void;
   refreshNotebooksEnabledStateForAccount: () => Promise<void>;
+  initNotebooks: () => Promise<void>;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -44,6 +52,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   memoryUsageInfo: undefined,
   isShellEnabled: false,
   notebookBasePath: Constants.Notebook.defaultBasePath,
+  isInitializingNotebooks: false,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -101,4 +110,57 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       set({ isNotebooksEnabledForAccount: false });
     }
   },
+  initNotebooks: async (): Promise<void> => {
+    if (!userContext?.databaseAccount) {
+      throw new Error("No database account specified");
+    }
+
+    if (get().isInitializingNotebooks) {
+      return;
+    }
+
+    set({ isInitializingNotebooks: true });
+
+    await ensureNotebookWorkspaceRunning();
+    const connectionInfo = await listConnectionInfo(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      userContext.databaseAccount.name,
+      "default"
+    );
+
+    set({
+      notebookServerInfo: {
+        notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
+        authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+      },
+    });
+    this.refreshNotebookList();
+
+    set({ isInitializingNotebooks: false });
+  },
 }));
+
+const ensureNotebookWorkspaceRunning = async (): Promise<void> => {
+  if (!userContext.databaseAccount) {
+    return;
+  }
+
+  let clearMessage;
+  try {
+    const notebookWorkspace = await getWorkspace(
+      userContext.subscriptionId,
+      userContext.resourceGroup,
+      userContext.databaseAccount.name,
+      "default"
+    );
+    if (notebookWorkspace?.properties?.status?.toLowerCase() === "stopped") {
+      clearMessage = NotificationConsoleUtils.logConsoleProgress("Initializing notebook workspace");
+      await start(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
+    }
+  } catch (error) {
+    handleError(error, "Explorer/ensureNotebookWorkspaceRunning", "Failed to initialize notebook workspace");
+  } finally {
+    clearMessage && clearMessage();
+  }
+};
