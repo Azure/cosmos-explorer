@@ -100,12 +100,6 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
         this.props.tabTitle(createdResource.id);
         this.props.isNew(false);
         this.props.resource(createdResource);
-        this.props.hashLocation(
-          `${Constants.HashRoutePrefixes.collectionsWithIds(
-            this.props.collection.databaseId,
-            this.props.collection.id()
-          )}/triggers/${createdResource.id}`
-        );
         this.props.editorContent.setBaseline(createdResource.body as string);
         this.props.addNodeInCollection(createdResource);
         this.saveButton.visible = false;

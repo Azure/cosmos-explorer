@@ -45,6 +45,7 @@ export default class Database implements ViewModels.Database {
     this.id = ko.observable(data.id);
     this.offer = ko.observable();
     this.collections = ko.observableArray<Collection>();
+    this.collections.subscribe(() => useDatabases.getState().updateDatabase(this));
     this.isDatabaseExpanded = ko.observable<boolean>(false);
     this.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
     this.isDatabaseShared = ko.pureComputed(() => {
@@ -85,7 +86,6 @@ export default class Database implements ViewModels.Database {
             node: this,
             rid: this.rid,
             database: this,
-            hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
             onLoadStartKey: startKey,
           };
           settingsTab = new DatabaseSettingsTabV2(tabOptions);

@@ -146,7 +146,7 @@ src/Explorer/Tabs/MongoDocumentsTab.ts
 # src/Explorer/Tabs/MongoShellTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
-src/Explorer/Tabs/StoredProcedureTab.ts
+# src/Explorer/Tabs/StoredProcedureTab.ts
 src/Explorer/Tabs/TabComponents.ts
 src/Explorer/Tabs/TabsBase.ts
 src/Explorer/Tabs/TriggerTab.ts
@@ -198,9 +198,6 @@ src/ResourceProvider/IResourceProviderClient.test.ts
 src/ResourceProvider/IResourceProviderClient.ts
 src/ResourceProvider/ResourceProviderClient.ts
 src/ResourceProvider/ResourceProviderClientFactory.ts
-src/RouteHandlers/RouteHandler.ts
-src/RouteHandlers/TabRouteHandler.test.ts
-src/RouteHandlers/TabRouteHandler.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
