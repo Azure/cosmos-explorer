@@ -13,9 +13,11 @@ import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
+import { useDatabases } from "../useDatabases";
 import Collection from "./Collection";
 
 export default class Database implements ViewModels.Database {
@@ -40,6 +42,7 @@ export default class Database implements ViewModels.Database {
     this.id = ko.observable(data.id);
     this.offer = ko.observable();
     this.collections = ko.observableArray<Collection>();
+    this.collections.subscribe(() => useDatabases.getState().updateDatabase(this));
     this.isDatabaseExpanded = ko.observable<boolean>(false);
     this.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
     this.isDatabaseShared = ko.pureComputed(() => {
@@ -79,7 +82,6 @@ export default class Database implements ViewModels.Database {
             node: this,
             rid: this.rid,
             database: this,
-            hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
             onLoadStartKey: startKey,
           };
           settingsTab = new DatabaseSettingsTabV2(tabOptions);
@@ -215,7 +217,7 @@ export default class Database implements ViewModels.Database {
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.isOfferRead && !this.container.isServerlessEnabled() && !this.offer()) {
+    if (!this.isOfferRead && !isServerlessAccount() && !this.offer()) {
       const params: DataModels.ReadDatabaseOfferParams = {
         databaseId: this.id(),
         databaseResourceId: this.self,

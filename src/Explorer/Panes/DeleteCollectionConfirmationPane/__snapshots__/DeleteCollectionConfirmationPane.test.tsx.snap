@@ -7,7 +7,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
   explorer={
     Object {
       "findSelectedCollection": [Function],
-      "isLastCollection": [Function],
       "isSelectedDatabaseShared": [Function],
       "refreshAllDatabases": [Function],
       "selectedCollectionId": [Function],
@@ -43,7 +42,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               variant="small"
             >
               <span
-                className="css-102"
+                className="css-53"
               >
                 Confirm by typing the 
                 container
@@ -347,18 +346,18 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                 value=""
               >
                 <div
-                  className="ms-TextField root-104"
+                  className="ms-TextField root-55"
                 >
                   <div
                     className="ms-TextField-wrapper"
                   >
                     <div
-                      className="ms-TextField-fieldGroup fieldGroup-105"
+                      className="ms-TextField-fieldGroup fieldGroup-56"
                     >
                       <input
                         aria-invalid={false}
                         autoFocus={true}
-                        className="ms-TextField-field field-106"
+                        className="ms-TextField-field field-57"
                         id="confirmCollectionId"
                         onBlur={[Function]}
                         onChange={[Function]}
@@ -381,7 +380,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               variant="small"
             >
               <span
-                className="css-115"
+                className="css-66"
               >
                 Help us improve Azure Cosmos DB!
               </span>
@@ -391,7 +390,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               variant="small"
             >
               <span
-                className="css-115"
+                className="css-66"
               >
                 What is the reason why you are deleting this 
                 container
@@ -697,17 +696,17 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                 value=""
               >
                 <div
-                  className="ms-TextField ms-TextField--multiline root-104"
+                  className="ms-TextField ms-TextField--multiline root-55"
                 >
                   <div
                     className="ms-TextField-wrapper"
                   >
                     <div
-                      className="ms-TextField-fieldGroup fieldGroup-116"
+                      className="ms-TextField-fieldGroup fieldGroup-67"
                     >
                       <textarea
                         aria-invalid={false}
-                        className="ms-TextField-field field-117"
+                        className="ms-TextField-field field-68"
                         id="deleteCollectionFeedbackInput"
                         onBlur={[Function]}
                         onChange={[Function]}
@@ -2434,7 +2433,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   >
                     <button
                       aria-label="OK"
-                      className="ms-Button ms-Button--primary root-119"
+                      className="ms-Button ms-Button--primary root-70"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2446,14 +2445,14 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-120"
+                        className="ms-Button-flexContainer flexContainer-71"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-121"
+                          className="ms-Button-textContainer textContainer-72"
                         >
                           <span
-                            className="ms-Button-label label-123"
+                            className="ms-Button-label label-74"
                             id="id__6"
                             key="id__6"
                           >

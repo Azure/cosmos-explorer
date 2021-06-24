@@ -6,7 +6,7 @@ import {
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
 import Explorer from "../Explorer/Explorer";
-import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import ConflictId from "../Explorer/Tree/ConflictId";
 import DocumentId from "../Explorer/Tree/DocumentId";
@@ -275,7 +275,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  hashLocation: string;
   isTabsContentExpanded?: ko.Observable<boolean>;
   onLoadStartKey?: number;
 

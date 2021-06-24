@@ -12,7 +12,6 @@ import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
-import { ArrayHashMap } from "../../Common/ArrayHashMap";
 import { Areas } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
@@ -22,8 +21,9 @@ import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
-import { ResourceTreeContextMenuButtonFactory } from "../ContextMenuButtonFactory";
+import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
@@ -32,6 +32,7 @@ import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
 import TabsBase from "../Tabs/TabsBase";
+import { useDatabases } from "../useDatabases";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
@@ -50,10 +51,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
 
-  private koSubsDatabaseIdMap: ArrayHashMap<ko.Subscription>; // database id -> ko subs
-  private koSubsCollectionIdMap: ArrayHashMap<ko.Subscription>; // collection id -> ko subs
-  private databaseCollectionIdMap: ArrayHashMap<string>; // database id -> collection ids
-
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
@@ -61,19 +58,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     this.container.tabsManager.activeTab.subscribe((newValue: TabsBase) => this.triggerRender());
     this.container.isNotebookEnabled.subscribe((newValue) => this.triggerRender());
 
-    this.koSubsDatabaseIdMap = new ArrayHashMap();
-    this.koSubsCollectionIdMap = new ArrayHashMap();
-    this.databaseCollectionIdMap = new ArrayHashMap();
-
-    this.container.databases.subscribe((databases: ViewModels.Database[]) => {
-      // Clean up old databases
-      this.cleanupDatabasesKoSubs();
-
-      databases.forEach((database: ViewModels.Database) => this.watchDatabase(database));
-      this.triggerRender();
-    });
-
-    this.container.databases().forEach((database: ViewModels.Database) => this.watchDatabase(database));
+    useDatabases.subscribe(() => this.triggerRender());
     this.triggerRender();
   }
 
@@ -191,7 +176,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
   }
 
   private buildDataTree(): TreeNode {
-    const databaseTreeNodes: TreeNode[] = this.container.databases().map((database: ViewModels.Database) => {
+    const databaseTreeNodes: TreeNode[] = useDatabases.getState().databases.map((database: ViewModels.Database) => {
       const databaseNode: TreeNode = {
         label: database.id(),
         iconSrc: CosmosDBIcon,
@@ -286,9 +271,9 @@ export class ResourceTreeAdapter implements ReactAdapter {
       });
     }
 
-    if (userContext.apiType !== "Cassandra" || !this.container.isServerlessEnabled()) {
+    if (userContext.apiType !== "Cassandra" || !isServerlessAccount()) {
       children.push({
-        label: database.isDatabaseShared() || this.container.isServerlessEnabled() ? "Settings" : "Scale & Settings",
+        label: database.isDatabaseShared() || isServerlessAccount() ? "Settings" : "Scale & Settings",
         onClick: collection.onSettingsClick.bind(collection),
         isSelected: () =>
           this.isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Settings]),
@@ -872,94 +857,5 @@ export class ResourceTreeAdapter implements ReactAdapter {
       selectedSubnodeKind !== undefined &&
       subnodeKinds.includes(selectedSubnodeKind)
     );
-  }
-
-  // ***************  watch all nested ko's inside database
-  // TODO Simplify so we don't have to do this
-
-  private watchCollection(databaseId: string, collection: ViewModels.Collection) {
-    this.addKoSubToCollectionId(
-      databaseId,
-      collection.id(),
-      collection.storedProcedures.subscribe(() => {
-        this.triggerRender();
-      })
-    );
-
-    this.addKoSubToCollectionId(
-      databaseId,
-      collection.id(),
-      collection.isCollectionExpanded.subscribe(() => {
-        this.triggerRender();
-      })
-    );
-
-    this.addKoSubToCollectionId(
-      databaseId,
-      collection.id(),
-      collection.isStoredProceduresExpanded.subscribe(() => {
-        this.triggerRender();
-      })
-    );
-  }
-
-  private watchDatabase(database: ViewModels.Database) {
-    const databaseId = database.id();
-    const koSub = database.collections.subscribe((collections: ViewModels.Collection[]) => {
-      this.cleanupCollectionsKoSubs(
-        databaseId,
-        collections.map((collection: ViewModels.Collection) => collection.id())
-      );
-
-      collections.forEach((collection: ViewModels.Collection) => this.watchCollection(databaseId, collection));
-      this.triggerRender();
-    });
-    this.addKoSubToDatabaseId(databaseId, koSub);
-
-    database.collections().forEach((collection: ViewModels.Collection) => this.watchCollection(databaseId, collection));
-  }
-
-  private addKoSubToDatabaseId(databaseId: string, sub: ko.Subscription): void {
-    this.koSubsDatabaseIdMap.push(databaseId, sub);
-  }
-
-  private addKoSubToCollectionId(databaseId: string, collectionId: string, sub: ko.Subscription): void {
-    this.databaseCollectionIdMap.push(databaseId, collectionId);
-    this.koSubsCollectionIdMap.push(collectionId, sub);
-  }
-
-  private cleanupDatabasesKoSubs(): void {
-    for (const databaseId of this.koSubsDatabaseIdMap.keys()) {
-      this.koSubsDatabaseIdMap.get(databaseId).forEach((sub: ko.Subscription) => sub.dispose());
-      this.koSubsDatabaseIdMap.delete(databaseId);
-
-      if (this.databaseCollectionIdMap.has(databaseId)) {
-        this.databaseCollectionIdMap
-          .get(databaseId)
-          .forEach((collectionId: string) => this.cleanupKoSubsForCollection(databaseId, collectionId));
-      }
-    }
-  }
-
-  private cleanupCollectionsKoSubs(databaseId: string, existingCollectionIds: string[]): void {
-    if (!this.databaseCollectionIdMap.has(databaseId)) {
-      return;
-    }
-
-    const collectionIdsToRemove = this.databaseCollectionIdMap
-      .get(databaseId)
-      .filter((id: string) => existingCollectionIds.indexOf(id) === -1);
-
-    collectionIdsToRemove.forEach((id: string) => this.cleanupKoSubsForCollection(databaseId, id));
-  }
-
-  private cleanupKoSubsForCollection(databaseId: string, collectionId: string) {
-    if (!this.koSubsCollectionIdMap.has(collectionId)) {
-      return;
-    }
-
-    this.koSubsCollectionIdMap.get(collectionId).forEach((sub: ko.Subscription) => sub.dispose());
-    this.koSubsCollectionIdMap.delete(collectionId);
-    this.databaseCollectionIdMap.remove(databaseId, collectionId);
   }
 }

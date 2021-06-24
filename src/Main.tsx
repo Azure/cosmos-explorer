@@ -45,7 +45,6 @@ import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
-import "./Explorer/Tabs/QueryTab.less";
 import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
@@ -56,16 +55,10 @@ import "./Shared/appInsights";
 initializeIcons();
 
 const App: React.FunctionComponent = () => {
-  const [notificationConsoleData, setNotificationConsoleData] = useState(undefined);
-  //TODO: Refactor so we don't need to pass the id to remove a console data
-  const [inProgressConsoleDataIdToBeDeleted, setInProgressConsoleDataIdToBeDeleted] = useState("");
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
-
   const { tabs, activeTab, tabsManager } = useTabs();
 
   const explorerParams: ExplorerParams = {
-    setNotificationConsoleData,
-    setInProgressConsoleDataIdToBeDeleted,
     tabsManager,
   };
 
@@ -117,10 +110,7 @@ const App: React.FunctionComponent = () => {
           aria-label="Notification console"
           id="explorerNotificationConsole"
         >
-          <NotificationConsole
-            consoleData={notificationConsoleData}
-            inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
-          />
+          <NotificationConsole />
         </div>
       </div>
       <SidePanel />

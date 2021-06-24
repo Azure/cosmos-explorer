@@ -22,6 +22,7 @@ import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLaunc
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { useDatabases } from "../useDatabases";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -308,8 +309,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       title: collectionId,
       description: "Data",
       onClick: () => {
-        const collection = this.container.findCollection(databaseId, collectionId);
-        collection && collection.openTab();
+        const collection = useDatabases.getState().findCollection(databaseId, collectionId);
+        collection?.openTab();
       },
     };
   }
