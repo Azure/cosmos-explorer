@@ -98,7 +98,7 @@ export default class NotebookManager {
       if (this?.gitHubOAuthService.isLoggedIn()) {
         useSidePanel.getState().closeSidePanel();
         setTimeout(() => {
-          this.params.container.openGitHubReposPanel("Manager GitHub settings");
+          this.params.container.openGitHubReposPanel("Manage GitHub settings");
         }, 200);
       }
 
