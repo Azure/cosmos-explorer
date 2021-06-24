@@ -554,11 +554,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
         .getState()
         .openSidePanel(
           label,
-          <GitHubReposPanel
-            explorer={container}
-            gitHubClientProp={container.notebookManager.gitHubClient}
-            junoClientProp={undefined}
-          />
+          <GitHubReposPanel explorer={container} gitHubClientProp={container.notebookManager.gitHubClient} />
         ),
     commandButtonLabel: label,
     hasPopup: false,
