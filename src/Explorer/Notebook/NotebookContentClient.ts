@@ -1,18 +1,14 @@
 import { stringifyNotebook } from "@nteract/commutable";
 import { FileType, IContent, IContentProvider, IEmptyContent, ServerConfig } from "@nteract/core";
 import { AjaxResponse } from "rxjs/ajax";
-import * as DataModels from "../../Contracts/DataModels";
 import * as StringUtils from "../../Utils/StringUtils";
 import * as FileSystemUtil from "./FileSystemUtil";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import { NotebookUtil } from "./NotebookUtil";
+import { useNotebook } from "./useNotebook";
 
 export class NotebookContentClient {
-  constructor(
-    private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
-    public notebookBasePath: ko.Observable<string>,
-    private contentProvider: IContentProvider
-  ) {}
+  constructor(private contentProvider: IContentProvider) {}
 
   /**
    * This updates the item and points all the children's parent to this item
@@ -271,9 +267,10 @@ export class NotebookContentClient {
   }
 
   private getServerConfig(): ServerConfig {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     return {
-      endpoint: this.notebookServerInfo().notebookServerEndpoint,
-      token: this.notebookServerInfo().authToken,
+      endpoint: notebookServerInfo.notebookServerEndpoint,
+      token: notebookServerInfo.authToken,
       crossDomain: true,
     };
   }

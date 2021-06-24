@@ -31,6 +31,7 @@ import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem, NotebookContentItemType } from "../Notebook/NotebookContentItem";
 import { NotebookUtil } from "../Notebook/NotebookUtil";
+import { useNotebook } from "../Notebook/useNotebook";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
 import StoredProcedure from "./StoredProcedure";
@@ -56,7 +57,10 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
     this.container.tabsManager.activeTab.subscribe((newValue: TabsBase) => this.triggerRender());
-    this.container.isNotebookEnabled.subscribe((newValue) => this.triggerRender());
+    useNotebook.subscribe(
+      () => this.triggerRender(),
+      (state) => state.isNotebookEnabled
+    );
 
     useDatabases.subscribe(() => this.triggerRender());
     this.triggerRender();
@@ -90,7 +94,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
     const dataRootNode = this.buildDataTree();
     const notebooksRootNode = this.buildNotebooksTrees();
 
-    if (this.container.isNotebookEnabled()) {
+    if (useNotebook.getState().isNotebookEnabled) {
       return (
         <>
           <AccordionComponent>
@@ -121,12 +125,12 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     this.myNotebooksContentRoot = {
       name: ResourceTreeAdapter.MyNotebooksTitle,
-      path: this.container.getNotebookBasePath(),
+      path: useNotebook.getState().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };
 
     // Only if notebook server is available we can refresh
-    if (this.container.notebookServerInfo().notebookServerEndpoint) {
+    if (useNotebook.getState().notebookServerInfo?.notebookServerEndpoint) {
       refreshTasks.push(
         this.container.refreshContentItem(this.myNotebooksContentRoot).then(() => {
           this.triggerRender();
@@ -260,7 +264,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(this.container, collection),
     });
 
-    if (this.container.isNotebookEnabled() && userContext.apiType === "Mongo" && isPublicInternetAccessAllowed()) {
+    if (
+      useNotebook.getState().isNotebookEnabled &&
+      userContext.apiType === "Mongo" &&
+      isPublicInternetAccessAllowed()
+    ) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),

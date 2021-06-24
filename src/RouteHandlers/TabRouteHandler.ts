@@ -400,7 +400,7 @@ export class TabRouteHandler {
 
   private _executeActionHelper(action: () => void): void {
     const explorer = window.dataExplorer;
-    if (explorer && explorer.isAccountReady()) {
+    if (explorer) {
       action();
     }
   }

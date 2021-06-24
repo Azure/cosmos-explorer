@@ -14,6 +14,7 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
+import { useNotebook } from "./Notebook/useNotebook";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
@@ -73,13 +74,13 @@ export class ResourceTreeContextMenuButtonFactory {
         iconSrc: HostedTerminalIcon,
         onClick: () => {
           const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-          if (container.isShellEnabled()) {
+          if (useNotebook.getState().isShellEnabled) {
             container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
           } else {
             selectedCollection && selectedCollection.onNewMongoShellClick();
           }
         },
-        label: container.isShellEnabled() ? "Open Mongo Shell" : "New Shell",
+        label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
       });
     }
 

@@ -22,6 +22,7 @@ import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLaunc
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { useNotebook } from "../Notebook/useNotebook";
 import { useDatabases } from "../useDatabases";
 
 export interface SplashScreenItem {
@@ -61,7 +62,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public componentDidMount() {
     this.subscriptions.push(
       this.container.selectedNode.subscribe(() => this.setState({})),
-      this.container.isNotebookEnabled.subscribe(() => this.setState({}))
+      { dispose: () => useNotebook.subscribe(() => this.setState({}), state => state.isNotebookEnabled)}
     );
   }
 
@@ -209,7 +210,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (this.container.isNotebookEnabled()) {
+    if (useNotebook.getState().isNotebookEnabled) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
