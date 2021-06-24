@@ -43,7 +43,6 @@ export default class UserDefinedFunction {
       tabPath: "",
       collection: source,
       node: source,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
     });
 
     source.container.tabsManager.activateNewTab(userDefinedFunctionTab);
@@ -76,10 +75,6 @@ export default class UserDefinedFunction {
         tabPath: "",
         collection: this.collection,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-          this.collection.databaseId,
-          this.collection.id()
-        )}/udfs/${this.id()}`,
       });
 
       this.container.tabsManager.activateNewTab(userDefinedFunctionTab);

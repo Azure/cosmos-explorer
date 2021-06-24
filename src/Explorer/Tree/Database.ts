@@ -82,7 +82,6 @@ export default class Database implements ViewModels.Database {
             node: this,
             rid: this.rid,
             database: this,
-            hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
             onLoadStartKey: startKey,
           };
           settingsTab = new DatabaseSettingsTabV2(tabOptions);

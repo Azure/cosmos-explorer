@@ -4,7 +4,6 @@ import React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
-import * as Constants from "../../../Common/Constants";
 import { NormalizedEventKey } from "../../../Common/Constants";
 import { createStoredProcedure } from "../../../Common/dataAccess/createStoredProcedure";
 import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProcedure";
@@ -55,7 +54,6 @@ export interface IStoredProcTabComponentProps {
   collectionBase: ViewModels.CollectionBase;
   //eslint-disable-next-line
   node?: any;
-  hasLocation: string;
   scriptTabBaseInstance: ScriptTabBase;
   collection: ViewModels.Collection;
   iStorProcTabComponentAccessor: (instance: IStorProcTabComponentAccessor) => void;
@@ -389,12 +387,6 @@ export default class StoredProcedureTabComponent extends React.Component<
           this.props.scriptTabBaseInstance.tabTitle(createdResource.id);
           this.props.scriptTabBaseInstance.isNew(false);
           this.props.scriptTabBaseInstance.resource(createdResource);
-          this.props.scriptTabBaseInstance.hashLocation(
-            `${Constants.HashRoutePrefixes.collectionsWithIds(
-              this.props.collectionBase.databaseId,
-              this.props.collectionBase.id()
-            )}/sprocs/${createdResource.id}`
-          );
           this.props.scriptTabBaseInstance.setBaselines();
 
           const editorModel =

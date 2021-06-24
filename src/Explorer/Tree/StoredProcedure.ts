@@ -76,7 +76,6 @@ export default class StoredProcedure {
         tabPath: `${source.databaseId}>${source.id()}>New Stored Procedure ${id}`,
         collection: source,
         node: source,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
       },
       {
         collection: source,
@@ -124,10 +123,6 @@ export default class StoredProcedure {
           tabPath: `${this.collection.databaseId}>${this.collection.id()}>${storedProcedureData.id}`,
           collection: this.collection,
           node: this,
-          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-            this.collection.databaseId,
-            this.collection.id()
-          )}/sprocs/${this.id()}`,
         },
         {
           collection: this.collection,
