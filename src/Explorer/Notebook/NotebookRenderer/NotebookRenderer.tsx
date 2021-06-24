@@ -2,7 +2,7 @@ import { CellId } from "@nteract/commutable";
 import { CellType } from "@nteract/commutable/src";
 import { actions, ContentRef, selectors } from "@nteract/core";
 import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
-import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
+import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import * as React from "react";
 import { DndProvider } from "react-dnd";
@@ -120,7 +120,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <CodeCell id={id} contentRef={contentRef} cell_type="code">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
+                              codemirror: (props: PassedEditorProps) => (
+                                <CodeMirrorEditor {...props} editorType="codemirror" />
+                              ),
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
                               <Prompt id={id} contentRef={contentRef} isHovered={false}>
@@ -142,7 +144,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
+                              codemirror: (props: PassedEditorProps) => (
+                                <CodeMirrorEditor {...props} editorType="codemirror" />
+                              ),
                             },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
@@ -157,7 +161,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <RawCell id={id} contentRef={contentRef} cell_type="raw">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
+                              codemirror: (props: PassedEditorProps) => (
+                                <CodeMirrorEditor {...props} editorType="codemirror" />
+                              ),
                             },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}

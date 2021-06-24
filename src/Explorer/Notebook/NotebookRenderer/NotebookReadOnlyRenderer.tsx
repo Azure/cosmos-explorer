@@ -1,6 +1,6 @@
 import { actions, ContentRef } from "@nteract/core";
 import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
-import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
+import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
 import * as React from "react";
@@ -67,8 +67,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                     ? () => <SandboxOutputs id={id} contentRef={contentRef} />
                     : undefined,
                   editor: {
-                    monaco: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <MonacoEditor readOnly={true} {...props} editorType={"monaco"} />,
+                    codemirror: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />,
                   },
                 }}
               </CodeCell>
@@ -84,8 +84,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <RawCell id={id} contentRef={contentRef} cell_type="raw">
                 {{
                   editor: {
-                    monaco: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <MonacoEditor {...props} readOnly={true} editorType={"monaco"} />,
+                    codemirror: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />,
                   },
                 }}
               </RawCell>

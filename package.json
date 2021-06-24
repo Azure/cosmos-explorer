@@ -22,7 +22,7 @@
     "@nteract/data-explorer": "8.0.3",
     "@nteract/directory-listing": "2.0.6",
     "@nteract/dropdown-menu": "1.0.1",
-    "@nteract/editor": "10.1.2",
+    "@nteract/editor": "10.1.12",
     "@nteract/fixtures": "2.3.0",
     "@nteract/iron-icons": "1.0.0",
     "@nteract/jupyter-widgets": "2.0.0",

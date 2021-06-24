@@ -53,7 +53,6 @@ describe("Tabs manager tests", () => {
         database,
         title: "",
         tabPath: "",
-        hashLocation: "",
         queryText: "",
         partitionKey: collection.partitionKey,
         onLoadStartKey: 1,
@@ -70,7 +69,6 @@ describe("Tabs manager tests", () => {
       collection,
       title: "",
       tabPath: "",
-      hashLocation: "",
     });
 
     // make sure tabs have different tabId

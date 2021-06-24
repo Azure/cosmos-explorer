@@ -145,12 +145,6 @@ export default class UserDefinedFunctionTabContent extends Component<
         this.updateButton.visible = true;
         this.saveButton.visible = false;
         this.props.resource(createdResource);
-        this.props.hashLocation(
-          `${Constants.HashRoutePrefixes.collectionsWithIds(
-            this.props.collection.databaseId,
-            this.props.collection.id()
-          )}/udfs/${createdResource.id}`
-        );
         this.props.addNodeInCollection(createdResource);
         this.setState({ isUdfIdEditable: false });
         this.props.isExecuting(false);

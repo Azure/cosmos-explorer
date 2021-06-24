@@ -94,7 +94,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
           tabPath: "",
           collection: this,
           node: this,
-          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
@@ -143,7 +142,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
       });
 

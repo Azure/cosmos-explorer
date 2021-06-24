@@ -55,7 +55,7 @@ export class NotebookViewerComponent
       databaseAccountName: undefined,
       defaultExperience: "NotebookViewer",
       isReadOnly: true,
-      cellEditorType: "monaco",
+      cellEditorType: "codemirror",
       autoSaveInterval: 365 * 24 * 3600 * 1000, // There is no way to turn off auto-save, set to 1 year
       contentProvider: contents.JupyterContentProvider, // NotebookViewer only knows how to talk to Jupyter contents API
     });
