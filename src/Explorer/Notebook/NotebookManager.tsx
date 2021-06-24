@@ -18,6 +18,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
+import Explorer from "../Explorer";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
@@ -33,6 +34,7 @@ type NotebookPaneContent = string | ImmutableNotebook;
 export type { NotebookPaneContent };
 
 export interface NotebookManagerOptions {
+  container: Explorer;
   resourceTree: ResourceTreeAdapter;
   refreshCommandBarButtons: () => void;
   refreshNotebookList: () => void;

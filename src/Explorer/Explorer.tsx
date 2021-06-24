@@ -1213,7 +1213,6 @@ export default class Explorer {
     userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases(true);
-    RouteHandler.getInstance().initHandler();
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
     const isNotebookEnabled: boolean =
       userContext.authType !== AuthType.ResourceToken &&
