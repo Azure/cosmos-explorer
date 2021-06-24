@@ -274,7 +274,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  hashLocation: string;
   isTabsContentExpanded?: ko.Observable<boolean>;
   onLoadStartKey?: number;
 

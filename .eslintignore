@@ -44,7 +44,6 @@ src/Definitions/png.d.ts
 src/Definitions/svg.d.ts
 src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
-src/Explorer/ContextMenuButtonFactory.ts
 src/Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.ts
 src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
 src/Explorer/Controls/DynamicList/DynamicList.test.ts
@@ -143,10 +142,10 @@ src/Explorer/Tabs/DocumentsTab.ts
 src/Explorer/Tabs/GraphTab.ts
 src/Explorer/Tabs/MongoDocumentsTab.ts
 # src/Explorer/Tabs/MongoQueryTab.ts
-src/Explorer/Tabs/MongoShellTab.ts
+# src/Explorer/Tabs/MongoShellTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
-src/Explorer/Tabs/StoredProcedureTab.ts
+# src/Explorer/Tabs/StoredProcedureTab.ts
 src/Explorer/Tabs/TabComponents.ts
 src/Explorer/Tabs/TabsBase.ts
 src/Explorer/Tabs/TriggerTab.ts
@@ -199,9 +198,6 @@ src/ResourceProvider/IResourceProviderClient.test.ts
 src/ResourceProvider/IResourceProviderClient.ts
 src/ResourceProvider/ResourceProviderClient.ts
 src/ResourceProvider/ResourceProviderClientFactory.ts
-src/RouteHandlers/RouteHandler.ts
-src/RouteHandlers/TabRouteHandler.test.ts
-src/RouteHandlers/TabRouteHandler.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts

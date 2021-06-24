@@ -29,7 +29,7 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
 import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
-import MongoShellTab from "../Tabs/MongoShellTab";
+import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
@@ -176,6 +176,19 @@ export default class Collection implements ViewModels.Collection {
     });
 
     this.children = ko.observableArray<ViewModels.TreeNode>([]);
+    this.children.subscribe(() => {
+      // update the database in zustand store
+      const database = this.getDatabase();
+      database.collections(
+        database.collections()?.map((collection) => {
+          if (collection.id() === this.id()) {
+            return this;
+          }
+          return collection;
+        })
+      );
+      useDatabases.getState().updateDatabase(database);
+    });
 
     this.storedProcedures = ko.computed(() => {
       return this.children()
@@ -301,7 +314,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
       });
 
@@ -347,7 +359,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Conflicts`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/conflicts`,
         onLoadStartKey: startKey,
       });
 
@@ -401,7 +412,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/entities`,
         onLoadStartKey: startKey,
       });
 
@@ -450,7 +460,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperty,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
         collectionId: this.id(),
         databaseId: this.databaseId,
         isTabsContentExpanded: this.container.isTabsContentExpanded,
@@ -499,7 +508,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
         onLoadStartKey: startKey,
       });
       this.container.tabsManager.activateNewTab(mongoDocumentsTab);
@@ -544,7 +552,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/schemaAnalyzer`,
         onLoadStartKey: startKey,
       })
     );
@@ -584,7 +591,6 @@ export default class Collection implements ViewModels.Collection {
       tabPath: "",
       collection: this,
       node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
     };
 
     let settingsTabV2 = matchingTabs && (matchingTabs[0] as CollectionSettingsTabV2);
@@ -627,7 +633,6 @@ export default class Collection implements ViewModels.Collection {
           tabPath: "",
           collection: this,
           node: this,
-          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
@@ -657,7 +662,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
         partitionKey: collection.partitionKey,
         onLoadStartKey: startKey,
       },
@@ -691,7 +695,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       masterKey: userContext.masterKey || "",
       collectionPartitionKeyProperty: this.partitionKeyProperty,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
       collectionId: this.id(),
       databaseId: this.databaseId,
       isTabsContentExpanded: this.container.isTabsContentExpanded,
@@ -704,22 +707,26 @@ export default class Collection implements ViewModels.Collection {
   public onNewMongoShellClick() {
     const mongoShellTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.MongoShell
-    ) as MongoShellTab[];
+    ) as NewMongoShellTab[];
 
     let index = 1;
     if (mongoShellTabs.length > 0) {
       index = mongoShellTabs[mongoShellTabs.length - 1].index + 1;
     }
 
-    const mongoShellTab: MongoShellTab = new MongoShellTab({
-      tabKind: ViewModels.CollectionTabKind.MongoShell,
-      title: "Shell " + index,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      index: index,
-    });
+    const mongoShellTab: NewMongoShellTab = new NewMongoShellTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.MongoShell,
+        title: "Shell " + index,
+        tabPath: "",
+        collection: this,
+        node: this,
+        index: index,
+      },
+      {
+        container: this.container,
+      }
+    );
 
     this.container.tabsManager.activateNewTab(mongoShellTab);
   }

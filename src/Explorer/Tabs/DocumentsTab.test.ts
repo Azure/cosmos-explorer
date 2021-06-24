@@ -15,7 +15,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -90,7 +89,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -104,7 +102,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -118,7 +115,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
@@ -135,7 +131,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -149,7 +144,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

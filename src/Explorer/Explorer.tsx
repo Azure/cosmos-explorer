@@ -18,7 +18,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -51,8 +50,6 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
-import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
-import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
@@ -135,7 +132,6 @@ export default class Explorer {
         userContext.authType === AuthType.ResourceToken
           ? this.refreshDatabaseForResourceToken()
           : this.refreshAllDatabases(true);
-        RouteHandler.getInstance().initHandler();
         await this._refreshNotebooksEnabledStateForAccount();
         this.isNotebookEnabled(
           userContext.authType !== AuthType.ResourceToken &&
@@ -822,7 +818,6 @@ export default class Explorer {
         tabPath: notebookContentItem.path,
         collection: null,
         masterKey: userContext.masterKey || "",
-        hashLocation: "notebooks",
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         container: this,
@@ -1122,30 +1117,27 @@ export default class Explorer {
 
   public openNotebookTerminal(kind: ViewModels.TerminalKind) {
     let title: string;
-    let hashLocation: string;
 
     switch (kind) {
       case ViewModels.TerminalKind.Default:
         title = "Terminal";
-        hashLocation = "terminal";
         break;
 
       case ViewModels.TerminalKind.Mongo:
         title = "Mongo Shell";
-        hashLocation = "mongo-shell";
         break;
 
       case ViewModels.TerminalKind.Cassandra:
         title = "Cassandra Shell";
-        hashLocation = "cassandra-shell";
         break;
 
       default:
         throw new Error("Terminal kind: ${kind} not supported");
     }
 
-    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(ViewModels.CollectionTabKind.Terminal, (tab) =>
-      tab.hashLocation().startsWith(hashLocation)
+    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.Terminal,
+      (tab) => tab.tabTitle() === title
     ) as TerminalTab[];
 
     let index = 1;
@@ -1160,7 +1152,6 @@ export default class Explorer {
       title: `${title} ${index}`,
       tabPath: `${title} ${index}`,
       collection: null,
-      hashLocation: `${hashLocation} ${index}`,
       isTabsContentExpanded: ko.observable(true),
       onLoadStartKey: null,
       container: this,
@@ -1178,11 +1169,10 @@ export default class Explorer {
     isFavorite?: boolean
   ) {
     const title = "Gallery";
-    const hashLocation = "gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
     const galleryTab = this.tabsManager
       .getTabs(ViewModels.CollectionTabKind.Gallery)
-      .find((tab) => tab.hashLocation() == hashLocation);
+      .find((tab) => tab.tabTitle() == title);
 
     if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
@@ -1191,9 +1181,8 @@ export default class Explorer {
         new GalleryTab(
           {
             tabKind: ViewModels.CollectionTabKind.Gallery,
-            title: title,
+            title,
             tabPath: title,
-            hashLocation: hashLocation,
             onLoadStartKey: null,
             isTabsContentExpanded: ko.observable(true),
           },
@@ -1264,17 +1253,6 @@ export default class Explorer {
     }
   }
 
-  public openDeleteCollectionConfirmationPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={this} />);
-  }
-
-  public openDeleteDatabaseConfirmationPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel("Delete " + getDatabaseName(), <DeleteDatabaseConfirmationPanel explorer={this} />);
-  }
   public openUploadItemsPanePane(): void {
     useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
   }

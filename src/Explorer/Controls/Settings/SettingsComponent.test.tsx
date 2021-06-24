@@ -38,7 +38,6 @@ describe("SettingsComponent", () => {
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
-      hashLocation: "settings",
     }),
   };
 

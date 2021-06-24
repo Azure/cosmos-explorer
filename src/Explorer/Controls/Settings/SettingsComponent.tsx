@@ -16,6 +16,7 @@ import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/T
 import { userContext } from "../../../UserContext";
 import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
@@ -109,6 +110,7 @@ export interface SettingsComponentState {
 
   initialNotification: DataModels.Notification;
   selectedTab: SettingsV2TabTypes;
+  offerLoaded: boolean;
 }
 
 export class SettingsComponent extends React.Component<SettingsComponentProps, SettingsComponentState> {
@@ -193,6 +195,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
       initialNotification: undefined,
       selectedTab: SettingsV2TabTypes.ScaleTab,
+      offerLoaded: !!this.offer,
     };
 
     this.saveSettingsButton = {
@@ -214,6 +217,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.isCollectionSettingsTab) {
       this.refreshIndexTransformationProgress();
       this.loadMongoIndexes();
+      this.loadCollectionOffer();
     }
 
     this.setAutoPilotStates();
@@ -367,6 +371,34 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       isConflictResolutionDirty: false,
     });
   };
+
+  private async loadCollectionOffer() {
+    try {
+      this.props.settingsTab.isExecuting(true);
+      await this.collection.loadOffer();
+      this.props.settingsTab.tabTitle(this.collection.offer() ? "Settings" : "Scale & Settings");
+      this.setState({ offerLoaded: true });
+    } catch (error) {
+      this.props.settingsTab.isExecutionError(true);
+      const errorMessage = getErrorMessage(error);
+      traceFailure(
+        Action.Tab,
+        {
+          databaseName: this.collection.databaseId,
+          collectionName: this.collection.id(),
+
+          dataExplorerArea: Constants.Areas.Tab,
+          tabTitle: this.props.settingsTab.tabTitle,
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        },
+        this.props.settingsTab.onLoadStartKey
+      );
+      logConsoleError(`Error while fetching container settings for container ${this.collection.id()}: ${errorMessage}`);
+    } finally {
+      this.props.settingsTab.isExecuting(false);
+    }
+  }
 
   private getMongoIndexesToSave = (): MongoIndex[] => {
     let finalIndexes: MongoIndex[] = [];
@@ -903,6 +935,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
           </div>
         </div>
       );
+    }
+
+    if (!this.state.offerLoaded) {
+      return <></>;
     }
 
     const subSettingsComponentProps: SubSettingsComponentProps = {

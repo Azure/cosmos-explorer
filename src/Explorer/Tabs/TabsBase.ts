@@ -4,7 +4,6 @@ import * as ThemeUtility from "../../Common/ThemeUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../hooks/useNotificationConsole";
-import { RouteHandler } from "../../RouteHandlers/RouteHandler";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
@@ -26,7 +25,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public tabKind: ViewModels.CollectionTabKind;
   public tabTitle: ko.Observable<string>;
   public tabPath: ko.Observable<string>;
-  public hashLocation: ko.Observable<string>;
   public isExecutionError = ko.observable(false);
   public isExecuting = ko.observable(false);
   public pendingNotification?: ko.Observable<DataModels.Notification>;
@@ -50,8 +48,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
         ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${this.tabTitle()}`));
     this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
     this.onLoadStartKey = options.onLoadStartKey;
-    this.hashLocation = ko.observable<string>(options.hashLocation || "");
-    this.hashLocation.subscribe((newLocation: string) => this.updateGlobalHash(newLocation));
     this.closeTabButton = {
       enabled: ko.computed<boolean>(() => {
         return true;
@@ -116,7 +112,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     this.updateSelectedNode();
     this.collection?.selectedSubnodeKind(this.tabKind);
     this.database?.selectedSubnodeKind(this.tabKind);
-    this.updateGlobalHash(this.hashLocation());
     this.updateNavbarWithTabsButtons();
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Open, {
       tabName: this.constructor.name,
@@ -152,10 +147,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   /** Renders a Javascript object to be displayed inside Monaco Editor */
   public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return JSON.stringify(value, replacer, space);
-  }
-
-  private updateGlobalHash(newHash: string): void {
-    RouteHandler.getInstance().updateRouteHashLocation(newHash);
   }
 
   /**

@@ -41,9 +41,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "resourceTree": ResourceTreeAdapter {
               "container": [Circular],
               "copyNotebook": [Function],
-              "databaseCollectionIdMap": Map {},
-              "koSubsCollectionIdMap": Map {},
-              "koSubsDatabaseIdMap": Map {},
               "parameters": [Function],
             },
             "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
