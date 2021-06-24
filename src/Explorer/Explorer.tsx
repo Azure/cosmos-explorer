@@ -17,7 +17,7 @@ import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
-import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
+import { IGalleryItem } from "../Juno/JunoClient";
 import { NotebookWorkspaceManager } from "../NotebookWorkspaceManager/NotebookWorkspaceManager";
 import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
@@ -1576,7 +1576,7 @@ export default class Explorer {
         <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
       );
   }
-  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
+  public openGitHubReposPanel(header: string): void {
     useSidePanel
       .getState()
       .openSidePanel(
@@ -1584,7 +1584,7 @@ export default class Explorer {
         <GitHubReposPanel
           explorer={this}
           gitHubClientProp={this.notebookManager.gitHubClient}
-          junoClientProp={junoClient}
+          junoClientProp={this.notebookManager?.junoClient}
         />
       );
   }
