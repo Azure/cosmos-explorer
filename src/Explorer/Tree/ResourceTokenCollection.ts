@@ -10,6 +10,7 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import DocumentId from "./DocumentId";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
@@ -94,7 +95,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
           tabPath: "",
           collection: this,
           node: this,
-          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
@@ -105,7 +105,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   }
 
   public onDocumentDBDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -143,7 +143,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
       });
 

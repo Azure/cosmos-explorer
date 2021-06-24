@@ -14,17 +14,16 @@ import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
 import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
 interface DeleteDatabaseConfirmationPanelProps {
   explorer: Explorer;
-  selectedDatabase: Database;
 }
 
 export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = ({
   explorer,
-  selectedDatabase,
 }: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const isLastNonEmptyDatabase = useDatabases((state) => state.isLastNonEmptyDatabase);
@@ -33,6 +32,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const [formError, setFormError] = useState<string>("");
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("");
+  const selectedDatabase: Database = useSelectedNode.getState().findSelectedDatabase();
 
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
@@ -54,7 +54,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
       closeSidePanel();
       explorer.refreshAllDatabases();
       explorer.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
-      explorer.selectedNode(undefined);
+      useSelectedNode.getState().setSelectedNode(undefined);
       selectedDatabase
         .collections()
         .forEach((collection: Collection) =>

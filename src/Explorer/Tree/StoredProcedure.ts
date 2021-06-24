@@ -3,14 +3,15 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { deleteStoredProcedure } from "../../Common/dataAccess/deleteStoredProcedure";
 import { executeStoredProcedure } from "../../Common/dataAccess/executeStoredProcedure";
-import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
-import StoredProcedureTab from "../Tabs/StoredProcedureTab";
+import { getErrorMessage } from "../Tables/Utilities";
+import { NewStoredProcedureTab } from "../Tabs/StoredProcedureTab/StoredProcedureTab";
 import TabsBase from "../Tabs/TabsBase";
+import { useSelectedNode } from "../useSelectedNode";
 
 const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
@@ -67,22 +68,27 @@ export default class StoredProcedure {
       body: sampleStoredProcedureBody,
     };
 
-    const storedProcedureTab: StoredProcedureTab = new StoredProcedureTab({
-      resource: storedProcedure,
-      isNew: true,
-      tabKind: ViewModels.CollectionTabKind.StoredProcedures,
-      title: `New Stored Procedure ${id}`,
-      tabPath: `${source.databaseId}>${source.id()}>New Stored Procedure ${id}`,
-      collection: source,
-      node: source,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/sproc`,
-    });
+    const storedProcedureTab: NewStoredProcedureTab = new NewStoredProcedureTab(
+      {
+        resource: storedProcedure,
+        isNew: true,
+        tabKind: ViewModels.CollectionTabKind.StoredProcedures,
+        title: `New Stored Procedure ${id}`,
+        tabPath: `${source.databaseId}>${source.id()}>New Stored Procedure ${id}`,
+        collection: source,
+        node: source,
+      },
+      {
+        collection: source,
+        container: source.container,
+      }
+    );
 
     source.container.tabsManager.activateNewTab(storedProcedureTab);
   }
 
   public select() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Stored procedure node",
 
@@ -93,11 +99,11 @@ export default class StoredProcedure {
   public open = () => {
     this.select();
 
-    const storedProcedureTabs: StoredProcedureTab[] = this.container.tabsManager.getTabs(
+    const storedProcedureTabs: NewStoredProcedureTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
       (tab: TabsBase) => tab.node && tab.node.rid === this.rid
-    ) as StoredProcedureTab[];
-    let storedProcedureTab: StoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
+    ) as NewStoredProcedureTab[];
+    let storedProcedureTab: NewStoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
 
     if (storedProcedureTab) {
       this.container.tabsManager.activateTab(storedProcedureTab);
@@ -109,24 +115,25 @@ export default class StoredProcedure {
         body: this.body(),
       };
 
-      storedProcedureTab = new StoredProcedureTab({
-        resource: storedProcedureData,
-        isNew: false,
-        tabKind: ViewModels.CollectionTabKind.StoredProcedures,
-        title: storedProcedureData.id,
-        tabPath: `${this.collection.databaseId}>${this.collection.id()}>${storedProcedureData.id}`,
-        collection: this.collection,
-        node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-          this.collection.databaseId,
-          this.collection.id()
-        )}/sprocs/${this.id()}`,
-      });
+      storedProcedureTab = new NewStoredProcedureTab(
+        {
+          resource: storedProcedureData,
+          isNew: false,
+          tabKind: ViewModels.CollectionTabKind.StoredProcedures,
+          title: storedProcedureData.id,
+          tabPath: `${this.collection.databaseId}>${this.collection.id()}>${storedProcedureData.id}`,
+          collection: this.collection,
+          node: this,
+        },
+        {
+          collection: this.collection,
+          container: this.container,
+        }
+      );
 
       this.container.tabsManager.activateNewTab(storedProcedureTab);
     }
   };
-
   public delete() {
     if (!window.confirm("Are you sure you want to delete the stored procedure?")) {
       return;
@@ -142,19 +149,19 @@ export default class StoredProcedure {
   }
 
   public execute(params: string[], partitionKeyValue?: string): void {
-    const sprocTabs = this.container.tabsManager.getTabs(
+    const sprocTabs: NewStoredProcedureTab[] = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.StoredProcedures,
       (tab: TabsBase) => tab.node && tab.node.rid === this.rid
-    ) as StoredProcedureTab[];
-    const sprocTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
+    ) as NewStoredProcedureTab[];
+    const sprocTab: NewStoredProcedureTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
     sprocTab.isExecuting(true);
     this.container &&
       executeStoredProcedure(this.collection, this, partitionKeyValue, params)
         .then(
-          (result: any) => {
-            sprocTab.onExecuteSprocsResult(result, result.scriptLogs);
+          (result) => {
+            sprocTab.onExecuteSprocsResult(result);
           },
-          (error: any) => {
+          (error) => {
             sprocTab.onExecuteSprocsError(getErrorMessage(error));
           }
         )

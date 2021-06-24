@@ -8,9 +8,9 @@ import * as React from "react";
 import create, { UseStore } from "zustand";
 import { StyleConstants } from "../../../Common/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import { useObservable } from "../../../hooks/useObservable";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
+import { useSelectedNode } from "../../useSelectedNode";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 import * as CommandBarUtil from "./CommandBarUtil";
 
@@ -29,13 +29,13 @@ export const useCommandBar: UseStore<CommandBarStore> = create((set) => ({
 }));
 
 export const CommandBar: React.FC<Props> = ({ container }: Props) => {
-  useObservable(container.selectedNode);
+  const selectedNodeState = useSelectedNode();
   const buttons = useCommandBar((state) => state.contextButtons);
   const backgroundColor = StyleConstants.BaseLight;
 
-  const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container);
+  const staticButtons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(container, selectedNodeState);
   const contextButtons = (buttons || []).concat(
-    CommandBarComponentButtonFactory.createContextCommandBarButtons(container)
+    CommandBarComponentButtonFactory.createContextCommandBarButtons(container, selectedNodeState)
   );
   const controlButtons = CommandBarComponentButtonFactory.createControlCommandBarButtons(container);
 

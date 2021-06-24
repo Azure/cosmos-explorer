@@ -7,6 +7,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import TriggerTab from "../Tabs/TriggerTab";
+import { useSelectedNode } from "../useSelectedNode";
 
 export default class Trigger {
   public nodeKind: string;
@@ -32,7 +33,7 @@ export default class Trigger {
   }
 
   public select() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Trigger node",
 
@@ -57,7 +58,6 @@ export default class Trigger {
       tabPath: "",
       collection: source,
       node: source,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
     });
 
     source.container.tabsManager.activateNewTab(triggerTab);
@@ -92,10 +92,6 @@ export default class Trigger {
         tabPath: "",
         collection: this.collection,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-          this.collection.databaseId,
-          this.collection.id()
-        )}/triggers/${this.id()}`,
       });
 
       this.container.tabsManager.activateNewTab(triggerTab);

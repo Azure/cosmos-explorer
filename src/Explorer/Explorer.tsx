@@ -18,7 +18,6 @@ import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import { RouteHandler } from "../RouteHandlers/RouteHandler";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
@@ -51,8 +50,6 @@ import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
-import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
-import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
 import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
 import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
@@ -70,6 +67,7 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
+import { useSelectedNode } from "./useSelectedNode";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -85,14 +83,10 @@ export default class Explorer {
   public tableDataClient: TableDataClient;
 
   // Resource Tree
-  public selectedDatabaseId: ko.Computed<string>;
-  public selectedCollectionId: ko.Computed<string>;
-  public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
-  public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
   public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
@@ -127,17 +121,9 @@ export default class Explorer {
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
-    this.selectedNode = ko.observable<ViewModels.TreeNode>();
-    this.selectedNode.subscribe((nodeSelected: ViewModels.TreeNode) => {
+    useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
       this.isTabsContentExpanded(false);
-    });
-    this.isResourceTokenCollectionNodeSelected = ko.computed<boolean>(() => {
-      return (
-        this.selectedNode() &&
-        this.resourceTokenCollection() &&
-        this.selectedNode().id() === this.resourceTokenCollection().id()
-      );
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
@@ -151,31 +137,11 @@ export default class Explorer {
 
       return isCapabilityEnabled("EnableMongo");
     });
-    this.selectedDatabaseId = ko.computed<string>(() => {
-      const selectedNode = this.selectedNode();
-      if (!selectedNode) {
-        return "";
-      }
-
-      switch (selectedNode.nodeKind) {
-        case "Collection":
-          return (selectedNode as ViewModels.CollectionBase).databaseId || "";
-        case "Database":
-          return selectedNode.id() || "";
-        case "DocumentId":
-        case "StoredProcedure":
-        case "Trigger":
-        case "UserDefinedFunction":
-          return selectedNode.collection.databaseId || "";
-        default:
-          return "";
-      }
-    });
 
     this.tabsManager = params?.tabsManager ?? new TabsManager();
     this.tabsManager.openedTabs.subscribe((tabs) => {
       if (tabs.length === 0) {
-        this.selectedNode(undefined);
+        useSelectedNode.getState().setSelectedNode(undefined);
         useCommandBar.getState().setContextButtons([]);
       }
     });
@@ -319,22 +285,6 @@ export default class Explorer {
     // TODO: return result
   }
 
-  public isDatabaseNodeOrNoneSelected(): boolean {
-    return this.isNoneSelected() || this.isDatabaseNodeSelected();
-  }
-
-  public isDatabaseNodeSelected(): boolean {
-    return (this.selectedNode() && this.selectedNode().nodeKind === "Database") || false;
-  }
-
-  public isNodeKindSelected(nodeKind: string): boolean {
-    return (this.selectedNode() && this.selectedNode().nodeKind === nodeKind) || false;
-  }
-
-  public isNoneSelected(): boolean {
-    return this.selectedNode() == null;
-  }
-
   public refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
@@ -344,7 +294,7 @@ export default class Explorer {
 
     return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
-      this.selectedNode(this.resourceTokenCollection());
+      useSelectedNode.getState().setSelectedNode(this.resourceTokenCollection());
     });
   }
 
@@ -370,11 +320,9 @@ export default class Explorer {
           },
           startKey
         );
-        const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
         const deltaDatabases = this.getDeltaDatabases(databases);
         this.addDatabasesToList(deltaDatabases.toAdd);
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
-        this.selectedNode(currentlySelectedNode);
         this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
           () => {
             deferred.resolve();
@@ -565,34 +513,6 @@ export default class Explorer {
       clearInProgressMessage();
     }
   };
-
-  public findSelectedDatabase(): ViewModels.Database {
-    if (!this.selectedNode()) {
-      return null;
-    }
-    if (this.selectedNode().nodeKind === "Database") {
-      return _.find(
-        useDatabases.getState().databases,
-        (database: ViewModels.Database) => database.id() === this.selectedNode().id()
-      );
-    }
-    return this.findSelectedCollection().database;
-  }
-
-  public isSelectedDatabaseShared(): boolean {
-    const database = this.findSelectedDatabase();
-    if (!!database) {
-      return database.offer && !!database.offer();
-    }
-
-    return false;
-  }
-
-  public findSelectedCollection(): ViewModels.Collection {
-    return (this.selectedNode().nodeKind === "Collection"
-      ? this.selectedNode()
-      : this.selectedNode().collection) as ViewModels.Collection;
-  }
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
@@ -850,7 +770,6 @@ export default class Explorer {
         tabPath: notebookContentItem.path,
         collection: null,
         masterKey: userContext.masterKey || "",
-        hashLocation: "notebooks",
         isTabsContentExpanded: ko.observable(true),
         onLoadStartKey: null,
         container: this,
@@ -1098,30 +1017,27 @@ export default class Explorer {
 
   public openNotebookTerminal(kind: ViewModels.TerminalKind) {
     let title: string;
-    let hashLocation: string;
 
     switch (kind) {
       case ViewModels.TerminalKind.Default:
         title = "Terminal";
-        hashLocation = "terminal";
         break;
 
       case ViewModels.TerminalKind.Mongo:
         title = "Mongo Shell";
-        hashLocation = "mongo-shell";
         break;
 
       case ViewModels.TerminalKind.Cassandra:
         title = "Cassandra Shell";
-        hashLocation = "cassandra-shell";
         break;
 
       default:
         throw new Error("Terminal kind: ${kind} not supported");
     }
 
-    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(ViewModels.CollectionTabKind.Terminal, (tab) =>
-      tab.hashLocation().startsWith(hashLocation)
+    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
+      ViewModels.CollectionTabKind.Terminal,
+      (tab) => tab.tabTitle() === title
     ) as TerminalTab[];
 
     let index = 1;
@@ -1136,7 +1052,6 @@ export default class Explorer {
       title: `${title} ${index}`,
       tabPath: `${title} ${index}`,
       collection: null,
-      hashLocation: `${hashLocation} ${index}`,
       isTabsContentExpanded: ko.observable(true),
       onLoadStartKey: null,
       container: this,
@@ -1154,11 +1069,10 @@ export default class Explorer {
     isFavorite?: boolean
   ) {
     const title = "Gallery";
-    const hashLocation = "gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
     const galleryTab = this.tabsManager
       .getTabs(ViewModels.CollectionTabKind.Gallery)
-      .find((tab) => tab.hashLocation() == hashLocation);
+      .find((tab) => tab.tabTitle() == title);
 
     if (galleryTab instanceof GalleryTab) {
       this.tabsManager.activateTab(galleryTab);
@@ -1167,9 +1081,8 @@ export default class Explorer {
         new GalleryTab(
           {
             tabKind: ViewModels.CollectionTabKind.Gallery,
-            title: title,
+            title,
             tabPath: title,
-            hashLocation: hashLocation,
             onLoadStartKey: null,
             isTabsContentExpanded: ko.observable(true),
           },
@@ -1240,22 +1153,8 @@ export default class Explorer {
     }
   }
 
-  public openDeleteCollectionConfirmationPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={this} />);
-  }
-
-  public openDeleteDatabaseConfirmationPane(): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "Delete " + getDatabaseName(),
-        <DeleteDatabaseConfirmationPanel explorer={this} selectedDatabase={this.findSelectedDatabase()} />
-      );
-  }
   public openUploadItemsPanePane(): void {
-    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
+    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
   }
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     useSidePanel

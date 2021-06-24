@@ -1,17 +1,18 @@
 jest.mock("../../../Common/dataAccess/deleteCollection");
 jest.mock("../../../Shared/Telemetry/TelemetryProcessor");
-import { mount, ReactWrapper, shallow } from "enzyme";
+import { mount, shallow } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { ApiKind, DatabaseAccount } from "../../../Contracts/DataModels";
-import { Collection, Database, TreeNode } from "../../../Contracts/ViewModels";
+import { Collection, Database } from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
+import { useSelectedNode } from "../../useSelectedNode";
 import { DeleteCollectionConfirmationPane } from "./DeleteCollectionConfirmationPane";
 
 describe("Delete Collection Confirmation Pane", () => {
@@ -54,47 +55,39 @@ describe("Delete Collection Confirmation Pane", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
       const fakeExplorer = new Explorer();
       fakeExplorer.refreshAllDatabases = () => undefined;
-      fakeExplorer.isSelectedDatabaseShared = () => false;
 
-      const props = {
-        explorer: fakeExplorer,
-        closePanel: (): void => undefined,
-        collectionName: "container",
-      };
-      const wrapper = shallow(<DeleteCollectionConfirmationPane {...props} />);
+      const wrapper = shallow(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
 
       const database = { id: ko.observable("testDB") } as Database;
       database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
+      database.nodeKind = "Database";
+      database.isDatabaseShared = ko.computed(() => false);
       useDatabases.getState().addDatabases([database]);
-      wrapper.setProps(props);
+      useSelectedNode.getState().setSelectedNode(database);
+      wrapper.setProps({ explorer: fakeExplorer });
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
 
-      props.explorer.isSelectedDatabaseShared = () => true;
-      wrapper.setProps(props);
+      database.isDatabaseShared = ko.computed(() => true);
+      wrapper.setProps({ explorer: fakeExplorer });
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
     });
   });
 
   describe("submit()", () => {
-    let wrapper: ReactWrapper;
     const selectedCollectionId = "testCol";
     const databaseId = "testDatabase";
     const fakeExplorer = {} as Explorer;
-    fakeExplorer.findSelectedCollection = () => {
-      return {
-        id: ko.observable<string>(selectedCollectionId),
-        databaseId,
-        rid: "test",
-      } as Collection;
-    };
-    fakeExplorer.selectedCollectionId = ko.computed<string>(() => selectedCollectionId);
-    fakeExplorer.selectedNode = ko.observable<TreeNode>();
     fakeExplorer.refreshAllDatabases = () => undefined;
-    fakeExplorer.isSelectedDatabaseShared = () => false;
-    const database = { id: ko.observable("testDB") } as Database;
-    database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
-    useDatabases.getState().addDatabases([database]);
+    const database = { id: ko.observable(databaseId) } as Database;
+    const collection = {
+      id: ko.observable(selectedCollectionId),
+      nodeKind: "Collection",
+      database,
+      databaseId,
+    } as Collection;
+    database.collections = ko.observableArray<Collection>([collection]);
+    database.isDatabaseShared = ko.computed(() => false);
 
     beforeAll(() => {
       updateUserContext({
@@ -112,15 +105,17 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     beforeEach(() => {
-      const props = {
-        explorer: fakeExplorer,
-        closePanel: (): void => undefined,
-        collectionName: "container",
-      };
-      wrapper = mount(<DeleteCollectionConfirmationPane {...props} />);
+      useDatabases.getState().addDatabases([database]);
+      useSelectedNode.getState().setSelectedNode(collection);
+    });
+
+    afterEach(() => {
+      useDatabases.getState().clearDatabases();
+      useSelectedNode.getState().setSelectedNode(undefined);
     });
 
     it("should call delete collection", () => {
+      const wrapper = mount(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
       expect(wrapper).toMatchSnapshot();
 
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
@@ -137,6 +132,7 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should record feedback", async () => {
+      const wrapper = mount(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
       wrapper
         .find("#confirmCollectionId")

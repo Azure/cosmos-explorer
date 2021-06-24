@@ -29,11 +29,12 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
 import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
-import MongoShellTab from "../Tabs/MongoShellTab";
+import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -223,7 +224,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public expandCollapseCollection() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Collection node",
 
@@ -276,7 +277,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onDocumentDBDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -313,7 +314,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
       });
 
@@ -322,7 +322,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onConflictsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Conflicts node",
@@ -359,7 +359,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Conflicts`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/conflicts`,
         onLoadStartKey: startKey,
       });
 
@@ -368,7 +367,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onTableEntitiesClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.QueryTables);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Entities node",
@@ -413,7 +412,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/entities`,
         onLoadStartKey: startKey,
       });
 
@@ -422,7 +420,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onGraphDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -462,7 +460,6 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperty,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
         collectionId: this.id(),
         databaseId: this.databaseId,
         isTabsContentExpanded: this.container.isTabsContentExpanded,
@@ -474,7 +471,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onMongoDBDocumentsClick = () => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -511,7 +508,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
         onLoadStartKey: startKey,
       });
       this.container.tabsManager.activateNewTab(mongoDocumentsTab);
@@ -519,7 +515,7 @@ export default class Collection implements ViewModels.Collection {
   };
 
   public onSchemaAnalyzerClick = async () => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
     const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -556,14 +552,13 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/schemaAnalyzer`,
         onLoadStartKey: startKey,
       })
     );
   };
 
   public onSettingsClick = async (): Promise<void> => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
@@ -596,7 +591,6 @@ export default class Collection implements ViewModels.Collection {
       tabPath: "",
       collection: this,
       node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
     };
 
     let settingsTabV2 = matchingTabs && (matchingTabs[0] as CollectionSettingsTabV2);
@@ -639,7 +633,6 @@ export default class Collection implements ViewModels.Collection {
           tabPath: "",
           collection: this,
           node: this,
-          hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
           queryText: queryText,
           partitionKey: collection.partitionKey,
           onLoadStartKey: startKey,
@@ -669,7 +662,6 @@ export default class Collection implements ViewModels.Collection {
         tabPath: "",
         collection: this,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
         partitionKey: collection.partitionKey,
         onLoadStartKey: startKey,
       },
@@ -703,7 +695,6 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       masterKey: userContext.masterKey || "",
       collectionPartitionKeyProperty: this.partitionKeyProperty,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
       collectionId: this.id(),
       databaseId: this.databaseId,
       isTabsContentExpanded: this.container.isTabsContentExpanded,
@@ -716,22 +707,26 @@ export default class Collection implements ViewModels.Collection {
   public onNewMongoShellClick() {
     const mongoShellTabs = this.container.tabsManager.getTabs(
       ViewModels.CollectionTabKind.MongoShell
-    ) as MongoShellTab[];
+    ) as NewMongoShellTab[];
 
     let index = 1;
     if (mongoShellTabs.length > 0) {
       index = mongoShellTabs[mongoShellTabs.length - 1].index + 1;
     }
 
-    const mongoShellTab: MongoShellTab = new MongoShellTab({
-      tabKind: ViewModels.CollectionTabKind.MongoShell,
-      title: "Shell " + index,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      index: index,
-    });
+    const mongoShellTab: NewMongoShellTab = new NewMongoShellTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.MongoShell,
+        title: "Shell " + index,
+        tabPath: "",
+        collection: this,
+        node: this,
+        index: index,
+      },
+      {
+        container: this.container,
+      }
+    );
 
     this.container.tabsManager.activateNewTab(mongoShellTab);
   }
@@ -750,21 +745,21 @@ export default class Collection implements ViewModels.Collection {
 
   public createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure {
     const node = new StoredProcedure(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
 
   public createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction {
     const node = new UserDefinedFunction(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
 
   public createTriggerNode(data: TriggerDefinition & Resource): Trigger {
     const node = new Trigger(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
