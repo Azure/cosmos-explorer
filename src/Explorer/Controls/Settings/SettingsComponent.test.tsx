@@ -126,7 +126,6 @@ describe("SettingsComponent", () => {
       isDatabaseExpanded: undefined,
       isDatabaseShared: ko.computed(() => true),
       selectedSubnodeKind: undefined,
-      selectDatabase: undefined,
       expandDatabase: undefined,
       collapseDatabase: undefined,
       loadCollections: undefined,

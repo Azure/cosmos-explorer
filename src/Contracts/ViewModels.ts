@@ -89,7 +89,6 @@ export interface Database extends TreeNode {
 
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
 
-  selectDatabase(): void;
   expandDatabase(): Promise<void>;
   collapseDatabase(): void;
 

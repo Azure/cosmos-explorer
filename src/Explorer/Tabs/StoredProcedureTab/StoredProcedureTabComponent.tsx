@@ -15,6 +15,7 @@ import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import StoredProcedure from "../../Tree/StoredProcedure";
+import { useSelectedNode } from "../../useSelectedNode";
 import ScriptTabBase from "../ScriptTabBase";
 
 export interface IStorProcTabComponentAccessor {
@@ -298,12 +299,13 @@ export default class StoredProcedureTabComponent extends React.Component<
     }
 
     const database: ViewModels.Database = this.props.collectionBase.getDatabase();
+    const setSelectedNode = useSelectedNode.getState().setSelectedNode;
     if (!database.isDatabaseExpanded()) {
-      this.props.collectionBase.container.selectedNode(database);
+      setSelectedNode(database);
     } else if (!this.props.collectionBase.isCollectionExpanded() || !this.collection.isStoredProceduresExpanded()) {
-      this.props.collectionBase.container.selectedNode(this.props.collectionBase);
+      setSelectedNode(this.props.collectionBase);
     } else {
-      this.props.collectionBase.container.selectedNode(this.node);
+      setSelectedNode(this.node);
     }
   }
 

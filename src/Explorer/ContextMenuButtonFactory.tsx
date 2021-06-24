@@ -21,6 +21,7 @@ import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmat
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import { useSelectedNode } from "./useSelectedNode";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
@@ -48,10 +49,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
       onClick: () =>
         useSidePanel
           .getState()
-          .openSidePanel(
-            "Delete " + getDatabaseName(),
-            <DeleteDatabaseConfirmationPanel explorer={container} selectedDatabase={container.findSelectedDatabase()} />
-          ),
+          .openSidePanel("Delete " + getDatabaseName(), <DeleteDatabaseConfirmationPanel explorer={container} />),
       label: `Delete ${getDatabaseName()}`,
       styleClass: "deleteDatabaseMenuItem",
     });
@@ -82,7 +80,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         if (container.isShellEnabled()) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
@@ -97,7 +95,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddStoredProcedureIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
       },
       label: "New Stored Procedure",
@@ -106,7 +104,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddUdfIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection, undefined);
       },
       label: "New UDF",
@@ -115,7 +113,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddTriggerIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, undefined);
       },
       label: "New Trigger",

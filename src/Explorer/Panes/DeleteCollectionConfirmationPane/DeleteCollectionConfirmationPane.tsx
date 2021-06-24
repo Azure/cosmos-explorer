@@ -14,6 +14,7 @@ import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
+import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface DeleteCollectionConfirmationPaneProps {
@@ -24,19 +25,19 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   explorer,
 }: DeleteCollectionConfirmationPaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
-  const isLastCollection = useDatabases((state) => state.isLastCollection);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState(false);
 
-  const shouldRecordFeedback = (): boolean => {
-    return isLastCollection() && !explorer.isSelectedDatabaseShared();
-  };
+  const shouldRecordFeedback = (): boolean =>
+    useDatabases.getState().isLastCollection() &&
+    !useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
+
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
   const onSubmit = async (): Promise<void> => {
-    const collection = explorer.findSelectedCollection();
+    const collection = useSelectedNode.getState().findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
       const errorMessage = "Input " + collectionName + " name does not match the selected " + collectionName;
       setFormError(errorMessage);
@@ -61,7 +62,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       await deleteCollection(collection.databaseId, collection.id());
 
       setIsExecuting(false);
-      explorer.selectedNode(collection.database);
+      useSelectedNode.getState().setSelectedNode(collection.database);
       explorer.tabsManager?.closeTabsByComparator(
         (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
       );

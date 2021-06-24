@@ -9,6 +9,7 @@ import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { useSelectedNode } from "../useSelectedNode";
 
 export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public parameters: ko.Observable<number>;
@@ -18,7 +19,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
     this.parameters = ko.observable(Date.now());
 
     this.container.resourceTokenCollection.subscribe(() => this.triggerRender());
-    this.container.selectedNode.subscribe((newValue: any) => this.triggerRender());
+    useSelectedNode.subscribe(() => this.triggerRender());
     this.container.tabsManager && this.container.tabsManager.activeTab.subscribe(() => this.triggerRender());
 
     this.triggerRender();
@@ -48,7 +49,11 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         mostRecentActivity.collectionWasOpened(userContext.databaseAccount?.id, collection);
       },
       isSelected: () =>
-        this.isDataNodeSelected(collection.databaseId, collection.id(), ViewModels.CollectionTabKind.Documents),
+        useSelectedNode
+          .getState()
+          .isDataNodeSelected(this.container.tabsManager.activeTab(), collection.databaseId, collection.id(), [
+            ViewModels.CollectionTabKind.Documents,
+          ]),
     });
 
     const collectionNode: TreeNode = {
@@ -59,13 +64,16 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       className: "collectionHeader",
       onClick: () => {
         // Rewritten version of expandCollapseCollection
-        this.container.selectedNode(collection);
+        useSelectedNode.getState().setSelectedNode(collection);
         useCommandBar.getState().setContextButtons([]);
         this.container.tabsManager.refreshActiveTab(
           (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
         );
       },
-      isSelected: () => this.isDataNodeSelected(collection.databaseId, collection.id()),
+      isSelected: () =>
+        useSelectedNode
+          .getState()
+          .isDataNodeSelected(this.container.tabsManager.activeTab(), collection.databaseId, collection.id()),
     };
 
     return {
@@ -73,35 +81,6 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       isExpanded: true,
       children: [collectionNode],
     };
-  }
-
-  public isDataNodeSelected(
-    databaseId: string,
-    collectionId?: string,
-    subnodeKind?: ViewModels.CollectionTabKind
-  ): boolean {
-    if (!this.container.selectedNode || !this.container.selectedNode()) {
-      return false;
-    }
-    const selectedNode = this.container.selectedNode();
-    const isNodeSelected = collectionId
-      ? (selectedNode as ViewModels.Collection).databaseId === databaseId && selectedNode.id() === collectionId
-      : selectedNode.id() === databaseId;
-
-    if (!isNodeSelected) {
-      return false;
-    }
-
-    if (!subnodeKind) {
-      return true;
-    }
-
-    const activeTab = this.container.tabsManager.activeTab();
-    const selectedSubnodeKind = collectionId
-      ? (selectedNode as ViewModels.Collection).selectedSubnodeKind()
-      : (selectedNode as ViewModels.Database).selectedSubnodeKind();
-
-    return activeTab && activeTab.tabKind === subnodeKind && selectedSubnodeKind === subnodeKind;
   }
 
   public triggerRender() {
