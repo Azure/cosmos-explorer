@@ -10,6 +10,7 @@ export interface EditorReactProps {
   onContentChanged?: (newContent: string) => void; // Called when text is changed
   lineNumbers?: monaco.editor.IEditorOptions["lineNumbers"];
   theme?: string; // Monaco editor theme
+  editorKey?: string;
 }
 
 export class EditorReact extends React.Component<EditorReactProps> {
@@ -27,11 +28,17 @@ export class EditorReact extends React.Component<EditorReactProps> {
 
   public shouldComponentUpdate(): boolean {
     // Prevents component re-rendering
-    return false;
+    return true;
   }
 
   public componentWillUnmount(): void {
     this.selectionListener && this.selectionListener.dispose();
+  }
+
+  public componentDidUpdate(prevProps: EditorReactProps): void {
+    if (prevProps.editorKey !== this.props.editorKey) {
+      this.createEditor(this.configureEditor.bind(this));
+    }
   }
 
   public render(): JSX.Element {

@@ -2,11 +2,7 @@ import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryItera
 import * as ko from "knockout";
 import Q from "q";
 import React from "react";
-import 'react-splitter-layout/lib/index.css';
-import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
-import DiscardIcon from "../../../images/discard.svg";
-import NewDocumentIcon from "../../../images/NewDocument.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
+import "react-splitter-layout/lib/index.css";
 import UploadIcon from "../../../images/Upload_16x16.svg";
 import * as Constants from "../../Common/Constants";
 import { DocumentsGridMetrics, KeyCodes } from "../../Common/Constants";
@@ -75,6 +71,7 @@ export default class DocumentsTab extends TabsBase {
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
+
     this.isPreferredApiMongoDB = userContext.apiType === "Mongo" || options.isPreferredApiMongoDB;
 
     this.idHeader = this.isPreferredApiMongoDB ? "_id" : "id";
@@ -791,92 +788,92 @@ export default class DocumentsTab extends TabsBase {
     return QueryUtils.buildDocumentsQuery(filter, this.partitionKeyProperty, this.partitionKey);
   }
 
-  protected getTabsButtons(): CommandButtonComponentProps[] {
-    const buttons: CommandButtonComponentProps[] = [];
-    const label = !this.isPreferredApiMongoDB ? "New Item" : "New Document";
-    if (this.newDocumentButton.visible()) {
-      buttons.push({
-        iconSrc: NewDocumentIcon,
-        iconAlt: label,
-        onCommandClick: this.onNewDocumentClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
-        hasPopup: false,
-        disabled: !this.newDocumentButton.enabled(),
-      });
-    }
+  // protected getTabsButtons(): CommandButtonComponentProps[] {
+  //   const buttons: CommandButtonComponentProps[] = [];
+  //   const label = !this.isPreferredApiMongoDB ? "New Item" : "New Document";
+  //   if (this.newDocumentButton.visible()) {
+  //     buttons.push({
+  //       iconSrc: NewDocumentIcon,
+  //       iconAlt: label,
+  //       onCommandClick: this.onNewDocumentClick,
+  //       commandButtonLabel: label,
+  //       ariaLabel: label,
+  //       hasPopup: false,
+  //       disabled: !this.newDocumentButton.enabled(),
+  //     });
+  //   }
 
-    if (this.saveNewDocumentButton.visible()) {
-      const label = "Save";
-      buttons.push({
-        iconSrc: SaveIcon,
-        iconAlt: label,
-        onCommandClick: this.onSaveNewDocumentClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
-        hasPopup: false,
-        disabled: !this.saveNewDocumentButton.enabled(),
-      });
-    }
+  //   if (this.saveNewDocumentButton.visible()) {
+  //     const label = "Save";
+  //     buttons.push({
+  //       iconSrc: SaveIcon,
+  //       iconAlt: label,
+  //       onCommandClick: this.onSaveNewDocumentClick,
+  //       commandButtonLabel: label,
+  //       ariaLabel: label,
+  //       hasPopup: false,
+  //       disabled: !this.saveNewDocumentButton.enabled(),
+  //     });
+  //   }
 
-    if (this.discardNewDocumentChangesButton.visible()) {
-      const label = "Discard";
-      buttons.push({
-        iconSrc: DiscardIcon,
-        iconAlt: label,
-        onCommandClick: this.onRevertNewDocumentClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
-        hasPopup: false,
-        disabled: !this.discardNewDocumentChangesButton.enabled(),
-      });
-    }
+  //   if (this.discardNewDocumentChangesButton.visible()) {
+  //     const label = "Discard";
+  //     buttons.push({
+  //       iconSrc: DiscardIcon,
+  //       iconAlt: label,
+  //       onCommandClick: this.onRevertNewDocumentClick,
+  //       commandButtonLabel: label,
+  //       ariaLabel: label,
+  //       hasPopup: false,
+  //       disabled: !this.discardNewDocumentChangesButton.enabled(),
+  //     });
+  //   }
 
-    if (this.saveExisitingDocumentButton.visible()) {
-      const label = "Update";
-      buttons.push({
-        iconSrc: SaveIcon,
-        iconAlt: label,
-        onCommandClick: this.onSaveExisitingDocumentClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
-        hasPopup: false,
-        disabled: !this.saveExisitingDocumentButton.enabled(),
-      });
-    }
+  //   if (this.saveExisitingDocumentButton.visible()) {
+  //     const label = "Update";
+  //     buttons.push({
+  //       iconSrc: SaveIcon,
+  //       iconAlt: label,
+  //       onCommandClick: this.onSaveExisitingDocumentClick,
+  //       commandButtonLabel: label,
+  //       ariaLabel: label,
+  //       hasPopup: false,
+  //       disabled: !this.saveExisitingDocumentButton.enabled(),
+  //     });
+  //   }
 
-    if (this.discardExisitingDocumentChangesButton.visible()) {
-      const label = "Discard";
-      buttons.push({
-        iconSrc: DiscardIcon,
-        iconAlt: label,
-        onCommandClick: this.onRevertExisitingDocumentClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
-        hasPopup: false,
-        disabled: !this.discardExisitingDocumentChangesButton.enabled(),
-      });
-    }
+  //   if (this.discardExisitingDocumentChangesButton.visible()) {
+  //     const label = "Discard";
+  //     buttons.push({
+  //       iconSrc: DiscardIcon,
+  //       iconAlt: label,
+  //       onCommandClick: this.onRevertExisitingDocumentClick,
+  //       commandButtonLabel: label,
+  //       ariaLabel: label,
+  //       hasPopup: false,
+  //       disabled: !this.discardExisitingDocumentChangesButton.enabled(),
+  //     });
+  //   }
 
-    if (this.deleteExisitingDocumentButton.visible()) {
-      const label = "Delete";
-      buttons.push({
-        iconSrc: DeleteDocumentIcon,
-        iconAlt: label,
-        onCommandClick: this.onDeleteExisitingDocumentClick,
-        commandButtonLabel: label,
-        ariaLabel: label,
-        hasPopup: false,
-        disabled: !this.deleteExisitingDocumentButton.enabled(),
-      });
-    }
+  //   if (this.deleteExisitingDocumentButton.visible()) {
+  //     const label = "Delete";
+  //     buttons.push({
+  //       iconSrc: DeleteDocumentIcon,
+  //       iconAlt: label,
+  //       onCommandClick: this.onDeleteExisitingDocumentClick,
+  //       commandButtonLabel: label,
+  //       ariaLabel: label,
+  //       hasPopup: false,
+  //       disabled: !this.deleteExisitingDocumentButton.enabled(),
+  //     });
+  //   }
 
-    if (!this.isPreferredApiMongoDB) {
-      buttons.push(DocumentsTab._createUploadButton(this.collection.container));
-    }
+  //   if (!this.isPreferredApiMongoDB) {
+  //     buttons.push(DocumentsTab._createUploadButton(this.collection.container));
+  //   }
 
-    return buttons;
-  }
+  //   return buttons;
+  // }
 
   protected buildCommandBarOptions(): void {
     ko.computed(() =>
@@ -925,8 +922,6 @@ export default class DocumentsTab extends TabsBase {
   }
 
   render(): JSX.Element {
-    return (
-      <DocumentsTabContent />
-    )
+    return <DocumentsTabContent {...this} />;
   }
 }

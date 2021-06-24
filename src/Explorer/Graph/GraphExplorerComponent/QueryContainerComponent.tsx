@@ -1,6 +1,6 @@
 import * as React from "react";
-import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 import CloseIcon from "../../../../images/close-black.svg";
+import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 
 export interface QueryContainerComponentProps {
   initialQuery: string;

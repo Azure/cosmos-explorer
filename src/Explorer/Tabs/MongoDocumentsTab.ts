@@ -9,7 +9,7 @@ import {
   deleteDocument,
   queryDocuments,
   readDocument,
-  updateDocument
+  updateDocument,
 } from "../../Common/MongoProxyClient";
 import MongoUtility from "../../Common/MongoUtility";
 import * as DataModels from "../../Contracts/DataModels";
