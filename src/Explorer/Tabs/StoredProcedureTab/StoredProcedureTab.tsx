@@ -37,7 +37,6 @@ export class NewStoredProcedureTab extends ScriptTabBase {
       tabPath: options.tabPath,
       collectionBase: options.collection,
       node: options.node,
-      hasLocation: options.hashLocation,
       scriptTabBaseInstance: this,
       collection: props.collection,
       iStorProcTabComponentAccessor: (instance: IStorProcTabComponentAccessor) => {
