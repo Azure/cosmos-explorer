@@ -14,7 +14,6 @@ import SaveIcon from "../../../images/save-cosmos.svg";
 import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
@@ -361,12 +360,14 @@ export default class NotebookTabV2 extends NotebookTabBase {
   private async configureServiceEndpoints(kernelName: string) {
     const notebookConnectionInfo = this.container && this.container.notebookServerInfo();
     const sparkClusterConnectionInfo = this.container && this.container.sparkClusterConnectionInfo();
+    /*
     await NotebookConfigurationUtils.configureServiceEndpoints(
       this.notebookPath(),
       notebookConnectionInfo,
       kernelName,
       sparkClusterConnectionInfo
     );
+    */
   }
 
   private publishToGallery = async () => {

@@ -6,6 +6,7 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
+import { HttpHeaders } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
@@ -24,12 +25,6 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import {
-  get as getWorkspace,
-  listByDatabaseAccount,
-  listConnectionInfo,
-  start,
-} from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -68,6 +63,8 @@ import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterF
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
+
+
 
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
@@ -458,16 +455,32 @@ export default class Explorer {
     this._isInitializingNotebooks = true;
 
     await this.ensureNotebookWorkspaceRunning();
+    /*
     const connectionInfo = await listConnectionInfo(
       userContext.subscriptionId,
       userContext.resourceGroup,
       databaseAccount.name,
       "default"
     );
+    */
+
+    const provisionData = {
+      cosmosKey: userContext.masterKey,
+      cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+      resourceId: userContext.databaseAccount.id,
+      dbAcountName: userContext.databaseAccount.name
+    }
+    const response = await window.fetch("http://localhost:443/api/containerpooling/provision", {
+      method: "POST",
+      headers: {
+        [HttpHeaders.contentType]: "application/json",
+      },
+      body: JSON.stringify(provisionData)
+    })
 
     this.notebookServerInfo({
-      notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
-      authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+      notebookServerEndpoint: userContext.features.notebookServerUrl || `http://localhost:443/api/containerpooling/resid${userContext.databaseAccount.id}/forward/`,
+      authToken: userContext.features.notebookServerToken || "token",
     });
     this.notebookServerInfo.valueHasMutated();
     this.refreshNotebookList();
@@ -501,6 +514,7 @@ export default class Explorer {
       return false;
     }
 
+    /*
     try {
       const { value: workspaces } = await listByDatabaseAccount(
         userContext.subscriptionId,
@@ -512,6 +526,8 @@ export default class Explorer {
       Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
     }
+    */
+   return true
   }
 
   private async ensureNotebookWorkspaceRunning() {
@@ -519,6 +535,7 @@ export default class Explorer {
       return;
     }
 
+    /*
     let clearMessage;
     try {
       const notebookWorkspace = await getWorkspace(
@@ -541,6 +558,7 @@ export default class Explorer {
     } finally {
       clearMessage && clearMessage();
     }
+    */
   }
 
   private _resetNotebookWorkspace = async () => {
