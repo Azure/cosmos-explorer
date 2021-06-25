@@ -36,7 +36,6 @@ describe("SettingsUtils", () => {
         isDatabaseExpanded: ko.observable(false),
         isDatabaseShared: ko.computed(() => true),
         selectedSubnodeKind: ko.observable(undefined),
-        selectDatabase: undefined,
         expandDatabase: undefined,
         collapseDatabase: undefined,
         loadCollections: undefined,

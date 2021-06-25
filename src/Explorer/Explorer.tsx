@@ -62,6 +62,7 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
+import { useSelectedNode } from "./useSelectedNode";
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -76,14 +77,10 @@ export default class Explorer {
   public tableDataClient: TableDataClient;
 
   // Resource Tree
-  public selectedDatabaseId: ko.Computed<string>;
-  public selectedCollectionId: ko.Computed<string>;
-  public selectedNode: ko.Observable<ViewModels.TreeNode>;
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
   public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
-  public isResourceTokenCollectionNodeSelected: ko.Computed<boolean>;
   public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
@@ -156,17 +153,9 @@ export default class Explorer {
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
-    this.selectedNode = ko.observable<ViewModels.TreeNode>();
-    this.selectedNode.subscribe(() => {
+    useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
       this.isTabsContentExpanded(false);
-    });
-    this.isResourceTokenCollectionNodeSelected = ko.computed<boolean>(() => {
-      return (
-        this.selectedNode() &&
-        this.resourceTokenCollection() &&
-        this.selectedNode().id() === this.resourceTokenCollection().id()
-      );
     });
 
     this.isFixedCollectionWithSharedThroughputSupported = ko.computed(() => {
@@ -180,31 +169,11 @@ export default class Explorer {
 
       return isCapabilityEnabled("EnableMongo");
     });
-    this.selectedDatabaseId = ko.computed<string>(() => {
-      const selectedNode = this.selectedNode();
-      if (!selectedNode) {
-        return "";
-      }
-
-      switch (selectedNode.nodeKind) {
-        case "Collection":
-          return (selectedNode as ViewModels.CollectionBase).databaseId || "";
-        case "Database":
-          return selectedNode.id() || "";
-        case "DocumentId":
-        case "StoredProcedure":
-        case "Trigger":
-        case "UserDefinedFunction":
-          return selectedNode.collection.databaseId || "";
-        default:
-          return "";
-      }
-    });
 
     this.tabsManager = params?.tabsManager ?? new TabsManager();
     this.tabsManager.openedTabs.subscribe((tabs) => {
       if (tabs.length === 0) {
-        this.selectedNode(undefined);
+        useSelectedNode.getState().setSelectedNode(undefined);
         useCommandBar.getState().setContextButtons([]);
       }
     });
@@ -357,22 +326,6 @@ export default class Explorer {
     // TODO: return result
   }
 
-  public isDatabaseNodeOrNoneSelected(): boolean {
-    return this.isNoneSelected() || this.isDatabaseNodeSelected();
-  }
-
-  public isDatabaseNodeSelected(): boolean {
-    return (this.selectedNode() && this.selectedNode().nodeKind === "Database") || false;
-  }
-
-  public isNodeKindSelected(nodeKind: string): boolean {
-    return (this.selectedNode() && this.selectedNode().nodeKind === nodeKind) || false;
-  }
-
-  public isNoneSelected(): boolean {
-    return this.selectedNode() === undefined;
-  }
-
   public refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
@@ -382,7 +335,7 @@ export default class Explorer {
 
     return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
       this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
-      this.selectedNode(this.resourceTokenCollection());
+      useSelectedNode.getState().setSelectedNode(this.resourceTokenCollection());
     });
   }
 
@@ -408,11 +361,9 @@ export default class Explorer {
           },
           startKey
         );
-        const currentlySelectedNode: ViewModels.TreeNode = this.selectedNode();
         const deltaDatabases = this.getDeltaDatabases(databases);
         this.addDatabasesToList(deltaDatabases.toAdd);
         this.deleteDatabasesFromList(deltaDatabases.toDelete);
-        this.selectedNode(currentlySelectedNode);
         this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
           () => {
             deferred.resolve();
@@ -600,34 +551,6 @@ export default class Explorer {
       clearInProgressMessage();
     }
   };
-
-  public findSelectedDatabase(): ViewModels.Database {
-    if (!this.selectedNode()) {
-      return undefined;
-    }
-    if (this.selectedNode().nodeKind === "Database") {
-      return _.find(
-        useDatabases.getState().databases,
-        (database: ViewModels.Database) => database.id() === this.selectedNode().id()
-      );
-    }
-    return this.findSelectedCollection().database;
-  }
-
-  public isSelectedDatabaseShared(): boolean {
-    const database = this.findSelectedDatabase();
-    if (database) {
-      return database.offer && !!database.offer();
-    }
-
-    return false;
-  }
-
-  public findSelectedCollection(): ViewModels.Collection {
-    return (this.selectedNode().nodeKind === "Collection"
-      ? this.selectedNode()
-      : this.selectedNode().collection) as ViewModels.Collection;
-  }
 
   private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
     // we reload collections for all databases so the resource tree reflects any collection-level changes
@@ -1322,7 +1245,7 @@ export default class Explorer {
   }
 
   public openUploadItemsPanePane(): void {
-    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane explorer={this} />);
+    useSidePanel.getState().openSidePanel("Upload " + getUploadName(), <UploadItemsPane />);
   }
   public openExecuteSprocParamsPanel(storedProcedure: StoredProcedure): void {
     useSidePanel

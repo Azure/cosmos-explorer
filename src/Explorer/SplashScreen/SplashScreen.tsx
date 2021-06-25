@@ -26,6 +26,7 @@ import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
 import { AddDatabasePanel } from "../Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -63,7 +64,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      this.container.selectedNode.subscribe(() => this.setState({})),
+      { dispose: useSelectedNode.subscribe(() => this.setState({})) },
       this.container.isNotebookEnabled.subscribe(() => this.setState({}))
     );
   }
@@ -231,12 +232,12 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       return items;
     }
 
-    if (!this.container.isDatabaseNodeOrNoneSelected()) {
+    if (!useSelectedNode.getState().isDatabaseNodeOrNoneSelected()) {
       if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
             selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined);
           },
           title: "New SQL Query",
@@ -246,7 +247,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
             selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
           },
           title: "New Query",
@@ -272,20 +273,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           title: "New Stored Procedure",
           description: undefined,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
             selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
           },
         });
       }
 
       /* Scale & Settings */
-      let isShared = false;
-      if (this.container.isDatabaseNodeSelected()) {
-        isShared = this.container.findSelectedDatabase().isDatabaseShared();
-      } else if (this.container.isNodeKindSelected("Collection")) {
-        const database: ViewModels.Database = this.container.findSelectedCollection().getDatabase();
-        isShared = database && database.isDatabaseShared();
-      }
+      const isShared = useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
 
       const label = isShared ? "Settings" : "Scale & Settings";
       items.push({
@@ -293,7 +288,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: label,
         description: undefined,
         onClick: () => {
-          const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && selectedCollection.onSettingsClick();
         },
       });

@@ -10,6 +10,7 @@ import DocumentsTab from "../Tabs/DocumentsTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
 import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import DocumentId from "./DocumentId";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
@@ -104,7 +105,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   }
 
   public onDocumentDBDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",

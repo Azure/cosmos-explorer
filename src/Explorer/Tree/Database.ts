@@ -18,6 +18,7 @@ import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import Collection from "./Collection";
 
 export default class Database implements ViewModels.Database {
@@ -53,7 +54,7 @@ export default class Database implements ViewModels.Database {
   }
 
   public onSettingsClick = () => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
@@ -120,25 +121,6 @@ export default class Database implements ViewModels.Database {
       );
     }
   };
-
-  public isDatabaseNodeSelected(): boolean {
-    return (
-      !this.isDatabaseExpanded() &&
-      this.container.selectedNode &&
-      this.container.selectedNode() &&
-      this.container.selectedNode().nodeKind === "Database" &&
-      this.container.selectedNode().id() === this.id()
-    );
-  }
-
-  public selectDatabase() {
-    this.container.selectedNode(this);
-    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      description: "Database node",
-
-      dataExplorerArea: Constants.Areas.ResourceTree,
-    });
-  }
 
   public async expandDatabase() {
     if (this.isDatabaseExpanded()) {
