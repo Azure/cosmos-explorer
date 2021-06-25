@@ -4,11 +4,11 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
+import { HttpHeaders } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
-import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -22,12 +22,6 @@ import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
-import {
-  get as getWorkspace,
-  listByDatabaseAccount,
-  listConnectionInfo,
-  start,
-} from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -61,6 +55,8 @@ import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
+
+
 
 BindingHandlersRegisterer.registerBindingHandlers();
 
@@ -345,16 +341,32 @@ export default class Explorer {
     this._isInitializingNotebooks = true;
 
     await this.ensureNotebookWorkspaceRunning();
+    /*
     const connectionInfo = await listConnectionInfo(
       userContext.subscriptionId,
       userContext.resourceGroup,
       databaseAccount.name,
       "default"
     );
+    */
+
+    const provisionData = {
+      cosmosKey: userContext.masterKey,
+      cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+      resourceId: userContext.databaseAccount.id,
+      dbAcountName: userContext.databaseAccount.name
+    }
+    const response = await window.fetch("http://localhost:443/api/containerpooling/provision", {
+      method: "POST",
+      headers: {
+        [HttpHeaders.contentType]: "application/json",
+      },
+      body: JSON.stringify(provisionData)
+    })
 
     useNotebook.getState().setNotebookServerInfo({
-      notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
-      authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+      notebookServerEndpoint: userContext.features.notebookServerUrl || `http://localhost:443/api/containerpooling/resid${userContext.databaseAccount.id}/forward/`,
+      authToken: userContext.features.notebookServerToken || "token",
     });
 
     useNotebook.getState().initializeNotebooksTree(this.notebookManager);
@@ -390,6 +402,7 @@ export default class Explorer {
       return false;
     }
 
+    /*
     try {
       const { value: workspaces } = await listByDatabaseAccount(
         userContext.subscriptionId,
@@ -401,6 +414,8 @@ export default class Explorer {
       Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
     }
+    */
+    return true
   }
 
   private async ensureNotebookWorkspaceRunning() {
@@ -408,6 +423,7 @@ export default class Explorer {
       return;
     }
 
+    /*
     let clearMessage;
     try {
       const notebookWorkspace = await getWorkspace(
@@ -430,6 +446,7 @@ export default class Explorer {
     } finally {
       clearMessage && clearMessage();
     }
+    */
   }
 
   private _resetNotebookWorkspace = async () => {

@@ -9,7 +9,7 @@ import {
   KernelRef,
   RemoteKernelProps,
   selectors,
-  ServerConfig as JupyterServerConfig,
+  ServerConfig as JupyterServerConfig
 } from "@nteract/core";
 import { Channels, childOf, createMessage, JupyterMessage, message, ofMessageType } from "@nteract/messaging";
 import { RecordOf } from "immutable";
@@ -29,7 +29,7 @@ import {
   switchMap,
   take,
   tap,
-  timeout,
+  timeout
 } from "rxjs/operators";
 import { webSocket } from "rxjs/webSocket";
 import * as Constants from "../../../Common/Constants";
@@ -109,7 +109,7 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
   const q = params.toString();
   const suffix = q !== "" ? `?${q}` : "";
 
-  const url = (serverConfig.endpoint || "") + `api/kernels/${kernelId}/channels${suffix}`;
+  const url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels${suffix}`;
 
   return url.replace(/^http(s)?/, "ws$1");
 };

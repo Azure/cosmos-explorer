@@ -32,6 +32,9 @@ export class NotebookContentClient {
     });
   }
 
+  private sleep = (milliseconds: number) => {
+    return new Promise(resolve => setTimeout(resolve, milliseconds))
+  }
   /**
    *
    * @param parent parent folder
@@ -42,6 +45,15 @@ export class NotebookContentClient {
     }
 
     const type = "notebook";
+    const item = NotebookUtil.createNotebookContentItem("Sample.ipynb", "notebooks/Sample.ipynb", "notebook");
+    if (parent.children) {
+      item.parent = parent;
+      parent.children.push(item);
+    }
+    return this.sleep(1000).then(() => item);
+   
+    /*
+
     return this.contentProvider
       .create<"notebook">(this.getServerConfig(), parent.path, { type })
       .toPromise()
@@ -66,6 +78,7 @@ export class NotebookContentClient {
 
         return item;
       });
+      */
   }
 
   public async deleteContentItem(item: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
@@ -270,9 +283,7 @@ export class NotebookContentClient {
 
   private fetchNotebookFiles(path: string): Promise<NotebookContentItem[]> {
     return this.contentProvider
-      .get(this.getServerConfig(), path, {
-        type: "directory",
-      })
+      .get(this.getServerConfig(), path + "/directory", {})
       .toPromise()
       .then((xhr) => {
         if (xhr.status !== 200) {
