@@ -37,7 +37,7 @@ export class DataSamplesUtil {
    * Public for unit tests
    */
   public async createGeneratorAsync(): Promise<ContainerSampleGenerator> {
-    return await ContainerSampleGenerator.createSampleGeneratorAsync(this.container);
+    return await ContainerSampleGenerator.createSampleGeneratorAsync();
   }
 
   /**
