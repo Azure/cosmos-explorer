@@ -10,7 +10,6 @@ import { Collection, Database } from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../../UserContext";
-import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import { DeleteCollectionConfirmationPane } from "./DeleteCollectionConfirmationPane";
@@ -53,10 +52,7 @@ describe("Delete Collection Confirmation Pane", () => {
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
-      const fakeExplorer = new Explorer();
-      fakeExplorer.refreshAllDatabases = () => undefined;
-
-      const wrapper = shallow(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
+      const wrapper = shallow(<DeleteCollectionConfirmationPane />);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
 
       const database = { id: ko.observable("testDB") } as Database;
@@ -65,11 +61,11 @@ describe("Delete Collection Confirmation Pane", () => {
       database.isDatabaseShared = ko.computed(() => false);
       useDatabases.getState().addDatabases([database]);
       useSelectedNode.getState().setSelectedNode(database);
-      wrapper.setProps({ explorer: fakeExplorer });
+      wrapper.setProps({});
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
 
       database.isDatabaseShared = ko.computed(() => true);
-      wrapper.setProps({ explorer: fakeExplorer });
+      wrapper.setProps({});
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
     });
   });
@@ -77,8 +73,6 @@ describe("Delete Collection Confirmation Pane", () => {
   describe("submit()", () => {
     const selectedCollectionId = "testCol";
     const databaseId = "testDatabase";
-    const fakeExplorer = {} as Explorer;
-    fakeExplorer.refreshAllDatabases = () => undefined;
     const database = { id: ko.observable(databaseId) } as Database;
     const collection = {
       id: ko.observable(selectedCollectionId),
@@ -115,7 +109,7 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should call delete collection", () => {
-      const wrapper = mount(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
+      const wrapper = mount(<DeleteCollectionConfirmationPane />);
       expect(wrapper).toMatchSnapshot();
 
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
@@ -132,7 +126,7 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     it("should record feedback", async () => {
-      const wrapper = mount(<DeleteCollectionConfirmationPane explorer={fakeExplorer} />);
+      const wrapper = mount(<DeleteCollectionConfirmationPane />);
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
       wrapper
         .find("#confirmCollectionId")

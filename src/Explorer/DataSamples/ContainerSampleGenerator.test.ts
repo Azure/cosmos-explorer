@@ -6,19 +6,10 @@ import { createDocument } from "../../Common/dataAccess/createDocument";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
-import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 describe("ContainerSampleGenerator", () => {
-  let explorerStub: Explorer;
-
-  beforeAll(() => {
-    explorerStub = {
-      refreshAllDatabases: () => {},
-    } as Explorer;
-  });
-
   beforeEach(() => {
     (createDocument as jest.Mock).mockResolvedValue(undefined);
   });
@@ -61,7 +52,7 @@ describe("ContainerSampleGenerator", () => {
     database.findCollectionWithId = () => collection;
     useDatabases.getState().addDatabases([database]);
 
-    const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
+    const generator = await ContainerSampleGenerator.createSampleGeneratorAsync();
     generator.setData(sampleData);
 
     await generator.createSampleContainerAsync();
@@ -117,7 +108,7 @@ describe("ContainerSampleGenerator", () => {
       } as DatabaseAccount,
     });
 
-    const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
+    const generator = await ContainerSampleGenerator.createSampleGeneratorAsync();
     generator.setData(sampleData);
 
     await generator.createSampleContainerAsync();
@@ -134,7 +125,7 @@ describe("ContainerSampleGenerator", () => {
     });
 
     // Rejects with error that contains experience
-    expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
+    expect(ContainerSampleGenerator.createSampleGeneratorAsync()).rejects.toMatch(experience);
   });
 
   it("should not create any sample for Table API account", async () => {
@@ -148,7 +139,7 @@ describe("ContainerSampleGenerator", () => {
     });
 
     // Rejects with error that contains experience
-    await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
+    await expect(ContainerSampleGenerator.createSampleGeneratorAsync()).rejects.toMatch(experience);
   });
 
   it("should not create any sample for Cassandra API account", async () => {
@@ -161,6 +152,6 @@ describe("ContainerSampleGenerator", () => {
       } as DatabaseAccount,
     });
     // Rejects with error that contains experience
-    await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
+    await expect(ContainerSampleGenerator.createSampleGeneratorAsync()).rejects.toMatch(experience);
   });
 });

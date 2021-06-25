@@ -5,7 +5,6 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
 import GraphTab from ".././Tabs/GraphTab";
-import Explorer from "../Explorer";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
 import { useDatabases } from "../useDatabases";
 
@@ -16,13 +15,13 @@ interface SampleDataFile extends DataModels.CreateCollectionParams {
 export class ContainerSampleGenerator {
   private sampleDataFile: SampleDataFile;
 
-  private constructor(private container: Explorer) {}
+  private constructor() {}
 
   /**
    * Factory function to load the json data file
    */
-  public static async createSampleGeneratorAsync(container: Explorer): Promise<ContainerSampleGenerator> {
-    const generator = new ContainerSampleGenerator(container);
+  public static async createSampleGeneratorAsync(): Promise<ContainerSampleGenerator> {
+    const generator = new ContainerSampleGenerator();
     let dataFileContent: any;
     if (userContext.apiType === "Gremlin") {
       dataFileContent = await import(
