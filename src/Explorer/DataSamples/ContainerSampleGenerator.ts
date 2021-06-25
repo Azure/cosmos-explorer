@@ -59,7 +59,7 @@ export class ContainerSampleGenerator {
     };
 
     await createCollection(createRequest);
-    await this.container.refreshAllDatabases();
+    await useDatabases.getState().refreshDatabases();
     const database = useDatabases.getState().findDatabaseWithId(this.sampleDataFile.databaseId);
     if (!database) {
       return undefined;

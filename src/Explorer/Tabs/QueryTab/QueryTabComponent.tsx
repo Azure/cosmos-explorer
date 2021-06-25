@@ -29,7 +29,6 @@ import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import TabsBase from "../TabsBase";
-import { TabsManager } from "../TabsManager";
 import "./QueryTabComponent.less";
 
 enum ToggleState {
@@ -65,7 +64,6 @@ export interface IQueryTabComponentProps {
   partitionKey: DataModels.PartitionKey;
   container: Explorer;
   activeTab?: TabsBase;
-  tabManager?: TabsManager;
   onTabAccessor: (instance: ITabAccessor) => void;
   isPreferredApiMongoDB?: boolean;
   monacoEditorSetting?: string;

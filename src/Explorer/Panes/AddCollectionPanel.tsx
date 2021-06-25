@@ -1056,7 +1056,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     try {
       await createCollection(createCollectionParams);
       this.setState({ isExecuting: false });
-      this.props.explorer.refreshAllDatabases();
+      useDatabases.getState().refreshDatabases();
       TelemetryProcessor.traceSuccess(Action.CreateCollection, telemetryData, startKey);
       useSidePanel.getState().closeSidePanel();
     } catch (error) {

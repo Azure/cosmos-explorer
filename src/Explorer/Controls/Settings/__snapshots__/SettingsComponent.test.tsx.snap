@@ -59,10 +59,6 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                 },
                 "sparkClusterConnectionInfo": [Function],
-                "tabsManager": TabsManager {
-                  "activeTab": [Function],
-                  "openedTabs": [Function],
-                },
               },
               "databaseId": "test",
               "defaultTtl": [Function],
@@ -145,10 +141,6 @@ exports[`SettingsComponent renders 1`] = `
                   "parameters": [Function],
                 },
                 "sparkClusterConnectionInfo": [Function],
-                "tabsManager": TabsManager {
-                  "activeTab": [Function],
-                  "openedTabs": [Function],
-                },
               },
               "databaseId": "test",
               "defaultTtl": [Function],

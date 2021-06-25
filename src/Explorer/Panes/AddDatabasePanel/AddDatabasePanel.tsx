@@ -115,7 +115,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   const _onCreateDatabaseSuccess = (offerThroughput: number, startKey: number): void => {
     setIsExecuting(false);
     closeSidePanel();
-    container.refreshAllDatabases();
+    useDatabases.getState().refreshDatabases();
     const addDatabasePaneSuccessMessage = {
       ...addDatabasePaneMessage,
       offerThroughput,

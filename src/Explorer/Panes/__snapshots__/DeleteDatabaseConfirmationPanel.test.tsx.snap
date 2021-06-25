@@ -1,17 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
-<DeleteDatabaseConfirmationPanel
-  explorer={
-    Object {
-      "refreshAllDatabases": [Function],
-      "tabsManager": TabsManager {
-        "activeTab": [Function],
-        "openedTabs": [Function],
-      },
-    }
-  }
->
+<DeleteDatabaseConfirmationPanel>
   <RightPaneForm
     formError=""
     isExecuting={false}

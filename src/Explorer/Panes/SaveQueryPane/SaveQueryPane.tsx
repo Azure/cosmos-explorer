@@ -5,6 +5,7 @@ import { Areas, SavedQueries } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Query } from "../../../Contracts/DataModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { useTabs } from "../../../hooks/useTabs";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
@@ -34,7 +35,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
       logConsoleError("Failed to save query: account not setup to save queries");
     }
 
-    const queryTab = explorer && (explorer.tabsManager.activeTab() as NewQueryTab);
+    const queryTab = useTabs.getState().activeTab as NewQueryTab;
     const query: string = queryTab && queryTab.iTabAccessor.onSaveClickEvent();
 
     if (!queryName || queryName.length === 0) {
@@ -99,7 +100,7 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
     try {
       setLoadingTrue();
       await explorer.queriesClient.setupQueriesCollection();
-      explorer.refreshAllDatabases();
+      useDatabases.getState().refreshDatabases();
       traceSuccess(
         Action.SetupSavedQueries,
         {

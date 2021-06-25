@@ -9,6 +9,7 @@ import * as Logger from "../../Common/Logger";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -64,7 +65,7 @@ export default class Database implements ViewModels.Database {
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
     const tabKind = ViewModels.CollectionTabKind.DatabaseSettingsV2;
-    const matchingTabs = this.container.tabsManager.getTabs(tabKind, (tab) => tab.node?.id() === this.id());
+    const matchingTabs = useTabs.getState().getTabs(tabKind, (tab) => tab.node?.id() === this.id());
     let settingsTab = matchingTabs?.[0] as DatabaseSettingsTabV2;
 
     if (!settingsTab) {
@@ -87,7 +88,7 @@ export default class Database implements ViewModels.Database {
           };
           settingsTab = new DatabaseSettingsTabV2(tabOptions);
           settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateNewTab(settingsTab);
+          useTabs.getState().activateNewTab(settingsTab);
         },
         (error: any) => {
           const errorMessage = getErrorMessage(error);
@@ -112,11 +113,11 @@ export default class Database implements ViewModels.Database {
       pendingNotificationsPromise.then(
         (pendingNotification: DataModels.Notification) => {
           settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateTab(settingsTab);
+          useTabs.getState().activateTab(settingsTab);
         },
         (error: any) => {
           settingsTab.pendingNotification(undefined);
-          this.container.tabsManager.activateTab(settingsTab);
+          useTabs.getState().activateTab(settingsTab);
         }
       );
     }

@@ -1,14 +1,12 @@
 import * as ko from "knockout";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
-import { TabsManager } from "../Tabs/TabsManager";
 import { SplashScreen } from "./SplashScreen";
 jest.mock("../Explorer");
 
 const createExplorer = () => {
   const mock = new Explorer();
   mock.isNotebookEnabled = ko.observable(false);
-  mock.tabsManager = new TabsManager();
   return mock as jest.Mocked<Explorer>;
 };
 

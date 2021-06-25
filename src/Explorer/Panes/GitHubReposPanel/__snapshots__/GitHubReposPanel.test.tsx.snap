@@ -48,10 +48,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
               "parameters": [Function],
             },
             "sparkClusterConnectionInfo": [Function],
-            "tabsManager": TabsManager {
-              "activeTab": [Function],
-              "openedTabs": [Function],
-            },
           },
           "getRepo": [Function],
           "pinRepo": [Function],

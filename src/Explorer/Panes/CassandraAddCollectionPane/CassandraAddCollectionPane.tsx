@@ -127,7 +127,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           tableQuery
         );
       }
-      container.refreshAllDatabases();
+      useDatabases.getState().refreshDatabases();
       setIsExecuting(false);
       closeSidePanel();
 
