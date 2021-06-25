@@ -6,7 +6,6 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export class NotebookContainerClient {
@@ -54,7 +53,7 @@ export class NotebookContainerClient {
 
     const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
     try {
-      const response = await fetch(`${notebookServerEndpoint}/api/metrics/memory`, {
+      const response = await fetch(`${notebookServerEndpoint}api/metrics/memory`, {
         method: "GET",
         headers: {
           Authorization: authToken,
@@ -135,6 +134,7 @@ export class NotebookContainerClient {
     if (!databaseAccount?.id) {
       throw new Error("DataExplorer not initialized");
     }
+    /*
     try {
       await destroy(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
       await createOrUpdate(
@@ -147,5 +147,6 @@ export class NotebookContainerClient {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);
     }
+    */
   }
 }
