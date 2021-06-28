@@ -105,17 +105,10 @@ src/Explorer/Notebook/NotebookContentClient.ts
 src/Explorer/Notebook/NotebookContentItem.ts
 src/Explorer/Notebook/NotebookUtil.ts
 src/Explorer/OpenActionsStubs.ts
-src/Explorer/Panes/AddDatabasePane.ts
-src/Explorer/Panes/AddDatabasePane.test.ts
-src/Explorer/Panes/BrowseQueriesPane.ts
-src/Explorer/Panes/RenewAdHocAccessPane.ts
-src/Explorer/Panes/SetupNotebooksPane.ts
-src/Explorer/Panes/SwitchDirectoryPane.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyNameValidator.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValidationCommon.ts
 src/Explorer/Panes/Tables/Validators/EntityPropertyValueValidator.ts
 src/Explorer/SplashScreen/SplashScreen.test.ts
-src/Explorer/Tables/Constants.ts
 src/Explorer/Tables/DataTable/CacheBase.ts
 src/Explorer/Tables/DataTable/DataTableBindingManager.ts
 src/Explorer/Tables/DataTable/DataTableBuilder.ts
@@ -141,11 +134,8 @@ src/Explorer/Tabs/DocumentsTab.test.ts
 src/Explorer/Tabs/DocumentsTab.ts
 src/Explorer/Tabs/GraphTab.ts
 src/Explorer/Tabs/MongoDocumentsTab.ts
-# src/Explorer/Tabs/MongoQueryTab.ts
-# src/Explorer/Tabs/MongoShellTab.ts
 src/Explorer/Tabs/NotebookV2Tab.ts
 src/Explorer/Tabs/ScriptTabBase.ts
-# src/Explorer/Tabs/StoredProcedureTab.ts
 src/Explorer/Tabs/TabComponents.ts
 src/Explorer/Tabs/TabsBase.ts
 src/Explorer/Tabs/TriggerTab.ts
@@ -168,35 +158,12 @@ src/GitHub/GitHubConnector.ts
 src/GitHub/GitHubContentProvider.test.ts
 src/GitHub/GitHubContentProvider.ts
 src/GitHub/GitHubOAuthService.ts
-src/HostedExplorer.ts
 src/Index.ts
 src/Juno/JunoClient.test.ts
 src/Juno/JunoClient.ts
-src/Main.ts
-src/NotebookWorkspaceManager/NotebookWorkspaceManager.ts
-src/NotebookWorkspaceManager/NotebookWorkspaceResourceProviderMockClients.ts
-src/Platform/Emulator/DataAccessUtility.ts
-src/Platform/Emulator/ExplorerFactory.ts
-src/Platform/Emulator/Main.ts
-src/Platform/Emulator/NotificationsClient.ts
-src/Platform/Hosted/ArmResourceUtils.ts
 src/Platform/Hosted/Authorization.ts
-src/Platform/Hosted/DataAccessUtility.ts
-src/Platform/Hosted/ExplorerFactory.ts
 src/Platform/Hosted/Helpers/ConnectionStringParser.test.ts
-src/Platform/Hosted/Main.ts
-src/Platform/Hosted/Maint.test.ts
-src/Platform/Hosted/NotificationsClient.ts
-src/Platform/Portal/DataAccessUtility.ts
-src/Platform/Portal/ExplorerFactory.ts
-src/Platform/Portal/Main.ts
-src/Platform/Portal/NotificationsClient.ts
-src/PlatformType.ts
 src/ReactDevTools.ts
-src/ResourceProvider/IResourceProviderClient.test.ts
-src/ResourceProvider/IResourceProviderClient.ts
-src/ResourceProvider/ResourceProviderClient.ts
-src/ResourceProvider/ResourceProviderClientFactory.ts
 src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
@@ -295,8 +262,5 @@ src/Explorer/Tabs/NotebookViewerTab.tsx
 src/Explorer/Tabs/TerminalTab.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 src/Explorer/Tree/ResourceTreeAdapterForResourceToken.tsx
-src/GalleryViewer/Cards/GalleryCardComponent.tsx
-src/GalleryViewer/GalleryViewer.tsx
-src/GalleryViewer/GalleryViewerComponent.tsx
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTreeAdapterForResourceToken.test.tsx

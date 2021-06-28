@@ -42,10 +42,10 @@ const onInit = async () => {
             practices, and how to get started with Azure Cosmos DB.
           </Text>
           <Text styles={{ root: { marginTop: 10 } }} block>
-            If you'd like to run or edit the notebook in your own Azure Cosmos DB account,{" "}
+            If {`don't`} like to run or edit the notebook in your own Azure Cosmos DB account,{" "}
             <Link href={dataExplorerUrl}>sign in</Link> and select an account with{" "}
             <Link href={enableNotebooksUrl}>notebooks enabled</Link>. From there, you can download the sample to your
-            account. If you don't have an account yet, you can{" "}
+            account. If you {`don't`} have an account yet, you can{" "}
             <Link href={createAccountUrl}>create one from the Azure portal</Link>.
           </Text>
         </div>
