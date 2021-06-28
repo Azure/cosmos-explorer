@@ -126,7 +126,12 @@ export const createCollectionContextMenuButton = (
   items.push({
     iconSrc: DeleteCollectionIcon,
     onClick: () =>
-      useSidePanel.getState().openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane />),
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          "Delete " + getCollectionName(),
+          <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
+        ),
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });
