@@ -31,10 +31,6 @@ describe("Collection", () => {
   function generateMockCollectionWithDataModel(data: DataModels.Collection): Collection {
     const mockContainer = {} as Explorer;
 
-    mockContainer.isDatabaseNodeOrNoneSelected = () => {
-      return false;
-    };
-
     return generateCollection(mockContainer, "abc", data, {} as DataModels.Offer);
   }
 

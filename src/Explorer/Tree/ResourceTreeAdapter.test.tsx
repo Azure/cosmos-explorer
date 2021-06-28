@@ -1,5 +1,4 @@
 import { shallow } from "enzyme";
-import * as ko from "knockout";
 import React from "react";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -208,13 +207,6 @@ const schema: DataModels.ISchema = {
   ],
 };
 
-const createMockContainer = (): Explorer => {
-  const mockContainer = new Explorer();
-  mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
-
-  return mockContainer;
-};
-
 const createMockCollection = (): ViewModels.Collection => {
   const mockCollection = {} as DataModels.Collection;
   mockCollection._rid = "fakeRid";
@@ -223,17 +215,13 @@ const createMockCollection = (): ViewModels.Collection => {
   mockCollection.analyticalStorageTtl = 0;
   mockCollection.schema = schema;
 
-  const mockCollectionVM: ViewModels.Collection = new Collection(
-    createMockContainer(),
-    "fakeDatabaseId",
-    mockCollection
-  );
+  const mockCollectionVM: ViewModels.Collection = new Collection(new Explorer(), "fakeDatabaseId", mockCollection);
 
   return mockCollectionVM;
 };
 
 describe("Resource tree for schema", () => {
-  const mockContainer: Explorer = createMockContainer();
+  const mockContainer = new Explorer();
   const resourceTree = new ResourceTreeAdapter(mockContainer);
 
   it("should render", () => {
