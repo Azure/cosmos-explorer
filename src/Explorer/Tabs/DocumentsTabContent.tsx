@@ -12,9 +12,8 @@ import {
   SelectionMode,
   Stack,
   Text,
-  TextField,
+  TextField
 } from "@fluentui/react";
-import {} from "@fluentui/react/lib/Image";
 import * as React from "react";
 import SplitterLayout from "react-splitter-layout";
 import CloseIcon from "../../../images/close-black.svg";
@@ -28,6 +27,7 @@ import { Areas } from "../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { logError } from "../../Common/Logger";
 import { createDocument, deleteDocument, queryDocuments, updateDocument } from "../../Common/MongoProxyClient";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -36,7 +36,7 @@ import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import DocumentId from "../Tree/DocumentId";
 import ObjectId from "../Tree/ObjectId";
-import DocumentsTab from "./DocumentsTab";
+import DocumentsTab from "./DocumentsTab1";
 import { formatDocumentContent, getPartitionKeyDefinition, hasShardKeySpecified } from "./DocumentTabUtils";
 
 const filterIcon: IIconProps = { iconName: "Filter" };
@@ -54,6 +54,7 @@ export interface IDocumentsTabContentState {
   documentIds: Array<DocumentId>;
   editorKey: string;
   selectedDocumentId?: DocumentId;
+  isEditorContentEdited: boolean;
 }
 
 export interface IDocument {
@@ -76,6 +77,8 @@ const imageProps: Partial<IImageProps> = {
 
 const filterSuggestions = [{ value: `{"id": "foo"}` }, { value: "{ qty: { $gte: 20 } }" }];
 const intitalDocumentContent = `{ \n "id": "replace_with_new_document_id" \n }`;
+const idHeader = userContext.apiType === "Mongo" ? "_id" : "id";
+
 export default class DocumentsTabContent extends React.Component<DocumentsTab, IDocumentsTabContentState> {
   public newDocumentButton: IButton;
   public saveNewDocumentButton: IButton;
@@ -115,7 +118,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     const columns: IColumn[] = [
       {
         key: "_id",
-        name: props.idHeader,
+        name: idHeader,
         minWidth: 90,
         maxWidth: 140,
         isResizable: true,
@@ -153,10 +156,12 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       documentContent: intitalDocumentContent,
       documentIds: [],
       editorKey: "",
+      isEditorContentEdited: false,
     };
   }
 
-  async componentDidMount(): void {
+  componentDidMount(): void {
+    this.props.isExecuting(true);
     this.updateTabButton();
     if (userContext.apiType === "Mongo") {
       this.queryDocumentsData();
@@ -171,17 +176,17 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       const query: string = filter || "{}";
       const queryDocumentsData = await queryDocuments(
         this.props.collection.databaseId,
-        this.props.collection,
+        this.props.collection as ViewModels.Collection,
         true,
         query,
         undefined
       );
       if (queryDocumentsData) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const nextDocumentIds = queryDocumentsData.documents.map((rawDocument: any) => {
-          const partitionKeyValue = rawDocument._partitionKeyValue;
-          return new DocumentId(this.props, rawDocument, partitionKeyValue);
+          const partitionKeyValue = rawDocument.partitionKeyValue;
+          return new DocumentId(this.props as DocumentsTab, rawDocument, partitionKeyValue);
         });
-
         this.setState({ documentIds: nextDocumentIds });
       }
       if (this.props.onLoadStartKey !== undefined) {
@@ -219,6 +224,19 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   };
 
   handleRow = (row: DocumentId): void => {
+    if (this.state.isEditorContentEdited) {
+      const isChangesConfirmed = window.confirm("Your unsaved changes will be lost.")
+      if (isChangesConfirmed) {
+        this.handleRowContent(row);
+        this.setState({ isEditorContentEdited: false });
+        return;
+      }
+    } else {
+      this.handleRowContent(row);
+    }
+  };
+
+  handleRowContent = (row: DocumentId): void => {
     const formattedDocumentContent = formatDocumentContent(row);
     this.newDocumentButton = {
       visible: false,
@@ -255,7 +273,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         this.updateTabButton();
       }
     );
-  };
+  }
 
   formatDocumentContent = (row: DocumentId): string => {
     const { partitionKeyProperty, partitionKeyValue, rid, self, stringPartitionKeyValue, ts } = row;
@@ -291,7 +309,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     try {
       const updatedDocument = await updateDocument(
         collection.databaseId,
-        collection,
+        collection as ViewModels.Collection,
         selectedDocumentId,
         documentContent
       );
@@ -304,7 +322,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
 
           const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
 
-          const id = new ObjectId(this.props, updatedDocument, partitionKeyValue);
+          const id = new ObjectId(this.props as DocumentsTab, updatedDocument, partitionKeyValue);
           documentId.id(id.id());
         }
       });
@@ -316,6 +334,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         },
         startKey
       );
+      this.setState({ isEditorContentEdited: false });
       isExecuting(false);
     } catch (error) {
       isExecutionError(true);
@@ -427,9 +446,28 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     this.updateMongoDocument();
   }
 
-  private onDeleteExisitingDocumentClick(): Promise<void> {
-    const { collection } = this.props;
-    return deleteDocument(collection.databaseId, collection, this.state.selectedDocumentId);
+  private async onDeleteExisitingDocumentClick(): Promise<void> {
+    const msg = userContext.apiType !== "Mongo"
+      ? "Are you sure you want to delete the selected item ?"
+      : "Are you sure you want to delete the selected document ?";
+
+    const {
+      isExecutionError,
+      isExecuting,
+      collection,
+    } = this.props;
+
+    if (window.confirm(msg)) {
+      try {
+        isExecuting(true)
+        await deleteDocument(collection.databaseId, collection as ViewModels.Collection, this.state.selectedDocumentId);
+        isExecuting(false)
+      } catch (error) {
+        console.error(error);
+        isExecutionError(true);
+        isExecuting(false)
+      }
+    }
   }
 
   private onRevertExisitingDocumentClick(): void {
@@ -510,7 +548,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     try {
       const savedDocument = await createDocument(
         collection.databaseId,
-        collection,
+        collection as ViewModels.Collection,
         partitionKeyProperty,
         parsedDocumentContent
       );
@@ -525,6 +563,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
           startKey
         );
       }
+      this.setState({ isEditorContentEdited: false });
       this.queryDocumentsData();
       isExecuting(false);
     } catch (error) {
@@ -561,7 +600,11 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     };
 
     this.updateTabButton();
-    this.setState({ isEditorVisible: false });
+    this.setState({
+      isEditorVisible: false,
+      isEditorContentEdited: false,
+    });
+
   };
 
   onRenderCell = (item: { value: string }): JSX.Element => {
@@ -603,7 +646,10 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       this.updateTabButton();
     }
 
-    this.setState({ documentContent: newContent });
+    this.setState({
+      documentContent: newContent,
+      isEditorContentEdited: true,
+    });
   };
 
   public render(): JSX.Element {

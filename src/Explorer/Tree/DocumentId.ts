@@ -27,12 +27,12 @@ export default class DocumentId {
     this.isDirty = ko.observable(false);
   }
 
-  public click() {
-    if (!this.container.isEditorDirty() || window.confirm("Your unsaved changes will be lost.")) {
-      this.loadDocument();
-    }
-    return;
-  }
+  // public click() {
+  //   if (!this.container.isEditorDirty() || window.confirm("Your unsaved changes will be lost.")) {
+  //     this.loadDocument();
+  //   }
+  //   return;
+  // }
 
   public partitionKeyHeader(): Object {
     if (!this.partitionKeyProperty) {
@@ -65,7 +65,7 @@ export default class DocumentId {
     return JSON.stringify(partitionKeyValue);
   }
 
-  public async loadDocument(): Promise<void> {
-    await this.container.selectDocument(this);
-  }
+  // public async loadDocument(): Promise<void> {
+  //   await this.container.selectDocument(this);
+  // }
 }
