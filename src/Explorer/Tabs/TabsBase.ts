@@ -4,6 +4,7 @@ import * as ThemeUtility from "../../Common/ThemeUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../hooks/useNotificationConsole";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
@@ -11,7 +12,6 @@ import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { useSelectedNode } from "../useSelectedNode";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
-import { TabsManager } from "./TabsManager";
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
   private static id = 0;
@@ -28,7 +28,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public isExecutionError = ko.observable(false);
   public isExecuting = ko.observable(false);
   public pendingNotification?: ko.Observable<DataModels.Notification>;
-  public manager?: TabsManager;
   protected _theme: string;
   public onLoadStartKey: number;
 
@@ -60,7 +59,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onCloseTabButtonClick(): void {
-    this.manager?.closeTab(this);
+    useTabs.getState().closeTab(this);
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
       tabName: this.constructor.name,
       dataExplorerArea: Constants.Areas.Tab,
@@ -70,7 +69,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onTabClick(): void {
-    this.manager?.activateTab(this);
+    useTabs.getState().activateTab(this);
   }
 
   protected updateSelectedNode(): void {
@@ -105,7 +104,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   /** @deprecated this is no longer observable, bind to comparisons with manager.activeTab() instead */
   public isActive() {
-    return this === this.manager?.activeTab();
+    return this === useTabs.getState().activeTab;
   }
 
   public onActivate(): void {

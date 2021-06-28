@@ -49,7 +49,10 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
       onClick: () =>
         useSidePanel
           .getState()
-          .openSidePanel("Delete " + getDatabaseName(), <DeleteDatabaseConfirmationPanel explorer={container} />),
+          .openSidePanel(
+            "Delete " + getDatabaseName(),
+            <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />
+          ),
       label: `Delete ${getDatabaseName()}`,
       styleClass: "deleteDatabaseMenuItem",
     });
@@ -123,9 +126,7 @@ export const createCollectionContextMenuButton = (
   items.push({
     iconSrc: DeleteCollectionIcon,
     onClick: () =>
-      useSidePanel
-        .getState()
-        .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={container} />),
+      useSidePanel.getState().openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane />),
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });

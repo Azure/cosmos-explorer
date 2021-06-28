@@ -13,7 +13,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isFixedCollectionWithSharedThroughputSupported": [Function],
       "isNotebookEnabled": [Function],
       "isNotebooksEnabledForAccount": [Function],
-      "isSchemaEnabled": [Function],
       "isShellEnabled": [Function],
       "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
@@ -38,10 +37,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         "parameters": [Function],
       },
       "sparkClusterConnectionInfo": [Function],
-      "tabsManager": TabsManager {
-        "activeTab": [Function],
-        "openedTabs": [Function],
-      },
     }
   }
   inProgressMessage="Creating directory "

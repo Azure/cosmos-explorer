@@ -274,7 +274,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       }
 
       /* Scale & Settings */
-      const isShared = useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
+      const isShared = useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
 
       const label = isShared ? "Settings" : "Scale & Settings";
       items.push({

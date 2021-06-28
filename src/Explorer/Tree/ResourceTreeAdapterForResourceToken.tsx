@@ -3,6 +3,7 @@ import * as React from "react";
 import CollectionIcon from "../../../images/tree-collection.svg";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { userContext } from "../../UserContext";
 import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
@@ -20,7 +21,10 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
 
     this.container.resourceTokenCollection.subscribe(() => this.triggerRender());
     useSelectedNode.subscribe(() => this.triggerRender());
-    this.container.tabsManager && this.container.tabsManager.activeTab.subscribe(() => this.triggerRender());
+    useTabs.subscribe(
+      () => this.triggerRender(),
+      (state) => state.activeTab
+    );
 
     this.triggerRender();
   }
@@ -51,9 +55,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       isSelected: () =>
         useSelectedNode
           .getState()
-          .isDataNodeSelected(this.container.tabsManager.activeTab(), collection.databaseId, collection.id(), [
-            ViewModels.CollectionTabKind.Documents,
-          ]),
+          .isDataNodeSelected(collection.databaseId, collection.id(), [ViewModels.CollectionTabKind.Documents]),
     });
 
     const collectionNode: TreeNode = {
@@ -66,14 +68,13 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
         // Rewritten version of expandCollapseCollection
         useSelectedNode.getState().setSelectedNode(collection);
         useCommandBar.getState().setContextButtons([]);
-        this.container.tabsManager.refreshActiveTab(
-          (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
-        );
-      },
-      isSelected: () =>
-        useSelectedNode
+        useTabs
           .getState()
-          .isDataNodeSelected(this.container.tabsManager.activeTab(), collection.databaseId, collection.id()),
+          .refreshActiveTab(
+            (tab) => tab.collection?.id() === collection.id() && tab.collection.databaseId === collection.databaseId
+          );
+      },
+      isSelected: () => useSelectedNode.getState().isDataNodeSelected(collection.databaseId, collection.id()),
     };
 
     return {

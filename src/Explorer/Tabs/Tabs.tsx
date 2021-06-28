@@ -3,28 +3,32 @@ import React, { useEffect, useRef, useState } from "react";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
 import { useObservable } from "../../hooks/useObservable";
+import { useTabs } from "../../hooks/useTabs";
 import TabsBase from "./TabsBase";
 
 type Tab = TabsBase | (TabsBase & { render: () => JSX.Element });
 
-export const Tabs = ({ tabs, activeTab }: { tabs: readonly Tab[]; activeTab: Tab }): JSX.Element => (
-  <div className="tabsManagerContainer">
-    <div id="content" className="flexContainer hideOverflows">
-      <div className="nav-tabs-margin">
-        <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
-          {tabs.map((tab) => (
-            <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
+export const Tabs = (): JSX.Element => {
+  const { openedTabs, activeTab } = useTabs();
+  return (
+    <div className="tabsManagerContainer">
+      <div id="content" className="flexContainer hideOverflows">
+        <div className="nav-tabs-margin">
+          <ul className="nav nav-tabs level navTabHeight" id="navTabs" role="tablist">
+            {openedTabs.map((tab) => (
+              <TabNav key={tab.tabId} tab={tab} active={activeTab === tab} />
+            ))}
+          </ul>
+        </div>
+        <div className="tabPanesContainer">
+          {openedTabs.map((tab) => (
+            <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
           ))}
-        </ul>
-      </div>
-      <div className="tabPanesContainer">
-        {tabs.map((tab) => (
-          <TabPane key={tab.tabId} tab={tab} active={activeTab === tab} />
-        ))}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
   const [hovering, setHovering] = useState(false);
