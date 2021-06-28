@@ -154,7 +154,6 @@ src/Explorer/Tree/AccessibleVerticalList.ts
 src/Explorer/Tree/Collection.test.ts
 src/Explorer/Tree/Collection.ts
 src/Explorer/Tree/ConflictId.ts
-src/Explorer/Tree/Database.ts
 src/Explorer/Tree/DocumentId.ts
 src/Explorer/Tree/ObjectId.ts
 src/Explorer/Tree/ResourceTokenCollection.ts

@@ -31,9 +31,9 @@ updateUserContext({
 
 describe("Add Schema", () => {
   it("should not call requestSchema or getSchema if analyticalStorageTtl is undefined", () => {
-    const collection: DataModels.Collection = {} as DataModels.Collection;
+    const collection: DataModels.Collection = { id: "fakeId" } as DataModels.Collection;
     collection.analyticalStorageTtl = undefined;
-    const database = new Database(createMockContainer(), { id: "fakeId" });
+    const database = new Database(createMockContainer(), collection);
     database.container = createMockContainer();
 
     database.junoClient = new JunoClient();
@@ -46,10 +46,10 @@ describe("Add Schema", () => {
   });
 
   it("should call requestSchema or getSchema if analyticalStorageTtl is not undefined", () => {
-    const collection: DataModels.Collection = { id: "fakeId" } as DataModels.Collection;
+    const collection: DataModels.Collection = {} as DataModels.Collection;
     collection.analyticalStorageTtl = 0;
 
-    const database = new Database(createMockContainer(), {});
+    const database = new Database(createMockContainer(), collection);
     database.container = createMockContainer();
     updateUserContext({
       features: {
