@@ -303,7 +303,7 @@ export default class Database implements ViewModels.Database {
     let checkForSchema: NodeJS.Timeout = null;
     interval = interval || 5000;
 
-    if (collection.analyticalStorageTtl !== undefined && this.container.isSchemaEnabled()) {
+    if (collection.analyticalStorageTtl !== undefined && userContext.features.enableSchema) {
       collection.requestSchema = () => {
         this.junoClient.requestSchema({
           id: undefined,

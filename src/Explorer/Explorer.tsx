@@ -6,6 +6,7 @@ import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
+import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
@@ -60,6 +61,7 @@ import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
 import TabsBase from "./Tabs/TabsBase";
 import TerminalTab from "./Tabs/TerminalTab";
+import Database from "./Tree/Database";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
 import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
@@ -88,7 +90,6 @@ export default class Explorer {
   public isTabsContentExpanded: ko.Observable<boolean>;
 
   public gitHubOAuthService: GitHubOAuthService;
-  public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
   public isNotebookEnabled: ko.Observable<boolean>;
@@ -122,9 +123,9 @@ export default class Explorer {
     this.isSynapseLinkUpdating = ko.observable<boolean>(false);
     this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
       if (isAccountReady) {
-        userContext.authType === AuthType.ResourceToken
+        await (userContext.authType === AuthType.ResourceToken
           ? this.refreshDatabaseForResourceToken()
-          : useDatabases.getState().refreshDatabases();
+          : this.refreshAllDatabases());
         await this._refreshNotebooksEnabledStateForAccount();
         this.isNotebookEnabled(
           userContext.authType !== AuthType.ResourceToken &&
@@ -151,7 +152,6 @@ export default class Explorer {
 
     this.queriesClient = new QueriesClient(this);
     this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
-    this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
@@ -327,17 +327,55 @@ export default class Explorer {
     // TODO: return result
   }
 
-  public refreshDatabaseForResourceToken(): Promise<void> {
+  public async refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
     if (!databaseId || !collectionId) {
-      return Promise.reject();
+      return;
     }
 
-    return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
-      this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
-      useSelectedNode.getState().setSelectedNode(this.resourceTokenCollection());
+    const collection: DataModels.Collection = await readCollection(databaseId, collectionId);
+    this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
+    useSelectedNode.getState().setSelectedNode(this.resourceTokenCollection());
+  }
+
+  public async refreshAllDatabases(): Promise<void> {
+    const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
+      dataExplorerArea: Constants.Areas.ResourceTree,
     });
+
+    try {
+      const databases: DataModels.Database[] = await readDatabases();
+      TelemetryProcessor.traceSuccess(
+        Action.LoadDatabases,
+        {
+          dataExplorerArea: Constants.Areas.ResourceTree,
+        },
+        startKey
+      );
+      const currentDatabases = useDatabases.getState().databases;
+      const deltaDatabases = this.getDeltaDatabases(databases, currentDatabases);
+      let updatedDatabases = currentDatabases.filter(
+        (database) => !deltaDatabases.toDelete.some((deletedDatabase) => deletedDatabase.id() === database.id())
+      );
+      updatedDatabases = [...updatedDatabases, ...deltaDatabases.toAdd].sort((db1, db2) =>
+        db1.id().localeCompare(db2.id())
+      );
+      useDatabases.setState({ databases: updatedDatabases });
+      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, currentDatabases);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      TelemetryProcessor.traceFailure(
+        Action.LoadDatabases,
+        {
+          dataExplorerArea: Constants.Areas.ResourceTree,
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+      logConsoleError(`Error while refreshing databases: ${errorMessage}`);
+    }
   }
 
   public onRefreshDatabasesKeyPress = (source: any, event: KeyboardEvent): boolean => {
@@ -355,7 +393,7 @@ export default class Explorer {
     });
     userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
-      : useDatabases.getState().refreshDatabases();
+      : this.refreshAllDatabases();
     this.refreshNotebookList();
   };
 
@@ -478,6 +516,86 @@ export default class Explorer {
       clearInProgressMessage();
     }
   };
+
+  private getDeltaDatabases(
+    updatedDatabaseList: DataModels.Database[],
+    databases: ViewModels.Database[]
+  ): {
+    toAdd: ViewModels.Database[];
+    toDelete: ViewModels.Database[];
+  } {
+    const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
+      const databaseExists = _.some(
+        databases,
+        (existingDatabase: ViewModels.Database) => existingDatabase.id() === database.id
+      );
+      return !databaseExists;
+    });
+    const databasesToAdd: ViewModels.Database[] = newDatabases.map(
+      (newDatabase: DataModels.Database) => new Database(this, newDatabase)
+    );
+
+    const databasesToDelete: ViewModels.Database[] = [];
+    databases.forEach((database: ViewModels.Database) => {
+      const databasePresentInUpdatedList = _.some(
+        updatedDatabaseList,
+        (db: DataModels.Database) => db.id === database.id()
+      );
+      if (!databasePresentInUpdatedList) {
+        databasesToDelete.push(database);
+      }
+    });
+
+    return { toAdd: databasesToAdd, toDelete: databasesToDelete };
+  }
+
+  private async refreshAndExpandNewDatabases(
+    newDatabases: ViewModels.Database[],
+    databases: ViewModels.Database[]
+  ): Promise<void> {
+    // we reload collections for all databases so the resource tree reflects any collection-level changes
+    // i.e addition of stored procedures, etc.
+
+    // If the user has a lot of databases, only load expanded databases.
+    const databasesToLoad =
+      databases.length <= Explorer.MaxNbDatabasesToAutoExpand
+        ? databases
+        : databases.filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
+
+    const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
+      dataExplorerArea: Constants.Areas.ResourceTree,
+    });
+
+    try {
+      await Promise.all(
+        databasesToLoad.map(async (database: ViewModels.Database) => {
+          await database.loadCollections();
+          const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
+          if (isNewDatabase) {
+            database.expandDatabase();
+          }
+          useTabs
+            .getState()
+            .refreshActiveTab((tab) => tab.collection && tab.collection.getDatabase().id() === database.id());
+          TelemetryProcessor.traceSuccess(
+            Action.LoadCollections,
+            { dataExplorerArea: Constants.Areas.ResourceTree },
+            startKey
+          );
+        })
+      );
+    } catch (error) {
+      TelemetryProcessor.traceFailure(
+        Action.LoadCollections,
+        {
+          dataExplorerArea: Constants.Areas.ResourceTree,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+    }
+  }
 
   private _initSettings() {
     if (!ExplorerSettings.hasSettingsDefined()) {
