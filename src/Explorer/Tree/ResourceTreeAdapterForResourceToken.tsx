@@ -9,6 +9,7 @@ import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
 export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
@@ -18,7 +19,10 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
 
-    this.container.resourceTokenCollection.subscribe(() => this.triggerRender());
+    useDatabases.subscribe(
+      () => this.triggerRender(),
+      (state) => state.resourceTokenCollection
+    );
     useSelectedNode.subscribe(() => this.triggerRender());
     this.container.tabsManager && this.container.tabsManager.activeTab.subscribe(() => this.triggerRender());
 
@@ -31,7 +35,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
   }
 
   public buildCollectionNode(): TreeNode {
-    const collection: ViewModels.CollectionBase = this.container.resourceTokenCollection();
+    const collection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
     if (!collection) {
       return {
         label: undefined,

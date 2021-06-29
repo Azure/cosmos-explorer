@@ -9,23 +9,7 @@ exports[`Resource tree for resource token should render 1`] = `
     generation={0}
     node={
       Object {
-        "children": Array [
-          Object {
-            "children": Array [
-              Object {
-                "isSelected": [Function],
-                "label": "Items",
-                "onClick": [Function],
-              },
-            ],
-            "className": "collectionHeader",
-            "iconSrc": "",
-            "isExpanded": true,
-            "isSelected": [Function],
-            "label": "fakeId",
-            "onClick": [Function],
-          },
-        ],
+        "children": Array [],
         "isExpanded": true,
         "label": undefined,
       }
