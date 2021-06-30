@@ -29,7 +29,14 @@ export async function update(
   body: Types.DatabaseAccountUpdateParameters
 ): Promise<Types.DatabaseAccountGetResults> {
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroupName}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}`;
-  return armRequest({ host: configContext.ARM_ENDPOINT, path, method: "PATCH", apiVersion, body });
+  return armRequest({
+    host: configContext.ARM_ENDPOINT,
+    path,
+    method: "PATCH",
+    apiVersion,
+    body,
+    contentType: "application/json",
+  });
 }
 
 /* Creates or updates an Azure Cosmos DB database account. The "Update" method is preferred when performing updates on an account. */
