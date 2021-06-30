@@ -477,6 +477,21 @@ export default class Explorer {
       },
       body: JSON.stringify(provisionData)
     })
+    const websocketId = await response.text();
+    const unprovisionData = {
+      resourceId: userContext.databaseAccount.id,
+      websocketId: websocketId
+    }
+
+      window.addEventListener("beforeunload", async () => {
+        const response = await window.fetch("http://localhost:443/api/containerpooling/unprovision", {
+          method: "POST",
+          headers: {
+            [HttpHeaders.contentType]: "application/json",
+          },
+          body: JSON.stringify(unprovisionData)
+        })
+      })
 
     this.notebookServerInfo({
       notebookServerEndpoint: userContext.features.notebookServerUrl || `http://localhost:443/api/containerpooling/resid${userContext.databaseAccount.id}/forward/`,
