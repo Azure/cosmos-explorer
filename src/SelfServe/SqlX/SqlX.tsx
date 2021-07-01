@@ -10,14 +10,14 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
-  refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  getPriceMap, refreshDedicatedGatewayProvisioning,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
@@ -273,7 +273,7 @@ export default class SqlX extends SelfServeBaseClass {
       value: undefined,
       hidden: true,
     });
-
+    console.log(await getPriceMap());
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });

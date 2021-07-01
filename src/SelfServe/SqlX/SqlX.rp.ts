@@ -160,11 +160,11 @@ export const getReadRegions = async (): Promise<Array<string>> => {
 
     // Parse ARM Response to determine read regions
     if (response.result.location != undefined) {
-      readRegions.push(response.result.location);
+      readRegions.push(response.result.location.replace(" ", "").toLowerCase());
     }
     else {
       for (var i = 0; i < response.result.locations.length; i++) {
-        readRegions.push(response.result.locations[i].locationName)
+        readRegions.push(response.result.locations[i].locationName.replace(" ", "").toLowerCase())
       }
     }
     return readRegions;
@@ -175,3 +175,64 @@ export const getReadRegions = async (): Promise<Array<string>> => {
     return new Array<string>();
   }
 }
+
+// Get Fetch Prices Path for Dedicated Gateway Product
+const getFetchPricesPathForRegion = (subscriptionId: string): string => {
+  return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
+};
+
+// Data Model for Fetch Prices API
+interface FetchPricesResponse {
+  Items: Array<PriceItem>,
+  NextPageLink: string | undefined,
+  Count: number
+}
+
+interface PriceItem {
+  retailPrice: number,
+  skuName: string
+}
+
+// Query ARM Fetch Prices to get pricing 
+export const getPriceMap = async (): Promise<Map<string, Map<string, number>>> => {
+  try {
+    // Get read regions
+    const readRegions = await getReadRegions();
+
+    // Initialize empty PriceMap
+    var priceMap = new Map<string, Map<string, number>>();
+
+    // Query ARM
+    for (var i = 0; i < readRegions.length; i++) {
+      var regionPriceMap = new Map<string, number>();
+
+      // Make actual query
+      const response = await armRequestWithoutPolling<FetchPricesResponse>(
+        {
+          host: configContext.ARM_ENDPOINT,
+          path: getFetchPricesPathForRegion(userContext.subscriptionId),
+          method: "POST",
+          apiVersion: "2020-01-01-preview",
+          queryParams: {
+            filter: `armRegionName eq '${readRegions[i]}' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'`
+          }
+        });
+
+      // Parse response to create price mapping for current region
+      for (var j = 0; j < response.result.Items.length; j++) {
+        regionPriceMap.set(response.result.Items[j].skuName, response.result.Items[j].retailPrice);
+      }
+
+      // Insert region's PriceMap to overall PriceMap
+      priceMap.set(readRegions[i], regionPriceMap);
+    }
+
+    return priceMap;
+  }
+  catch (err) {
+    alert(err)
+    // TODO: Log some failure
+    return undefined;
+  }
+}
+
