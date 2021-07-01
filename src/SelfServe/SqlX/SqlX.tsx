@@ -187,6 +187,7 @@ const calculateCost = (skuName: string, instanceCount: number): string | Descrip
     for (var i = 0; i < readRegions.length; i++) {
       costPerHour += priceMap.get(readRegions[i]).get(skuName.replace("Cosmos\.", ""));
     }
+    alert(`The approximate cost per hour is $ ${costPerHour * instanceCount}`);
     return `The approximate cost per hour is $ ${costPerHour * instanceCount}`
   }
   catch (err) {
