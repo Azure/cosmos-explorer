@@ -194,11 +194,8 @@ interface PriceItem {
 }
 
 // Query ARM Fetch Prices to get pricing 
-export const getPriceMap = async (): Promise<Map<string, Map<string, number>>> => {
+export const getPriceMap = async (readRegions: Array<string>): Promise<Map<string, Map<string, number>>> => {
   try {
-    // Get read regions
-    const readRegions = await getReadRegions();
-
     // Initialize empty PriceMap
     var priceMap = new Map<string, Map<string, number>>();
 

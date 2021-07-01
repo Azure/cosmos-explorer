@@ -16,11 +16,11 @@ import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
-  getPriceMap, refreshDedicatedGatewayProvisioning,
+  getPriceMap, getReadRegions, refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
-const costPerHourValue: Description = {
+let costPerHourValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
@@ -177,6 +177,23 @@ const NumberOfInstancesDropdownInfo: Info = {
   },
 };
 
+// Block-scoped Variables to store information for cost calculation
+let priceMap: Map<string, Map<string, number>>;
+let readRegions: Array<string>;
+
+const calculateCost = (skuName: string, instanceCount: number): string | Description => {
+  try {
+    var costPerHour = 0;
+    for (var i = 0; i < readRegions.length; i++) {
+      costPerHour += priceMap.get(readRegions[i]).get(skuName.replace("Cosmos\.", ""));
+    }
+    return `The approximate cost per hour is $ ${costPerHour * instanceCount}`
+  }
+  catch (err) {
+    return costPerHourValue;
+  }
+}
+
 @IsDisplayable()
 @RefreshOptions({ retryIntervalInMs: 20000 })
 export default class SqlX extends SelfServeBaseClass {
@@ -273,13 +290,17 @@ export default class SqlX extends SelfServeBaseClass {
       value: undefined,
       hidden: true,
     });
-    console.log(await getPriceMap());
+
+    // Get Read Regions and PriceMap
+    readRegions = await getReadRegions()
+    priceMap = await getPriceMap(readRegions);
+
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: false });
-      defaults.set("costPerHour", { value: costPerHourValue });
+      defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
         value: connectionStringValue,
         hidden: false,
