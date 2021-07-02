@@ -45,6 +45,7 @@ export interface NodePropertiesComponentProps {
   selectNode: (id: string) => void;
   updatePossibleVertices: () => Q.Promise<PossibleVertex[]>;
   possibleEdgeLabels: Item[];
+  //eslint-disable-next-line
   editGraphEdges: (editedEdges: EditedEdges) => Q.Promise<any>;
   deleteHighlightedNode: () => void;
   onModeChanged: (newMode: Mode) => void;
@@ -72,7 +73,7 @@ export class NodePropertiesComponent extends React.Component<
     super(props);
     this.state = {
       editedProperties: {
-        pkId: null,
+        pkId: undefined,
         readOnlyProperties: [],
         existingProperties: [],
         addedProperties: [],
@@ -98,15 +99,12 @@ export class NodePropertiesComponent extends React.Component<
     };
   }
 
-  public static getDerivedStateFromProps(
-    props: NodePropertiesComponentProps,
-    state: NodePropertiesComponentState
-  ): Partial<NodePropertiesComponentState> {
+  public static getDerivedStateFromProps(props: NodePropertiesComponentProps): Partial<NodePropertiesComponentState> {
     if (props.viewMode !== Mode.READONLY_PROP) {
       return { isDeleteConfirm: false };
     }
 
-    return null;
+    return undefined;
   }
 
   public render(): JSX.Element {
@@ -137,11 +135,12 @@ export class NodePropertiesComponent extends React.Component<
    * Get type option. Limit to string, number or boolean
    * @param value
    */
+  //eslint-disable-next-line
   private static getTypeOption(value: any): ViewModels.InputPropertyValueTypeString {
-    if (value == null) {
+    if (value === undefined) {
       return "null";
     }
-    let type = typeof value;
+    const type = typeof value;
     switch (type) {
       case "number":
       case "boolean":
@@ -172,10 +171,10 @@ export class NodePropertiesComponent extends React.Component<
     ];
 
     const existingProps: ViewModels.InputProperty[] = [];
-
+    //eslint-disable-next-line
     if (this.props.node.hasOwnProperty("properties")) {
       const hProps = this.props.node["properties"];
-      for (let p in hProps) {
+      for (const p in hProps) {
         const propValues = hProps[p];
         (p === partitionKeyProperty ? readOnlyProps : existingProps).push({
           key: p,
@@ -437,7 +436,7 @@ export class NodePropertiesComponent extends React.Component<
         </div>
       );
     } else {
-      return null;
+      return undefined;
     }
   }
 
