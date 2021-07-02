@@ -121,8 +121,7 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
     if (!this.dropdownElt || !this.expandButtonElt) {
       return;
     }
-
-    const dropdownElt = $(this.dropdownElt).offset({ left: $(this.expandButtonElt).offset().left });
+    $(this.dropdownElt).offset({ left: $(this.expandButtonElt).offset().left });
   }
 
   private onKeyPress(event: React.KeyboardEvent): boolean {

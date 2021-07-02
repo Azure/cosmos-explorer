@@ -1,5 +1,5 @@
-import * as React from "react";
 import { AppState, ContentRef, selectors } from "@nteract/core";
+import * as React from "react";
 import { connect } from "react-redux";
 import * as NteractUtil from "../NTeractUtil";
 
