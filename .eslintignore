@@ -248,8 +248,6 @@ src/Explorer/Controls/Tabs/TabComponent.tsx
 src/Explorer/Controls/TreeComponent/TreeComponent.test.tsx
 src/Explorer/Controls/TreeComponent/TreeComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/EditorNeighborsComponent.tsx
-src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.test.tsx
-src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphVizComponent.tsx
