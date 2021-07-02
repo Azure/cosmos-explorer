@@ -7,6 +7,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
+import { useSelectedNode } from "../useSelectedNode";
 
 export default class UserDefinedFunction {
   public nodeKind: string;
@@ -43,7 +44,6 @@ export default class UserDefinedFunction {
       tabPath: "",
       collection: source,
       node: source,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
     });
 
     source.container.tabsManager.activateNewTab(userDefinedFunctionTab);
@@ -76,10 +76,6 @@ export default class UserDefinedFunction {
         tabPath: "",
         collection: this.collection,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-          this.collection.databaseId,
-          this.collection.id()
-        )}/udfs/${this.id()}`,
       });
 
       this.container.tabsManager.activateNewTab(userDefinedFunctionTab);
@@ -87,7 +83,7 @@ export default class UserDefinedFunction {
   };
 
   public select() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "UDF item node",
 

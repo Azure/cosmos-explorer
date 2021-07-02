@@ -17,25 +17,7 @@ import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
-
-/**
- * Log levels
- */
-export enum ConsoleDataType {
-  Info = 0,
-  Error = 1,
-  InProgress = 2,
-}
-
-/**
- * Interface for the data/content that will be recorded
- */
-export interface ConsoleData {
-  type: ConsoleDataType;
-  date: string;
-  message: string;
-  id?: string;
-}
+import { ConsoleData, ConsoleDataType } from "./ConsoleData";
 
 export interface NotificationConsoleComponentProps {
   isConsoleExpanded: boolean;
@@ -323,14 +305,13 @@ const PrPreview = (props: { pr: string }) => {
   );
 };
 
-export const NotificationConsole: React.FC<
-  Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">
-> = ({
-  consoleData,
-  inProgressConsoleDataIdToBeDeleted,
-}: Pick<NotificationConsoleComponentProps, "consoleData" | "inProgressConsoleDataIdToBeDeleted">) => {
+export const NotificationConsole: React.FC = () => {
   const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
   const isExpanded = useNotificationConsole((state) => state.isExpanded);
+  const consoleData = useNotificationConsole((state) => state.consoleData);
+  const inProgressConsoleDataIdToBeDeleted = useNotificationConsole(
+    (state) => state.inProgressConsoleDataIdToBeDeleted
+  );
   // TODO Refactor NotificationConsoleComponent into a functional component and remove this wrapper
   // This component only exists so we can use hooks and pass them down to a non-functional component
   return (

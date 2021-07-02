@@ -11,7 +11,6 @@ import { ResourceTreeAdapterForResourceToken } from "./ResourceTreeAdapterForRes
 const createMockContainer = (): Explorer => {
   let mockContainer = {} as Explorer;
   mockContainer.resourceTokenCollection = createMockCollection(mockContainer);
-  mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
 
   return mockContainer;
 };

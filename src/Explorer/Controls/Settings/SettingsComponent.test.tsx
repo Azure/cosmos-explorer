@@ -38,7 +38,6 @@ describe("SettingsComponent", () => {
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
-      hashLocation: "settings",
     }),
   };
 
@@ -127,7 +126,6 @@ describe("SettingsComponent", () => {
       isDatabaseExpanded: undefined,
       isDatabaseShared: ko.computed(() => true),
       selectedSubnodeKind: undefined,
-      selectDatabase: undefined,
       expandDatabase: undefined,
       collapseDatabase: undefined,
       loadCollections: undefined,

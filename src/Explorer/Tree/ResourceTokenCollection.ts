@@ -4,10 +4,13 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import DocumentsTab from "../Tabs/DocumentsTab";
-import QueryTab from "../Tabs/QueryTab";
+import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import TabsBase from "../Tabs/TabsBase";
+import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import DocumentId from "./DocumentId";
 
 export default class ResourceTokenCollection implements ViewModels.CollectionBase {
@@ -84,24 +87,25 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       tabTitle: title,
     });
 
-    const queryTab: QueryTab = new QueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
-      queryText: queryText,
-      partitionKey: collection.partitionKey,
-      resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
-      onLoadStartKey: startKey,
-    });
-
-    this.container.tabsManager.activateNewTab(queryTab);
+    this.container.tabsManager.activateNewTab(
+      new NewQueryTab(
+        {
+          tabKind: ViewModels.CollectionTabKind.Query,
+          title: title,
+          tabPath: "",
+          collection: this,
+          node: this,
+          queryText: queryText,
+          partitionKey: collection.partitionKey,
+          onLoadStartKey: startKey,
+        },
+        { container: this.container }
+      )
+    );
   }
 
   public onDocumentDBDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -132,14 +136,13 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
       documentsTab = new DocumentsTab({
         partitionKey: this.partitionKey,
-        resourceTokenPartitionKey: this.container.resourceTokenPartitionKey(),
+        resourceTokenPartitionKey: userContext.parsedResourceToken.partitionKey,
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
       });
 
@@ -148,6 +151,6 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
   }
 
   public getDatabase(): ViewModels.Database {
-    return this.container.findDatabaseWithId(this.databaseId);
+    return useDatabases.getState().findDatabaseWithId(this.databaseId);
   }
 }

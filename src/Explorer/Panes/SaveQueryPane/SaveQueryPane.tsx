@@ -9,7 +9,8 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import { traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
-import QueryTab from "../../Tabs/QueryTab";
+import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
+import { useDatabases } from "../../useDatabases";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 interface SaveQueryPaneProps {
@@ -24,17 +25,18 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
 
   const setupSaveQueriesText = `For compliance reasons, we save queries in a container in your Azure Cosmos account, in a separate database called “${SavedQueries.DatabaseName}”. To proceed, we need to create a container in your account, estimated additional cost is $0.77 daily.`;
   const title = "Save Query";
-  const { canSaveQueries } = explorer;
+  const isSaveQueryEnabled = useDatabases((state) => state.isSaveQueryEnabled);
 
   const submit = async (): Promise<void> => {
     setFormError("");
-    if (!canSaveQueries()) {
+    if (!isSaveQueryEnabled()) {
       setFormError("Cannot save query");
       logConsoleError("Failed to save query: account not setup to save queries");
     }
 
-    const queryTab = explorer && (explorer.tabsManager.activeTab() as QueryTab);
-    const query: string = queryTab && queryTab.sqlQueryEditorContent();
+    const queryTab = explorer && (explorer.tabsManager.activeTab() as NewQueryTab);
+    const query: string = queryTab && queryTab.iTabAccessor.onSaveClickEvent();
+
     if (!queryName || queryName.length === 0) {
       setFormError("No query name specified");
       logConsoleError("Could not save query -- No query name specified. Please specify a query name.");
@@ -128,16 +130,16 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
   const props: RightPaneFormProps = {
     formError: formError,
     isExecuting: isLoading,
-    submitButtonText: canSaveQueries() ? "Save" : "Complete setup",
+    submitButtonText: isSaveQueryEnabled() ? "Save" : "Complete setup",
     onSubmit: () => {
-      canSaveQueries() ? submit() : setupQueries();
+      isSaveQueryEnabled() ? submit() : setupQueries();
     },
   };
   return (
     <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
-          {!canSaveQueries() ? (
+          {!isSaveQueryEnabled() ? (
             <Text variant="small">{setupSaveQueriesText}</Text>
           ) : (
             <TextField
