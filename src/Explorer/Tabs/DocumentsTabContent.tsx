@@ -22,22 +22,37 @@ import DiscardIcon from "../../../images/discard.svg";
 import DocumentWaterMark from "../../../images/DocumentWaterMark.svg";
 import NewDocumentIcon from "../../../images/NewDocument.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
+import UploadIcon from "../../../images/Upload_16x16.svg";
+import { Resource } from "../../../src/Contracts/DataModels";
 import { Areas } from "../../Common/Constants";
-// import { createDocument } from "../../Common/dataAccess/createDocument";
+import { createDocument as createSqlDocuments } from "../../Common/dataAccess/createDocument";
+import { deleteDocument as deleteSqlDocument } from "../../Common/dataAccess/deleteDocument";
+import { queryDocuments as querySqlDocuments } from "../../Common/dataAccess/queryDocuments";
+import { updateDocument as updateSqlDocuments } from "../../Common/dataAccess/updateDocument";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../Common/HeadersUtility";
 import { logError } from "../../Common/Logger";
 import { createDocument, deleteDocument, queryDocuments, updateDocument } from "../../Common/MongoProxyClient";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import DocumentId from "../Tree/DocumentId";
 import ObjectId from "../Tree/ObjectId";
 import DocumentsTab from "./DocumentsTab1";
-import { formatDocumentContent, getPartitionKeyDefinition, hasShardKeySpecified } from "./DocumentTabUtils";
+import {
+  formatDocumentContent,
+  formatSqlDocumentContent,
+  getDocumentItems,
+  getFilterPlaceholder,
+  getFilterSuggestions,
+  getPartitionKeyDefinition,
+  hasShardKeySpecified
+} from "./DocumentTabUtils";
 
 const filterIcon: IIconProps = { iconName: "Filter" };
 
@@ -52,9 +67,16 @@ export interface IDocumentsTabContentState {
   isEditorVisible: boolean;
   documentContent: string;
   documentIds: Array<DocumentId>;
+  documentSqlIds: Array<Resource>;
   editorKey: string;
   selectedDocumentId?: DocumentId;
+  selectedSqlDocumentId?: Resource;
   isEditorContentEdited: boolean;
+  isAllDocumentsVisible: boolean;
+}
+
+export interface IDocumentsTabContentProps extends DocumentsTab {
+  _resourceTokenPartitionKey: string;
 }
 
 export interface IDocument {
@@ -75,9 +97,7 @@ const imageProps: Partial<IImageProps> = {
   style: { marginTop: "15px" },
 };
 
-const filterSuggestions = [{ value: `{"id": "foo"}` }, { value: "{ qty: { $gte: 20 } }" }];
 const intitalDocumentContent = `{ \n "id": "replace_with_new_document_id" \n }`;
-const idHeader = userContext.apiType === "Mongo" ? "_id" : "id";
 
 export default class DocumentsTabContent extends React.Component<DocumentsTab, IDocumentsTabContentState> {
   public newDocumentButton: IButton;
@@ -118,7 +138,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     const columns: IColumn[] = [
       {
         key: "_id",
-        name: idHeader,
+        name: userContext.apiType === "Mongo" ? "_id" : "id",
         minWidth: 90,
         maxWidth: 140,
         isResizable: true,
@@ -127,7 +147,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         onRender: (item: DocumentId) => {
           return (
             <div onClick={() => this.handleRow(item)} className="documentIdItem">
-              {item.rid}
+              {userContext.apiType === "Mongo" ? item.rid : item.id}
             </div>
           );
         },
@@ -155,8 +175,10 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       isEditorVisible: false,
       documentContent: intitalDocumentContent,
       documentIds: [],
+      documentSqlIds: [],
       editorKey: "",
       isEditorContentEdited: false,
+      isAllDocumentsVisible: false,
     };
   }
 
@@ -165,8 +187,39 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     this.updateTabButton();
     if (userContext.apiType === "Mongo") {
       this.queryDocumentsData();
+    } else {
+      this.querySqlDocumentsData();
     }
   }
+
+  public buildQuery(filter: string): string {
+    return QueryUtils.buildDocumentsQuery(filter, this.props.partitionKeyProperty, this.props.partitionKey);
+  }
+
+  querySqlDocumentsData = async (): Promise<void> => {
+    this.props.isExecuting(true);
+    this.props.isExecutionError(false);
+    const { filter } = this.state;
+    const query: string = this.buildQuery(filter);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const options: any = {};
+    options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
+    if (this.props._resourceTokenPartitionKey) {
+      options.partitionKey = this.props._resourceTokenPartitionKey;
+    }
+
+    try {
+      const sqlQuery = querySqlDocuments(this.props.collection.databaseId, this.props.collection.id(), query, options);
+      const querySqlDocumentsData = await sqlQuery.fetchNext();
+      this.setState({ documentSqlIds: querySqlDocumentsData.resources.length ? querySqlDocumentsData.resources : [] });
+      this.props.isExecuting(false);
+    } catch (error) {
+      this.props.isExecuting(false);
+      this.props.isExecutionError(true);
+      const errorMessage = getErrorMessage(error);
+      window.alert(errorMessage);
+    }
+  };
 
   queryDocumentsData = async (): Promise<void> => {
     this.props.isExecuting(true);
@@ -223,9 +276,9 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     }
   };
 
-  handleRow = (row: DocumentId): void => {
+  handleRow = (row: DocumentId | Resource): void => {
     if (this.state.isEditorContentEdited) {
-      const isChangesConfirmed = window.confirm("Your unsaved changes will be lost.")
+      const isChangesConfirmed = window.confirm("Your unsaved changes will be lost.");
       if (isChangesConfirmed) {
         this.handleRowContent(row);
         this.setState({ isEditorContentEdited: false });
@@ -236,11 +289,14 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     }
   };
 
-  handleRowContent = (row: DocumentId): void => {
-    const formattedDocumentContent = formatDocumentContent(row);
+  handleRowContent = (row: DocumentId | Resource): void => {
+    const formattedDocumentContent =
+      userContext.apiType === "Mongo"
+        ? formatDocumentContent(row as DocumentId)
+        : formatSqlDocumentContent(row as Resource);
     this.newDocumentButton = {
-      visible: false,
-      enabled: false,
+      visible: true,
+      enabled: true,
     };
     this.saveNewDocumentButton = {
       visible: false,
@@ -262,6 +318,12 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       visible: true,
       enabled: true,
     };
+    userContext.apiType === "Mongo"
+      ? this.updateContent(row as DocumentId, formattedDocumentContent)
+      : this.updateSqlContent(row as Resource, formattedDocumentContent);
+  };
+
+  updateContent = (row: DocumentId, formattedDocumentContent: string): void => {
     this.setState(
       {
         documentContent: formattedDocumentContent,
@@ -273,28 +335,85 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         this.updateTabButton();
       }
     );
-  }
+  };
 
-  formatDocumentContent = (row: DocumentId): string => {
-    const { partitionKeyProperty, partitionKeyValue, rid, self, stringPartitionKeyValue, ts } = row;
-    const documentContent = JSON.stringify({
-      partitionKeyProperty: partitionKeyProperty || "",
-      partitionKeyValue: partitionKeyValue || "",
-      rid: rid || "",
-      self: self || "",
-      stringPartitionKeyValue: stringPartitionKeyValue || "",
-      ts: ts || "",
-    });
-    const formattedDocumentContent = documentContent.replace(/,/g, ",\n").replace("{", "{\n").replace("}", "\n}");
-    return formattedDocumentContent;
+  updateSqlContent = (row: Resource, formattedDocumentContent: string): void => {
+    this.setState(
+      {
+        documentContent: formattedDocumentContent,
+        isEditorVisible: true,
+        editorKey: row._rid,
+        selectedSqlDocumentId: row,
+      },
+      () => {
+        this.updateTabButton();
+      }
+    );
   };
 
   handleFilter = (): void => {
-    this.queryDocumentsData();
+    userContext.apiType === "Mongo" ? this.queryDocumentsData() : this.querySqlDocumentsData();
     this.setState({
       isSuggestionVisible: false,
     });
   };
+
+  async updateSqlDocument(): Promise<void> {
+    const { partitionKey, partitionKeyProperty, isExecutionError, isExecuting, tabTitle, collection } = this.props;
+    const { documentContent } = this.state;
+    const partitionKeyArray = extractPartitionKey(
+      this.state.selectedSqlDocumentId,
+      getPartitionKeyDefinition(partitionKey, partitionKeyProperty) as PartitionKeyDefinition
+    );
+
+    const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
+    const selectedDocumentId = new DocumentId(
+      this.props as DocumentsTab,
+      this.state.selectedSqlDocumentId,
+      partitionKeyValue
+    );
+    isExecutionError(false);
+    const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
+      dataExplorerArea: Areas.Tab,
+      tabTitle: tabTitle(),
+    });
+
+    try {
+      isExecuting(true);
+      const updateSqlDocumentRes = await updateSqlDocuments(
+        collection as ViewModels.Collection,
+        selectedDocumentId,
+        documentContent
+      );
+      if (updateSqlDocumentRes) {
+        TelemetryProcessor.traceSuccess(
+          Action.UpdateDocument,
+          {
+            dataExplorerArea: Areas.Tab,
+            tabTitle: tabTitle(),
+          },
+          startKey
+        );
+        this.querySqlDocumentsData();
+        isExecuting(false);
+      }
+    } catch (error) {
+      isExecutionError(true);
+      isExecuting(false);
+      const errorMessage = getErrorMessage(error);
+      window.alert(errorMessage);
+      TelemetryProcessor.traceFailure(
+        Action.UpdateDocument,
+        {
+          dataExplorerArea: Areas.Tab,
+          tabTitle: tabTitle(),
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+    }
+  }
 
   private async updateMongoDocument(): Promise<void> {
     const { selectedDocumentId, documentContent, documentIds } = this.state;
@@ -319,9 +438,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
             updatedDocument,
             getPartitionKeyDefinition(partitionKey, partitionKeyProperty) as PartitionKeyDefinition
           );
-
           const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
-
           const id = new ObjectId(this.props as DocumentsTab, updatedDocument, partitionKeyValue);
           documentId.id(id.id());
         }
@@ -356,7 +473,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const buttons: CommandButtonComponentProps[] = [];
-    const label = "New Document";
+    const label = userContext.apiType === "Mongo" ? "New Document" : "New Item";
     if (this.newDocumentButton.visible) {
       buttons.push({
         iconSrc: NewDocumentIcon,
@@ -400,6 +517,8 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       buttons.push({
         ...this,
         updateMongoDocument: this.updateMongoDocument,
+        updateSqlDocument: this.updateSqlDocument,
+        setState: this.setState,
         iconSrc: SaveIcon,
         iconAlt: label,
         onCommandClick: this.onSaveExisitingDocumentClick,
@@ -429,6 +548,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       const label = "Delete";
       buttons.push({
         ...this,
+        setState: this.setState,
         iconSrc: DeleteDocumentIcon,
         iconAlt: label,
         onCommandClick: this.onDeleteExisitingDocumentClick,
@@ -438,34 +558,89 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         disabled: !this.deleteExisitingDocumentButton.enabled,
       });
     }
-
+    if (userContext.apiType !== "Mongo") {
+      const { collection } = this.props;
+      const label = "Upload Item";
+      buttons.push({
+        iconSrc: UploadIcon,
+        iconAlt: label,
+        onCommandClick: () => {
+          const selectedCollection: ViewModels.Collection = collection.container.findSelectedCollection();
+          selectedCollection && collection.container.openUploadItemsPanePane();
+        },
+        commandButtonLabel: label,
+        ariaLabel: label,
+        hasPopup: true,
+        disabled: collection.container.isDatabaseNodeOrNoneSelected(),
+      });
+    }
     return buttons;
   }
 
   private onSaveExisitingDocumentClick(): void {
-    this.updateMongoDocument();
+    userContext.apiType === "Mongo" ? this.updateMongoDocument() : this.updateSqlDocument();
   }
 
   private async onDeleteExisitingDocumentClick(): Promise<void> {
-    const msg = userContext.apiType !== "Mongo"
-      ? "Are you sure you want to delete the selected item ?"
-      : "Are you sure you want to delete the selected document ?";
+    const msg =
+      userContext.apiType !== "Mongo"
+        ? "Are you sure you want to delete the selected item ?"
+        : "Are you sure you want to delete the selected document ?";
 
-    const {
-      isExecutionError,
-      isExecuting,
-      collection,
-    } = this.props;
+    const { isExecutionError, isExecuting, collection, tabTitle, partitionKey, partitionKeyProperty } = this.props;
+    const partitionKeyArray = extractPartitionKey(
+      this.state.selectedSqlDocumentId,
+      getPartitionKeyDefinition(partitionKey, partitionKeyProperty) as PartitionKeyDefinition
+    );
+
+    const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
+    const selectedDocumentId = new DocumentId(
+      this.props as DocumentsTab,
+      this.state.selectedSqlDocumentId,
+      partitionKeyValue
+    );
+
+    const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
+      dataExplorerArea: Areas.Tab,
+      tabTitle: tabTitle(),
+    });
 
     if (window.confirm(msg)) {
       try {
-        isExecuting(true)
-        await deleteDocument(collection.databaseId, collection as ViewModels.Collection, this.state.selectedDocumentId);
-        isExecuting(false)
+        isExecuting(true);
+        if (userContext.apiType === "Mongo") {
+          await deleteDocument(
+            collection.databaseId,
+            collection as ViewModels.Collection,
+            this.state.selectedDocumentId
+          );
+        } else {
+          await deleteSqlDocument(collection as ViewModels.Collection, selectedDocumentId);
+        }
+        TelemetryProcessor.traceSuccess(
+          Action.DeleteDocument,
+          {
+            dataExplorerArea: Areas.Tab,
+            tabTitle: tabTitle(),
+          },
+          startKey
+        );
+        this.setState({ isEditorVisible: false });
+        isExecuting(false);
+        this.querySqlDocumentsData();
       } catch (error) {
-        console.error(error);
         isExecutionError(true);
-        isExecuting(false)
+        isExecuting(false);
+        TelemetryProcessor.traceFailure(
+          Action.DeleteDocument,
+          {
+            dataExplorerArea: Areas.Tab,
+            tabTitle: tabTitle(),
+            error: getErrorMessage(error),
+            errorStack: getErrorStack(error),
+          },
+          startKey
+        );
       }
     }
   }
@@ -491,6 +666,19 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       visible: true,
       enabled: true,
     };
+    this.saveExisitingDocumentButton = {
+      visible: false,
+      enabled: false,
+    };
+    this.discardExisitingDocumentChangesButton = {
+      visible: false,
+      enabled: false,
+    };
+    this.deleteExisitingDocumentButton = {
+      visible: false,
+      enabled: false,
+    };
+
     this.updateTabButton();
     this.setState({
       documentContent: intitalDocumentContent,
@@ -502,6 +690,52 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   private onSaveNewDocumentClick = () => {
     if (userContext.apiType === "Mongo") {
       this.onSaveNewMongoDocumentClick();
+    } else {
+      this.onSaveSqlNewMongoDocumentClick();
+    }
+  };
+
+  public onSaveSqlNewMongoDocumentClick = async (): Promise<void> => {
+    const { isExecutionError, tabTitle, isExecuting, collection } = this.props;
+    isExecutionError(false);
+    const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
+      dataExplorerArea: Areas.Tab,
+      tabTitle: tabTitle(),
+    });
+    const document = JSON.parse(this.state.documentContent);
+
+    isExecuting(true);
+
+    try {
+      const savedDocument = await createSqlDocuments(collection, document);
+      if (savedDocument) {
+        this.handleRowContent(savedDocument as Resource);
+        TelemetryProcessor.traceSuccess(
+          Action.CreateDocument,
+          {
+            dataExplorerArea: Areas.Tab,
+            tabTitle: tabTitle(),
+          },
+          startKey
+        );
+      }
+      isExecuting(false);
+      this.querySqlDocumentsData();
+    } catch (error) {
+      isExecutionError(true);
+      const errorMessage = getErrorMessage(error);
+      window.alert(errorMessage);
+      TelemetryProcessor.traceFailure(
+        Action.CreateDocument,
+        {
+          dataExplorerArea: Areas.Tab,
+          tabTitle: tabTitle(),
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+      isExecuting(false);
     }
   };
 
@@ -604,7 +838,6 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       isEditorVisible: false,
       isEditorContentEdited: false,
     });
-
   };
 
   onRenderCell = (item: { value: string }): JSX.Element => {
@@ -624,8 +857,11 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   };
 
   handleLoadMoreDocument = (): void => {
-    this.queryDocumentsData();
-    this.setState({ isSuggestionVisible: false });
+    userContext.apiType === "Mongo" ? this.queryDocumentsData() : this.querySqlDocumentsData();
+    this.setState({
+      isSuggestionVisible: false,
+      isAllDocumentsVisible: true,
+    });
   };
 
   private updateTabButton = (): void => {
@@ -642,14 +878,17 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         visible: true,
         enabled: true,
       };
-
-      this.updateTabButton();
     }
 
-    this.setState({
-      documentContent: newContent,
-      isEditorContentEdited: true,
-    });
+    this.setState(
+      {
+        documentContent: newContent,
+        isEditorContentEdited: true,
+      },
+      () => {
+        this.updateTabButton();
+      }
+    );
   };
 
   public render(): JSX.Element {
@@ -662,19 +901,23 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       isEditorVisible,
       documentContent,
       documentIds,
+      documentSqlIds,
       editorKey,
+      isAllDocumentsVisible,
     } = this.state;
 
+    const isPreferredApiMongoDB = userContext.apiType === "Mongo";
     return (
       <div>
         {isFilterOptionVisible && (
           <div>
             <div>
               <Stack horizontal verticalFill wrap>
+                {!isPreferredApiMongoDB && <Text className="queryText">SELECT * FROM c</Text>}
                 <TextField
                   iconProps={filterIcon}
-                  placeholder="Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
-                  className="documentTabSearchBar"
+                  placeholder={getFilterPlaceholder(isPreferredApiMongoDB)}
+                  className={isPreferredApiMongoDB ? "documentTabSearchBar" : "documentSqlTabSearchBar"}
                   onFocus={() => this.setState({ isSuggestionVisible: true })}
                   onChange={(_event, newInput?: string) => {
                     this.setState({ filter: newInput });
@@ -691,15 +934,15 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
               </Stack>
             </div>
             {isSuggestionVisible && (
-              <div className="filterSuggestions">
-                <List items={filterSuggestions} onRenderCell={this.onRenderCell} />
+              <div className={isPreferredApiMongoDB ? "filterSuggestions" : "filterSuggestions sqlFilterSuggestions"}>
+                <List items={getFilterSuggestions(isPreferredApiMongoDB)} onRenderCell={this.onRenderCell} />
               </div>
             )}
           </div>
         )}
         {!isFilterOptionVisible && (
           <Stack horizontal verticalFill wrap className="documentTabNoFilterView">
-            <Text className="noFilterText">No filter applied</Text>
+            <Text className="noFilterText">{isPreferredApiMongoDB ? "No filter applied" : "Select * from C"}</Text>
             <PrimaryButton text="Edit Filter" onClick={() => this.setState({ isFilterOptionVisible: true })} />
           </Stack>
         )}
@@ -707,7 +950,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
           <SplitterLayout primaryIndex={0} secondaryInitialSize={1000}>
             <div className="leftSplitter">
               <DetailsList
-                items={documentIds}
+                items={getDocumentItems(isPreferredApiMongoDB, documentIds, documentSqlIds, isAllDocumentsVisible)}
                 compact={isCompactMode}
                 columns={columns}
                 selectionMode={SelectionMode.none}

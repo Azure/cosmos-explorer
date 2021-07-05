@@ -46,11 +46,10 @@ export default class DocumentsTab extends TabsBase {
   // public documentIds: ko.ObservableArray<DocumentId>;
 
   // private _documentsIterator: QueryIterator<ItemDefinition & Resource>;
-  // private _resourceTokenPartitionKey: string;
+  public _resourceTokenPartitionKey: string;
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
-
     // this.isPreferredApiMongoDB = userContext.apiType === "Mongo" || options.isPreferredApiMongoDB;
 
     // this.idHeader = this.isPreferredApiMongoDB ? "_id" : "id";
@@ -64,7 +63,7 @@ export default class DocumentsTab extends TabsBase {
     // this.selectedDocumentContent = editable.observable<string>("");
     // this.initialDocumentContent = ko.observable<string>("");
     this.partitionKey = options.partitionKey || (this.collection && this.collection.partitionKey);
-    // this._resourceTokenPartitionKey = options.resourceTokenPartitionKey;
+    this._resourceTokenPartitionKey = options.resourceTokenPartitionKey;
     // this.documentIds = options.documentIds;
 
     this.partitionKeyPropertyHeader =

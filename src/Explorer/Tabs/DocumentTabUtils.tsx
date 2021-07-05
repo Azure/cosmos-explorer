@@ -1,4 +1,5 @@
 import { extractPartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
+import { Resource } from "../../../src/Contracts/DataModels";
 import * as DataModels from "../../Contracts/DataModels";
 import DocumentId from "../Tree/DocumentId";
 
@@ -48,4 +49,49 @@ export function formatDocumentContent(row: DocumentId): string {
   });
   const formattedDocumentContent = documentContent.replace(/,/g, ",\n").replace("{", "{\n").replace("}", "\n}");
   return formattedDocumentContent;
+}
+
+export function formatSqlDocumentContent(row: Resource): string {
+  const { id, _rid, _self, _ts, _etag } = row;
+  const documentContent = JSON.stringify({
+    id: id || "",
+    _rid: _rid || "",
+    _self: _self || "",
+    _ts: _ts || "",
+    _etag: _etag || "",
+  });
+  const formattedDocumentContent = documentContent.replace(/,/g, ",\n").replace("{", "{\n").replace("}", "\n}");
+  return formattedDocumentContent;
+}
+
+export function getFilterPlaceholder(isPreferredApiMongoDB: boolean): string {
+  const filterPlaceholder = isPreferredApiMongoDB
+    ? "Type a query predicate (e.g., {´a´:´foo´}), or choose one from the drop down list, or leave empty to query all documents."
+    : "Type a query predicate (e.g., WHERE c.id=´1´), or choose one from the drop down list, or leave empty to query all documents.";
+  return filterPlaceholder;
+}
+
+export function getFilterSuggestions(isPreferredApiMongoDB: boolean): { value: string }[] {
+  const filterSuggestions = isPreferredApiMongoDB
+    ? [{ value: `{"id": "foo"}` }, { value: "{ qty: { $gte: 20 } }" }]
+    : [
+        { value: 'WHERE c.id = "foo"' },
+        { value: "ORDER BY c._ts DESC" },
+        { value: 'WHERE c.id = "foo" ORDER BY c._ts DESC' },
+      ];
+  return filterSuggestions;
+}
+
+export function getDocumentItems(
+  isPreferredApiMongoDB: boolean,
+  documentIds: Array<DocumentId>,
+  documentSqlIds: Array<Resource>,
+  isAllDocumentsVisible: boolean
+): Array<DocumentId> | Array<Resource> {
+  if (isPreferredApiMongoDB) {
+    const documentItems = documentIds.reverse();
+    return isAllDocumentsVisible ? documentItems : documentItems.slice(0, 5);
+  }
+  const documentSqlItems = documentSqlIds.reverse();
+  return isAllDocumentsVisible ? documentSqlItems : documentSqlItems.slice(0, 5);
 }
