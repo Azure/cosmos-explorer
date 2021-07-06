@@ -7,7 +7,6 @@ import { handleError } from "../ErrorHandlingUtils";
 
 export const deleteDocument = async (collection: CollectionBase, documentId: DocumentId): Promise<void> => {
   const entityName: string = getEntityName();
-  console.log("documemt", documentId);
   const clearMessage = logConsoleProgress(`Deleting ${entityName} ${documentId.id()}`);
 
   try {

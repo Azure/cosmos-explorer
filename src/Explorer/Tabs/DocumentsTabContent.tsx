@@ -12,7 +12,7 @@ import {
   SelectionMode,
   Stack,
   Text,
-  TextField
+  TextField,
 } from "@fluentui/react";
 import * as React from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -51,7 +51,7 @@ import {
   getFilterPlaceholder,
   getFilterSuggestions,
   getPartitionKeyDefinition,
-  hasShardKeySpecified
+  hasShardKeySpecified,
 } from "./DocumentTabUtils";
 
 const filterIcon: IIconProps = { iconName: "Filter" };

@@ -75,10 +75,10 @@ export function getFilterSuggestions(isPreferredApiMongoDB: boolean): { value: s
   const filterSuggestions = isPreferredApiMongoDB
     ? [{ value: `{"id": "foo"}` }, { value: "{ qty: { $gte: 20 } }" }]
     : [
-        { value: 'WHERE c.id = "foo"' },
-        { value: "ORDER BY c._ts DESC" },
-        { value: 'WHERE c.id = "foo" ORDER BY c._ts DESC' },
-      ];
+      { value: 'WHERE c.id = "foo"' },
+      { value: "ORDER BY c._ts DESC" },
+      { value: 'WHERE c.id = "foo" ORDER BY c._ts DESC' },
+    ];
   return filterSuggestions;
 }
 
@@ -89,9 +89,7 @@ export function getDocumentItems(
   isAllDocumentsVisible: boolean
 ): Array<DocumentId> | Array<Resource> {
   if (isPreferredApiMongoDB) {
-    const documentItems = documentIds.reverse();
-    return isAllDocumentsVisible ? documentItems : documentItems.slice(0, 5);
+    return isAllDocumentsVisible ? documentIds : documentIds.slice(0, 5);
   }
-  const documentSqlItems = documentSqlIds.reverse();
-  return isAllDocumentsVisible ? documentSqlItems : documentSqlItems.slice(0, 5);
+  return isAllDocumentsVisible ? documentSqlIds : documentSqlIds.slice(0, 5);
 }
