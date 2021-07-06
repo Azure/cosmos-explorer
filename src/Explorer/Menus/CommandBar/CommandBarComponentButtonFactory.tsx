@@ -31,6 +31,7 @@ import Explorer from "../../Explorer";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState } from "../../useSelectedNode";
 
 let counter = 0;
@@ -554,12 +555,12 @@ function createStaticCommandBarButtonsForResourceToken(
   const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
   const openQueryBtn = createOpenQueryButton(container);
 
+  const resourceTokenCollection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
   const isResourceTokenCollectionNodeSelected: boolean =
-    container.resourceTokenCollection() &&
-    container.resourceTokenCollection().id() === selectedNodeState.selectedNode?.id();
+    resourceTokenCollection?.id() === selectedNodeState.selectedNode?.id();
   newSqlQueryBtn.disabled = !isResourceTokenCollectionNodeSelected;
   newSqlQueryBtn.onCommandClick = () => {
-    const resourceTokenCollection: ViewModels.CollectionBase = container.resourceTokenCollection();
+    const resourceTokenCollection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
     resourceTokenCollection && resourceTokenCollection.onNewQueryClick(resourceTokenCollection, undefined);
   };
 

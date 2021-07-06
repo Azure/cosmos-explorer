@@ -6,6 +6,7 @@ import { useSelectedNode } from "./useSelectedNode";
 
 interface DatabasesState {
   databases: ViewModels.Database[];
+  resourceTokenCollection: ViewModels.CollectionBase;
   updateDatabase: (database: ViewModels.Database) => void;
   addDatabases: (databases: ViewModels.Database[]) => void;
   deleteDatabase: (database: ViewModels.Database) => void;
@@ -22,6 +23,7 @@ interface DatabasesState {
 
 export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   databases: [],
+  resourceTokenCollection: undefined,
   updateDatabase: (updatedDatabase: ViewModels.Database) =>
     set((state) => {
       const updatedDatabases = state.databases.map((database: ViewModels.Database) => {
