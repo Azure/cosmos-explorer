@@ -195,7 +195,6 @@ function configureEmulator(): Explorer {
     authType: AuthType.MasterKey,
   });
   const explorer = new Explorer();
-  explorer.isAccountReady(true);
   return explorer;
 }
 

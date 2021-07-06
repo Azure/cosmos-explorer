@@ -55,7 +55,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
   if (useTabs.getState().activeTab?.tabKind === ViewModels.CollectionTabKind.NotebookV2) {
-    uiFabricControlButtons.unshift(CommandBarUtil.createMemoryTracker("memoryTracker", container.memoryUsageInfo));
+    uiFabricControlButtons.unshift(CommandBarUtil.createMemoryTracker("memoryTracker"));
   }
 
   return (

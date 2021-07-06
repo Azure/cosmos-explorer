@@ -30,7 +30,6 @@ import {
   listConnectionInfo,
   start,
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
-import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -46,6 +45,7 @@ import { NotebookContentItem, NotebookContentItemType } from "./Notebook/Noteboo
 import type NotebookManager from "./Notebook/NotebookManager";
 import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
+import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
 import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
 import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
@@ -75,7 +75,6 @@ var tmp = ComponentRegisterer;
 
 export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
-  public isAccountReady: ko.Observable<boolean>;
   public queriesClient: QueriesClient;
   public tableDataClient: TableDataClient;
 
@@ -91,18 +90,9 @@ export default class Explorer {
   public gitHubOAuthService: GitHubOAuthService;
 
   // Notebooks
-  public isNotebookEnabled: ko.Observable<boolean>;
-  public isNotebooksEnabledForAccount: ko.Observable<boolean>;
-  public notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>;
-  public sparkClusterConnectionInfo: ko.Observable<DataModels.SparkClusterConnectionInfo>;
-  public isSynapseLinkUpdating: ko.Observable<boolean>;
-  public memoryUsageInfo: ko.Observable<DataModels.MemoryUsageInfo>;
   public notebookManager?: NotebookManager;
 
-  public isShellEnabled: ko.Observable<boolean>;
-
   private _isInitializingNotebooks: boolean;
-  private notebookBasePath: ko.Observable<string>;
   private notebookToImport: {
     name: string;
     content: string;
@@ -114,40 +104,12 @@ export default class Explorer {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    this.isAccountReady = ko.observable<boolean>(false);
     this._isInitializingNotebooks = false;
-    this.isShellEnabled = ko.observable(false);
-    this.isNotebooksEnabledForAccount = ko.observable(false);
-    this.isNotebooksEnabledForAccount.subscribe((isEnabledForAccount: boolean) => this.refreshCommandBarButtons());
-    this.isSynapseLinkUpdating = ko.observable<boolean>(false);
-    this.isAccountReady.subscribe(async (isAccountReady: boolean) => {
-      if (isAccountReady) {
-        await (userContext.authType === AuthType.ResourceToken
-          ? this.refreshDatabaseForResourceToken()
-          : this.refreshAllDatabases());
-        await this._refreshNotebooksEnabledStateForAccount();
-        this.isNotebookEnabled(
-          userContext.authType !== AuthType.ResourceToken &&
-            ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-              userContext.features.enableNotebooks)
-        );
+    useNotebook.subscribe(
+      () => this.refreshCommandBarButtons(),
+      (state) => state.isNotebooksEnabledForAccount
+    );
 
-        this.isShellEnabled(this.isNotebookEnabled() && isPublicInternetAccessAllowed());
-
-        TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
-          isNotebookEnabled: this.isNotebookEnabled(),
-          dataExplorerArea: Constants.Areas.Notebook,
-        });
-
-        if (this.isNotebookEnabled()) {
-          await this.initNotebooks(userContext.databaseAccount);
-        } else if (this.notebookToImport) {
-          // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
-          this._openSetupNotebooksPaneForQuickstart();
-        }
-      }
-    });
-    this.memoryUsageInfo = ko.observable<DataModels.MemoryUsageInfo>();
     this.queriesClient = new QueriesClient(this);
 
     useSelectedNode.subscribe(() => {
@@ -208,53 +170,44 @@ export default class Explorer {
       startKey
     );
 
-    this.isNotebookEnabled = ko.observable(false);
-    this.isNotebookEnabled.subscribe(async () => {
-      if (!this.notebookManager) {
-        const NotebookManager = await (
-          await import(/* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager")
-        ).default;
-        this.notebookManager = new NotebookManager();
-        this.notebookManager.initialize({
-          container: this,
-          notebookBasePath: this.notebookBasePath,
-          resourceTree: this.resourceTree,
-          refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
-          refreshNotebookList: () => this.refreshNotebookList(),
-        });
-      }
+    useNotebook.subscribe(
+      async () => {
+        if (!this.notebookManager) {
+          const NotebookManager = await (
+            await import(/* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager")
+          ).default;
+          this.notebookManager = new NotebookManager();
+          this.notebookManager.initialize({
+            container: this,
+            resourceTree: this.resourceTree,
+            refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
+            refreshNotebookList: () => this.refreshNotebookList(),
+          });
+        }
 
-      this.refreshCommandBarButtons();
-      this.refreshNotebookList();
-    });
+        this.refreshCommandBarButtons();
+        this.refreshNotebookList();
+      },
+      (state) => state.isNotebookEnabled
+    );
 
     this.resourceTree = new ResourceTreeAdapter(this);
     this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
-    this.notebookServerInfo = ko.observable<DataModels.NotebookWorkspaceConnectionInfo>({
-      notebookServerEndpoint: undefined,
-      authToken: undefined,
-    });
-    this.notebookBasePath = ko.observable(Constants.Notebook.defaultBasePath);
-    this.sparkClusterConnectionInfo = ko.observable<DataModels.SparkClusterConnectionInfo>({
-      userName: undefined,
-      password: undefined,
-      endpoints: [],
-    });
 
     // Override notebook server parameters from URL parameters
     if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
-      this.notebookServerInfo({
+      useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl,
         authToken: userContext.features.notebookServerToken,
       });
     }
 
     if (userContext.features.notebookBasePath) {
-      this.notebookBasePath(userContext.features.notebookBasePath);
+      useNotebook.getState().setNotebookBasePath(userContext.features.notebookBasePath);
     }
 
     if (userContext.features.livyEndpoint) {
-      this.sparkClusterConnectionInfo({
+      useNotebook.getState().setSparkClusterConnectionInfo({
         userName: undefined,
         password: undefined,
         endpoints: [
@@ -269,7 +222,8 @@ export default class Explorer {
     if (configContext.enableSchemaAnalyzer) {
       userContext.features.enableSchemaAnalyzer = true;
     }
-    this.isAccountReady(true);
+
+    this.refreshExplorer();
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -290,7 +244,7 @@ export default class Explorer {
         const clearInProgressMessage = logConsoleProgress(
           "Enabling Azure Synapse Link for this account. This may take a few minutes before you can enable analytical store for this account."
         );
-        this.isSynapseLinkUpdating(true);
+        useNotebook.getState().setIsSynapseLinkUpdating(true);
         useDialog.getState().closeDialog();
 
         try {
@@ -309,7 +263,7 @@ export default class Explorer {
           logConsoleError(`Enabling Azure Synapse Link for this account failed. ${getErrorMessage(error)}`);
           TelemetryProcessor.traceFailure(Action.EnableAzureSynapseLink, {}, startTime);
         } finally {
-          this.isSynapseLinkUpdating(false);
+          useNotebook.getState().setIsSynapseLinkUpdating(false);
         }
       },
 
@@ -418,18 +372,17 @@ export default class Explorer {
       "default"
     );
 
-    this.notebookServerInfo({
+    useNotebook.getState().setNotebookServerInfo({
       notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
       authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
     });
-    this.notebookServerInfo.valueHasMutated();
     this.refreshNotebookList();
 
     this._isInitializingNotebooks = false;
   }
 
   public resetNotebookWorkspace() {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookClient) {
       handleError(
         "Attempt to reset notebook workspace, but notebook is not enabled",
         "Explorer/resetNotebookWorkspace"
@@ -602,7 +555,7 @@ export default class Explorer {
   }
 
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
       handleError(error, "Explorer/uploadFile");
       throw new Error(error);
@@ -620,7 +573,7 @@ export default class Explorer {
     const item = NotebookUtil.createNotebookContentItem(name, path, "file");
     const parent = this.resourceTree.myNotebooksContentRoot;
 
-    if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
+    if (parent && parent.children && useNotebook.getState().isNotebookEnabled && this.notebookManager?.notebookClient) {
       const existingItem = _.find(parent.children, (node) => node.name === name);
       if (existingItem) {
         return this.openNotebook(existingItem);
@@ -637,7 +590,7 @@ export default class Explorer {
   public async importAndOpenContent(name: string, content: string): Promise<boolean> {
     const parent = this.resourceTree.myNotebooksContentRoot;
 
-    if (parent && parent.children && this.isNotebookEnabled() && this.notebookManager?.notebookClient) {
+    if (parent && parent.children && useNotebook.getState().isNotebookEnabled && this.notebookManager?.notebookClient) {
       if (this.notebookToImport && this.notebookToImport.name === name && this.notebookToImport.content === content) {
         this.notebookToImport = undefined; // we don't want to try opening this notebook again
       }
@@ -782,7 +735,7 @@ export default class Explorer {
   }
 
   public renameNotebook(notebookFile: NotebookContentItem): void {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
       handleError(error, "Explorer/renameNotebook");
       throw new Error(error);
@@ -821,7 +774,7 @@ export default class Explorer {
   }
 
   public onCreateDirectory(parent: NotebookContentItem): void {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
       handleError(error, "Explorer/onCreateDirectory");
       throw new Error(error);
@@ -850,7 +803,7 @@ export default class Explorer {
   }
 
   public readFile(notebookFile: NotebookContentItem): Promise<string> {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to read file, but notebook is not enabled";
       handleError(error, "Explorer/downloadFile");
       throw new Error(error);
@@ -860,7 +813,7 @@ export default class Explorer {
   }
 
   public downloadFile(notebookFile: NotebookContentItem): Promise<void> {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to download file, but notebook is not enabled";
       handleError(error, "Explorer/downloadFile");
       throw new Error(error);
@@ -897,56 +850,8 @@ export default class Explorer {
     );
   }
 
-  private async _refreshNotebooksEnabledStateForAccount(): Promise<void> {
-    const { databaseAccount, authType } = userContext;
-    if (
-      authType === AuthType.EncryptedToken ||
-      authType === AuthType.ResourceToken ||
-      authType === AuthType.MasterKey
-    ) {
-      this.isNotebooksEnabledForAccount(false);
-      return;
-    }
-
-    const firstWriteLocation =
-      databaseAccount?.properties?.writeLocations &&
-      databaseAccount?.properties?.writeLocations[0]?.locationName.toLowerCase();
-    const disallowedLocationsUri = `${configContext.BACKEND_ENDPOINT}/api/disallowedLocations`;
-    const authorizationHeader = getAuthorizationHeader();
-    try {
-      const response = await fetch(disallowedLocationsUri, {
-        method: "POST",
-        body: JSON.stringify({
-          resourceTypes: [Constants.ArmResourceTypes.notebookWorkspaces],
-        }),
-        headers: {
-          [authorizationHeader.header]: authorizationHeader.token,
-          [Constants.HttpHeaders.contentType]: "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch disallowed locations");
-      }
-
-      const disallowedLocations: string[] = await response.json();
-      if (!disallowedLocations) {
-        Logger.logInfo("No disallowed locations found", "Explorer/isNotebooksEnabledForAccount");
-        this.isNotebooksEnabledForAccount(true);
-        return;
-      }
-
-      // firstWriteLocation should not be disallowed
-      const isAccountInAllowedLocation = firstWriteLocation && disallowedLocations.indexOf(firstWriteLocation) === -1;
-      this.isNotebooksEnabledForAccount(isAccountInAllowedLocation);
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "Explorer/isNotebooksEnabledForAccount");
-      this.isNotebooksEnabledForAccount(false);
-    }
-  }
-
   private refreshNotebookList = async (): Promise<void> => {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       return;
     }
 
@@ -958,7 +863,7 @@ export default class Explorer {
   };
 
   public deleteNotebookFile(item: NotebookContentItem): Promise<void> {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to delete notebook file, but notebook is not enabled";
       handleError(error, "Explorer/deleteNotebookFile");
       throw new Error(error);
@@ -998,7 +903,7 @@ export default class Explorer {
    * This creates a new notebook file, then opens the notebook
    */
   public onNewNotebookClicked(parent?: NotebookContentItem): void {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
       handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
@@ -1042,17 +947,13 @@ export default class Explorer {
   }
 
   public refreshContentItem(item: NotebookContentItem): Promise<void> {
-    if (!this.isNotebookEnabled() || !this.notebookManager?.notebookContentClient) {
+    if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
       handleError(error, "Explorer/refreshContentItem");
       return Promise.reject(new Error(error));
     }
 
     return this.notebookManager?.notebookContentClient.updateItemChildren(item);
-  }
-
-  public getNotebookBasePath(): string {
-    return this.notebookBasePath();
   }
 
   public openNotebookTerminal(kind: ViewModels.TerminalKind) {
@@ -1174,7 +1075,7 @@ export default class Explorer {
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (this.isAccountReady() && !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
+    if (!(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
       this._openSetupNotebooksPaneForQuickstart();
     }
 
@@ -1244,5 +1145,30 @@ export default class Explorer {
     useSidePanel
       .getState()
       .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
+  }
+
+  public async refreshExplorer(): Promise<void> {
+    userContext.authType === AuthType.ResourceToken
+      ? this.refreshDatabaseForResourceToken()
+      : this.refreshAllDatabases();
+    await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+    const isNotebookEnabled: boolean =
+      userContext.authType !== AuthType.ResourceToken &&
+      ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+        userContext.features.enableNotebooks);
+    useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
+    useNotebook.getState().setIsShellEnabled(isNotebookEnabled && isPublicInternetAccessAllowed());
+
+    TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
+      isNotebookEnabled,
+      dataExplorerArea: Constants.Areas.Notebook,
+    });
+
+    if (isNotebookEnabled) {
+      await this.initNotebooks(userContext.databaseAccount);
+    } else if (this.notebookToImport) {
+      // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
+      this._openSetupNotebooksPaneForQuickstart();
+    }
   }
 }

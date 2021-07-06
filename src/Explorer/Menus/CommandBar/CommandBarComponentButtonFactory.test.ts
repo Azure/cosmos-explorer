@@ -6,6 +6,7 @@ import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import NotebookManager from "../../Notebook/NotebookManager";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
@@ -28,9 +29,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isNotebookEnabled = ko.observable(false);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
     });
 
     it("Account is not serverless - button should be visible", () => {
@@ -71,18 +69,19 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
     });
 
     afterEach(() => {
       updateUserContext({
         portalEnv: "prod",
       });
+      useNotebook.getState().setIsNotebookEnabled(false);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(false);
     });
 
     it("Notebooks is already enabled - button should be hidden", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
+      useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
@@ -90,8 +89,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Account is running on one of the national clouds - button should be hidden", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(false);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
       updateUserContext({
         portalEnv: "mooncake",
       });
@@ -102,8 +99,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is not enabled but is available - button should be shown and enabled", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(false);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
@@ -113,9 +109,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is not enabled and is unavailable - button should be shown and disabled", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(false);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const enableNotebookBtn = buttons.find((button) => button.commandButtonLabel === enableNotebookBtnLabel);
       expect(enableNotebookBtn).toBeDefined();
@@ -139,24 +132,25 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isShellEnabled = ko.observable(true);
     });
 
     afterAll(() => {
       updateUserContext({
         apiType: "SQL",
       });
+      useNotebook.getState().setIsShellEnabled(false);
     });
 
     beforeEach(() => {
       updateUserContext({
         apiType: "Mongo",
       });
-      mockExplorer.isNotebookEnabled = ko.observable(false);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
+      useNotebook.getState().setIsShellEnabled(true);
+    });
 
-      mockExplorer.isShellEnabled = ko.observable(true);
+    afterEach(() => {
+      useNotebook.getState().setIsNotebookEnabled(false);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(false);
     });
 
     it("Mongo Api not available - button should be hidden", () => {
@@ -185,7 +179,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is not enabled and is available - button should be hidden", () => {
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
@@ -193,7 +187,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
+      useNotebook.getState().setIsNotebookEnabled(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
@@ -203,8 +197,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is enabled and is available - button should be shown and enabled", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
+      useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
@@ -214,9 +208,9 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is enabled and is available, terminal is unavailable due to ipRules - button should be hidden", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
-      mockExplorer.isShellEnabled = ko.observable(false);
+      useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(true);
+      useNotebook.getState().setIsShellEnabled(false);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
@@ -237,7 +231,6 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
     });
 
     beforeEach(() => {
@@ -248,8 +241,11 @@ describe("CommandBarComponentButtonFactory tests", () => {
           },
         } as DatabaseAccount,
       });
-      mockExplorer.isNotebookEnabled = ko.observable(false);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
+    });
+
+    afterEach(() => {
+      useNotebook.getState().setIsNotebookEnabled(false);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(false);
     });
 
     it("Cassandra Api not available - button should be hidden", () => {
@@ -283,7 +279,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is not enabled and is available - button should be shown and enabled", () => {
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
@@ -291,7 +287,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
+      useNotebook.getState().setIsNotebookEnabled(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
@@ -301,8 +297,8 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is enabled and is available - button should be shown and enabled", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(true);
+      useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
@@ -327,23 +323,17 @@ describe("CommandBarComponentButtonFactory tests", () => {
         } as DatabaseAccount,
       });
 
-      mockExplorer.isSynapseLinkUpdating = ko.observable(false);
-      mockExplorer.isNotebooksEnabledForAccount = ko.observable(false);
-
       mockExplorer.notebookManager = new NotebookManager();
       mockExplorer.notebookManager.gitHubOAuthService = new GitHubOAuthService(undefined);
     });
 
-    beforeEach(() => {
-      mockExplorer.isNotebookEnabled = ko.observable(false);
-    });
-
     afterEach(() => {
       jest.resetAllMocks();
+      useNotebook.getState().setIsNotebookEnabled(false);
     });
 
     it("Notebooks is enabled and GitHubOAuthService is not logged in - connect to github button should be visible", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
+      useNotebook.getState().setIsNotebookEnabled(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const connectToGitHubBtn = buttons.find((button) => button.commandButtonLabel === connectToGitHubBtnLabel);
@@ -351,7 +341,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
     });
 
     it("Notebooks is enabled and GitHubOAuthService is logged in - manage github settings button should be visible", () => {
-      mockExplorer.isNotebookEnabled = ko.observable(true);
+      useNotebook.getState().setIsNotebookEnabled(true);
       mockExplorer.notebookManager.gitHubOAuthService.isLoggedIn = jest.fn().mockReturnValue(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);

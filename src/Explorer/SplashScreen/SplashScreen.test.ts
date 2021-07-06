@@ -1,4 +1,3 @@
-import * as ko from "knockout";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import { SplashScreen } from "./SplashScreen";
@@ -6,7 +5,6 @@ jest.mock("../Explorer");
 
 const createExplorer = () => {
   const mock = new Explorer();
-  mock.isNotebookEnabled = ko.observable(false);
   return mock as jest.Mocked<Explorer>;
 };
 
