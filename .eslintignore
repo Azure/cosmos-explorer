@@ -154,7 +154,6 @@ src/Explorer/Tree/AccessibleVerticalList.ts
 src/Explorer/Tree/Collection.test.ts
 src/Explorer/Tree/Collection.ts
 src/Explorer/Tree/ConflictId.ts
-src/Explorer/Tree/Database.ts
 src/Explorer/Tree/DocumentId.ts
 src/Explorer/Tree/ObjectId.ts
 src/Explorer/Tree/ResourceTokenCollection.ts
@@ -240,15 +239,7 @@ src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookMetadataComponent.tsx
 src/NotebookViewer/NotebookViewer.tsx
 src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
-src/Explorer/Controls/QueriesGridReactComponent/QueriesGridComponent.tsx
-src/Explorer/Controls/QueriesGridReactComponent/QueriesGridComponentAdapter.tsx
-src/Explorer/Controls/ResizeSensorReactComponent/ResizeSensorComponent.tsx
-src/Explorer/Controls/Spark/ClusterSettingsComponent.tsx
-src/Explorer/Controls/Spark/ClusterSettingsComponentAdapter.tsx
-src/Explorer/Controls/Tabs/TabComponent.tsx
-src/Explorer/Controls/TreeComponent/TreeComponent.test.tsx
 src/Explorer/Controls/TreeComponent/TreeComponent.tsx
-src/Explorer/Graph/GraphExplorerComponent/EditorNeighborsComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx

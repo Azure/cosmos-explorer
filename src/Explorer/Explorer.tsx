@@ -86,7 +86,6 @@ export default class Explorer {
   private resourceTree: ResourceTreeAdapter;
 
   // Resource Token
-  public resourceTokenCollection: ko.Observable<ViewModels.CollectionBase>;
   public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
@@ -118,7 +117,6 @@ export default class Explorer {
     );
 
     this.queriesClient = new QueriesClient(this);
-    this.resourceTokenCollection = ko.observable<ViewModels.CollectionBase>();
     this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     useSelectedNode.subscribe(() => {
@@ -293,8 +291,9 @@ export default class Explorer {
     }
 
     return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
-      this.resourceTokenCollection(new ResourceTokenCollection(this, databaseId, collection));
-      useSelectedNode.getState().setSelectedNode(this.resourceTokenCollection());
+      const resourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection);
+      useDatabases.setState({ resourceTokenCollection });
+      useSelectedNode.getState().setSelectedNode(resourceTokenCollection);
     });
   }
 
@@ -1100,7 +1099,7 @@ export default class Explorer {
     }
   }
 
-  public onNewCollectionClicked(databaseId?: string): void {
+  public async onNewCollectionClicked(databaseId?: string): Promise<void> {
     if (userContext.apiType === "Cassandra") {
       useSidePanel
         .getState()
@@ -1109,7 +1108,10 @@ export default class Explorer {
           <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
         );
     } else {
-      this.openAddCollectionPanel(databaseId);
+      await useDatabases.getState().loadDatabaseOffers();
+      useSidePanel
+        .getState()
+        .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
     }
   }
 
@@ -1162,12 +1164,6 @@ export default class Explorer {
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
-  public async openAddCollectionPanel(databaseId?: string): Promise<void> {
-    await useDatabases.getState().loadDatabaseOffers();
-    useSidePanel
-      .getState()
-      .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);
-  }
   public openAddDatabasePane(): void {
     useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this} />);
   }

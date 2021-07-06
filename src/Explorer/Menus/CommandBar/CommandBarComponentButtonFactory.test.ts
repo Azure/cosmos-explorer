@@ -7,6 +7,7 @@ import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
 import NotebookManager from "../../Notebook/NotebookManager";
 import { useNotebook } from "../../Notebook/useNotebook";
+import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import * as CommandBarComponentButtonFactory from "./CommandBarComponentButtonFactory";
 
@@ -366,10 +367,11 @@ describe("CommandBarComponentButtonFactory tests", () => {
   describe("Resource token", () => {
     const mockCollection = { id: ko.observable("test") } as CollectionBase;
     useSelectedNode.getState().setSelectedNode(mockCollection);
+    useDatabases.setState({ resourceTokenCollection: mockCollection });
     const selectedNodeState = useSelectedNode.getState();
+
     beforeAll(() => {
       mockExplorer = {} as Explorer;
-      mockExplorer.resourceTokenCollection = ko.observable(mockCollection);
 
       updateUserContext({
         authType: AuthType.ResourceToken,
