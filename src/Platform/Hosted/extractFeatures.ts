@@ -10,6 +10,7 @@ export type Features = {
   readonly enableSchema: boolean;
   enableSchemaAnalyzer: boolean;
   autoscaleDefault: boolean;
+  partitionKeyDefault: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -53,7 +54,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableReactPane: "true" === get("enablereactpane"),
     enableRightPanelV2: "true" === get("enablerightpanelv2"),
     enableSchema: "true" === get("enableschema"),
-    enableSchemaAnalyzer: "true" === get("enableschemaanalyzer"),
+    enableSchemaAnalyzer: "true" === get("sanalyzer"),
     enableSDKoperations: "true" === get("enablesdkoperations"),
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),
@@ -70,5 +71,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
     autoscaleDefault: "true" === get("autoscaledefault"),
+    partitionKeyDefault: "true" == get("partitionkeytest")
   };
 }
