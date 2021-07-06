@@ -16,6 +16,7 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
+import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import StoredProcedure from "./Tree/StoredProcedure";
@@ -81,13 +82,13 @@ export const createCollectionContextMenuButton = (
       iconSrc: HostedTerminalIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (container.isShellEnabled()) {
+        if (useNotebook.getState().isShellEnabled) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label: container.isShellEnabled() ? "Open Mongo Shell" : "New Shell",
+      label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
     });
   }
 

@@ -28,6 +28,7 @@ import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
@@ -63,7 +64,7 @@ export function createStaticCommandBarButtons(
 
   buttons.push(createDivider());
 
-  if (container.isNotebookEnabled()) {
+  if (useNotebook.getState().isNotebookEnabled) {
     const newNotebookButton = createNewNotebookButton(container);
     newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
     buttons.push(newNotebookButton);
@@ -77,7 +78,7 @@ export function createStaticCommandBarButtons(
     buttons.push(createNotebookWorkspaceResetButton(container));
     if (
       (userContext.apiType === "Mongo" &&
-        container.isShellEnabled() &&
+        useNotebook.getState().isShellEnabled &&
         selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
       userContext.apiType === "Cassandra"
     ) {
@@ -139,13 +140,13 @@ export function createContextCommandBarButtons(
   const buttons: CommandButtonComponentProps[] = [];
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = container.isShellEnabled() ? "Open Mongo Shell" : "New Shell";
+    const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
-        if (container.isShellEnabled()) {
+        if (useNotebook.getState().isShellEnabled) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -270,7 +271,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: container.isSynapseLinkUpdating(),
+    disabled: useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
@@ -450,9 +451,9 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
     onCommandClick: () => container.openSetupNotebooksPanel(label, description),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: !container.isNotebooksEnabledForAccount(),
+    disabled: !useNotebook.getState().isNotebooksEnabledForAccount,
     ariaLabel: label,
-    tooltipText: container.isNotebooksEnabledForAccount() ? "" : tooltip,
+    tooltipText: useNotebook.getState().isNotebooksEnabledForAccount ? "" : tooltip,
   };
 }
 
@@ -476,12 +477,13 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
   const title = "Set up workspace";
   const description =
     "Looks like you have not created a workspace for this account. To proceed and start using features including mongo shell and notebook, we will need to create a default workspace in this account.";
-  const disableButton = !container.isNotebooksEnabledForAccount() && !container.isNotebookEnabled();
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (container.isNotebookEnabled()) {
+      if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
         container.openSetupNotebooksPanel(title, description);
@@ -502,12 +504,13 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
   const title = "Set up workspace";
   const description =
     "Looks like you have not created a workspace for this account. To proceed and start using features including cassandra shell and notebook, we will need to create a default workspace in this account.";
-  const disableButton = !container.isNotebooksEnabledForAccount() && !container.isNotebookEnabled();
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (container.isNotebookEnabled()) {
+      if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
         container.openSetupNotebooksPanel(title, description);
