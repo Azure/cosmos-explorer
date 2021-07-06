@@ -31,7 +31,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
-                "isSchemaEnabled": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
