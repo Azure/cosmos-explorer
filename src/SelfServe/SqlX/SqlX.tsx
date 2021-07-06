@@ -20,7 +20,7 @@ import {
   updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
-let costPerHourValue: Description = {
+let costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
@@ -53,7 +53,10 @@ const CosmosD16s = "Cosmos.D16s";
 
 const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
   currentValues.set("sku", { value: newValue });
-  currentValues.set("costPerHour", { value: costPerHourValue });
+
+  // Update cost per hour based on new sku
+  currentValues.set("costPerHour", { value: calculateCost(newValue as string, currentValues.get("NumberOfInstances").value as number) });
+
   return currentValues;
 };
 
@@ -79,6 +82,10 @@ const onNumberOfInstancesChange = (
   } else {
     currentValues.set("warningBanner", undefined);
   }
+
+  // Update cost per hour based on new instance count
+  currentValues.set("costPerHour", { value: calculateCost(currentValues.get("sku").value as string, newValue as number) });
+
   return currentValues;
 };
 
@@ -137,7 +144,7 @@ const onEnableDedicatedGatewayChange = (
     disabled: dedicatedGatewayOriginallyEnabled,
   });
 
-  currentValues.set("costPerHour", { value: costPerHourValue, hidden: hideAttributes });
+  currentValues.set("costPerHour", { value: costPerHourDefaultValue, hidden: hideAttributes });
   currentValues.set("connectionString", {
     value: connectionStringValue,
     hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
@@ -187,11 +194,15 @@ const calculateCost = (skuName: string, instanceCount: number): string | Descrip
     for (var i = 0; i < readRegions.length; i++) {
       costPerHour += priceMap.get(readRegions[i]).get(skuName.replace("Cosmos\.", ""));
     }
-    alert(`The approximate cost per hour is $ ${costPerHour * instanceCount}`);
-    return `The approximate cost per hour is $ ${costPerHour * instanceCount}`
+    costPerHour *= instanceCount;
+
+    return {
+      textTKey: `$${costPerHour}`,
+      type: DescriptionType.Text
+    }
   }
   catch (err) {
-    return costPerHourValue;
+    return costPerHourDefaultValue;
   }
 }
 
@@ -361,7 +372,7 @@ export default class SqlX extends SelfServeBaseClass {
   instances: number;
 
   @Values({
-    labelTKey: "Cost",
+    labelTKey: "Approximate Cost Per Hour",
     isDynamicDescription: true,
   })
   costPerHour: string;
