@@ -213,11 +213,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     };
   }
 
-  componentDidMount(): void {
+  async componentDidMount(): Promise<void> {
     if (this.isCollectionSettingsTab) {
-      this.refreshIndexTransformationProgress();
-      this.loadMongoIndexes();
-      this.loadCollectionOffer();
+      await this.refreshIndexTransformationProgress();
+      await this.loadMongoIndexes();
+      await this.loadCollectionOffer();
     }
 
     this.setAutoPilotStates();
@@ -376,6 +376,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     try {
       this.props.settingsTab.isExecuting(true);
       await this.collection.loadOffer();
+      this.offer = this.collection.offer();
       this.props.settingsTab.tabTitle(this.collection.offer() ? "Settings" : "Scale & Settings");
       this.setState({ offerLoaded: true });
     } catch (error) {
