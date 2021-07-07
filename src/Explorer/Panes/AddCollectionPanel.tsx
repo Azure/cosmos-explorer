@@ -721,7 +721,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       case "Gremlin":
         return "e.g., /address";
       default:
-        return "/id";
+        return "/address/zipCode";
     }
   }
 
