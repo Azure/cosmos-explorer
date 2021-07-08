@@ -1,7 +1,34 @@
 import { extractPartitionKey, PartitionKeyDefinition } from "@azure/cosmos";
+import { IColumn, IImageProps, ImageFit } from "@fluentui/react";
 import { Resource } from "../../../src/Contracts/DataModels";
 import * as DataModels from "../../Contracts/DataModels";
 import DocumentId from "../Tree/DocumentId";
+
+export interface IDocumentsTabContentState {
+  columns: IColumn[];
+  isModalSelection: boolean;
+  isCompactMode: boolean;
+  announcedMessage?: string;
+  isSuggestionVisible: boolean;
+  filter: string;
+  isFilterOptionVisible: boolean;
+  isEditorVisible: boolean;
+  documentContent: string;
+  documentIds: Array<DocumentId>;
+  documentSqlIds: Array<Resource>;
+  editorKey: string;
+  selectedDocumentId?: DocumentId;
+  selectedSqlDocumentId?: Resource;
+  isEditorContentEdited: boolean;
+  isAllDocumentsVisible: boolean;
+}
+
+export const imageProps: Partial<IImageProps> = {
+  imageFit: ImageFit.centerContain,
+  width: 40,
+  height: 40,
+  style: { marginTop: "15px" },
+};
 
 export function hasShardKeySpecified(
   document: string,
@@ -75,10 +102,10 @@ export function getFilterSuggestions(isPreferredApiMongoDB: boolean): { value: s
   const filterSuggestions = isPreferredApiMongoDB
     ? [{ value: `{"id": "foo"}` }, { value: "{ qty: { $gte: 20 } }" }]
     : [
-      { value: 'WHERE c.id = "foo"' },
-      { value: "ORDER BY c._ts DESC" },
-      { value: 'WHERE c.id = "foo" ORDER BY c._ts DESC' },
-    ];
+        { value: 'WHERE c.id = "foo"' },
+        { value: "ORDER BY c._ts DESC" },
+        { value: 'WHERE c.id = "foo" ORDER BY c._ts DESC' },
+      ];
   return filterSuggestions;
 }
 
@@ -93,3 +120,10 @@ export function getDocumentItems(
   }
   return isAllDocumentsVisible ? documentSqlIds : documentSqlIds.slice(0, 5);
 }
+
+export const tabButtonVisibility = (visible: boolean, enabled: boolean): { visible: boolean; enabled: boolean } => {
+  return {
+    visible,
+    enabled,
+  };
+};

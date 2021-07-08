@@ -31,7 +31,6 @@ export default class DocumentsTab extends TabsBase {
     this.displayedError = ko.observable<string>("");
   }
 
-
   public onTabClick(): void {
     super.onTabClick();
     this.collection && this.collection.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);

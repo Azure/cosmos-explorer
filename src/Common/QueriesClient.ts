@@ -2,7 +2,7 @@ import * as _ from "underscore";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "../Explorer/Explorer";
-import DocumentsTab from "../Explorer/Tabs/DocumentsTab1";
+import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { userContext } from "../UserContext";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";

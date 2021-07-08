@@ -1,6 +1,6 @@
 import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
-import DocumentsTab from "../Tabs/DocumentsTab1";
+import DocumentsTab from "../Tabs/DocumentsTab";
 
 export default class DocumentId {
   public container: DocumentsTab;

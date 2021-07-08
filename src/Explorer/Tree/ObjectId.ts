@@ -1,5 +1,5 @@
 import * as ko from "knockout";
-import DocumentsTab from "../Tabs/DocumentsTab1";
+import DocumentsTab from "../Tabs/DocumentsTab";
 import DocumentId from "./DocumentId";
 
 export default class ObjectId extends DocumentId {

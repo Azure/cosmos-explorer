@@ -4,9 +4,7 @@ import {
   DetailsListLayoutMode,
   IColumn,
   IIconProps,
-  IImageProps,
   Image,
-  ImageFit,
   List,
   PrimaryButton,
   SelectionMode,
@@ -43,7 +41,7 @@ import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import DocumentId from "../Tree/DocumentId";
 import ObjectId from "../Tree/ObjectId";
-import DocumentsTab from "./DocumentsTab1";
+import DocumentsTab from "./DocumentsTab";
 import {
   formatDocumentContent,
   formatSqlDocumentContent,
@@ -52,32 +50,10 @@ import {
   getFilterSuggestions,
   getPartitionKeyDefinition,
   hasShardKeySpecified,
+  IDocumentsTabContentState,
+  imageProps,
+  tabButtonVisibility,
 } from "./DocumentTabUtils";
-
-const filterIcon: IIconProps = { iconName: "Filter" };
-
-export interface IDocumentsTabContentState {
-  columns: IColumn[];
-  isModalSelection: boolean;
-  isCompactMode: boolean;
-  announcedMessage?: string;
-  isSuggestionVisible: boolean;
-  filter: string;
-  isFilterOptionVisible: boolean;
-  isEditorVisible: boolean;
-  documentContent: string;
-  documentIds: Array<DocumentId>;
-  documentSqlIds: Array<Resource>;
-  editorKey: string;
-  selectedDocumentId?: DocumentId;
-  selectedSqlDocumentId?: Resource;
-  isEditorContentEdited: boolean;
-  isAllDocumentsVisible: boolean;
-}
-
-export interface IDocumentsTabContentProps extends DocumentsTab {
-  _resourceTokenPartitionKey: string;
-}
 
 export interface IDocument {
   value: string;
@@ -90,13 +66,7 @@ interface IButton {
   isSelected?: boolean;
 }
 
-const imageProps: Partial<IImageProps> = {
-  imageFit: ImageFit.centerContain,
-  width: 40,
-  height: 40,
-  style: { marginTop: "15px" },
-};
-
+const filterIcon: IIconProps = { iconName: "Filter" };
 const intitalDocumentContent = `{ \n "id": "replace_with_new_document_id" \n }`;
 
 export default class DocumentsTabContent extends React.Component<DocumentsTab, IDocumentsTabContentState> {
@@ -110,30 +80,12 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   constructor(props: DocumentsTab) {
     super(props);
 
-    this.newDocumentButton = {
-      visible: true,
-      enabled: true,
-    };
-    this.saveNewDocumentButton = {
-      visible: false,
-      enabled: true,
-    };
-    this.discardNewDocumentChangesButton = {
-      visible: false,
-      enabled: false,
-    };
-    this.saveExisitingDocumentButton = {
-      visible: false,
-      enabled: false,
-    };
-    this.discardExisitingDocumentChangesButton = {
-      visible: false,
-      enabled: false,
-    };
-    this.deleteExisitingDocumentButton = {
-      visible: false,
-      enabled: false,
-    };
+    this.newDocumentButton = tabButtonVisibility(true, true);
+    this.saveNewDocumentButton = tabButtonVisibility(false, true);
+    this.discardNewDocumentChangesButton = tabButtonVisibility(false, false);
+    this.saveExisitingDocumentButton = tabButtonVisibility(false, false);
+    this.discardExisitingDocumentChangesButton = tabButtonVisibility(false, false);
+    this.deleteExisitingDocumentButton = tabButtonVisibility(false, false);
 
     const columns: IColumn[] = [
       {
@@ -294,30 +246,13 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       userContext.apiType === "Mongo"
         ? formatDocumentContent(row as DocumentId)
         : formatSqlDocumentContent(row as Resource);
-    this.newDocumentButton = {
-      visible: true,
-      enabled: true,
-    };
-    this.saveNewDocumentButton = {
-      visible: false,
-      enabled: false,
-    };
-    this.discardNewDocumentChangesButton = {
-      visible: false,
-      enabled: false,
-    };
-    this.saveExisitingDocumentButton = {
-      visible: true,
-      enabled: false,
-    };
-    this.discardExisitingDocumentChangesButton = {
-      visible: true,
-      enabled: false,
-    };
-    this.deleteExisitingDocumentButton = {
-      visible: true,
-      enabled: true,
-    };
+    this.newDocumentButton = tabButtonVisibility(true, true);
+    this.saveNewDocumentButton = tabButtonVisibility(false, false);
+    this.discardNewDocumentChangesButton = tabButtonVisibility(false, false);
+    this.saveExisitingDocumentButton = tabButtonVisibility(true, false);
+    this.discardExisitingDocumentChangesButton = tabButtonVisibility(true, false);
+    this.deleteExisitingDocumentButton = tabButtonVisibility(true, true);
+
     userContext.apiType === "Mongo"
       ? this.updateContent(row as DocumentId, formattedDocumentContent)
       : this.updateSqlContent(row as Resource, formattedDocumentContent);
@@ -383,7 +318,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       const updateSqlDocumentRes = await updateSqlDocuments(
         collection as ViewModels.Collection,
         selectedDocumentId,
-        documentContent
+        JSON.parse(documentContent)
       );
       if (updateSqlDocumentRes) {
         TelemetryProcessor.traceSuccess(
@@ -653,31 +588,12 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   }
 
   private onNewDocumentClick = () => {
-    this.newDocumentButton = {
-      visible: true,
-      enabled: false,
-    };
-    this.saveNewDocumentButton = {
-      visible: true,
-      enabled: true,
-    };
-
-    this.discardNewDocumentChangesButton = {
-      visible: true,
-      enabled: true,
-    };
-    this.saveExisitingDocumentButton = {
-      visible: false,
-      enabled: false,
-    };
-    this.discardExisitingDocumentChangesButton = {
-      visible: false,
-      enabled: false,
-    };
-    this.deleteExisitingDocumentButton = {
-      visible: false,
-      enabled: false,
-    };
+    this.newDocumentButton = tabButtonVisibility(true, false);
+    this.saveNewDocumentButton = tabButtonVisibility(true, true);
+    this.discardNewDocumentChangesButton = tabButtonVisibility(true, true);
+    this.saveExisitingDocumentButton = tabButtonVisibility(false, false);
+    this.discardExisitingDocumentChangesButton = tabButtonVisibility(false, false);
+    this.deleteExisitingDocumentButton = tabButtonVisibility(false, false);
 
     this.updateTabButton();
     this.setState({
@@ -819,19 +735,9 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   };
 
   private onRevertNewDocumentClick = () => {
-    this.newDocumentButton = {
-      visible: true,
-      enabled: true,
-    };
-    this.saveNewDocumentButton = {
-      visible: true,
-      enabled: false,
-    };
-
-    this.discardNewDocumentChangesButton = {
-      visible: true,
-      enabled: false,
-    };
+    this.newDocumentButton = tabButtonVisibility(true, true);
+    this.saveNewDocumentButton = tabButtonVisibility(true, false);
+    this.discardNewDocumentChangesButton = tabButtonVisibility(true, false);
 
     this.updateTabButton();
     this.setState({
@@ -840,7 +746,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     });
   };
 
-  onRenderCell = (item: { value: string }): JSX.Element => {
+  private onRenderCell = (item: { value: string }): JSX.Element => {
     return (
       <div
         className="documentTabSuggestions"
@@ -856,7 +762,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     );
   };
 
-  handleLoadMoreDocument = (): void => {
+  private handleLoadMoreDocument = (): void => {
     userContext.apiType === "Mongo" ? this.queryDocumentsData() : this.querySqlDocumentsData();
     this.setState({
       isSuggestionVisible: false,
@@ -868,16 +774,14 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   };
 
+  private getKey(item: DocumentId): string {
+    return item.rid;
+  }
+
   private handleDocumentContentChange = (newContent: string): void => {
     if (this.saveExisitingDocumentButton.visible) {
-      this.saveExisitingDocumentButton = {
-        visible: true,
-        enabled: true,
-      };
-      this.discardExisitingDocumentChangesButton = {
-        visible: true,
-        enabled: true,
-      };
+      this.saveExisitingDocumentButton = tabButtonVisibility(true, true);
+      this.discardExisitingDocumentChangesButton = tabButtonVisibility(true, true);
     }
 
     this.setState(
@@ -985,9 +889,5 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         </div>
       </div>
     );
-  }
-
-  private getKey(item: DocumentId): string {
-    return item.rid;
   }
 }
