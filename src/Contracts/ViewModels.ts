@@ -3,7 +3,7 @@ import {
   Resource,
   StoredProcedureDefinition,
   TriggerDefinition,
-  UserDefinedFunctionDefinition,
+  UserDefinedFunctionDefinition
 } from "@azure/cosmos";
 import Explorer from "../Explorer/Explorer";
 import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
@@ -370,6 +370,7 @@ export enum TerminalKind {
   Default = 0,
   Mongo = 1,
   Cassandra = 2,
+  PostgreSQL = 3
 }
 
 export interface DataExplorerInputsFrame {

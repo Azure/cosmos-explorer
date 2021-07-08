@@ -91,6 +91,10 @@ export default class TerminalTab extends TabsBase {
         endpointSuffix = "cassandra";
         break;
 
+      case ViewModels.TerminalKind.PostgreSQL:
+          endpointSuffix = "postgreSQL";
+          break;
+  
       default:
         throw new Error(`Terminal kind: ${options.kind} not supported`);
     }
