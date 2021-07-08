@@ -63,7 +63,7 @@ export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = 
         userContext.databaseAccount.name,
         "default"
       );
-      explorer.isAccountReady.valueHasMutated(); // re-trigger init notebooks
+      explorer.refreshExplorer();
 
       closeSidePanel();
 
