@@ -10,14 +10,16 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
-  getPriceMap, getReadRegions, refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  getPriceMap,
+  getReadRegions,
+  refreshDedicatedGatewayProvisioning,
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 let costPerHourDefaultValue: Description = {
@@ -55,7 +57,9 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
   currentValues.set("sku", { value: newValue });
 
   // Update cost per hour based on new sku
-  currentValues.set("costPerHour", { value: calculateCost(newValue as string, currentValues.get("NumberOfInstances").value as number) });
+  currentValues.set("costPerHour", {
+    value: calculateCost(newValue as string, currentValues.get("NumberOfInstances").value as number),
+  });
 
   return currentValues;
 };
@@ -84,7 +88,9 @@ const onNumberOfInstancesChange = (
   }
 
   // Update cost per hour based on new instance count
-  currentValues.set("costPerHour", { value: calculateCost(currentValues.get("sku").value as string, newValue as number) });
+  currentValues.set("costPerHour", {
+    value: calculateCost(currentValues.get("sku").value as string, newValue as number),
+  });
 
   return currentValues;
 };
@@ -192,19 +198,18 @@ const calculateCost = (skuName: string, instanceCount: number): string | Descrip
   try {
     var costPerHour = 0;
     for (var i = 0; i < readRegions.length; i++) {
-      costPerHour += priceMap.get(readRegions[i]).get(skuName.replace("Cosmos\.", ""));
+      costPerHour += priceMap.get(readRegions[i]).get(skuName.replace("Cosmos.", ""));
     }
     costPerHour *= instanceCount;
 
     return {
       textTKey: `$${costPerHour}`,
-      type: DescriptionType.Text
-    }
-  }
-  catch (err) {
+      type: DescriptionType.Text,
+    };
+  } catch (err) {
     return costPerHourDefaultValue;
   }
-}
+};
 
 @IsDisplayable()
 @RefreshOptions({ retryIntervalInMs: 20000 })
@@ -304,7 +309,7 @@ export default class SqlX extends SelfServeBaseClass {
     });
 
     // Get Read Regions and PriceMap
-    readRegions = await getReadRegions()
+    readRegions = await getReadRegions();
     priceMap = await getPriceMap(readRegions);
 
     const response = await getCurrentProvisioningState();

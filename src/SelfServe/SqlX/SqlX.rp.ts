@@ -131,12 +131,12 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
 
 // Data model for Read Regions Query
 interface ReadRegionsResponse {
-  locations: Array<ReadRegionItem>
-  location: string
+  locations: Array<ReadRegionItem>;
+  location: string;
 }
 
 interface ReadRegionItem {
-  locationName: string
+  locationName: string;
 }
 
 // Construct path to query arm about cosmos db account as a whole
@@ -144,37 +144,34 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
 };
 
-// Query ARM to get regions 
+// Query ARM to get regions
 export const getReadRegions = async (): Promise<Array<string>> => {
   try {
     var readRegions = new Array<string>();
 
     // Query ARM
-    const response = await armRequestWithoutPolling<ReadRegionsResponse>(
-      {
-        host: configContext.ARM_ENDPOINT,
-        path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
-        method: "GET",
-        apiVersion: "2021-04-01-preview",
-      });
+    const response = await armRequestWithoutPolling<ReadRegionsResponse>({
+      host: configContext.ARM_ENDPOINT,
+      path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
+      method: "GET",
+      apiVersion: "2021-04-01-preview",
+    });
 
     // Parse ARM Response to determine read regions
     if (response.result.location != undefined) {
       readRegions.push(response.result.location.replace(" ", "").toLowerCase());
-    }
-    else {
+    } else {
       for (var i = 0; i < response.result.locations.length; i++) {
-        readRegions.push(response.result.locations[i].locationName.replace(" ", "").toLowerCase())
+        readRegions.push(response.result.locations[i].locationName.replace(" ", "").toLowerCase());
       }
     }
     return readRegions;
-  }
-  catch (err) {
-    alert(err)
+  } catch (err) {
+    alert(err);
     // TODO: Log some failure
     return new Array<string>();
   }
-}
+};
 
 // Get Fetch Prices Path for Dedicated Gateway Product
 const getFetchPricesPathForRegion = (subscriptionId: string): string => {
@@ -183,17 +180,17 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
 
 // Data Model for Fetch Prices API
 interface FetchPricesResponse {
-  Items: Array<PriceItem>,
-  NextPageLink: string | undefined,
-  Count: number
+  Items: Array<PriceItem>;
+  NextPageLink: string | undefined;
+  Count: number;
 }
 
 interface PriceItem {
-  retailPrice: number,
-  skuName: string
+  retailPrice: number;
+  skuName: string;
 }
 
-// Query ARM Fetch Prices to get pricing 
+// Query ARM Fetch Prices to get pricing
 export const getPriceMap = async (readRegions: Array<string>): Promise<Map<string, Map<string, number>>> => {
   try {
     // Initialize empty PriceMap
@@ -204,16 +201,15 @@ export const getPriceMap = async (readRegions: Array<string>): Promise<Map<strin
       var regionPriceMap = new Map<string, number>();
 
       // Make actual query
-      const response = await armRequestWithoutPolling<FetchPricesResponse>(
-        {
-          host: configContext.ARM_ENDPOINT,
-          path: getFetchPricesPathForRegion(userContext.subscriptionId),
-          method: "POST",
-          apiVersion: "2020-01-01-preview",
-          queryParams: {
-            filter: `armRegionName eq '${readRegions[i]}' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'`
-          }
-        });
+      const response = await armRequestWithoutPolling<FetchPricesResponse>({
+        host: configContext.ARM_ENDPOINT,
+        path: getFetchPricesPathForRegion(userContext.subscriptionId),
+        method: "POST",
+        apiVersion: "2020-01-01-preview",
+        queryParams: {
+          filter: `armRegionName eq '${readRegions[i]}' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'`,
+        },
+      });
 
       // Parse response to create price mapping for current region
       for (var j = 0; j < response.result.Items.length; j++) {
@@ -225,11 +221,9 @@ export const getPriceMap = async (readRegions: Array<string>): Promise<Map<strin
     }
 
     return priceMap;
-  }
-  catch (err) {
-    alert(err)
+  } catch (err) {
+    alert(err);
     // TODO: Log some failure
     return undefined;
   }
-}
-
+};
