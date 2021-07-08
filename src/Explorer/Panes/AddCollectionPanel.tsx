@@ -113,7 +113,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey: "/id",
+      partitionKey: userContext.apiType == "SQL" || userContext.apiType == "Mongo" ? "/id" : "",
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
       useHashV2: false,
@@ -123,6 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       showErrorDetails: false,
       isExecuting: false,
     }
+
     if (userContext.features.partitionKeyDefault) {
       this.state = {
         createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
@@ -436,6 +437,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </TooltipHost>
               </Stack>
 
+              <Text variant="small" aria-label="ruDescription">
+                For small read-heavy containers or write-heavy containers of any size, the item ID is naturally a great choice for the partition key.
+              </Text>
+
               <input
                 type="text"
                 id="addCollection-partitionKeyValue"
@@ -721,7 +726,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       case "Gremlin":
         return "e.g., /address";
       default:
-        return "/address/zipCode";
+        return "e.g., /address/zipCode";
     }
   }
 
