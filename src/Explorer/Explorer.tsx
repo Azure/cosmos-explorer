@@ -954,6 +954,10 @@ export default class Explorer {
         title = "Cassandra Shell";
         break;
 
+        case ViewModels.TerminalKind.PostgreSQL:
+          title = "PostgreSQL Shell";
+          break;
+  
       default:
         throw new Error("Terminal kind: ${kind} not supported");
     }

@@ -80,6 +80,7 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.push(createOpenTerminalButton(container));
+    notebookButtons.push(createOpenPostgreSQLTerminalButton(container));
 
     notebookButtons.push(createNotebookWorkspaceResetButton(container));
     if (
@@ -504,6 +505,19 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
     iconSrc: CosmosTerminalIcon,
     iconAlt: label,
     onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
+    commandButtonLabel: label,
+    hasPopup: false,
+    disabled: false,
+    ariaLabel: label,
+  };
+}
+
+function createOpenPostgreSQLTerminalButton(container: Explorer): CommandButtonComponentProps {
+  const label = "Open PostgreSQL Terminal";
+  return {
+    iconSrc: CosmosTerminalIcon,
+    iconAlt: label,
+    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.PostgreSQL),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,
