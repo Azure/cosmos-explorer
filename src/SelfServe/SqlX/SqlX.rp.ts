@@ -147,7 +147,7 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
 // Query ARM to get regions
 export const getReadRegions = async (): Promise<Array<string>> => {
   try {
-    var readRegions = new Array<string>();
+    const readRegions = new Array<string>();
 
     // Query ARM
     const response = await armRequestWithoutPolling<ReadRegionsResponse>({
@@ -158,10 +158,10 @@ export const getReadRegions = async (): Promise<Array<string>> => {
     });
 
     // Parse ARM Response to determine read regions
-    if (response.result.location != undefined) {
+    if (response.result.location !== undefined) {
       readRegions.push(response.result.location.replace(" ", "").toLowerCase());
     } else {
-      for (var i = 0; i < response.result.locations.length; i++) {
+      for (let i = 0; i < response.result.locations.length; i++) {
         readRegions.push(response.result.locations[i].locationName.replace(" ", "").toLowerCase());
       }
     }
@@ -194,11 +194,11 @@ interface PriceItem {
 export const getPriceMap = async (readRegions: Array<string>): Promise<Map<string, Map<string, number>>> => {
   try {
     // Initialize empty PriceMap
-    var priceMap = new Map<string, Map<string, number>>();
+    const priceMap = new Map<string, Map<string, number>>();
 
     // Query ARM
-    for (var i = 0; i < readRegions.length; i++) {
-      var regionPriceMap = new Map<string, number>();
+    for (let i = 0; i < readRegions.length; i++) {
+      const regionPriceMap = new Map<string, number>();
 
       // Make actual query
       const response = await armRequestWithoutPolling<FetchPricesResponse>({
@@ -207,12 +207,15 @@ export const getPriceMap = async (readRegions: Array<string>): Promise<Map<strin
         method: "POST",
         apiVersion: "2020-01-01-preview",
         queryParams: {
-          filter: `armRegionName eq '${readRegions[i]}' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'`,
+          filter:
+            "armRegionName eq " +
+            readRegions[i] +
+            " and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
         },
       });
 
       // Parse response to create price mapping for current region
-      for (var j = 0; j < response.result.Items.length; j++) {
+      for (let j = 0; j < response.result.Items.length; j++) {
         regionPriceMap.set(response.result.Items[j].skuName, response.result.Items[j].retailPrice);
       }
 

@@ -22,7 +22,7 @@ import {
   updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
-let costPerHourDefaultValue: Description = {
+const costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
@@ -196,8 +196,8 @@ let readRegions: Array<string>;
 
 const calculateCost = (skuName: string, instanceCount: number): string | Description => {
   try {
-    var costPerHour = 0;
-    for (var i = 0; i < readRegions.length; i++) {
+    let costPerHour = 0;
+    for (let i = 0; i < readRegions.length; i++) {
       costPerHour += priceMap.get(readRegions[i]).get(skuName.replace("Cosmos.", ""));
     }
     costPerHour *= instanceCount;
