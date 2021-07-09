@@ -10,15 +10,12 @@ import { Collection, Database } from "../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../UserContext";
-import Explorer from "../Explorer";
-import { TabsManager } from "../Tabs/TabsManager";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 import { DeleteDatabaseConfirmationPanel } from "./DeleteDatabaseConfirmationPanel";
 
 describe("Delete Database Confirmation Pane", () => {
   const selectedDatabaseId = "testDatabase";
-  let fakeExplorer: Explorer;
   let database: Database;
 
   beforeAll(() => {
@@ -37,10 +34,6 @@ describe("Delete Database Confirmation Pane", () => {
   });
 
   beforeEach(() => {
-    fakeExplorer = {} as Explorer;
-    fakeExplorer.refreshAllDatabases = () => undefined;
-    fakeExplorer.tabsManager = new TabsManager();
-
     database = {} as Database;
     database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
     database.id = ko.observable<string>(selectedDatabaseId);
@@ -56,17 +49,17 @@ describe("Delete Database Confirmation Pane", () => {
   });
 
   it("shouldRecordFeedback() should return true if last non empty database or is last database that has shared throughput", () => {
-    const wrapper = shallow(<DeleteDatabaseConfirmationPanel explorer={fakeExplorer} />);
+    const wrapper = shallow(<DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} />);
     expect(wrapper.exists(".deleteDatabaseFeedback")).toBe(true);
 
     useDatabases.getState().addDatabases([database]);
-    wrapper.setProps({ explorer: fakeExplorer });
+    wrapper.setProps({});
     expect(wrapper.exists(".deleteDatabaseFeedback")).toBe(false);
     useDatabases.getState().clearDatabases();
   });
 
   it("Should call delete database", () => {
-    const wrapper = mount(<DeleteDatabaseConfirmationPanel explorer={fakeExplorer} />);
+    const wrapper = mount(<DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} />);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.exists("#confirmDatabaseId")).toBe(true);
 
@@ -81,7 +74,7 @@ describe("Delete Database Confirmation Pane", () => {
   });
 
   it("should record feedback", async () => {
-    const wrapper = mount(<DeleteDatabaseConfirmationPanel explorer={fakeExplorer} />);
+    const wrapper = mount(<DeleteDatabaseConfirmationPanel refreshDatabases={() => undefined} />);
     expect(wrapper.exists("#confirmDatabaseId")).toBe(true);
     wrapper
       .find("#confirmDatabaseId")

@@ -1,6 +1,5 @@
 import { IChoiceGroupProps } from "@fluentui/react";
 import * as ko from "knockout";
-import Q from "q";
 import React from "react";
 import _ from "underscore";
 import { AuthType } from "../AuthType";
@@ -17,6 +16,7 @@ import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
+import { useTabs } from "../hooks/useTabs";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { ExplorerSettings } from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
@@ -59,7 +59,7 @@ import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
 import { UploadItemsPane } from "./Panes/UploadItemsPane/UploadItemsPane";
 import { CassandraAPIDataClient, TableDataClient, TablesAPIDataClient } from "./Tables/TableDataClient";
 import NotebookV2Tab, { NotebookTabOptions } from "./Tabs/NotebookV2Tab";
-import { TabsManager } from "./Tabs/TabsManager";
+import TabsBase from "./Tabs/TabsBase";
 import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
@@ -72,10 +72,6 @@ import { useSelectedNode } from "./useSelectedNode";
 BindingHandlersRegisterer.registerBindingHandlers();
 // Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
 var tmp = ComponentRegisterer;
-
-export interface ExplorerParams {
-  tabsManager: TabsManager;
-}
 
 export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
@@ -90,10 +86,8 @@ export default class Explorer {
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
-  public tabsManager: TabsManager;
 
   public gitHubOAuthService: GitHubOAuthService;
-  public isSchemaEnabled: ko.Computed<boolean>;
 
   // Notebooks
   public notebookManager?: NotebookManager;
@@ -106,7 +100,7 @@ export default class Explorer {
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
 
-  constructor(params?: ExplorerParams) {
+  constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
@@ -117,7 +111,6 @@ export default class Explorer {
     );
 
     this.queriesClient = new QueriesClient(this);
-    this.isSchemaEnabled = ko.computed<boolean>(() => userContext.features.enableSchema);
 
     useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
@@ -136,13 +129,15 @@ export default class Explorer {
       return isCapabilityEnabled("EnableMongo");
     });
 
-    this.tabsManager = params?.tabsManager ?? new TabsManager();
-    this.tabsManager.openedTabs.subscribe((tabs) => {
-      if (tabs.length === 0) {
-        useSelectedNode.getState().setSelectedNode(undefined);
-        useCommandBar.getState().setContextButtons([]);
-      }
-    });
+    useTabs.subscribe(
+      (openedTabs: TabsBase[]) => {
+        if (openedTabs.length === 0) {
+          useSelectedNode.getState().setSelectedNode(undefined);
+          useCommandBar.getState().setContextButtons([]);
+        }
+      },
+      (state) => state.openedTabs
+    );
 
     this.isTabsContentExpanded = ko.observable(false);
 
@@ -283,96 +278,56 @@ export default class Explorer {
     // TODO: return result
   }
 
-  public refreshDatabaseForResourceToken(): Promise<void> {
+  public async refreshDatabaseForResourceToken(): Promise<void> {
     const databaseId = userContext.parsedResourceToken?.databaseId;
     const collectionId = userContext.parsedResourceToken?.collectionId;
     if (!databaseId || !collectionId) {
-      return Promise.reject();
+      return;
     }
 
-    return readCollection(databaseId, collectionId).then((collection: DataModels.Collection) => {
-      const resourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection);
-      useDatabases.setState({ resourceTokenCollection });
-      useSelectedNode.getState().setSelectedNode(resourceTokenCollection);
-    });
+    const collection: DataModels.Collection = await readCollection(databaseId, collectionId);
+    const resourceTokenCollection = new ResourceTokenCollection(this, databaseId, collection);
+    useDatabases.setState({ resourceTokenCollection });
+    useSelectedNode.getState().setSelectedNode(resourceTokenCollection);
   }
 
-  public refreshAllDatabases(isInitialLoad?: boolean): Q.Promise<any> {
+  public async refreshAllDatabases(): Promise<void> {
     const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
-    let resourceTreeStartKey: number = null;
-    if (isInitialLoad) {
-      resourceTreeStartKey = TelemetryProcessor.traceStart(Action.LoadResourceTree, {
-        dataExplorerArea: Constants.Areas.ResourceTree,
-      });
+
+    try {
+      const databases: DataModels.Database[] = await readDatabases();
+      TelemetryProcessor.traceSuccess(
+        Action.LoadDatabases,
+        {
+          dataExplorerArea: Constants.Areas.ResourceTree,
+        },
+        startKey
+      );
+      const currentDatabases = useDatabases.getState().databases;
+      const deltaDatabases = this.getDeltaDatabases(databases, currentDatabases);
+      let updatedDatabases = currentDatabases.filter(
+        (database) => !deltaDatabases.toDelete.some((deletedDatabase) => deletedDatabase.id() === database.id())
+      );
+      updatedDatabases = [...updatedDatabases, ...deltaDatabases.toAdd].sort((db1, db2) =>
+        db1.id().localeCompare(db2.id())
+      );
+      useDatabases.setState({ databases: updatedDatabases });
+      await this.refreshAndExpandNewDatabases(deltaDatabases.toAdd, currentDatabases);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      TelemetryProcessor.traceFailure(
+        Action.LoadDatabases,
+        {
+          dataExplorerArea: Constants.Areas.ResourceTree,
+          error: errorMessage,
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+      logConsoleError(`Error while refreshing databases: ${errorMessage}`);
     }
-
-    // TODO: Refactor
-    const deferred: Q.Deferred<any> = Q.defer();
-    readDatabases().then(
-      (databases: DataModels.Database[]) => {
-        TelemetryProcessor.traceSuccess(
-          Action.LoadDatabases,
-          {
-            dataExplorerArea: Constants.Areas.ResourceTree,
-          },
-          startKey
-        );
-        const deltaDatabases = this.getDeltaDatabases(databases);
-        this.addDatabasesToList(deltaDatabases.toAdd);
-        this.deleteDatabasesFromList(deltaDatabases.toDelete);
-        this.refreshAndExpandNewDatabases(deltaDatabases.toAdd).then(
-          () => {
-            deferred.resolve();
-          },
-          (reason) => {
-            deferred.reject(reason);
-          }
-        );
-      },
-      (error) => {
-        deferred.reject(error);
-        const errorMessage = getErrorMessage(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadDatabases,
-          {
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: errorMessage,
-            errorStack: getErrorStack(error),
-          },
-          startKey
-        );
-        logConsoleError(`Error while refreshing databases: ${errorMessage}`);
-      }
-    );
-
-    return deferred.promise.then(
-      () => {
-        if (resourceTreeStartKey != null) {
-          TelemetryProcessor.traceSuccess(
-            Action.LoadResourceTree,
-            {
-              dataExplorerArea: Constants.Areas.ResourceTree,
-            },
-            resourceTreeStartKey
-          );
-        }
-      },
-      (error) => {
-        if (resourceTreeStartKey != null) {
-          TelemetryProcessor.traceFailure(
-            Action.LoadResourceTree,
-            {
-              dataExplorerArea: Constants.Areas.ResourceTree,
-              error: getErrorMessage(error),
-              errorStack: getErrorStack(error),
-            },
-            resourceTreeStartKey
-          );
-        }
-      }
-    );
   }
 
   public onRefreshDatabasesKeyPress = (source: any, event: KeyboardEvent): boolean => {
@@ -513,69 +468,13 @@ export default class Explorer {
     }
   };
 
-  private refreshAndExpandNewDatabases(newDatabases: ViewModels.Database[]): Q.Promise<void> {
-    // we reload collections for all databases so the resource tree reflects any collection-level changes
-    // i.e addition of stored procedures, etc.
-    const deferred: Q.Deferred<void> = Q.defer<void>();
-    let loadCollectionPromises: Q.Promise<void>[] = [];
-
-    // If the user has a lot of databases, only load expanded databases.
-    const databases = useDatabases.getState().databases;
-    const databasesToLoad =
-      databases.length <= Explorer.MaxNbDatabasesToAutoExpand
-        ? databases
-        : databases.filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
-
-    const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
-      dataExplorerArea: Constants.Areas.ResourceTree,
-    });
-    databasesToLoad.forEach(async (database: ViewModels.Database) => {
-      await database.loadCollections();
-      const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
-      if (isNewDatabase) {
-        database.expandDatabase();
-      }
-      this.tabsManager.refreshActiveTab((tab) => tab.collection && tab.collection.getDatabase().id() === database.id());
-    });
-
-    Q.all(loadCollectionPromises).done(
-      () => {
-        deferred.resolve();
-        TelemetryProcessor.traceSuccess(
-          Action.LoadCollections,
-          { dataExplorerArea: Constants.Areas.ResourceTree },
-          startKey
-        );
-      },
-      (error: any) => {
-        deferred.reject(error);
-        TelemetryProcessor.traceFailure(
-          Action.LoadCollections,
-          {
-            dataExplorerArea: Constants.Areas.ResourceTree,
-            error: getErrorMessage(error),
-            errorStack: getErrorStack(error),
-          },
-          startKey
-        );
-      }
-    );
-    return deferred.promise;
-  }
-
-  private _initSettings() {
-    if (!ExplorerSettings.hasSettingsDefined()) {
-      ExplorerSettings.createDefaultSettings();
-    }
-  }
-
   private getDeltaDatabases(
-    updatedDatabaseList: DataModels.Database[]
+    updatedDatabaseList: DataModels.Database[],
+    databases: ViewModels.Database[]
   ): {
     toAdd: ViewModels.Database[];
     toDelete: ViewModels.Database[];
   } {
-    const databases = useDatabases.getState().databases;
     const newDatabases: DataModels.Database[] = _.filter(updatedDatabaseList, (database: DataModels.Database) => {
       const databaseExists = _.some(
         databases,
@@ -587,8 +486,8 @@ export default class Explorer {
       (newDatabase: DataModels.Database) => new Database(this, newDatabase)
     );
 
-    let databasesToDelete: ViewModels.Database[] = [];
-    ko.utils.arrayForEach(databases, (database: ViewModels.Database) => {
+    const databasesToDelete: ViewModels.Database[] = [];
+    databases.forEach((database: ViewModels.Database) => {
       const databasePresentInUpdatedList = _.some(
         updatedDatabaseList,
         (db: DataModels.Database) => db.id === database.id()
@@ -601,13 +500,58 @@ export default class Explorer {
     return { toAdd: databasesToAdd, toDelete: databasesToDelete };
   }
 
-  private addDatabasesToList(databases: ViewModels.Database[]): void {
-    useDatabases.getState().addDatabases(databases);
+  private async refreshAndExpandNewDatabases(
+    newDatabases: ViewModels.Database[],
+    databases: ViewModels.Database[]
+  ): Promise<void> {
+    // we reload collections for all databases so the resource tree reflects any collection-level changes
+    // i.e addition of stored procedures, etc.
+
+    // If the user has a lot of databases, only load expanded databases.
+    const databasesToLoad =
+      databases.length <= Explorer.MaxNbDatabasesToAutoExpand
+        ? databases
+        : databases.filter((db) => db.isDatabaseExpanded() || db.id() === Constants.SavedQueries.DatabaseName);
+
+    const startKey: number = TelemetryProcessor.traceStart(Action.LoadCollections, {
+      dataExplorerArea: Constants.Areas.ResourceTree,
+    });
+
+    try {
+      await Promise.all(
+        databasesToLoad.map(async (database: ViewModels.Database) => {
+          await database.loadCollections();
+          const isNewDatabase: boolean = _.some(newDatabases, (db: ViewModels.Database) => db.id() === database.id());
+          if (isNewDatabase) {
+            database.expandDatabase();
+          }
+          useTabs
+            .getState()
+            .refreshActiveTab((tab) => tab.collection && tab.collection.getDatabase().id() === database.id());
+          TelemetryProcessor.traceSuccess(
+            Action.LoadCollections,
+            { dataExplorerArea: Constants.Areas.ResourceTree },
+            startKey
+          );
+        })
+      );
+    } catch (error) {
+      TelemetryProcessor.traceFailure(
+        Action.LoadCollections,
+        {
+          dataExplorerArea: Constants.Areas.ResourceTree,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        },
+        startKey
+      );
+    }
   }
 
-  private deleteDatabasesFromList(databasesToRemove: ViewModels.Database[]): void {
-    const deleteDatabase = useDatabases.getState().deleteDatabase;
-    databasesToRemove.forEach((database) => deleteDatabase(database));
+  private _initSettings() {
+    if (!ExplorerSettings.hasSettingsDefined()) {
+      ExplorerSettings.createDefaultSettings();
+    }
   }
 
   public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
@@ -750,16 +694,18 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
 
-    const notebookTabs = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.NotebookV2,
-      (tab) =>
-        (tab as NotebookV2Tab).notebookPath &&
-        FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
-    ) as NotebookV2Tab[];
+    const notebookTabs = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.NotebookV2,
+        (tab) =>
+          (tab as NotebookV2Tab).notebookPath &&
+          FileSystemUtil.isPathEqual((tab as NotebookV2Tab).notebookPath(), notebookContentItem.path)
+      ) as NotebookV2Tab[];
     let notebookTab = notebookTabs && notebookTabs[0];
 
     if (notebookTab) {
-      this.tabsManager.activateTab(notebookTab);
+      useTabs.getState().activateTab(notebookTab);
     } else {
       const options: NotebookTabOptions = {
         account: userContext.databaseAccount,
@@ -778,7 +724,7 @@ export default class Explorer {
       try {
         const NotebookTabV2 = await import(/* webpackChunkName: "NotebookV2Tab" */ "./Tabs/NotebookV2Tab");
         notebookTab = new NotebookTabV2.default(options);
-        this.tabsManager.activateNewTab(notebookTab);
+        useTabs.getState().activateNewTab(notebookTab);
       } catch (reason) {
         console.error("Import NotebookV2Tab failed!", reason);
         return false;
@@ -796,19 +742,17 @@ export default class Explorer {
     }
 
     // Don't delete if tab is open to avoid accidental deletion
-    const openedNotebookTabs = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.NotebookV2,
-      (tab: NotebookV2Tab) => {
+    const openedNotebookTabs = useTabs
+      .getState()
+      .getTabs(ViewModels.CollectionTabKind.NotebookV2, (tab: NotebookV2Tab) => {
         return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), notebookFile.path);
-      }
-    );
+      });
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
       useSidePanel.getState().openSidePanel(
         "Rename Notebook",
         <StringInputPane
-          explorer={this}
           closePanel={() => {
             useSidePanel.getState().closeSidePanel();
             this.resourceTree.triggerRender();
@@ -839,7 +783,6 @@ export default class Explorer {
     useSidePanel.getState().openSidePanel(
       "Create new directory",
       <StringInputPane
-        explorer={this}
         closePanel={() => {
           useSidePanel.getState().closeSidePanel();
           this.resourceTree.triggerRender();
@@ -927,12 +870,11 @@ export default class Explorer {
     }
 
     // Don't delete if tab is open to avoid accidental deletion
-    const openedNotebookTabs = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.NotebookV2,
-      (tab: NotebookV2Tab) => {
+    const openedNotebookTabs = useTabs
+      .getState()
+      .getTabs(ViewModels.CollectionTabKind.NotebookV2, (tab: NotebookV2Tab) => {
         return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), item.path);
-      }
-    );
+      });
     if (openedNotebookTabs.length > 0) {
       this.showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
       return Promise.reject();
@@ -1034,10 +976,9 @@ export default class Explorer {
         throw new Error("Terminal kind: ${kind} not supported");
     }
 
-    const terminalTabs: TerminalTab[] = this.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Terminal,
-      (tab) => tab.tabTitle() === title
-    ) as TerminalTab[];
+    const terminalTabs: TerminalTab[] = useTabs
+      .getState()
+      .getTabs(ViewModels.CollectionTabKind.Terminal, (tab) => tab.tabTitle() === title) as TerminalTab[];
 
     let index = 1;
     if (terminalTabs.length > 0) {
@@ -1058,7 +999,7 @@ export default class Explorer {
       index: index,
     });
 
-    this.tabsManager.activateNewTab(newTab);
+    useTabs.getState().activateNewTab(newTab);
   }
 
   public async openGallery(
@@ -1069,14 +1010,15 @@ export default class Explorer {
   ) {
     const title = "Gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
-    const galleryTab = this.tabsManager
+    const galleryTab = useTabs
+      .getState()
       .getTabs(ViewModels.CollectionTabKind.Gallery)
       .find((tab) => tab.tabTitle() == title);
 
     if (galleryTab instanceof GalleryTab) {
-      this.tabsManager.activateTab(galleryTab);
+      useTabs.getState().activateTab(galleryTab);
     } else {
-      this.tabsManager.activateNewTab(
+      useTabs.getState().activateNewTab(
         new GalleryTab(
           {
             tabKind: ViewModels.CollectionTabKind.Gallery,
@@ -1116,7 +1058,7 @@ export default class Explorer {
   }
 
   private refreshCommandBarButtons(): void {
-    const activeTab = this.tabsManager.activeTab();
+    const activeTab = useTabs.getState().activeTab;
     if (activeTab) {
       activeTab.onActivate(); // TODO only update tabs buttons?
     } else {
@@ -1208,7 +1150,7 @@ export default class Explorer {
   public async refreshExplorer(): Promise<void> {
     userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
-      : this.refreshAllDatabases(true);
+      : this.refreshAllDatabases();
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
     const isNotebookEnabled: boolean =
       userContext.authType !== AuthType.ResourceToken &&

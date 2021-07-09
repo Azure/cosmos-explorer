@@ -2,6 +2,7 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -77,7 +78,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
 
   public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
     const collection: ViewModels.Collection = source.collection || source;
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
       databaseName: this.databaseId,
@@ -87,7 +88,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       tabTitle: title,
     });
 
-    this.container.tabsManager.activateNewTab(
+    useTabs.getState().activateNewTab(
       new NewQueryTab(
         {
           tabKind: ViewModels.CollectionTabKind.Query,
@@ -115,16 +116,18 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Documents,
-      (tab: TabsBase) =>
-        tab.collection?.id() === this.id() &&
-        (tab.collection as ViewModels.CollectionBase).databaseId === this.databaseId
-    ) as DocumentsTab[];
+    const documentsTabs: DocumentsTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Documents,
+        (tab: TabsBase) =>
+          tab.collection?.id() === this.id() &&
+          (tab.collection as ViewModels.CollectionBase).databaseId === this.databaseId
+      ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
     if (documentsTab) {
-      this.container.tabsManager.activateTab(documentsTab);
+      useTabs.getState().activateTab(documentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.databaseId,
@@ -146,7 +149,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
         onLoadStartKey: startKey,
       });
 
-      this.container.tabsManager.activateNewTab(documentsTab);
+      useTabs.getState().activateNewTab(documentsTab);
     }
   }
 
