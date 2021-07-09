@@ -437,8 +437,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 </TooltipHost>
               </Stack>
 
-              <Text variant="small" aria-label="ruDescription">
-                For small read-heavy containers or write-heavy containers of any size, the item ID is naturally a great choice for the partition key.
+              <Text variant="small" aria-label="pkDescription">
+                {this.getPartitionKeySubtext()}
               </Text>
 
               <input
@@ -833,6 +833,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return tooltipText;
+  }
+
+  private getPartitionKeySubtext(): string {
+    if ((!userContext.features.partitionKeyDefault) && (userContext.apiType == "SQL" || userContext.apiType == "Mongo")) {
+      let subtext = "For small workloads, the item ID is a suitable choice for the partition key."
+      return subtext;
+    }
   }
 
   private getAnalyticalStorageTooltipContent(): JSX.Element {
