@@ -2,12 +2,12 @@
  * Wrapper around Notebook server terminal
  */
 
+import postRobot from "post-robot";
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
-import * as StringUtils from "../../../Utils/StringUtils";
+import { TerminalProps } from "../../../Terminal/TerminalProps";
 import { userContext } from "../../../UserContext";
-import { TerminalQueryParams } from "../../../Common/Constants";
-import { handleError } from "../../../Common/ErrorHandlingUtils";
+import * as StringUtils from "../../../Utils/StringUtils";
 
 export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
@@ -15,8 +15,14 @@ export interface NotebookTerminalComponentProps {
 }
 
 export class NotebookTerminalComponent extends React.Component<NotebookTerminalComponentProps> {
+  private terminalWindow: Window;
+
   constructor(props: NotebookTerminalComponentProps) {
     super(props);
+  }
+
+  componentDidMount(): void {
+    this.sendPropsToTerminalFrame();
   }
 
   public render(): JSX.Element {
@@ -24,22 +30,36 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       <div className="notebookTerminalContainer">
         <iframe
           title="Terminal to Notebook Server"
-          src={NotebookTerminalComponent.createNotebookAppSrc(this.props.notebookServerInfo, this.getTerminalParams())}
+          onLoad={(event) => this.handleFrameLoad(event)}
+          src="terminal.html"
         />
       </div>
     );
   }
 
-  public getTerminalParams(): Map<string, string> {
-    let params: Map<string, string> = new Map<string, string>();
-    params.set(TerminalQueryParams.Terminal, "true");
+  handleFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {
+    this.terminalWindow = (event.target as HTMLIFrameElement).contentWindow;
+    this.sendPropsToTerminalFrame();
+  }
 
-    const terminalEndpoint: string = this.tryGetTerminalEndpoint();
-    if (terminalEndpoint) {
-      params.set(TerminalQueryParams.TerminalEndpoint, terminalEndpoint);
+  sendPropsToTerminalFrame(): void {
+    if (!this.terminalWindow) {
+      return;
     }
 
-    return params;
+    const props: TerminalProps = {
+      terminalEndpoint: this.tryGetTerminalEndpoint(),
+      notebookServerEndpoint: this.props.notebookServerInfo.notebookServerEndpoint,
+      authToken: this.props.notebookServerInfo.authToken,
+      subscriptionId: userContext.subscriptionId,
+      apiType: userContext.apiType,
+      authType: userContext.authType,
+      databaseAccount: userContext.databaseAccount,
+    };
+
+    postRobot.send(this.terminalWindow, "props", props, {
+      domain: window.location.origin,
+    });
   }
 
   public tryGetTerminalEndpoint(): string | null {
@@ -62,32 +82,5 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       return new URL(terminalEndpoint).host;
     }
     return null;
-  }
-
-  public static createNotebookAppSrc(
-    serverInfo: DataModels.NotebookWorkspaceConnectionInfo,
-    params: Map<string, string>
-  ): string {
-    if (!serverInfo.notebookServerEndpoint) {
-      handleError(
-        "Notebook server endpoint not defined. Terminal will fail to connect to jupyter server.",
-        "NotebookTerminalComponent/createNotebookAppSrc"
-      );
-      return "";
-    }
-
-    params.set(TerminalQueryParams.Server, serverInfo.notebookServerEndpoint);
-    if (serverInfo.authToken && serverInfo.authToken.length > 0) {
-      params.set(TerminalQueryParams.Token, serverInfo.authToken);
-    }
-
-    params.set(TerminalQueryParams.SubscriptionId, userContext.subscriptionId);
-
-    let result: string = "terminal.html?";
-    for (let key of params.keys()) {
-      result += `${key}=${encodeURIComponent(params.get(key))}&`;
-    }
-
-    return result;
   }
 }
