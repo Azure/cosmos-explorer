@@ -20,7 +20,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "_isInitializingNotebooks": false,
             "_resetNotebookWorkspace": [Function],
             "isFixedCollectionWithSharedThroughputSupported": [Function],
-            "isSchemaEnabled": [Function],
             "isTabsContentExpanded": [Function],
             "onRefreshDatabasesKeyPress": [Function],
             "onRefreshResourcesClick": [Function],
@@ -37,10 +36,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
               "container": [Circular],
               "parameters": [Function],
-            },
-            "tabsManager": TabsManager {
-              "activeTab": [Function],
-              "openedTabs": [Function],
             },
           },
           "getRepo": [Function],

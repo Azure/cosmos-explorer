@@ -1,6 +1,7 @@
 import React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
 import type { TabOptions } from "../../../Contracts/ViewModels";
+import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
 import TabsBase from "../TabsBase";
 import MongoShellTabComponent, { IMongoShellTabAccessor, IMongoShellTabComponentProps } from "./MongoShellTabComponent";
@@ -33,7 +34,7 @@ export class NewMongoShellTab extends TabsBase {
   }
 
   public onTabClick(): void {
-    this.manager?.activateTab(this);
+    useTabs.getState().activateTab(this);
     this.iMongoShellTabAccessor.onTabClickEvent();
   }
 }
