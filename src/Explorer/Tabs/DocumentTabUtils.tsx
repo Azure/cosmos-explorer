@@ -86,13 +86,14 @@ export function formatDocumentContent(row: DocumentId): string {
 }
 
 export function formatSqlDocumentContent(row: Resource): string {
-  const { id, _rid, _self, _ts, _etag } = row;
+  const { id, _rid, _self, _ts, _etag, _partitionKeyValue } = row;
   const documentContent = JSON.stringify({
     id: id || "",
     _rid: _rid || "",
     _self: _self || "",
     _ts: _ts || "",
     _etag: _etag || "",
+    _partitionKeyValue: _partitionKeyValue || "",
   });
   const formattedDocumentContent = documentContent.replace(/,/g, ",\n").replace("{", "{\n").replace("}", "\n}");
   return formattedDocumentContent;
@@ -142,5 +143,11 @@ export const getfilterText = (isPreferredApiMongoDB: boolean, filter: string): s
     }
     return "No filter applied";
   }
-  return "Select * from C";
+  return `Select * from C ${filter}`;
+};
+
+export const getConfirmationMessage = (apiType: string): string => {
+  return apiType !== "Mongo"
+    ? "Are you sure you want to delete the selected item ?"
+    : "Are you sure you want to delete the selected document ?";
 };

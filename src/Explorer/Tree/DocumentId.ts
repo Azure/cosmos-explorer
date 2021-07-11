@@ -13,6 +13,7 @@ export default class DocumentId {
   public partitionKeyValue: any;
   public stringPartitionKeyValue: string;
   public isDirty: ko.Observable<boolean>;
+  public _partitionKeyValue: string;
 
   constructor(container: DocumentsTab, data: any, partitionKeyValue: any) {
     this.container = container;
@@ -26,13 +27,6 @@ export default class DocumentId {
     this.id = ko.observable(data.id);
     this.isDirty = ko.observable(false);
   }
-
-  // public click() {
-  //   if (!this.container.isEditorDirty() || window.confirm("Your unsaved changes will be lost.")) {
-  //     this.loadDocument();
-  //   }
-  //   return;
-  // }
 
   public partitionKeyHeader(): Object {
     if (!this.partitionKeyProperty) {
@@ -64,8 +58,4 @@ export default class DocumentId {
 
     return JSON.stringify(partitionKeyValue);
   }
-
-  // public async loadDocument(): Promise<void> {
-  //   await this.container.selectDocument(this);
-  // }
 }

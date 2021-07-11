@@ -10,7 +10,7 @@ import {
   SelectionMode,
   Stack,
   Text,
-  TextField
+  TextField,
 } from "@fluentui/react";
 import * as React from "react";
 import SplitterLayout from "react-splitter-layout";
@@ -45,6 +45,7 @@ import DocumentsTab from "./DocumentsTab";
 import {
   formatDocumentContent,
   formatSqlDocumentContent,
+  getConfirmationMessage,
   getDocumentItems,
   getFilterPlaceholder,
   getFilterSuggestions,
@@ -54,7 +55,7 @@ import {
   IButton,
   IDocumentsTabContentState,
   imageProps,
-  tabButtonVisibility
+  tabButtonVisibility,
 } from "./DocumentTabUtils";
 
 const filterIcon: IIconProps = { iconName: "Filter" };
@@ -108,15 +109,16 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         onRender: (item: DocumentId) => {
           return (
             <div onClick={() => this.handleRow(item)} className="documentIdItem">
-              {item.partitionKeyValue}
+              {isPreferredApiMongoDB ? item.partitionKeyValue : item._partitionKeyValue}
             </div>
           );
         },
       },
     ];
 
-    this.intitalDocumentContent = `{ \n ${isPreferredApiMongoDB ? '"_id"' : '"id"'
-      }: "replace_with_new_document_id" \n }`;
+    this.intitalDocumentContent = `{ \n ${
+      isPreferredApiMongoDB ? '"_id"' : '"id"'
+    }: "replace_with_new_document_id" \n }`;
 
     this.state = {
       columns: columns,
@@ -150,7 +152,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     return QueryUtils.buildDocumentsQuery(filter, this.props.partitionKeyProperty, this.props.partitionKey);
   }
 
-  querySqlDocumentsData = async (): Promise<void> => {
+  private querySqlDocumentsData = async (): Promise<void> => {
     this.props.isExecuting(true);
     this.props.isExecutionError(false);
     const { filter } = this.state;
@@ -175,7 +177,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     }
   };
 
-  queryDocumentsData = async (): Promise<void> => {
+  private queryDocumentsData = async (): Promise<void> => {
     this.props.isExecuting(true);
     this.props.isExecutionError(false);
     try {
@@ -202,7 +204,6 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
           {
             databaseName: this.props.collection.databaseId,
             collectionName: this.props.collection.id(),
-
             dataExplorerArea: Areas.Tab,
             tabTitle: this.props.tabTitle(),
           },
@@ -217,7 +218,6 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
           {
             databaseName: this.props.collection.databaseId,
             collectionName: this.props.collection.id(),
-
             dataExplorerArea: Areas.Tab,
             tabTitle: this.props.tabTitle(),
             error: getErrorMessage(error),
@@ -230,7 +230,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     }
   };
 
-  handleRow = (row: DocumentId | Resource): void => {
+  private handleRow = (row: DocumentId | Resource): void => {
     if (this.state.isEditorContentEdited) {
       const isChangesConfirmed = window.confirm("Your unsaved changes will be lost.");
       if (isChangesConfirmed) {
@@ -243,7 +243,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     }
   };
 
-  handleRowContent = (row: DocumentId | Resource): void => {
+  private handleRowContent = (row: DocumentId | Resource): void => {
     const formattedDocumentContent =
       userContext.apiType === "Mongo"
         ? formatDocumentContent(row as DocumentId)
@@ -255,7 +255,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       : this.updateSqlContent(row as Resource, formattedDocumentContent);
   };
 
-  updateContent = (row: DocumentId, formattedDocumentContent: string): void => {
+  private updateContent = (row: DocumentId, formattedDocumentContent: string): void => {
     this.setState(
       {
         documentContent: formattedDocumentContent,
@@ -269,7 +269,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     );
   };
 
-  updateSqlContent = (row: Resource, formattedDocumentContent: string): void => {
+  private updateSqlContent = (row: Resource, formattedDocumentContent: string): void => {
     this.setState(
       {
         documentContent: formattedDocumentContent,
@@ -283,7 +283,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     );
   };
 
-  handleFilter = (): void => {
+  private handleFilter = (): void => {
     userContext.apiType === "Mongo" ? this.queryDocumentsData() : this.querySqlDocumentsData();
     this.setState({
       isSuggestionVisible: false,
@@ -291,7 +291,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   };
 
   async updateSqlDocument(): Promise<void> {
-    const { partitionKey, partitionKeyProperty, isExecutionError, isExecuting, tabTitle, collection } = this.props;
+    const { partitionKey, partitionKeyProperty, isExecutionError, isExecuting, collection } = this.props;
     const { documentContent } = this.state;
     const partitionKeyArray = extractPartitionKey(
       this.state.selectedSqlDocumentId,
@@ -305,11 +305,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       partitionKeyValue
     );
     isExecutionError(false);
-    const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
-      dataExplorerArea: Areas.Tab,
-      tabTitle: tabTitle(),
-    });
-
+    const startKey: number = this.getStartKey(Action.UpdateDocument);
     try {
       isExecuting(true);
       const updateSqlDocumentRes = await updateSqlDocuments(
@@ -318,45 +314,21 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         JSON.parse(documentContent)
       );
       if (updateSqlDocumentRes) {
-        TelemetryProcessor.traceSuccess(
-          Action.UpdateDocument,
-          {
-            dataExplorerArea: Areas.Tab,
-            tabTitle: tabTitle(),
-          },
-          startKey
-        );
+        this.setTraceSuccess(Action.UpdateDocument, startKey);
         this.querySqlDocumentsData();
-        isExecuting(false);
       }
     } catch (error) {
-      isExecutionError(true);
-      isExecuting(false);
-      const errorMessage = getErrorMessage(error);
-      window.alert(errorMessage);
-      TelemetryProcessor.traceFailure(
-        Action.UpdateDocument,
-        {
-          dataExplorerArea: Areas.Tab,
-          tabTitle: tabTitle(),
-          error: errorMessage,
-          errorStack: getErrorStack(error),
-        },
-        startKey
-      );
+      window.alert(getErrorMessage(error));
+      this.setTraceFail(Action.UpdateDocument, startKey, error);
     }
   }
 
   private async updateMongoDocument(): Promise<void> {
     const { selectedDocumentId, documentContent, documentIds } = this.state;
-    const { isExecutionError, isExecuting, tabTitle, collection, partitionKey, partitionKeyProperty } = this.props;
+    const { isExecutionError, isExecuting, collection, partitionKey, partitionKeyProperty } = this.props;
     isExecutionError(false);
     isExecuting(true);
-    const startKey: number = TelemetryProcessor.traceStart(Action.UpdateDocument, {
-      dataExplorerArea: Areas.Tab,
-      tabTitle: tabTitle(),
-    });
-
+    const startKey: number = this.getStartKey(Action.UpdateDocument);
     try {
       const updatedDocument = await updateDocument(
         collection.databaseId,
@@ -376,31 +348,11 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
           documentId.id(id.id());
         }
       });
-      TelemetryProcessor.traceSuccess(
-        Action.UpdateDocument,
-        {
-          dataExplorerArea: Areas.Tab,
-          tabTitle: tabTitle(),
-        },
-        startKey
-      );
+      this.setTraceSuccess(Action.UpdateDocument, startKey);
       this.setState({ isEditorContentEdited: false });
-      isExecuting(false);
     } catch (error) {
-      isExecutionError(true);
-      const errorMessage = getErrorMessage(error);
-      window.alert(errorMessage);
-      TelemetryProcessor.traceFailure(
-        Action.UpdateDocument,
-        {
-          dataExplorerArea: Areas.Tab,
-          tabTitle: tabTitle(),
-          error: errorMessage,
-          errorStack: getErrorStack(error),
-        },
-        startKey
-      );
-      isExecuting(false);
+      window.alert(getErrorMessage(error));
+      this.setTraceFail(Action.UpdateDocument, startKey, error);
     }
   }
 
@@ -515,19 +467,10 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   }
 
   private async onDeleteExisitingDocumentClick(): Promise<void> {
-    const msg =
-      userContext.apiType !== "Mongo"
-        ? "Are you sure you want to delete the selected item ?"
-        : "Are you sure you want to delete the selected document ?";
-
-    const { isExecutionError, isExecuting, collection, tabTitle, partitionKey, partitionKeyProperty } = this.props;
-
-    const startKey: number = TelemetryProcessor.traceStart(Action.DeleteDocument, {
-      dataExplorerArea: Areas.Tab,
-      tabTitle: tabTitle(),
-    });
-
-    if (window.confirm(msg)) {
+    const confirmationMessage = getConfirmationMessage(userContext.apiType);
+    const { isExecuting, collection, partitionKey, partitionKeyProperty } = this.props;
+    const startKey: number = this.getStartKey(Action.DeleteDocument);
+    if (window.confirm(confirmationMessage)) {
       try {
         isExecuting(true);
         if (userContext.apiType === "Mongo") {
@@ -551,29 +494,10 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
           await deleteSqlDocument(collection as ViewModels.Collection, selectedDocumentId);
           this.querySqlDocumentsData();
         }
-        TelemetryProcessor.traceSuccess(
-          Action.DeleteDocument,
-          {
-            dataExplorerArea: Areas.Tab,
-            tabTitle: tabTitle(),
-          },
-          startKey
-        );
+        this.setTraceSuccess(Action.DeleteDocument, startKey);
         this.setState({ isEditorVisible: false });
-        isExecuting(false);
       } catch (error) {
-        isExecutionError(true);
-        isExecuting(false);
-        TelemetryProcessor.traceFailure(
-          Action.DeleteDocument,
-          {
-            dataExplorerArea: Areas.Tab,
-            tabTitle: tabTitle(),
-            error: getErrorMessage(error),
-            errorStack: getErrorStack(error),
-          },
-          startKey
-        );
+        this.setTraceFail(Action.DeleteDocument, startKey, error);
       }
     }
   }
@@ -610,47 +534,22 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   };
 
   public onSaveSqlNewMongoDocumentClick = async (): Promise<void> => {
-    const { isExecutionError, tabTitle, isExecuting, collection } = this.props;
+    const { isExecutionError, isExecuting, collection } = this.props;
     isExecutionError(false);
-    const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
-      dataExplorerArea: Areas.Tab,
-      tabTitle: tabTitle(),
-    });
+    const startKey: number = this.getStartKey(Action.CreateDocument);
     const document = JSON.parse(this.state.documentContent);
-
     isExecuting(true);
-
     try {
       const savedDocument = await createSqlDocuments(collection, document);
       if (savedDocument) {
         this.handleRowContent(savedDocument as Resource);
         this.updateTabButtonVisibility();
-        TelemetryProcessor.traceSuccess(
-          Action.CreateDocument,
-          {
-            dataExplorerArea: Areas.Tab,
-            tabTitle: tabTitle(),
-          },
-          startKey
-        );
+        this.setTraceSuccess(Action.CreateDocument, startKey);
       }
-      isExecuting(false);
       this.querySqlDocumentsData();
     } catch (error) {
-      isExecutionError(true);
-      const errorMessage = getErrorMessage(error);
-      window.alert(errorMessage);
-      TelemetryProcessor.traceFailure(
-        Action.CreateDocument,
-        {
-          dataExplorerArea: Areas.Tab,
-          tabTitle: tabTitle(),
-          error: errorMessage,
-          errorStack: getErrorStack(error),
-        },
-        startKey
-      );
-      isExecuting(false);
+      window.alert(getErrorMessage(error));
+      this.setTraceFail(Action.CreateDocument, startKey, error);
     }
   };
 
@@ -670,18 +569,12 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       partitionKey,
       partitionKeyProperty,
       displayedError,
-      tabTitle,
       isExecutionError,
       isExecuting,
       collection,
     } = this.props;
     displayedError("");
-
-    const startKey: number = TelemetryProcessor.traceStart(Action.CreateDocument, {
-      dataExplorerArea: Areas.Tab,
-      tabTitle: tabTitle(),
-    });
-
+    const startKey: number = this.getStartKey(Action.CreateDocument);
     if (
       partitionKeyProperty &&
       partitionKeyProperty !== "_id" &&
@@ -689,19 +582,10 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     ) {
       const message = `The document is lacking the shard property: ${partitionKeyProperty}`;
       displayedError(message);
-      TelemetryProcessor.traceFailure(
-        Action.CreateDocument,
-        {
-          dataExplorerArea: Areas.Tab,
-          tabTitle: tabTitle(),
-          error: message,
-        },
-        startKey
-      );
+      this.setTraceFail(Action.CreateDocument, startKey, message);
       logError("Failed to save new document: Document shard key not defined", "MongoDocumentsTab");
       throw new Error("Document without shard key");
     }
-
     isExecutionError(false);
     isExecuting(true);
     try {
@@ -714,34 +598,51 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       if (savedDocument) {
         this.handleLoadMoreDocument();
         this.updateTabButtonVisibility();
-        TelemetryProcessor.traceSuccess(
-          Action.CreateDocument,
-          {
-            dataExplorerArea: Areas.Tab,
-            tabTitle: tabTitle(),
-          },
-          startKey
-        );
+        this.setTraceSuccess(Action.CreateDocument, startKey);
       }
       this.setState({ isEditorContentEdited: false });
       this.queryDocumentsData();
-      isExecuting(false);
     } catch (error) {
-      isExecutionError(true);
-      const errorMessage = getErrorMessage(error);
-      window.alert(errorMessage);
-      TelemetryProcessor.traceFailure(
-        Action.CreateDocument,
-        {
-          dataExplorerArea: Areas.Tab,
-          tabTitle: tabTitle(),
-          error: errorMessage,
-          errorStack: getErrorStack(error),
-        },
-        startKey
-      );
-      isExecuting(false);
+      window.alert(getErrorMessage(error));
+      this.setTraceFail(Action.CreateDocument, startKey, error);
     }
+  };
+
+  private getStartKey = (action: number): number => {
+    const startKey: number = TelemetryProcessor.traceStart(action, {
+      dataExplorerArea: Areas.Tab,
+      tabTitle: this.props.tabTitle(),
+    });
+    return startKey;
+  };
+
+  private setTraceSuccess = (action: number, startKey: number): void => {
+    const { isExecuting, tabTitle } = this.props;
+    TelemetryProcessor.traceSuccess(
+      action,
+      {
+        dataExplorerArea: Areas.Tab,
+        tabTitle: tabTitle(),
+      },
+      startKey
+    );
+    isExecuting(false);
+  };
+
+  private setTraceFail = (action: number, startKey: number, error: Error | string): void => {
+    const { isExecuting, tabTitle, isExecutionError } = this.props;
+    TelemetryProcessor.traceFailure(
+      action,
+      {
+        dataExplorerArea: Areas.Tab,
+        tabTitle: tabTitle(),
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error),
+      },
+      startKey
+    );
+    isExecuting(false);
+    isExecutionError(true);
   };
 
   private onRevertNewDocumentClick = () => {
