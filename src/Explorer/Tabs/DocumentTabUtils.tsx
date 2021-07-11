@@ -23,6 +23,17 @@ export interface IDocumentsTabContentState {
   isAllDocumentsVisible: boolean;
 }
 
+export interface IDocument {
+  value: string;
+  id: string;
+}
+
+export interface IButton {
+  visible: boolean;
+  enabled: boolean;
+  isSelected?: boolean;
+}
+
 export const imageProps: Partial<IImageProps> = {
   imageFit: ImageFit.centerContain,
   width: 40,
@@ -65,14 +76,10 @@ export function getPartitionKeyDefinition(
 }
 
 export function formatDocumentContent(row: DocumentId): string {
-  const { partitionKeyProperty, partitionKeyValue, rid, self, stringPartitionKeyValue, ts } = row;
+  const { partitionKeyProperty, partitionKeyValue, id } = row;
   const documentContent = JSON.stringify({
-    partitionKeyProperty: partitionKeyProperty || "",
-    partitionKeyValue: partitionKeyValue || "",
-    rid: rid || "",
-    self: self || "",
-    stringPartitionKeyValue: stringPartitionKeyValue || "",
-    ts: ts || "",
+    _id1: id(),
+    [partitionKeyProperty]: partitionKeyValue || "",
   });
   const formattedDocumentContent = documentContent.replace(/,/g, ",\n").replace("{", "{\n").replace("}", "\n}");
   return formattedDocumentContent;
@@ -100,7 +107,7 @@ export function getFilterPlaceholder(isPreferredApiMongoDB: boolean): string {
 
 export function getFilterSuggestions(isPreferredApiMongoDB: boolean): { value: string }[] {
   const filterSuggestions = isPreferredApiMongoDB
-    ? [{ value: `{"id": "foo"}` }, { value: "{ qty: { $gte: 20 } }" }]
+    ? [{ value: `{"_id": "foo"}` }, { value: "{ qty: { $gte: 20 } }" }]
     : [
         { value: 'WHERE c.id = "foo"' },
         { value: "ORDER BY c._ts DESC" },
@@ -126,4 +133,14 @@ export const tabButtonVisibility = (visible: boolean, enabled: boolean): { visib
     visible,
     enabled,
   };
+};
+
+export const getfilterText = (isPreferredApiMongoDB: boolean, filter: string): string => {
+  if (isPreferredApiMongoDB) {
+    if (filter) {
+      return `Filter : ${filter}`;
+    }
+    return "No filter applied";
+  }
+  return "Select * from C";
 };
