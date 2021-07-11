@@ -8,8 +8,9 @@ import { configContext, Platform, updateConfigContext } from "../ConfigContext";
 import { ActionType, DataExplorerAction } from "../Contracts/ActionContracts";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { DataExplorerInputsFrame } from "../Contracts/ViewModels";
-import Explorer, { ExplorerParams } from "../Explorer/Explorer";
+import Explorer from "../Explorer/Explorer";
 import { handleOpenAction } from "../Explorer/OpenActions/OpenActions";
+import { useDatabases } from "../Explorer/useDatabases";
 import {
   AAD,
   ConnectionString,
@@ -36,20 +37,20 @@ import { isInvalidParentFrameOrigin } from "../Utils/MessageValidation";
 // This hook has a LOT of magic, but ideally we can delete it once we have removed KO and switched entirely to React
 // Please tread carefully :)
 
-export function useKnockoutExplorer(platform: Platform, explorerParams: ExplorerParams): Explorer {
+export function useKnockoutExplorer(platform: Platform): Explorer {
   const [explorer, setExplorer] = useState<Explorer>();
 
   useEffect(() => {
     const effect = async () => {
       if (platform) {
         if (platform === Platform.Hosted) {
-          const explorer = await configureHosted(explorerParams);
+          const explorer = await configureHosted();
           setExplorer(explorer);
         } else if (platform === Platform.Emulator) {
-          const explorer = configureEmulator(explorerParams);
+          const explorer = configureEmulator();
           setExplorer(explorer);
         } else if (platform === Platform.Portal) {
-          const explorer = await configurePortal(explorerParams);
+          const explorer = await configurePortal();
           setExplorer(explorer);
         }
       }
@@ -66,21 +67,21 @@ export function useKnockoutExplorer(platform: Platform, explorerParams: Explorer
   return explorer;
 }
 
-async function configureHosted(explorerParams: ExplorerParams): Promise<Explorer> {
+async function configureHosted(): Promise<Explorer> {
   const win = (window as unknown) as HostedExplorerChildFrame;
   if (win.hostedConfig.authType === AuthType.EncryptedToken) {
-    return configureHostedWithEncryptedToken(win.hostedConfig, explorerParams);
+    return configureHostedWithEncryptedToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ResourceToken) {
-    return configureHostedWithResourceToken(win.hostedConfig, explorerParams);
+    return configureHostedWithResourceToken(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.ConnectionString) {
-    return configureHostedWithConnectionString(win.hostedConfig, explorerParams);
+    return configureHostedWithConnectionString(win.hostedConfig);
   } else if (win.hostedConfig.authType === AuthType.AAD) {
-    return configureHostedWithAAD(win.hostedConfig, explorerParams);
+    return configureHostedWithAAD(win.hostedConfig);
   }
   throw new Error(`Unknown hosted config: ${win.hostedConfig}`);
 }
 
-async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParams): Promise<Explorer> {
+async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
   // TODO: Refactor. updateUserContext needs to be called twice because listKeys below depends on userContext.authorizationToken
   updateUserContext({
     authType: AuthType.AAD,
@@ -119,11 +120,11 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
     databaseAccount: config.databaseAccount,
     masterKey: keys.primaryMasterKey,
   });
-  const explorer = new Explorer(explorerParams);
+  const explorer = new Explorer();
   return explorer;
 }
 
-function configureHostedWithConnectionString(config: ConnectionString, explorerParams: ExplorerParams): Explorer {
+function configureHostedWithConnectionString(config: ConnectionString): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   const databaseAccount = {
     id: "",
@@ -141,11 +142,11 @@ function configureHostedWithConnectionString(config: ConnectionString, explorerP
     databaseAccount,
     masterKey: config.masterKey,
   });
-  const explorer = new Explorer(explorerParams);
+  const explorer = new Explorer();
   return explorer;
 }
 
-function configureHostedWithResourceToken(config: ResourceToken, explorerParams: ExplorerParams): Explorer {
+function configureHostedWithResourceToken(config: ResourceToken): Explorer {
   const parsedResourceToken = parseResourceTokenConnectionString(config.resourceToken);
   const databaseAccount = {
     id: "",
@@ -166,11 +167,11 @@ function configureHostedWithResourceToken(config: ResourceToken, explorerParams:
       partitionKey: parsedResourceToken.partitionKey,
     },
   });
-  const explorer = new Explorer(explorerParams);
+  const explorer = new Explorer();
   return explorer;
 }
 
-function configureHostedWithEncryptedToken(config: EncryptedToken, explorerParams: ExplorerParams): Explorer {
+function configureHostedWithEncryptedToken(config: EncryptedToken): Explorer {
   const apiExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(config.encryptedTokenMetadata.apiKind);
   updateUserContext({
     authType: AuthType.EncryptedToken,
@@ -184,21 +185,20 @@ function configureHostedWithEncryptedToken(config: EncryptedToken, explorerParam
       properties: getDatabaseAccountPropertiesFromMetadata(config.encryptedTokenMetadata),
     },
   });
-  const explorer = new Explorer(explorerParams);
+  const explorer = new Explorer();
   return explorer;
 }
 
-function configureEmulator(explorerParams: ExplorerParams): Explorer {
+function configureEmulator(): Explorer {
   updateUserContext({
     databaseAccount: emulatorAccount,
     authType: AuthType.MasterKey,
   });
-  const explorer = new Explorer(explorerParams);
-  explorer.isAccountReady(true);
+  const explorer = new Explorer();
   return explorer;
 }
 
-async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer> {
+async function configurePortal(): Promise<Explorer> {
   updateUserContext({
     authType: AuthType.AAD,
   });
@@ -214,7 +214,7 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
         );
         console.dir(message);
         updateContextsFromPortalMessage(message);
-        const explorer = new Explorer(explorerParams);
+        const explorer = new Explorer();
         // In development mode, save the iframe message from the portal in session storage.
         // This allows webpack hot reload to funciton properly
         if (process.env.NODE_ENV === "development") {
@@ -250,10 +250,10 @@ async function configurePortal(explorerParams: ExplorerParams): Promise<Explorer
           }
 
           updateContextsFromPortalMessage(inputs);
-          const explorer = new Explorer(explorerParams);
+          const explorer = new Explorer();
           resolve(explorer);
           if (openAction) {
-            handleOpenAction(openAction, explorer.databases(), explorer);
+            handleOpenAction(openAction, useDatabases.getState().databases, explorer);
           }
         } else if (shouldForwardMessage(message, event.origin)) {
           sendMessage(message);

@@ -16,6 +16,7 @@ import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { getUpsellMessage } from "../../../Utils/PricingUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
+import { useDatabases } from "../../useDatabases";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { getTextFieldStyles } from "../PanelStyles";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -172,7 +173,12 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     <RightPaneForm {...props}>
       {!formErrors && isFreeTierAccount && (
         <PanelInfoErrorComponent
-          message={getUpsellMessage(userContext.portalEnv, true, container.isFirstResourceCreated(), true)}
+          message={getUpsellMessage(
+            userContext.portalEnv,
+            true,
+            useDatabases.getState().isFirstResourceCreated(),
+            true
+          )}
           messageType="info"
           showErrorDetails={false}
           link={Constants.Urls.freeTierInformation}
@@ -225,7 +231,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
         {!isServerlessAccount() && databaseCreateNewShared && (
           <ThroughputInput
-            showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
+            showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={true}
             isSharded={databaseCreateNewShared}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}

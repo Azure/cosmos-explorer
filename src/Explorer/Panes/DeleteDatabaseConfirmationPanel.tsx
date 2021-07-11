@@ -7,30 +7,32 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { Collection, Database } from "../../Contracts/ViewModels";
 import { useSidePanel } from "../../hooks/useSidePanel";
+import { useTabs } from "../../hooks/useTabs";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
 import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
 interface DeleteDatabaseConfirmationPanelProps {
-  explorer: Explorer;
-  selectedDatabase: Database;
+  refreshDatabases: () => Promise<void>;
 }
 
 export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = ({
-  explorer,
-  selectedDatabase,
+  refreshDatabases,
 }: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+  const isLastNonEmptyDatabase = useDatabases((state) => state.isLastNonEmptyDatabase);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
 
   const [formError, setFormError] = useState<string>("");
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("");
+  const selectedDatabase: Database = useDatabases.getState().findSelectedDatabase();
 
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
@@ -50,15 +52,18 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     try {
       await deleteDatabase(selectedDatabase.id());
       closeSidePanel();
-      explorer.refreshAllDatabases();
-      explorer.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
-      explorer.selectedNode(undefined);
+      refreshDatabases();
+      useTabs.getState().closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
+      useSelectedNode.getState().setSelectedNode(undefined);
       selectedDatabase
         .collections()
         .forEach((collection: Collection) =>
-          explorer.tabsManager.closeTabsByComparator(
-            (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
-          )
+          useTabs
+            .getState()
+            .closeTabsByComparator(
+              (tab) =>
+                tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
+            )
         );
       TelemetryProcessor.traceSuccess(
         Action.DeleteDatabase,
@@ -70,7 +75,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         startKey
       );
 
-      if (shouldRecordFeedback()) {
+      if (isLastNonEmptyDatabase()) {
         const deleteFeedback = new DeleteFeedback(
           userContext?.databaseAccount.id,
           userContext?.databaseAccount.name,
@@ -98,10 +103,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
         startKey
       );
     }
-  };
-
-  const shouldRecordFeedback = (): boolean => {
-    return explorer.isLastNonEmptyDatabase() || (explorer.isLastDatabase() && explorer.isSelectedDatabaseShared());
   };
 
   const props: RightPaneFormProps = {
@@ -134,7 +135,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
             }}
           />
         </div>
-        {shouldRecordFeedback() && (
+        {isLastNonEmptyDatabase() && (
           <div className="deleteDatabaseFeedback">
             <Text variant="small" block>
               Help us improve Azure Cosmos DB!

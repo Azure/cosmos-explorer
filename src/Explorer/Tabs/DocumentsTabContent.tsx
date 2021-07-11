@@ -41,6 +41,7 @@ import { EditorReact } from "../Controls/Editor/EditorReact";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import DocumentId from "../Tree/DocumentId";
 import ObjectId from "../Tree/ObjectId";
+import { useSelectedNode } from "../useSelectedNode";
 import DocumentsTab from "./DocumentsTab";
 import {
   formatDocumentContent,
@@ -450,13 +451,13 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         iconSrc: UploadIcon,
         iconAlt: label,
         onCommandClick: () => {
-          const selectedCollection: ViewModels.Collection = collection.container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && collection.container.openUploadItemsPanePane();
         },
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: collection.container.isDatabaseNodeOrNoneSelected(),
+        disabled: useSelectedNode.getState().isDatabaseNodeOrNoneSelected(),
       });
     }
     return buttons;

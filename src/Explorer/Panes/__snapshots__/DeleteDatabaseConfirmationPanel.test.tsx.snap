@@ -1,67 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Delete Database Confirmation Pane submit() Should call delete database 1`] = `
+exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
 <DeleteDatabaseConfirmationPanel
-  closePanel={[Function]}
-  explorer={
-    Explorer {
-      "_isInitializingNotebooks": false,
-      "_resetNotebookWorkspace": [Function],
-      "canSaveQueries": [Function],
-      "databases": [Function],
-      "isAccountReady": [Function],
-      "isFixedCollectionWithSharedThroughputSupported": [Function],
-      "isHostedDataExplorerEnabled": [Function],
-      "isLastCollection": [Function],
-      "isLastNonEmptyDatabase": [Function],
-      "isNotebookEnabled": [Function],
-      "isNotebooksEnabledForAccount": [Function],
-      "isResourceTokenCollectionNodeSelected": [Function],
-      "isSchemaEnabled": [Function],
-      "isSelectedDatabaseShared": [Function],
-      "isShellEnabled": [Function],
-      "isSynapseLinkUpdating": [Function],
-      "isTabsContentExpanded": [Function],
-      "memoryUsageInfo": [Function],
-      "notebookBasePath": [Function],
-      "notebookServerInfo": [Function],
-      "onRefreshDatabasesKeyPress": [Function],
-      "onRefreshResourcesClick": [Function],
-      "provideFeedbackEmail": [Function],
-      "queriesClient": QueriesClient {
-        "container": [Circular],
-      },
-      "refreshAllDatabases": [Function],
-      "refreshNotebookList": [Function],
-      "resourceTokenCollection": [Function],
-      "resourceTree": ResourceTreeAdapter {
-        "container": [Circular],
-        "copyNotebook": [Function],
-        "databaseCollectionIdMap": Map {},
-        "koSubsCollectionIdMap": Map {},
-        "koSubsDatabaseIdMap": Map {},
-        "parameters": [Function],
-      },
-      "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-        "container": [Circular],
-        "parameters": [Function],
-      },
-      "selectedDatabaseId": [Function],
-      "selectedNode": [Function],
-      "sparkClusterConnectionInfo": [Function],
-      "tabsManager": TabsManager {
-        "activeTab": [Function],
-        "openedTabs": [Function],
-      },
-    }
-  }
-  openNotificationConsole={[Function]}
-  selectedDatabase={
-    Object {
-      "collections": [Function],
-      "id": [Function],
-    }
-  }
+  refreshDatabases={[Function]}
 >
   <RightPaneForm
     formError=""
@@ -750,7 +691,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             variant="small"
           >
             <span
-              className="css-77"
+              className="css-69"
             >
               Help us improve Azure Cosmos DB!
             </span>
@@ -760,7 +701,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
             variant="small"
           >
             <span
-              className="css-77"
+              className="css-69"
             >
               What is the reason why you are deleting this database?
             </span>
@@ -1068,11 +1009,11 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   className="ms-TextField-wrapper"
                 >
                   <div
-                    className="ms-TextField-fieldGroup fieldGroup-78"
+                    className="ms-TextField-fieldGroup fieldGroup-70"
                   >
                     <textarea
                       aria-invalid={false}
-                      className="ms-TextField-field field-79"
+                      className="ms-TextField-field field-71"
                       id="deleteDatabaseFeedbackInput"
                       onBlur={[Function]}
                       onChange={[Function]}
@@ -2798,7 +2739,7 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                   >
                     <button
                       aria-label="OK"
-                      className="ms-Button ms-Button--primary root-69"
+                      className="ms-Button ms-Button--primary root-73"
                       data-is-focusable={true}
                       id="sidePanelOkButton"
                       onClick={[Function]}
@@ -2810,16 +2751,16 @@ exports[`Delete Database Confirmation Pane submit() Should call delete database 
                       type="submit"
                     >
                       <span
-                        className="ms-Button-flexContainer flexContainer-70"
+                        className="ms-Button-flexContainer flexContainer-74"
                         data-automationid="splitbuttonprimary"
                       >
                         <span
-                          className="ms-Button-textContainer textContainer-71"
+                          className="ms-Button-textContainer textContainer-75"
                         >
                           <span
-                            className="ms-Button-label label-73"
-                            id="id__3"
-                            key="id__3"
+                            className="ms-Button-label label-77"
+                            id="id__6"
+                            key="id__6"
                           >
                             OK
                           </span>

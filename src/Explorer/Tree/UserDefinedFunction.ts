@@ -3,10 +3,12 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { deleteUserDefinedFunction } from "../../Common/dataAccess/deleteUserDefinedFunction";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import Explorer from "../Explorer";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
+import { useSelectedNode } from "../useSelectedNode";
 
 export default class UserDefinedFunction {
   public nodeKind: string;
@@ -29,7 +31,7 @@ export default class UserDefinedFunction {
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
-    const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
     const userDefinedFunction = {
       id: "",
       body: "function userDefinedFunction(){}",
@@ -43,23 +45,24 @@ export default class UserDefinedFunction {
       tabPath: "",
       collection: source,
       node: source,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/udf`,
     });
 
-    source.container.tabsManager.activateNewTab(userDefinedFunctionTab);
+    useTabs.getState().activateNewTab(userDefinedFunctionTab);
   }
 
   public open = () => {
     this.select();
 
-    const userDefinedFunctionTabs: UserDefinedFunctionTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.UserDefinedFunctions,
-      (tab) => tab.node?.rid === this.rid
-    ) as UserDefinedFunctionTab[];
+    const userDefinedFunctionTabs: UserDefinedFunctionTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.UserDefinedFunctions,
+        (tab) => tab.node?.rid === this.rid
+      ) as UserDefinedFunctionTab[];
     let userDefinedFunctionTab: UserDefinedFunctionTab = userDefinedFunctionTabs && userDefinedFunctionTabs[0];
 
     if (userDefinedFunctionTab) {
-      this.container.tabsManager.activateTab(userDefinedFunctionTab);
+      useTabs.getState().activateTab(userDefinedFunctionTab);
     } else {
       const userDefinedFunctionData = {
         _rid: this.rid,
@@ -76,18 +79,14 @@ export default class UserDefinedFunction {
         tabPath: "",
         collection: this.collection,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-          this.collection.databaseId,
-          this.collection.id()
-        )}/udfs/${this.id()}`,
       });
 
-      this.container.tabsManager.activateNewTab(userDefinedFunctionTab);
+      useTabs.getState().activateNewTab(userDefinedFunctionTab);
     }
   };
 
   public select() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "UDF item node",
 
@@ -102,7 +101,7 @@ export default class UserDefinedFunction {
 
     deleteUserDefinedFunction(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
-        this.container.tabsManager.closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
+        useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       (reason) => {}

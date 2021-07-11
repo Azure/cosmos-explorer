@@ -2,22 +2,22 @@ jest.mock("../Graph/GraphExplorerComponent/GremlinClient");
 jest.mock("../../Common/dataAccess/createCollection");
 jest.mock("../../Common/dataAccess/createDocument");
 import * as ko from "knockout";
-import Q from "q";
 import { createDocument } from "../../Common/dataAccess/createDocument";
 import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 describe("ContainerSampleGenerator", () => {
-  const createExplorerStub = (database: ViewModels.Database): Explorer => {
-    const explorerStub = {} as Explorer;
-    explorerStub.databases = ko.observableArray<ViewModels.Database>([database]);
-    explorerStub.findDatabaseWithId = () => database;
-    explorerStub.refreshAllDatabases = () => Q.resolve();
-    return explorerStub;
-  };
+  let explorerStub: Explorer;
+
+  beforeAll(() => {
+    explorerStub = {
+      refreshAllDatabases: () => {},
+    } as Explorer;
+  });
 
   beforeEach(() => {
     (createDocument as jest.Mock).mockResolvedValue(undefined);
@@ -59,8 +59,7 @@ describe("ContainerSampleGenerator", () => {
       loadCollections: () => {},
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
-
-    const explorerStub = createExplorerStub(database);
+    useDatabases.getState().addDatabases([database]);
 
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
@@ -108,8 +107,8 @@ describe("ContainerSampleGenerator", () => {
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
     collection.databaseId = database.id();
+    useDatabases.getState().addDatabases([database]);
 
-    const explorerStub = createExplorerStub(database);
     updateUserContext({
       databaseAccount: {
         properties: {
@@ -126,7 +125,6 @@ describe("ContainerSampleGenerator", () => {
 
   it("should not create any sample for Mongo API account", async () => {
     const experience = "Sample generation not supported for this API Mongo";
-    const explorerStub = createExplorerStub(undefined);
     updateUserContext({
       databaseAccount: {
         properties: {
@@ -141,7 +139,6 @@ describe("ContainerSampleGenerator", () => {
 
   it("should not create any sample for Table API account", async () => {
     const experience = "Sample generation not supported for this API Tables";
-    const explorerStub = createExplorerStub(undefined);
     updateUserContext({
       databaseAccount: {
         properties: {
@@ -163,7 +160,6 @@ describe("ContainerSampleGenerator", () => {
         },
       } as DatabaseAccount,
     });
-    const explorerStub = createExplorerStub(undefined);
     // Rejects with error that contains experience
     await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });

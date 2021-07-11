@@ -1,4 +1,5 @@
 import * as ko from "knockout";
+import React from "react";
 import * as _ from "underscore";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
@@ -9,16 +10,21 @@ import * as Logger from "../../Common/Logger";
 import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
+import { useTabs } from "../../hooks/useTabs";
 import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { getCollectionName } from "../../Utils/APITypeUtils";
 import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
+import { AddCollectionPanel } from "../Panes/AddCollectionPanel";
 import { DatabaseSettingsTabV2 } from "../Tabs/SettingsTabV2";
+import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import Collection from "./Collection";
-
 export default class Database implements ViewModels.Database {
   public nodeKind: string;
   public container: Explorer;
@@ -33,7 +39,7 @@ export default class Database implements ViewModels.Database {
   public junoClient: JunoClient;
   private isOfferRead: boolean;
 
-  constructor(container: Explorer, data: any) {
+  constructor(container: Explorer, data: DataModels.Database) {
     this.nodeKind = "Database";
     this.container = container;
     this.self = data._self;
@@ -41,6 +47,7 @@ export default class Database implements ViewModels.Database {
     this.id = ko.observable(data.id);
     this.offer = ko.observable();
     this.collections = ko.observableArray<Collection>();
+    this.collections.subscribe(() => useDatabases.getState().updateDatabase(this));
     this.isDatabaseExpanded = ko.observable<boolean>(false);
     this.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
     this.isDatabaseShared = ko.pureComputed(() => {
@@ -51,7 +58,7 @@ export default class Database implements ViewModels.Database {
   }
 
   public onSettingsClick = () => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
@@ -61,7 +68,7 @@ export default class Database implements ViewModels.Database {
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
     const tabKind = ViewModels.CollectionTabKind.DatabaseSettingsV2;
-    const matchingTabs = this.container.tabsManager.getTabs(tabKind, (tab) => tab.node?.id() === this.id());
+    const matchingTabs = useTabs.getState().getTabs(tabKind, (tab) => tab.node?.id() === this.id());
     let settingsTab = matchingTabs?.[0] as DatabaseSettingsTabV2;
 
     if (!settingsTab) {
@@ -71,6 +78,7 @@ export default class Database implements ViewModels.Database {
         tabTitle: "Scale",
       });
       pendingNotificationsPromise.then(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (data: any) => {
           const pendingNotification: DataModels.Notification = data?.[0];
           const tabOptions: ViewModels.TabOptions = {
@@ -80,14 +88,13 @@ export default class Database implements ViewModels.Database {
             node: this,
             rid: this.rid,
             database: this,
-            hashLocation: `${Constants.HashRoutePrefixes.databasesWithId(this.id())}/settings`,
             onLoadStartKey: startKey,
           };
           settingsTab = new DatabaseSettingsTabV2(tabOptions);
           settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateNewTab(settingsTab);
+          useTabs.getState().activateNewTab(settingsTab);
         },
-        (error: any) => {
+        (error) => {
           const errorMessage = getErrorMessage(error);
           TelemetryProcessor.traceFailure(
             Action.Tab,
@@ -110,34 +117,15 @@ export default class Database implements ViewModels.Database {
       pendingNotificationsPromise.then(
         (pendingNotification: DataModels.Notification) => {
           settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateTab(settingsTab);
+          useTabs.getState().activateTab(settingsTab);
         },
-        (error: any) => {
+        () => {
           settingsTab.pendingNotification(undefined);
-          this.container.tabsManager.activateTab(settingsTab);
+          useTabs.getState().activateTab(settingsTab);
         }
       );
     }
   };
-
-  public isDatabaseNodeSelected(): boolean {
-    return (
-      !this.isDatabaseExpanded() &&
-      this.container.selectedNode &&
-      this.container.selectedNode() &&
-      this.container.selectedNode().nodeKind === "Database" &&
-      this.container.selectedNode().id() === this.id()
-    );
-  }
-
-  public selectDatabase() {
-    this.container.selectedNode(this);
-    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
-      description: "Database node",
-
-      dataExplorerArea: Constants.Areas.ResourceTree,
-    });
-  }
 
   public async expandDatabase() {
     if (this.isDatabaseExpanded()) {
@@ -207,8 +195,14 @@ export default class Database implements ViewModels.Database {
     this.deleteCollectionsFromList(deltaCollections.toDelete);
   }
 
-  public openAddCollection(database: Database) {
-    database.container.openAddCollectionPanel(database.id());
+  public async openAddCollection(database: Database): Promise<void> {
+    await useDatabases.getState().loadDatabaseOffers();
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "New " + getCollectionName(),
+        <AddCollectionPanel explorer={database.container} databaseId={database.id()} />
+      );
   }
 
   public findCollectionWithId(collectionId: string): ViewModels.Collection {
@@ -238,7 +232,7 @@ export default class Database implements ViewModels.Database {
       }
 
       return _.find(notifications, (notification: DataModels.Notification) => {
-        const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
+        const throughputUpdateRegExp = new RegExp("Throughput update (.*) in progress");
         return (
           notification.kind === "message" &&
           !notification.collectionName &&
@@ -276,7 +270,7 @@ export default class Database implements ViewModels.Database {
       }
     );
 
-    let collectionsToDelete: Collection[] = [];
+    const collectionsToDelete: Collection[] = [];
     ko.utils.arrayForEach(this.collections(), (collection: Collection) => {
       const collectionPresentInUpdatedList = _.some(
         updatedCollectionsList,
@@ -316,10 +310,10 @@ export default class Database implements ViewModels.Database {
   }
 
   public addSchema(collection: DataModels.Collection, interval?: number): NodeJS.Timeout {
-    let checkForSchema: NodeJS.Timeout = null;
+    let checkForSchema: NodeJS.Timeout;
     interval = interval || 5000;
 
-    if (collection.analyticalStorageTtl !== undefined && this.container.isSchemaEnabled()) {
+    if (collection.analyticalStorageTtl !== undefined && userContext.features.enableSchema) {
       collection.requestSchema = () => {
         this.junoClient.requestSchema({
           id: undefined,
@@ -342,7 +336,7 @@ export default class Database implements ViewModels.Database {
             clearInterval(checkForSchema);
           }
 
-          if (response.data !== null) {
+          if (response.data !== undefined) {
             clearInterval(checkForSchema);
             collection.schema = response.data;
           }

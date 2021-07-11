@@ -5,7 +5,6 @@ exports[`Browse queries panel Should render Default properly 1`] = `
   closePanel={[Function]}
   explorer={
     Object {
-      "canSaveQueries": [Function],
       "queriesClient": Object {
         "getQueries": [Function],
       },

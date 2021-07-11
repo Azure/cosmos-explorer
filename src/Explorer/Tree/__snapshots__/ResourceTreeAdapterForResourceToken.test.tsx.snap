@@ -3,6 +3,7 @@
 exports[`Resource tree for resource token should render 1`] = `
 <div
   className="treeComponent dataResourceTree"
+  role="tree"
 >
   <TreeNodeComponent
     generation={0}

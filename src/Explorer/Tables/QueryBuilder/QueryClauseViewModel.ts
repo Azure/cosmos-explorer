@@ -89,7 +89,7 @@ export default class QueryClauseViewModel {
     );
 
     this.and_or.subscribe((value) => {
-      this._queryBuilderViewModel.checkIfClauseChanged(this);
+      this._queryBuilderViewModel.checkIfClauseChanged();
     });
     this.field.subscribe((value) => {
       this.changeField();
@@ -103,13 +103,13 @@ export default class QueryClauseViewModel {
       // }
     });
     this.customTimeValue.subscribe((value) => {
-      this._queryBuilderViewModel.checkIfClauseChanged(this);
+      this._queryBuilderViewModel.checkIfClauseChanged();
     });
     this.value.subscribe((value) => {
-      this._queryBuilderViewModel.checkIfClauseChanged(this);
+      this._queryBuilderViewModel.checkIfClauseChanged();
     });
     this.operator.subscribe((value) => {
-      this._queryBuilderViewModel.checkIfClauseChanged(this);
+      this._queryBuilderViewModel.checkIfClauseChanged();
     });
     this._groupCheckSubscription = this.checkedForGrouping.subscribe((value) => {
       this._queryBuilderViewModel.updateCanGroupClauses();
@@ -184,7 +184,7 @@ export default class QueryClauseViewModel {
         this.type(QueryBuilderConstants.TableType.String);
       }
     }
-    this._queryBuilderViewModel.checkIfClauseChanged(this);
+    this._queryBuilderViewModel.checkIfClauseChanged();
   }
 
   private resetFromTimestamp(): void {
@@ -216,7 +216,7 @@ export default class QueryClauseViewModel {
       this.timeValue("");
       this.customTimeValue("");
     }
-    this._queryBuilderViewModel.checkIfClauseChanged(this);
+    this._queryBuilderViewModel.checkIfClauseChanged();
   }
 
   // private customTimestampDialog(): Promise<any> {

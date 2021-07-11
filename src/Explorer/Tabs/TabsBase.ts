@@ -4,15 +4,14 @@ import * as ThemeUtility from "../../Common/ThemeUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../hooks/useNotificationConsole";
-import { RouteHandler } from "../../RouteHandlers/RouteHandler";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
+import { useSelectedNode } from "../useSelectedNode";
 import { WaitsForTemplateViewModel } from "../WaitsForTemplateViewModel";
-import { TabsManager } from "./TabsManager";
-
 // TODO: Use specific actions for logging telemetry data
 export default class TabsBase extends WaitsForTemplateViewModel {
   private static id = 0;
@@ -26,11 +25,9 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   public tabKind: ViewModels.CollectionTabKind;
   public tabTitle: ko.Observable<string>;
   public tabPath: ko.Observable<string>;
-  public hashLocation: ko.Observable<string>;
   public isExecutionError = ko.observable(false);
   public isExecuting = ko.observable(false);
   public pendingNotification?: ko.Observable<DataModels.Notification>;
-  public manager?: TabsManager;
   protected _theme: string;
   public onLoadStartKey: number;
 
@@ -50,8 +47,6 @@ export default class TabsBase extends WaitsForTemplateViewModel {
         ko.observable<string>(`${this.collection.databaseId}>${this.collection.id()}>${this.tabTitle()}`));
     this.pendingNotification = ko.observable<DataModels.Notification>(undefined);
     this.onLoadStartKey = options.onLoadStartKey;
-    this.hashLocation = ko.observable<string>(options.hashLocation || "");
-    this.hashLocation.subscribe((newLocation: string) => this.updateGlobalHash(newLocation));
     this.closeTabButton = {
       enabled: ko.computed<boolean>(() => {
         return true;
@@ -64,7 +59,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onCloseTabButtonClick(): void {
-    this.manager?.closeTab(this);
+    useTabs.getState().closeTab(this);
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Close, {
       tabName: this.constructor.name,
       dataExplorerArea: Constants.Areas.Tab,
@@ -74,17 +69,18 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   public onTabClick(): void {
-    this.manager?.activateTab(this);
+    useTabs.getState().activateTab(this);
   }
 
   protected updateSelectedNode(): void {
     const relatedDatabase = (this.collection && this.collection.getDatabase()) || this.database;
+    const setSelectedNode = useSelectedNode.getState().setSelectedNode;
     if (relatedDatabase && !relatedDatabase.isDatabaseExpanded()) {
-      this.getContainer().selectedNode(relatedDatabase);
+      setSelectedNode(relatedDatabase);
     } else if (this.collection && !this.collection.isCollectionExpanded()) {
-      this.getContainer().selectedNode(this.collection);
+      setSelectedNode(this.collection);
     } else {
-      this.getContainer().selectedNode(this.node);
+      setSelectedNode(this.node);
     }
   }
 
@@ -108,14 +104,13 @@ export default class TabsBase extends WaitsForTemplateViewModel {
 
   /** @deprecated this is no longer observable, bind to comparisons with manager.activeTab() instead */
   public isActive() {
-    return this === this.manager?.activeTab();
+    return this === useTabs.getState().activeTab;
   }
 
   public onActivate(): void {
     this.updateSelectedNode();
     this.collection?.selectedSubnodeKind(this.tabKind);
     this.database?.selectedSubnodeKind(this.tabKind);
-    this.updateGlobalHash(this.hashLocation());
     this.updateNavbarWithTabsButtons();
     TelemetryProcessor.trace(Action.Tab, ActionModifiers.Open, {
       tabName: this.constructor.name,
@@ -149,12 +144,8 @@ export default class TabsBase extends WaitsForTemplateViewModel {
   }
 
   /** Renders a Javascript object to be displayed inside Monaco Editor */
-  protected renderObjectForEditor(value: any, replacer: any, space: string | number): string {
+  public renderObjectForEditor(value: any, replacer: any, space: string | number): string {
     return JSON.stringify(value, replacer, space);
-  }
-
-  private updateGlobalHash(newHash: string): void {
-    RouteHandler.getInstance().updateRouteHashLocation(newHash);
   }
 
   /**
@@ -164,7 +155,7 @@ export default class TabsBase extends WaitsForTemplateViewModel {
     return [];
   }
 
-  protected updateNavbarWithTabsButtons = (): void => {
+  public updateNavbarWithTabsButtons = (): void => {
     if (this.isActive()) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }

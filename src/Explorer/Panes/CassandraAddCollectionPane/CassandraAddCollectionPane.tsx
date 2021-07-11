@@ -12,6 +12,7 @@ import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
+import { useDatabases } from "../../useDatabases";
 import { getTextFieldStyles } from "../PanelStyles";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
@@ -236,7 +237,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               styles={{ root: { width: 300 }, title: { fontSize: 12 }, dropdownItem: { fontSize: 12 } }}
               placeholder="Choose existing keyspace id"
               defaultSelectedKey={existingKeyspaceId}
-              options={container?.databases()?.map((keyspace) => ({
+              options={useDatabases.getState().databases?.map((keyspace) => ({
                 key: keyspace.id(),
                 text: keyspace.id(),
                 data: {
@@ -253,7 +254,9 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
 
           {!isServerlessAccount() && keyspaceCreateNew && isKeyspaceShared && (
             <ThroughputInput
-              showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
+              showFreeTierExceedThroughputTooltip={
+                isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()
+              }
               isDatabase
               isSharded
               setThroughputValue={(throughput: number) => (newKeySpaceThroughput = throughput)}
@@ -324,7 +327,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
         )}
         {!isServerlessAccount() && (!isKeyspaceShared || dedicateTableThroughput) && (
           <ThroughputInput
-            showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container.isFirstResourceCreated()}
+            showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={false}
             isSharded={false}
             setThroughputValue={(throughput: number) => (tableThroughput = throughput)}

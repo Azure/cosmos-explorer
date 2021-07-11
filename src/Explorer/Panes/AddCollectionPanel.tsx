@@ -31,6 +31,7 @@ import { getUpsellMessage } from "../../Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
 import { PanelFooterComponent } from "./PanelFooterComponent";
 import { PanelInfoErrorComponent } from "./PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "./PanelLoadingScreen";
@@ -125,6 +126,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   render(): JSX.Element {
+    const isFirstResourceCreated = useDatabases.getState().isFirstResourceCreated();
+
     return (
       <form className="panelFormWrapper" onSubmit={this.submit.bind(this)}>
         {this.state.errorMessage && (
@@ -137,7 +140,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
         {!this.state.errorMessage && this.isFreeTierAccount() && (
           <PanelInfoErrorComponent
-            message={getUpsellMessage(userContext.portalEnv, true, this.props.explorer.isFirstResourceCreated(), true)}
+            message={getUpsellMessage(userContext.portalEnv, true, isFirstResourceCreated, true)}
             messageType="info"
             showErrorDetails={false}
             link={Constants.Urls.freeTierInformation}
@@ -240,9 +243,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
                 {!isServerlessAccount() && this.state.isSharedThroughputChecked && (
                   <ThroughputInput
-                    showFreeTierExceedThroughputTooltip={
-                      this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
-                    }
+                    showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
                     isDatabase={true}
                     isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
@@ -469,9 +470,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
           {this.shouldShowCollectionThroughputInput() && (
             <ThroughputInput
-              showFreeTierExceedThroughputTooltip={
-                this.isFreeTierAccount() && !this.props.explorer.isFirstResourceCreated()
-              }
+              showFreeTierExceedThroughputTooltip={this.isFreeTierAccount() && !isFirstResourceCreated}
               isDatabase={false}
               isSharded={this.state.isSharded}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
@@ -680,7 +679,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getDatabaseOptions(): IDropdownOption[] {
-    return this.props.explorer?.databases()?.map((database) => ({
+    return useDatabases.getState().databases?.map((database) => ({
       key: database.id(),
       text: database.id(),
     }));
@@ -772,9 +771,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       return false;
     }
 
-    const selectedDatabase = this.props.explorer
-      .databases()
-      ?.find((database) => database.id() === this.state.selectedDatabaseId);
+    const selectedDatabase = useDatabases
+      .getState()
+      .databases?.find((database) => database.id() === this.state.selectedDatabaseId);
     return !!selectedDatabase?.offer();
   }
 

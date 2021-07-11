@@ -34,7 +34,6 @@ import "./Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.less";
 import "./Explorer/Controls/JsonEditor/JsonEditorComponent.less";
 import "./Explorer/Controls/Notebook/NotebookTerminalComponent.less";
 import "./Explorer/Controls/TreeComponent/treeComponent.less";
-import { ExplorerParams } from "./Explorer/Explorer";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
 import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
@@ -45,7 +44,6 @@ import "./Explorer/Panes/PanelComponent.less";
 import { SidePanel } from "./Explorer/Panes/PanelContainerComponent";
 import { SplashScreen } from "./Explorer/SplashScreen/SplashScreen";
 import "./Explorer/SplashScreen/SplashScreen.less";
-import "./Explorer/Tabs/QueryTab.less";
 import { Tabs } from "./Explorer/Tabs/Tabs";
 import { useConfig } from "./hooks/useConfig";
 import { useKnockoutExplorer } from "./hooks/useKnockoutExplorer";
@@ -57,14 +55,10 @@ initializeIcons();
 
 const App: React.FunctionComponent = () => {
   const [isLeftPaneExpanded, setIsLeftPaneExpanded] = useState<boolean>(true);
-  const { tabs, activeTab, tabsManager } = useTabs();
-
-  const explorerParams: ExplorerParams = {
-    tabsManager,
-  };
+  const openedTabs = useTabs((state) => state.openedTabs);
 
   const config = useConfig();
-  const explorer = useKnockoutExplorer(config?.platform, explorerParams);
+  const explorer = useKnockoutExplorer(config?.platform);
 
   const toggleLeftPaneExpanded = () => {
     setIsLeftPaneExpanded(!isLeftPaneExpanded);
@@ -101,8 +95,8 @@ const App: React.FunctionComponent = () => {
             </div>
           </div>
           {/* Collections Tree - End */}
-          {tabs.length === 0 && <SplashScreen explorer={explorer} />}
-          <Tabs tabs={tabs} activeTab={activeTab} />
+          {openedTabs.length === 0 && <SplashScreen explorer={explorer} />}
+          <Tabs />
         </div>
         {/* Collections Tree and Tabs - End */}
         <div

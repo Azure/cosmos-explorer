@@ -4,6 +4,7 @@ import * as ViewModels from "../Contracts/ViewModels";
 import Explorer from "../Explorer/Explorer";
 import DocumentsTab from "../Explorer/Tabs/DocumentsTab";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { useDatabases } from "../Explorer/useDatabases";
 import { userContext } from "../UserContext";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { BackendDefaults, HttpStatusCodes, SavedQueries } from "./Constants";
@@ -176,7 +177,7 @@ export class QueriesClient {
 
   private findQueriesCollection(): ViewModels.Collection {
     const queriesDatabase: ViewModels.Database = _.find(
-      this.container.databases(),
+      useDatabases.getState().databases,
       (database: ViewModels.Database) => database.id() === SavedQueries.DatabaseName
     );
     if (!queriesDatabase) {
