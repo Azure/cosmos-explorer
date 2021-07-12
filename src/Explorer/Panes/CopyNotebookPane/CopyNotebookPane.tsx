@@ -9,6 +9,7 @@ import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../../Notebook/NotebookContentItem";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
@@ -101,7 +102,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
       case "MyNotebooks":
         parent = {
           name: ResourceTreeAdapter.MyNotebooksTitle,
-          path: container.getNotebookBasePath(),
+          path: useNotebook.getState().notebookBasePath,
           type: NotebookContentItemType.Directory,
         };
         break;

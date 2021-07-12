@@ -6,16 +6,14 @@ import {
   IDropdownOption,
   IDropdownStyles,
 } from "@fluentui/react";
-import { Observable } from "knockout";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
 import { StyleConstants } from "../../../Common/Constants";
-import { MemoryUsageInfo } from "../../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
+import { MemoryTracker } from "./MemoryTrackerComponent";
 
 /**
  * Convert our NavbarButtonConfig to UI Fabric buttons
@@ -185,12 +183,9 @@ export const createDivider = (key: string): ICommandBarItemProps => {
   };
 };
 
-export const createMemoryTracker = (
-  key: string,
-  memoryUsageInfo: Observable<MemoryUsageInfo>
-): ICommandBarItemProps => {
+export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   return {
     key,
-    onRender: () => <MemoryTrackerComponent memoryUsageInfo={memoryUsageInfo} />,
+    onRender: () => <MemoryTracker />,
   };
 };

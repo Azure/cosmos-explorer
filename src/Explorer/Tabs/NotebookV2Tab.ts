@@ -23,6 +23,7 @@ import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { useNotebook } from "../Notebook/useNotebook";
 import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
 
 export interface NotebookTabOptions extends NotebookTabBaseOptions {
@@ -39,10 +40,13 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
     this.container = options.container;
     this.notebookPath = ko.observable(options.notebookContentItem.path);
-    this.container.notebookServerInfo.subscribe(() => logConsoleInfo("New notebook server info received."));
+    useNotebook.subscribe(
+      () => logConsoleInfo("New notebook server info received."),
+      (state) => state.notebookServerInfo
+    );
     this.notebookComponentAdapter = new NotebookComponentAdapter({
       contentItem: options.notebookContentItem,
-      notebooksBasePath: this.container.getNotebookBasePath(),
+      notebooksBasePath: useNotebook.getState().notebookBasePath,
       notebookClient: NotebookTabBase.clientManager,
       onUpdateKernelInfo: this.onKernelUpdate,
     });
@@ -359,8 +363,8 @@ export default class NotebookTabV2 extends NotebookTabBase {
   };
 
   private async configureServiceEndpoints(kernelName: string) {
-    const notebookConnectionInfo = this.container && this.container.notebookServerInfo();
-    const sparkClusterConnectionInfo = this.container && this.container.sparkClusterConnectionInfo();
+    const notebookConnectionInfo = useNotebook.getState().notebookServerInfo;
+    const sparkClusterConnectionInfo = useNotebook.getState().sparkClusterConnectionInfo;
     await NotebookConfigurationUtils.configureServiceEndpoints(
       this.notebookPath(),
       notebookConnectionInfo,

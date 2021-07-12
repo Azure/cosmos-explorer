@@ -27,7 +27,7 @@ interface DispatchProps {
   moveCell: (destinationId: CellId, above: boolean) => void;
   clearOutputs: () => void;
   deleteCell: () => void;
-  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) => void;
+  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: string) => void;
   takeNotebookSnapshot: (payload: SnapshotRequest) => void;
 }
 
@@ -203,7 +203,7 @@ const mapDispatchToProps = (
     dispatch(actions.moveCell({ id, contentRef, destinationId, above })),
   clearOutputs: () => dispatch(actions.clearOutputs({ id, contentRef })),
   deleteCell: () => dispatch(actions.deleteCell({ id, contentRef })),
-  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) =>
+  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: string) =>
     dispatch(cdbActions.traceNotebookTelemetry({ action, actionModifier, data })),
   takeNotebookSnapshot: (request: SnapshotRequest) => dispatch(cdbActions.takeNotebookSnapshot(request)),
 });
