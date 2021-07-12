@@ -4,6 +4,7 @@ import * as Constants from "../../Common/Constants";
 import { deleteStoredProcedure } from "../../Common/dataAccess/deleteStoredProcedure";
 import { executeStoredProcedure } from "../../Common/dataAccess/executeStoredProcedure";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -62,7 +63,7 @@ export default class StoredProcedure {
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
-    const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.StoredProcedures).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.StoredProcedures).length + 1;
     const storedProcedure = <StoredProcedureDefinition>{
       id: "",
       body: sampleStoredProcedureBody,
@@ -84,7 +85,7 @@ export default class StoredProcedure {
       }
     );
 
-    source.container.tabsManager.activateNewTab(storedProcedureTab);
+    useTabs.getState().activateNewTab(storedProcedureTab);
   }
 
   public select() {
@@ -99,14 +100,16 @@ export default class StoredProcedure {
   public open = () => {
     this.select();
 
-    const storedProcedureTabs: NewStoredProcedureTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
-    ) as NewStoredProcedureTab[];
+    const storedProcedureTabs: NewStoredProcedureTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.StoredProcedures,
+        (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+      ) as NewStoredProcedureTab[];
     let storedProcedureTab: NewStoredProcedureTab = storedProcedureTabs && storedProcedureTabs[0];
 
     if (storedProcedureTab) {
-      this.container.tabsManager.activateTab(storedProcedureTab);
+      useTabs.getState().activateTab(storedProcedureTab);
     } else {
       const storedProcedureData = <StoredProcedureDefinition>{
         _rid: this.rid,
@@ -131,7 +134,7 @@ export default class StoredProcedure {
         }
       );
 
-      this.container.tabsManager.activateNewTab(storedProcedureTab);
+      useTabs.getState().activateNewTab(storedProcedureTab);
     }
   };
   public delete() {
@@ -141,7 +144,7 @@ export default class StoredProcedure {
 
     deleteStoredProcedure(this.collection.databaseId, this.collection.id(), this.id()).then(
       () => {
-        this.container.tabsManager.closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
+        useTabs.getState().closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
       (reason) => {}
@@ -149,10 +152,12 @@ export default class StoredProcedure {
   }
 
   public execute(params: string[], partitionKeyValue?: string): void {
-    const sprocTabs: NewStoredProcedureTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.StoredProcedures,
-      (tab: TabsBase) => tab.node && tab.node.rid === this.rid
-    ) as NewStoredProcedureTab[];
+    const sprocTabs: NewStoredProcedureTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.StoredProcedures,
+        (tab: TabsBase) => tab.node && tab.node.rid === this.rid
+      ) as NewStoredProcedureTab[];
     const sprocTab: NewStoredProcedureTab = sprocTabs && sprocTabs.length > 0 && sprocTabs[0];
     sprocTab.isExecuting(true);
     this.container &&

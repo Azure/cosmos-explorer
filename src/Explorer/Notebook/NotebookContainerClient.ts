@@ -8,25 +8,26 @@ import * as DataModels from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
   private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
 
-  constructor(
-    private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
-    private onConnectionLost: () => void,
-    private onMemoryUsageInfoUpdate: (update: DataModels.MemoryUsageInfo) => void
-  ) {
-    if (notebookServerInfo() && notebookServerInfo().notebookServerEndpoint) {
+  constructor(private onConnectionLost: () => void) {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    if (notebookServerInfo?.notebookServerEndpoint) {
       this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
     } else {
-      const subscription = notebookServerInfo.subscribe((newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
-        if (newServerInfo && newServerInfo.notebookServerEndpoint) {
-          this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-        }
-        subscription.dispose();
-      });
+      const unsub = useNotebook.subscribe(
+        (newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
+          if (newServerInfo?.notebookServerEndpoint) {
+            this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
+          }
+          unsub();
+        },
+        (state) => state.notebookServerInfo
+      );
     }
   }
 
@@ -36,13 +37,14 @@ export class NotebookContainerClient {
   private scheduleHeartbeat(delayMs: number): void {
     setTimeout(() => {
       this.getMemoryUsage()
-        .then((memoryUsageInfo) => this.onMemoryUsageInfoUpdate(memoryUsageInfo))
+        .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo))
         .finally(() => this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs));
     }, delayMs);
   }
 
   private async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
-    if (!this.notebookServerInfo() || !this.notebookServerInfo().notebookServerEndpoint) {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";
       Logger.logError(error, "NotebookContainerClient/getMemoryUsage");
       return Promise.reject(error);
@@ -98,7 +100,8 @@ export class NotebookContainerClient {
   }
 
   private async _resetWorkspace(): Promise<void> {
-    if (!this.notebookServerInfo() || !this.notebookServerInfo().notebookServerEndpoint) {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";
       Logger.logError(error, "NotebookContainerClient/resetWorkspace");
       return Promise.reject(error);
@@ -117,15 +120,11 @@ export class NotebookContainerClient {
   }
 
   private getNotebookServerConfig(): { notebookServerEndpoint: string; authToken: string } {
-    let authToken: string,
-      notebookServerEndpoint = this.notebookServerInfo().notebookServerEndpoint,
-      token = this.notebookServerInfo().authToken;
-    if (token) {
-      authToken = `Token ${token}`;
-    }
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    const authToken: string = notebookServerInfo.authToken ? `Token ${notebookServerInfo.authToken}` : undefined;
 
     return {
-      notebookServerEndpoint,
+      notebookServerEndpoint: notebookServerInfo.notebookServerEndpoint,
       authToken,
     };
   }

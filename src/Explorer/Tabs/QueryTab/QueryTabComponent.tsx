@@ -32,7 +32,6 @@ import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter
 import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { SaveQueryPane } from "../../Panes/SaveQueryPane/SaveQueryPane";
 import TabsBase from "../TabsBase";
-import { TabsManager } from "../TabsManager";
 import "./QueryTabComponent.less";
 
 enum ToggleState {
@@ -68,7 +67,6 @@ export interface IQueryTabComponentProps {
   partitionKey: DataModels.PartitionKey;
   container: Explorer;
   activeTab?: TabsBase;
-  tabManager?: TabsManager;
   onTabAccessor: (instance: ITabAccessor) => void;
   isPreferredApiMongoDB?: boolean;
   monacoEditorSetting?: string;

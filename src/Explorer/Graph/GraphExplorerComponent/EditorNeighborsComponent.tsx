@@ -4,12 +4,12 @@
  */
 
 import * as React from "react";
-import { NeighborVertexBasicInfo, EditedEdges, GraphNewEdgeData, PossibleVertex } from "./GraphExplorer";
-import * as GraphUtil from "./GraphUtil";
-import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
-import DeleteIcon from "../../../../images/delete.svg";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
+import DeleteIcon from "../../../../images/delete.svg";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
+import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
+import { EditedEdges, GraphNewEdgeData, NeighborVertexBasicInfo, PossibleVertex } from "./GraphExplorer";
+import * as GraphUtil from "./GraphUtil";
 
 export interface EditorNeighborsComponentProps {
   isSource: boolean;
@@ -83,11 +83,11 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
   }
 
   private removeCurrentNeighborEdge(index: number): void {
-    let sources = this.props.editedNeighbors.currentNeighbors;
-    let id = sources[index].edgeId;
+    const sources = this.props.editedNeighbors.currentNeighbors;
+    const id = sources[index].edgeId;
     sources.splice(index, 1);
 
-    let droppedIds = this.props.editedNeighbors.droppedIds;
+    const droppedIds = this.props.editedNeighbors.droppedIds;
     droppedIds.push(id);
     this.onUpdateEdges();
   }
@@ -215,7 +215,7 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
             </td>
             <td className="actionCol">
               <span className="rightPaneTrashIcon rightPaneBtns">
-                <img src={DeleteIcon} alt="Delete" onClick={(e) => this.removeAddedEdgeToNeighbor(index)} />
+                <img src={DeleteIcon} alt="Delete" onClick={() => this.removeAddedEdgeToNeighbor(index)} />
               </span>
             </td>
           </tr>
