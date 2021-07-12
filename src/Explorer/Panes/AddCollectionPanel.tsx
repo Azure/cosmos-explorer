@@ -11,7 +11,7 @@ import {
   Separator,
   Stack,
   Text,
-  TooltipHost,
+  TooltipHost
 } from "@fluentui/react";
 import React from "react";
 import * as Constants from "../../Common/Constants";
@@ -115,7 +115,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       isSharded: userContext.apiType !== "Tables",
       partitionKey:
         (!userContext.features.partitionKeyDefault && userContext.apiType === "SQL") ||
-        (!userContext.features.partitionKeyDefault && userContext.apiType === "Mongo")
+          (!userContext.features.partitionKeyDefault && userContext.apiType === "Mongo")
           ? "/id"
           : "",
       enableDedicatedThroughput: false,
@@ -466,8 +466,8 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`You can optionally provision dedicated throughput for a ${getCollectionName().toLocaleLowerCase()} within a database that has throughput
                   provisioned. This dedicated throughput amount will not be shared with other ${getCollectionName(
-                    true
-                  ).toLocaleLowerCase()} in the database and
+                  true
+                ).toLocaleLowerCase()} in the database and
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
@@ -820,9 +820,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       !userContext.features.partitionKeyDefault &&
       (userContext.apiType === "SQL" || userContext.apiType === "Mongo")
     ) {
-      let subtext = "For small workloads, the item ID is a suitable choice for the partition key.";
+      const subtext = "For small workloads, the item ID is a suitable choice for the partition key.";
       return subtext;
     }
+    return "";
   }
 
   private getAnalyticalStorageTooltipContent(): JSX.Element {
@@ -1000,10 +1001,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     const partitionKeyVersion = this.state.useHashV2 ? 2 : undefined;
     const partitionKey: DataModels.PartitionKey = partitionKeyString
       ? {
-          paths: [partitionKeyString],
-          kind: "Hash",
-          version: partitionKeyVersion,
-        }
+        paths: [partitionKeyString],
+        kind: "Hash",
+        version: partitionKeyVersion,
+      }
       : undefined;
 
     const indexingPolicy: DataModels.IndexingPolicy = this.state.enableIndexing
