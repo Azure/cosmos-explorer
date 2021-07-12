@@ -28,7 +28,11 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
   public render(): JSX.Element {
     return (
       <div className="notebookTerminalContainer">
-        <iframe title="Terminal to Notebook Server" onLoad={this.handleFrameLoad.bind(this)} src="terminal.html" />
+        <iframe
+          title="Terminal to Notebook Server"
+          onLoad={(event) => this.handleFrameLoad(event)}
+          src="terminal.html"
+        />
       </div>
     );
   }
@@ -45,8 +49,8 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
 
     const props: TerminalProps = {
       terminalEndpoint: this.tryGetTerminalEndpoint(),
-      notebookServerEndpoint: this.props.notebookServerInfo.notebookServerEndpoint,
-      authToken: this.props.notebookServerInfo.authToken,
+      notebookServerEndpoint: this.props.notebookServerInfo?.notebookServerEndpoint,
+      authToken: this.props.notebookServerInfo?.authToken,
       subscriptionId: userContext.subscriptionId,
       apiType: userContext.apiType,
       authType: userContext.authType,
@@ -58,25 +62,22 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
     });
   }
 
-  public tryGetTerminalEndpoint(): string | null {
-    let terminalEndpoint: string | null;
+  public tryGetTerminalEndpoint(): string | undefined {
+    let terminalEndpoint: string | undefined;
 
-    const notebookServerEndpoint: string = this.props.notebookServerInfo.notebookServerEndpoint;
+    const notebookServerEndpoint = this.props.notebookServerInfo?.notebookServerEndpoint;
     if (StringUtils.endsWith(notebookServerEndpoint, "mongo")) {
-      let mongoShellEndpoint: string = this.props.databaseAccount.properties.mongoEndpoint;
-      if (!mongoShellEndpoint) {
-        // mongoEndpoint is only available for Mongo 3.6 and higher.
-        // Fallback to documentEndpoint otherwise.
-        mongoShellEndpoint = this.props.databaseAccount.properties.documentEndpoint;
-      }
-      terminalEndpoint = mongoShellEndpoint;
+      // mongoEndpoint is only available for Mongo 3.6 and higher, fallback to documentEndpoint otherwise
+      terminalEndpoint =
+        this.props.databaseAccount?.properties.mongoEndpoint || this.props.databaseAccount?.properties.documentEndpoint;
     } else if (StringUtils.endsWith(notebookServerEndpoint, "cassandra")) {
-      terminalEndpoint = this.props.databaseAccount.properties.cassandraEndpoint;
+      terminalEndpoint = this.props.databaseAccount?.properties.cassandraEndpoint;
     }
 
     if (terminalEndpoint) {
       return new URL(terminalEndpoint).host;
     }
-    return null;
+
+    return undefined;
   }
 }
