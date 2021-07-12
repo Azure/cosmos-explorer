@@ -30,7 +30,7 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       <div className="notebookTerminalContainer">
         <iframe
           title="Terminal to Notebook Server"
-          onLoad={(event) => this.handleFrameLoad(event)}
+          onLoad={this.handleFrameLoad.bind(this)}
           src="terminal.html"
         />
       </div>
