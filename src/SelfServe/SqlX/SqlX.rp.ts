@@ -8,7 +8,7 @@ import {
   FetchPricesResponse,
   RegionsResponse,
   SqlxServiceResource,
-  UpdateDedicatedGatewayRequestParameters
+  UpdateDedicatedGatewayRequestParameters,
 } from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";

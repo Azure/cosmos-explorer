@@ -10,7 +10,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -19,7 +19,7 @@ import {
   getPriceMap,
   getReadRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -192,8 +192,8 @@ const ApproximateCostDropDownInfo: Info = {
   link: {
     href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
     textTKey: "DedicatedGatewayPricing",
-  }
-}
+  },
+};
 
 let priceMap: Map<string, Map<string, number>>;
 let regions: Array<string>;
