@@ -8,7 +8,7 @@ import {
   FetchPricesResponse,
   RegionsResponse,
   SqlxServiceResource,
-  UpdateDedicatedGatewayRequestParameters,
+  UpdateDedicatedGatewayRequestParameters
 } from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";
@@ -152,7 +152,7 @@ export const getReadRegions = async (): Promise<Array<string>> => {
     if (response.result.location !== undefined) {
       readRegions.push(response.result.location.replace(" ", "").toLowerCase());
     } else {
-      for (let location of response.result.locations) {
+      for (const location of response.result.locations) {
         readRegions.push(location.locationName.replace(" ", "").toLowerCase());
       }
     }
@@ -170,7 +170,7 @@ export const getPriceMap = async (regions: Array<string>): Promise<Map<string, M
   try {
     const priceMap = new Map<string, Map<string, number>>();
 
-    for (let region of regions) {
+    for (const region of regions) {
       const regionPriceMap = new Map<string, number>();
 
       const response = await armRequestWithoutPolling<FetchPricesResponse>({
@@ -186,7 +186,7 @@ export const getPriceMap = async (regions: Array<string>): Promise<Map<string, M
         },
       });
 
-      for (let item of response.result.Items) {
+      for (const item of response.result.Items) {
         regionPriceMap.set(item.skuName, item.retailPrice);
       }
       priceMap.set(region, regionPriceMap);

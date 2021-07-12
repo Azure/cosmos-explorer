@@ -10,7 +10,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -19,7 +19,7 @@ import {
   getPriceMap,
   getReadRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -201,7 +201,7 @@ let regions: Array<string>;
 const calculateCost = (skuName: string, instanceCount: number): Description => {
   try {
     let costPerHour = 0;
-    for (let region of regions) {
+    for (const region of regions) {
       costPerHour += priceMap.get(region).get(skuName.replace("Cosmos.", ""));
     }
     costPerHour *= instanceCount;
