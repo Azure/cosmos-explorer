@@ -10,7 +10,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -19,7 +19,7 @@ import {
   getPriceMap,
   getReadRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -58,7 +58,7 @@ const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInpu
 
   // Update cost per hour based on new sku
   currentValues.set("costPerHour", {
-    value: calculateCost(newValue as string, currentValues.get("NumberOfInstances").value as number),
+    value: calculateCost(newValue as string, currentValues.get("instances").value as number),
   });
 
   return currentValues;
@@ -190,15 +190,14 @@ const NumberOfInstancesDropdownInfo: Info = {
   },
 };
 
-// Block-scoped Variables to store information for cost calculation
 let priceMap: Map<string, Map<string, number>>;
-let readRegions: Array<string>;
+let regions: Array<string>;
 
-const calculateCost = (skuName: string, instanceCount: number): string | Description => {
+const calculateCost = (skuName: string, instanceCount: number): Description => {
   try {
     let costPerHour = 0;
-    for (let i = 0; i < readRegions.length; i++) {
-      costPerHour += priceMap.get(readRegions[i]).get(skuName.replace("Cosmos.", ""));
+    for (var region of regions) {
+      costPerHour += priceMap.get(region).get(skuName.replace("Cosmos.", ""));
     }
     costPerHour *= instanceCount;
 
@@ -309,8 +308,8 @@ export default class SqlX extends SelfServeBaseClass {
     });
 
     // Get Read Regions and PriceMap
-    readRegions = await getReadRegions();
-    priceMap = await getPriceMap(readRegions);
+    regions = await getReadRegions();
+    priceMap = await getPriceMap(regions);
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
@@ -377,7 +376,7 @@ export default class SqlX extends SelfServeBaseClass {
   instances: number;
 
   @Values({
-    labelTKey: "Approximate Cost Per Hour",
+    labelTKey: "ApproximateCost",
     isDynamicDescription: true,
   })
   costPerHour: string;
