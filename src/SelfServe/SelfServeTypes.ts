@@ -236,7 +236,6 @@ export enum DescriptionType {
 export interface Description {
   /**
    * Key used to pickup the string corresponding to the text to be shown as part of the description, from the strings JSON file.
-   * In case key is not present in strings JSON file, displays key as is.
    */
   textTKey: string;
   type: DescriptionType;
