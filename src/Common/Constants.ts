@@ -95,7 +95,7 @@ export class Flights {
   public static readonly MongoIndexing = "mongoindexing";
   public static readonly AutoscaleTest = "autoscaletest";
   public static readonly SchemaAnalyzer = "schemaanalyzer";
-  public static readonly PartitionKeyTest = 'partitionkeytest'
+  public static readonly PartitionKeyTest = "partitionkeytest";
 }
 
 export class AfecFeatures {

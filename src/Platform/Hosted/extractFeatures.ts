@@ -71,6 +71,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
     autoscaleDefault: "true" === get("autoscaledefault"),
-    partitionKeyDefault: "true" == get("partitionkeytest")
+    partitionKeyDefault: "true" === get("partitionkeytest"),
   };
 }
