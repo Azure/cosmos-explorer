@@ -113,7 +113,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey: userContext.apiType == "SQL" || userContext.apiType == "Mongo" ? "/id" : "",
+      partitionKey: (!userContext.features.partitionKeyDefault && userContext.apiType == "SQL") || (!userContext.features.partitionKeyDefault && userContext.apiType == "Mongo") ? "/id" : "",
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
       useHashV2: false,
@@ -123,29 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       showErrorDetails: false,
       isExecuting: false,
     }
-
-    if (userContext.features.partitionKeyDefault) {
-      this.state = {
-        createNewDatabase: userContext.apiType !== "Tables" && !this.props.databaseId,
-        newDatabaseId: "",
-        isSharedThroughputChecked: this.getSharedThroughputDefault(),
-        selectedDatabaseId:
-          userContext.apiType === "Tables" ? CollectionCreation.TablesAPIDefaultDatabase : this.props.databaseId,
-        collectionId: "",
-        enableIndexing: true,
-        isSharded: userContext.apiType !== "Tables",
-        partitionKey: "",
-        enableDedicatedThroughput: false,
-        createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
-        useHashV2: false,
-        enableAnalyticalStore: false,
-        uniqueKeys: [],
-        errorMessage: "",
-        showErrorDetails: false,
-        isExecuting: false,
-      }
-    }
-    ;
+      ;
   }
 
 
