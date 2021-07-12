@@ -10,7 +10,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -19,7 +19,7 @@ import {
   getPriceMap,
   getReadRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -55,8 +55,6 @@ const CosmosD16s = "Cosmos.D16s";
 
 const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
   currentValues.set("sku", { value: newValue });
-
-  // Update cost per hour based on new sku
   currentValues.set("costPerHour", {
     value: calculateCost(newValue as string, currentValues.get("instances").value as number),
   });
@@ -87,7 +85,6 @@ const onNumberOfInstancesChange = (
     currentValues.set("warningBanner", undefined);
   }
 
-  // Update cost per hour based on new instance count
   currentValues.set("costPerHour", {
     value: calculateCost(currentValues.get("sku").value as string, newValue as number),
   });
@@ -189,6 +186,14 @@ const NumberOfInstancesDropdownInfo: Info = {
     textTKey: "ResizingDecisionLink",
   },
 };
+
+const ApproximateCostDropDownInfo: Info = {
+  messageTKey: "CostText",
+  link: {
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
+    textTKey: "DedicatedGatewayPricing",
+  }
+}
 
 let priceMap: Map<string, Map<string, number>>;
 let regions: Array<string>;
@@ -375,6 +380,7 @@ export default class SqlX extends SelfServeBaseClass {
   })
   instances: number;
 
+  @PropertyInfo(ApproximateCostDropDownInfo)
   @Values({
     labelTKey: "ApproximateCost",
     isDynamicDescription: true,
