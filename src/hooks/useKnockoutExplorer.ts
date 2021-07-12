@@ -105,7 +105,9 @@ async function configureHostedWithAAD(config: AAD, explorerParams: ExplorerParam
     aadToken = aadTokenResponse.accessToken;
   }
   try {
-    keys = await listKeys(subscriptionId, resourceGroup, account.name);
+    if (!account.properties.disableLocalAuth) {
+      keys = await listKeys(subscriptionId, resourceGroup, account.name);
+    }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
       console.warn(e);
