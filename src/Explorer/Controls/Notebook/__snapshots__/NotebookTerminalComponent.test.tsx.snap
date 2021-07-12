@@ -1,6 +1,42 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NotebookTerminalComponent renders 1`] = `
+exports[`NotebookTerminalComponent renders cassandra shell 1`] = `
+<div
+  className="notebookTerminalContainer"
+>
+  <iframe
+    onLoad={[Function]}
+    src="terminal.html"
+    title="Terminal to Notebook Server"
+  />
+</div>
+`;
+
+exports[`NotebookTerminalComponent renders mongo 3.2 shell 1`] = `
+<div
+  className="notebookTerminalContainer"
+>
+  <iframe
+    onLoad={[Function]}
+    src="terminal.html"
+    title="Terminal to Notebook Server"
+  />
+</div>
+`;
+
+exports[`NotebookTerminalComponent renders mongo 3.6 shell 1`] = `
+<div
+  className="notebookTerminalContainer"
+>
+  <iframe
+    onLoad={[Function]}
+    src="terminal.html"
+    title="Terminal to Notebook Server"
+  />
+</div>
+`;
+
+exports[`NotebookTerminalComponent renders terminal 1`] = `
 <div
   className="notebookTerminalContainer"
 >
