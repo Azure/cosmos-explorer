@@ -4,7 +4,12 @@ import { armRequestWithoutPolling } from "../../Utils/arm/request";
 import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
-import { FetchPricesResponse, RegionsResponse, SqlxServiceResource, UpdateDedicatedGatewayRequestParameters } from "./SqlxTypes";
+import {
+  FetchPricesResponse,
+  RegionsResponse,
+  SqlxServiceResource,
+  UpdateDedicatedGatewayRequestParameters,
+} from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";
 

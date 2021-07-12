@@ -34,18 +34,18 @@ export type FetchPricesResponse = {
   Items: Array<PriceItem>;
   NextPageLink: string | undefined;
   Count: number;
-}
+};
 
 export type PriceItem = {
   retailPrice: number;
   skuName: string;
-}
+};
 
 export type RegionsResponse = {
   locations: Array<RegionItem>;
   location: string;
-}
+};
 
 export type RegionItem = {
   locationName: string;
-}
+};
