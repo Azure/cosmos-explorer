@@ -504,8 +504,13 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   }
 
   private onRevertExisitingDocumentClick(): void {
+    const { selectedDocumentId, selectedSqlDocumentId } = this.state;
+    const documentContent =
+      userContext.apiType === "Mongo"
+        ? formatDocumentContent(selectedDocumentId)
+        : formatSqlDocumentContent(selectedSqlDocumentId);
     this.setState({
-      documentContent: formatDocumentContent(this.state.selectedDocumentId),
+      documentContent: documentContent,
       editorKey: Math.random().toString(),
     });
   }
