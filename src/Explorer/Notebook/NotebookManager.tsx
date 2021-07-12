@@ -92,7 +92,7 @@ export default class NotebookManager {
         useSidePanel
           .getState()
           .openSidePanel(
-            "Manager GitHub settings",
+            "Manage GitHub settings",
             <GitHubReposPanel
               explorer={this.params.container}
               gitHubClientProp={this.params.container.notebookManager.gitHubClient}
