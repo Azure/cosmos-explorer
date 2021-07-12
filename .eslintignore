@@ -186,8 +186,6 @@ src/Explorer/Controls/Notebook/NotebookTerminalComponent.test.tsx
 src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
 src/Explorer/Controls/TreeComponent/TreeComponent.tsx
-src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.test.tsx
-src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphVizComponent.tsx
