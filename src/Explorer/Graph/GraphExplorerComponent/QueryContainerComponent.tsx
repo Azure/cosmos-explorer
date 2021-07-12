@@ -1,6 +1,6 @@
 import * as React from "react";
-import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 import CloseIcon from "../../../../images/close-black.svg";
+import * as InputTypeaheadComponent from "../../Controls/InputTypeahead/InputTypeaheadComponent";
 
 export interface QueryContainerComponentProps {
   initialQuery: string;
@@ -82,7 +82,7 @@ export class QueryContainerComponent extends React.Component<
         <button
           type="button"
           className="filterbtnstyle queryButton"
-          onClick={(e) => this.props.onExecuteClick(this.state.query)}
+          onClick={() => this.props.onExecuteClick(this.state.query)}
           disabled={this.props.isLoading || !QueryContainerComponent.isQueryValid(this.state.query)}
         >
           Execute Gremlin Query
