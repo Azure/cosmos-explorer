@@ -7,23 +7,23 @@ import DeleteFeedback from "../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import { Collection, Database } from "../../Contracts/ViewModels";
 import { useSidePanel } from "../../hooks/useSidePanel";
+import { useTabs } from "../../hooks/useTabs";
 import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
-import Explorer from "../Explorer";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
 import { RightPaneForm, RightPaneFormProps } from "./RightPaneForm/RightPaneForm";
 
 interface DeleteDatabaseConfirmationPanelProps {
-  explorer: Explorer;
+  refreshDatabases: () => Promise<void>;
 }
 
 export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseConfirmationPanelProps> = ({
-  explorer,
+  refreshDatabases,
 }: DeleteDatabaseConfirmationPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const isLastNonEmptyDatabase = useDatabases((state) => state.isLastNonEmptyDatabase);
@@ -32,7 +32,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
   const [formError, setFormError] = useState<string>("");
   const [databaseInput, setDatabaseInput] = useState<string>("");
   const [databaseFeedbackInput, setDatabaseFeedbackInput] = useState<string>("");
-  const selectedDatabase: Database = useSelectedNode.getState().findSelectedDatabase();
+  const selectedDatabase: Database = useDatabases.getState().findSelectedDatabase();
 
   const submit = async (): Promise<void> => {
     if (selectedDatabase?.id() && databaseInput !== selectedDatabase.id()) {
@@ -52,15 +52,18 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     try {
       await deleteDatabase(selectedDatabase.id());
       closeSidePanel();
-      explorer.refreshAllDatabases();
-      explorer.tabsManager.closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
+      refreshDatabases();
+      useTabs.getState().closeTabsByComparator((tab) => tab.node?.id() === selectedDatabase.id());
       useSelectedNode.getState().setSelectedNode(undefined);
       selectedDatabase
         .collections()
         .forEach((collection: Collection) =>
-          explorer.tabsManager.closeTabsByComparator(
-            (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
-          )
+          useTabs
+            .getState()
+            .closeTabsByComparator(
+              (tab) =>
+                tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
+            )
         );
       TelemetryProcessor.traceSuccess(
         Action.DeleteDatabase,

@@ -22,6 +22,7 @@ import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLaunc
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { useNotebook } from "../Notebook/useNotebook";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -61,8 +62,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      { dispose: useSelectedNode.subscribe(() => this.setState({})) },
-      this.container.isNotebookEnabled.subscribe(() => this.setState({}))
+      {
+        dispose: useNotebook.subscribe(
+          () => this.setState({}),
+          (state) => state.isNotebookEnabled
+        ),
+      },
+      { dispose: useSelectedNode.subscribe(() => this.setState({})) }
     );
   }
 
@@ -210,7 +216,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (this.container.isNotebookEnabled()) {
+    if (useNotebook.getState().isNotebookEnabled) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
@@ -274,7 +280,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       }
 
       /* Scale & Settings */
-      const isShared = useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
+      const isShared = useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
 
       const label = isShared ? "Settings" : "Scale & Settings";
       items.push({

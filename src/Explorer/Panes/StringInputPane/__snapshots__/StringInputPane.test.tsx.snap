@@ -9,17 +9,8 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
     Explorer {
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
-      "isAccountReady": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
-      "isNotebookEnabled": [Function],
-      "isNotebooksEnabledForAccount": [Function],
-      "isSchemaEnabled": [Function],
-      "isShellEnabled": [Function],
-      "isSynapseLinkUpdating": [Function],
       "isTabsContentExpanded": [Function],
-      "memoryUsageInfo": [Function],
-      "notebookBasePath": [Function],
-      "notebookServerInfo": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
       "provideFeedbackEmail": [Function],
@@ -27,7 +18,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         "container": [Circular],
       },
       "refreshNotebookList": [Function],
-      "resourceTokenCollection": [Function],
       "resourceTree": ResourceTreeAdapter {
         "container": [Circular],
         "copyNotebook": [Function],
@@ -36,11 +26,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
         "container": [Circular],
         "parameters": [Function],
-      },
-      "sparkClusterConnectionInfo": [Function],
-      "tabsManager": TabsManager {
-        "activeTab": [Function],
-        "openedTabs": [Function],
       },
     }
   }

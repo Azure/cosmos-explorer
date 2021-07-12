@@ -54,7 +54,6 @@
     "./src/Explorer/Notebook/NotebookComponent/loadTransform.ts",
     "./src/Explorer/Notebook/NotebookComponent/reducers.ts",
     "./src/Explorer/Notebook/NotebookComponent/types.ts",
-    "./src/Explorer/Notebook/NotebookContentClient.ts",
     "./src/Explorer/Notebook/NotebookContentItem.ts",
     "./src/Explorer/Notebook/NotebookRenderer/AzureTheme.tsx",
     "./src/Explorer/Notebook/NotebookRenderer/Prompt.tsx",

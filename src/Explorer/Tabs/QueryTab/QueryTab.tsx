@@ -1,6 +1,7 @@
 import React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
 import type { QueryTabOptions } from "../../../Contracts/ViewModels";
+import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
 import { IQueryTabComponentProps, ITabAccessor } from "../../Tabs/QueryTab/QueryTabComponent";
 import TabsBase from "../TabsBase";
@@ -40,12 +41,12 @@ export class NewQueryTab extends TabsBase {
   }
 
   public onTabClick(): void {
-    this.manager?.activateTab(this);
+    useTabs.getState().activateTab(this);
     this.iTabAccessor.onTabClickEvent();
   }
 
   public onCloseTabButtonClick(): void {
-    this.manager?.closeTab(this);
+    useTabs.getState().closeTab(this);
     if (this.iTabAccessor) {
       this.iTabAccessor.onCloseClickEvent(true);
     }

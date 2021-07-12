@@ -10,6 +10,7 @@ import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProc
 import { updateStoredProcedure } from "../../../Common/dataAccess/updateStoredProcedure";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
+import { useTabs } from "../../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
@@ -144,7 +145,7 @@ export default class StoredProcedureTabComponent extends React.Component<
   }
 
   public onTabClick(): void {
-    if (this.props.container.tabsManager.openedTabs().length > 0) {
+    if (useTabs.getState().openedTabs.length > 0) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
@@ -396,10 +397,8 @@ export default class StoredProcedureTabComponent extends React.Component<
           editorModel && editorModel.setValue(createdResource.body as string);
           this.props.scriptTabBaseInstance.editorContent.setBaseline(createdResource.body as string);
           this.node = this.collection.createStoredProcedureNode(createdResource);
-          this.props.container.tabsManager.openedTabs()[
-            this.props.container.tabsManager.openedTabs().length - 1
-          ].node = this.node;
-
+          this.props.scriptTabBaseInstance.node = this.node;
+          useTabs.getState().updateTab(this.props.scriptTabBaseInstance);
           this.props.scriptTabBaseInstance.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
 
           this.setState({
