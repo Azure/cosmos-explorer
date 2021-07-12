@@ -71,7 +71,6 @@ src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.ts
 src/Explorer/DataSamples/DataSamplesUtil.test.ts
 src/Explorer/DataSamples/DataSamplesUtil.ts
-src/Explorer/Explorer.tsx
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.ts
 src/Explorer/Graph/GraphExplorerComponent/D3ForceGraph.test.ts
@@ -83,8 +82,6 @@ src/Explorer/Graph/GraphExplorerComponent/GremlinClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinClient.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.test.ts
 src/Explorer/Graph/GraphExplorerComponent/GremlinSimpleClient.ts
-src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.test.ts
-src/Explorer/Menus/CommandBar/CommandBarComponentButtonFactory.ts
 src/Explorer/Menus/ContextMenu.ts
 src/Explorer/MostRecentActivity/MostRecentActivity.ts
 src/Explorer/Notebook/NotebookClientV2.ts
@@ -206,7 +203,6 @@ src/Explorer/Notebook/NotebookRenderer/decorators/draggable/index.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/hijack-scroll/index.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/kbd-shortcuts/index.tsx
 src/Explorer/Notebook/temp/inputs/connected-editors/codemirror.tsx
-src/Explorer/SplashScreen/SplashScreen.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 __mocks__/monaco-editor.ts
 src/Explorer/Tree/ResourceTreeAdapterForResourceToken.test.tsx
