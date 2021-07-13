@@ -513,9 +513,9 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
 }
 
 function createOpenPostgreSQLTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open PostgreSQL Terminal";
+  const label = "Open PostgreSQL Shell";
   return {
-    iconSrc: CosmosTerminalIcon,
+    iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.PostgreSQL),
     commandButtonLabel: label,
