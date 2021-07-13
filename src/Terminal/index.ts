@@ -6,7 +6,7 @@ import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../UserContext";
 import "./index.css";
-import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
+import { createTerminalApp } from "./JupyterLabAppFactory";
 import { TerminalProps } from "./TerminalProps";
 
 const createServerSettings = (props: TerminalProps): ServerConnection.ISettings => {
@@ -54,7 +54,7 @@ const initTerminal = async (props: TerminalProps) => {
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
-    await JupyterLabAppFactory.createTerminalApp(serverSettings);
+    await createTerminalApp(serverSettings);
     TelemetryProcessor.traceSuccess(Action.OpenTerminal, data, startTime);
   } catch (error) {
     TelemetryProcessor.traceFailure(Action.OpenTerminal, data, startTime);

@@ -1,6 +1,6 @@
 import * as ko from "knockout";
-import * as ViewModels from "../Contracts/ViewModels";
 import * as Constants from "../Common/Constants";
+import * as ViewModels from "../Contracts/ViewModels";
 
 export abstract class WaitsForTemplateViewModel implements ViewModels.WaitsForTemplate {
   public isTemplateReady: ko.Observable<boolean>;
@@ -14,11 +14,11 @@ export abstract class WaitsForTemplateViewModel implements ViewModels.WaitsForTe
       callback(value);
     });
 
-    document.addEventListener("keydown", function (e: KeyboardEvent) {
+    document.addEventListener("keydown", (e: KeyboardEvent) => {
       // To trap keyboard focus in AddCollection pane
-      let firstFocusableElement = document.getElementById("closeBtnAddCollection");
-      let lastFocusableElement = document.getElementById("submitBtnAddCollection");
-      var isTabPressed = e.keyCode === Constants.KeyCodes.Tab;
+      const firstFocusableElement = document.getElementById("closeBtnAddCollection");
+      const lastFocusableElement = document.getElementById("submitBtnAddCollection");
+      const isTabPressed = e.keyCode === Constants.KeyCodes.Tab;
       if (isTabPressed) {
         if (e.shiftKey) {
           /* shift + tab */ if (document.activeElement === firstFocusableElement) {

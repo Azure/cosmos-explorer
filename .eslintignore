@@ -124,7 +124,6 @@ src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
 src/Explorer/Tabs/ConflictsTab.ts
 src/Explorer/Tabs/DatabaseSettingsTab.ts
-src/Explorer/Tabs/DocumentsTab.test.ts
 src/Explorer/Tabs/DocumentsTab.ts
 src/Explorer/Tabs/GraphTab.ts
 src/Explorer/Tabs/MongoDocumentsTab.ts
@@ -145,7 +144,6 @@ src/Explorer/Tree/StoredProcedure.ts
 src/Explorer/Tree/TreeComponents.ts
 src/Explorer/Tree/Trigger.ts
 src/Explorer/Tree/UserDefinedFunction.ts
-src/Explorer/WaitsForTemplateViewModel.ts
 src/GitHub/GitHubClient.test.ts
 src/GitHub/GitHubClient.ts
 src/GitHub/GitHubConnector.ts
@@ -159,8 +157,6 @@ src/Platform/Hosted/Authorization.ts
 src/Platform/Hosted/Helpers/ConnectionStringParser.test.ts
 src/ReactDevTools.ts
 src/Shared/Constants.ts
-src/Shared/DefaultExperienceUtility.test.ts
-src/Shared/DefaultExperienceUtility.ts
 src/Shared/ExplorerSettings.ts
 src/Shared/PriceEstimateCalculator.ts
 src/Shared/StorageUtility.test.ts
@@ -170,7 +166,6 @@ src/SparkClusterManager/ArcadiaResourceManager.ts
 src/SparkClusterManager/SparkClusterManager.ts
 src/Terminal/JupyterLabAppFactory.ts
 src/Terminal/NotebookAppContracts.d.ts
-src/Terminal/index.ts
 src/TokenProviders/PortalTokenProvider.ts
 src/TokenProviders/TokenProviderFactory.ts
 src/Utils/PricingUtils.test.ts

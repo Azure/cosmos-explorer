@@ -16,17 +16,17 @@ import {
   ConnectionString,
   EncryptedToken,
   HostedExplorerChildFrame,
-  ResourceToken,
+  ResourceToken
 } from "../HostedExplorerChildFrame";
 import { emulatorAccount } from "../Platform/Emulator/emulatorAccount";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { parseResourceTokenConnectionString } from "../Platform/Hosted/Helpers/ResourceTokenUtils";
 import {
   getDatabaseAccountKindFromExperience,
-  getDatabaseAccountPropertiesFromMetadata,
+  getDatabaseAccountPropertiesFromMetadata
 } from "../Platform/Hosted/HostedUtils";
 import { CollectionCreation } from "../Shared/Constants";
-import { DefaultExperienceUtility } from "../Shared/DefaultExperienceUtility";
+import * as DefaultExperienceUtility from "../Shared/DefaultExperienceUtility";
 import { PortalEnv, updateUserContext, userContext } from "../UserContext";
 import { listKeys } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import { DatabaseAccountListKeysResult } from "../Utils/arm/generatedClients/cosmos/types";

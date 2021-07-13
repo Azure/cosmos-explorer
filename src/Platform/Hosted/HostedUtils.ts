@@ -1,6 +1,6 @@
 import { AccountKind, CapabilityNames } from "../../Common/Constants";
 import { AccessInputMetadata, ApiKind } from "../../Contracts/DataModels";
-import { DefaultExperienceUtility } from "../../Shared/DefaultExperienceUtility";
+import * as DefaultExperienceUtility from "../../Shared/DefaultExperienceUtility";
 import { userContext } from "../../UserContext";
 
 export function getDatabaseAccountPropertiesFromMetadata(metadata: AccessInputMetadata): unknown {

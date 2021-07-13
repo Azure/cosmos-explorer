@@ -7,7 +7,7 @@ import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUti
 import { Collection } from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { useTabs } from "../../../hooks/useTabs";
-import { DefaultExperienceUtility } from "../../../Shared/DefaultExperienceUtility";
+import * as DefaultExperienceUtility from "../../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
