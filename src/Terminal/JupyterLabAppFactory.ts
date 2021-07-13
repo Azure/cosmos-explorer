@@ -36,4 +36,4 @@ export const createTerminalApp = async (serverSettings: ServerConnection.ISettin
   window.addEventListener("unload", () => {
     panel.dispose();
   });
-}
+};

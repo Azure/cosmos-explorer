@@ -15,7 +15,7 @@ export const _generateResourceUrl = (): string => {
   const rid = "";
   const rtype = "";
   return `?resourceUrl=${resourceUrl}&rid=${rid}&rtype=${rtype}&sid=${sid}&rg=${rg}&dba=${dba}&api=${apiKind}`;
-}
+};
 
 export const generateEncryptedToken = async (readOnly = false): Promise<DataModels.GenerateTokenResponse> => {
   const url = configContext.BACKEND_ENDPOINT + "/api/tokens/generateToken" + _generateResourceUrl();
@@ -26,6 +26,4 @@ export const generateEncryptedToken = async (readOnly = false): Promise<DataMode
   const result = await response.json();
   // This API has a quirk where the response must be parsed to JSON twice
   return JSON.parse(result);
-}
-
-
+};

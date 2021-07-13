@@ -20,7 +20,7 @@ export const getApiKindFromDefaultExperience = (defaultExperience: typeof userCo
     default:
       return DataModels.ApiKind.SQL;
   }
-}
+};
 
 export const getDefaultExperienceFromApiKind = (apiKind: DataModels.ApiKind): typeof userContext.apiType => {
   if (apiKind === undefined) {
@@ -42,4 +42,4 @@ export const getDefaultExperienceFromApiKind = (apiKind: DataModels.ApiKind): ty
     default:
       return "SQL";
   }
-}
+};
