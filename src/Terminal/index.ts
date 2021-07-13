@@ -19,7 +19,7 @@ const getUrlVars = (): { [key: string]: string } => {
 const createServerSettings = (urlVars: { [key: string]: string }): ServerConnection.ISettings => {
   let body: BodyInit | undefined;
   let headers: HeadersInit | undefined;
-  if (urlVars.hasOwnProperty(TerminalQueryParams.TerminalEndpoint)) {
+  if (Object.prototype.hasOwnProperty.call(urlVars, TerminalQueryParams.TerminalEndpoint)) {
     body = JSON.stringify({
       endpoint: urlVars[TerminalQueryParams.TerminalEndpoint],
     });
@@ -34,7 +34,7 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
     init: { body, headers },
     fetch: window.parent.fetch,
   };
-  if (urlVars.hasOwnProperty(TerminalQueryParams.Token)) {
+  if (Object.prototype.hasOwnProperty.call(urlVars, TerminalQueryParams.Token)) {
     options = {
       baseUrl: server,
       token: urlVars[TerminalQueryParams.Token],
@@ -61,7 +61,7 @@ const main = async (): Promise<void> => {
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
-    if (urlVars.hasOwnProperty(TerminalQueryParams.Terminal)) {
+    if (Object.prototype.hasOwnProperty.call(urlVars, TerminalQueryParams.Terminal)) {
       await JupyterLabAppFactory.createTerminalApp(serverSettings);
     } else {
       throw new Error("Only terminal is supported");
