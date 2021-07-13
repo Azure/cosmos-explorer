@@ -45,7 +45,6 @@ export interface NodePropertiesComponentProps {
   selectNode: (id: string) => void;
   updatePossibleVertices: () => Q.Promise<PossibleVertex[]>;
   possibleEdgeLabels: Item[];
-  //eslint-disable-next-line
   editGraphEdges: (editedEdges: EditedEdges) => Q.Promise<any>;
   deleteHighlightedNode: () => void;
   onModeChanged: (newMode: Mode) => void;
@@ -135,7 +134,6 @@ export class NodePropertiesComponent extends React.Component<
    * Get type option. Limit to string, number or boolean
    * @param value
    */
-  //eslint-disable-next-line
   private static getTypeOption(value: any): ViewModels.InputPropertyValueTypeString {
     if (value === undefined) {
       return "null";
@@ -171,7 +169,6 @@ export class NodePropertiesComponent extends React.Component<
     ];
 
     const existingProps: ViewModels.InputProperty[] = [];
-    //eslint-disable-next-line
     if (this.props.node.hasOwnProperty("properties")) {
       const hProps = this.props.node["properties"];
       for (const p in hProps) {

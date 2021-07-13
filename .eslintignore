@@ -252,6 +252,7 @@ src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/EditorNodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.tsx
+src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/QueryContainerComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNeighborsComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
