@@ -12,7 +12,7 @@ window.addEventListener("load", async () => {
   if (openerWindow) {
     const params = new URLSearchParams(document.location.search);
     await postRobot.send(
-      window,
+      openerWindow,
       GitHubConnectorMsgType,
       {
         state: params.get("state"),
