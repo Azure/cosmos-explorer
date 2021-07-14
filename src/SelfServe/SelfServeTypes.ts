@@ -71,6 +71,12 @@ export interface SelfServeDescriptor {
 }
 
 /**@internal */
+export enum SelfServeComponentTelemetryType {
+  Load = "Load",
+  Save = "Save",
+}
+
+/**@internal */
 export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput | DescriptionDisplay;
 
 /**@internal */

@@ -36,14 +36,7 @@ describe("New Vertex Panel", () => {
   it("should call form submit method", () => {
     const onSubmitSpy = jest.fn();
 
-    const newWrapper = mount(
-      <NewVertexPanel
-        explorer={fakeExplorer}
-        partitionKeyPropertyProp={undefined}
-        openNotificationConsole={(): void => undefined}
-        onSubmit={onSubmitSpy}
-      />
-    );
+    const newWrapper = mount(<NewVertexPanel partitionKeyPropertyProp={undefined} onSubmit={onSubmitSpy} />);
     //eslint-disable-next-line
     newWrapper.find("form").simulate("submit", { preventDefault: () => {} });
 
@@ -61,14 +54,7 @@ describe("New Vertex Panel", () => {
 
     const result = onSubmitSpy(fakeNewVertexData, onErrorSpy, onSuccessSpy);
 
-    const newWrapper = mount(
-      <NewVertexPanel
-        explorer={fakeExplorer}
-        partitionKeyPropertyProp={undefined}
-        openNotificationConsole={(): void => undefined}
-        onSubmit={onSubmitSpy}
-      />
-    );
+    const newWrapper = mount(<NewVertexPanel partitionKeyPropertyProp={undefined} onSubmit={onSubmitSpy} />);
     //eslint-disable-next-line
     newWrapper.find("form").simulate("submit", { preventDefault: () => {} });
 

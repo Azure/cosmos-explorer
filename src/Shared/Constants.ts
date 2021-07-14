@@ -187,42 +187,6 @@ export const CollectionCreationDefaults = {
   },
 } as const;
 
-export class IndexingPolicies {
-  public static SharedDatabaseDefault = {
-    indexingMode: "consistent",
-    automatic: true,
-    includedPaths: <any>[],
-    excludedPaths: [
-      {
-        path: "/*",
-      },
-    ],
-  };
-
-  public static AllPropertiesIndexed = {
-    indexingMode: "consistent",
-    automatic: true,
-    includedPaths: [
-      {
-        path: "/*",
-        indexes: [
-          {
-            kind: "Range",
-            dataType: "Number",
-            precision: -1,
-          },
-          {
-            kind: "Range",
-            dataType: "String",
-            precision: -1,
-          },
-        ],
-      },
-    ],
-    excludedPaths: <any>[],
-  };
-}
-
 export class SubscriptionUtilMappings {
   public static FreeTierSubscriptionIds: string[] = [
     "b8f2ff04-0a81-4cf9-95ef-5828d16981d2",
@@ -236,4 +200,9 @@ export class SubscriptionUtilMappings {
 
 export class AutopilotDocumentation {
   public static Url: string = "https://aka.ms/cosmos-autoscale-info";
+}
+
+export class FreeTierLimits {
+  public static RU: number = 1000;
+  public static Storage: number = 25;
 }

@@ -9,6 +9,7 @@ export interface DatabaseAccount {
 
 export interface DatabaseAccountExtendedProperties {
   documentEndpoint?: string;
+  disableLocalAuth?: boolean;
   tableEndpoint?: string;
   gremlinEndpoint?: string;
   cassandraEndpoint?: string;
@@ -22,6 +23,7 @@ export interface DatabaseAccountExtendedProperties {
   enableAnalyticalStorage?: boolean;
   isVirtualNetworkFilterEnabled?: boolean;
   ipRules?: IpRule[];
+  privateEndpointConnections?: unknown[];
 }
 
 export interface DatabaseAccountResponseLocation {
@@ -167,7 +169,7 @@ export interface KeyResource {
 
 export interface IndexingPolicy {
   automatic: boolean;
-  indexingMode: string;
+  indexingMode: "consistent" | "lazy" | "none";
   includedPaths: any;
   excludedPaths: any;
   compositeIndexes?: any;
@@ -176,7 +178,7 @@ export interface IndexingPolicy {
 
 export interface PartitionKey {
   paths: string[];
-  kind: string;
+  kind: "Hash" | "Range" | "MultiHash";
   version: number;
   systemKey?: boolean;
 }
@@ -391,16 +393,6 @@ export interface GeospatialConfig {
   type: string;
 }
 
-export interface GatewayDatabaseAccount {
-  MediaLink: string;
-  DatabasesLink: string;
-  MaxMediaStorageUsageInMB: number;
-  CurrentMediaStorageUsageInMB: number;
-  EnableMultipleWriteLocations?: boolean;
-  WritableLocations: RegionEndpoint[];
-  ReadableLocations: RegionEndpoint[];
-}
-
 export interface RegionEndpoint {
   name: string;
   documentAccountEndpoint: string;
@@ -419,13 +411,6 @@ export interface AccountKeys {
   secondaryMasterKey: string;
   primaryReadonlyMasterKey: string;
   secondaryReadonlyMasterKey: string;
-}
-
-export interface AfecFeature {
-  id: string;
-  name: string;
-  properties: { state: string };
-  type: string;
 }
 
 export interface OperationStatus {
@@ -505,91 +490,6 @@ export interface MongoParameters extends RpParameters {
   isAutoPilot?: Boolean;
   autoPilotThroughput?: string;
   analyticalStorageTtl?: number;
-}
-
-export interface SparkClusterLibrary {
-  name: string;
-}
-
-export interface Library extends SparkClusterLibrary {
-  properties: {
-    kind: "Jar";
-    source: {
-      kind: "HttpsUri";
-      uri: string;
-      libraryFileName: string;
-    };
-  };
-}
-
-export interface LibraryFeedResponse {
-  value: Library[];
-}
-
-export interface ArmResource {
-  id: string;
-  location: string;
-  name: string;
-  type: string;
-  tags: { [key: string]: string };
-}
-
-export interface ArcadiaWorkspaceIdentity {
-  type: string;
-  principalId: string;
-  tenantId: string;
-}
-
-export interface ArcadiaWorkspaceProperties {
-  managedResourceGroupName: string;
-  provisioningState: string;
-  sqlAdministratorLogin: string;
-  connectivityEndpoints: {
-    artifacts: string;
-    dev: string;
-    spark: string;
-    sql: string;
-    web: string;
-  };
-  defaultDataLakeStorage: {
-    accountUrl: string;
-    filesystem: string;
-  };
-}
-
-export interface ArcadiaWorkspaceFeedResponse {
-  value: ArcadiaWorkspace[];
-}
-
-export interface ArcadiaWorkspace extends ArmResource {
-  identity: ArcadiaWorkspaceIdentity;
-  properties: ArcadiaWorkspaceProperties;
-}
-
-export interface SparkPoolFeedResponse {
-  value: SparkPool[];
-}
-
-export interface SparkPoolProperties {
-  creationDate: string;
-  sparkVersion: string;
-  nodeCount: number;
-  nodeSize: string;
-  nodeSizeFamily: string;
-  provisioningState: string;
-  autoScale: {
-    enabled: boolean;
-    minNodeCount: number;
-    maxNodeCount: number;
-  };
-  autoPause: {
-    enabled: boolean;
-    delayInMinutes: number;
-  };
-}
-
-export interface SparkPool extends ArmResource {
-  properties: SparkPoolProperties;
 }
 
 export interface MemoryUsageInfo {

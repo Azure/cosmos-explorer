@@ -83,7 +83,7 @@ export function client(): Cosmos.CosmosClient {
   if (_client) return _client;
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
-    ...(!userContext.features.enableAadDataPlane && { key: userContext.masterKey }),
+    key: userContext.masterKey,
     tokenProvider,
     connectionPolicy: {
       enableEndpointDiscovery: false,

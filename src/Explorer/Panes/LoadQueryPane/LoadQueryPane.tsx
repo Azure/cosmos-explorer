@@ -4,21 +4,14 @@ import React, { FunctionComponent, useState } from "react";
 import folderIcon from "../../../../images/folder_16x16.svg";
 import { logError } from "../../../Common/Logger";
 import { Collection } from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
-import QueryTab from "../../Tabs/QueryTab";
+import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-interface LoadQueryPaneProps {
-  explorer: Explorer;
-  closePanel: () => void;
-}
-
-export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
-  explorer,
-  closePanel,
-}: LoadQueryPaneProps): JSX.Element => {
+export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [formError, setFormError] = useState<string>("");
   const [selectedFileName, setSelectedFileName] = useState<string>("");
@@ -51,7 +44,7 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
     try {
       await loadQueryFromFile(file);
       logConsoleInfo(`Successfully loaded query from file ${file.name}`);
-      closePanel();
+      closeSidePanel();
       setLoadingFalse();
     } catch (error) {
       setLoadingFalse();
@@ -61,21 +54,20 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
   };
 
   const loadQueryFromFile = async (file: File): Promise<void> => {
-    const selectedCollection: Collection = explorer?.findSelectedCollection();
-    if (!selectedCollection) {
-      logError("No collection was selected", "LoadQueryPane.loadQueryFromFile");
-    } else if (userContext.apiType === "Mongo") {
-      selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
-    } else {
-      selectedCollection.onNewQueryClick(selectedCollection, undefined);
-    }
+    const selectedCollection: Collection = useSelectedNode.getState().findSelectedCollection();
     const reader = new FileReader();
+    let fileData: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     reader.onload = (evt: any): void => {
-      const fileData: string = evt.target.result;
-      const queryTab = explorer.tabsManager.activeTab() as QueryTab;
-      queryTab.initialEditorContent(fileData);
-      queryTab.sqlQueryEditorContent(fileData);
+      fileData = evt.target.result;
+
+      if (!selectedCollection) {
+        logError("No collection was selected", "LoadQueryPane.loadQueryFromFile");
+      } else if (userContext.apiType === "Mongo") {
+        selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
+      } else {
+        selectedCollection.onNewQueryClick(selectedCollection, undefined, fileData);
+      }
     };
 
     reader.onerror = (): void => {
@@ -89,7 +81,6 @@ export const LoadQueryPane: FunctionComponent<LoadQueryPaneProps> = ({
     isExecuting: isLoading,
     submitButtonText: "Load",
     onSubmit: () => submit(),
-    expandConsole: () => explorer.expandConsole(),
   };
 
   return (

@@ -3,29 +3,28 @@ import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, KeyboardEvent, useState } from "react";
 import { Areas, NormalizedEventKey } from "../../../Common/Constants";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
+import { createOrUpdate } from "../../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
 import { PanelLoadingScreen } from "../PanelLoadingScreen";
 interface SetupNoteBooksPanelProps {
   explorer: Explorer;
-  closePanel: () => void;
-  openNotificationConsole: () => void;
   panelTitle: string;
   panelDescription: string;
 }
 
 export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = ({
   explorer,
-  closePanel,
-  openNotificationConsole,
   panelTitle,
   panelDescription,
 }: SetupNoteBooksPanelProps): JSX.Element => {
-  const title = panelTitle;
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+
   const description = panelDescription;
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -51,26 +50,28 @@ export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = 
 
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateNotebookWorkspace, {
       dataExplorerArea: Areas.ContextualPane,
-      paneTitle: title,
+      paneTitle: panelTitle,
     });
 
     const clear = NotificationConsoleUtils.logConsoleProgress("Creating a new default notebook workspace");
 
     try {
       setLoadingTrue();
-      await explorer.notebookWorkspaceManager.createNotebookWorkspaceAsync(
-        userContext.databaseAccount && userContext.databaseAccount.id,
+      await createOrUpdate(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
         "default"
       );
-      explorer.isAccountReady.valueHasMutated(); // re-trigger init notebooks
+      explorer.refreshExplorer();
 
-      closePanel();
+      closeSidePanel();
 
       TelemetryProcessor.traceSuccess(
         Action.CreateNotebookWorkspace,
         {
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: title,
+          paneTitle: panelTitle,
         },
         startKey
       );
@@ -81,7 +82,7 @@ export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = 
         Action.CreateNotebookWorkspace,
         {
           dataExplorerArea: Areas.ContextualPane,
-          paneTitle: title,
+          paneTitle: panelTitle,
           error: errorMessage,
           errorStack: getErrorStack(error),
         },
@@ -99,12 +100,7 @@ export const SetupNoteBooksPanel: FunctionComponent<SetupNoteBooksPanelProps> = 
   return (
     <form className="panelFormWrapper">
       {errorMessage && (
-        <PanelInfoErrorComponent
-          message={errorMessage}
-          messageType="error"
-          showErrorDetails={showErrorDetails}
-          openNotificationConsole={openNotificationConsole}
-        />
+        <PanelInfoErrorComponent message={errorMessage} messageType="error" showErrorDetails={showErrorDetails} />
       )}
       <div className="panelMainContent">
         <div className="pkPadding">

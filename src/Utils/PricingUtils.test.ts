@@ -18,7 +18,7 @@ describe("PricingUtils Tests", () => {
     });
 
     it("should return false if passed number is not number", () => {
-      const value = PricingUtils.isLargerThanDefaultMinRU(null);
+      const value = PricingUtils.isLargerThanDefaultMinRU(undefined);
       expect(value).toBe(false);
     });
   });
@@ -28,7 +28,7 @@ describe("PricingUtils Tests", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
-        numberOfRegions: null,
+        numberOfRegions: undefined,
         multimasterEnabled: false,
         isAutoscale: false,
       });
@@ -38,7 +38,7 @@ describe("PricingUtils Tests", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
-        numberOfRegions: null,
+        numberOfRegions: undefined,
         multimasterEnabled: false,
         isAutoscale: true,
       });
@@ -264,11 +264,6 @@ describe("PricingUtils Tests", () => {
 
   describe("getRegionMultiplier()", () => {
     describe("without multimaster", () => {
-      it("should return 0 for null", () => {
-        const value = PricingUtils.getRegionMultiplier(null, false);
-        expect(value).toBe(0);
-      });
-
       it("should return 0 for undefined", () => {
         const value = PricingUtils.getRegionMultiplier(undefined, false);
         expect(value).toBe(0);
@@ -296,11 +291,6 @@ describe("PricingUtils Tests", () => {
     });
 
     describe("with multimaster", () => {
-      it("should return 0 for null", () => {
-        const value = PricingUtils.getRegionMultiplier(null, true);
-        expect(value).toBe(0);
-      });
-
       it("should return 0 for undefined", () => {
         const value = PricingUtils.getRegionMultiplier(undefined, true);
         expect(value).toBe(0);
@@ -450,11 +440,6 @@ describe("PricingUtils Tests", () => {
   });
 
   describe("normalizeNumberOfRegions()", () => {
-    it("should return 0 for null", () => {
-      const value = PricingUtils.normalizeNumber(null);
-      expect(value).toBe(0);
-    });
-
     it("should return 0 for undefined", () => {
       const value = PricingUtils.normalizeNumber(undefined);
       expect(value).toBe(0);

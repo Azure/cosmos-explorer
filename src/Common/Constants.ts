@@ -44,7 +44,7 @@ export class ArmResourceTypes {
 }
 
 export class BackendDefaults {
-  public static partitionKeyKind: string = "Hash";
+  public static partitionKeyKind = "Hash";
   public static singlePartitionStorageInGb: string = "10";
   public static multiPartitionStorageInGb: string = "100";
   public static maxChangeFeedRetentionDuration: number = 10;
@@ -156,16 +156,6 @@ export class DocumentsGridMetrics {
 
   public static DocumentEditorMinWidthRatio: number = 0.2;
   public static DocumentEditorMaxWidthRatio: number = 0.4;
-}
-
-export class ExplorerMetrics {
-  public static SplitterMinWidth: number = 240;
-  public static SplitterMaxWidth: number = 400;
-  public static CollapsedResourceTreeWidth: number = 36;
-}
-
-export class SplitterMetrics {
-  public static CollapsedPositionLeft: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 }
 
 export class Areas {

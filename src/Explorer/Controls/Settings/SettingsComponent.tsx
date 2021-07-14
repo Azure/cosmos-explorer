@@ -14,10 +14,10 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
 import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import Explorer from "../../Explorer";
+import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
 import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
@@ -121,7 +121,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private collection: ViewModels.Collection;
   private database: ViewModels.Database;
   private offer: DataModels.Offer;
-  private container: Explorer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
@@ -133,7 +132,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.isCollectionSettingsTab = this.props.settingsTab.tabKind === ViewModels.CollectionTabKind.CollectionSettingsV2;
     if (this.isCollectionSettingsTab) {
       this.collection = this.props.settingsTab.collection as ViewModels.Collection;
-      this.container = this.collection?.container;
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
       this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
@@ -145,7 +143,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         userContext.apiType === "Mongo" && (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
     } else {
       this.database = this.props.settingsTab.database;
-      this.container = this.database?.container;
       this.offer = this.database?.offer();
     }
 
@@ -222,13 +219,13 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
@@ -293,7 +290,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.state.wasAutopilotOriginallySet !== this.state.isAutoPilotSelected;
 
   public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
-    this.container && userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
+    userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
     userContext?.databaseAccount?.properties?.enableMultipleWriteLocations &&
@@ -883,7 +880,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
       database: this.database,
-      container: this.container,
       isFixedContainer: this.isFixedContainer,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
@@ -911,7 +907,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     const subSettingsComponentProps: SubSettingsComponentProps = {
       collection: this.collection,
-      container: this.container,
       isAnalyticalStorageEnabled: this.isAnalyticalStorageEnabled,
       changeFeedPolicyVisible: this.changeFeedPolicyVisible,
       timeToLive: this.state.timeToLive,
@@ -964,7 +959,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {
       collection: this.collection,
-      container: this.container,
       conflictResolutionPolicyMode: this.state.conflictResolutionPolicyMode,
       conflictResolutionPolicyModeBaseline: this.state.conflictResolutionPolicyModeBaseline,
       onConflictResolutionPolicyModeChange: this.onConflictResolutionPolicyModeChange,

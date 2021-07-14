@@ -724,45 +724,24 @@ execute-sproc-params-pane {
 
   .results-container,
   .errors-container {
-    padding: @MediumSpace 0px 0px @MediumSpace;
     height: 100%;
     .flex-display();
     .flex-direction();
     overflow: hidden;
 
-    .toggles {
-      height: @ToggleHeight;
-      width: @ToggleWidth;
-      margin-left: @MediumSpace;
-
-      &:focus {
-        .focus();
-      }
-
-      .tab {
-        margin-right: @MediumSpace;
-      }
-
-      .toggleSwitch {
-        .toggleSwitch();
-      }
-
-      .selectedToggle {
-        .selectedToggle();
-      }
-
-      .unselectedToggle {
-        .unselectedToggle();
-      }
-    }
-
     .enterInputParameters {
       padding: @LargeSpace @MediumSpace;
+    }
+
+    div[role="tabpanel"] {
+      height: 100%;
+      padding-bottom: 50px;
     }
   }
 
   .errors-container {
     padding-left: (2 * @MediumSpace);
+    padding: @MediumSpace 0px 0px @MediumSpace;
     .errors-header {
       font-weight: 700;
       font-size: @DefaultFontSize;
@@ -3084,4 +3063,15 @@ settings-pane {
     margin: auto 0;
     padding-left: @SmallSpace;
   }
+}
+.hiddenMain {
+  display: none;
+  height: 0px;
+}
+.spinner {
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  background: white;
+  height: 100%;
 }

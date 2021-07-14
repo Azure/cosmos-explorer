@@ -1,15 +1,14 @@
 import { TextField } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useTabs } from "../../../hooks/useTabs";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import NotebookV2Tab from "../../Tabs/NotebookV2Tab";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface StringInputPanelProps {
-  explorer: Explorer;
   closePanel: () => void;
   errorMessage: string;
   inProgressMessage: string;
@@ -23,7 +22,6 @@ export interface StringInputPanelProps {
 }
 
 export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
-  explorer: container,
   closePanel,
   errorMessage,
   inProgressMessage,
@@ -55,10 +53,12 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
       logConsoleInfo(`${successMessage}: ${stringInput}`);
       const originalPath = notebookFile.path;
 
-      const notebookTabs = container.tabsManager.getTabs(
-        ViewModels.CollectionTabKind.NotebookV2,
-        (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
-      );
+      const notebookTabs = useTabs
+        .getState()
+        .getTabs(
+          ViewModels.CollectionTabKind.NotebookV2,
+          (tab: NotebookV2Tab) => tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), originalPath)
+        );
       notebookTabs.forEach((tab) => {
         tab.tabTitle(newNotebookFile.name);
         tab.tabPath(newNotebookFile.path);
@@ -89,7 +89,6 @@ export const StringInputPane: FunctionComponent<StringInputPanelProps> = ({
     isExecuting: isExecuting,
     submitButtonText: submitButtonLabel,
     onSubmit: submit,
-    expandConsole: () => container.expandConsole(),
   };
   return (
     <RightPaneForm {...props}>
