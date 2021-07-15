@@ -1,8 +1,8 @@
 import { QueryResults } from "../../Contracts/ViewModels";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { MinimalQueryIterator, nextPage } from "../IteratorUtilities";
-import { handleError } from "../ErrorHandlingUtils";
 import { getEntityName } from "../DocumentUtility";
+import { handleError } from "../ErrorHandlingUtils";
+import { MinimalQueryIterator, nextPage } from "../IteratorUtilities";
 
 export const queryDocumentsPage = async (
   resourceName: string,

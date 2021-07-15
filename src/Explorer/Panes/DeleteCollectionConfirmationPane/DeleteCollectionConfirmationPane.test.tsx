@@ -1,101 +1,87 @@
 jest.mock("../../../Common/dataAccess/deleteCollection");
 jest.mock("../../../Shared/Telemetry/TelemetryProcessor");
-import { mount, ReactWrapper, shallow } from "enzyme";
+import { mount, shallow } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { ApiKind, DatabaseAccount } from "../../../Contracts/DataModels";
-import { Collection, Database, TreeNode } from "../../../Contracts/ViewModels";
+import { Collection, Database } from "../../../Contracts/ViewModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../../../UserContext";
-import Explorer from "../../Explorer";
+import { useDatabases } from "../../useDatabases";
+import { useSelectedNode } from "../../useSelectedNode";
 import { DeleteCollectionConfirmationPane } from "./DeleteCollectionConfirmationPane";
 
 describe("Delete Collection Confirmation Pane", () => {
-  describe("Explorer.isLastCollection()", () => {
-    let explorer: Explorer;
-
-    beforeEach(() => {
-      explorer = new Explorer();
-    });
+  describe("useDatabases.isLastCollection()", () => {
+    beforeAll(() => useDatabases.getState().clearDatabases());
+    afterEach(() => useDatabases.getState().clearDatabases());
 
     it("should be true if 1 database and 1 collection", () => {
-      const database = {} as Database;
-      database.collections = ko.observableArray<Collection>([{} as Collection]);
-      explorer.databases = ko.observableArray<Database>([database]);
-      expect(explorer.isLastCollection()).toBe(true);
+      const database = { id: ko.observable("testDB") } as Database;
+      database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
+      useDatabases.getState().addDatabases([database]);
+      expect(useDatabases.getState().isLastCollection()).toBe(true);
     });
 
     it("should be false if if 1 database and 2 collection", () => {
-      const database = {} as Database;
-      database.collections = ko.observableArray<Collection>([{} as Collection, {} as Collection]);
-      explorer.databases = ko.observableArray<Database>([database]);
-      expect(explorer.isLastCollection()).toBe(false);
+      const database = { id: ko.observable("testDB") } as Database;
+      database.collections = ko.observableArray<Collection>([
+        { id: ko.observable("coll1") } as Collection,
+        { id: ko.observable("coll2") } as Collection,
+      ]);
+      useDatabases.getState().addDatabases([database]);
+      expect(useDatabases.getState().isLastCollection()).toBe(false);
     });
 
     it("should be false if 2 database and 1 collection each", () => {
-      const database = {} as Database;
-      database.collections = ko.observableArray<Collection>([{} as Collection]);
-      const database2 = {} as Database;
-      database2.collections = ko.observableArray<Collection>([{} as Collection]);
-      explorer.databases = ko.observableArray<Database>([database, database2]);
-      expect(explorer.isLastCollection()).toBe(false);
+      const database = { id: ko.observable("testDB") } as Database;
+      database.collections = ko.observableArray<Collection>([{ id: ko.observable("coll1") } as Collection]);
+      const database2 = { id: ko.observable("testDB2") } as Database;
+      database2.collections = ko.observableArray<Collection>([{ id: ko.observable("coll2") } as Collection]);
+      useDatabases.getState().addDatabases([database, database2]);
+      expect(useDatabases.getState().isLastCollection()).toBe(false);
     });
 
     it("should be false if 0 databases", () => {
-      const database = {} as Database;
-      explorer.databases = ko.observableArray<Database>();
-      database.collections = ko.observableArray<Collection>();
-      expect(explorer.isLastCollection()).toBe(false);
+      expect(useDatabases.getState().isLastCollection()).toBe(false);
     });
   });
 
   describe("shouldRecordFeedback()", () => {
     it("should return true if last collection and database does not have shared throughput else false", () => {
-      const fakeExplorer = new Explorer();
-      fakeExplorer.refreshAllDatabases = () => undefined;
-      fakeExplorer.isLastCollection = () => true;
-      fakeExplorer.isSelectedDatabaseShared = () => false;
-
-      const props = {
-        explorer: fakeExplorer,
-        closePanel: (): void => undefined,
-        collectionName: "container",
-      };
-      const wrapper = shallow(<DeleteCollectionConfirmationPane {...props} />);
-      expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
-
-      props.explorer.isLastCollection = () => true;
-      props.explorer.isSelectedDatabaseShared = () => true;
-      wrapper.setProps(props);
+      const wrapper = shallow(<DeleteCollectionConfirmationPane refreshDatabases={() => undefined} />);
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
 
-      props.explorer.isLastCollection = () => false;
-      props.explorer.isSelectedDatabaseShared = () => false;
-      wrapper.setProps(props);
+      const database = { id: ko.observable("testDB") } as Database;
+      database.collections = ko.observableArray<Collection>([{ id: ko.observable("testCollection") } as Collection]);
+      database.nodeKind = "Database";
+      database.isDatabaseShared = ko.computed(() => false);
+      useDatabases.getState().addDatabases([database]);
+      useSelectedNode.getState().setSelectedNode(database);
+      wrapper.setProps({});
+      expect(wrapper.exists(".deleteCollectionFeedback")).toBe(true);
+
+      database.isDatabaseShared = ko.computed(() => true);
+      wrapper.setProps({});
       expect(wrapper.exists(".deleteCollectionFeedback")).toBe(false);
     });
   });
 
   describe("submit()", () => {
-    let wrapper: ReactWrapper;
     const selectedCollectionId = "testCol";
     const databaseId = "testDatabase";
-    const fakeExplorer = {} as Explorer;
-    fakeExplorer.findSelectedCollection = () => {
-      return {
-        id: ko.observable<string>(selectedCollectionId),
-        databaseId,
-        rid: "test",
-      } as Collection;
-    };
-    fakeExplorer.selectedCollectionId = ko.computed<string>(() => selectedCollectionId);
-    fakeExplorer.selectedNode = ko.observable<TreeNode>();
-    fakeExplorer.refreshAllDatabases = () => undefined;
-    fakeExplorer.isLastCollection = () => true;
-    fakeExplorer.isSelectedDatabaseShared = () => false;
+    const database = { id: ko.observable(databaseId) } as Database;
+    const collection = {
+      id: ko.observable(selectedCollectionId),
+      nodeKind: "Collection",
+      database,
+      databaseId,
+    } as Collection;
+    database.collections = ko.observableArray<Collection>([collection]);
+    database.isDatabaseShared = ko.computed(() => false);
 
     beforeAll(() => {
       updateUserContext({
@@ -113,15 +99,17 @@ describe("Delete Collection Confirmation Pane", () => {
     });
 
     beforeEach(() => {
-      const props = {
-        explorer: fakeExplorer,
-        closePanel: (): void => undefined,
-        collectionName: "container",
-      };
-      wrapper = mount(<DeleteCollectionConfirmationPane {...props} />);
+      useDatabases.getState().addDatabases([database]);
+      useSelectedNode.getState().setSelectedNode(collection);
+    });
+
+    afterEach(() => {
+      useDatabases.getState().clearDatabases();
+      useSelectedNode.getState().setSelectedNode(undefined);
     });
 
     it("should call delete collection", () => {
+      const wrapper = mount(<DeleteCollectionConfirmationPane refreshDatabases={() => undefined} />);
       expect(wrapper).toMatchSnapshot();
 
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
@@ -130,14 +118,15 @@ describe("Delete Collection Confirmation Pane", () => {
         .hostNodes()
         .simulate("change", { target: { value: selectedCollectionId } });
 
-      expect(wrapper.exists(".genericPaneSubmitBtn")).toBe(true);
-      wrapper.find(".genericPaneSubmitBtn").hostNodes().simulate("click");
+      expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
+      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
       expect(deleteCollection).toHaveBeenCalledWith(databaseId, selectedCollectionId);
 
       wrapper.unmount();
     });
 
     it("should record feedback", async () => {
+      const wrapper = mount(<DeleteCollectionConfirmationPane refreshDatabases={() => undefined} />);
       expect(wrapper.exists("#confirmCollectionId")).toBe(true);
       wrapper
         .find("#confirmCollectionId")
@@ -151,8 +140,8 @@ describe("Delete Collection Confirmation Pane", () => {
         .hostNodes()
         .simulate("change", { target: { value: feedbackText } });
 
-      expect(wrapper.exists(".genericPaneSubmitBtn")).toBe(true);
-      wrapper.find(".genericPaneSubmitBtn").hostNodes().simulate("click");
+      expect(wrapper.exists("#sidePanelOkButton")).toBe(true);
+      wrapper.find("#sidePanelOkButton").hostNodes().simulate("submit");
       expect(deleteCollection).toHaveBeenCalledWith(databaseId, selectedCollectionId);
 
       const deleteFeedback = new DeleteFeedback(

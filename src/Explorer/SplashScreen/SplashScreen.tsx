@@ -16,11 +16,18 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { userContext } from "../../UserContext";
+import { getCollectionName, getDatabaseName } from "../../Utils/APITypeUtils";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { useNotebook } from "../Notebook/useNotebook";
+import { AddDatabasePanel } from "../Panes/AddDatabasePanel/AddDatabasePanel";
+import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -58,8 +65,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      this.container.selectedNode.subscribe(() => this.setState({})),
-      this.container.isNotebookEnabled.subscribe(() => this.setState({}))
+      {
+        dispose: useNotebook.subscribe(
+          () => this.setState({}),
+          (state) => state.isNotebookEnabled
+        ),
+      },
+      { dispose: useSelectedNode.subscribe(() => this.setState({})) }
     );
   }
 
@@ -164,7 +176,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </li>
                 ))}
                 <li>
-                  <a role="link" href={SplashScreen.seeMoreItemUrl} target="_blank" tabIndex={0}>
+                  <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
                     {SplashScreen.seeMoreItemTitle}
                   </a>
                 </li>
@@ -191,7 +203,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const heroes: SplashScreenItem[] = [
       {
         iconSrc: NewContainerIcon,
-        title: this.container.addCollectionText(),
+        title: `New ${getCollectionName()}`,
         description: "Create a new container for storage and throughput",
         onClick: () => this.container.onNewCollectionClicked(),
       },
@@ -207,7 +219,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (this.container.isNotebookEnabled()) {
+    if (useNotebook.getState().isNotebookEnabled) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
@@ -226,73 +238,75 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       return items;
     }
 
-    if (!this.container.isDatabaseNodeOrNoneSelected()) {
+    if (!useSelectedNode.getState().isDatabaseNodeOrNoneSelected()) {
       if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null);
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined);
           },
           title: "New SQL Query",
-          description: null,
+          description: undefined,
         });
       } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null);
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
           },
           title: "New Query",
-          description: null,
+          description: undefined,
         });
       }
 
-      items.push({
-        iconSrc: OpenQueryIcon,
-        title: "Open Query",
-        description: null,
-        onClick: () => this.container.openBrowseQueriesPanel(),
-      });
+      if (userContext.apiType === "SQL") {
+        items.push({
+          iconSrc: OpenQueryIcon,
+          title: "Open Query",
+          description: undefined,
+          onClick: () =>
+            useSidePanel
+              .getState()
+              .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.container} />),
+        });
+      }
 
       if (userContext.apiType !== "Cassandra") {
         items.push({
           iconSrc: NewStoredProcedureIcon,
           title: "New Stored Procedure",
-          description: null,
+          description: undefined,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
           },
         });
       }
 
       /* Scale & Settings */
-      let isShared = false;
-      if (this.container.isDatabaseNodeSelected()) {
-        isShared = this.container.findSelectedDatabase().isDatabaseShared();
-      } else if (this.container.isNodeKindSelected("Collection")) {
-        const database: ViewModels.Database = this.container.findSelectedCollection().getDatabase();
-        isShared = database && database.isDatabaseShared();
-      }
+      const isShared = useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
 
       const label = isShared ? "Settings" : "Scale & Settings";
       items.push({
         iconSrc: ScaleAndSettingsIcon,
         title: label,
-        description: null,
+        description: undefined,
         onClick: () => {
-          const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && selectedCollection.onSettingsClick();
         },
       });
     } else {
       items.push({
         iconSrc: AddDatabaseIcon,
-        title: this.container.addDatabaseText(),
-        description: null,
-        onClick: () => this.container.openAddDatabasePane(),
+        title: "New " + getDatabaseName(),
+        description: undefined,
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
       });
     }
 
@@ -305,8 +319,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       title: collectionId,
       description: "Data",
       onClick: () => {
-        const collection = this.container.findCollection(databaseId, collectionId);
-        collection && collection.openTab();
+        const collection = useDatabases.getState().findCollection(databaseId, collectionId);
+        collection?.openTab();
       },
     };
   }
@@ -343,19 +357,19 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private createTipsItems(): SplashScreenItem[] {
     return [
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Data Modeling",
         description: "Learn more about modeling",
         onClick: () => window.open(SplashScreen.dataModelingUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Cost & Throughput Calculation",
         description: "Learn more about cost calculation",
         onClick: () => window.open(SplashScreen.throughputEstimatorUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Configure automatic failover",
         description: "Learn more about Cosmos DB high-availability",
         onClick: () => window.open(SplashScreen.failoverUrl),

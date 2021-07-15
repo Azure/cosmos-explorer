@@ -3,9 +3,8 @@
 exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
 <AddTableEntityPanel
   cassandraApiClient={Object {}}
-  closePanel={[Function]}
-  explorer={Object {}}
   queryTablesTab={Object {}}
+  tableDataClient={TablesAPIDataClient {}}
   tableEntityListViewModel={
     Object {
       "headers": Array [],
@@ -14,7 +13,6 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
   }
 >
   <PanelContainerComponent
-    closePanel={[Function]}
     headerText="Add Table Row"
     isConsoleExpanded={false}
     isOpen={true}

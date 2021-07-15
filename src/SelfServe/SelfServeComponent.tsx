@@ -17,6 +17,8 @@ import * as _ from "underscore";
 import { sendMessage } from "../Common/MessageHandler";
 import { SelfServeMessageTypes } from "../Contracts/SelfServeContracts";
 import { SmartUiComponent, SmartUiDescriptor } from "../Explorer/Controls/SmartUi/SmartUiComponent";
+import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
+import { trace } from "../Shared/Telemetry/TelemetryProcessor";
 import { commandBarItemStyles, commandBarStyles, containerStackTokens, separatorStyles } from "./SelfServeStyles";
 import {
   AnyDisplay,
@@ -27,6 +29,7 @@ import {
   Node,
   NumberInput,
   RefreshResult,
+  SelfServeComponentTelemetryType,
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
@@ -87,6 +90,12 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
       }
     });
     this.initializeSmartUiComponent();
+
+    const telemetryData = {
+      selfServeClassName: this.props.descriptor.root.id,
+      eventType: SelfServeComponentTelemetryType.Load,
+    };
+    trace(Action.SelfServeComponent, ActionModifiers.Mark, telemetryData, SelfServeMessageTypes.TelemetryInfo);
   }
 
   constructor(props: SelfServeComponentProps) {
@@ -166,7 +175,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     const { baselineValues } = this.state;
     for (const key of currentValues.keys()) {
       const baselineValue = baselineValues.get(key);
-      currentValues = currentValues.set(key, { ...baselineValue });
+      currentValues = currentValues.set(key, baselineValue ? { ...baselineValue } : baselineValue);
     }
     this.setState({ currentValues });
   };
@@ -262,6 +271,12 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
   };
 
   public performSave = async (): Promise<void> => {
+    const telemetryData = {
+      selfServeClassName: this.props.descriptor.root.id,
+      eventType: SelfServeComponentTelemetryType.Save,
+    };
+    trace(Action.SelfServeComponent, ActionModifiers.Mark, telemetryData, SelfServeMessageTypes.TelemetryInfo);
+
     this.setState({ isSaving: true, notification: undefined });
     try {
       const onSaveResult = await this.props.descriptor.onSave(

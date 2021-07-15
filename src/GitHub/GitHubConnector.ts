@@ -7,10 +7,12 @@ export interface IGitHubConnectorParams {
 
 export const GitHubConnectorMsgType = "GitHubConnectorMsgType";
 
-export class GitHubConnector {
-  public async start(params: URLSearchParams, window: Window & typeof globalThis): Promise<void> {
+window.addEventListener("load", async () => {
+  const openerWindow = window.opener;
+  if (openerWindow) {
+    const params = new URLSearchParams(document.location.search);
     await postRobot.send(
-      window,
+      openerWindow,
       GitHubConnectorMsgType,
       {
         state: params.get("state"),
@@ -20,14 +22,6 @@ export class GitHubConnector {
         domain: window.location.origin,
       }
     );
-  }
-}
-
-var connector = new GitHubConnector();
-window.addEventListener("load", async () => {
-  const openerWindow = window.opener;
-  if (openerWindow) {
-    await connector.start(new URLSearchParams(document.location.search), openerWindow);
     window.close();
   }
 });

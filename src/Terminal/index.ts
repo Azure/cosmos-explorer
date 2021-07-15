@@ -1,43 +1,36 @@
-import "@jupyterlab/terminal/style/index.css";
-import "./index.css";
 import { ServerConnection } from "@jupyterlab/services";
-import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
+import "@jupyterlab/terminal/style/index.css";
+import postRobot from "post-robot";
+import { HttpHeaders } from "../Common/Constants";
 import { Action } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { updateUserContext } from "../UserContext";
-import { HttpHeaders, TerminalQueryParams } from "../Common/Constants";
+import "./index.css";
+import { JupyterLabAppFactory } from "./JupyterLabAppFactory";
+import { TerminalProps } from "./TerminalProps";
 
-const getUrlVars = (): { [key: string]: string } => {
-  const vars: { [key: string]: string } = {};
-  window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (_m, key, value): string => {
-    vars[key] = decodeURIComponent(value);
-    return value;
-  });
-  return vars;
-};
-
-const createServerSettings = (urlVars: { [key: string]: string }): ServerConnection.ISettings => {
+const createServerSettings = (props: TerminalProps): ServerConnection.ISettings => {
   let body: BodyInit | undefined;
   let headers: HeadersInit | undefined;
-  if (urlVars.hasOwnProperty(TerminalQueryParams.TerminalEndpoint)) {
+  if (props.terminalEndpoint) {
     body = JSON.stringify({
-      endpoint: urlVars[TerminalQueryParams.TerminalEndpoint],
+      endpoint: props.terminalEndpoint,
     });
     headers = {
       [HttpHeaders.contentType]: "application/json",
     };
   }
 
-  const server = urlVars[TerminalQueryParams.Server];
+  const server = props.notebookServerEndpoint;
   let options: Partial<ServerConnection.ISettings> = {
     baseUrl: server,
     init: { body, headers },
     fetch: window.parent.fetch,
   };
-  if (urlVars.hasOwnProperty(TerminalQueryParams.Token)) {
+  if (props.authToken) {
     options = {
       baseUrl: server,
-      token: urlVars[TerminalQueryParams.Token],
+      token: props.authToken,
       appendToken: true,
       init: { body, headers },
       fetch: window.parent.fetch,
@@ -47,30 +40,41 @@ const createServerSettings = (urlVars: { [key: string]: string }): ServerConnect
   return ServerConnection.makeSettings(options);
 };
 
-const main = async (): Promise<void> => {
-  const urlVars = getUrlVars();
-
-  // Initialize userContext. Currently only subscrptionId is required by TelemetryProcessor
+const initTerminal = async (props: TerminalProps) => {
+  // Initialize userContext (only properties which are needed by TelemetryProcessor)
   updateUserContext({
-    subscriptionId: urlVars[TerminalQueryParams.SubscriptionId],
+    subscriptionId: props.subscriptionId,
+    apiType: props.apiType,
+    authType: props.authType,
+    databaseAccount: props.databaseAccount,
   });
 
-  const serverSettings = createServerSettings(urlVars);
-
+  const serverSettings = createServerSettings(props);
   const data = { baseUrl: serverSettings.baseUrl };
   const startTime = TelemetryProcessor.traceStart(Action.OpenTerminal, data);
 
   try {
-    if (urlVars.hasOwnProperty(TerminalQueryParams.Terminal)) {
-      await JupyterLabAppFactory.createTerminalApp(serverSettings);
-    } else {
-      throw new Error("Only terminal is supported");
-    }
-
+    await JupyterLabAppFactory.createTerminalApp(serverSettings);
     TelemetryProcessor.traceSuccess(Action.OpenTerminal, data, startTime);
   } catch (error) {
     TelemetryProcessor.traceFailure(Action.OpenTerminal, data, startTime);
   }
+};
+
+const main = async (): Promise<void> => {
+  postRobot.on(
+    "props",
+    {
+      window: window.parent,
+      domain: window.location.origin,
+    },
+    async (event) => {
+      // Typescript definition for event is wrong. So read props by casting to <any>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const props = (event as any).data as TerminalProps;
+      await initTerminal(props);
+    }
+  );
 };
 
 window.addEventListener("load", main);

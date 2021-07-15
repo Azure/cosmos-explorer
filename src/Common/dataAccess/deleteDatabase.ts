@@ -1,9 +1,9 @@
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { deleteCassandraKeyspace } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { deleteGremlinDatabase } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { deleteMongoDBDatabase } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { deleteSqlDatabase } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";

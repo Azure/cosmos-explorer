@@ -1,16 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Load Query Pane should render Default properly 1`] = `
-<GenericRightPaneComponent
-  expandConsole={[Function]}
+<RightPaneForm
   formError=""
-  formErrorDetail=""
-  id="loadQueryPane"
   isExecuting={false}
-  onClose={[Function]}
   onSubmit={[Function]}
   submitButtonText="Load"
-  title="Load Query"
 >
   <div
     className="panelFormWrapper"
@@ -58,5 +53,5 @@ exports[`Load Query Pane should render Default properly 1`] = `
       </Stack>
     </div>
   </div>
-</GenericRightPaneComponent>
+</RightPaneForm>
 `;

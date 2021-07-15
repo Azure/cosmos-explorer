@@ -13,7 +13,7 @@ import * as React from "react";
 type SchemaAnalyzerHeaderProps = {
   isKernelIdle: boolean;
   isKernelBusy: boolean;
-  onSampleSizeUpdated: (sampleSize: string) => void;
+  onSampleSizeUpdated: (sampleSize?: string) => void;
   onAnalyzeButtonClick: (filter: string, sampleSize: string) => void;
 };
 
@@ -30,15 +30,15 @@ export const SchemaAnalyzerHeader = ({
   onSampleSizeUpdated,
   onAnalyzeButtonClick,
 }: SchemaAnalyzerHeaderProps): JSX.Element => {
-  const [filter, setFilter] = React.useState<string>(DefaultFilter);
-  const [sampleSize, setSampleSize] = React.useState<string>(DefaultSampleSize);
+  const [filter, setFilter] = React.useState<string | undefined>(DefaultFilter);
+  const [sampleSize, setSampleSize] = React.useState<string | undefined>(DefaultSampleSize);
 
   return (
     <Stack horizontal tokens={{ childrenGap: 10 }}>
       <Stack.Item grow>
         <TextField
           value={filter}
-          onChange={(event, newValue) => setFilter(newValue)}
+          onChange={(_event, newValue?: string) => setFilter(newValue)}
           label="Filter"
           placeholder={FilterPlaceholder}
           disabled={!isKernelIdle}
@@ -47,7 +47,7 @@ export const SchemaAnalyzerHeader = ({
       <Stack.Item>
         <TextField
           value={sampleSize}
-          onChange={(event, newValue) => {
+          onChange={(_event, newValue?: string) => {
             const num = Number(newValue);
             if (!newValue || (num >= MinSampleSize && num <= MaxSampleSize)) {
               setSampleSize(newValue);

@@ -30,7 +30,7 @@ import * as DataModels from "../../../Contracts/DataModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-const title: string = "Open Saved Queries";
+const title = "Open Saved Queries";
 
 export interface QueriesGridComponentProps {
   queriesClient: QueriesClient;
@@ -196,9 +196,9 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       {
         key: "Action",
         name: "Action",
-        fieldName: null,
+        fieldName: undefined,
         minWidth: 70,
-        onRender: (query: Query, index: number, column: IColumn) => {
+        onRender: (query: Query) => {
           const buttonProps: IButtonProps = {
             iconProps: {
               iconName: "More",
@@ -214,19 +214,15 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                 {
                   key: "Open",
                   text: "Open query",
-                  onClick: (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>, menuItem: any) => {
+                  onClick: () => {
                     this.props.onQuerySelect(query);
                   },
                 },
                 {
                   key: "Delete",
                   text: "Delete query",
-                  onClick: async (
-                    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
-                    menuItem: any
-                  ) => {
+                  onClick: async () => {
                     if (window.confirm("Are you sure you want to delete this query?")) {
-                      const container = window.dataExplorer;
                       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
                         dataExplorerArea: Constants.Areas.ContextualPane,
                         paneTitle: title,

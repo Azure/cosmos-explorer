@@ -1,6 +1,5 @@
 import { HttpStatusCodes } from "../Common/Constants";
 import Explorer from "../Explorer/Explorer";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
 import NotebookManager from "../Explorer/Notebook/NotebookManager";
 import { JunoClient } from "../Juno/JunoClient";
 import { IGitHubConnectorParams } from "./GitHubConnector";
@@ -17,8 +16,6 @@ describe("GitHubOAuthService", () => {
     originalDataExplorer = window.dataExplorer;
     window.dataExplorer = {
       ...originalDataExplorer,
-      logConsoleData: (data): void =>
-        data.type === ConsoleDataType.Error ? console.error(data.message) : console.error(data.message),
     } as Explorer;
     window.dataExplorer.notebookManager = new NotebookManager();
     window.dataExplorer.notebookManager.junoClient = junoClient;
