@@ -26,7 +26,7 @@ export const SwitchAccount: FunctionComponent<Props> = ({
         data: account,
       }))}
       onChange={(_, option) => {
-        setSelectedAccountName(String(option.key));
+        setSelectedAccountName(String(option?.key));
         dismissMenu();
       }}
       defaultSelectedKey={selectedAccount?.name}
