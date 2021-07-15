@@ -11,7 +11,6 @@ import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility"
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
@@ -212,10 +211,6 @@ export default class Explorer {
           },
         ],
       });
-    }
-
-    if (configContext.enableSchemaAnalyzer) {
-      userContext.features.enableSchemaAnalyzer = true;
     }
 
     this.refreshExplorer();
