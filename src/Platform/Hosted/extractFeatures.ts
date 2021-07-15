@@ -8,7 +8,6 @@ export type Features = {
   readonly enableReactPane: boolean;
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
-  enableSchemaAnalyzer: boolean;
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;
   readonly enableSDKoperations: boolean;
@@ -55,7 +54,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableReactPane: "true" === get("enablereactpane"),
     enableRightPanelV2: "true" === get("enablerightpanelv2"),
     enableSchema: "true" === get("enableschema"),
-    enableSchemaAnalyzer: "true" === get("enableschemaanalyzer"),
     enableSDKoperations: "true" === get("enablesdkoperations"),
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),

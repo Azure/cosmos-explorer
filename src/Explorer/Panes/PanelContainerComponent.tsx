@@ -4,8 +4,8 @@ import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { useSidePanel } from "../../hooks/useSidePanel";
 
 export interface PanelContainerProps {
-  headerText: string;
-  panelContent: JSX.Element;
+  headerText?: string;
+  panelContent?: JSX.Element;
   isConsoleExpanded: boolean;
   isOpen: boolean;
   panelWidth?: string;
@@ -66,8 +66,8 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     );
   }
 
-  private onDissmiss = (ev?: React.SyntheticEvent<HTMLElement>): void => {
-    if ((ev.target as HTMLElement).id === "notificationConsoleHeader") {
+  private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
+    if (ev && (ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
     } else {
       useSidePanel.getState().closeSidePanel();

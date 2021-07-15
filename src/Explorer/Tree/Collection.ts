@@ -744,8 +744,8 @@ export default class Collection implements ViewModels.Collection {
     StoredProcedure.create(source, event);
   }
 
-  public onNewUserDefinedFunctionClick(source: ViewModels.Collection, event: MouseEvent) {
-    UserDefinedFunction.create(source, event);
+  public onNewUserDefinedFunctionClick(source: ViewModels.Collection) {
+    UserDefinedFunction.create(source);
   }
 
   public onNewTriggerClick(source: ViewModels.Collection, event: MouseEvent) {
