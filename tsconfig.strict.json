@@ -8,6 +8,9 @@
     "noUnusedParameters": true
   },
   "files": [
+    "./src/Explorer/Notebook/SchemaAnalyzer/SchemaAnalyzerSplashScreen.tsx",
+    "./src/Explorer/Panes/PanelContainerComponent.tsx",
+    "./src/hooks/useSidePanel.ts",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",
