@@ -10,7 +10,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -19,7 +19,7 @@ import {
   getPriceMap,
   getReadRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -202,8 +202,8 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
   try {
     let costPerHour = 0;
     for (const region of regions) {
-      let incrementalCost = priceMap.get(region).get(skuName.replace("Cosmos.", ""));
-      if (incrementalCost == undefined) {
+      const incrementalCost = priceMap.get(region).get(skuName.replace("Cosmos.", ""));
+      if (incrementalCost === undefined) {
         throw new Error("Value not found in map.");
       }
       costPerHour += incrementalCost;
@@ -211,7 +211,7 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
     costPerHour *= instanceCount;
 
     return {
-      textTKey: `$${costPerHour}`,
+      textTKey: `US $${costPerHour}`,
       type: DescriptionType.Text,
     };
   } catch (err) {
