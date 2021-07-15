@@ -176,7 +176,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             .getState()
             .openSidePanel(
               "Manage GitHub settings",
-              <GitHubReposPanel explorer={container} gitHubClientProp={container.notebookManager.gitHubClient} />
+              <GitHubReposPanel
+                explorer={container}
+                gitHubClientProp={container.notebookManager.gitHubClient}
+                junoClientProp={container.notebookManager.junoClient}
+              />
             ),
       },
       {
