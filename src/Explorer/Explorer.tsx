@@ -367,6 +367,9 @@ export default class Explorer {
       notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
       authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
     });
+
+    useNotebook.getState().initializeNotebooksTree(this.notebookManager);
+
     this.refreshNotebookList();
 
     this._isInitializingNotebooks = false;
@@ -847,6 +850,8 @@ export default class Explorer {
     }
 
     await this.resourceTree.initialize();
+    await useNotebook.getState().initializeNotebooksTree(this.notebookManager);
+
     this.notebookManager?.refreshPinnedRepos();
     if (this.notebookToImport) {
       this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
@@ -937,14 +942,15 @@ export default class Explorer {
       .finally(clearInProgressMessage);
   }
 
-  public refreshContentItem(item: NotebookContentItem): Promise<void> {
+  // TODO: Delete this function when ResourceTreeAdapter is removed.
+  public async refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
       handleError(error, "Explorer/refreshContentItem");
       return Promise.reject(new Error(error));
     }
 
-    return this.notebookManager?.notebookContentClient.updateItemChildren(item);
+    await this.notebookManager?.notebookContentClient.updateItemChildrenInPlace(item);
   }
 
   public openNotebookTerminal(kind: ViewModels.TerminalKind) {
