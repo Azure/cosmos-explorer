@@ -202,11 +202,11 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
   try {
     let costPerHour = 0;
     for (const region of regions) {
-      let incrementalCost += priceMap.get(region).get(skuName.replace("Cosmos.", ""));
-      if (incrementalCost == undefined)
-      {
-        throw new Error("Value not found in map");
+      let incrementalCost = priceMap.get(region).get(skuName.replace("Cosmos.", ""));
+      if (incrementalCost == undefined) {
+        throw new Error("Value not found in map.");
       }
+      costPerHour += incrementalCost;
     }
     costPerHour *= instanceCount;
 
