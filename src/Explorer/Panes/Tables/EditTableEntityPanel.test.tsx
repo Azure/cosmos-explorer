@@ -1,15 +1,13 @@
 import { mount } from "enzyme";
 import * as ko from "knockout";
 import React from "react";
-import Explorer from "../../Explorer";
 import TableListViewModal from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
-import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
+import { CassandraAPIDataClient, TablesAPIDataClient } from "../../Tables/TableDataClient";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import { EditTableEntityPanel } from "./EditTableEntityPanel";
 
 describe("Excute Edit Table Entity Pane", () => {
-  const fakeExplorer = {} as Explorer;
   const fakeQueryTablesTab = {} as QueryTablesTab;
   const fakeTableEntityListViewModel = {} as TableListViewModal;
   fakeTableEntityListViewModel.items = ko.observableArray<Entities.ITableEntity>();
@@ -18,8 +16,7 @@ describe("Excute Edit Table Entity Pane", () => {
   fakeTableEntityListViewModel.selected = ko.observableArray<Entities.ITableEntity>([{}]);
 
   const props = {
-    explorer: fakeExplorer,
-    closePanel: (): void => undefined,
+    tableDataClient: new TablesAPIDataClient(),
     queryTablesTab: fakeQueryTablesTab,
     tableEntityListViewModel: fakeTableEntityListViewModel,
     cassandraApiClient: fakeCassandraApiClient,

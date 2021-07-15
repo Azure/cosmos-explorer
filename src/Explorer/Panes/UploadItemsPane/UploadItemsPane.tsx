@@ -3,15 +3,11 @@ import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Upload } from "../../../Common/Upload/Upload";
 import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
 import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
 import { getErrorMessage } from "../../Tables/Utilities";
+import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export interface UploadItemsPaneProps {
-  explorer: Explorer;
-}
-
-export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explorer }: UploadItemsPaneProps) => {
+export const UploadItemsPane: FunctionComponent = () => {
   const [files, setFiles] = useState<FileList>();
   const [uploadFileData, setUploadFileData] = useState<UploadDetailsRecord[]>([]);
   const [formError, setFormError] = useState<string>("");
@@ -25,8 +21,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
       return;
     }
 
-    const selectedCollection = explorer.findSelectedCollection();
-
+    const selectedCollection = useSelectedNode.getState().findSelectedCollection();
     setIsExecuting(true);
 
     selectedCollection
@@ -50,8 +45,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
     setFiles(event.target.files);
   };
 
-  const genericPaneProps: RightPaneFormProps = {
-    expandConsole: () => explorer.expandConsole(),
+  const props: RightPaneFormProps = {
     formError,
     isExecuting: isExecuting,
     submitButtonText: "Upload",
@@ -89,7 +83,7 @@ export const UploadItemsPane: FunctionComponent<UploadItemsPaneProps> = ({ explo
   };
 
   return (
-    <RightPaneForm {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneMainContent">
         <Upload
           label="Select JSON Files"

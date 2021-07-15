@@ -1,25 +1,27 @@
 import React, { FunctionComponent } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { GraphStyleComponent } from "../../Graph/GraphStyleComponent/GraphStyleComponent";
 import { IGraphConfig } from "../../Tabs/GraphTab";
 import { PanelFooterComponent } from "../PanelFooterComponent";
 interface GraphStylingProps {
-  closePanel: () => void;
   igraphConfigUiData: ViewModels.IGraphConfigUiData;
   igraphConfig: IGraphConfig;
   getValues: (igraphConfig?: IGraphConfig) => void;
 }
 
 export const GraphStylingPanel: FunctionComponent<GraphStylingProps> = ({
-  closePanel,
   igraphConfigUiData,
   igraphConfig,
   getValues,
 }: GraphStylingProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
+
   const buttonLabel = "Ok";
 
-  const submit = () => {
-    closePanel();
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    closeSidePanel();
   };
 
   return (

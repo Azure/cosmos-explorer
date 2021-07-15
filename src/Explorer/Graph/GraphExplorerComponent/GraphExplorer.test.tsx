@@ -10,7 +10,7 @@ import { queryDocumentsPage } from "../../../Common/dataAccess/queryDocumentsPag
 import * as DataModels from "../../../Contracts/DataModels";
 import * as StorageUtility from "../../../Shared/StorageUtility";
 import { TabComponent } from "../../Controls/Tabs/TabComponent";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleDataType } from "../../Menus/NotificationConsole/ConsoleData";
 import GraphTab from "../../Tabs/GraphTab";
 import * as D3ForceGraph from "./D3ForceGraph";
 import { GraphData } from "./GraphData";

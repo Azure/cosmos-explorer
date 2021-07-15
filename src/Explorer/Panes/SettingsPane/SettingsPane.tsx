@@ -3,21 +3,15 @@ import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import { configContext } from "../../../ConfigContext";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export interface SettingsPaneProps {
-  expandConsole: () => void;
-  closePanel: () => void;
-}
-
-export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
-  expandConsole,
-  closePanel,
-}: SettingsPaneProps) => {
+export const SettingsPane: FunctionComponent = () => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
@@ -88,7 +82,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`
     );
-    closePanel();
+    closeSidePanel();
     e.preventDefault();
   };
 
@@ -101,7 +95,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   };
 
   const genericPaneProps: RightPaneFormProps = {
-    expandConsole,
     formError: "",
     isExecuting,
     submitButtonText: "Apply",

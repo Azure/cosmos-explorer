@@ -34,9 +34,9 @@ import {
 import { webSocket } from "rxjs/webSocket";
 import * as Constants from "../../../Common/Constants";
 import { Areas } from "../../../Common/Constants";
+import { useTabs } from "../../../hooks/useTabs";
 import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
 import { logConsoleError, logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
 import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
@@ -103,11 +103,6 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
   }
   if (sessionId) {
     params.append("session_id", sessionId);
-  }
-
-  const userId = getUserPuid();
-  if (userId) {
-    params.append("user_id", userId);
   }
 
   const q = params.toString();
@@ -289,7 +284,6 @@ export const launchWebSocketKernelEpic = (
         return EMPTY;
       }
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
-      serverConfig.userPuid = getUserPuid();
 
       const {
         payload: { kernelSpecName, cwd, kernelRef, contentRef },
@@ -766,25 +760,6 @@ const executeFocusedCellAndFocusNextEpic = (
   );
 };
 
-function getUserPuid(): string {
-  const arcadiaToken = window.dataExplorer && window.dataExplorer.arcadiaToken();
-  if (!arcadiaToken) {
-    return undefined;
-  }
-
-  let userPuid;
-  try {
-    const tokenPayload = decryptJWTToken(arcadiaToken);
-    if (tokenPayload && tokenPayload.hasOwnProperty("puid")) {
-      userPuid = tokenPayload.puid;
-    }
-  } catch (error) {
-    // ignore
-  }
-
-  return userPuid;
-}
-
 /**
  * Close tab if mimetype not supported
  * @param action$
@@ -802,9 +777,11 @@ const closeUnsupportedMimetypesEpic = (
       if (explorer && !TextFile.handles(mimetype)) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.tabsManager.closeTabsByComparator(
-          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
-        );
+        useTabs
+          .getState()
+          .closeTabsByComparator(
+            (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+          );
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
         explorer.showOkModalDialog("File cannot be rendered", msg);
         logConsoleError(msg);
@@ -830,9 +807,11 @@ const closeContentFailedToFetchEpic = (
       if (explorer) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.tabsManager.closeTabsByComparator(
-          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
-        );
+        useTabs
+          .getState()
+          .closeTabsByComparator(
+            (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+          );
         const msg = `Failed to load file: ${filepath}.`;
         explorer.showOkModalDialog("Failure to load", msg);
         logConsoleError(msg);

@@ -4,7 +4,7 @@ import { ThroughputInput } from "./ThroughputInput";
 const props = {
   isDatabase: false,
   showFreeTierExceedThroughputTooltip: true,
-  isSharded: false,
+  isSharded: true,
   setThroughputValue: () => jest.fn(),
   setIsAutoscale: () => jest.fn(),
   onCostAcknowledgeChange: () => jest.fn(),

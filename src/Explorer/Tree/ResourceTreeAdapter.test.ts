@@ -1,114 +1,109 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
-import Explorer from "../Explorer";
+import { useTabs } from "../../hooks/useTabs";
 import TabsBase from "../Tabs/TabsBase";
-import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
+import { useSelectedNode } from "../useSelectedNode";
 
-describe("ResourceTreeAdapter", () => {
-  const mockContainer = (): Explorer =>
-    (({
-      selectedNode: ko.observable<ViewModels.TreeNode>({
-        nodeKind: "nodeKind",
-        rid: "rid",
-        id: ko.observable<string>("id"),
-      }),
-      tabsManager: {
-        activeTab: ko.observable<TabsBase>({
-          tabKind: ViewModels.CollectionTabKind.Documents,
-        } as TabsBase),
-      },
-      isNotebookEnabled: ko.observable<boolean>(true),
-      databases: ko.observable<ViewModels.Database[]>([]),
-    } as unknown) as Explorer);
+describe("useSelectedNode", () => {
+  const mockTab = {
+    tabKind: ViewModels.CollectionTabKind.Documents,
+  } as TabsBase;
 
   // TODO isDataNodeSelected needs a better design and refactor, but for now, we protect some of the code paths
   describe("isDataNodeSelected", () => {
+    afterEach(() => {
+      useSelectedNode.getState().setSelectedNode(undefined);
+      useTabs.setState({ activeTab: undefined });
+    });
     it("it should not select if no selected node", () => {
-      const explorer = mockContainer();
-      explorer.selectedNode(undefined);
-      const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("foo", "bar", undefined);
+      useTabs.setState({ activeTab: mockTab });
+      const isDataNodeSelected = useSelectedNode.getState().isDataNodeSelected("foo", "bar", undefined);
       expect(isDataNodeSelected).toBeFalsy();
     });
 
     it("it should not select incorrect subnodekinds", () => {
-      const resourceTreeAdapter = new ResourceTreeAdapter(mockContainer());
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("foo", "bar", undefined);
+      useTabs.setState({ activeTab: mockTab });
+      useSelectedNode.getState().setSelectedNode({
+        nodeKind: "nodeKind",
+        rid: "rid",
+        id: ko.observable<string>("id"),
+      });
+      const isDataNodeSelected = useSelectedNode.getState().isDataNodeSelected("foo", "bar", undefined);
       expect(isDataNodeSelected).toBeFalsy();
     });
 
     it("it should not select if no active tab", () => {
-      const explorer = mockContainer();
-      explorer.tabsManager.activeTab(undefined);
-      const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("foo", "bar", undefined);
+      useSelectedNode.getState().setSelectedNode({
+        nodeKind: "nodeKind",
+        rid: "rid",
+        id: ko.observable<string>("id"),
+      });
+      const isDataNodeSelected = useSelectedNode.getState().isDataNodeSelected("foo", "bar", undefined);
       expect(isDataNodeSelected).toBeFalsy();
     });
 
     it("should select if correct database node regardless of subnodekinds", () => {
+      useTabs.setState({ activeTab: mockTab });
       const subNodeKind = ViewModels.CollectionTabKind.Documents;
-      const explorer = mockContainer();
-      explorer.selectedNode(({
+      useSelectedNode.getState().setSelectedNode({
         nodeKind: "Database",
         rid: "dbrid",
         id: ko.observable<string>("dbid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind),
-      } as unknown) as ViewModels.TreeNode);
-      const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", undefined, [
-        ViewModels.CollectionTabKind.Documents,
-      ]);
+      } as ViewModels.TreeNode);
+      const isDataNodeSelected = useSelectedNode
+        .getState()
+        .isDataNodeSelected("dbid", undefined, [ViewModels.CollectionTabKind.Documents]);
       expect(isDataNodeSelected).toBeTruthy();
     });
 
     it("should select correct collection node (documents or graph node)", () => {
       let subNodeKind = ViewModels.CollectionTabKind.Documents;
-      const explorer = mockContainer();
-      explorer.tabsManager.activeTab({
+      let activeTab = {
         tabKind: subNodeKind,
-      } as TabsBase);
-      explorer.selectedNode(({
+      } as TabsBase;
+      useTabs.setState({ activeTab });
+      useSelectedNode.getState().setSelectedNode({
         nodeKind: "Collection",
         rid: "collrid",
         databaseId: "dbid",
         id: ko.observable<string>("collid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind),
-      } as unknown) as ViewModels.TreeNode);
-      const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      let isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [subNodeKind]);
+      } as ViewModels.TreeNode);
+      let isDataNodeSelected = useSelectedNode.getState().isDataNodeSelected("dbid", "collid", [subNodeKind]);
       expect(isDataNodeSelected).toBeTruthy();
 
       subNodeKind = ViewModels.CollectionTabKind.Graph;
-      explorer.tabsManager.activeTab({
+      activeTab = {
         tabKind: subNodeKind,
-      } as TabsBase);
-      explorer.selectedNode(({
+      } as TabsBase;
+      useTabs.setState({ activeTab });
+      useSelectedNode.getState().setSelectedNode({
         nodeKind: "Collection",
         rid: "collrid",
         databaseId: "dbid",
         id: ko.observable<string>("collid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(subNodeKind),
-      } as unknown) as ViewModels.TreeNode);
-      isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [subNodeKind]);
+      } as ViewModels.TreeNode);
+      isDataNodeSelected = useSelectedNode.getState().isDataNodeSelected("dbid", "collid", [subNodeKind]);
       expect(isDataNodeSelected).toBeTruthy();
     });
 
     it("should not select incorrect collection node (e.g. Settings)", () => {
-      const explorer = mockContainer();
-      explorer.selectedNode(({
+      useSelectedNode.getState().setSelectedNode({
         nodeKind: "Collection",
         rid: "collrid",
         databaseId: "dbid",
         id: ko.observable<string>("collid"),
         selectedSubnodeKind: ko.observable<ViewModels.CollectionTabKind>(ViewModels.CollectionTabKind.Documents),
-      } as unknown) as ViewModels.TreeNode);
-      explorer.tabsManager.activeTab({
+      } as ViewModels.TreeNode);
+      const activeTab = {
         tabKind: ViewModels.CollectionTabKind.Documents,
-      } as TabsBase);
-      const resourceTreeAdapter = new ResourceTreeAdapter(explorer);
-      const isDataNodeSelected = resourceTreeAdapter.isDataNodeSelected("dbid", "collid", [
-        ViewModels.CollectionTabKind.Settings,
-      ]);
+      } as TabsBase;
+      useTabs.setState({ activeTab });
+      const isDataNodeSelected = useSelectedNode
+        .getState()
+        .isDataNodeSelected("dbid", "collid", [ViewModels.CollectionTabKind.Settings]);
       expect(isDataNodeSelected).toBeFalsy();
     });
   });
