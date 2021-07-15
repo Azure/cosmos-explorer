@@ -30,7 +30,7 @@ export default class UserDefinedFunction {
     this.body = ko.observable(data.body as string);
   }
 
-  public static create(source: ViewModels.Collection, event: MouseEvent) {
+  public static create(source: ViewModels.Collection) {
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.UserDefinedFunctions).length + 1;
     const userDefinedFunction = {
       id: "",
@@ -104,7 +104,9 @@ export default class UserDefinedFunction {
         useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
         this.collection.children.remove(this);
       },
-      (reason) => {}
+      () => {
+        /**/
+      }
     );
   }
 }
