@@ -22,6 +22,7 @@ import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
@@ -560,6 +561,7 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
 function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
   const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
   const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
+  const junoClient = new JunoClient();
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
@@ -568,7 +570,11 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
         .getState()
         .openSidePanel(
           label,
-          <GitHubReposPanel explorer={container} gitHubClientProp={container.notebookManager.gitHubClient} />
+          <GitHubReposPanel
+            explorer={container}
+            gitHubClientProp={container.notebookManager.gitHubClient}
+            junoClientProp={junoClient}
+          />
         ),
     commandButtonLabel: label,
     hasPopup: false,

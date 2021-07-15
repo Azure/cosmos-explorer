@@ -16,9 +16,10 @@ import { Areas } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
-import { IPinnedRepo } from "../../Juno/JunoClient";
+import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -55,6 +56,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public galleryContentRoot: NotebookContentItem;
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
+  public junoClient: JunoClient;
+  public gitHubOAuthService: GitHubOAuthService;
 
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
@@ -71,6 +74,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     useDatabases.subscribe(() => this.triggerRender());
     this.triggerRender();
+    this.junoClient = new JunoClient();
+    this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
   }
 
   private traceMyNotebookTreeInfo() {
@@ -634,6 +639,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
               <GitHubReposPanel
                 explorer={this.container}
                 gitHubClientProp={this.container.notebookManager.gitHubClient}
+                junoClientProp={this.junoClient}
               />
             ),
       },

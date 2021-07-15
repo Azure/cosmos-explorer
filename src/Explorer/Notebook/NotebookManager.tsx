@@ -181,6 +181,7 @@ export default class NotebookManager {
               <GitHubReposPanel
                 explorer={this.params.container}
                 gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+                junoClientProp={this.junoClient}
               />
             ),
         "Cancel",
