@@ -2,9 +2,11 @@ import _ from "underscore";
 import create, { UseStore } from "zustand";
 import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
+import { useSelectedNode } from "./useSelectedNode";
 
 interface DatabasesState {
   databases: ViewModels.Database[];
+  resourceTokenCollection: ViewModels.CollectionBase;
   updateDatabase: (database: ViewModels.Database) => void;
   addDatabases: (databases: ViewModels.Database[]) => void;
   deleteDatabase: (database: ViewModels.Database) => void;
@@ -16,10 +18,12 @@ interface DatabasesState {
   isLastCollection: () => boolean;
   loadDatabaseOffers: () => Promise<void>;
   isFirstResourceCreated: () => boolean;
+  findSelectedDatabase: () => ViewModels.Database;
 }
 
 export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
   databases: [],
+  resourceTokenCollection: undefined,
   updateDatabase: (updatedDatabase: ViewModels.Database) =>
     set((state) => {
       const updatedDatabases = state.databases.map((database: ViewModels.Database) => {
@@ -109,5 +113,20 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
       // use has created an empty database without shared throughput
       return false;
     });
+  },
+  findSelectedDatabase: (): ViewModels.Database => {
+    const selectedNode = useSelectedNode.getState().selectedNode;
+    if (!selectedNode) {
+      return undefined;
+    }
+    if (selectedNode.nodeKind === "Database") {
+      return _.find(get().databases, (database: ViewModels.Database) => database.id() === selectedNode.id());
+    }
+
+    if (selectedNode.nodeKind === "Collection") {
+      return selectedNode.database;
+    }
+
+    return selectedNode.collection?.database;
   },
 }));

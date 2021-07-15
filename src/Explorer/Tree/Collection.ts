@@ -15,6 +15,7 @@ import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { UploadDetailsRecord } from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
@@ -34,6 +35,7 @@ import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
@@ -223,7 +225,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public expandCollapseCollection() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Collection node",
 
@@ -238,9 +240,11 @@ export default class Collection implements ViewModels.Collection {
       this.expandCollection();
     }
     useCommandBar.getState().setContextButtons([]);
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public collapseCollection() {
@@ -276,7 +280,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onDocumentDBDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -287,14 +291,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Documents,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as DocumentsTab[];
+    const documentsTabs: DocumentsTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Documents,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
     if (documentsTab) {
-      this.container.tabsManager.activateTab(documentsTab);
+      useTabs.getState().activateTab(documentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.databaseId,
@@ -316,12 +322,12 @@ export default class Collection implements ViewModels.Collection {
         onLoadStartKey: startKey,
       });
 
-      this.container.tabsManager.activateNewTab(documentsTab);
+      useTabs.getState().activateNewTab(documentsTab);
     }
   }
 
   public onConflictsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Conflicts node",
@@ -332,14 +338,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const conflictsTabs: ConflictsTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Conflicts,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as ConflictsTab[];
+    const conflictsTabs: ConflictsTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Conflicts,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as ConflictsTab[];
     let conflictsTab: ConflictsTab = conflictsTabs && conflictsTabs[0];
 
     if (conflictsTab) {
-      this.container.tabsManager.activateTab(conflictsTab);
+      useTabs.getState().activateTab(conflictsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.databaseId,
@@ -361,12 +369,12 @@ export default class Collection implements ViewModels.Collection {
         onLoadStartKey: startKey,
       });
 
-      this.container.tabsManager.activateNewTab(conflictsTab);
+      useTabs.getState().activateNewTab(conflictsTab);
     }
   }
 
   public onTableEntitiesClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.QueryTables);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Entities node",
@@ -383,14 +391,16 @@ export default class Collection implements ViewModels.Collection {
       });
     }
 
-    const queryTablesTabs: QueryTablesTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.QueryTables,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as QueryTablesTab[];
+    const queryTablesTabs: QueryTablesTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.QueryTables,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as QueryTablesTab[];
     let queryTablesTab: QueryTablesTab = queryTablesTabs && queryTablesTabs[0];
 
     if (queryTablesTab) {
-      this.container.tabsManager.activateTab(queryTablesTab);
+      useTabs.getState().activateTab(queryTablesTab);
     } else {
       this.documentIds([]);
       let title = `Entities`;
@@ -414,12 +424,12 @@ export default class Collection implements ViewModels.Collection {
         onLoadStartKey: startKey,
       });
 
-      this.container.tabsManager.activateNewTab(queryTablesTab);
+      useTabs.getState().activateNewTab(queryTablesTab);
     }
   }
 
   public onGraphDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -430,14 +440,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const graphTabs: GraphTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Graph,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as GraphTab[];
+    const graphTabs: GraphTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Graph,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as GraphTab[];
     let graphTab: GraphTab = graphTabs && graphTabs[0];
 
     if (graphTab) {
-      this.container.tabsManager.activateTab(graphTab);
+      useTabs.getState().activateTab(graphTab);
     } else {
       this.documentIds([]);
       const title = "Graph";
@@ -465,12 +477,12 @@ export default class Collection implements ViewModels.Collection {
         onLoadStartKey: startKey,
       });
 
-      this.container.tabsManager.activateNewTab(graphTab);
+      useTabs.getState().activateNewTab(graphTab);
     }
   }
 
   public onMongoDBDocumentsClick = () => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -481,14 +493,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const mongoDocumentsTabs: MongoDocumentsTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Documents,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as MongoDocumentsTab[];
+    const mongoDocumentsTabs: MongoDocumentsTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Documents,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as MongoDocumentsTab[];
     let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
     if (mongoDocumentsTab) {
-      this.container.tabsManager.activateTab(mongoDocumentsTab);
+      useTabs.getState().activateTab(mongoDocumentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.databaseId,
@@ -509,12 +523,12 @@ export default class Collection implements ViewModels.Collection {
         node: this,
         onLoadStartKey: startKey,
       });
-      this.container.tabsManager.activateNewTab(mongoDocumentsTab);
+      useTabs.getState().activateNewTab(mongoDocumentsTab);
     }
   };
 
   public onSchemaAnalyzerClick = async () => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
     const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -524,13 +538,13 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    for (const tab of this.container.tabsManager.openedTabs()) {
+    for (const tab of useTabs.getState().openedTabs) {
       if (
         tab instanceof SchemaAnalyzerTab &&
         tab.collection?.databaseId === this.databaseId &&
         tab.collection?.id() === this.id()
       ) {
-        return this.container.tabsManager.activateTab(tab);
+        return useTabs.getState().activateTab(tab);
       }
     }
 
@@ -541,7 +555,7 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: "Schema",
     });
     this.documentIds([]);
-    this.container.tabsManager.activateNewTab(
+    useTabs.getState().activateNewTab(
       new SchemaAnalyzerTab({
         account: userContext.databaseAccount,
         masterKey: userContext.masterKey || "",
@@ -557,7 +571,8 @@ export default class Collection implements ViewModels.Collection {
   };
 
   public onSettingsClick = async (): Promise<void> => {
-    this.container.selectedNode(this);
+    await this.loadOffer();
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
@@ -569,12 +584,9 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
-    const matchingTabs = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.CollectionSettingsV2,
-      (tab) => {
-        return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
-      }
-    );
+    const matchingTabs = useTabs.getState().getTabs(ViewModels.CollectionTabKind.CollectionSettingsV2, (tab) => {
+      return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
+    });
 
     const traceStartData = {
       databaseName: this.databaseId,
@@ -606,15 +618,15 @@ export default class Collection implements ViewModels.Collection {
       settingsTabOptions.onLoadStartKey = startKey;
       settingsTabOptions.tabKind = ViewModels.CollectionTabKind.CollectionSettingsV2;
       settingsTabV2 = new CollectionSettingsTabV2(settingsTabOptions);
-      this.container.tabsManager.activateNewTab(settingsTabV2);
+      useTabs.getState().activateNewTab(settingsTabV2);
     } else {
-      this.container.tabsManager.activateTab(settingsTabV2);
+      useTabs.getState().activateTab(settingsTabV2);
     }
   };
 
   public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
     const collection: ViewModels.Collection = source.collection || source;
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
       databaseName: this.databaseId,
@@ -624,7 +636,7 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    this.container.tabsManager.activateNewTab(
+    useTabs.getState().activateNewTab(
       new NewQueryTab(
         {
           tabKind: ViewModels.CollectionTabKind.Query,
@@ -643,7 +655,7 @@ export default class Collection implements ViewModels.Collection {
 
   public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
     const collection: ViewModels.Collection = source.collection || source;
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
 
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -670,11 +682,11 @@ export default class Collection implements ViewModels.Collection {
       }
     );
 
-    this.container.tabsManager.activateNewTab(newMongoQueryTab);
+    useTabs.getState().activateNewTab(newMongoQueryTab);
   }
 
   public onNewGraphClick() {
-    const id: number = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Graph).length + 1;
+    const id: number = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Graph).length + 1;
     const title: string = "Graph Query " + id;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -700,13 +712,11 @@ export default class Collection implements ViewModels.Collection {
       onLoadStartKey: startKey,
     });
 
-    this.container.tabsManager.activateNewTab(graphTab);
+    useTabs.getState().activateNewTab(graphTab);
   }
 
   public onNewMongoShellClick() {
-    const mongoShellTabs = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.MongoShell
-    ) as NewMongoShellTab[];
+    const mongoShellTabs = useTabs.getState().getTabs(ViewModels.CollectionTabKind.MongoShell) as NewMongoShellTab[];
 
     let index = 1;
     if (mongoShellTabs.length > 0) {
@@ -727,7 +737,7 @@ export default class Collection implements ViewModels.Collection {
       }
     );
 
-    this.container.tabsManager.activateNewTab(mongoShellTab);
+    useTabs.getState().activateNewTab(mongoShellTab);
   }
 
   public onNewStoredProcedureClick(source: ViewModels.Collection, event: MouseEvent) {
@@ -744,21 +754,21 @@ export default class Collection implements ViewModels.Collection {
 
   public createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure {
     const node = new StoredProcedure(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
 
   public createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction {
     const node = new UserDefinedFunction(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
 
   public createTriggerNode(data: TriggerDefinition & Resource): Trigger {
     const node = new Trigger(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
@@ -785,9 +795,11 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandStoredProcedures();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public expandStoredProcedures() {
@@ -844,9 +856,11 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandUserDefinedFunctions();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public expandUserDefinedFunctions() {
@@ -903,9 +917,11 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandTriggers();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public expandTriggers() {

@@ -28,6 +28,7 @@ import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandBu
 import Explorer from "../Explorer";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import DocumentId from "../Tree/DocumentId";
+import { useSelectedNode } from "../useSelectedNode";
 import template from "./DocumentsTab.html";
 import TabsBase from "./TabsBase";
 
@@ -911,13 +912,13 @@ export default class DocumentsTab extends TabsBase {
       iconSrc: UploadIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && container.openUploadItemsPanePane();
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: useSelectedNode.getState().isDatabaseNodeOrNoneSelected(),
     };
   }
 }

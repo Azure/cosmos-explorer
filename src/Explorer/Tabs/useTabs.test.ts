@@ -1,23 +1,19 @@
 import * as ko from "knockout";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { updateUserContext } from "../../UserContext";
-import Explorer from "../Explorer";
+import { container } from "../Controls/Settings/TestUtils";
 import DocumentId from "../Tree/DocumentId";
-import { container } from "./../Controls/Settings/TestUtils";
 import DocumentsTab from "./DocumentsTab";
 import { NewQueryTab } from "./QueryTab/QueryTab";
-import { TabsManager } from "./TabsManager";
 
-describe("Tabs manager tests", () => {
-  let tabsManager: TabsManager;
-  let explorer: Explorer;
+describe("useTabs tests", () => {
   let database: ViewModels.Database;
   let collection: ViewModels.Collection;
   let queryTab: NewQueryTab;
   let documentsTab: DocumentsTab;
 
   beforeEach(() => {
-    explorer = new Explorer();
     updateUserContext({
       databaseAccount: {
         id: "test",
@@ -30,7 +26,6 @@ describe("Tabs manager tests", () => {
     });
 
     database = {
-      container: explorer,
       id: ko.observable<string>("test"),
       isDatabaseShared: () => false,
     } as ViewModels.Database;
@@ -38,7 +33,6 @@ describe("Tabs manager tests", () => {
     database.selectedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
 
     collection = {
-      container: explorer,
       databaseId: "test",
       id: ko.observable<string>("test"),
     } as ViewModels.Collection;
@@ -76,63 +70,70 @@ describe("Tabs manager tests", () => {
     documentsTab.tabId = "2";
   });
 
-  beforeEach(() => (tabsManager = new TabsManager()));
+  beforeEach(() => useTabs.setState({ openedTabs: [], activeTab: undefined }));
 
   it("open new tabs", () => {
-    tabsManager.activateNewTab(queryTab);
-    expect(tabsManager.openedTabs().length).toBe(1);
-    expect(tabsManager.openedTabs()[0]).toEqual(queryTab);
-    expect(tabsManager.activeTab()).toEqual(queryTab);
+    const { activateNewTab } = useTabs.getState();
+    activateNewTab(queryTab);
+    let tabsState = useTabs.getState();
+    expect(tabsState.openedTabs.length).toBe(1);
+    expect(tabsState.openedTabs[0]).toEqual(queryTab);
+    expect(tabsState.activeTab).toEqual(queryTab);
     expect(queryTab.isActive()).toBe(true);
 
-    tabsManager.activateNewTab(documentsTab);
-    expect(tabsManager.openedTabs().length).toBe(2);
-    expect(tabsManager.openedTabs()[1]).toEqual(documentsTab);
-    expect(tabsManager.activeTab()).toEqual(documentsTab);
+    activateNewTab(documentsTab);
+    tabsState = useTabs.getState();
+    expect(tabsState.openedTabs.length).toBe(2);
+    expect(tabsState.openedTabs[1]).toEqual(documentsTab);
+    expect(tabsState.activeTab).toEqual(documentsTab);
     expect(queryTab.isActive()).toBe(false);
     expect(documentsTab.isActive()).toBe(true);
   });
 
   it("open existing tabs", () => {
-    tabsManager.activateNewTab(queryTab);
-    tabsManager.activateNewTab(documentsTab);
-    tabsManager.activateTab(queryTab);
-    expect(tabsManager.openedTabs().length).toBe(2);
-    expect(tabsManager.activeTab()).toEqual(queryTab);
+    const { activateNewTab, activateTab } = useTabs.getState();
+    activateNewTab(queryTab);
+    activateNewTab(documentsTab);
+    activateTab(queryTab);
+
+    const { openedTabs, activeTab } = useTabs.getState();
+    expect(openedTabs.length).toBe(2);
+    expect(activeTab).toEqual(queryTab);
     expect(queryTab.isActive()).toBe(true);
     expect(documentsTab.isActive()).toBe(false);
   });
 
   it("get tabs", () => {
-    tabsManager.activateNewTab(queryTab);
-    tabsManager.activateNewTab(documentsTab);
+    const { activateNewTab, getTabs } = useTabs.getState();
+    activateNewTab(queryTab);
+    activateNewTab(documentsTab);
 
-    const queryTabs = tabsManager.getTabs(ViewModels.CollectionTabKind.Query);
+    const queryTabs = getTabs(ViewModels.CollectionTabKind.Query);
     expect(queryTabs.length).toBe(1);
     expect(queryTabs[0]).toEqual(queryTab);
 
-    const documentsTabs = tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Documents,
-      (tab) => tab.tabId === documentsTab.tabId
-    );
+    const documentsTabs = getTabs(ViewModels.CollectionTabKind.Documents, (tab) => tab.tabId === documentsTab.tabId);
     expect(documentsTabs.length).toBe(1);
     expect(documentsTabs[0]).toEqual(documentsTab);
   });
 
   it("close tabs", () => {
-    tabsManager.activateNewTab(queryTab);
-    tabsManager.activateNewTab(documentsTab);
+    const { activateNewTab, closeTab, closeTabsByComparator } = useTabs.getState();
+    activateNewTab(queryTab);
+    activateNewTab(documentsTab);
+    closeTab(documentsTab);
 
-    tabsManager.closeTab(documentsTab);
-    expect(tabsManager.openedTabs().length).toBe(1);
-    expect(tabsManager.openedTabs()[0]).toEqual(queryTab);
-    expect(tabsManager.activeTab()).toEqual(queryTab);
+    let tabsState = useTabs.getState();
+    expect(tabsState.openedTabs.length).toBe(1);
+    expect(tabsState.openedTabs[0]).toEqual(queryTab);
+    expect(tabsState.activeTab).toEqual(queryTab);
     expect(queryTab.isActive()).toBe(true);
     expect(documentsTab.isActive()).toBe(false);
 
-    tabsManager.closeTabsByComparator((tab) => tab.tabId === queryTab.tabId);
-    expect(tabsManager.openedTabs().length).toBe(0);
-    expect(tabsManager.activeTab()).toEqual(undefined);
+    closeTabsByComparator((tab) => tab.tabId === queryTab.tabId);
+    tabsState = useTabs.getState();
+    expect(tabsState.openedTabs.length).toBe(0);
+    expect(tabsState.activeTab).toEqual(undefined);
     expect(queryTab.isActive()).toBe(false);
   });
 });

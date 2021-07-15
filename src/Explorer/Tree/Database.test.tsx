@@ -1,7 +1,7 @@
-import * as ko from "knockout";
 import { HttpStatusCodes } from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import { JunoClient } from "../../Juno/JunoClient";
+import { Features } from "../../Platform/Hosted/extractFeatures";
 import { updateUserContext, userContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import Database from "./Database";
@@ -31,11 +31,10 @@ updateUserContext({
 
 describe("Add Schema", () => {
   it("should not call requestSchema or getSchema if analyticalStorageTtl is undefined", () => {
-    const collection: DataModels.Collection = {} as DataModels.Collection;
+    const collection: DataModels.Collection = { id: "fakeId" } as DataModels.Collection;
     collection.analyticalStorageTtl = undefined;
-    const database = new Database(createMockContainer(), { id: "fakeId" });
+    const database = new Database(createMockContainer(), collection);
     database.container = createMockContainer();
-    database.container.isSchemaEnabled = ko.computed<boolean>(() => false);
 
     database.junoClient = new JunoClient();
     database.junoClient.requestSchema = jest.fn();
@@ -47,12 +46,16 @@ describe("Add Schema", () => {
   });
 
   it("should call requestSchema or getSchema if analyticalStorageTtl is not undefined", () => {
-    const collection: DataModels.Collection = { id: "fakeId" } as DataModels.Collection;
+    const collection: DataModels.Collection = {} as DataModels.Collection;
     collection.analyticalStorageTtl = 0;
 
-    const database = new Database(createMockContainer(), {});
+    const database = new Database(createMockContainer(), collection);
     database.container = createMockContainer();
-    database.container.isSchemaEnabled = ko.computed<boolean>(() => true);
+    updateUserContext({
+      features: {
+        enableSchema: true,
+      } as Features,
+    });
 
     database.junoClient = new JunoClient();
     database.junoClient.requestSchema = jest.fn();

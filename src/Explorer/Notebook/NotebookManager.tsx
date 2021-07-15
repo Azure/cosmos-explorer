@@ -4,13 +4,11 @@
 
 import { ImmutableNotebook } from "@nteract/commutable";
 import type { IContentProvider } from "@nteract/core";
-import ko from "knockout";
 import React from "react";
 import { contents } from "rx-jupyter";
 import { Areas, HttpStatusCodes } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
-import { MemoryUsageInfo } from "../../Contracts/DataModels";
 import { GitHubClient } from "../../GitHub/GitHubClient";
 import { GitHubContentProvider } from "../../GitHub/GitHubContentProvider";
 import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
@@ -22,6 +20,7 @@ import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
 import Explorer from "../Explorer";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
+import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
 import { PublishNotebookPane } from "../Panes/PublishNotebookPane/PublishNotebookPane";
 import { ResourceTreeAdapter } from "../Tree/ResourceTreeAdapter";
 import { InMemoryContentProvider } from "./NotebookComponent/ContentProviders/InMemoryContentProvider";
@@ -37,7 +36,6 @@ export type { NotebookPaneContent };
 
 export interface NotebookManagerOptions {
   container: Explorer;
-  notebookBasePath: ko.Observable<string>;
   resourceTree: ResourceTreeAdapter;
   refreshCommandBarButtons: () => void;
   refreshNotebookList: () => void;
@@ -81,24 +79,27 @@ export default class NotebookManager {
       contents.JupyterContentProvider
     );
 
-    this.notebookClient = new NotebookContainerClient(
-      this.params.container.notebookServerInfo,
-      () => this.params.container.initNotebooks(userContext?.databaseAccount),
-      (update: MemoryUsageInfo) => this.params.container.memoryUsageInfo(update)
+    this.notebookClient = new NotebookContainerClient(() =>
+      this.params.container.initNotebooks(userContext?.databaseAccount)
     );
 
-    this.notebookContentClient = new NotebookContentClient(
-      this.params.container.notebookServerInfo,
-      this.params.notebookBasePath,
-      this.notebookContentProvider
-    );
+    this.notebookContentClient = new NotebookContentClient(this.notebookContentProvider);
 
     this.gitHubOAuthService.getTokenObservable().subscribe((token) => {
       this.gitHubClient.setToken(token?.access_token);
       if (this?.gitHubOAuthService.isLoggedIn()) {
         useSidePanel.getState().closeSidePanel();
         setTimeout(() => {
-          this.params.container.openGitHubReposPanel("Manage GitHub settings");
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Manage GitHub settings",
+              <GitHubReposPanel
+                explorer={this.params.container}
+                gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+                junoClientProp={this.junoClient}
+              />
+            );
         }, 200);
       }
 
@@ -172,7 +173,16 @@ export default class NotebookManager {
         undefined,
         "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
         "Connect to GitHub",
-        () => this.params.container.openGitHubReposPanel("Connect to GitHub"),
+        () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Connect to GitHub",
+              <GitHubReposPanel
+                explorer={this.params.container}
+                gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+              />
+            ),
         "Cancel",
         undefined
       );

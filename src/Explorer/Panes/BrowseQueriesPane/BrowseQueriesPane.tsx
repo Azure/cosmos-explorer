@@ -4,6 +4,7 @@ import { logError } from "../../../Common/Logger";
 import { Query } from "../../../Contracts/DataModels";
 import { Collection } from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { useTabs } from "../../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
@@ -14,6 +15,7 @@ import {
 import Explorer from "../../Explorer";
 import { NewQueryTab } from "../../Tabs/QueryTab/QueryTab";
 import { useDatabases } from "../../useDatabases";
+import { useSelectedNode } from "../../useSelectedNode";
 
 interface BrowseQueriesPaneProps {
   explorer: Explorer;
@@ -24,7 +26,7 @@ export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
 }: BrowseQueriesPaneProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const loadSavedQuery = (savedQuery: Query): void => {
-    const selectedCollection: Collection = explorer && explorer.findSelectedCollection();
+    const selectedCollection: Collection = useSelectedNode.getState().findSelectedCollection();
     if (!selectedCollection) {
       // should never get into this state because this pane is only accessible through the query tab
       logError("No collection was selected", "BrowseQueriesPane.loadSavedQuery");
@@ -35,7 +37,7 @@ export const BrowseQueriesPane: FunctionComponent<BrowseQueriesPaneProps> = ({
       selectedCollection.onNewQueryClick(selectedCollection, undefined, savedQuery.query);
     }
 
-    const queryTab = explorer && (explorer.tabsManager.activeTab() as NewQueryTab);
+    const queryTab = useTabs.getState().activeTab as NewQueryTab;
     queryTab.tabTitle(savedQuery.queryName);
     queryTab.tabPath(`${selectedCollection.databaseId}>${selectedCollection.id()}>${savedQuery.queryName}`);
 

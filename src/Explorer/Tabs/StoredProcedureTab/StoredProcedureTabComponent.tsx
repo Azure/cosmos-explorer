@@ -10,11 +10,13 @@ import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProc
 import { updateStoredProcedure } from "../../../Common/dataAccess/updateStoredProcedure";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
+import { useTabs } from "../../../hooks/useTabs";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import StoredProcedure from "../../Tree/StoredProcedure";
+import { useSelectedNode } from "../../useSelectedNode";
 import ScriptTabBase from "../ScriptTabBase";
 
 export interface IStorProcTabComponentAccessor {
@@ -143,7 +145,7 @@ export default class StoredProcedureTabComponent extends React.Component<
   }
 
   public onTabClick(): void {
-    if (this.props.container.tabsManager.openedTabs().length > 0) {
+    if (useTabs.getState().openedTabs.length > 0) {
       useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
@@ -298,12 +300,13 @@ export default class StoredProcedureTabComponent extends React.Component<
     }
 
     const database: ViewModels.Database = this.props.collectionBase.getDatabase();
+    const setSelectedNode = useSelectedNode.getState().setSelectedNode;
     if (!database.isDatabaseExpanded()) {
-      this.props.collectionBase.container.selectedNode(database);
+      setSelectedNode(database);
     } else if (!this.props.collectionBase.isCollectionExpanded() || !this.collection.isStoredProceduresExpanded()) {
-      this.props.collectionBase.container.selectedNode(this.props.collectionBase);
+      setSelectedNode(this.props.collectionBase);
     } else {
-      this.props.collectionBase.container.selectedNode(this.node);
+      setSelectedNode(this.node);
     }
   }
 
@@ -394,10 +397,8 @@ export default class StoredProcedureTabComponent extends React.Component<
           editorModel && editorModel.setValue(createdResource.body as string);
           this.props.scriptTabBaseInstance.editorContent.setBaseline(createdResource.body as string);
           this.node = this.collection.createStoredProcedureNode(createdResource);
-          this.props.container.tabsManager.openedTabs()[
-            this.props.container.tabsManager.openedTabs().length - 1
-          ].node = this.node;
-
+          this.props.scriptTabBaseInstance.node = this.node;
+          useTabs.getState().updateTab(this.props.scriptTabBaseInstance);
           this.props.scriptTabBaseInstance.editorState(ViewModels.ScriptEditorState.exisitingNoEdits);
 
           this.setState({

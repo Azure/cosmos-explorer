@@ -23,7 +23,7 @@ import { PanelLoadingScreen } from "../PanelLoadingScreen";
 interface IGitHubReposPanelProps {
   explorer: Explorer;
   gitHubClientProp: GitHubClient;
-  junoClientProp: JunoClient;
+  junoClientProp?: JunoClient;
 }
 
 interface IGitHubReposPanelState {

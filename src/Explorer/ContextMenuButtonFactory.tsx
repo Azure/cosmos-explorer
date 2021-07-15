@@ -16,11 +16,13 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
+import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import StoredProcedure from "./Tree/StoredProcedure";
 import Trigger from "./Tree/Trigger";
 import UserDefinedFunction from "./Tree/UserDefinedFunction";
+import { useSelectedNode } from "./useSelectedNode";
 
 export interface CollectionContextMenuButtonParams {
   databaseId: string;
@@ -50,7 +52,7 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
           .getState()
           .openSidePanel(
             "Delete " + getDatabaseName(),
-            <DeleteDatabaseConfirmationPanel explorer={container} selectedDatabase={container.findSelectedDatabase()} />
+            <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />
           ),
       label: `Delete ${getDatabaseName()}`,
       styleClass: "deleteDatabaseMenuItem",
@@ -82,14 +84,14 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        if (container.isShellEnabled()) {
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+        if (useNotebook.getState().isShellEnabled) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label: container.isShellEnabled() ? "Open Mongo Shell" : "New Shell",
+      label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
     });
   }
 
@@ -97,7 +99,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddStoredProcedureIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
       },
       label: "New Stored Procedure",
@@ -106,7 +108,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddUdfIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection, undefined);
       },
       label: "New UDF",
@@ -115,7 +117,7 @@ export const createCollectionContextMenuButton = (
     items.push({
       iconSrc: AddTriggerIcon,
       onClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection, undefined);
       },
       label: "New Trigger",
@@ -127,7 +129,10 @@ export const createCollectionContextMenuButton = (
     onClick: () =>
       useSidePanel
         .getState()
-        .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={container} />),
+        .openSidePanel(
+          "Delete " + getCollectionName(),
+          <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
+        ),
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });

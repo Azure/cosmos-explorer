@@ -28,15 +28,25 @@ import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
+import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
+import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { SetupNoteBooksPanel } from "../../Panes/SetupNotebooksPanel/SetupNotebooksPanel";
+import { useDatabases } from "../../useDatabases";
+import { SelectedNodeState } from "../../useSelectedNode";
 
 let counter = 0;
 
-export function createStaticCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
+export function createStaticCommandBarButtons(
+  container: Explorer,
+  selectedNodeState: SelectedNodeState
+): CommandButtonComponentProps[] {
   if (userContext.authType === AuthType.ResourceToken) {
-    return createStaticCommandBarButtonsForResourceToken(container);
+    return createStaticCommandBarButtonsForResourceToken(container, selectedNodeState);
   }
 
   const newCollectionBtn = createNewCollectionGroup(container);
@@ -58,7 +68,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
 
   buttons.push(createDivider());
 
-  if (container.isNotebookEnabled()) {
+  if (useNotebook.getState().isNotebookEnabled) {
     const newNotebookButton = createNewNotebookButton(container);
     newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
     buttons.push(newNotebookButton);
@@ -71,7 +81,9 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
 
     buttons.push(createNotebookWorkspaceResetButton(container));
     if (
-      (userContext.apiType === "Mongo" && container.isShellEnabled() && container.isDatabaseNodeOrNoneSelected()) ||
+      (userContext.apiType === "Mongo" &&
+        useNotebook.getState().isShellEnabled &&
+        selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
       userContext.apiType === "Cassandra"
     ) {
       buttons.push(createDivider());
@@ -87,18 +99,18 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     }
   }
 
-  if (!container.isDatabaseNodeOrNoneSelected()) {
+  if (!selectedNodeState.isDatabaseNodeOrNoneSelected()) {
     const isQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 
     if (isQuerySupported) {
       buttons.push(createDivider());
-      const newSqlQueryBtn = createNewSQLQueryButton(container);
+      const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
       buttons.push(newSqlQueryBtn);
     }
 
-    if (isQuerySupported && container.selectedNode() && container.findSelectedCollection()) {
+    if (isQuerySupported && selectedNodeState.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
-      openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
+      openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
       buttons.push(openQueryBtn);
     }
 
@@ -108,16 +120,16 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
         iconSrc: AddStoredProcedureIcon,
         iconAlt: label,
         onCommandClick: () => {
-          const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
         },
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected(),
+        disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
       };
 
-      newStoredProcedureBtn.children = createScriptCommandButtons(container);
+      newStoredProcedureBtn.children = createScriptCommandButtons(selectedNodeState);
       buttons.push(newStoredProcedureBtn);
     }
   }
@@ -125,17 +137,20 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
   return buttons;
 }
 
-export function createContextCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
+export function createContextCommandBarButtons(
+  container: Explorer,
+  selectedNodeState: SelectedNodeState
+): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  if (!container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
-    const label = container.isShellEnabled() ? "Open Mongo Shell" : "New Shell";
+  if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
+    const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        if (container.isShellEnabled()) {
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
+        if (useNotebook.getState().isShellEnabled) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
@@ -144,7 +159,7 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
     };
     buttons.push(newMongoShellBtn);
   }
@@ -260,7 +275,7 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: container.isSynapseLinkUpdating(),
+    disabled: useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
@@ -270,29 +285,28 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
-    onCommandClick: () => {
-      container.openAddDatabasePane();
-    },
+    onCommandClick: () =>
+      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
   };
 }
 
-function createNewSQLQueryButton(container: Explorer): CommandButtonComponentProps {
+function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandButtonComponentProps {
   if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
     const label = "New SQL Query";
     return {
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
   } else if (userContext.apiType === "Mongo") {
     const label = "New Query";
@@ -300,23 +314,24 @@ function createNewSQLQueryButton(container: Explorer): CommandButtonComponentPro
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
   }
 
   return undefined;
 }
 
-export function createScriptCommandButtons(container: Explorer): CommandButtonComponentProps[] {
+export function createScriptCommandButtons(selectedNodeState: SelectedNodeState): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  const shouldEnableScriptsCommands: boolean = !container.isDatabaseNodeOrNoneSelected() && areScriptsSupported();
+  const shouldEnableScriptsCommands: boolean =
+    !selectedNodeState.isDatabaseNodeOrNoneSelected() && areScriptsSupported();
 
   if (shouldEnableScriptsCommands) {
     const label = "New Stored Procedure";
@@ -324,13 +339,13 @@ export function createScriptCommandButtons(container: Explorer): CommandButtonCo
       iconSrc: AddStoredProcedureIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -341,13 +356,13 @@ export function createScriptCommandButtons(container: Explorer): CommandButtonCo
       iconSrc: AddUdfIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -358,13 +373,13 @@ export function createScriptCommandButtons(container: Explorer): CommandButtonCo
       iconSrc: AddTriggerIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newTriggerBtn);
   }
@@ -403,7 +418,8 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
-    onCommandClick: () => container.openBrowseQueriesPanel(),
+    onCommandClick: () =>
+      useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -411,12 +427,12 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   };
 }
 
-function createOpenQueryFromDiskButton(container: Explorer): CommandButtonComponentProps {
+function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
   const label = "Open Query From Disk";
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
-    onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane explorer={container} />),
+    onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -436,12 +452,18 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
   return {
     iconSrc: EnableNotebooksIcon,
     iconAlt: label,
-    onCommandClick: () => container.openSetupNotebooksPanel(label, description),
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <SetupNoteBooksPanel explorer={container} panelTitle={label} panelDescription={description} />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: !container.isNotebooksEnabledForAccount(),
+    disabled: !useNotebook.getState().isNotebooksEnabledForAccount,
     ariaLabel: label,
-    tooltipText: container.isNotebooksEnabledForAccount() ? "" : tooltip,
+    tooltipText: useNotebook.getState().isNotebooksEnabledForAccount ? "" : tooltip,
   };
 }
 
@@ -465,15 +487,21 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
   const title = "Set up workspace";
   const description =
     "Looks like you have not created a workspace for this account. To proceed and start using features including mongo shell and notebook, we will need to create a default workspace in this account.";
-  const disableButton = !container.isNotebooksEnabledForAccount() && !container.isNotebookEnabled();
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (container.isNotebookEnabled()) {
+      if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
-        container.openSetupNotebooksPanel(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,
@@ -491,15 +519,21 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
   const title = "Set up workspace";
   const description =
     "Looks like you have not created a workspace for this account. To proceed and start using features including cassandra shell and notebook, we will need to create a default workspace in this account.";
-  const disableButton = !container.isNotebooksEnabledForAccount() && !container.isNotebookEnabled();
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (container.isNotebookEnabled()) {
+      if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
-        container.openSetupNotebooksPanel(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,
@@ -529,7 +563,13 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () => container.openGitHubReposPanel(label),
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <GitHubReposPanel explorer={container} gitHubClientProp={container.notebookManager.gitHubClient} />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,
@@ -537,19 +577,25 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   };
 }
 
-function createStaticCommandBarButtonsForResourceToken(container: Explorer): CommandButtonComponentProps[] {
-  const newSqlQueryBtn = createNewSQLQueryButton(container);
+function createStaticCommandBarButtonsForResourceToken(
+  container: Explorer,
+  selectedNodeState: SelectedNodeState
+): CommandButtonComponentProps[] {
+  const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
   const openQueryBtn = createOpenQueryButton(container);
 
-  newSqlQueryBtn.disabled = !container.isResourceTokenCollectionNodeSelected();
+  const resourceTokenCollection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
+  const isResourceTokenCollectionNodeSelected: boolean =
+    resourceTokenCollection?.id() === selectedNodeState.selectedNode?.id();
+  newSqlQueryBtn.disabled = !isResourceTokenCollectionNodeSelected;
   newSqlQueryBtn.onCommandClick = () => {
-    const resourceTokenCollection: ViewModels.CollectionBase = container.resourceTokenCollection();
+    const resourceTokenCollection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
     resourceTokenCollection && resourceTokenCollection.onNewQueryClick(resourceTokenCollection, undefined);
   };
 
-  openQueryBtn.disabled = !container.isResourceTokenCollectionNodeSelected();
+  openQueryBtn.disabled = !isResourceTokenCollectionNodeSelected;
   if (!openQueryBtn.disabled) {
-    openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
+    openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
   }
 
   return [newSqlQueryBtn, openQueryBtn];

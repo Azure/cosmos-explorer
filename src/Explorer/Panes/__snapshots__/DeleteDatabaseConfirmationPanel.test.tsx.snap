@@ -1,26 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Delete Database Confirmation Pane submit() Should call delete database 1`] = `
+exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
 <DeleteDatabaseConfirmationPanel
-  closePanel={[Function]}
-  explorer={
-    Object {
-      "isSelectedDatabaseShared": [Function],
-      "refreshAllDatabases": [Function],
-      "selectedNode": [Function],
-      "tabsManager": TabsManager {
-        "activeTab": [Function],
-        "openedTabs": [Function],
-      },
-    }
-  }
-  openNotificationConsole={[Function]}
-  selectedDatabase={
-    Object {
-      "collections": [Function],
-      "id": [Function],
-    }
-  }
+  refreshDatabases={[Function]}
 >
   <RightPaneForm
     formError=""
