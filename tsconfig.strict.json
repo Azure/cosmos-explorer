@@ -26,7 +26,7 @@
     "./src/Common/ObjectCache.ts",
     "./src/Common/OfferUtility.test.ts",
     "./src/Common/OfferUtility.ts",
-    "./src/Common/ResourceTree.tsx",
+    "./src/Common/ResourceTreeContainer.tsx",
     "./src/Common/Splitter.ts",
     "./src/Common/ThemeUtility.ts",
     "./src/Common/UrlUtility.ts",
@@ -142,7 +142,7 @@
     "./src/userContext.test.ts",
     "src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
-    "./src/Platform/Hosted/Components/SwitchSubscription.tsx",
+    "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
