@@ -15,9 +15,9 @@ export class NotebookContentClient {
    * This updates the item and points all the children's parent to this item
    * @param item
    */
-  public async updateItemChildren(item: NotebookContentItem, shouldDeepClone?: boolean): Promise<NotebookContentItem> {
+  public async updateItemChildren(item: NotebookContentItem): Promise<NotebookContentItem> {
     const subItems = await this.fetchNotebookFiles(item.path);
-    const clonedItem = shouldDeepClone ? cloneDeep(item) : item;
+    const clonedItem = cloneDeep(item);
     subItems.forEach((subItem) => (subItem.parent = clonedItem));
     clonedItem.children = subItems;
 
