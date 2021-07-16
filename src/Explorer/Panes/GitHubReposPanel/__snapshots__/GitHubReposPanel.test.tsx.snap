@@ -31,15 +31,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
             "resourceTree": ResourceTreeAdapter {
               "container": [Circular],
               "copyNotebook": [Function],
-              "gitHubOAuthService": GitHubOAuthService {
-                "junoClient": JunoClient {
-                  "cachedPinnedRepos": [Function],
-                },
-                "token": [Function],
-              },
-              "junoClient": JunoClient {
-                "cachedPinnedRepos": [Function],
-              },
               "parameters": [Function],
             },
             "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
