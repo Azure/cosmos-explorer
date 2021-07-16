@@ -26,7 +26,6 @@
     "./src/Common/ObjectCache.ts",
     "./src/Common/OfferUtility.test.ts",
     "./src/Common/OfferUtility.ts",
-    "./src/Common/ResourceTreeContainer.tsx",
     "./src/Common/Splitter.ts",
     "./src/Common/ThemeUtility.ts",
     "./src/Common/UrlUtility.ts",
