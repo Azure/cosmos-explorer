@@ -2,6 +2,7 @@ import { AppState, ContentRef, selectors } from "@nteract/core";
 import distanceInWordsToNow from "date-fns/distance_in_words_to_now";
 import React from "react";
 import { connect } from "react-redux";
+import styled from "styled-components";
 import { StyleConstants } from "../../../Common/Constants";
 
 interface Props {
@@ -11,8 +12,6 @@ interface Props {
 }
 
 const NOT_CONNECTED = "not connected";
-
-import styled from "styled-components";
 
 export const LeftStatus = styled.div`
   float: left;
@@ -80,7 +79,7 @@ interface InitialProps {
   contentRef: ContentRef;
 }
 
-const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
+const makeMapStateToProps = (_initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
   const { contentRef } = initialProps;
 
   const mapStateToProps = (state: AppState) => {
@@ -90,26 +89,26 @@ const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps)
       return {
         kernelStatus: NOT_CONNECTED,
         kernelSpecDisplayName: "no kernel",
-        lastSaved: null,
+        lastSaved: undefined,
       };
     }
 
     const kernelRef = content.model.kernelRef;
-    let kernel = null;
+    let kernel;
     if (kernelRef) {
       kernel = selectors.kernel(state, { kernelRef });
     }
 
-    const lastSaved = content && content.lastSaved ? content.lastSaved : null;
+    const lastSaved = content && content.lastSaved ? content.lastSaved : undefined;
 
-    const kernelStatus = kernel != null && kernel.status != null ? kernel.status : NOT_CONNECTED;
+    const kernelStatus = kernel?.status || NOT_CONNECTED;
 
     // TODO: We need kernels associated to the kernelspec they came from
     //       so we can pluck off the display_name and provide it here
     let kernelSpecDisplayName = " ";
     if (kernelStatus === NOT_CONNECTED) {
       kernelSpecDisplayName = "no kernel";
-    } else if (kernel != null && kernel.kernelSpecName != null) {
+    } else if (kernel?.kernelSpecName) {
       kernelSpecDisplayName = kernel.kernelSpecName;
     } else if (content && content.type === "notebook") {
       kernelSpecDisplayName = selectors.notebook.displayName(content.model) || " ";

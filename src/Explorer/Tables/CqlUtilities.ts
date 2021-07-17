@@ -1,4 +1,5 @@
-export function getQuotedCqlIdentifier(identifier: string): string {
+// Added return type optional undefined because passing undefined from test cases.
+export function getQuotedCqlIdentifier(identifier: string | undefined): string | undefined {
   let result = identifier;
   if (!identifier) {
     return result;

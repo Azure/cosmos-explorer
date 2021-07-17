@@ -5,21 +5,17 @@ import * as ViewModels from "../Contracts/ViewModels";
 import * as QueryUtils from "./QueryUtils";
 
 describe("Query Utils", () => {
-  function generatePartitionKeyForPath(path: string): DataModels.PartitionKey {
+  const generatePartitionKeyForPath = (path: string): DataModels.PartitionKey => {
     return {
       paths: [path],
       kind: "Hash",
       version: 2,
     };
-  }
+  };
 
   describe("buildDocumentsQueryPartitionProjections()", () => {
     it("should return empty string if partition key is undefined", () => {
       expect(QueryUtils.buildDocumentsQueryPartitionProjections("c", undefined)).toBe("");
-    });
-
-    it("should return empty string if partition key is null", () => {
-      expect(QueryUtils.buildDocumentsQueryPartitionProjections("c", null)).toBe("");
     });
 
     it("should replace slashes and embed projection in square braces", () => {

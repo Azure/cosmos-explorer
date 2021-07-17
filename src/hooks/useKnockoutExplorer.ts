@@ -105,7 +105,9 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     aadToken = aadTokenResponse.accessToken;
   }
   try {
-    keys = await listKeys(subscriptionId, resourceGroup, account.name);
+    if (!account.properties.disableLocalAuth) {
+      keys = await listKeys(subscriptionId, resourceGroup, account.name);
+    }
   } catch (e) {
     if (userContext.features.enableAadDataPlane) {
       console.warn(e);
@@ -326,8 +328,8 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.AutoscaleTest) !== -1) {
       userContext.features.autoscaleDefault;
     }
-    if (inputs.flights.indexOf(Flights.SchemaAnalyzer) !== -1) {
-      userContext.features.enableSchemaAnalyzer = true;
+    if (inputs.flights.indexOf(Flights.PartitionKeyTest) !== -1) {
+      userContext.features.partitionKeyDefault = true;
     }
   }
 }
