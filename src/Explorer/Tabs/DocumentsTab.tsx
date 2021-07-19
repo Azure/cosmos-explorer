@@ -41,13 +41,7 @@ export default class DocumentsTab extends TabsBase {
   }
 
   private _getPartitionKeyPropertyHeader(): string {
-    return (
-      (this.partitionKey &&
-        this.partitionKey.paths &&
-        this.partitionKey.paths.length > 0 &&
-        this.partitionKey.paths[0]) ||
-      undefined
-    );
+    return this.partitionKey?.paths?.[0];
   }
 
   render(): JSX.Element {

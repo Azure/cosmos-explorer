@@ -15,7 +15,6 @@ export interface EditorReactProps {
   onContentChanged?: (newContent: string) => void; // Called when text is changed
   lineNumbers?: monaco.editor.IEditorOptions["lineNumbers"];
   theme?: string; // Monaco editor theme
-  editorKey?: string;
 }
 
 export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
@@ -35,7 +34,6 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
   }
 
   public shouldComponentUpdate(): boolean {
-    // Prevents component re-rendering
     return true;
   }
 
@@ -44,8 +42,8 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
   }
 
   public componentDidUpdate(prevProps: EditorReactProps): void {
-    if (prevProps.editorKey !== this.props.editorKey) {
-      this.createEditor(this.configureEditor.bind(this));
+    if (this.props.content !== prevProps.content) {
+      this.editor.setValue(this.props.content);
     }
   }
 

@@ -16,7 +16,6 @@ export interface IDocumentsTabContentState {
   documentContent: string;
   documentIds: Array<DocumentId>;
   documentSqlIds: Array<Resource>;
-  editorKey: string;
   selectedDocumentId?: DocumentId;
   selectedSqlDocumentId?: Resource;
   isEditorContentEdited: boolean;
@@ -58,13 +57,7 @@ export function getPartitionKeyDefinition(
   partitionKey: DataModels.PartitionKey,
   partitionKeyProperty: string
 ): DataModels.PartitionKey {
-  if (
-    partitionKey &&
-    partitionKey.paths &&
-    partitionKey.paths.length &&
-    partitionKey.paths.length > 0 &&
-    partitionKey.paths[0].indexOf("$v") > -1
-  ) {
+  if (partitionKey?.paths?.[0]?.indexOf("$v") > -1) {
     // Convert BsonSchema2 to /path format
     partitionKey = {
       kind: partitionKey.kind,
@@ -78,7 +71,7 @@ export function getPartitionKeyDefinition(
 export function formatDocumentContent(row: DocumentId): string {
   const { partitionKeyProperty, partitionKeyValue, id } = row;
   const documentContent = JSON.stringify({
-    _id1: id(),
+    _id: id(),
     [partitionKeyProperty]: partitionKeyValue || "",
   });
   const formattedDocumentContent = documentContent.replace(/,/g, ",\n").replace("{", "{\n").replace("}", "\n}");
@@ -129,7 +122,10 @@ export function getDocumentItems(
   return isAllDocumentsVisible ? documentSqlIds : documentSqlIds.slice(0, 5);
 }
 
-export const tabButtonVisibility = (visible: boolean, enabled: boolean): { visible: boolean; enabled: boolean } => {
+export const assignTabButtonVisibility = (
+  visible: boolean,
+  enabled: boolean
+): { visible: boolean; enabled: boolean } => {
   return {
     visible,
     enabled,
@@ -144,10 +140,4 @@ export const getfilterText = (isPreferredApiMongoDB: boolean, filter: string): s
     return "No filter applied";
   }
   return `Select * from C ${filter}`;
-};
-
-export const getConfirmationMessage = (apiType: string): string => {
-  return apiType !== "Mongo"
-    ? "Are you sure you want to delete the selected item ?"
-    : "Are you sure you want to delete the selected document ?";
 };
