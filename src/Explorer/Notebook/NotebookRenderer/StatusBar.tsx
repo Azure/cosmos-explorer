@@ -79,7 +79,7 @@ interface InitialProps {
   contentRef: ContentRef;
 }
 
-const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
+const makeMapStateToProps = (_initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
   const { contentRef } = initialProps;
 
   const mapStateToProps = (state: AppState) => {

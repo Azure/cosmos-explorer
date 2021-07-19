@@ -26,7 +26,7 @@ export const SwitchSubscription: FunctionComponent<Props> = ({
         };
       })}
       onChange={(_, option) => {
-        setSelectedSubscriptionId(String(option.key));
+        setSelectedSubscriptionId(String(option?.key));
       }}
       defaultSelectedKey={selectedSubscription?.subscriptionId}
       placeholder={subscriptions && subscriptions.length === 0 ? "No Subscriptions Found" : "Select a Subscription"}
