@@ -1,6 +1,5 @@
 import { jest } from "@jest/globals";
 import "expect-playwright";
-import { safeClick } from "../utils/safeClick";
 import { generateDatabaseNameWithTimestamp, generateUniqueName } from "../utils/shared";
 jest.setTimeout(240000);
 
@@ -20,11 +19,11 @@ test("Mongo CRUD", async () => {
   await explorer.fill('[aria-label="Collection id"]', containerId);
   await explorer.fill('[aria-label="Shard key"]', "pk");
   await explorer.click("#sidePanelOkButton");
-  await safeClick(explorer, `.nodeItem >> text=${databaseId}`);
-  await safeClick(explorer, `.nodeItem >> text=${containerId}`);
+  explorer.click(`.nodeItem >> text=${databaseId}`, { timeout: 50000 });
+  explorer.click(`.nodeItem >> text=${containerId}`);
   // Delete database and collection
-  await safeClick(explorer, `[data-test="${containerId}"] [aria-label="More"]`);
-  await safeClick(explorer, 'button[role="menuitem"]:has-text("Delete Collection")');
+  explorer.click(`[data-test="${containerId}"] [aria-label="More"]`);
+  explorer.click('button[role="menuitem"]:has-text("Delete Collection")');
   await explorer.fill('text=* Confirm by typing the collection id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');
   await explorer.click(`[data-test="${databaseId}"] [aria-label="More"]`);

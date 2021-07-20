@@ -1,6 +1,5 @@
 import { jest } from "@jest/globals";
 import "expect-playwright";
-import { safeClick } from "../utils/safeClick";
 import { generateUniqueName } from "../utils/shared";
 jest.setTimeout(120000);
 
@@ -19,9 +18,9 @@ test("SQL CRUD", async () => {
   await explorer.fill('[aria-label="Container id"]', containerId);
   await explorer.fill('[aria-label="Partition key"]', "/pk");
   await explorer.click("#sidePanelOkButton");
-  await safeClick(explorer, `.nodeItem >> text=${databaseId}`);
-  await safeClick(explorer, `[data-test="${containerId}"] [aria-label="More"]`);
-  await safeClick(explorer, 'button[role="menuitem"]:has-text("Delete Container")');
+  await explorer.click(`.nodeItem >> text=${databaseId}`, { timeout: 50000 });
+  await explorer.click(`[data-test="${containerId}"] [aria-label="More"]`);
+  await explorer.click('button[role="menuitem"]:has-text("Delete Container")');
   await explorer.fill('text=* Confirm by typing the container id >> input[type="text"]', containerId);
   await explorer.click('[aria-label="OK"]');
   await explorer.click(`[data-test="${databaseId}"] [aria-label="More"]`);
