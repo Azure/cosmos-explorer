@@ -102,7 +102,18 @@ const onEnableDedicatedGatewayChange = (
   if (dedicatedGatewayOriginallyEnabled === newValue) {
     currentValues.set("sku", baselineValues.get("sku"));
     currentValues.set("instances", baselineValues.get("instances"));
-    currentValues.set("costPerHour", baselineValues.get("costPerHour"));
+
+    if (newValue === true) {
+      currentValues.set("costPerHour",
+        {
+          value: calculateCost(baselineValues.get("sku").value as string, baselineValues.get("instances").value as number),
+          hidden: false
+        });
+    }
+    else {
+      currentValues.set("costPerHour", baselineValues.get("costPerHour"));
+    }
+
     currentValues.set("warningBanner", baselineValues.get("warningBanner"));
     currentValues.set("connectionString", baselineValues.get("connectionString"));
     currentValues.set("metricsString", baselineValues.get("metricsString"));
@@ -121,6 +132,12 @@ const onEnableDedicatedGatewayChange = (
       } as Description,
       hidden: false,
     });
+
+    currentValues.set("costPerHour",
+      {
+        value: calculateCost(baselineValues.get("sku").value as string, baselineValues.get("instances").value as number),
+        hidden: false
+      })
   } else {
     currentValues.set("warningBanner", {
       value: {
@@ -132,6 +149,8 @@ const onEnableDedicatedGatewayChange = (
       } as Description,
       hidden: false,
     });
+
+    currentValues.set("costPerHour", { value: costPerHourDefaultValue, hidden: true });
   }
   const sku = currentValues.get("sku");
   const instances = currentValues.get("instances");
@@ -147,7 +166,6 @@ const onEnableDedicatedGatewayChange = (
     disabled: dedicatedGatewayOriginallyEnabled,
   });
 
-  currentValues.set("costPerHour", { value: costPerHourDefaultValue, hidden: hideAttributes });
   currentValues.set("connectionString", {
     value: connectionStringValue,
     hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
@@ -323,7 +341,7 @@ export default class SqlX extends SelfServeBaseClass {
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
-      defaults.set("sku", { value: response.sku, disabled: true });
+      defaults.set("sku", { value: response.sku, disabled: false });
       defaults.set("instances", { value: response.instances, disabled: false });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
