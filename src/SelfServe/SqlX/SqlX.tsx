@@ -226,7 +226,9 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
       }
       costPerHour += incrementalCost;
     }
+
     costPerHour *= instanceCount;
+    costPerHour = Math.round(costPerHour * 100) / 100
 
     return {
       textTKey: `US $${costPerHour}`,
@@ -341,7 +343,7 @@ export default class SqlX extends SelfServeBaseClass {
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
-      defaults.set("sku", { value: response.sku, disabled: false });
+      defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: false });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
