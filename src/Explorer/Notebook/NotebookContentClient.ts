@@ -67,7 +67,17 @@ export class NotebookContentClient {
   }
 
   public async deleteContentItem(item: NotebookContentItem): Promise<void> {
-    await this.deleteNotebookFile(item.path);
+    const path = await this.deleteNotebookFile(item.path);
+    if (!path || path !== item.path) {
+      throw new Error("No path provided");
+    }
+
+    if (item.parent && item.parent.children) {
+      // Remove deleted child
+      const newChildren = item.parent.children.filter((child) => child.path !== path);
+      item.parent.children = newChildren;
+    }
+
     useNotebook.getState().deleteNotebookItem(item);
   }
 
