@@ -1,11 +1,11 @@
-import { IDropdownOption, Image, IPanelProps, IRenderFunction, Label, Stack, Text, TextField } from "@fluentui/react";
+import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import RevertBackIcon from "../../../../images/RevertBack.svg";
+import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 import { TableEntity } from "../../../Common/TableEntity";
-import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import * as TableConstants from "../../Tables/Constants";
 import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
@@ -15,7 +15,7 @@ import { CassandraAPIDataClient, CassandraTableKey, TableDataClient } from "../.
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import * as Utilities from "../../Tables/Utilities";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import { PanelContainerComponent } from "../PanelContainerComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import {
   attributeNameLabel,
   attributeValueLabel,
@@ -30,9 +30,7 @@ import {
   getCassandraDefaultEntities,
   getDefaultEntities,
   getEntityValuePlaceholder,
-  getPanelTitle,
   imageProps,
-  isValidEntities,
   options,
 } from "./Validators/EntityTableHelper";
 
@@ -61,7 +59,6 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   tableEntityListViewModel,
   cassandraApiClient,
 }: AddTableEntityPanelProps): JSX.Element => {
-  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
@@ -70,6 +67,8 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     isEntityValuePanelOpen,
     { setTrue: setIsEntityValuePanelTrue, setFalse: setIsEntityValuePanelFalse },
   ] = useBoolean(false);
+  const [formError, setFormError] = useState<string>("");
+  const [isExecuting, setIsExecuting] = useState<boolean>(false);
 
   /* Get default and previous saved entity headers */
   useEffect(() => {
@@ -98,19 +97,36 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   };
 
   /* Add new entity attribute */
-  const submit = async (event: React.FormEvent<HTMLInputElement>): Promise<void> => {
-    if (!isValidEntities(entities)) {
-      return undefined;
-    }
-    event.preventDefault();
+  const onSubmit = async (): Promise<void> => {
+    for (let i = 0; i < entities.length; i++) {
+      const { property, type } = entities[i];
+      if (property === "" || property === undefined) {
+        setFormError(`Property name cannot be empty. Please enter a property name`);
+        return;
+      }
 
+      if (!type) {
+        setFormError(`Property type cannot be empty. Please select a type from the dropdown for property ${property}`);
+        return;
+      }
+    }
+
+    setIsExecuting(true);
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
     const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
-    await tableEntityListViewModel.addEntityToCache(newEntity);
-    if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
-      tableEntityListViewModel.redrawTableThrottled();
+    try {
+      await tableEntityListViewModel.addEntityToCache(newEntity);
+      if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
+        tableEntityListViewModel.redrawTableThrottled();
+      }
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+      setFormError(errorMessage);
+      handleError(errorMessage, "AddTableRow");
+      throw error;
+    } finally {
+      setIsExecuting(false);
     }
-    closeSidePanel();
   };
 
   const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
@@ -200,110 +216,80 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     setIsEntityValuePanelTrue();
   };
 
-  const renderPanelContent = (): JSX.Element => {
-    return (
-      <form className="panelFormWrapper">
-        <div className="panelFormWrapper">
-          <div className="panelMainContent">
-            {entities.map((entity, index) => {
-              return (
-                <TableEntity
-                  key={"" + entity.id + index}
-                  isDeleteOptionVisible={entity.isDeleteOptionVisible}
-                  entityTypeLabel={index === 0 && dataTypeLabel}
-                  entityPropertyLabel={index === 0 && attributeNameLabel}
-                  entityValueLabel={index === 0 && attributeValueLabel}
-                  options={userContext.apiType === "Cassandra" ? cassandraOptions : options}
-                  isPropertyTypeDisable={entity.isPropertyTypeDisable}
-                  entityProperty={entity.property}
-                  selectedKey={entity.type}
-                  entityPropertyPlaceHolder={detailedHelp}
-                  entityValuePlaceholder={entity.entityValuePlaceholder}
-                  entityValue={entity.value}
-                  isEntityTypeDate={entity.isEntityTypeDate}
-                  entityTimeValue={entity.entityTimeValue}
-                  onEditEntity={() => editEntity(index)}
-                  onSelectDate={(date: Date) => {
-                    entityChange(date, index, "value");
-                  }}
-                  onDeleteEntity={() => deleteEntityAtIndex(index)}
-                  onEntityPropertyChange={(event, newInput?: string) => {
-                    entityChange(newInput, index, "property");
-                  }}
-                  onEntityTypeChange={(event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption) => {
-                    entityTypeChange(event, selectedParam, index);
-                  }}
-                  onEntityValueChange={(event, newInput?: string) => {
-                    entityChange(newInput, index, "value");
-                  }}
-                  onEntityTimeValueChange={(event, newInput?: string) => {
-                    entityChange(newInput, index, "time");
-                  }}
-                />
-              );
-            })}
-            {userContext.apiType !== "Cassandra" && (
-              <Stack horizontal onClick={addNewEntity} className="addButtonEntiy">
-                <Image {...imageProps} src={AddPropertyIcon} alt="Add Entity" />
-                <Text className="addNewParamStyle">{getAddButtonLabel(userContext.apiType)}</Text>
-              </Stack>
-            )}
-          </div>
-          <div className="paneFooter">
-            <div className="leftpanel-okbut">
-              <input
-                type="submit"
-                onClick={submit}
-                className="genericPaneSubmitBtn"
-                value={getButtonLabel(userContext.apiType)}
-              />
-            </div>
-          </div>
-        </div>
-      </form>
-    );
-  };
-
-  const onRenderNavigationContent: IRenderFunction<IPanelProps> = () => {
-    return (
-      <Stack horizontal {...columnProps}>
-        <Image {...backImageProps} src={RevertBackIcon} alt="back" onClick={() => setIsEntityValuePanelFalse()} />
-        <Label>{entityAttributeProperty}</Label>
-      </Stack>
-    );
-  };
-
   if (isEntityValuePanelOpen) {
     return (
-      <PanelContainerComponent
-        headerText=""
-        onRenderNavigationContent={onRenderNavigationContent}
-        panelWidth="700px"
-        isOpen={true}
-        panelContent={
-          <TextField
-            multiline
-            rows={5}
-            className="entityValueTextField"
-            value={entityAttributeValue}
-            onChange={(event, newInput?: string) => {
-              entityChange(newInput, selectedRow, "value");
-              setEntityAttributeValue(newInput);
-            }}
-          />
-        }
-        isConsoleExpanded={false}
-      />
+      <Stack style={{ margin: "20px 0", padding: "0 34px" }}>
+        <Stack horizontal {...columnProps}>
+          <Image {...backImageProps} src={RevertBackIcon} alt="back" onClick={() => setIsEntityValuePanelFalse()} />
+          <Label>{entityAttributeProperty}</Label>
+        </Stack>
+        <TextField
+          multiline
+          rows={5}
+          value={entityAttributeValue}
+          onChange={(event, newInput?: string) => {
+            entityChange(newInput, selectedRow, "value");
+            setEntityAttributeValue(newInput);
+          }}
+        />
+      </Stack>
     );
   }
 
+  const props: RightPaneFormProps = {
+    formError,
+    isExecuting,
+    submitButtonText: getButtonLabel(userContext.apiType),
+    onSubmit,
+  };
+
   return (
-    <PanelContainerComponent
-      headerText={getPanelTitle(userContext.apiType)}
-      panelWidth="700px"
-      isOpen={true}
-      panelContent={renderPanelContent()}
-      isConsoleExpanded={false}
-    />
+    <RightPaneForm {...props}>
+      <div className="panelMainContent">
+        {entities.map((entity, index) => {
+          return (
+            <TableEntity
+              key={"" + entity.id + index}
+              isDeleteOptionVisible={entity.isDeleteOptionVisible}
+              entityTypeLabel={index === 0 && dataTypeLabel}
+              entityPropertyLabel={index === 0 && attributeNameLabel}
+              entityValueLabel={index === 0 && attributeValueLabel}
+              options={userContext.apiType === "Cassandra" ? cassandraOptions : options}
+              isPropertyTypeDisable={entity.isPropertyTypeDisable}
+              entityProperty={entity.property}
+              selectedKey={entity.type}
+              entityPropertyPlaceHolder={detailedHelp}
+              entityValuePlaceholder={entity.entityValuePlaceholder}
+              entityValue={entity.value}
+              isEntityTypeDate={entity.isEntityTypeDate}
+              entityTimeValue={entity.entityTimeValue}
+              onEditEntity={() => editEntity(index)}
+              onSelectDate={(date: Date) => {
+                entityChange(date, index, "value");
+              }}
+              onDeleteEntity={() => deleteEntityAtIndex(index)}
+              onEntityPropertyChange={(event, newInput?: string) => {
+                entityChange(newInput, index, "property");
+              }}
+              onEntityTypeChange={(event: React.FormEvent<HTMLDivElement>, selectedParam: IDropdownOption) => {
+                entityTypeChange(event, selectedParam, index);
+              }}
+              onEntityValueChange={(event, newInput?: string) => {
+                entityChange(newInput, index, "value");
+              }}
+              onEntityTimeValueChange={(event, newInput?: string) => {
+                entityChange(newInput, index, "time");
+              }}
+            />
+          );
+        })}
+        {userContext.apiType !== "Cassandra" && (
+          <Stack horizontal onClick={addNewEntity} className="addButtonEntiy">
+            <Image {...imageProps} src={AddPropertyIcon} alt="Add Entity" />
+            <Text className="addNewParamStyle">{getAddButtonLabel(userContext.apiType)}</Text>
+          </Stack>
+        )}
+      </div>
+    </RightPaneForm>
   );
 };
