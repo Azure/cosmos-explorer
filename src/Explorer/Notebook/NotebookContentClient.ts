@@ -68,6 +68,9 @@ export class NotebookContentClient {
 
   public async deleteContentItem(item: NotebookContentItem): Promise<void> {
     const path = await this.deleteNotebookFile(item.path);
+    useNotebook.getState().deleteNotebookItem(item);
+
+    // TODO: Delete once old resource tree is removed
     if (!path || path !== item.path) {
       throw new Error("No path provided");
     }
@@ -77,8 +80,6 @@ export class NotebookContentClient {
       const newChildren = item.parent.children.filter((child) => child.path !== path);
       item.parent.children = newChildren;
     }
-
-    useNotebook.getState().deleteNotebookItem(item);
   }
 
   /**
