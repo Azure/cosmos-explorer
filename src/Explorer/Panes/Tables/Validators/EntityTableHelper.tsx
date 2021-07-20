@@ -134,8 +134,8 @@ export const getEntityValuePlaceholder = (entityType: string | number): string =
 
 export const isValidEntities = (entities: EntityRowType[]): boolean => {
   for (let i = 0; i < entities.length; i++) {
-    const { property } = entities[i];
-    if (property === "" || property === undefined) {
+    const { property, type } = entities[i];
+    if (property === "" || property === undefined || !type) {
       return false;
     }
   }
@@ -168,13 +168,6 @@ export const getDefaultEntities = (headers: string[], entityTypes: EntityType): 
     }
   });
   return defaultEntities;
-};
-
-export const getPanelTitle = (apiType: string): string => {
-  if (apiType === "Cassandra") {
-    return "Add Table Row";
-  }
-  return "Add Table Row";
 };
 
 export const getAddButtonLabel = (apiType: string): string => {
