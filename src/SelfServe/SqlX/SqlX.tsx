@@ -104,13 +104,14 @@ const onEnableDedicatedGatewayChange = (
     currentValues.set("instances", baselineValues.get("instances"));
 
     if (newValue === true) {
-      currentValues.set("costPerHour",
-        {
-          value: calculateCost(baselineValues.get("sku").value as string, baselineValues.get("instances").value as number),
-          hidden: false
-        });
-    }
-    else {
+      currentValues.set("costPerHour", {
+        value: calculateCost(
+          baselineValues.get("sku").value as string,
+          baselineValues.get("instances").value as number
+        ),
+        hidden: false,
+      });
+    } else {
       currentValues.set("costPerHour", baselineValues.get("costPerHour"));
     }
 
@@ -133,11 +134,10 @@ const onEnableDedicatedGatewayChange = (
       hidden: false,
     });
 
-    currentValues.set("costPerHour",
-      {
-        value: calculateCost(baselineValues.get("sku").value as string, baselineValues.get("instances").value as number),
-        hidden: false
-      })
+    currentValues.set("costPerHour", {
+      value: calculateCost(baselineValues.get("sku").value as string, baselineValues.get("instances").value as number),
+      hidden: false,
+    });
   } else {
     currentValues.set("warningBanner", {
       value: {
@@ -228,7 +228,7 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
     }
 
     costPerHour *= instanceCount;
-    costPerHour = Math.round(costPerHour * 100) / 100
+    costPerHour = Math.round(costPerHour * 100) / 100;
 
     return {
       textTKey: `US$ ${costPerHour}`,
