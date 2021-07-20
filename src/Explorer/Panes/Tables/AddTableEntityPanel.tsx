@@ -218,7 +218,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 
   if (isEntityValuePanelOpen) {
     return (
-      <Stack>
+      <Stack style={{ margin: "20px 0", padding: "0 34px" }}>
         <Stack horizontal {...columnProps}>
           <Image {...backImageProps} src={RevertBackIcon} alt="back" onClick={() => setIsEntityValuePanelFalse()} />
           <Label>{entityAttributeProperty}</Label>
@@ -226,7 +226,6 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
         <TextField
           multiline
           rows={5}
-          className="entityValueTextField"
           value={entityAttributeValue}
           onChange={(event, newInput?: string) => {
             entityChange(newInput, selectedRow, "value");

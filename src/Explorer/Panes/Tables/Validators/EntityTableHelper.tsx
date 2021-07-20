@@ -80,7 +80,7 @@ export const int64Placeholder = "Enter a signed 64-bit integer, in the range (-2
 
 export const columnProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 },
-  styles: { root: { width: 680 } },
+  styles: { root: { width: 680, marginBottom: 8 } },
 };
 
 // helper functions
