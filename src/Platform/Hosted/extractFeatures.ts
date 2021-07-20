@@ -26,6 +26,8 @@ export type Features = {
   readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
+  readonly mongoProxyEndpoint: string;
+  readonly mongoProxyFeatures: string;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -58,6 +60,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableTtl: "true" === get("enablettl"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
+    mongoProxyEndpoint: get("mongoProxyEndpoint"),
+    mongoProxyFeatures: get("mongoProxyFeatures"),
     junoEndpoint: get("junoendpoint"),
     livyEndpoint: get("livyendpoint"),
     notebookBasePath: get("notebookbasepath"),
@@ -71,4 +75,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     autoscaleDefault: "true" === get("autoscaledefault"),
     partitionKeyDefault: "true" === get("partitionkeytest"),
   };
+}
+
+export function hasFlag(value: string, flag: string): boolean {
+  return true;
 }

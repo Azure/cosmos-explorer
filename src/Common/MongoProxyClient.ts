@@ -6,6 +6,7 @@ import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { hasFlag } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
@@ -141,7 +142,8 @@ export function readDocument(
         : "",
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("readDocument");
+
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
       method: "GET",
@@ -340,6 +342,10 @@ export function getEndpoint(): string {
     url = url.replace("api/mongo", "api/guest/mongo");
   }
   return url;
+}
+
+function getFeatureEndpointOrDefault(feature: string): string {
+  return (hasFlag("mongoProxyFeatures", feature)) ? userContext.features.mongoProxyEndpoint : getEndpoint();
 }
 
 // TODO: This function throws most of the time except on Forbidden which is a bit strange
