@@ -219,7 +219,7 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
     costPerHour = Math.round(costPerHour * 100) / 100;
 
     return {
-      textTKey: `US$${costPerHour}`,
+      textTKey: `${costPerHour} USD`,
       type: DescriptionType.Text,
     };
   } catch (err) {
