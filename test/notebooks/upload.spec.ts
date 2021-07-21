@@ -10,6 +10,7 @@ const fileToUpload = `GettingStarted-ignore${Math.floor(Math.random() * 100000)}
 fs.copyFileSync(path.join(__dirname, filename), path.join(__dirname, fileToUpload));
 
 test("Notebooks", async () => {
+  page.setDefaultTimeout(50000);
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-sql-runner");
   await page.waitForSelector("iframe");
   const explorer = page.frame({
