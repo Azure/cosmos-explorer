@@ -85,11 +85,12 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 
 export const SidePanel: React.FC = () => {
   const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
-  const { isOpen, panelContent, headerText } = useSidePanel((state) => {
+  const { isOpen, panelContent, panelWidth, headerText } = useSidePanel((state) => {
     return {
       isOpen: state.isOpen,
       panelContent: state.panelContent,
       headerText: state.headerText,
+      panelWidth: state.panelWidth,
     };
   });
   // TODO Refactor PanelContainerComponent into a functional component and remove this wrapper
@@ -100,6 +101,7 @@ export const SidePanel: React.FC = () => {
       panelContent={panelContent}
       headerText={headerText}
       isConsoleExpanded={isConsoleExpanded}
+      panelWidth={panelWidth}
     />
   );
 };
