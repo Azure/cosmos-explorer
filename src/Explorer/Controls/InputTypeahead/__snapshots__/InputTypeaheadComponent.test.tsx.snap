@@ -1,61 +1,43 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`inputTypeahead renders <input /> 1`] = `
-<span
+<div
   className="input-typeahead-container"
 >
-  <div
-    className="input-typehead"
-    onKeyDown={[Function]}
+  <Stack
+    horizontal={true}
   >
-    <div
-      className="typeahead__container"
-    >
-      <div
-        className="typeahead__field"
-      >
-        <span
-          className="typeahead__query"
-        >
-          <input
-            aria-label="Input query"
-            autoComplete="off"
-            name="q"
-            type="search"
-          />
-        </span>
-      </div>
-    </div>
-  </div>
-</span>
+    <StyledTextFieldBase
+      ariaLabel="Input query"
+      className="input-type-head-text-field"
+      multiline={false}
+      onChange={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      placeholder="placeholder"
+      rows={1}
+    />
+  </Stack>
+</div>
 `;
 
 exports[`inputTypeahead renders <textarea /> 1`] = `
-<span
+<div
   className="input-typeahead-container"
 >
-  <div
-    className="input-typehead"
-    onKeyDown={[Function]}
+  <Stack
+    horizontal={true}
   >
-    <div
-      className="typeahead__container"
-    >
-      <div
-        className="typeahead__field"
-      >
-        <span
-          className="typeahead__query"
-        >
-          <textarea
-            aria-label="Input query"
-            autoComplete="off"
-            name="q"
-            rows={1}
-          />
-        </span>
-      </div>
-    </div>
-  </div>
-</span>
+    <StyledTextFieldBase
+      ariaLabel="Input query"
+      className="input-type-head-text-field"
+      multiline={true}
+      onChange={[Function]}
+      onFocus={[Function]}
+      onKeyDown={[Function]}
+      placeholder="placeholder"
+      rows={1}
+    />
+  </Stack>
+</div>
 `;
