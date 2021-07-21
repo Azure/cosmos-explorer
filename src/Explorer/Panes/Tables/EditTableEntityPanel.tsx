@@ -13,7 +13,8 @@ import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListView
 import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataClient";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
+// import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import { PanelContainerComponent } from "../PanelContainerComponent";
 import {
   attributeNameLabel,
@@ -35,7 +36,8 @@ import {
 
 interface EditTableEntityPanelProps {
   tableDataClient: TableDataClient;
-  queryTablesTab: QueryTablesTab;
+  queryTablesTab: NewQueryTablesTab;
+  // queryTablesTab: QueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
 }
