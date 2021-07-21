@@ -153,35 +153,31 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    set({
-      myNotebooksContentRoot: {
-        name: "My Notebooks",
-        path: get().notebookBasePath,
-        type: NotebookContentItemType.Directory,
-      },
-      galleryContentRoot: {
-        name: "Gallery",
-        path: "Gallery",
-        type: NotebookContentItemType.File,
-      },
-    });
-
-    if (notebookManager?.gitHubOAuthService?.isLoggedIn()) {
-      set({
-        gitHubNotebooksContentRoot: {
+    const myNotebooksContentRoot = {
+      name: "My Notebooks",
+      path: get().notebookBasePath,
+      type: NotebookContentItemType.Directory,
+    };
+    const galleryContentRoot = {
+      name: "Gallery",
+      path: "Gallery",
+      type: NotebookContentItemType.File,
+    };
+    const gitHubNotebooksContentRoot = notebookManager?.gitHubOAuthService?.isLoggedIn()
+      ? {
           name: "GitHub repos",
           path: "PsuedoDir",
           type: NotebookContentItemType.Directory,
-        },
-      });
-    }
+        }
+      : undefined;
+    set({
+      myNotebooksContentRoot,
+      galleryContentRoot,
+      gitHubNotebooksContentRoot,
+    });
 
     if (get().notebookServerInfo?.notebookServerEndpoint) {
-      const updatedRoot = await notebookManager?.notebookContentClient?.updateItemChildren({
-        name: "My Notebooks",
-        path: get().notebookBasePath,
-        type: NotebookContentItemType.Directory,
-      });
+      const updatedRoot = await notebookManager?.notebookContentClient?.updateItemChildren(myNotebooksContentRoot);
       set({ myNotebooksContentRoot: updatedRoot });
 
       if (updatedRoot?.children) {
