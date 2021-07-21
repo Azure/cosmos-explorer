@@ -102,19 +102,7 @@ const onEnableDedicatedGatewayChange = (
   if (dedicatedGatewayOriginallyEnabled === newValue) {
     currentValues.set("sku", baselineValues.get("sku"));
     currentValues.set("instances", baselineValues.get("instances"));
-
-    if (newValue === true) {
-      currentValues.set("costPerHour", {
-        value: calculateCost(
-          baselineValues.get("sku").value as string,
-          baselineValues.get("instances").value as number
-        ),
-        hidden: false,
-      });
-    } else {
-      currentValues.set("costPerHour", baselineValues.get("costPerHour"));
-    }
-
+    currentValues.set("costPerHour", baselineValues.get("costPerHour"));
     currentValues.set("warningBanner", baselineValues.get("warningBanner"));
     currentValues.set("connectionString", baselineValues.get("connectionString"));
     currentValues.set("metricsString", baselineValues.get("metricsString"));
