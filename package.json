@@ -42,6 +42,7 @@
     "@octokit/rest": "17.9.2",
     "@phosphor/widgets": "1.9.3",
     "@testing-library/jest-dom": "5.11.9",
+    "@types/lodash": "4.14.171",
     "@types/mkdirp": "1.0.1",
     "@types/node-fetch": "2.5.7",
     "applicationinsights": "1.8.0",

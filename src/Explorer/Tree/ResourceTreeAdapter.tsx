@@ -634,6 +634,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
               <GitHubReposPanel
                 explorer={this.container}
                 gitHubClientProp={this.container.notebookManager.gitHubClient}
+                junoClientProp={this.container.notebookManager.junoClient}
               />
             ),
       },

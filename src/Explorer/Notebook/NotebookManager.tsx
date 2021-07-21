@@ -89,16 +89,18 @@ export default class NotebookManager {
       this.gitHubClient.setToken(token?.access_token);
       if (this?.gitHubOAuthService.isLoggedIn()) {
         useSidePanel.getState().closeSidePanel();
-        useSidePanel
-          .getState()
-          .openSidePanel(
-            "Manage GitHub settings",
-            <GitHubReposPanel
-              explorer={this.params.container}
-              gitHubClientProp={this.params.container.notebookManager.gitHubClient}
-              junoClientProp={this.junoClient}
-            />
-          );
+        setTimeout(() => {
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Manage GitHub settings",
+              <GitHubReposPanel
+                explorer={this.params.container}
+                gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+                junoClientProp={this.junoClient}
+              />
+            );
+        }, 200);
       }
 
       this.params.refreshCommandBarButtons();
@@ -139,6 +141,7 @@ export default class NotebookManager {
           notebookContentRef={notebookContentRef}
           onTakeSnapshot={onTakeSnapshot}
         />,
+        "440px",
         onClosePanel
       );
   }
@@ -179,6 +182,7 @@ export default class NotebookManager {
               <GitHubReposPanel
                 explorer={this.params.container}
                 gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+                junoClientProp={this.junoClient}
               />
             ),
         "Cancel",
