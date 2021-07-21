@@ -336,7 +336,6 @@ export default class SqlX extends SelfServeBaseClass {
       hidden: true,
     });
 
-    // Get Read Regions and PriceMap
     regions = await getReadRegions();
     priceMap = await getPriceMap(regions);
 
