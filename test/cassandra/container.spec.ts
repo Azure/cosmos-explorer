@@ -1,17 +1,17 @@
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateUniqueName } from "../utils/shared";
+import { waitForExplorer } from "../utils/waitForExplorer";
 jest.setTimeout(120000);
 
 test("Cassandra keyspace and table CRUD", async () => {
   const keyspaceId = generateUniqueName("keyspace");
   const tableId = generateUniqueName("table");
+  page.setDefaultTimeout(50000);
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-cassandra-runner");
   await page.waitForSelector("iframe");
-  const explorer = page.frame({
-    name: "explorer",
-  });
+  const explorer = await waitForExplorer();
 
   await explorer.click('[data-test="New Table"]');
   await explorer.click('[aria-label="Keyspace id"]');
@@ -19,7 +19,7 @@ test("Cassandra keyspace and table CRUD", async () => {
   await explorer.click('[aria-label="addCollection-tableId"]');
   await explorer.fill('[aria-label="addCollection-tableId"]', tableId);
   await explorer.click("#sidePanelOkButton");
-  await explorer.click(`.nodeItem >> text=${keyspaceId}`, { timeout: 50000 });
+  await explorer.click(`.nodeItem >> text=${keyspaceId}`);
   await explorer.click(`[data-test="${tableId}"] [aria-label="More"]`);
   await explorer.click('button[role="menuitem"]:has-text("Delete Table")');
   await explorer.fill('text=* Confirm by typing the table id >> input[type="text"]', tableId);
