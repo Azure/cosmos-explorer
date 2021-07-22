@@ -158,7 +158,8 @@ export default class QueryTablesTab extends TabsBase {
           queryTablesTab={this}
           tableEntityListViewModel={this.tableEntityListViewModel()}
           cassandraApiClient={new CassandraAPIDataClient()}
-        />
+        />,
+        "700px"
       );
   };
 
