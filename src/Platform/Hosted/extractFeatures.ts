@@ -8,7 +8,6 @@ export type Features = {
   readonly enableReactPane: boolean;
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
-  enableSchemaAnalyzer: boolean;
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;
   partitionKeyDefault2: boolean;
@@ -17,6 +16,7 @@ export type Features = {
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
   readonly enableAadDataPlane: boolean;
+  readonly enableKOResourceTree: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly livyEndpoint?: string;
@@ -55,10 +55,10 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableReactPane: "true" === get("enablereactpane"),
     enableRightPanelV2: "true" === get("enablerightpanelv2"),
     enableSchema: "true" === get("enableschema"),
-    enableSchemaAnalyzer: "true" === get("enableschemaanalyzer"),
     enableSDKoperations: "true" === get("enablesdkoperations"),
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),
+    enableKOResourceTree: "true" === get("enablekoresourcetree"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
     junoEndpoint: get("junoendpoint"),

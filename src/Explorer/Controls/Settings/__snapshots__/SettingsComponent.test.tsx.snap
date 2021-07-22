@@ -31,7 +31,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
-                "isSchemaEnabled": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
@@ -48,10 +47,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
                   "container": [Circular],
                   "parameters": [Function],
-                },
-                "tabsManager": TabsManager {
-                  "activeTab": [Function],
-                  "openedTabs": [Function],
                 },
               },
               "databaseId": "test",
@@ -107,7 +102,6 @@ exports[`SettingsComponent renders 1`] = `
                 "_isInitializingNotebooks": false,
                 "_resetNotebookWorkspace": [Function],
                 "isFixedCollectionWithSharedThroughputSupported": [Function],
-                "isSchemaEnabled": [Function],
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
@@ -124,10 +118,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
                   "container": [Circular],
                   "parameters": [Function],
-                },
-                "tabsManager": TabsManager {
-                  "activeTab": [Function],
-                  "openedTabs": [Function],
                 },
               },
               "databaseId": "test",

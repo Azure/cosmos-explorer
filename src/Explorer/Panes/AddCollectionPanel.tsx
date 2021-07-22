@@ -811,6 +811,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     return tooltipText;
   }
 
+
   private getPartitionKey(): string {
     if (userContext.features.partitionKeyDefault && userContext.apiType === "SQL") {
       const key = "/id";
@@ -1100,3 +1101,4 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
   }
 }
+  

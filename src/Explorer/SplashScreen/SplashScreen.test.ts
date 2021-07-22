@@ -1,12 +1,10 @@
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
-import { TabsManager } from "../Tabs/TabsManager";
 import { SplashScreen } from "./SplashScreen";
 jest.mock("../Explorer");
 
 const createExplorer = () => {
   const mock = new Explorer();
-  mock.tabsManager = new TabsManager();
   return mock as jest.Mocked<Explorer>;
 };
 

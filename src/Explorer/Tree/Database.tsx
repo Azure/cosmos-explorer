@@ -11,6 +11,7 @@ import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useSidePanel } from "../../hooks/useSidePanel";
+import { useTabs } from "../../hooks/useTabs";
 import { IJunoResponse, JunoClient } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -56,7 +57,7 @@ export default class Database implements ViewModels.Database {
     this.isOfferRead = false;
   }
 
-  public onSettingsClick = () => {
+  public onSettingsClick = (): void => {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -67,7 +68,7 @@ export default class Database implements ViewModels.Database {
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
     const tabKind = ViewModels.CollectionTabKind.DatabaseSettingsV2;
-    const matchingTabs = this.container.tabsManager.getTabs(tabKind, (tab) => tab.node?.id() === this.id());
+    const matchingTabs = useTabs.getState().getTabs(tabKind, (tab) => tab.node?.id() === this.id());
     let settingsTab = matchingTabs?.[0] as DatabaseSettingsTabV2;
 
     if (!settingsTab) {
@@ -91,7 +92,7 @@ export default class Database implements ViewModels.Database {
           };
           settingsTab = new DatabaseSettingsTabV2(tabOptions);
           settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateNewTab(settingsTab);
+          useTabs.getState().activateNewTab(settingsTab);
         },
         (error) => {
           const errorMessage = getErrorMessage(error);
@@ -116,11 +117,11 @@ export default class Database implements ViewModels.Database {
       pendingNotificationsPromise.then(
         (pendingNotification: DataModels.Notification) => {
           settingsTab.pendingNotification(pendingNotification);
-          this.container.tabsManager.activateTab(settingsTab);
+          useTabs.getState().activateTab(settingsTab);
         },
         () => {
           settingsTab.pendingNotification(undefined);
-          this.container.tabsManager.activateTab(settingsTab);
+          useTabs.getState().activateTab(settingsTab);
         }
       );
     }
@@ -192,6 +193,8 @@ export default class Database implements ViewModels.Database {
     //merge collections
     this.addCollectionsToList(collectionVMs);
     this.deleteCollectionsFromList(deltaCollections.toDelete);
+
+    useDatabases.getState().updateDatabase(this);
   }
 
   public async openAddCollection(database: Database): Promise<void> {
@@ -312,7 +315,7 @@ export default class Database implements ViewModels.Database {
     let checkForSchema: NodeJS.Timeout;
     interval = interval || 5000;
 
-    if (collection.analyticalStorageTtl !== undefined && this.container.isSchemaEnabled()) {
+    if (collection.analyticalStorageTtl !== undefined && userContext.features.enableSchema) {
       collection.requestSchema = () => {
         this.junoClient.requestSchema({
           id: undefined,

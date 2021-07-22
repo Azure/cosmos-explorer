@@ -10,7 +10,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "_isInitializingNotebooks": false,
       "_resetNotebookWorkspace": [Function],
       "isFixedCollectionWithSharedThroughputSupported": [Function],
-      "isSchemaEnabled": [Function],
       "isTabsContentExpanded": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
@@ -27,10 +26,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
         "container": [Circular],
         "parameters": [Function],
-      },
-      "tabsManager": TabsManager {
-        "activeTab": [Function],
-        "openedTabs": [Function],
       },
     }
   }

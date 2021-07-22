@@ -22,6 +22,7 @@ import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
@@ -30,8 +31,12 @@ import { CommandButtonComponentProps } from "../../Controls/CommandButton/Comman
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
+import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
+import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
 import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
 import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { SetupNoteBooksPanel } from "../../Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { useDatabases } from "../../useDatabases";
 import { SelectedNodeState } from "../../useSelectedNode";
 
@@ -281,9 +286,8 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
-    onCommandClick: () => {
-      container.openAddDatabasePane();
-    },
+    onCommandClick: () =>
+      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -415,7 +419,8 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
-    onCommandClick: () => container.openBrowseQueriesPanel(),
+    onCommandClick: () =>
+      useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -448,7 +453,13 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
   return {
     iconSrc: EnableNotebooksIcon,
     iconAlt: label,
-    onCommandClick: () => container.openSetupNotebooksPanel(label, description),
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <SetupNoteBooksPanel explorer={container} panelTitle={label} panelDescription={description} />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: !useNotebook.getState().isNotebooksEnabledForAccount,
@@ -486,7 +497,12 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
       if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
-        container.openSetupNotebooksPanel(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,
@@ -513,7 +529,12 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
       if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
-        container.openSetupNotebooksPanel(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,
@@ -540,10 +561,21 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
 function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
   const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
   const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
+  const junoClient = new JunoClient();
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () => container.openGitHubReposPanel(label),
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <GitHubReposPanel
+            explorer={container}
+            gitHubClientProp={container.notebookManager.gitHubClient}
+            junoClientProp={junoClient}
+          />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

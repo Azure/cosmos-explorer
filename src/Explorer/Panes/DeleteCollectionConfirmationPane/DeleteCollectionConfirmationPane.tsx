@@ -6,23 +6,23 @@ import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Collection } from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { useTabs } from "../../../hooks/useTabs";
 import { DefaultExperienceUtility } from "../../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface DeleteCollectionConfirmationPaneProps {
-  explorer: Explorer;
+  refreshDatabases: () => Promise<void>;
 }
 
 export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectionConfirmationPaneProps> = ({
-  explorer,
+  refreshDatabases,
 }: DeleteCollectionConfirmationPaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
@@ -31,8 +31,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   const [isExecuting, setIsExecuting] = useState(false);
 
   const shouldRecordFeedback = (): boolean =>
-    useDatabases.getState().isLastCollection() &&
-    !useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
+    useDatabases.getState().isLastCollection() && !useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
 
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
@@ -63,10 +62,12 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
 
       setIsExecuting(false);
       useSelectedNode.getState().setSelectedNode(collection.database);
-      explorer.tabsManager?.closeTabsByComparator(
-        (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
-      );
-      explorer.refreshAllDatabases();
+      useTabs
+        .getState()
+        .closeTabsByComparator(
+          (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
+        );
+      refreshDatabases();
 
       TelemetryProcessor.traceSuccess(Action.DeleteCollection, paneInfo, startKey);
 

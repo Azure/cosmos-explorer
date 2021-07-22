@@ -2,11 +2,7 @@
 
 exports[`Delete Collection Confirmation Pane submit() should call delete collection 1`] = `
 <DeleteCollectionConfirmationPane
-  explorer={
-    Object {
-      "refreshAllDatabases": [Function],
-    }
-  }
+  refreshDatabases={[Function]}
 >
   <RightPaneForm
     formError=""
