@@ -55,6 +55,7 @@ interface IQueryTablesTabComponentStates {
   addEntityButton: Button;
   editEntityButton: Button;
   deleteEntityButton: Button;
+  isHelperActive: boolean;
 }
 
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
@@ -75,6 +76,13 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   public queryBuilderButton: ViewModels.Button;
   public queryTextButton: ViewModels.Button;
   public container: Explorer;
+  public andLabel: string;
+  public actionLabel: string;
+  public fieldLabel: string;
+  public dataTypeLabel: string;
+  public operatorLabel: string;
+  public valueLabel: string;
+
   constructor(props: IQueryTablesTabComponentProps) {
     super(props);
     this.container = props.collection && props.collection.container;
@@ -87,6 +95,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       queryViewModel: new QueryViewModel(this.props.queryTablesTab),
       queryText: "PartitionKey eq 'partionKey1'",
       selectedQueryText: "",
+      isHelperActive: true,
       executeQueryButton: {
         enabled: true,
         visible: true,
@@ -122,6 +131,20 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 24 ~ QueryTablesTabComponent ~ constructor ~ props",
     //   props
     // );
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 85 ~ QueryTablesTabComponent ~ constructor ~ this.state",
+      this.state,
+      ", ",
+      this.state.queryViewModel.queryBuilderViewModel().andLabel
+    );
+
+    this.andLabel = this.state.queryViewModel.queryBuilderViewModel().andLabel;
+    this.actionLabel = this.state.queryViewModel.queryBuilderViewModel().actionLabel;
+    this.fieldLabel = this.state.queryViewModel.queryBuilderViewModel().fieldLabel;
+    this.dataTypeLabel = this.state.queryViewModel.queryBuilderViewModel().dataTypeLabel;
+    this.operatorLabel = this.state.queryViewModel.queryBuilderViewModel().operatorLabel;
+    this.valueLabel = this.state.queryViewModel.queryBuilderViewModel().valueLabel;
+
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
     this.buildCommandBarOptions();
@@ -274,64 +297,66 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
               ></textarea>
             </div>
           </div>
-          <div style={{ paddingLeft: "13px" }}>
-            <div className="clause-table">
-              <div className="scroll-box scrollable" id="scroll">
-                <table className="clause-table">
-                  <thead>
-                    <tr className="clause-table-row">
-                      <th className="clause-table-cell header-background action-header">
-                        <span></span>
-                      </th>
-                      <th className="clause-table-cell header-background group-control-header">
-                        <button type="button">
-                          <img className="and-or-svg" src={AndOr} alt="Group selected clauses" />
-                        </button>
-                      </th>
-                      <th className="clause-table-cell header-background"></th>
-                      <th className="clause-table-cell header-background and-or-header">
-                        <span></span>
-                      </th>
-                      <th className="clause-table-cell header-background field-header">
-                        <span></span>
-                      </th>
-                      <th className="clause-table-cell header-background type-header">
-                        <span></span>
-                      </th>
-                      <th className="clause-table-cell header-background operator-header">
-                        <span></span>
-                      </th>
-                      <th className="clause-table-cell header-background value-header">
-                        <span></span>
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody></tbody>
-                </table>
-              </div>
-              <div
-                className="addClause"
-                role="button"
-                // data-bind="click: addNewClause, event: { keydown: onAddNewClauseKeyDown }, attr: { title: addNewClauseLine }"
-                tabIndex={0}
-              >
-                <div className="addClause-heading">
-                  <span className="clause-table addClause-title">
-                    <img
-                      className="addclauseProperty-Img"
-                      style={{ marginBottom: "5px" }}
-                      src={AddProperty}
-                      alt="Add new clause"
-                    />
-                    <span
-                      style={{ marginLeft: "5px" }}
-                      // data-bind="text: addNewClauseLine"
-                    ></span>
-                  </span>
+          {this.state.queryViewModel.isHelperActive() && (
+            <div style={{ paddingLeft: "13px" }}>
+              <div className="clause-table">
+                <div className="scroll-box scrollable" id="scroll">
+                  <table className="clause-table">
+                    <thead>
+                      <tr className="clause-table-row">
+                        <th className="clause-table-cell header-background action-header">
+                          <span>{this.actionLabel}</span>
+                        </th>
+                        <th className="clause-table-cell header-background group-control-header">
+                          <button type="button">
+                            <img className="and-or-svg" src={AndOr} alt="Group selected clauses" />
+                          </button>
+                        </th>
+                        <th className="clause-table-cell header-background"></th>
+                        <th className="clause-table-cell header-background and-or-header">
+                          <span>{this.andLabel}</span>
+                        </th>
+                        <th className="clause-table-cell header-background field-header">
+                          <span>{this.fieldLabel}</span>
+                        </th>
+                        <th className="clause-table-cell header-background type-header">
+                          <span>{this.dataTypeLabel}</span>
+                        </th>
+                        <th className="clause-table-cell header-background operator-header">
+                          <span>{this.operatorLabel}</span>
+                        </th>
+                        <th className="clause-table-cell header-background value-header">
+                          <span>{this.valueLabel}</span>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                <div
+                  className="addClause"
+                  role="button"
+                  // data-bind="click: addNewClause, event: { keydown: onAddNewClauseKeyDown }, attr: { title: addNewClauseLine }"
+                  tabIndex={0}
+                >
+                  <div className="addClause-heading">
+                    <span className="clause-table addClause-title">
+                      <img
+                        className="addclauseProperty-Img"
+                        style={{ marginBottom: "5px" }}
+                        src={AddProperty}
+                        alt="Add new clause"
+                      />
+                      <span
+                        style={{ marginLeft: "5px" }}
+                        // data-bind="text: addNewClauseLine"
+                      ></span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
           <div className="advanced-options-panel">
             <div className="advanced-heading">
               <span
