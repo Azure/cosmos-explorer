@@ -2,17 +2,21 @@ import React, { FunctionComponent } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import refreshImg from "../../images/refresh-cosmos.svg";
 import { AuthType } from "../AuthType";
+import Explorer from "../Explorer/Explorer";
+import { ResourceTree } from "../Explorer/Tree/ResourceTree";
 import { userContext } from "../UserContext";
 
-export interface ResourceTreeProps {
+export interface ResourceTreeContainerProps {
   toggleLeftPaneExpanded: () => void;
   isLeftPaneExpanded: boolean;
+  container: Explorer;
 }
 
-export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
+export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps> = ({
   toggleLeftPaneExpanded,
   isLeftPaneExpanded,
-}: ResourceTreeProps): JSX.Element => {
+  container,
+}: ResourceTreeContainerProps): JSX.Element => {
   return (
     <div id="main" className={isLeftPaneExpanded ? "main" : "hiddenMain"}>
       {/* Collections Window - - Start */}
@@ -49,8 +53,10 @@ export const ResourceTree: FunctionComponent<ResourceTreeProps> = ({
         </div>
         {userContext.authType === AuthType.ResourceToken ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
-        ) : (
+        ) : userContext.features.enableKOResourceTree ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
+        ) : (
+          <ResourceTree container={container} />
         )}
       </div>
       {/*  Collections Window - End */}
