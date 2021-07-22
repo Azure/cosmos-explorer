@@ -33,10 +33,6 @@ exports[`GitHub Repos Panel should render Default properly 1`] = `
               "copyNotebook": [Function],
               "parameters": [Function],
             },
-            "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-              "container": [Circular],
-              "parameters": [Function],
-            },
           },
           "getRepo": [Function],
           "pinRepo": [Function],
