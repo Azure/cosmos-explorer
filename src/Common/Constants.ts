@@ -96,7 +96,7 @@ export class Flights {
   public static readonly AutoscaleTest = "autoscaletest";
   public static readonly SchemaAnalyzer = "schemaanalyzer";
   public static readonly PartitionKeyTest = "partitionkeytest";
-  public static readonly PKPartitionKeyTest = "pkpartitionkeytest"
+  public static readonly PKPartitionKeyTest = "pkpartitionkeytest";
 }
 
 export class AfecFeatures {
