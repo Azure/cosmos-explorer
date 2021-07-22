@@ -141,6 +141,7 @@ export default class NotebookManager {
           notebookContentRef={notebookContentRef}
           onTakeSnapshot={onTakeSnapshot}
         />,
+        "440px",
         onClosePanel
       );
   }
