@@ -1,5 +1,5 @@
+import { HoverCard, HoverCardType, Icon, Label, Link, Stack } from "@fluentui/react";
 import * as React from "react";
-import { Icon, Label, Stack, HoverCard, HoverCardType, Link } from "@fluentui/react";
 import { CodeOfConductEndpoints } from "../../../../Common/Constants";
 import "./InfoComponent.less";
 
@@ -31,7 +31,7 @@ export class InfoComponent extends React.Component<InfoComponentProps> {
         </Stack.Item>
         {this.props.onReportAbuseClick && (
           <Stack.Item>
-            {this.getInfoPanel("ReportHacked", "Report Abuse", undefined, () => this.props.onReportAbuseClick())}
+            {this.getInfoPanel("ReportHacked", "Report Abuse", undefined, this.props.onReportAbuseClick)}
           </Stack.Item>
         )}
       </Stack>
