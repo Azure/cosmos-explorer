@@ -812,27 +812,22 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   }
 
   private getPartitionKey(): string {
-    if (userContext.features.partitionKeyDefault && userContext.apiType === "SQL") {
-      const key = "/id";
-      return key;
-    } else if (userContext.features.partitionKeyDefault && userContext.apiType === "Mongo") {
-      const key = "_id";
-      return key;
+    if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
+      return "";
     }
-    if (userContext.features.partitionKeyDefault2 && userContext.apiType === "SQL") {
-      const key = "/pk";
-      return key;
-    } else if (userContext.features.partitionKeyDefault2 && userContext.apiType === "Mongo") {
-      const key = "pk";
-      return key;
+    if (userContext.features.partitionKeyDefault) {
+      return userContext.apiType === "SQL" ? "/id" : "_id";
+    }
+    if (userContext.features.partitionKeyDefault2) {
+      return userContext.apiType === "SQL" ? "/pk" : "pk";
     }
     return "";
   }
 
   private getPartitionKeySubtext(): string {
     if (
-      (userContext.features.partitionKeyDefault && userContext.apiType === "SQL") ||
-      (userContext.features.partitionKeyDefault && userContext.apiType === "Mongo")
+      userContext.features.partitionKeyDefault &&
+      (userContext.apiType === "SQL" || userContext.apiType === "Mongo")
     ) {
       const subtext = "For small workloads, the item ID is a suitable choice for the partition key.";
       return subtext;
