@@ -218,7 +218,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 
   if (isEntityValuePanelOpen) {
     return (
-      <Stack style={{ margin: "20px 0", padding: "0 34px" }}>
+      <Stack style={{ padding: "20px 34px" }}>
         <Stack horizontal {...columnProps}>
           <Image {...backImageProps} src={RevertBackIcon} alt="back" onClick={() => setIsEntityValuePanelFalse()} />
           <Label>{entityAttributeProperty}</Label>

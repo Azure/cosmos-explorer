@@ -4,7 +4,12 @@ import { armRequestWithoutPolling } from "../../Utils/arm/request";
 import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
-import { SqlxServiceResource, UpdateDedicatedGatewayRequestParameters } from "./SqlxTypes";
+import {
+  FetchPricesResponse,
+  RegionsResponse,
+  SqlxServiceResource,
+  UpdateDedicatedGatewayRequestParameters,
+} from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";
 
@@ -126,5 +131,69 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
   } catch {
     //TODO differentiate between different failures
     return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
+  }
+};
+
+const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
+};
+
+export const getReadRegions = async (): Promise<Array<string>> => {
+  try {
+    const readRegions = new Array<string>();
+
+    const response = await armRequestWithoutPolling<RegionsResponse>({
+      host: configContext.ARM_ENDPOINT,
+      path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
+      method: "GET",
+      apiVersion: "2021-04-01-preview",
+    });
+
+    if (response.result.location !== undefined) {
+      readRegions.push(response.result.location.replace(" ", "").toLowerCase());
+    } else {
+      for (const location of response.result.locations) {
+        readRegions.push(location.locationName.replace(" ", "").toLowerCase());
+      }
+    }
+    return readRegions;
+  } catch (err) {
+    return new Array<string>();
+  }
+};
+
+const getFetchPricesPathForRegion = (subscriptionId: string): string => {
+  return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
+};
+
+export const getPriceMap = async (regions: Array<string>): Promise<Map<string, Map<string, number>>> => {
+  try {
+    const priceMap = new Map<string, Map<string, number>>();
+
+    for (const region of regions) {
+      const regionPriceMap = new Map<string, number>();
+
+      const response = await armRequestWithoutPolling<FetchPricesResponse>({
+        host: configContext.ARM_ENDPOINT,
+        path: getFetchPricesPathForRegion(userContext.subscriptionId),
+        method: "POST",
+        apiVersion: "2020-01-01-preview",
+        queryParams: {
+          filter:
+            "armRegionName eq '" +
+            region +
+            "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
+        },
+      });
+
+      for (const item of response.result.Items) {
+        regionPriceMap.set(item.skuName, item.retailPrice);
+      }
+      priceMap.set(region, regionPriceMap);
+    }
+
+    return priceMap;
+  } catch (err) {
+    return undefined;
   }
 };

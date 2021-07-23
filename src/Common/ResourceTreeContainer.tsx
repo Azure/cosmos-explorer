@@ -3,6 +3,7 @@ import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import refreshImg from "../../images/refresh-cosmos.svg";
 import { AuthType } from "../AuthType";
 import Explorer from "../Explorer/Explorer";
+import { ResourceTokenTree } from "../Explorer/Tree/ResourceTokenTree";
 import { ResourceTree } from "../Explorer/Tree/ResourceTree";
 import { userContext } from "../UserContext";
 
@@ -52,7 +53,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
           </div>
         </div>
         {userContext.authType === AuthType.ResourceToken ? (
-          <div style={{ overflowY: "auto" }} data-bind="react:resourceTreeForResourceToken" />
+          <ResourceTokenTree />
         ) : userContext.features.enableKOResourceTree ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
         ) : (

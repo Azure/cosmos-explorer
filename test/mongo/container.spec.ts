@@ -1,17 +1,16 @@
 import { jest } from "@jest/globals";
 import "expect-playwright";
 import { generateDatabaseNameWithTimestamp, generateUniqueName } from "../utils/shared";
+import { waitForExplorer } from "../utils/waitForExplorer";
 jest.setTimeout(240000);
 
 test("Mongo CRUD", async () => {
   const databaseId = generateDatabaseNameWithTimestamp();
   const containerId = generateUniqueName("container");
+  page.setDefaultTimeout(50000);
 
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-mongo-runner");
-  await page.waitForSelector("iframe");
-  const explorer = page.frame({
-    name: "explorer",
-  });
+  const explorer = await waitForExplorer();
 
   // Create new database and collection
   await explorer.click('[data-test="New Collection"]');
@@ -19,7 +18,7 @@ test("Mongo CRUD", async () => {
   await explorer.fill('[aria-label="Collection id"]', containerId);
   await explorer.fill('[aria-label="Shard key"]', "/pk");
   await explorer.click("#sidePanelOkButton");
-  await explorer.click(`.nodeItem >> text=${databaseId}`, { timeout: 50000 });
+  await explorer.click(`.nodeItem >> text=${databaseId}`);
   await explorer.click(`.nodeItem >> text=${containerId}`);
   // Create indexing policy
   await explorer.click(".nodeItem >> text=Settings");
