@@ -135,7 +135,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 85 ~ QueryTablesTabComponent ~ constructor ~ this.state",
       this.state,
       ", ",
-      this.state.queryViewModel.queryBuilderViewModel().andLabel
+      this.state.queryViewModel.queryBuilderViewModel().andLabel,
+      ", ",
+      this.state.queryViewModel.queryBuilderViewModel().clauseArray()
     );
 
     this.andLabel = this.state.queryViewModel.queryBuilderViewModel().andLabel;
