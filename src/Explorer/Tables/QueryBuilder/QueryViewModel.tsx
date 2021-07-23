@@ -5,7 +5,7 @@ import { KeyCodes } from "../../../Common/Constants";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { TableQuerySelectPanel } from "../../Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { NewQueryTablesTab } from "../../Tabs/QueryTablesTab/NewQueryTablesTab";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
@@ -39,14 +39,14 @@ export default class QueryViewModel {
 
   public columnOptions: ko.ObservableArray<string>;
 
-  public queryTablesTab: QueryTablesTab;
+  public queryTablesTab: NewQueryTablesTab;
   public id: string;
   private _tableEntityListViewModel: TableEntityListViewModel;
 
-  constructor(queryTablesTab: QueryTablesTab) {
+  constructor(queryTablesTab: NewQueryTablesTab) {
     this.queryTablesTab = queryTablesTab;
     this.id = `queryViewModel${this.queryTablesTab.tabId}`;
-    this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel();
+    this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel;
 
     this.queryTextIsReadOnly = ko.computed<boolean>(() => {
       return userContext.apiType !== "Cassandra";

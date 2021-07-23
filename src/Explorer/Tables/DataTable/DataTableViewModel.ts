@@ -1,14 +1,14 @@
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as _ from "underscore";
-
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import CacheBase from "./CacheBase";
 import * as CommonConstants from "../../../Common/Constants";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { NewQueryTablesTab } from "../../Tabs/QueryTablesTab/NewQueryTablesTab";
 import * as Constants from "../Constants";
 import * as Entities from "../Entities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
+import CacheBase from "./CacheBase";
+
 
 // This is the format of the data we will have to pass to Datatable render callback,
 // and property names are defined by Datatable as well.
@@ -49,7 +49,7 @@ abstract class DataTableViewModel {
 
   private dataTableOperationManager: IDataTableOperation;
 
-  public queryTablesTab: QueryTablesTab;
+  public queryTablesTab: NewQueryTablesTab;
 
   constructor() {
     this.items([]);

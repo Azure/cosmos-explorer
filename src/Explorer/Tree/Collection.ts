@@ -32,7 +32,7 @@ import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
 import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
 import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
 import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
-import QueryTablesTab from "../Tabs/QueryTablesTab";
+import { NewQueryTablesTab } from "../Tabs/QueryTablesTab/NewQueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
@@ -391,13 +391,13 @@ export default class Collection implements ViewModels.Collection {
       });
     }
 
-    const queryTablesTabs: QueryTablesTab[] = useTabs
+    const queryTablesTabs: NewQueryTablesTab[] = useTabs
       .getState()
       .getTabs(
         ViewModels.CollectionTabKind.QueryTables,
         (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-      ) as QueryTablesTab[];
-    let queryTablesTab: QueryTablesTab = queryTablesTabs && queryTablesTabs[0];
+      ) as NewQueryTablesTab[];
+    let queryTablesTab: NewQueryTablesTab = queryTablesTabs && queryTablesTabs[0];
 
     if (queryTablesTab) {
       useTabs.getState().activateTab(queryTablesTab);
@@ -415,14 +415,14 @@ export default class Collection implements ViewModels.Collection {
         tabTitle: title,
       });
 
-      queryTablesTab = new QueryTablesTab({
+      queryTablesTab = new NewQueryTablesTab({
         tabKind: ViewModels.CollectionTabKind.QueryTables,
         title: title,
         tabPath: "",
         collection: this,
         node: this,
         onLoadStartKey: startKey,
-      });
+      }, { container: this.container });
 
       useTabs.getState().activateNewTab(queryTablesTab);
     }

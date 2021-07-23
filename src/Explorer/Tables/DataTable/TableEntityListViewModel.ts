@@ -7,6 +7,7 @@ import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { NewQueryTablesTab } from "../../Tabs/QueryTablesTab/NewQueryTablesTab";
 import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as Entities from "../Entities";
@@ -112,7 +113,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   public queryErrorMessage: ko.Observable<string>;
   public id: string;
 
-  constructor(tableCommands: TableCommands, queryTablesTab: QueryTablesTab) {
+  constructor(tableCommands: TableCommands, queryTablesTab: NewQueryTablesTab) {
     super();
     this.cache = new TableEntityCache();
     this.queryErrorMessage = ko.observable<string>();

@@ -14,7 +14,7 @@ import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, CassandraTableKey, TableDataClient } from "../../Tables/TableDataClient";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import * as Utilities from "../../Tables/Utilities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { NewQueryTablesTab } from "../../Tabs/QueryTablesTab/NewQueryTablesTab";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import {
   attributeNameLabel,
@@ -36,7 +36,7 @@ import {
 
 interface AddTableEntityPanelProps {
   tableDataClient: TableDataClient;
-  queryTablesTab: QueryTablesTab;
+  queryTablesTab: NewQueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
 }
