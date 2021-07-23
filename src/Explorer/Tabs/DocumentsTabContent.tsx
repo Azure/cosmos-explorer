@@ -27,6 +27,7 @@ import { Areas } from "../../Common/Constants";
 import { createDocument as createSqlDocuments } from "../../Common/dataAccess/createDocument";
 import { deleteDocument as deleteSqlDocument } from "../../Common/dataAccess/deleteDocument";
 import { queryDocuments as querySqlDocuments } from "../../Common/dataAccess/queryDocuments";
+import { readDocument } from "../../Common/dataAccess/readDocument";
 import { updateDocument as updateSqlDocuments } from "../../Common/dataAccess/updateDocument";
 import { getEntityName } from "../../Common/DocumentUtility";
 import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
@@ -78,8 +79,8 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       {
         key: "_id",
         name: isPreferredApiMongoDB ? "_id" : "id",
-        minWidth: 90,
-        maxWidth: 140,
+        minWidth: 50,
+        maxWidth: 100,
         isResizable: true,
         isCollapsible: true,
         data: "string",
@@ -96,7 +97,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
         key: "column2",
         name: props.partitionKeyPropertyHeader,
         minWidth: 50,
-        maxWidth: 60,
+        maxWidth: 100,
         isResizable: true,
         isCollapsible: true,
         data: "number",
@@ -128,6 +129,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
       documentSqlIds: [],
       isEditorContentEdited: false,
       isAllDocumentsVisible: false,
+      selectedSqlDocumentContent: this.initialDocumentContent,
     };
   }
 
@@ -160,7 +162,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     try {
       const sqlQuery = querySqlDocuments(this.props.collection.databaseId, this.props.collection.id(), query, options);
       const querySqlDocumentsData = await sqlQuery.fetchNext();
-      this.setState({ documentSqlIds: querySqlDocumentsData.resources.length ? querySqlDocumentsData.resources : [] });
+      this.setState({ documentSqlIds: querySqlDocumentsData.resources?.length ? querySqlDocumentsData.resources : [] });
     } catch (error) {
       this.props.isExecutionError(true);
       const errorMessage = getErrorMessage(error);
@@ -243,13 +245,9 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   };
 
   private handleRowContent = (row: DocumentId | Resource): void => {
-    const formattedDocumentContent =
-      userContext.apiType === "Mongo"
-        ? formatDocumentContent(row as DocumentId)
-        : formatSqlDocumentContent(row as Resource);
     userContext.apiType === "Mongo"
-      ? this.updateContent(row as DocumentId, formattedDocumentContent)
-      : this.updateSqlContent(row as Resource, formattedDocumentContent);
+      ? this.updateContent(row as DocumentId, formatDocumentContent(row as DocumentId))
+      : this.updateSqlContent(row as Resource);
     this.setDefaultUpdateTabButtonVisibility();
   };
 
@@ -266,12 +264,17 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     );
   };
 
-  private updateSqlContent = (row: Resource, formattedDocumentContent: string): void => {
+  private updateSqlContent = async (row: Resource): Promise<void> => {
+    const selectedDocumentId: DocumentId = new DocumentId(this.props as DocumentsTab, row, row._partitionKeyValue);
+
+    const content = await readDocument(this.props.collection, selectedDocumentId);
+    const formattedDocumentContent = formatSqlDocumentContent((content as unknown) as Resource);
     this.setState(
       {
         documentContent: formattedDocumentContent,
         isEditorVisible: true,
-        selectedSqlDocumentId: row,
+        selectedSqlDocumentContent: formattedDocumentContent,
+        selectedSqlDocumentId: selectedDocumentId,
       },
       () => {
         this.updateTabButton();
@@ -287,26 +290,15 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   };
 
   async updateSqlDocument(): Promise<void> {
-    const { partitionKey, partitionKeyProperty, isExecutionError, isExecuting, collection } = this.props;
-    const { documentContent } = this.state;
-    const partitionKeyArray = extractPartitionKey(
-      this.state.selectedSqlDocumentId,
-      getPartitionKeyDefinition(partitionKey, partitionKeyProperty) as PartitionKeyDefinition
-    );
-
-    const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
-    const selectedDocumentId = new DocumentId(
-      this.props as DocumentsTab,
-      this.state.selectedSqlDocumentId,
-      partitionKeyValue
-    );
+    const { isExecutionError, isExecuting, collection } = this.props;
+    const { documentContent, selectedSqlDocumentId } = this.state;
     isExecutionError(false);
     const startKey: number = this.getStartKey(Action.UpdateDocument);
     try {
       isExecuting(true);
       const updateSqlDocumentRes = await updateSqlDocuments(
         collection as ViewModels.Collection,
-        selectedDocumentId,
+        selectedSqlDocumentId,
         JSON.parse(documentContent)
       );
       if (updateSqlDocumentRes) {
@@ -464,7 +456,7 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
 
   private async onDeleteExisitingDocumentClick(): Promise<void> {
     const confirmationMessage = `Are you sure you want to delete the selected ${getEntityName()} ?`;
-    const { isExecuting, collection, partitionKey, partitionKeyProperty } = this.props;
+    const { isExecuting, collection } = this.props;
     const startKey: number = this.getStartKey(Action.DeleteDocument);
     this.props.collection.container.showOkCancelModalDialog(
       confirmationMessage,
@@ -481,17 +473,8 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
             );
             this.queryDocumentsData();
           } else {
-            const partitionKeyArray = extractPartitionKey(
-              this.state.selectedSqlDocumentId,
-              getPartitionKeyDefinition(partitionKey, partitionKeyProperty) as PartitionKeyDefinition
-            );
-            const partitionKeyValue = partitionKeyArray && partitionKeyArray[0];
-            const selectedDocumentId = new DocumentId(
-              this.props as DocumentsTab,
-              this.state.selectedSqlDocumentId,
-              partitionKeyValue
-            );
-            await deleteSqlDocument(collection as ViewModels.Collection, selectedDocumentId);
+            const { selectedSqlDocumentId } = this.state;
+            await deleteSqlDocument(collection as ViewModels.Collection, selectedSqlDocumentId);
             this.querySqlDocumentsData();
           }
           this.setTraceSuccess(Action.DeleteDocument, startKey);
@@ -506,11 +489,9 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
   }
 
   private onRevertExisitingDocumentClick(): void {
-    const { selectedDocumentId, selectedSqlDocumentId } = this.state;
+    const { selectedDocumentId, selectedSqlDocumentContent } = this.state;
     const documentContent =
-      userContext.apiType === "Mongo"
-        ? formatDocumentContent(selectedDocumentId)
-        : formatSqlDocumentContent(selectedSqlDocumentId);
+      userContext.apiType === "Mongo" ? formatDocumentContent(selectedDocumentId) : selectedSqlDocumentContent;
     this.setState({
       documentContent: documentContent,
     });
@@ -551,7 +532,8 @@ export default class DocumentsTabContent extends React.Component<DocumentsTab, I
     try {
       const savedDocument = await createSqlDocuments(collection, document);
       if (savedDocument) {
-        this.handleRowContent(savedDocument as Resource);
+        const formattedDocumentContent = formatSqlDocumentContent((savedDocument as unknown) as Resource);
+        this.setState({ documentContent: formattedDocumentContent });
         this.setDefaultUpdateTabButtonVisibility();
         this.setTraceSuccess(Action.CreateDocument, startKey);
       }

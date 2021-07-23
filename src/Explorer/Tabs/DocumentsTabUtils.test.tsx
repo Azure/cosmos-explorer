@@ -45,10 +45,12 @@ describe("DocumentTabUtils", () => {
       fakeDocumentData._self = "testSelf";
       fakeDocumentData._ts = "testTs";
       fakeDocumentData._etag = "testEtag";
-      fakeDocumentData._partitionKeyValue = "testPartitionKeyValue";
+      fakeDocumentData._attachments = "testAttachments";
+      fakeDocumentData._partitionKey = "testPartitionKey";
+
       const formattedContent: string = DocumentTabUtils.formatSqlDocumentContent(fakeDocumentData);
       expect(formattedContent).toBe(
-        `{\n"id":"testId",\n"_rid":"testRid",\n"_self":"testSelf",\n"_ts":"testTs",\n"_etag":"testEtag",\n"_partitionKeyValue":"testPartitionKeyValue"\n}`
+        `{\n"id":"testId",\n"_rid":"testRid",\n"_self":"testSelf",\n"_ts":"testTs",\n"_etag":"testEtag",\n"_attachments":"testAttachments",\n"_partitionKey":"testPartitionKey"\n}`
       );
     });
 
@@ -58,31 +60,31 @@ describe("DocumentTabUtils", () => {
       fakeDocumentData._self = undefined;
       fakeDocumentData._ts = undefined;
       fakeDocumentData._etag = undefined;
-      fakeDocumentData._partitionKeyValue = undefined;
+      fakeDocumentData._attachments = undefined;
+      fakeDocumentData._partitionKey = undefined;
       const formattedContent: string = DocumentTabUtils.formatSqlDocumentContent(fakeDocumentData);
       expect(formattedContent).toBe(
-        `{\n"id":"",\n"_rid":"",\n"_self":"",\n"_ts":"",\n"_etag":"",\n"_partitionKeyValue":""\n}`
+        `{\n"id":"",\n"_rid":"",\n"_self":"",\n"_ts":"",\n"_etag":"",\n"_attachments":"",\n"_partitionKey":""\n}`
       );
     });
+  });
+  describe("getPartitionKeyDefinition()", () => {
+    const partitionKey = {} as PartitionKey;
+    partitionKey.kind = "Hash";
+    partitionKey.version = 1;
+    partitionKey.systemKey = true;
+    const partitionKeyProperty = "testPartitionKey";
 
-    describe("getPartitionKeyDefinition()", () => {
-      const partitionKey = {} as PartitionKey;
-      partitionKey.kind = "Hash";
-      partitionKey.version = 1;
-      partitionKey.systemKey = true;
-      const partitionKeyProperty = "testPartitionKey";
+    it("should return formatted partitionKey with formatted path.", () => {
+      partitionKey.paths = ["test"];
+      const formattedPartitionKey = DocumentTabUtils.getPartitionKeyDefinition(partitionKey, partitionKeyProperty);
+      expect(formattedPartitionKey).toEqual({ kind: "Hash", version: 1, systemKey: true, paths: ["test"] });
+    });
 
-      it("should return formatted partitionKey with formatted path.", () => {
-        partitionKey.paths = ["test"];
-        const formattedPartitionKey = DocumentTabUtils.getPartitionKeyDefinition(partitionKey, partitionKeyProperty);
-        expect(formattedPartitionKey).toEqual({ kind: "Hash", version: 1, systemKey: true, paths: ["test"] });
-      });
-
-      it("should return partitionKey with undefined paths if paths is undefined.", () => {
-        partitionKey.paths = undefined;
-        const formattedPartitionKey = DocumentTabUtils.getPartitionKeyDefinition(partitionKey, partitionKeyProperty);
-        expect(formattedPartitionKey).toEqual({ kind: "Hash", version: 1, systemKey: true, paths: undefined });
-      });
+    it("should return partitionKey with undefined paths if paths is undefined.", () => {
+      partitionKey.paths = undefined;
+      const formattedPartitionKey = DocumentTabUtils.getPartitionKeyDefinition(partitionKey, partitionKeyProperty);
+      expect(formattedPartitionKey).toEqual({ kind: "Hash", version: 1, systemKey: true, paths: undefined });
     });
   });
 });

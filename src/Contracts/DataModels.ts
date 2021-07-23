@@ -88,6 +88,8 @@ export interface SubscriptionPolicies {
 
 export interface Resource {
   _partitionKeyValue?: string;
+  _partitionKey?: string;
+  _attachments?: string;
   _rid: string;
   _self: string;
   _etag: string;

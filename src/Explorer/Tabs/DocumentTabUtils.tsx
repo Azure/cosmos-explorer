@@ -14,10 +14,11 @@ export interface IDocumentsTabContentState {
   isFilterOptionVisible: boolean;
   isEditorVisible: boolean;
   documentContent: string;
+  selectedSqlDocumentContent: string;
   documentIds: Array<DocumentId>;
   documentSqlIds: Array<Resource>;
   selectedDocumentId?: DocumentId;
-  selectedSqlDocumentId?: Resource;
+  selectedSqlDocumentId?: DocumentId;
   isEditorContentEdited: boolean;
   isAllDocumentsVisible: boolean;
 }
@@ -79,14 +80,15 @@ export function formatDocumentContent(row: DocumentId): string {
 }
 
 export function formatSqlDocumentContent(row: Resource): string {
-  const { id, _rid, _self, _ts, _etag, _partitionKeyValue } = row;
+  const { id, _rid, _self, _ts, _etag, _partitionKey, _attachments } = row;
   const documentContent = JSON.stringify({
     id: id || "",
     _rid: _rid || "",
     _self: _self || "",
     _ts: _ts || "",
     _etag: _etag || "",
-    _partitionKeyValue: _partitionKeyValue || "",
+    _attachments: _attachments || "",
+    _partitionKey: _partitionKey || "",
   });
   const formattedDocumentContent = documentContent.replace(/,/g, ",\n").replace("{", "{\n").replace("}", "\n}");
   return formattedDocumentContent;
