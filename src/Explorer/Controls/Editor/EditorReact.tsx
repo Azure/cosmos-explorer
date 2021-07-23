@@ -60,7 +60,7 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     this.editor = editor;
     const queryEditorModel = this.editor.getModel();
     if (!this.props.isReadOnly && this.props.onContentChanged) {
-      queryEditorModel.onDidChangeContent((e: monaco.editor.IModelContentChangedEvent) => {
+      queryEditorModel.onDidChangeContent(() => {
         const queryEditorModel = this.editor.getModel();
         this.props.onContentChanged(queryEditorModel.getValue());
       });

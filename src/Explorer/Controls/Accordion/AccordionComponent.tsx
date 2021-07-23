@@ -8,7 +8,9 @@ import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
 import * as Constants from "../../../Common/Constants";
 
-export interface AccordionComponentProps {}
+export interface AccordionComponentProps {
+  children: React.ReactNode;
+}
 
 export class AccordionComponent extends React.Component<AccordionComponentProps> {
   public render(): JSX.Element {
@@ -78,7 +80,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
     );
   }
 
-  private onHeaderClick = (_event: React.MouseEvent<HTMLDivElement>): void => {
+  private onHeaderClick = (): void => {
     this.setState({ isExpanded: !this.state.isExpanded });
   };
 

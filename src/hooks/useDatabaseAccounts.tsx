@@ -15,7 +15,7 @@ export async function fetchDatabaseAccounts(subscriptionId: string, accessToken:
 
   let accounts: Array<DatabaseAccount> = [];
 
-  let nextLink = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/databaseAccounts?api-version=2020-06-01-preview`;
+  let nextLink = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/databaseAccounts?api-version=2021-06-15`;
 
   while (nextLink) {
     const response: Response = await fetch(nextLink, { headers });

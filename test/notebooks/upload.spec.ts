@@ -2,6 +2,7 @@ import { jest } from "@jest/globals";
 import "expect-playwright";
 import fs from "fs";
 import path from "path";
+import { waitForExplorer } from "../utils/waitForExplorer";
 jest.setTimeout(240000);
 
 const filename = "GettingStarted.ipynb";
@@ -11,10 +12,7 @@ fs.copyFileSync(path.join(__dirname, filename), path.join(__dirname, fileToUploa
 
 test("Notebooks", async () => {
   await page.goto("https://localhost:1234/testExplorer.html?accountName=portal-sql-runner");
-  await page.waitForSelector("iframe");
-  const explorer = page.frame({
-    name: "explorer",
-  });
+  const explorer = await waitForExplorer();
   // Upload and Delete Notebook
   await explorer.click('[data-test="My Notebooks"] [aria-label="More"]');
   await explorer.click('button[role="menuitem"]:has-text("Upload File")');

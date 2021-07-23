@@ -1,4 +1,4 @@
-export function stripSpacesFromString(inputString: string): string {
+export function stripSpacesFromString(inputString?: string): string | undefined {
   if (inputString === undefined || typeof inputString !== "string") {
     return inputString;
   }

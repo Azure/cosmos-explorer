@@ -11,18 +11,17 @@ import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility"
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
-import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
-import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
-import { ExplorerSettings } from "../Shared/ExplorerSettings";
+import { IGalleryItem } from "../Juno/JunoClient";
+import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
-import { getCollectionName, getDatabaseName, getUploadName } from "../Utils/APITypeUtils";
+import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
 import {
   get as getWorkspace,
@@ -35,7 +34,7 @@ import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
-import * as ComponentRegisterer from "./ComponentRegisterer";
+import "./ComponentRegisterer";
 import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
@@ -47,12 +46,8 @@ import type { NotebookPaneContent } from "./Notebook/NotebookManager";
 import { NotebookUtil } from "./Notebook/NotebookUtil";
 import { useNotebook } from "./Notebook/useNotebook";
 import { AddCollectionPanel } from "./Panes/AddCollectionPanel";
-import { AddDatabasePanel } from "./Panes/AddDatabasePanel/AddDatabasePanel";
-import { BrowseQueriesPane } from "./Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { CassandraAddCollectionPane } from "./Panes/CassandraAddCollectionPane/CassandraAddCollectionPane";
 import { ExecuteSprocParamsPane } from "./Panes/ExecuteSprocParamsPane/ExecuteSprocParamsPane";
-import { GitHubReposPanel } from "./Panes/GitHubReposPanel/GitHubReposPanel";
-import { SaveQueryPane } from "./Panes/SaveQueryPane/SaveQueryPane";
 import { SetupNoteBooksPanel } from "./Panes/SetupNotebooksPanel/SetupNotebooksPanel";
 import { StringInputPane } from "./Panes/StringInputPane/StringInputPane";
 import { UploadFilePane } from "./Panes/UploadFilePane/UploadFilePane";
@@ -64,14 +59,11 @@ import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
-import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
 
 BindingHandlersRegisterer.registerBindingHandlers();
-// Hold a reference to ComponentRegisterer to prevent transpiler to ignore import
-var tmp = ComponentRegisterer;
 
 export default class Explorer {
   public isFixedCollectionWithSharedThroughputSupported: ko.Computed<boolean>;
@@ -80,9 +72,6 @@ export default class Explorer {
 
   // Resource Tree
   private resourceTree: ResourceTreeAdapter;
-
-  // Resource Token
-  public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -143,13 +132,13 @@ export default class Explorer {
 
     document.addEventListener(
       "contextmenu",
-      function (e) {
+      (e) => {
         e.preventDefault();
       },
       false
     );
 
-    $(function () {
+    $(() => {
       $(document.body).click(() => $(".commandDropdownContainer").hide());
     });
 
@@ -160,6 +149,7 @@ export default class Explorer {
       case "Cassandra":
         this.tableDataClient = new CassandraAPIDataClient();
         break;
+      default:
     }
 
     this._initSettings();
@@ -192,7 +182,6 @@ export default class Explorer {
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);
-    this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
 
     // Override notebook server parameters from URL parameters
     if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
@@ -217,10 +206,6 @@ export default class Explorer {
           },
         ],
       });
-    }
-
-    if (configContext.enableSchemaAnalyzer) {
-      userContext.features.enableSchemaAnalyzer = true;
     }
 
     this.refreshExplorer();
@@ -330,19 +315,15 @@ export default class Explorer {
     }
   }
 
-  public onRefreshDatabasesKeyPress = (source: any, event: KeyboardEvent): boolean => {
+  public onRefreshDatabasesKeyPress = (source: string, event: KeyboardEvent): boolean => {
     if (event.keyCode === Constants.KeyCodes.Space || event.keyCode === Constants.KeyCodes.Enter) {
-      this.onRefreshResourcesClick(source, null);
+      this.onRefreshResourcesClick();
       return false;
     }
     return true;
   };
 
-  public onRefreshResourcesClick = (source: any, event: MouseEvent): void => {
-    const startKey: number = TelemetryProcessor.traceStart(Action.LoadDatabases, {
-      description: "Refresh button clicked",
-      dataExplorerArea: Constants.Areas.ResourceTree,
-    });
+  public onRefreshResourcesClick = (): void => {
     userContext.authType === AuthType.ResourceToken
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
@@ -350,7 +331,7 @@ export default class Explorer {
   };
 
   // Facade
-  public provideFeedbackEmail = () => {
+  public provideFeedbackEmail = (): void => {
     window.open(Constants.Urls.feedbackEmail, "_blank");
   };
 
@@ -376,6 +357,9 @@ export default class Explorer {
       notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
       authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
     });
+
+    useNotebook.getState().initializeNotebooksTree(this.notebookManager);
+
     this.refreshNotebookList();
 
     this._isInitializingNotebooks = false;
@@ -564,7 +548,7 @@ export default class Explorer {
     const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent);
     promise
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason: any) => this.showOkModalDialog("Unable to upload file", reason));
+      .catch((reason) => this.showOkModalDialog("Unable to upload file", reason));
     return promise;
   }
 
@@ -710,13 +694,13 @@ export default class Explorer {
       const options: NotebookTabOptions = {
         account: userContext.databaseAccount,
         tabKind: ViewModels.CollectionTabKind.NotebookV2,
-        node: null,
+        node: undefined,
         title: notebookContentItem.name,
         tabPath: notebookContentItem.path,
-        collection: null,
+        collection: undefined,
         masterKey: userContext.masterKey || "",
         isTabsContentExpanded: ko.observable(true),
-        onLoadStartKey: null,
+        onLoadStartKey: undefined,
         container: this,
         notebookContentItem,
       };
@@ -843,7 +827,7 @@ export default class Explorer {
 
         clearMessage();
       },
-      (error: any) => {
+      (error) => {
         logConsoleError(`Could not download notebook ${getErrorMessage(error)}`);
         clearMessage();
       }
@@ -856,6 +840,8 @@ export default class Explorer {
     }
 
     await this.resourceTree.initialize();
+    await useNotebook.getState().initializeNotebooksTree(this.notebookManager);
+
     this.notebookManager?.refreshPinnedRepos();
     if (this.notebookToImport) {
       this.importAndOpenContent(this.notebookToImport.name, this.notebookToImport.content);
@@ -895,7 +881,7 @@ export default class Explorer {
 
     return this.notebookManager?.notebookContentClient.deleteContentItem(item).then(
       () => logConsoleInfo(`Successfully deleted: ${item.path}`),
-      (reason: any) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
+      (reason) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
     );
   }
 
@@ -930,7 +916,7 @@ export default class Explorer {
         return this.openNotebook(newFile);
       })
       .then(() => this.resourceTree.triggerRender())
-      .catch((error: any) => {
+      .catch((error) => {
         const errorMessage = `Failed to create a new notebook: ${getErrorMessage(error)}`;
         logConsoleError(errorMessage);
         TelemetryProcessor.traceFailure(
@@ -946,14 +932,15 @@ export default class Explorer {
       .finally(clearInProgressMessage);
   }
 
-  public refreshContentItem(item: NotebookContentItem): Promise<void> {
+  // TODO: Delete this function when ResourceTreeAdapter is removed.
+  public async refreshContentItem(item: NotebookContentItem): Promise<void> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to refresh notebook list, but notebook is not enabled";
       handleError(error, "Explorer/refreshContentItem");
       return Promise.reject(new Error(error));
     }
 
-    return this.notebookManager?.notebookContentClient.updateItemChildren(item);
+    await this.notebookManager?.notebookContentClient.updateItemChildrenInPlace(item);
   }
 
   public openNotebookTerminal(kind: ViewModels.TerminalKind) {
@@ -988,12 +975,12 @@ export default class Explorer {
     const newTab = new TerminalTab({
       account: userContext.databaseAccount,
       tabKind: ViewModels.CollectionTabKind.Terminal,
-      node: null,
+      node: undefined,
       title: `${title} ${index}`,
       tabPath: `${title} ${index}`,
-      collection: null,
+      collection: undefined,
       isTabsContentExpanded: ko.observable(true),
-      onLoadStartKey: null,
+      onLoadStartKey: undefined,
       container: this,
       kind: kind,
       index: index,
@@ -1013,7 +1000,7 @@ export default class Explorer {
     const galleryTab = useTabs
       .getState()
       .getTabs(ViewModels.CollectionTabKind.Gallery)
-      .find((tab) => tab.tabTitle() == title);
+      .find((tab) => tab.tabTitle() === title);
 
     if (galleryTab instanceof GalleryTab) {
       useTabs.getState().activateTab(galleryTab);
@@ -1024,7 +1011,7 @@ export default class Explorer {
             tabKind: ViewModels.CollectionTabKind.Gallery,
             title,
             tabPath: title,
-            onLoadStartKey: null,
+            onLoadStartKey: undefined,
             isTabsContentExpanded: ko.observable(true),
           },
           {
@@ -1070,8 +1057,9 @@ export default class Explorer {
     const title = "Enable Notebooks (Preview)";
     const description =
       "You have not yet created a notebooks workspace for this account. To proceed and start using notebooks, we'll need to create a default notebooks workspace in this account.";
-
-    this.openSetupNotebooksPanel(title, description);
+    useSidePanel
+      .getState()
+      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
@@ -1106,18 +1094,6 @@ export default class Explorer {
       .openSidePanel("Input parameters", <ExecuteSprocParamsPane storedProcedure={storedProcedure} />);
   }
 
-  public openAddDatabasePane(): void {
-    useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this} />);
-  }
-
-  public openBrowseQueriesPanel(): void {
-    useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this} />);
-  }
-
-  public openSaveQueryPanel(): void {
-    useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this} />);
-  }
-
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     parent = parent || this.resourceTree.myNotebooksContentRoot;
     useSidePanel
@@ -1126,25 +1102,6 @@ export default class Explorer {
         "Upload file to notebook server",
         <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />
       );
-  }
-
-  public openGitHubReposPanel(header: string, junoClient?: JunoClient): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        header,
-        <GitHubReposPanel
-          explorer={this}
-          gitHubClientProp={this.notebookManager.gitHubClient}
-          junoClientProp={junoClient}
-        />
-      );
-  }
-
-  public openSetupNotebooksPanel(title: string, description: string): void {
-    useSidePanel
-      .getState()
-      .openSidePanel(title, <SetupNoteBooksPanel explorer={this} panelTitle={title} panelDescription={description} />);
   }
 
   public async refreshExplorer(): Promise<void> {

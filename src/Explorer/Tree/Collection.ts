@@ -571,8 +571,8 @@ export default class Collection implements ViewModels.Collection {
   };
 
   public onSettingsClick = async (): Promise<void> => {
-    await this.loadOffer();
     useSelectedNode.getState().setSelectedNode(this);
+    await this.loadOffer();
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
@@ -744,8 +744,8 @@ export default class Collection implements ViewModels.Collection {
     StoredProcedure.create(source, event);
   }
 
-  public onNewUserDefinedFunctionClick(source: ViewModels.Collection, event: MouseEvent) {
-    UserDefinedFunction.create(source, event);
+  public onNewUserDefinedFunctionClick(source: ViewModels.Collection) {
+    UserDefinedFunction.create(source);
   }
 
   public onNewTriggerClick(source: ViewModels.Collection, event: MouseEvent) {
