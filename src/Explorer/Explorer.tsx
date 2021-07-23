@@ -59,7 +59,6 @@ import TerminalTab from "./Tabs/TerminalTab";
 import Database from "./Tree/Database";
 import ResourceTokenCollection from "./Tree/ResourceTokenCollection";
 import { ResourceTreeAdapter } from "./Tree/ResourceTreeAdapter";
-import { ResourceTreeAdapterForResourceToken } from "./Tree/ResourceTreeAdapterForResourceToken";
 import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
@@ -73,9 +72,6 @@ export default class Explorer {
 
   // Resource Tree
   private resourceTree: ResourceTreeAdapter;
-
-  // Resource Token
-  public resourceTreeForResourceToken: ResourceTreeAdapterForResourceToken;
 
   // Tabs
   public isTabsContentExpanded: ko.Observable<boolean>;
@@ -186,7 +182,6 @@ export default class Explorer {
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);
-    this.resourceTreeForResourceToken = new ResourceTreeAdapterForResourceToken(this);
 
     // Override notebook server parameters from URL parameters
     if (userContext.features.notebookServerUrl && userContext.features.notebookServerToken) {
