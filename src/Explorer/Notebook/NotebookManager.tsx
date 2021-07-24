@@ -29,6 +29,7 @@ import { SnapshotRequest } from "./NotebookComponent/types";
 import { NotebookContainerClient } from "./NotebookContainerClient";
 import { NotebookContentClient } from "./NotebookContentClient";
 import { SchemaAnalyzerNotebook } from "./SchemaAnalyzer/SchemaAnalyzerUtils";
+import { useNotebook } from "./useNotebook";
 
 type NotebookPaneContent = string | ImmutableNotebook;
 
@@ -110,6 +111,7 @@ export default class NotebookManager {
     this.junoClient.subscribeToPinnedRepos((pinnedRepos) => {
       this.params.resourceTree.initializeGitHubRepos(pinnedRepos);
       this.params.resourceTree.triggerRender();
+      useNotebook.getState().initializeGitHubRepos(pinnedRepos);
     });
     this.refreshPinnedRepos();
   }
