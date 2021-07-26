@@ -1,8 +1,8 @@
 import create, { UseStore } from "zustand";
 
 export interface NotebookSnapshotHooks {
-  snapshot: string;
-  error: string;
+  snapshot?: string;
+  error?: string;
   setSnapshot: (imageSrc: string) => void;
   setError: (error: string) => void;
 }

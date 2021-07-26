@@ -1,20 +1,16 @@
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
 import { Upload } from "../../../Common/Upload/Upload";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface UploadFilePanelProps {
-  expandConsole: () => void;
-  closePanel: () => void;
   uploadFile: (name: string, content: string) => Promise<NotebookContentItem>;
 }
 
-export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
-  expandConsole,
-  closePanel,
-  uploadFile,
-}: UploadFilePanelProps) => {
+export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({ uploadFile }: UploadFilePanelProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const extensions: string = undefined; //ex. ".ipynb"
   const errorMessage = "Could not upload file";
   const inProgressMessage = "Uploading file to notebook server";
@@ -42,7 +38,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
       .then(
         () => {
           logConsoleInfo(`${successMessage} ${file.name}`);
-          closePanel();
+          closeSidePanel();
         },
         (error: string) => {
           setFormErrors(errorMessage);
@@ -78,8 +74,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
     return uploadFile(file.name, fileContent);
   };
 
-  const genericPaneProps: RightPaneFormProps = {
-    expandConsole,
+  const props: RightPaneFormProps = {
     formError: formErrors,
     isExecuting: isExecuting,
     submitButtonText: "Upload",
@@ -87,7 +82,7 @@ export const UploadFilePane: FunctionComponent<UploadFilePanelProps> = ({
   };
 
   return (
-    <RightPaneForm {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="paneMainContent">
         <Upload label="Select file to upload" accept={extensions} onUpload={updateSelectedFiles} />
       </div>

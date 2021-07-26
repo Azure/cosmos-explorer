@@ -6,6 +6,7 @@ import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUti
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../Contracts/SubscriptionType";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import * as SharedConstants from "../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
@@ -15,20 +16,19 @@ import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
 import { getUpsellMessage } from "../../../Utils/PricingUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
+import { useDatabases } from "../../useDatabases";
 import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
+import { getTextFieldStyles } from "../PanelStyles";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export interface AddDatabasePaneProps {
   explorer: Explorer;
-  closePanel: () => void;
-  openNotificationConsole: () => void;
 }
 
 export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   explorer: container,
-  closePanel,
-  openNotificationConsole,
 }: AddDatabasePaneProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   let throughput: number;
   let isAutoscaleSelected: boolean;
   let isCostAcknowledged: boolean;
@@ -114,7 +114,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
 
   const _onCreateDatabaseSuccess = (offerThroughput: number, startKey: number): void => {
     setIsExecuting(false);
-    closePanel();
+    closeSidePanel();
     container.refreshAllDatabases();
     const addDatabasePaneSuccessMessage = {
       ...addDatabasePaneMessage,
@@ -163,7 +163,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   );
 
   const props: RightPaneFormProps = {
-    expandConsole: openNotificationConsole,
     formError: formErrors,
     isExecuting,
     submitButtonText: "OK",
@@ -174,19 +173,25 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     <RightPaneForm {...props}>
       {!formErrors && isFreeTierAccount && (
         <PanelInfoErrorComponent
-          message={getUpsellMessage(userContext.portalEnv, true, container.isFirstResourceCreated(), true)}
+          message={getUpsellMessage(
+            userContext.portalEnv,
+            true,
+            useDatabases.getState().isFirstResourceCreated(),
+            true
+          )}
           messageType="info"
           showErrorDetails={false}
-          openNotificationConsole={openNotificationConsole}
           link={Constants.Urls.freeTierInformation}
           linkText="Learn more"
         />
       )}
       <div className="panelMainContent">
-        <div>
+        <Stack>
           <Stack horizontal>
-            <span className="mandatoryStar">*</span>
-            <Text variant="small">{databaseIdLabel}</Text>
+            <span className="mandatoryStar">*&nbsp;</span>
+            <Text className="panelTextBold" variant="small">
+              {databaseIdLabel}
+            </Text>
             <InfoTooltip>{databaseIdTooltipText}</InfoTooltip>
           </Stack>
 
@@ -203,36 +208,37 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             value={databaseId}
             onChange={handleonChangeDBId}
             autoFocus
-            style={{ fontSize: 12 }}
-            styles={{ root: { width: 300 } }}
+            styles={getTextFieldStyles()}
           />
 
-          <Stack horizontal>
-            <Checkbox
-              title="Provision shared throughput"
-              styles={{
-                text: { fontSize: 12 },
-                checkbox: { width: 12, height: 12 },
-                label: { padding: 0, alignItems: "center" },
-              }}
-              label="Provision throughput"
-              checked={databaseCreateNewShared}
-              onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
-            />
-            <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
-          </Stack>
-
-          {!isServerlessAccount() && databaseCreateNewShared && (
-            <ThroughputInput
-              showFreeTierExceedThroughputTooltip={isFreeTierAccount && !container?.isFirstResourceCreated()}
-              isDatabase={true}
-              isSharded={databaseCreateNewShared}
-              setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
-              setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
-              onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
-            />
+          {!isServerlessAccount() && (
+            <Stack horizontal>
+              <Checkbox
+                title="Provision shared throughput"
+                styles={{
+                  text: { fontSize: 12 },
+                  checkbox: { width: 12, height: 12 },
+                  label: { padding: 0, alignItems: "center" },
+                }}
+                label="Provision throughput"
+                checked={databaseCreateNewShared}
+                onChange={() => setDatabaseCreateNewShared(!databaseCreateNewShared)}
+              />
+              <InfoTooltip>{databaseLevelThroughputTooltipText}</InfoTooltip>
+            </Stack>
           )}
-        </div>
+        </Stack>
+
+        {!isServerlessAccount() && databaseCreateNewShared && (
+          <ThroughputInput
+            showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
+            isDatabase={true}
+            isSharded={databaseCreateNewShared}
+            setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
+            setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
+            onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
+          />
+        )}
       </div>
     </RightPaneForm>
   );

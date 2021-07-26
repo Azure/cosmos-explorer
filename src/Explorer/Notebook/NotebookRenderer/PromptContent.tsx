@@ -5,7 +5,7 @@ import "./Prompt.less";
 
 export const promptContent = (props: PassedPromptProps): JSX.Element => {
   if (props.status === "busy") {
-    const stopButtonText: string = "Stop cell execution";
+    const stopButtonText = "Stop cell execution";
     return (
       <div
         style={{ position: "sticky", width: "100%", maxHeight: "100%", left: 0, top: 0, zIndex: 300 }}
@@ -23,7 +23,7 @@ export const promptContent = (props: PassedPromptProps): JSX.Element => {
       </div>
     );
   } else if (props.isHovered) {
-    const playButtonText: string = "Run cell";
+    const playButtonText = "Run cell";
     return (
       <IconButton
         className="runCellButton"

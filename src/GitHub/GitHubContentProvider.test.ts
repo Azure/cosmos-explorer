@@ -1,11 +1,13 @@
 import { IContent } from "@nteract/core";
 import { fixture } from "@nteract/fixtures";
 import { HttpStatusCodes } from "../Common/Constants";
+import * as GitHubUtils from "../Utils/GitHubUtils";
 import { GitHubClient, IGitHubCommit, IGitHubFile } from "./GitHubClient";
 import { GitHubContentProvider } from "./GitHubContentProvider";
-import * as GitHubUtils from "../Utils/GitHubUtils";
 
-const gitHubClient = new GitHubClient(() => {});
+const gitHubClient = new GitHubClient(() => {
+  /**/
+});
 const gitHubContentProvider = new GitHubContentProvider({
   gitHubClient,
   promptForCommitMsg: () => Promise.resolve("commit msg"),
@@ -46,7 +48,7 @@ const sampleNotebookModel: IContent<"notebook"> = {
   created: "",
   last_modified: "date",
   mimetype: "application/x-ipynb+json",
-  content: sampleFile.content ? JSON.parse(sampleFile.content) : null,
+  content: sampleFile.content ? JSON.parse(sampleFile.content) : undefined,
   format: "json",
 };
 
@@ -54,7 +56,7 @@ describe("GitHubContentProvider remove", () => {
   it("errors on invalid path", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync");
 
-    const response = await gitHubContentProvider.remove(null, "invalid path").toPromise();
+    const response = await gitHubContentProvider.remove(undefined, "invalid path").toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
     expect(gitHubClient.getContentsAsync).not.toBeCalled();
@@ -63,7 +65,7 @@ describe("GitHubContentProvider remove", () => {
   it("errors on failed read", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.remove(null, sampleGitHubUri).toPromise();
+    const response = await gitHubContentProvider.remove(undefined, sampleGitHubUri).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -75,7 +77,7 @@ describe("GitHubContentProvider remove", () => {
     );
     spyOn(GitHubClient.prototype, "deleteFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.remove(null, sampleGitHubUri).toPromise();
+    const response = await gitHubContentProvider.remove(undefined, sampleGitHubUri).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -90,7 +92,7 @@ describe("GitHubContentProvider remove", () => {
       Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit })
     );
 
-    const response = await gitHubContentProvider.remove(null, sampleGitHubUri).toPromise();
+    const response = await gitHubContentProvider.remove(undefined, sampleGitHubUri).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.NoContent);
     expect(gitHubClient.deleteFileAsync).toBeCalled();
@@ -102,7 +104,7 @@ describe("GitHubContentProvider get", () => {
   it("errors on invalid path", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync");
 
-    const response = await gitHubContentProvider.get(null, "invalid path", null).toPromise();
+    const response = await gitHubContentProvider.get(undefined, "invalid path", undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
     expect(gitHubClient.getContentsAsync).not.toBeCalled();
@@ -111,7 +113,7 @@ describe("GitHubContentProvider get", () => {
   it("errors on failed read", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.get(null, sampleGitHubUri, null).toPromise();
+    const response = await gitHubContentProvider.get(undefined, sampleGitHubUri, undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -122,7 +124,7 @@ describe("GitHubContentProvider get", () => {
       Promise.resolve({ status: HttpStatusCodes.OK, data: sampleFile })
     );
 
-    const response = await gitHubContentProvider.get(null, sampleGitHubUri, {}).toPromise();
+    const response = await gitHubContentProvider.get(undefined, sampleGitHubUri, {}).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -134,7 +136,7 @@ describe("GitHubContentProvider update", () => {
   it("errors on invalid path", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync");
 
-    const response = await gitHubContentProvider.update(null, "invalid path", null).toPromise();
+    const response = await gitHubContentProvider.update(undefined, "invalid path", undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
     expect(gitHubClient.getContentsAsync).not.toBeCalled();
@@ -143,7 +145,7 @@ describe("GitHubContentProvider update", () => {
   it("errors on failed read", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.update(null, sampleGitHubUri, null).toPromise();
+    const response = await gitHubContentProvider.update(undefined, sampleGitHubUri, undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -155,7 +157,7 @@ describe("GitHubContentProvider update", () => {
     );
     spyOn(GitHubClient.prototype, "renameFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.update(null, sampleGitHubUri, sampleNotebookModel).toPromise();
+    const response = await gitHubContentProvider.update(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -170,7 +172,7 @@ describe("GitHubContentProvider update", () => {
       Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit })
     );
 
-    const response = await gitHubContentProvider.update(null, sampleGitHubUri, sampleNotebookModel).toPromise();
+    const response = await gitHubContentProvider.update(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -186,7 +188,7 @@ describe("GitHubContentProvider create", () => {
   it("errors on invalid path", async () => {
     spyOn(GitHubClient.prototype, "createOrUpdateFileAsync");
 
-    const response = await gitHubContentProvider.create(null, "invalid path", sampleNotebookModel).toPromise();
+    const response = await gitHubContentProvider.create(undefined, "invalid path", sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
     expect(gitHubClient.createOrUpdateFileAsync).not.toBeCalled();
@@ -195,7 +197,7 @@ describe("GitHubContentProvider create", () => {
   it("errors on failed create", async () => {
     spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.create(null, sampleGitHubUri, sampleNotebookModel).toPromise();
+    const response = await gitHubContentProvider.create(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.createOrUpdateFileAsync).toBeCalled();
@@ -206,7 +208,7 @@ describe("GitHubContentProvider create", () => {
       Promise.resolve({ status: HttpStatusCodes.Created, data: gitHubCommit })
     );
 
-    const response = await gitHubContentProvider.create(null, sampleGitHubUri, sampleNotebookModel).toPromise();
+    const response = await gitHubContentProvider.create(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.Created);
     expect(gitHubClient.createOrUpdateFileAsync).toBeCalled();
@@ -221,7 +223,7 @@ describe("GitHubContentProvider save", () => {
   it("errors on invalid path", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync");
 
-    const response = await gitHubContentProvider.save(null, "invalid path", null).toPromise();
+    const response = await gitHubContentProvider.save(undefined, "invalid path", undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
     expect(gitHubClient.getContentsAsync).not.toBeCalled();
@@ -230,7 +232,7 @@ describe("GitHubContentProvider save", () => {
   it("errors on failed read", async () => {
     spyOn(GitHubClient.prototype, "getContentsAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.save(null, sampleGitHubUri, null).toPromise();
+    const response = await gitHubContentProvider.save(undefined, sampleGitHubUri, undefined).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -242,7 +244,7 @@ describe("GitHubContentProvider save", () => {
     );
     spyOn(GitHubClient.prototype, "createOrUpdateFileAsync").and.returnValue(Promise.resolve({ status: 888 }));
 
-    const response = await gitHubContentProvider.save(null, sampleGitHubUri, sampleNotebookModel).toPromise();
+    const response = await gitHubContentProvider.save(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(888);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -257,7 +259,7 @@ describe("GitHubContentProvider save", () => {
       Promise.resolve({ status: HttpStatusCodes.OK, data: gitHubCommit })
     );
 
-    const response = await gitHubContentProvider.save(null, sampleGitHubUri, sampleNotebookModel).toPromise();
+    const response = await gitHubContentProvider.save(undefined, sampleGitHubUri, sampleNotebookModel).toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(HttpStatusCodes.OK);
     expect(gitHubClient.getContentsAsync).toBeCalled();
@@ -271,7 +273,7 @@ describe("GitHubContentProvider save", () => {
 
 describe("GitHubContentProvider listCheckpoints", () => {
   it("errors for everything", async () => {
-    const response = await gitHubContentProvider.listCheckpoints(null, null).toPromise();
+    const response = await gitHubContentProvider.listCheckpoints().toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
   });
@@ -279,7 +281,7 @@ describe("GitHubContentProvider listCheckpoints", () => {
 
 describe("GitHubContentProvider createCheckpoint", () => {
   it("errors for everything", async () => {
-    const response = await gitHubContentProvider.createCheckpoint(null, null).toPromise();
+    const response = await gitHubContentProvider.createCheckpoint().toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
   });
@@ -287,7 +289,7 @@ describe("GitHubContentProvider createCheckpoint", () => {
 
 describe("GitHubContentProvider deleteCheckpoint", () => {
   it("errors for everything", async () => {
-    const response = await gitHubContentProvider.deleteCheckpoint(null, null, null).toPromise();
+    const response = await gitHubContentProvider.deleteCheckpoint().toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
   });
@@ -295,7 +297,7 @@ describe("GitHubContentProvider deleteCheckpoint", () => {
 
 describe("GitHubContentProvider restoreFromCheckpoint", () => {
   it("errors for everything", async () => {
-    const response = await gitHubContentProvider.restoreFromCheckpoint(null, null, null).toPromise();
+    const response = await gitHubContentProvider.restoreFromCheckpoint().toPromise();
     expect(response).toBeDefined();
     expect(response.status).toBe(GitHubContentProvider.SelfErrorCode);
   });

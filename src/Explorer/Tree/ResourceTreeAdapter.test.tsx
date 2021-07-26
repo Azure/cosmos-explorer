@@ -1,12 +1,11 @@
-import * as ko from "knockout";
+import { shallow } from "enzyme";
+import React from "react";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import React from "react";
-import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
-import { shallow } from "enzyme";
-import { TreeComponent, TreeNode, TreeComponentProps } from "../Controls/TreeComponent/TreeComponent";
+import { TreeComponent, TreeComponentProps, TreeNode } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
 import Collection from "./Collection";
+import { ResourceTreeAdapter } from "./ResourceTreeAdapter";
 
 const schema: DataModels.ISchema = {
   id: "fakeSchemaId",
@@ -208,16 +207,6 @@ const schema: DataModels.ISchema = {
   ],
 };
 
-const createMockContainer = (): Explorer => {
-  const mockContainer = new Explorer();
-  mockContainer.selectedNode = ko.observable<ViewModels.TreeNode>();
-  mockContainer.onUpdateTabsButtons = () => {
-    return;
-  };
-
-  return mockContainer;
-};
-
 const createMockCollection = (): ViewModels.Collection => {
   const mockCollection = {} as DataModels.Collection;
   mockCollection._rid = "fakeRid";
@@ -226,17 +215,13 @@ const createMockCollection = (): ViewModels.Collection => {
   mockCollection.analyticalStorageTtl = 0;
   mockCollection.schema = schema;
 
-  const mockCollectionVM: ViewModels.Collection = new Collection(
-    createMockContainer(),
-    "fakeDatabaseId",
-    mockCollection
-  );
+  const mockCollectionVM: ViewModels.Collection = new Collection(new Explorer(), "fakeDatabaseId", mockCollection);
 
   return mockCollectionVM;
 };
 
 describe("Resource tree for schema", () => {
-  const mockContainer: Explorer = createMockContainer();
+  const mockContainer = new Explorer();
   const resourceTree = new ResourceTreeAdapter(mockContainer);
 
   it("should render", () => {

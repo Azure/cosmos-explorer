@@ -3,13 +3,14 @@
  */
 
 import * as React from "react";
-import * as Constants from "../../../Common/Constants";
 import AnimateHeight from "react-animate-height";
-
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
+import * as Constants from "../../../Common/Constants";
 
-export interface AccordionComponentProps {}
+export interface AccordionComponentProps {
+  children: React.ReactNode;
+}
 
 export class AccordionComponent extends React.Component<AccordionComponentProps> {
   public render(): JSX.Element {
@@ -27,12 +28,12 @@ export interface AccordionItemComponentProps {
 }
 
 interface AccordionItemComponentState {
-  isExpanded: boolean;
+  isExpanded?: boolean;
 }
 
 export class AccordionItemComponent extends React.Component<AccordionItemComponentProps, AccordionItemComponentState> {
   private static readonly durationMS = 500;
-  private isExpanded: boolean;
+  private isExpanded?: boolean;
 
   constructor(props: AccordionItemComponentProps) {
     super(props);
@@ -79,7 +80,7 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
     );
   }
 
-  private onHeaderClick = (event: React.MouseEvent<HTMLDivElement>): void => {
+  private onHeaderClick = (): void => {
     this.setState({ isExpanded: !this.state.isExpanded });
   };
 
