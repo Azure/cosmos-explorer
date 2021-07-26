@@ -1,8 +1,8 @@
 import { CollectionBase } from "../../Contracts/ViewModels";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 
 export const createDocument = async (collection: CollectionBase, newDocument: unknown): Promise<unknown> => {
   const entityName = getEntityName();

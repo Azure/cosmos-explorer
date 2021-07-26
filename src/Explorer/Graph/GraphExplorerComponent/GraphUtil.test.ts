@@ -1,9 +1,7 @@
-import { GraphUtil } from "./GraphUtil";
-import { GraphData, GremlinVertex, GremlinEdge } from "./GraphData";
 import * as sinon from "sinon";
+import { GraphData, GremlinEdge, GremlinVertex } from "./GraphData";
 import { GraphExplorer } from "./GraphExplorer";
-window.$ = window.jQuery = require("jquery");
-
+import * as GraphUtil from "./GraphUtil";
 const OUT_E_MATCHER = "g\\.V\\(.*\\).outE\\(\\).*\\.as\\('e'\\).inV\\(\\)\\.as\\('v'\\)\\.select\\('e', *'v'\\)";
 const IN_E_MATCHER = "g\\.V\\(.*\\).inE\\(\\).*\\.as\\('e'\\).outV\\(\\)\\.as\\('v'\\)\\.select\\('e', *'v'\\)";
 
@@ -69,7 +67,7 @@ describe("Process Gremlin vertex", () => {
 describe("getLimitedArrayString()", () => {
   const expectedEmptyResult = { result: "", consumedCount: 0 };
   it("should handle null array", () => {
-    expect(GraphUtil.getLimitedArrayString(null, 10)).toEqual(expectedEmptyResult);
+    expect(GraphUtil.getLimitedArrayString(undefined, 10)).toEqual(expectedEmptyResult);
   });
 
   it("should handle empty array", () => {

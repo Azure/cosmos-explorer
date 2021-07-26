@@ -1,7 +1,6 @@
-import * as CommandBarUtil from "./CommandBarUtil";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
+import { ICommandBarItemProps } from "@fluentui/react";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import * as CommandBarUtil from "./CommandBarUtil";
 
 describe("CommandBarUtil tests", () => {
   const createButton = (): CommandButtonComponentProps => {
@@ -26,7 +25,7 @@ describe("CommandBarUtil tests", () => {
     const converteds = CommandBarUtil.convertButton([btn], backgroundColor);
     expect(converteds.length).toBe(1);
     const converted = converteds[0];
-    expect(!converted.split);
+    expect(converted.split).toBe(undefined);
     expect(converted.iconProps.imageProps.src).toEqual(btn.iconSrc);
     expect(converted.iconProps.imageProps.alt).toEqual(btn.iconAlt);
     expect(converted.text).toEqual(btn.commandButtonLabel);
@@ -50,7 +49,7 @@ describe("CommandBarUtil tests", () => {
     const converteds = CommandBarUtil.convertButton([btn], "backgroundColor");
     expect(converteds.length).toBe(1);
     const converted = converteds[0];
-    expect(converted.split);
+    expect(converted.split).toBe(true);
     expect(converted.subMenuProps.items.length).toBe(btn.children.length);
     for (let i = 0; i < converted.subMenuProps.items.length; i++) {
       expect(converted.subMenuProps.items[i].text).toEqual(btn.children[i].commandButtonLabel);
@@ -64,7 +63,6 @@ describe("CommandBarUtil tests", () => {
     }
 
     const converteds = CommandBarUtil.convertButton(btns, "backgroundColor");
-    const keys = converteds.map((btn: ICommandBarItemProps) => btn.key);
     const uniqueKeys = converteds
       .map((btn: ICommandBarItemProps) => btn.key)
       .filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
@@ -75,7 +73,7 @@ describe("CommandBarUtil tests", () => {
     const btn = createButton();
     const backgroundColor = "backgroundColor";
 
-    btn.commandButtonLabel = null;
+    btn.commandButtonLabel = undefined;
     let converted = CommandBarUtil.convertButton([btn], backgroundColor)[0];
     expect(converted.text).toEqual(btn.tooltipText);
 

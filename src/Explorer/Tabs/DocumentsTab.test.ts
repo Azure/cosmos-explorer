@@ -1,10 +1,10 @@
 import * as ko from "knockout";
+import { DatabaseAccount } from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import * as Constants from "../../Common/Constants";
-import DocumentsTab from "./DocumentsTab";
+import { updateUserContext } from "../../UserContext";
 import Explorer from "../Explorer";
 import DocumentId from "../Tree/DocumentId";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import DocumentsTab from "./DocumentsTab";
 
 describe("Documents tab", () => {
   describe("buildQuery", () => {
@@ -15,10 +15,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.buildQuery("")).toContain("select");
@@ -27,9 +23,14 @@ describe("Documents tab", () => {
 
   describe("showPartitionKey", () => {
     const explorer = new Explorer();
-
     const mongoExplorer = new Explorer();
-    mongoExplorer.defaultExperience(Constants.DefaultAccountExperience.MongoDB);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableGremlin" }],
+        },
+      } as DatabaseAccount,
+    });
 
     const collectionWithoutPartitionKey = <ViewModels.Collection>(<unknown>{
       id: ko.observable<string>("foo"),
@@ -88,10 +89,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -105,10 +102,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -122,16 +115,15 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);
     });
 
     it("should be false for Mongo accounts with system partitionKey", () => {
+      updateUserContext({
+        apiType: "Mongo",
+      });
       const documentsTab = new DocumentsTab({
         collection: mongoCollectionWithSystemPartitionKey,
         partitionKey: null,
@@ -139,10 +131,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(false);
@@ -156,10 +144,6 @@ describe("Documents tab", () => {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
         tabPath: "",
-        hashLocation: "",
-        isActive: ko.observable<boolean>(false),
-
-        onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]): void => {},
       });
 
       expect(documentsTab.showPartitionKey).toBe(true);

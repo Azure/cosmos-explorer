@@ -1,16 +1,10 @@
-import * as ko from "knockout";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
-import { SplashScreen } from "./SplashScreen";
-import { TabsManager } from "../Tabs/TabsManager";
 import Explorer from "../Explorer";
+import { SplashScreen } from "./SplashScreen";
 jest.mock("../Explorer");
 
 const createExplorer = () => {
   const mock = new Explorer();
-  mock.selectedNode = ko.observable();
-  mock.isNotebookEnabled = ko.observable(false);
-  mock.addCollectionText = ko.observable("add collection");
-  mock.tabsManager = new TabsManager();
   return mock as jest.Mocked<Explorer>;
 };
 

@@ -1,158 +1,90 @@
+import { shallow } from "enzyme";
+import React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
-import { NotebookTerminalComponent } from "./NotebookTerminalComponent";
+import { NotebookTerminalComponent, NotebookTerminalComponentProps } from "./NotebookTerminalComponent";
 
-const createTestDatabaseAccount = (): DataModels.DatabaseAccount => {
-  return {
-    id: "testId",
-    kind: "testKind",
-    location: "testLocation",
-    name: "testName",
-    properties: {
-      cassandraEndpoint: null,
-      documentEndpoint: "https://testDocumentEndpoint.azure.com/",
-      gremlinEndpoint: null,
-      tableEndpoint: null,
-    },
-    tags: "testTags",
-    type: "testType",
-  };
+const testAccount: DataModels.DatabaseAccount = {
+  id: "id",
+  kind: "kind",
+  location: "location",
+  name: "name",
+  properties: {
+    documentEndpoint: "https://testDocumentEndpoint.azure.com/",
+  },
+  type: "type",
 };
 
-const createTestMongo32DatabaseAccount = (): DataModels.DatabaseAccount => {
-  return {
-    id: "testId",
-    kind: "testKind",
-    location: "testLocation",
-    name: "testName",
-    properties: {
-      cassandraEndpoint: null,
-      documentEndpoint: "https://testDocumentEndpoint.azure.com/",
-      gremlinEndpoint: null,
-      tableEndpoint: null,
-    },
-    tags: "testTags",
-    type: "testType",
-  };
+const testMongo32Account: DataModels.DatabaseAccount = {
+  ...testAccount,
 };
 
-const createTestMongo36DatabaseAccount = (): DataModels.DatabaseAccount => {
-  return {
-    id: "testId",
-    kind: "testKind",
-    location: "testLocation",
-    name: "testName",
-    properties: {
-      cassandraEndpoint: null,
-      documentEndpoint: "https://testDocumentEndpoint.azure.com/",
-      gremlinEndpoint: null,
-      tableEndpoint: null,
-      mongoEndpoint: "https://testMongoEndpoint.azure.com/",
-    },
-    tags: "testTags",
-    type: "testType",
-  };
+const testMongo36Account: DataModels.DatabaseAccount = {
+  ...testAccount,
+  properties: {
+    mongoEndpoint: "https://testMongoEndpoint.azure.com/",
+  },
 };
 
-const createTestCassandraDatabaseAccount = (): DataModels.DatabaseAccount => {
-  return {
-    id: "testId",
-    kind: "testKind",
-    location: "testLocation",
-    name: "testName",
-    properties: {
-      cassandraEndpoint: "https://testCassandraEndpoint.azure.com/",
-      documentEndpoint: null,
-      gremlinEndpoint: null,
-      tableEndpoint: null,
-    },
-    tags: "testTags",
-    type: "testType",
-  };
+const testCassandraAccount: DataModels.DatabaseAccount = {
+  ...testAccount,
+  properties: {
+    cassandraEndpoint: "https://testCassandraEndpoint.azure.com/",
+  },
 };
 
-const createTerminal = (): NotebookTerminalComponent => {
-  return new NotebookTerminalComponent({
-    notebookServerInfo: {
-      authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/",
-    },
-    databaseAccount: createTestDatabaseAccount(),
-  });
+const testNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
+  authToken: "authToken",
+  notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com",
 };
 
-const createMongo32Terminal = (): NotebookTerminalComponent => {
-  return new NotebookTerminalComponent({
-    notebookServerInfo: {
-      authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo",
-    },
-    databaseAccount: createTestMongo32DatabaseAccount(),
-  });
+const testMongoNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
+  authToken: "authToken",
+  notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo",
 };
 
-const createMongo36Terminal = (): NotebookTerminalComponent => {
-  return new NotebookTerminalComponent({
-    notebookServerInfo: {
-      authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo",
-    },
-    databaseAccount: createTestMongo36DatabaseAccount(),
-  });
-};
-
-const createCassandraTerminal = (): NotebookTerminalComponent => {
-  return new NotebookTerminalComponent({
-    notebookServerInfo: {
-      authToken: "testAuthToken",
-      notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/cassandra",
-    },
-    databaseAccount: createTestCassandraDatabaseAccount(),
-  });
+const testCassandraNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
+  authToken: "authToken",
+  notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/cassandra",
 };
 
 describe("NotebookTerminalComponent", () => {
-  it("getTerminalParams: Test for terminal", () => {
-    const terminal: NotebookTerminalComponent = createTerminal();
-    const params: Map<string, string> = terminal.getTerminalParams();
+  it("renders terminal", () => {
+    const props: NotebookTerminalComponentProps = {
+      databaseAccount: testAccount,
+      notebookServerInfo: testNotebookServerInfo,
+    };
 
-    expect(params).toEqual(
-      new Map<string, string>([["terminal", "true"]])
-    );
+    const wrapper = shallow(<NotebookTerminalComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
   });
 
-  it("getTerminalParams: Test for Mongo 3.2 terminal", () => {
-    const terminal: NotebookTerminalComponent = createMongo32Terminal();
-    const params: Map<string, string> = terminal.getTerminalParams();
+  it("renders mongo 3.2 shell", () => {
+    const props: NotebookTerminalComponentProps = {
+      databaseAccount: testMongo32Account,
+      notebookServerInfo: testMongoNotebookServerInfo,
+    };
 
-    expect(params).toEqual(
-      new Map<string, string>([
-        ["terminal", "true"],
-        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.documentEndpoint).host],
-      ])
-    );
+    const wrapper = shallow(<NotebookTerminalComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
   });
 
-  it("getTerminalParams: Test for Mongo 3.6 terminal", () => {
-    const terminal: NotebookTerminalComponent = createMongo36Terminal();
-    const params: Map<string, string> = terminal.getTerminalParams();
+  it("renders mongo 3.6 shell", () => {
+    const props: NotebookTerminalComponentProps = {
+      databaseAccount: testMongo36Account,
+      notebookServerInfo: testMongoNotebookServerInfo,
+    };
 
-    expect(params).toEqual(
-      new Map<string, string>([
-        ["terminal", "true"],
-        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.mongoEndpoint).host],
-      ])
-    );
+    const wrapper = shallow(<NotebookTerminalComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
   });
 
-  it("getTerminalParams: Test for Cassandra terminal", () => {
-    const terminal: NotebookTerminalComponent = createCassandraTerminal();
-    const params: Map<string, string> = terminal.getTerminalParams();
+  it("renders cassandra shell", () => {
+    const props: NotebookTerminalComponentProps = {
+      databaseAccount: testCassandraAccount,
+      notebookServerInfo: testCassandraNotebookServerInfo,
+    };
 
-    expect(params).toEqual(
-      new Map<string, string>([
-        ["terminal", "true"],
-        ["terminalEndpoint", new URL(terminal.props.databaseAccount.properties.cassandraEndpoint).host],
-      ])
-    );
+    const wrapper = shallow(<NotebookTerminalComponent {...props} />);
+    expect(wrapper).toMatchSnapshot();
   });
 });

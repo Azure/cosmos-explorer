@@ -1,33 +1,25 @@
-import * as DataModels from "../../Contracts/DataModels";
-import { AuthType } from "../../AuthType";
 import { ContainerResponse, DatabaseResponse } from "@azure/cosmos";
+import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { ContainerRequest } from "@azure/cosmos/dist-esm/client/Container/ContainerRequest";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import * as ARMTypes from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
-import { createMongoCollectionWithProxy } from "../MongoProxyClient";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import {
-  createUpdateCassandraTable,
-  getCassandraTable,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import {
-  createUpdateMongoDBCollection,
-  getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import {
-  createUpdateGremlinGraph,
-  getGremlinGraph,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleProgress, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
-import { createDatabase } from "./createDatabase";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { AuthType } from "../../AuthType";
+import * as DataModels from "../../Contracts/DataModels";
+import { useDatabases } from "../../Explorer/useDatabases";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../UserContext";
+import { getCollectionName } from "../../Utils/APITypeUtils";
+import { createUpdateCassandraTable } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { createUpdateGremlinGraph } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { createUpdateMongoDBCollection } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { createUpdateSqlContainer } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { createUpdateTable } from "../../Utils/arm/generatedClients/cosmos/tableResources";
+import * as ARMTypes from "../../Utils/arm/generatedClients/cosmos/types";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
+import { createMongoCollectionWithProxy } from "../MongoProxyClient";
+import { createDatabase } from "./createDatabase";
 
 export const createCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   const clearMessage = logConsoleProgress(
@@ -46,7 +38,7 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
         await createDatabase(createDatabaseParams);
       }
       collection = await createCollectionWithARM(params);
-    } else if (userContext.defaultExperience === DefaultAccountExperienceType.MongoDB) {
+    } else if (userContext.apiType === "Mongo") {
       collection = await createMongoCollectionWithProxy(params);
     } else {
       collection = await createCollectionWithSDK(params);
@@ -63,41 +55,34 @@ export const createCollection = async (params: DataModels.CreateCollectionParams
 };
 
 const createCollectionWithARM = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  const defaultExperience = userContext.defaultExperience;
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+  if (!params.createNewDatabase) {
+    const isValid = await useDatabases.getState().validateCollectionId(params.databaseId, params.collectionId);
+    if (!isValid) {
+      const collectionName = getCollectionName().toLocaleLowerCase();
+      throw new Error(
+        `Create ${collectionName} failed: ${collectionName} with id ${params.collectionId} already exists`
+      );
+    }
+  }
+
+  const { apiType } = userContext;
+  switch (apiType) {
+    case "SQL":
       return createSqlContainer(params);
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       return createMongoCollection(params);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return createCassandraTable(params);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return createGraph(params);
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       return createTable(params);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 };
 
 const createSqlContainer = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  try {
-    const getResponse = await getSqlContainer(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId,
-      params.collectionId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create container failed: container with id ${params.collectionId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.SqlContainerResource = {
     id: params.collectionId,
@@ -135,23 +120,6 @@ const createSqlContainer = async (params: DataModels.CreateCollectionParams): Pr
 
 const createMongoCollection = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
   const mongoWildcardIndexOnAllFields: ARMTypes.MongoIndex[] = [{ key: { keys: ["$**"] } }, { key: { keys: ["_id"] } }];
-  try {
-    const getResponse = await getMongoDBCollection(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId,
-      params.collectionId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create collection failed: collection with id ${params.collectionId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.MongoDBCollectionResource = {
     id: params.collectionId,
@@ -193,23 +161,6 @@ const createMongoCollection = async (params: DataModels.CreateCollectionParams):
 };
 
 const createCassandraTable = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  try {
-    const getResponse = await getCassandraTable(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId,
-      params.collectionId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create table failed: table with id ${params.collectionId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.CassandraTableResource = {
     id: params.collectionId,
@@ -237,23 +188,6 @@ const createCassandraTable = async (params: DataModels.CreateCollectionParams): 
 };
 
 const createGraph = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  try {
-    const getResponse = await getGremlinGraph(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId,
-      params.collectionId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create graph failed: graph with id ${params.collectionId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.GremlinGraphResource = {
     id: params.collectionId,
@@ -288,22 +222,6 @@ const createGraph = async (params: DataModels.CreateCollectionParams): Promise<D
 };
 
 const createTable = async (params: DataModels.CreateCollectionParams): Promise<DataModels.Collection> => {
-  try {
-    const getResponse = await getTable(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.collectionId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create table failed: table with id ${params.collectionId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: ARMTypes.CreateUpdateOptions = constructRpOptions(params);
   const resource: ARMTypes.TableResource = {
     id: params.collectionId,

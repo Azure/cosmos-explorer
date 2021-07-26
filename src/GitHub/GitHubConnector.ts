@@ -1,3 +1,5 @@
+import postRobot from "post-robot";
+
 export interface IGitHubConnectorParams {
   state: string;
   code: string;
@@ -5,26 +7,21 @@ export interface IGitHubConnectorParams {
 
 export const GitHubConnectorMsgType = "GitHubConnectorMsgType";
 
-export class GitHubConnector {
-  public start(params: URLSearchParams, window: Window & typeof globalThis) {
-    window.postMessage(
-      {
-        type: GitHubConnectorMsgType,
-        data: {
-          state: params.get("state"),
-          code: params.get("code"),
-        } as IGitHubConnectorParams,
-      },
-      window.location.origin
-    );
-  }
-}
-
-var connector = new GitHubConnector();
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
   const openerWindow = window.opener;
   if (openerWindow) {
-    connector.start(new URLSearchParams(document.location.search), openerWindow);
+    const params = new URLSearchParams(document.location.search);
+    await postRobot.send(
+      openerWindow,
+      GitHubConnectorMsgType,
+      {
+        state: params.get("state"),
+        code: params.get("code"),
+      } as IGitHubConnectorParams,
+      {
+        domain: window.location.origin,
+      }
+    );
     window.close();
   }
 });

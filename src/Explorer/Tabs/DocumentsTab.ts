@@ -1,44 +1,39 @@
+import { extractPartitionKey, ItemDefinition, PartitionKeyDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
+import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
+import DiscardIcon from "../../../images/discard.svg";
+import NewDocumentIcon from "../../../images/NewDocument.svg";
+import SaveIcon from "../../../images/save-cosmos.svg";
+import UploadIcon from "../../../images/Upload_16x16.svg";
 import * as Constants from "../../Common/Constants";
+import { DocumentsGridMetrics, KeyCodes } from "../../Common/Constants";
+import { createDocument } from "../../Common/dataAccess/createDocument";
+import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
+import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
+import { readDocument } from "../../Common/dataAccess/readDocument";
+import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import editable from "../../Common/EditableUtility";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../Common/HeadersUtility";
+import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
-import { KeyCodes } from "../../Common/Constants";
-import DocumentId from "../Tree/DocumentId";
-import editable from "../../Common/EditableUtility";
-import * as HeadersUtility from "../../Common/HeadersUtility";
-import TabsBase from "./TabsBase";
-import { DocumentsGridMetrics } from "../../Common/Constants";
-import { QueryUtils } from "../../Utils/QueryUtils";
-import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import NewDocumentIcon from "../../../images/NewDocument.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
-import DiscardIcon from "../../../images/discard.svg";
-import DeleteDocumentIcon from "../../../images/DeleteDocument.svg";
-import UploadIcon from "../../../images/Upload_16x16.svg";
-import {
-  extractPartitionKey,
-  PartitionKeyDefinition,
-  QueryIterator,
-  ItemDefinition,
-  Resource,
-  Item,
-} from "@azure/cosmos";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import Explorer from "../Explorer";
+import { userContext } from "../../UserContext";
+import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { queryDocuments } from "../../Common/dataAccess/queryDocuments";
-import { readDocument } from "../../Common/dataAccess/readDocument";
-import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
-import { updateDocument } from "../../Common/dataAccess/updateDocument";
-import { createDocument } from "../../Common/dataAccess/createDocument";
+import Explorer from "../Explorer";
+import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
+import DocumentId from "../Tree/DocumentId";
+import { useSelectedNode } from "../useSelectedNode";
+import template from "./DocumentsTab.html";
+import TabsBase from "./TabsBase";
 
 export default class DocumentsTab extends TabsBase {
+  public readonly html = template;
   public selectedDocumentId: ko.Observable<DocumentId>;
   public selectedDocumentContent: ViewModels.Editable<string>;
   public initialDocumentContent: ko.Observable<string>;
@@ -78,9 +73,7 @@ export default class DocumentsTab extends TabsBase {
 
   constructor(options: ViewModels.DocumentsTabOptions) {
     super(options);
-    this.isPreferredApiMongoDB = !!this.collection
-      ? this.collection.container.isPreferredApiMongoDB()
-      : options.isPreferredApiMongoDB;
+    this.isPreferredApiMongoDB = userContext.apiType === "Mongo" || options.isPreferredApiMongoDB;
 
     this.idHeader = this.isPreferredApiMongoDB ? "_id" : "id";
 
@@ -733,7 +726,7 @@ export default class DocumentsTab extends TabsBase {
         (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, errorMessage);
+          logConsoleError(errorMessage);
           if (this.onLoadStartKey != null && this.onLoadStartKey != undefined) {
             TelemetryProcessor.traceFailure(
               Action.Tab,
@@ -880,8 +873,6 @@ export default class DocumentsTab extends TabsBase {
       buttons.push(DocumentsTab._createUploadButton(this.collection.container));
     }
 
-    const features = this.collection.container.features() || {};
-
     return buttons;
   }
 
@@ -921,18 +912,13 @@ export default class DocumentsTab extends TabsBase {
       iconSrc: UploadIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        const focusElement = document.getElementById("itemImportLink");
-        const uploadItemsPane = container.isRightPanelV2Enabled()
-          ? container.uploadItemsPaneAdapter
-          : container.uploadItemsPane;
-        selectedCollection && uploadItemsPane.open();
-        focusElement && focusElement.focus();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+        selectedCollection && container.openUploadItemsPanePane();
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: useSelectedNode.getState().isDatabaseNodeOrNoneSelected(),
     };
   }
 }

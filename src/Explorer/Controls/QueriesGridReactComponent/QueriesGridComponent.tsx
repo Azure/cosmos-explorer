@@ -1,34 +1,36 @@
-import * as _ from "underscore";
-import * as React from "react";
-import * as Constants from "../../../Common/Constants";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import {
+  ContextualMenu,
   DetailsList,
   DetailsListLayoutMode,
+  DetailsRow,
+  FocusZone,
+  IButtonProps,
+  IColumn,
+  IconButton,
+  IContextualMenuProps,
   IDetailsListProps,
   IDetailsRowProps,
-  DetailsRow,
-} from "office-ui-fabric-react/lib/DetailsList";
-import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
-import { IconButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
-import { IColumn } from "office-ui-fabric-react/lib/DetailsList";
-import { IContextualMenuProps, ContextualMenu } from "office-ui-fabric-react/lib/ContextualMenu";
-import {
   IObjectWithKey,
   ISelectionZoneProps,
+  ITextField,
+  ITextFieldProps,
   Selection,
   SelectionMode,
   SelectionZone,
-} from "office-ui-fabric-react/lib/utilities/selection/index";
+  TextField,
+} from "@fluentui/react";
+import * as React from "react";
+import * as _ from "underscore";
+import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
+import * as Constants from "../../../Common/Constants";
 import { StyleConstants } from "../../../Common/Constants";
-import { TextField, ITextFieldProps, ITextField } from "office-ui-fabric-react/lib/TextField";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import { QueriesClient } from "../../../Common/QueriesClient";
+import * as DataModels from "../../../Contracts/DataModels";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
-import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
-import { QueriesClient } from "../../../Common/QueriesClient";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+const title = "Open Saved Queries";
 
 export interface QueriesGridComponentProps {
   queriesClient: QueriesClient;
@@ -74,6 +76,11 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       // refresh only when pane is opened or query setup was recently completed
       this.fetchSavedQueries();
     }
+  }
+
+  // fetched saved queries when panel open
+  public componentDidMount() {
+    this.fetchSavedQueries();
   }
 
   public render(): JSX.Element {
@@ -136,7 +143,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       },
     };
     return (
-      <div>
+      <div id="emptyQueryBanner">
         <div>
           You have not saved any queries yet. <br /> <br />
           To write a new query, open a new query tab and enter the desired query. Once ready to save, click on Save
@@ -189,9 +196,9 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       {
         key: "Action",
         name: "Action",
-        fieldName: null,
+        fieldName: undefined,
         minWidth: 70,
-        onRender: (query: Query, index: number, column: IColumn) => {
+        onRender: (query: Query) => {
           const buttonProps: IButtonProps = {
             iconProps: {
               iconName: "More",
@@ -207,22 +214,18 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                 {
                   key: "Open",
                   text: "Open query",
-                  onClick: (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>, menuItem: any) => {
+                  onClick: () => {
                     this.props.onQuerySelect(query);
                   },
                 },
                 {
                   key: "Delete",
                   text: "Delete query",
-                  onClick: async (
-                    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
-                    menuItem: any
-                  ) => {
+                  onClick: async () => {
                     if (window.confirm("Are you sure you want to delete this query?")) {
-                      const container = window.dataExplorer;
                       const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
                         dataExplorerArea: Constants.Areas.ContextualPane,
-                        paneTitle: container && container.browseQueriesPane.title(),
+                        paneTitle: title,
                       });
                       try {
                         await this.props.queriesClient.deleteQuery(query);
@@ -230,7 +233,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                           Action.DeleteSavedQuery,
                           {
                             dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: container && container.browseQueriesPane.title(),
+                            paneTitle: title,
                           },
                           startKey
                         );
@@ -239,7 +242,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                           Action.DeleteSavedQuery,
                           {
                             dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: container && container.browseQueriesPane.title(),
+                            paneTitle: title,
                             error: getErrorMessage(error),
                             errorStack: getErrorStack(error),
                           },

@@ -1,12 +1,53 @@
 @import "../../../less/Common/Constants";
 
-.panelContentContainer {
+.panelFormWrapper {
   display: flex;
   flex-direction: column;
   height: 100%;
 
   .panelMainContent {
     flex-grow: 1;
+    padding: 0 34px;
+    margin: 20px 0;
+    overflow: auto;
+
+    & > :not(.collapsibleSection) {
+      margin-bottom: @DefaultSpace;
+
+      & > :not(:last-child) {
+        margin-bottom: @DefaultSpace;
+      }
+    }
+
+    .panelInfoIcon {
+      font-size: @mediumFontSize;
+      width: @mediumFontSize;
+      margin: auto 0 auto @SmallSpace;
+      cursor: default;
+      vertical-align: middle;
+    }
+
+    .panelTextBold {
+      font-weight: 600;
+      line-height: 20px;
+    }
+
+    .panelTextField {
+      font-size: @mediumFontSize;
+      border: 1px solid #605e5c;
+      color: #000;
+      padding: 4px 10px;
+      width: @newCollectionPaneInputWidth;
+    }
+
+    .panelRadioBtn {
+      margin: 0;
+    }
+
+    .panelRadioBtnLabel {
+      font-size: @mediumFontSize;
+      padding: 0 @LargeSpace 0 @SmallSpace;
+    }
   }
 }
 
@@ -16,24 +57,28 @@
   font-weight: 400;
 }
 
-.panelWarningErrorContainer {
+.panelInfoErrorContainer {
   background-color: @BaseLow;
   padding: @DefaultSpace;
   display: inline-flex;
-  margin-bottom: 24px;
+  margin: 20px 34px 0 34px;
 
-  .panelWarningIcon {
+  i {
     font-size: @WarningErrorIconSize;
     width: @WarningErrorIconSize;
-    margin: auto 0 auto @SmallSpace;
+    margin-left: @SmallSpace;
+  }
+
+  .panelWarningIcon {
     color: @WarningIconColor;
   }
 
   .panelErrorIcon {
-    font-size: @WarningErrorIconSize;
-    width: @WarningErrorIconSize;
-    margin: auto 0 auto @SmallSpace;
     color: @ErrorIconColor;
+  }
+
+  .panelLargeInfoIcon {
+    color: @InfoIconColor;
   }
 
   .panelWarningErrorDetailsLinkContainer {
@@ -48,10 +93,75 @@
   }
 }
 
-.panelFooter button {
-  height: 30px;
+.panelFooter {
+  padding: 16px 34px;
+  border-top: solid 1px #bbbbbb;
+
+  & button {
+    height: 30px;
+  }
 }
 
 .deleteCollectionFeedback {
   margin-top: 12px;
+}
+.addRemoveIcon {
+  margin-left: 4px !important;
+}
+.addRemoveIconLabel {
+  margin-top: 28px;
+  margin-left: 4px !important;
+}
+.addNewParamStyle {
+  margin-top: 5px;
+  margin-left: 5px !important;
+  cursor: pointer;
+}
+
+.panelGroupSpacing > :not(:last-child) {
+  margin-bottom: @DefaultSpace;
+}
+.fileUpload {
+  display: none !important;
+}
+.customFileUpload {
+  padding: 25px 0px 0px 10px;
+  cursor: pointer;
+  display: flex;
+}
+.fileIcon {
+  align-self: center;
+}
+.panelAddIconLabel {
+  font-size: 20px;
+  width: 20px;
+  margin: 30px 0 0 10px;
+  cursor: default;
+}
+.panelAddIcon {
+  font-size: 20px;
+  width: 20px;
+  margin: 30px 0 0 10px;
+  cursor: default;
+}
+.removeIcon {
+  color: @InfoIconColor;
+}
+.backImageIcon {
+  margin-top: 8px;
+}
+.addEntityDatePicker {
+  max-width: 145px;
+}
+.addEntityTextField {
+  width: 237px;
+}
+.addButtonEntiy {
+  width: 25%;
+}
+.column-select-view {
+  margin: 20px 0px 0px 0px;
+}
+.panelSeparator::before {
+  background-color: #edebe9;
 }

@@ -1,47 +1,51 @@
-import * as React from "react";
-import "./base.css";
-import "./default.css";
-
-import { RawCell, Cells, CodeCell, MarkdownCell } from "@nteract/stateful-components";
-import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
+import { CellId } from "@nteract/commutable";
+import { CellType } from "@nteract/commutable/src";
+import { actions, ContentRef, selectors } from "@nteract/core";
+import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
+import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
-
-import Prompt from "./Prompt";
-import { promptContent } from "./PromptContent";
-
-import { AzureTheme } from "./AzureTheme";
+import * as React from "react";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { actions, ContentRef } from "@nteract/core";
-import { CellId } from "@nteract/commutable";
-import loadTransform from "../NotebookComponent/loadTransform";
-import DraggableCell from "./decorators/draggable";
-import CellCreator from "./decorators/CellCreator";
-import KeyboardShortcuts from "./decorators/kbd-shortcuts";
-
-import CellToolbar from "./Toolbar";
-import StatusBar from "./StatusBar";
-
-import HijackScroll from "./decorators/hijack-scroll";
-import { CellType } from "@nteract/commutable/src";
-
-import "./NotebookRenderer.less";
-import HoverableCell from "./decorators/HoverableCell";
-import CellLabeler from "./decorators/CellLabeler";
+import { userContext } from "../../../UserContext";
 import * as cdbActions from "../NotebookComponent/actions";
+import loadTransform from "../NotebookComponent/loadTransform";
+import { CdbAppState, SnapshotFragment, SnapshotRequest } from "../NotebookComponent/types";
+import { NotebookUtil } from "../NotebookUtil";
+import { AzureTheme } from "./AzureTheme";
+import "./base.css";
+import CellCreator from "./decorators/CellCreator";
+import CellLabeler from "./decorators/CellLabeler";
+import HoverableCell from "./decorators/HoverableCell";
+import KeyboardShortcuts from "./decorators/kbd-shortcuts";
+import "./default.css";
+import MarkdownCell from "./markdown-cell";
+import "./NotebookRenderer.less";
+import SandboxOutputs from "./outputs/SandboxOutputs";
+import Prompt from "./Prompt";
+import { promptContent } from "./PromptContent";
+import StatusBar from "./StatusBar";
+import CellToolbar from "./Toolbar";
 
 export interface NotebookRendererBaseProps {
   contentRef: any;
 }
 
 interface NotebookRendererDispatchProps {
-  updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => void;
+  storeNotebookSnapshot: (imageSrc: string, requestId: string) => void;
+  notebookSnapshotError: (error: string) => void;
 }
 
-type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatchProps;
+interface StateProps {
+  pendingSnapshotRequest: SnapshotRequest;
+  cellOutputSnapshots: Map<string, SnapshotFragment>;
+  notebookSnapshot: { imageSrc: string; requestId: string };
+  nbCodeCells: number;
+}
+
+type NotebookRendererProps = NotebookRendererBaseProps & NotebookRendererDispatchProps & StateProps;
 
 const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, children: React.ReactNode) => {
   const Cell = () => (
@@ -66,25 +70,37 @@ const decorate = (id: string, contentRef: ContentRef, cell_type: CellType, child
 class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   private notebookRendererRef = React.createRef<HTMLDivElement>();
 
-  constructor(props: NotebookRendererProps) {
-    super(props);
-
-    this.state = {
-      hoveredCellId: undefined,
-    };
-  }
-
   componentDidMount() {
-    loadTransform(this.props as any);
-    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
+    if (!userContext.features.sandboxNotebookOutputs) {
+      loadTransform(this.props as any);
+    }
   }
 
-  componentDidUpdate() {
-    this.props.updateNotebookParentDomElt(this.props.contentRef, this.notebookRendererRef.current);
-  }
-
-  componentWillUnmount() {
-    this.props.updateNotebookParentDomElt(this.props.contentRef, undefined);
+  async componentDidUpdate(): Promise<void> {
+    // Take a snapshot if there's a pending request and all the outputs are also saved
+    if (
+      this.props.pendingSnapshotRequest &&
+      this.props.pendingSnapshotRequest.type === "notebook" &&
+      this.props.pendingSnapshotRequest.notebookContentRef === this.props.contentRef &&
+      (!this.props.notebookSnapshot ||
+        this.props.pendingSnapshotRequest.requestId !== this.props.notebookSnapshot.requestId) &&
+      this.props.cellOutputSnapshots.size === this.props.nbCodeCells
+    ) {
+      try {
+        // Use Html2Canvas because it is much more reliable and fast than dom-to-file
+        const result = await NotebookUtil.takeScreenshotHtml2Canvas(
+          this.notebookRendererRef.current,
+          this.props.pendingSnapshotRequest.aspectRatio,
+          [...this.props.cellOutputSnapshots.values()],
+          this.props.pendingSnapshotRequest.downloadFilename
+        );
+        this.props.storeNotebookSnapshot(result.imageSrc, this.props.pendingSnapshotRequest.requestId);
+      } catch (error) {
+        this.props.notebookSnapshotError(error.message);
+      } finally {
+        this.setState({ processedSnapshotRequest: undefined });
+      }
+    }
   }
 
   render(): JSX.Element {
@@ -104,7 +120,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <CodeCell id={id} contentRef={contentRef} cell_type="code">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
+                              codemirror: (props: PassedEditorProps) => (
+                                <CodeMirrorEditor {...props} editorType="codemirror" />
+                              ),
                             },
                             prompt: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) => (
                               <Prompt id={id} contentRef={contentRef} isHovered={false}>
@@ -112,6 +130,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                               </Prompt>
                             ),
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
+                            outputs: userContext.features.sandboxNotebookOutputs
+                              ? () => <SandboxOutputs id={id} contentRef={contentRef} />
+                              : undefined,
                           }}
                         </CodeCell>
                       ),
@@ -123,7 +144,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
+                              codemirror: (props: PassedEditorProps) => (
+                                <CodeMirrorEditor {...props} editorType="codemirror" />
+                              ),
                             },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
@@ -138,7 +161,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         <RawCell id={id} contentRef={contentRef} cell_type="raw">
                           {{
                             editor: {
-                              monaco: (props: PassedEditorProps) => <MonacoEditor {...props} editorType={"monaco"} />,
+                              codemirror: (props: PassedEditorProps) => (
+                                <CodeMirrorEditor {...props} editorType="codemirror" />
+                              ),
                             },
                             toolbar: () => <CellToolbar id={id} contentRef={contentRef} />,
                           }}
@@ -157,28 +182,40 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
   }
 }
 
+export const makeMapStateToProps = (
+  initialState: CdbAppState,
+  ownProps: NotebookRendererProps
+): ((state: CdbAppState) => StateProps) => {
+  const mapStateToProps = (state: CdbAppState): StateProps => {
+    const { contentRef } = ownProps;
+    const model = selectors.model(state, { contentRef });
+
+    let nbCodeCells;
+    if (model && model.type === "notebook") {
+      nbCodeCells = NotebookUtil.findCodeCellWithDisplay(model.notebook).length;
+    }
+    const { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot } = state.cdb;
+    return { pendingSnapshotRequest, cellOutputSnapshots, notebookSnapshot, nbCodeCells };
+  };
+  return mapStateToProps;
+};
+
 const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererBaseProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
-      addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => {
-        return dispatch(
+      addTransform: (transform: React.ComponentType & { MIMETYPE: string }) =>
+        dispatch(
           actions.addTransform({
             mediaType: transform.MIMETYPE,
             component: transform,
           })
-        );
-      },
-      updateNotebookParentDomElt: (contentRef: ContentRef, parentElt: HTMLElement) => {
-        return dispatch(
-          cdbActions.UpdateNotebookParentDomElt({
-            contentRef,
-            parentElt,
-          })
-        );
-      },
+        ),
+      storeNotebookSnapshot: (imageSrc: string, requestId: string) =>
+        dispatch(cdbActions.storeNotebookSnapshot({ imageSrc, requestId })),
+      notebookSnapshotError: (error: string) => dispatch(cdbActions.notebookSnapshotError({ error })),
     };
   };
   return mapDispatchToProps;
 };
 
-export default connect(null, makeMapDispatchToProps)(BaseNotebookRenderer);
+export default connect(makeMapStateToProps, makeMapDispatchToProps)(BaseNotebookRenderer);

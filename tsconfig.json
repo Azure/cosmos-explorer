@@ -3,6 +3,7 @@
     "allowJs": true,
     "sourceMap": false,
     "noImplicitAny": true,
+    "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "allowUnreachableCode": false,
@@ -11,16 +12,41 @@
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "module": "esnext",
-    "target": "es5",
+    "target": "es2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": ["es5", "es6", "dom", "webworker.importscripts"],
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": ["jest"]
+    "types": [
+      "jest"
+    ]
   },
-  "include": ["./src/**/*", "./test/testExplorer/TestExplorer.ts"],
-  "exclude": ["./src/**/__mocks__/**/*"]
+  "typedocOptions": {
+    "entryPoints": [
+      "./src/SelfServe/Documentation/Documentation.ts",
+      "./src/SelfServe/Documentation/SupportedFeatures.ts",
+      "./src/SelfServe/Decorators.tsx",
+      "./src/SelfServe/SelfServeTypes.ts",
+      "./src/SelfServe/SelfServeUtils.tsx",
+      "./src/SelfServe/SelfServeTelemetryProcessor.ts"
+    ],
+    "out": "docs",
+    "excludeInternal": true,
+    "includes": "./src/SelfServe/Documentation",
+    "disableSources": true
+  },
+  "include": [
+    "./src/**/*",
+    "./utils/**/*"
+  ],
+  "exclude": [
+    "./src/**/__mocks__/**/*"
+  ]
 }

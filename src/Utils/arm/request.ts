@@ -47,15 +47,14 @@ interface Options {
   queryParams?: ARMQueryParams;
 }
 
-// TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
-export async function armRequest<T>({
+export async function armRequestWithoutPolling<T>({
   host,
   path,
   apiVersion,
   method,
   body: requestBody,
   queryParams,
-}: Options): Promise<T> {
+}: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
   if (queryParams) {
@@ -92,13 +91,33 @@ export async function armRequest<T>({
     throw error;
   }
 
-  const operationStatusUrl = response.headers && response.headers.get("location");
+  const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
+  const responseBody = (await response.json()) as T;
+  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+}
+
+// TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
+export async function armRequest<T>({
+  host,
+  path,
+  apiVersion,
+  method,
+  body: requestBody,
+  queryParams,
+}: Options): Promise<T> {
+  const armRequestResult = await armRequestWithoutPolling<T>({
+    host,
+    path,
+    apiVersion,
+    method,
+    body: requestBody,
+    queryParams,
+  });
+  const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
     return await promiseRetry(() => getOperationStatus(operationStatusUrl));
   }
-
-  const responseBody = (await response.json()) as T;
-  return responseBody;
+  return armRequestResult.result;
 }
 
 async function getOperationStatus(operationStatusUrl: string) {
@@ -125,13 +144,13 @@ async function getOperationStatus(operationStatusUrl: string) {
 
   const body = await response.json();
   const status = body.status;
-  if (!status && response.status === 200) {
-    return body;
-  }
   if (status === "Canceled" || status === "Failed") {
     const errorMessage = body.error ? JSON.stringify(body.error) : "Operation could not be completed";
     const error = new Error(errorMessage);
     throw new AbortError(error);
+  }
+  if (response.status === 200) {
+    return body;
   }
   throw new Error(`Operation Response: ${JSON.stringify(body)}. Retrying.`);
 }

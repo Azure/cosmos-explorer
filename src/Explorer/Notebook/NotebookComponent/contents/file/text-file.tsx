@@ -1,10 +1,10 @@
-import { StringUtils } from "../../../../../Utils/StringUtils";
 import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import { IMonacoProps as MonacoEditorProps } from "@nteract/monaco-editor";
 import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import styled from "styled-components";
+import * as StringUtils from "../../../../../Utils/StringUtils";
 
 const EditorContainer = styled.div`
   position: absolute;
@@ -37,7 +37,7 @@ interface TextFileState {
 class EditorPlaceholder extends React.PureComponent<MonacoEditorProps> {
   render(): JSX.Element {
     // TODO: Show a little blocky placeholder
-    return null;
+    return undefined;
   }
 }
 
@@ -98,7 +98,7 @@ function makeMapStateToTextFileProps(
 
     return {
       contentRef,
-      mimetype: content.mimetype != null ? content.mimetype : "text/plain",
+      mimetype: content.mimetype !== undefined ? content.mimetype : "text/plain",
       text,
     };
   };

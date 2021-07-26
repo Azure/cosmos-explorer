@@ -4,9 +4,9 @@
  */
 
 import * as React from "react";
-import { GraphHighlightedNodeData, NeighborVertexBasicInfo } from "./GraphExplorer";
-import { GraphUtil } from "./GraphUtil";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
+import { GraphHighlightedNodeData, NeighborVertexBasicInfo } from "./GraphExplorer";
+import * as GraphUtil from "./GraphUtil";
 
 export interface ReadOnlyNeighborsComponentProps {
   node: GraphHighlightedNodeData;
@@ -48,7 +48,7 @@ export class ReadOnlyNeighborsComponent extends React.Component<ReadOnlyNeighbor
                     className="clickableLink"
                     as="a"
                     aria-label={_neighbor.name}
-                    onActivated={(e) => this.props.selectNode(_neighbor.id)}
+                    onActivated={() => this.props.selectNode(_neighbor.id)}
                     title={GraphUtil.getNeighborTitle(_neighbor)}
                   >
                     {_neighbor.name}

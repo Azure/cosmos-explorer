@@ -1,29 +1,29 @@
-import { StringUtils } from "./StringUtils";
+import * as StringUtils from "./StringUtils";
 
 describe("StringUtils", () => {
   describe("stripSpacesFromString()", () => {
     it("should strip all spaces from input string", () => {
-      const transformedString: string = StringUtils.stripSpacesFromString("a b c");
+      const transformedString: string | undefined = StringUtils.stripSpacesFromString("a b c");
       expect(transformedString).toBe("abc");
     });
 
     it("should return original string if input string has no spaces", () => {
-      const transformedString: string = StringUtils.stripSpacesFromString("abc");
+      const transformedString: string | undefined = StringUtils.stripSpacesFromString("abc");
       expect(transformedString).toBe("abc");
     });
 
-    it("should return null if input is null", () => {
-      const transformedString: string = StringUtils.stripSpacesFromString(null);
-      expect(transformedString).toBeNull();
+    it("should return undefined if input is undefined", () => {
+      const transformedString: string | undefined = StringUtils.stripSpacesFromString(undefined);
+      expect(transformedString).toBeUndefined();
     });
 
     it("should return undefined if input is undefiend", () => {
-      const transformedString: string = StringUtils.stripSpacesFromString(undefined);
+      const transformedString: string | undefined = StringUtils.stripSpacesFromString(undefined);
       expect(transformedString).toBe(undefined);
     });
 
     it("should return empty string if input is an empty string", () => {
-      const transformedString: string = StringUtils.stripSpacesFromString("");
+      const transformedString: string | undefined = StringUtils.stripSpacesFromString("");
       expect(transformedString).toBe("");
     });
   });

@@ -1,55 +1,52 @@
-import React from "react";
-import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
 import {
-  getTextFieldStyles,
-  getToolTipContainer,
-  noLeftPaddingCheckBoxStyle,
-  titleAndInputStackProps,
-  checkBoxAndInputStackProps,
-  getChoiceGroupStyles,
-  messageBarStyles,
-  getEstimatedSpendingElement,
-  getAutoPilotV3SpendElement,
-  manualToAutoscaleDisclaimerElement,
-  saveThroughputWarningMessage,
-  ManualEstimatedSpendingDisplayProps,
-  AutoscaleEstimatedSpendingDisplayProps,
-  PriceBreakdown,
-  getRuPriceBreakdown,
-  transparentDetailsHeaderStyle,
-} from "../../SettingsRenderUtils";
-import {
-  Text,
-  TextField,
-  ChoiceGroup,
-  IChoiceGroupOption,
   Checkbox,
-  Stack,
+  ChoiceGroup,
+  FontIcon,
+  IChoiceGroupOption,
+  IColumn,
   Label,
   Link,
   MessageBar,
-  FontIcon,
-  IColumn,
-} from "office-ui-fabric-react";
-import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
-import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
-import * as SharedConstants from "../../../../../Shared/Constants";
+  Stack,
+  Text,
+  TextField,
+} from "@fluentui/react";
+import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
-import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
-import { userContext } from "../../../../../UserContext";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
-import { usageInGB, calculateEstimateNumber } from "../../../../../Utils/PricingUtils";
-import { Features } from "../../../../../Common/Constants";
-import { minAutoPilotThroughput } from "../../../../../Utils/AutoPilotUtils";
-
-import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
+import * as SharedConstants from "../../../../../Shared/Constants";
 import { Action, ActionModifiers } from "../../../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../../../UserContext";
+import * as AutoPilotUtils from "../../../../../Utils/AutoPilotUtils";
+import { minAutoPilotThroughput } from "../../../../../Utils/AutoPilotUtils";
+import { calculateEstimateNumber, usageInGB } from "../../../../../Utils/PricingUtils";
+import { Int32 } from "../../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
+import {
+  AutoscaleEstimatedSpendingDisplayProps,
+  checkBoxAndInputStackProps,
+  getAutoPilotV3SpendElement,
+  getChoiceGroupStyles,
+  getEstimatedSpendingElement,
+  getRuPriceBreakdown,
+  getTextFieldStyles,
+  getToolTipContainer,
+  ManualEstimatedSpendingDisplayProps,
+  manualToAutoscaleDisclaimerElement,
+  messageBarStyles,
+  noLeftPaddingCheckBoxStyle,
+  PriceBreakdown,
+  saveThroughputWarningMessage,
+  titleAndInputStackProps,
+  transparentDetailsHeaderStyle,
+} from "../../SettingsRenderUtils";
+import { getSanitizedInputValue, IsComponentDirtyResult, isDirty } from "../../SettingsUtils";
+import { ToolTipLabelComponent } from "../ToolTipLabelComponent";
 
 export interface ThroughputInputAutoPilotV3Props {
   databaseAccount: DataModels.DatabaseAccount;
   databaseName: string;
   collectionName: string;
-  serverId: string;
   throughput: number;
   throughputBaseline: number;
   onThroughputChange: (newThroughput: number) => void;
@@ -158,7 +155,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     this.state = {
       spendAckChecked: this.props.spendAckChecked,
       exceedFreeTierThroughput:
-        this.props.isFreeTierAccount && !this.props.isAutoPilotSelected && this.props.throughput > 400,
+        this.props.isFreeTierAccount &&
+        !this.props.isAutoPilotSelected &&
+        this.props.throughput > SharedConstants.FreeTierLimits.RU,
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
@@ -182,7 +181,6 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     }
 
     const isDirty: boolean = this.IsComponentDirty().isDiscardable;
-    const serverId: string = this.props.serverId;
     const regions = account?.properties?.readLocations?.length || 1;
     const multimaster = account?.properties?.enableMultipleWriteLocations || false;
 
@@ -192,7 +190,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
       estimatedSpend = this.getEstimatedManualSpendElement(
         // if migrating from autoscale to manual, we use the autoscale RUs value as that is what will be set...
         this.overrideWithAutoPilotSettings() ? this.props.maxAutoPilotThroughput : this.props.throughputBaseline,
-        serverId,
+        userContext.portalEnv,
         regions,
         multimaster,
         isDirty ? this.props.throughput : undefined
@@ -200,7 +198,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     } else {
       estimatedSpend = this.getEstimatedAutoscaleSpendElement(
         this.props.maxAutoPilotThroughputBaseline,
-        serverId,
+        userContext.portalEnv,
         regions,
         multimaster,
         isDirty ? this.props.maxAutoPilotThroughput : undefined
@@ -445,7 +443,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
-      this.setState({ exceedFreeTierThroughput: this.props.isFreeTierAccount && newThroughput > 400 });
+      this.setState({
+        exceedFreeTierThroughput: this.props.isFreeTierAccount && newThroughput > SharedConstants.FreeTierLimits.RU,
+      });
       this.props.onThroughputChange(newThroughput);
     }
   };
@@ -468,7 +468,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     const href = `https://ncv.microsoft.com/vRBTO37jmO?ctx={"AzureSubscriptionId":"${userContext.subscriptionId}","CosmosDBAccountName":"${userContext.databaseAccount?.name}"}`;
     const oneTBinKB = 1000000000;
     const minRUperGB = 10;
-    const featureFlagEnabled = window.dataExplorer?.isFeatureEnabled(Features.showMinRUSurvey);
+    const featureFlagEnabled = userContext.features.showMinRUSurvey;
     const collectionIsEligible =
       userContext.subscriptionType !== SubscriptionType.Internal &&
       this.props.usageSizeInKB > oneTBinKB &&
@@ -585,9 +585,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
           styles={messageBarStyles}
         >
-          {
-            "Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale."
-          }
+          {`Billing will apply if you provision more than ${SharedConstants.FreeTierLimits.RU} RU/s of manual throughput, or if the resource scales beyond ${SharedConstants.FreeTierLimits.RU} RU/s with autoscale.`}
         </MessageBar>
       )}
       {this.props.getThroughputWarningMessage() && (

@@ -2,27 +2,22 @@ jest.mock("../Graph/GraphExplorerComponent/GremlinClient");
 jest.mock("../../Common/dataAccess/createCollection");
 jest.mock("../../Common/dataAccess/createDocument");
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
-import Q from "q";
-import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import { createDocument } from "../../Common/dataAccess/createDocument";
-import Explorer from "../Explorer";
+import { DatabaseAccount } from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { updateUserContext } from "../../UserContext";
+import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
+import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 describe("ContainerSampleGenerator", () => {
-  const createExplorerStub = (database: ViewModels.Database): Explorer => {
-    const explorerStub = {} as Explorer;
-    explorerStub.nonSystemDatabases = ko.computed(() => [database]);
-    explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => false);
-    explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => false);
-    explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => false);
-    explorerStub.isPreferredApiTable = ko.computed<boolean>(() => false);
-    explorerStub.isPreferredApiCassandra = ko.computed<boolean>(() => false);
-    explorerStub.canExceedMaximumValue = ko.computed<boolean>(() => false);
-    explorerStub.findDatabaseWithId = () => database;
-    explorerStub.refreshAllDatabases = () => Q.resolve();
-    return explorerStub;
-  };
+  let explorerStub: Explorer;
+
+  beforeAll(() => {
+    explorerStub = {
+      refreshAllDatabases: () => {},
+    } as Explorer;
+  });
 
   beforeEach(() => {
     (createDocument as jest.Mock).mockResolvedValue(undefined);
@@ -31,7 +26,7 @@ describe("ContainerSampleGenerator", () => {
   it("should insert documents for sql API account", async () => {
     const sampleCollectionId = "SampleCollection";
     const sampleDatabaseId = "SampleDB";
-
+    updateUserContext({});
     const sampleData = {
       databaseId: sampleDatabaseId,
       offerThroughput: 400,
@@ -64,9 +59,8 @@ describe("ContainerSampleGenerator", () => {
       loadCollections: () => {},
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
+    useDatabases.getState().addDatabases([database]);
 
-    const explorerStub = createExplorerStub(database);
-    explorerStub.isPreferredApiDocumentDB = ko.computed<boolean>(() => true);
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
 
@@ -83,7 +77,6 @@ describe("ContainerSampleGenerator", () => {
         location: "foo",
         type: "foo",
         kind: "foo",
-        tags: [],
         properties: {
           documentEndpoint: "bar",
           gremlinEndpoint: "foo",
@@ -114,9 +107,15 @@ describe("ContainerSampleGenerator", () => {
     } as ViewModels.Database;
     database.findCollectionWithId = () => collection;
     collection.databaseId = database.id();
+    useDatabases.getState().addDatabases([database]);
 
-    const explorerStub = createExplorerStub(database);
-    explorerStub.isPreferredApiGraph = ko.computed<boolean>(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableGremlin" }],
+        },
+      } as DatabaseAccount,
+    });
 
     const generator = await ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub);
     generator.setData(sampleData);
@@ -125,31 +124,42 @@ describe("ContainerSampleGenerator", () => {
   });
 
   it("should not create any sample for Mongo API account", async () => {
-    const experience = "not supported api";
-    const explorerStub = createExplorerStub(undefined);
-    explorerStub.isPreferredApiMongoDB = ko.computed<boolean>(() => true);
-    explorerStub.defaultExperience = ko.observable<string>(experience);
+    const experience = "Sample generation not supported for this API Mongo";
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableMongo" }],
+        },
+      } as DatabaseAccount,
+    });
 
     // Rejects with error that contains experience
     expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });
 
   it("should not create any sample for Table API account", async () => {
-    const experience = "not supported api";
-    const explorerStub = createExplorerStub(undefined);
-    explorerStub.isPreferredApiTable = ko.computed<boolean>(() => true);
-    explorerStub.defaultExperience = ko.observable<string>(experience);
+    const experience = "Sample generation not supported for this API Tables";
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableTable" }],
+        },
+      } as DatabaseAccount,
+    });
 
     // Rejects with error that contains experience
     await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });
 
   it("should not create any sample for Cassandra API account", async () => {
-    const experience = "not supported api";
-    const explorerStub = createExplorerStub(undefined);
-    explorerStub.isPreferredApiCassandra = ko.computed<boolean>(() => true);
-    explorerStub.defaultExperience = ko.observable<string>(experience);
-
+    const experience = "Sample generation not supported for this API Cassandra";
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableCassandra" }],
+        },
+      } as DatabaseAccount,
+    });
     // Rejects with error that contains experience
     await expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });

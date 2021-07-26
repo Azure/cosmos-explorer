@@ -1,44 +1,44 @@
-import * as React from "react";
 import {
   DetailsList,
   DetailsListLayoutMode,
-  Stack,
-  IconButton,
-  Text,
-  SelectionMode,
   IColumn,
+  IconButton,
   MessageBar,
   MessageBarType,
+  SelectionMode,
+  Separator,
   Spinner,
   SpinnerSize,
-  Separator,
-} from "office-ui-fabric-react";
+  Stack,
+  Text,
+} from "@fluentui/react";
+import * as React from "react";
+import { MongoIndex } from "../../../../../Utils/arm/generatedClients/cosmos/types";
+import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
 import {
   addMongoIndexStackProps,
-  customDetailsListStyles,
-  mongoIndexingPolicyDisclaimer,
-  mediumWidthStackStyles,
-  subComponentStackProps,
   createAndAddMongoIndexStackProps,
-  separatorStyles,
+  customDetailsListStyles,
   indexingPolicynUnsavedWarningMessage,
   infoAndToolTipTextStyle,
-  onRenderRow,
+  mediumWidthStackStyles,
   mongoCompoundIndexNotSupportedMessage,
+  mongoIndexingPolicyDisclaimer,
+  onRenderRow,
+  separatorStyles,
+  subComponentStackProps,
 } from "../../SettingsRenderUtils";
-import { MongoIndex } from "../../../../../Utils/arm/generatedClients/2020-04-01/types";
 import {
-  MongoIndexTypes,
   AddMongoIndexProps,
-  MongoIndexIdField,
-  MongoNotificationType,
   getMongoIndexType,
   getMongoIndexTypeText,
   isIndexTransforming,
+  MongoIndexIdField,
+  MongoIndexTypes,
+  MongoNotificationType,
 } from "../../SettingsUtils";
-import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
-import { CollapsibleSectionComponent } from "../../../CollapsiblePanel/CollapsibleSectionComponent";
 import { IndexingPolicyRefreshComponent } from "../IndexingPolicyRefresh/IndexingPolicyRefreshComponent";
+import { AddMongoIndexComponent } from "./AddMongoIndexComponent";
 
 export interface MongoIndexingPolicyComponentProps {
   mongoIndexes: MongoIndex[];
@@ -239,7 +239,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
     return (
       <Stack {...createAndAddMongoIndexStackProps} styles={mediumWidthStackStyles}>
-        <CollapsibleSectionComponent title="Current index(es)">
+        <CollapsibleSectionComponent title="Current index(es)" isExpandedByDefault={true}>
           {
             <>
               <DetailsList
@@ -266,7 +266,7 @@ export class MongoIndexingPolicyComponent extends React.Component<MongoIndexingP
 
     return (
       <Stack styles={mediumWidthStackStyles}>
-        <CollapsibleSectionComponent title="Index(es) to be dropped">
+        <CollapsibleSectionComponent title="Index(es) to be dropped" isExpandedByDefault={true}>
           {indexesToBeDropped.length > 0 && (
             <DetailsList
               styles={customDetailsListStyles}

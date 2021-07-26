@@ -15,10 +15,10 @@ jobs:
     if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - run: npm ci
       - run: node utils/codeMetrics.js
         env:
@@ -28,10 +28,10 @@ jobs:
     name: "Compile TypeScript"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - run: npm ci
       - run: npm run compile
       - run: npm run compile:strict
@@ -40,10 +40,10 @@ jobs:
     name: "Check Format"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - run: npm ci
       - run: npm run format:check
   lint:
@@ -51,10 +51,10 @@ jobs:
     name: "Lint"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - run: npm ci
       - run: npm run lint
   unittest:
@@ -62,22 +62,21 @@ jobs:
     name: "Unit Tests"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - run: npm ci
       - run: npm run test
   build:
     runs-on: ubuntu-latest
-    needs: [lint, format, compile, unittest]
     name: "Build"
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - run: npm ci
       - run: npm run build:contracts
       - name: Restore Build Cache
@@ -92,16 +91,25 @@ jobs:
         with:
           name: dist
           path: dist/
+      - name: Upload build to preview blob storage
+        run: az storage blob upload-batch -d '$web' -s 'dist' --account-name cosmosexplorerpreview --subscription cosmosdb-portalteam-generaldemo --destination-path "${{github.event.pull_request.head.sha || github.sha}}" --account-key="${PREVIEW_STORAGE_KEY}"
+        env:
+          PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
+      - name: Upload preview config to blob storage
+        run: az storage blob upload -c '$web' -f ./preview/config.json --account-name cosmosexplorerpreview --subscription cosmosdb-portalteam-generaldemo --name "${{github.event.pull_request.head.sha || github.sha}}/config.json" --account-key="${PREVIEW_STORAGE_KEY}"
+        env:
+          PREVIEW_STORAGE_KEY: ${{ secrets.PREVIEW_STORAGE_KEY }}
   endtoendemulator:
     name: "End To End Emulator Tests"
-    needs: [lint, format, compile, unittest]
+    # Temporarily disabled. This test needs to be rewritten in playwright
+    if: false
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 14.x
       - uses: southpolesteve/cosmos-emulator-github-action@v1
       - name: End to End Tests
         run: |
@@ -119,72 +127,48 @@ jobs:
         with:
           name: screenshots
           path: failed-*
-  accessibility:
-    name: "Accessibility | Hosted"
-    needs: [lint, format, compile, unittest]
+  endtoend:
+    name: "E2E"
     runs-on: ubuntu-latest
+    env:
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
+    strategy:
+      fail-fast: false
+      matrix:
+        test-file:
+          - ./test/cassandra/container.spec.ts
+          - ./test/graph/container.spec.ts
+          - ./test/sql/container.spec.ts
+          - ./test/mongo/container.spec.ts
+          - ./test/mongo/container32.spec.ts
+          - ./test/selfServe/selfServeExample.spec.ts
+          - ./test/notebooks/upload.spec.ts
+          - ./test/sql/resourceToken.spec.ts
+          - ./test/tables/container.spec.ts
     steps:
       - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
+      - name: Use Node.js 14.x
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
-      - name: Accessibility Check
+          node-version: 14.x
+      - run: npm ci
+      - run: npm start &
+      - run: npm run wait-for-server
+      - name: ${{ matrix['test-file'] }}
         run: |
-          # Ubuntu gets mad when webpack runs too many files watchers
-          cat /proc/sys/fs/inotify/max_user_watches
-          sudo sysctl fs.inotify.max_user_watches=524288
-          sudo sysctl -p
-          npm ci
-          npm start &
-          npx wait-on -i 5000 https-get://0.0.0.0:1234/
-          node utils/accesibilityCheck.js
+          # Run tests up to three times
+          for i in $(seq 1 3); do npx jest -c ./jest.config.playwright.js ${{ matrix['test-file'] }} && s=0 && break || s=$? && sleep 1; done; (exit $s)
         shell: bash
-        env:
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
-  endtoendhosted:
-    name: "End to End Hosted Tests"
-    needs: [lint, format, compile, unittest]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - name: End to End Hosted Tests
-        run: |
-          npm ci
-          npm start &
-          node utils/cleanupDBs.js
-          npm run wait-for-server
-          npm run test:e2e
-        shell: bash
-        env:
-          NODE_TLS_REJECT_UNAUTHORIZED: 0
-          PORTAL_RUNNER_SUBSCRIPTION: ${{ secrets.PORTAL_RUNNER_SUBSCRIPTION }}
-          PORTAL_RUNNER_RESOURCE_GROUP: ${{ secrets.PORTAL_RUNNER_RESOURCE_GROUP }}
-          PORTAL_RUNNER_DATABASE_ACCOUNT: ${{ secrets.PORTAL_RUNNER_DATABASE_ACCOUNT }}
-          PORTAL_RUNNER_DATABASE_ACCOUNT_KEY: ${{ secrets.PORTAL_RUNNER_DATABASE_ACCOUNT_KEY }}
-          PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT: ${{ secrets.PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT }}
-          PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT_KEY: ${{ secrets.PORTAL_RUNNER_MONGO_DATABASE_ACCOUNT_KEY }}
-          NOTEBOOKS_TEST_RUNNER_TENANT_ID: ${{ secrets.NOTEBOOKS_TEST_RUNNER_TENANT_ID }}
-          NOTEBOOKS_TEST_RUNNER_CLIENT_ID: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_ID }}
-          NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET: ${{ secrets.NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET }}
-          PORTAL_RUNNER_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_SQL }}
-          MONGO_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_MONGO }}
-          CASSANDRA_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_CASSANDRA }}
-          TABLES_CONNECTION_STRING: ${{ secrets.CONNECTION_STRING_TABLE }}
-          DATA_EXPLORER_ENDPOINT: "https://localhost:1234/hostedExplorer.html"
       - uses: actions/upload-artifact@v2
         if: failure()
         with:
           name: screenshots
-          path: failed-*
+          path: screenshots/
   nuget:
     name: Publish Nuget
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted, accessibility]
+    needs: [build]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
@@ -200,7 +184,7 @@ jobs:
       - run: cp ./configs/prod.json config.json
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
-      - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
+      - run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
       - uses: actions/upload-artifact@v2
         name: packages
         with:
@@ -208,7 +192,7 @@ jobs:
   nugetmpac:
     name: Publish Nuget MPAC
     if: github.ref == 'refs/heads/master' || contains(github.ref, 'hotfix/') || contains(github.ref, 'release/')
-    needs: [lint, format, compile, build, unittest, endtoendemulator, endtoendhosted, accessibility]
+    needs: [build]
     runs-on: ubuntu-latest
     env:
       NUGET_SOURCE: ${{ secrets.NUGET_SOURCE }}
@@ -225,7 +209,7 @@ jobs:
       - run: sed -i 's/Azure.Cosmos.DB.Data.Explorer/Azure.Cosmos.DB.Data.Explorer.MPAC/g' DataExplorer.nuspec
       - run: nuget sources add -Name "ADO" -Source "$NUGET_SOURCE" -UserName "GitHub" -Password "$AZURE_DEVOPS_PAT"
       - run: nuget pack -Version "2.0.0-github-${GITHUB_SHA}"
-      - run: nuget push -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
+      - run: nuget push -SkipDuplicate -Source "$NUGET_SOURCE" -ApiKey Az *.nupkg
       - uses: actions/upload-artifact@v2
         name: packages
         with:

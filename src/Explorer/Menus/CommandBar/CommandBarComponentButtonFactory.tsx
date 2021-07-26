@@ -1,38 +1,53 @@
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { Areas } from "../../../Common/Constants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-
-import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
+import * as React from "react";
 import AddCollectionIcon from "../../../../images/AddCollection.svg";
+import AddDatabaseIcon from "../../../../images/AddDatabase.svg";
 import AddSqlQueryIcon from "../../../../images/AddSqlQuery_16x16.svg";
-import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
-import * as Constants from "../../../Common/Constants";
-import OpenInTabIcon from "../../../../images/open-in-tab.svg";
-import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
-import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
-import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import AddStoredProcedureIcon from "../../../../images/AddStoredProcedure.svg";
-import SettingsIcon from "../../../../images/settings_15x15.svg";
-import AddUdfIcon from "../../../../images/AddUdf.svg";
 import AddTriggerIcon from "../../../../images/AddTrigger.svg";
+import AddUdfIcon from "../../../../images/AddUdf.svg";
+import BrowseQueriesIcon from "../../../../images/BrowseQuery.svg";
+import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
+import GitHubIcon from "../../../../images/github.svg";
+import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
 import EnableNotebooksIcon from "../../../../images/notebook/Notebook-enable.svg";
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
-import GitHubIcon from "../../../../images/github.svg";
+import OpenInTabIcon from "../../../../images/open-in-tab.svg";
+import OpenQueryFromDiskIcon from "../../../../images/OpenQueryFromDisk.svg";
+import SettingsIcon from "../../../../images/settings_15x15.svg";
 import SynapseIcon from "../../../../images/synapse-link.svg";
+import { AuthType } from "../../../AuthType";
+import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
-import Explorer from "../../Explorer";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
+import { JunoClient } from "../../../Juno/JunoClient";
+import { userContext } from "../../../UserContext";
+import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
+import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
+import { isRunningOnNationalCloud } from "../../../Utils/CloudUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import * as React from "react";
+import Explorer from "../../Explorer";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { OpenFullScreen } from "../../OpenFullScreen";
+import { AddDatabasePanel } from "../../Panes/AddDatabasePanel/AddDatabasePanel";
+import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { GitHubReposPanel } from "../../Panes/GitHubReposPanel/GitHubReposPanel";
+import { LoadQueryPane } from "../../Panes/LoadQueryPane/LoadQueryPane";
+import { SettingsPane } from "../../Panes/SettingsPane/SettingsPane";
+import { SetupNoteBooksPanel } from "../../Panes/SetupNotebooksPanel/SetupNotebooksPanel";
+import { useDatabases } from "../../useDatabases";
+import { SelectedNodeState } from "../../useSelectedNode";
 
 let counter = 0;
 
-export function createStaticCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  if (container.isAuthWithResourceToken()) {
-    return createStaticCommandBarButtonsForResourceToken(container);
+export function createStaticCommandBarButtons(
+  container: Explorer,
+  selectedNodeState: SelectedNodeState
+): CommandButtonComponentProps[] {
+  if (userContext.authType === AuthType.ResourceToken) {
+    return createStaticCommandBarButtonsForResourceToken(container, selectedNodeState);
   }
 
   const newCollectionBtn = createNewCollectionGroup(container);
@@ -46,7 +61,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     buttons.push(addSynapseLink);
   }
 
-  if (!container.isPreferredApiTable()) {
+  if (userContext.apiType !== "Tables") {
     newCollectionBtn.children = [createNewCollectionGroup(container)];
     const newDatabaseBtn = createNewDatabase(container);
     newCollectionBtn.children.push(newDatabaseBtn);
@@ -54,7 +69,7 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
 
   buttons.push(createDivider());
 
-  if (container.isNotebookEnabled()) {
+  if (useNotebook.getState().isNotebookEnabled) {
     const newNotebookButton = createNewNotebookButton(container);
     newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
     buttons.push(newNotebookButton);
@@ -62,66 +77,60 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
     if (container.notebookManager?.gitHubOAuthService) {
       buttons.push(createManageGitHubAccountButton(container));
     }
-  }
 
-  if (!container.isRunningOnNationalCloud()) {
-    if (!container.isNotebookEnabled()) {
-      buttons.push(createEnableNotebooksButton(container));
-    }
-
-    if (container.isPreferredApiMongoDB()) {
-      buttons.push(createOpenMongoTerminalButton(container));
-    }
-
-    if (container.isPreferredApiCassandra()) {
-      buttons.push(createOpenCassandraTerminalButton(container));
-    }
-  }
-
-  if (container.isNotebookEnabled()) {
     buttons.push(createOpenTerminalButton(container));
 
     buttons.push(createNotebookWorkspaceResetButton(container));
+    if (
+      (userContext.apiType === "Mongo" &&
+        useNotebook.getState().isShellEnabled &&
+        selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
+      userContext.apiType === "Cassandra"
+    ) {
+      buttons.push(createDivider());
+      if (userContext.apiType === "Cassandra") {
+        buttons.push(createOpenCassandraTerminalButton(container));
+      } else {
+        buttons.push(createOpenMongoTerminalButton(container));
+      }
+    }
+  } else {
+    if (!isRunningOnNationalCloud()) {
+      buttons.push(createEnableNotebooksButton(container));
+    }
   }
 
-  if (!container.isDatabaseNodeOrNoneSelected()) {
-    if (container.isNotebookEnabled()) {
-      buttons.push(createDivider());
-    }
+  if (!selectedNodeState.isDatabaseNodeOrNoneSelected()) {
+    const isQuerySupported = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 
-    const isSqlQuerySupported = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
-    if (isSqlQuerySupported) {
-      const newSqlQueryBtn = createNewSQLQueryButton(container);
+    if (isQuerySupported) {
+      buttons.push(createDivider());
+      const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
       buttons.push(newSqlQueryBtn);
     }
 
-    const isSupportedOpenQueryApi =
-      container.isPreferredApiDocumentDB() || container.isPreferredApiMongoDB() || container.isPreferredApiGraph();
-    const isSupportedOpenQueryFromDiskApi = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
-    if (isSupportedOpenQueryApi && container.selectedNode() && container.findSelectedCollection()) {
+    if (isQuerySupported && selectedNodeState.findSelectedCollection()) {
       const openQueryBtn = createOpenQueryButton(container);
-      openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
+      openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
       buttons.push(openQueryBtn);
-    } else if (isSupportedOpenQueryFromDiskApi && container.selectedNode() && container.findSelectedCollection()) {
-      buttons.push(createOpenQueryFromDiskButton(container));
     }
 
-    if (areScriptsSupported(container)) {
+    if (areScriptsSupported()) {
       const label = "New Stored Procedure";
       const newStoredProcedureBtn: CommandButtonComponentProps = {
         iconSrc: AddStoredProcedureIcon,
         iconAlt: label,
         onCommandClick: () => {
-          const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
           selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
         },
         commandButtonLabel: label,
         ariaLabel: label,
         hasPopup: true,
-        disabled: container.isDatabaseNodeOrNoneSelected(),
+        disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
       };
 
-      newStoredProcedureBtn.children = createScriptCommandButtons(container);
+      newStoredProcedureBtn.children = createScriptCommandButtons(selectedNodeState);
       buttons.push(newStoredProcedureBtn);
     }
   }
@@ -129,22 +138,29 @@ export function createStaticCommandBarButtons(container: Explorer): CommandButto
   return buttons;
 }
 
-export function createContextCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
+export function createContextCommandBarButtons(
+  container: Explorer,
+  selectedNodeState: SelectedNodeState
+): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
-  if (!container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB()) {
-    const label = "New Shell";
+  if (!selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") {
+    const label = useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell";
     const newMongoShellBtn: CommandButtonComponentProps = {
       iconSrc: HostedTerminalIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
-        selectedCollection && selectedCollection.onNewMongoShellClick();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
+        if (useNotebook.getState().isShellEnabled) {
+          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+        } else {
+          selectedCollection && selectedCollection.onNewMongoShellClick();
+        }
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected() && container.isPreferredApiMongoDB(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
     };
     buttons.push(newMongoShellBtn);
   }
@@ -153,39 +169,35 @@ export function createContextCommandBarButtons(container: Explorer): CommandButt
 }
 
 export function createControlCommandBarButtons(container: Explorer): CommandButtonComponentProps[] {
-  const buttons: CommandButtonComponentProps[] = [];
-  if (configContext.platform === Platform.Hosted) {
-    return buttons;
-  }
-
-  if (!container.isPreferredApiCassandra()) {
-    const label = "Settings";
-    const settingsPaneButton: CommandButtonComponentProps = {
+  const buttons: CommandButtonComponentProps[] = [
+    {
       iconSrc: SettingsIcon,
-      iconAlt: label,
-      onCommandClick: () => container.settingsPane.open(),
+      iconAlt: "Settings",
+      onCommandClick: () => useSidePanel.getState().openSidePanel("Settings", <SettingsPane />),
       commandButtonLabel: undefined,
-      ariaLabel: label,
-      tooltipText: label,
+      ariaLabel: "Settings",
+      tooltipText: "Settings",
       hasPopup: true,
       disabled: false,
-    };
-    buttons.push(settingsPaneButton);
-  }
+    },
+  ];
 
-  if (container.isHostedDataExplorerEnabled()) {
+  const showOpenFullScreen =
+    configContext.platform === Platform.Portal && !isRunningOnNationalCloud() && userContext.apiType !== "Gremlin";
+
+  if (showOpenFullScreen) {
     const label = "Open Full Screen";
     const fullScreenButton: CommandButtonComponentProps = {
       iconSrc: OpenInTabIcon,
       iconAlt: label,
       onCommandClick: () => {
-        container.openSidePanel("Open Full Screen", <OpenFullScreen />);
+        useSidePanel.getState().openSidePanel("Open Full Screen", <OpenFullScreen />);
       },
       commandButtonLabel: undefined,
       ariaLabel: label,
       tooltipText: label,
       hasPopup: false,
-      disabled: !container.isHostedDataExplorerEnabled(),
+      disabled: !showOpenFullScreen,
       className: "OpenFullScreen",
     };
     buttons.push(fullScreenButton);
@@ -222,12 +234,12 @@ export function createDivider(): CommandButtonComponentProps {
   };
 }
 
-function areScriptsSupported(container: Explorer): boolean {
-  return container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+function areScriptsSupported(): boolean {
+  return userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
 }
 
 function createNewCollectionGroup(container: Explorer): CommandButtonComponentProps {
-  const label = container.addCollectionText();
+  const label = `New ${getCollectionName()}`;
   return {
     iconSrc: AddCollectionIcon,
     iconAlt: label,
@@ -244,25 +256,15 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     return undefined;
   }
 
-  if (container.isServerlessEnabled()) {
+  if (isServerlessAccount()) {
     return undefined;
   }
 
-  if (
-    container.databaseAccount &&
-    container.databaseAccount() &&
-    container.databaseAccount().properties &&
-    container.databaseAccount().properties.enableAnalyticalStorage
-  ) {
+  if (userContext?.databaseAccount?.properties?.enableAnalyticalStorage) {
     return undefined;
   }
 
-  const capabilities =
-    (container.databaseAccount &&
-      container.databaseAccount() &&
-      container.databaseAccount().properties &&
-      container.databaseAccount().properties.capabilities) ||
-    [];
+  const capabilities = userContext?.databaseAccount?.properties?.capabilities || [];
   if (capabilities.some((capability) => capability.name === Constants.CapabilityNames.EnableStorageAnalytics)) {
     return undefined;
   }
@@ -274,65 +276,63 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
     onCommandClick: () => container.openEnableSynapseLinkDialog(),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: container.isSynapseLinkUpdating(),
+    disabled: useNotebook.getState().isSynapseLinkUpdating,
     ariaLabel: label,
   };
 }
 
 function createNewDatabase(container: Explorer): CommandButtonComponentProps {
-  const label = container.addDatabaseText();
+  const label = "New " + getDatabaseName();
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
-    onCommandClick: () => {
-      container.addDatabasePane.open();
-      document.getElementById("linkAddDatabase").focus();
-    },
+    onCommandClick: () =>
+      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
   };
 }
 
-function createNewSQLQueryButton(container: Explorer): CommandButtonComponentProps {
-  if (container.isPreferredApiDocumentDB() || container.isPreferredApiGraph()) {
+function createNewSQLQueryButton(selectedNodeState: SelectedNodeState): CommandButtonComponentProps {
+  if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
     const label = "New SQL Query";
     return {
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewQueryClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
-  } else if (container.isPreferredApiMongoDB()) {
+  } else if (userContext.apiType === "Mongo") {
     const label = "New Query";
     return {
       iconSrc: AddSqlQueryIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
   }
 
   return undefined;
 }
 
-export function createScriptCommandButtons(container: Explorer): CommandButtonComponentProps[] {
+export function createScriptCommandButtons(selectedNodeState: SelectedNodeState): CommandButtonComponentProps[] {
   const buttons: CommandButtonComponentProps[] = [];
 
   const shouldEnableScriptsCommands: boolean =
-    !container.isDatabaseNodeOrNoneSelected() && areScriptsSupported(container);
+    !selectedNodeState.isDatabaseNodeOrNoneSelected() && areScriptsSupported();
 
   if (shouldEnableScriptsCommands) {
     const label = "New Stored Procedure";
@@ -340,13 +340,13 @@ export function createScriptCommandButtons(container: Explorer): CommandButtonCo
       iconSrc: AddStoredProcedureIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newStoredProcedureBtn);
   }
@@ -357,13 +357,13 @@ export function createScriptCommandButtons(container: Explorer): CommandButtonCo
       iconSrc: AddUdfIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newUserDefinedFunctionBtn);
   }
@@ -374,13 +374,13 @@ export function createScriptCommandButtons(container: Explorer): CommandButtonCo
       iconSrc: AddTriggerIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         selectedCollection && selectedCollection.onNewTriggerClick(selectedCollection);
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected(),
     };
     buttons.push(newTriggerBtn);
   }
@@ -406,7 +406,7 @@ function createuploadNotebookButton(container: Explorer): CommandButtonComponent
   return {
     iconSrc: NewNotebookIcon,
     iconAlt: label,
-    onCommandClick: () => container.onUploadToNotebookServerClicked(),
+    onCommandClick: () => container.openUploadFilePanel(),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,
@@ -419,7 +419,8 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   return {
     iconSrc: BrowseQueriesIcon,
     iconAlt: label,
-    onCommandClick: () => container.browseQueriesPane.open(),
+    onCommandClick: () =>
+      useSidePanel.getState().openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={container} />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -427,12 +428,12 @@ function createOpenQueryButton(container: Explorer): CommandButtonComponentProps
   };
 }
 
-function createOpenQueryFromDiskButton(container: Explorer): CommandButtonComponentProps {
+function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
   const label = "Open Query From Disk";
   return {
     iconSrc: OpenQueryFromDiskIcon,
     iconAlt: label,
-    onCommandClick: () => container.loadQueryPane.open(),
+    onCommandClick: () => useSidePanel.getState().openSidePanel("Load Query", <LoadQueryPane />),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -452,12 +453,18 @@ function createEnableNotebooksButton(container: Explorer): CommandButtonComponen
   return {
     iconSrc: EnableNotebooksIcon,
     iconAlt: label,
-    onCommandClick: () => container.setupNotebooksPane.openWithTitleAndDescription(label, description),
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <SetupNoteBooksPanel explorer={container} panelTitle={label} panelDescription={description} />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
-    disabled: !container.isNotebooksEnabledForAccount(),
+    disabled: !useNotebook.getState().isNotebooksEnabledForAccount,
     ariaLabel: label,
-    tooltipText: container.isNotebooksEnabledForAccount() ? "" : tooltip,
+    tooltipText: useNotebook.getState().isNotebooksEnabledForAccount ? "" : tooltip,
   };
 }
 
@@ -481,15 +488,21 @@ function createOpenMongoTerminalButton(container: Explorer): CommandButtonCompon
   const title = "Set up workspace";
   const description =
     "Looks like you have not created a workspace for this account. To proceed and start using features including mongo shell and notebook, we will need to create a default workspace in this account.";
-  const disableButton = !container.isNotebooksEnabledForAccount() && !container.isNotebookEnabled();
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (container.isNotebookEnabled()) {
+      if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
       } else {
-        container.setupNotebooksPane.openWithTitleAndDescription(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,
@@ -507,15 +520,21 @@ function createOpenCassandraTerminalButton(container: Explorer): CommandButtonCo
   const title = "Set up workspace";
   const description =
     "Looks like you have not created a workspace for this account. To proceed and start using features including cassandra shell and notebook, we will need to create a default workspace in this account.";
-  const disableButton = !container.isNotebooksEnabledForAccount() && !container.isNotebookEnabled();
+  const disableButton =
+    !useNotebook.getState().isNotebooksEnabledForAccount && !useNotebook.getState().isNotebookEnabled;
   return {
     iconSrc: HostedTerminalIcon,
     iconAlt: label,
     onCommandClick: () => {
-      if (container.isNotebookEnabled()) {
+      if (useNotebook.getState().isNotebookEnabled) {
         container.openNotebookTerminal(ViewModels.TerminalKind.Cassandra);
       } else {
-        container.setupNotebooksPane.openWithTitleAndDescription(title, description);
+        useSidePanel
+          .getState()
+          .openSidePanel(
+            title,
+            <SetupNoteBooksPanel explorer={container} panelTitle={title} panelDescription={description} />
+          );
       }
     },
     commandButtonLabel: label,
@@ -542,17 +561,21 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
 function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
   const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
   const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
+  const junoClient = new JunoClient();
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () => {
-      if (!connectedToGitHub) {
-        TelemetryProcessor.trace(Action.NotebooksGitHubConnect, ActionModifiers.Mark, {
-          dataExplorerArea: Areas.Notebook,
-        });
-      }
-      container.gitHubReposPane.open();
-    },
+    onCommandClick: () =>
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          label,
+          <GitHubReposPanel
+            explorer={container}
+            gitHubClientProp={container.notebookManager.gitHubClient}
+            junoClientProp={junoClient}
+          />
+        ),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,
@@ -560,19 +583,25 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   };
 }
 
-function createStaticCommandBarButtonsForResourceToken(container: Explorer): CommandButtonComponentProps[] {
-  const newSqlQueryBtn = createNewSQLQueryButton(container);
+function createStaticCommandBarButtonsForResourceToken(
+  container: Explorer,
+  selectedNodeState: SelectedNodeState
+): CommandButtonComponentProps[] {
+  const newSqlQueryBtn = createNewSQLQueryButton(selectedNodeState);
   const openQueryBtn = createOpenQueryButton(container);
 
-  newSqlQueryBtn.disabled = !container.isResourceTokenCollectionNodeSelected();
+  const resourceTokenCollection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
+  const isResourceTokenCollectionNodeSelected: boolean =
+    resourceTokenCollection?.id() === selectedNodeState.selectedNode?.id();
+  newSqlQueryBtn.disabled = !isResourceTokenCollectionNodeSelected;
   newSqlQueryBtn.onCommandClick = () => {
-    const resourceTokenCollection: ViewModels.CollectionBase = container.resourceTokenCollection();
+    const resourceTokenCollection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
     resourceTokenCollection && resourceTokenCollection.onNewQueryClick(resourceTokenCollection, undefined);
   };
 
-  openQueryBtn.disabled = !container.isResourceTokenCollectionNodeSelected();
+  openQueryBtn.disabled = !isResourceTokenCollectionNodeSelected;
   if (!openQueryBtn.disabled) {
-    openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton(container)];
+    openQueryBtn.children = [createOpenQueryButton(container), createOpenQueryFromDiskButton()];
   }
 
   return [newSqlQueryBtn, openQueryBtn];

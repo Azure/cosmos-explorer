@@ -1,5 +1,10 @@
-import * as Plotly from "plotly.js-cartesian-dist-min";
 import dayjs from "dayjs";
+import * as Plotly from "plotly.js-cartesian-dist-min";
+import { StyleConstants } from "../../Common/Constants";
+import { sendCachedDataMessage, sendReadyMessage } from "../../Common/MessageHandler";
+import { MessageTypes } from "../../Contracts/ExplorerContracts";
+import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
+import "./Heatmap.less";
 import {
   ChartSettings,
   DataPayload,
@@ -11,11 +16,6 @@ import {
   PartitionTimeStampToData,
   PortalTheme,
 } from "./HeatmapDatatypes";
-import { isInvalidParentFrameOrigin } from "../../Utils/MessageValidation";
-import { sendCachedDataMessage, sendMessage } from "../../Common/MessageHandler";
-import { MessageTypes } from "../../Contracts/ExplorerContracts";
-import { StyleConstants } from "../../Common/Constants";
-import "./Heatmap.less";
 
 export class Heatmap {
   public static readonly elementId: string = "heatmap";
@@ -266,4 +266,4 @@ export function handleMessage(event: MessageEvent) {
 }
 
 window.addEventListener("message", handleMessage, false);
-sendMessage("ready");
+sendReadyMessage();

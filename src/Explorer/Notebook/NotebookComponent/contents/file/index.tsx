@@ -2,7 +2,6 @@ import { AppState, ContentRef, selectors } from "@nteract/core";
 import * as React from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-
 import NotebookRenderer from "../../../NotebookRenderer/NotebookRenderer";
 import * as TextFile from "./text-file";
 
@@ -32,14 +31,14 @@ interface FileProps {
 
 export class File extends React.PureComponent<FileProps> {
   getChoice = () => {
-    let choice = null;
+    let choice;
 
     // notebooks don't report a mimetype so we'll use the content.type
     if (this.props.type === "notebook") {
       choice = <NotebookRenderer contentRef={this.props.contentRef} />;
     } else if (this.props.type === "dummy") {
-      choice = null;
-    } else if (this.props.mimetype == null || !TextFile.handles(this.props.mimetype)) {
+      choice = undefined;
+    } else if (this.props.mimetype === undefined || !TextFile.handles(this.props.mimetype)) {
       // This should not happen as we intercept mimetype upstream, but just in case
       choice = (
         <PaddedContainer>

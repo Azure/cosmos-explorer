@@ -1,17 +1,19 @@
 import { shallow } from "enzyme";
-import React from "react";
-import { SettingsComponentProps, SettingsComponent, SettingsComponentState } from "./SettingsComponent";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
-import { collection } from "./TestUtils";
-import * as DataModels from "../../../Contracts/DataModels";
 import ko from "knockout";
-import { TtlType, isDirty } from "./SettingsUtils";
+import React from "react";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
+import { updateOffer } from "../../../Common/dataAccess/updateOffer";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { updateUserContext } from "../../../UserContext";
 import Explorer from "../../Explorer";
+import { CollectionSettingsTabV2 } from "../../Tabs/SettingsTabV2";
+import { SettingsComponent, SettingsComponentProps, SettingsComponentState } from "./SettingsComponent";
+import { isDirty, TtlType } from "./SettingsUtils";
+import { collection } from "./TestUtils";
 jest.mock("../../../Common/dataAccess/getIndexTransformationProgress", () => ({
   getIndexTransformationProgress: jest.fn().mockReturnValue(undefined),
 }));
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
 jest.mock("../../../Common/dataAccess/updateCollection", () => ({
   updateCollection: jest.fn().mockReturnValue({
     id: undefined,
@@ -21,16 +23,9 @@ jest.mock("../../../Common/dataAccess/updateCollection", () => ({
     changeFeedPolicy: undefined,
     analyticalStorageTtl: undefined,
     geospatialConfig: undefined,
-  } as DataModels.Collection),
-  updateMongoDBCollectionThroughRP: jest.fn().mockReturnValue({
-    id: undefined,
-    shardKey: undefined,
     indexes: [],
-    analyticalStorageTtl: undefined,
-  } as MongoDBCollectionResource),
+  }),
 }));
-import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { MongoDBCollectionResource } from "../../../Utils/arm/generatedClients/2020-04-01/types";
 jest.mock("../../../Common/dataAccess/updateOffer", () => ({
   updateOffer: jest.fn().mockReturnValue({} as DataModels.Offer),
 }));
@@ -43,9 +38,6 @@ describe("SettingsComponent", () => {
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
-      hashLocation: "settings",
-      isActive: ko.observable(false),
-      onUpdateTabsButtons: undefined,
     }),
   };
 
@@ -113,7 +105,13 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.shouldShowKeyspaceSharedThroughputMessage()).toEqual(false);
 
     const newContainer = new Explorer();
-    newContainer.isPreferredApiCassandra = ko.computed(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableCassandra" }],
+        },
+      } as DataModels.DatabaseAccount,
+    });
 
     const newCollection = { ...collection };
     newCollection.container = newContainer;
@@ -128,13 +126,11 @@ describe("SettingsComponent", () => {
       isDatabaseExpanded: undefined,
       isDatabaseShared: ko.computed(() => true),
       selectedSubnodeKind: undefined,
-      selectDatabase: undefined,
       expandDatabase: undefined,
       collapseDatabase: undefined,
       loadCollections: undefined,
       findCollectionWithId: undefined,
       openAddCollection: undefined,
-      onDeleteDatabaseContextMenuClick: undefined,
       readSettings: undefined,
       onSettingsClick: undefined,
       loadOffer: undefined,
@@ -155,19 +151,20 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.hasConflictResolution()).toEqual(undefined);
 
     const newContainer = new Explorer();
-    newContainer.databaseAccount = ko.observable({
-      id: undefined,
-      name: undefined,
-      location: undefined,
-      type: undefined,
-      kind: undefined,
-      tags: undefined,
-      properties: {
-        documentEndpoint: undefined,
-        tableEndpoint: undefined,
-        gremlinEndpoint: undefined,
-        cassandraEndpoint: undefined,
-        enableMultipleWriteLocations: true,
+    updateUserContext({
+      databaseAccount: {
+        id: undefined,
+        name: undefined,
+        location: undefined,
+        type: undefined,
+        kind: undefined,
+        properties: {
+          documentEndpoint: undefined,
+          tableEndpoint: undefined,
+          gremlinEndpoint: undefined,
+          cassandraEndpoint: undefined,
+          enableMultipleWriteLocations: true,
+        },
       },
     });
     const newCollection = { ...collection };
@@ -194,7 +191,6 @@ describe("SettingsComponent", () => {
     };
     await settingsComponentInstance.onSaveClick();
     expect(updateCollection).toBeCalled();
-    expect(updateMongoDBCollectionThroughRP).toBeCalled();
     expect(updateOffer).toBeCalled();
   });
 

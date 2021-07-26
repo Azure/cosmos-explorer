@@ -1,28 +1,20 @@
+import { TriggerDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import { Resource, TriggerDefinition } from "@azure/cosmos";
-import {
-  SqlTriggerCreateUpdateParameters,
-  SqlTriggerResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
-import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { userContext } from "../../UserContext";
+import { createUpdateSqlTrigger, getSqlTrigger } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { SqlTriggerCreateUpdateParameters, SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function createTrigger(
   databaseId: string,
   collectionId: string,
-  trigger: TriggerDefinition
-): Promise<TriggerDefinition & Resource> {
+  trigger: SqlTriggerResource
+): Promise<TriggerDefinition | SqlTriggerResource> {
   const clearMessage = logConsoleProgress(`Creating trigger ${trigger.id}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       try {
         const getResponse = await getSqlTrigger(
           userContext.subscriptionId,
@@ -43,7 +35,7 @@ export async function createTrigger(
 
       const createTriggerParams: SqlTriggerCreateUpdateParameters = {
         properties: {
-          resource: trigger as SqlTriggerResource,
+          resource: trigger,
           options: {},
         },
       };
@@ -56,10 +48,13 @@ export async function createTrigger(
         trigger.id,
         createTriggerParams
       );
-      return rpResponse && (rpResponse.properties?.resource as TriggerDefinition & Resource);
+      return rpResponse && rpResponse.properties?.resource;
     }
 
-    const response = await client().database(databaseId).container(collectionId).scripts.triggers.create(trigger);
+    const response = await client()
+      .database(databaseId)
+      .container(collectionId)
+      .scripts.triggers.create((trigger as unknown) as TriggerDefinition); // TODO: TypeScript does not like the SQL SDK trigger type
     return response.resource;
   } catch (error) {
     handleError(error, "CreateTrigger", `Error while creating trigger ${trigger.id}`);

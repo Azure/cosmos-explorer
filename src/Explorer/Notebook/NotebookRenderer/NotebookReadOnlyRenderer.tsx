@@ -1,18 +1,19 @@
-import * as React from "react";
-import "./base.css";
-import "./default.css";
-
-import { CodeCell, RawCell, Cells, MarkdownCell } from "@nteract/stateful-components";
+import { actions, ContentRef } from "@nteract/core";
+import { Cells, CodeCell, RawCell } from "@nteract/stateful-components";
+import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-editors/codemirror";
+import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import Prompt, { PassedPromptProps } from "@nteract/stateful-components/lib/inputs/prompt";
-import { AzureTheme } from "./AzureTheme";
-
+import * as React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
-import { actions, ContentRef } from "@nteract/core";
+import { userContext } from "../../../UserContext";
 import loadTransform from "../NotebookComponent/loadTransform";
-import MonacoEditor from "@nteract/stateful-components/lib/inputs/connected-editors/monacoEditor";
-import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
+import { AzureTheme } from "./AzureTheme";
+import "./base.css";
+import "./default.css";
+import MarkdownCell from "./markdown-cell";
 import "./NotebookReadOnlyRenderer.less";
+import SandboxOutputs from "./outputs/SandboxOutputs";
 
 export interface NotebookRendererProps {
   contentRef: any;
@@ -25,7 +26,9 @@ export interface NotebookRendererProps {
  */
 class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
   componentDidMount() {
-    loadTransform(this.props as any);
+    if (!userContext.features.sandboxNotebookOutputs) {
+      loadTransform(this.props as any);
+    }
   }
 
   private renderPrompt(id: string, contentRef: string): JSX.Element {
@@ -60,9 +63,12 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <CodeCell id={id} contentRef={contentRef}>
                 {{
                   prompt: (props: { id: string; contentRef: string }) => this.renderPrompt(props.id, props.contentRef),
+                  outputs: userContext.features.sandboxNotebookOutputs
+                    ? () => <SandboxOutputs id={id} contentRef={contentRef} />
+                    : undefined,
                   editor: {
-                    monaco: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <MonacoEditor readOnly={true} {...props} editorType={"monaco"} />,
+                    codemirror: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />,
                   },
                 }}
               </CodeCell>
@@ -78,8 +84,8 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
               <RawCell id={id} contentRef={contentRef} cell_type="raw">
                 {{
                   editor: {
-                    monaco: (props: PassedEditorProps) =>
-                      this.props.hideInputs ? <></> : <MonacoEditor {...props} readOnly={true} editorType={"monaco"} />,
+                    codemirror: (props: PassedEditorProps) =>
+                      this.props.hideInputs ? <></> : <CodeMirrorEditor {...props} editorType="codemirror" />,
                   },
                 }}
               </RawCell>

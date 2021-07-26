@@ -5,21 +5,21 @@
  * - context menu
  */
 
-import * as React from "react";
-import * as Constants from "../../../Common/Constants";
-import AnimateHeight from "react-animate-height";
-import { IconButton, IButtonStyles } from "office-ui-fabric-react/lib/Button";
 import {
   DirectionalHint,
+  IButtonStyles,
+  IconButton,
   IContextualMenuItemProps,
   IContextualMenuProps,
-} from "office-ui-fabric-react/lib/ContextualMenu";
-
+} from "@fluentui/react";
+import * as React from "react";
+import AnimateHeight from "react-animate-height";
+import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
 import TriangleDownIcon from "../../../../images/Triangle-down.svg";
 import TriangleRightIcon from "../../../../images/Triangle-right.svg";
-import LoadingIndicator_3Squares from "../../../../images/LoadingIndicator_3Squares.gif";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as Constants from "../../../Common/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 
 export interface TreeNodeMenuItem {
   label: string;
@@ -58,7 +58,7 @@ export interface TreeComponentProps {
 export class TreeComponent extends React.Component<TreeComponentProps> {
   public render(): JSX.Element {
     return (
-      <div style={this.props.style} className={`treeComponent ${this.props.className}`}>
+      <div style={this.props.style} className={`treeComponent ${this.props.className}`} role="tree">
         <TreeNodeComponent paddingLeft={0} node={this.props.rootNode} generation={0} />
       </div>
     );
@@ -172,6 +172,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
         className={`${this.props.node.className || ""} main${generation} nodeItem ${showSelected ? "selected" : ""}`}
         onClick={(event: React.MouseEvent<HTMLDivElement>) => this.onNodeClick(event, node)}
         onKeyPress={(event: React.KeyboardEvent<HTMLDivElement>) => this.onNodeKeyPress(event, node)}
+        role="treeitem"
       >
         <div
           className={`treeNodeHeader ${this.state.isMenuShowing ? "showingMenu" : ""}`}

@@ -1,51 +1,40 @@
+import { ContainerDefinition } from "@azure/cosmos";
+import { RequestOptions } from "@azure/cosmos/dist-esm";
 import { AuthType } from "../../AuthType";
 import { Collection } from "../../Contracts/DataModels";
-import { ContainerDefinition } from "@azure/cosmos";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
-import {
-  CreateUpdateOptions,
-  ExtendedResourceProperties,
-  MongoDBCollectionCreateUpdateParameters,
-  MongoDBCollectionResource,
-  SqlContainerCreateUpdateParameters,
-  SqlContainerResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { RequestOptions } from "@azure/cosmos/dist-esm";
-import { client } from "../CosmosClient";
-import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { userContext } from "../../UserContext";
 import {
   createUpdateCassandraTable,
   getCassandraTable,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
+} from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { createUpdateGremlinGraph, getGremlinGraph } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
 import {
   createUpdateMongoDBCollection,
   getMongoDBCollection,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
+} from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { createUpdateSqlContainer, getSqlContainer } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import {
-  createUpdateGremlinGraph,
-  getGremlinGraph,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { createUpdateTable, getTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { handleError } from "../ErrorHandlingUtils";
+  ExtendedResourceProperties,
+  MongoDBCollectionCreateUpdateParameters,
+  SqlContainerCreateUpdateParameters,
+  SqlContainerResource,
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function updateCollection(
   databaseId: string,
   collectionId: string,
-  newCollection: Collection,
+  newCollection: Partial<Collection>,
   options: RequestOptions = {}
 ): Promise<Collection> {
   let collection: Collection;
   const clearMessage = logConsoleProgress(`Updating container ${collectionId}`);
 
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       collection = await updateCollectionWithARM(databaseId, collectionId, newCollection);
     } else {
       const sdkResponse = await client()
@@ -69,24 +58,31 @@ export async function updateCollection(
 async function updateCollectionWithARM(
   databaseId: string,
   collectionId: string,
-  newCollection: Collection
+  newCollection: Partial<Collection>
 ): Promise<Collection> {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+  switch (apiType) {
+    case "SQL":
       return updateSqlContainer(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       return updateCassandraTable(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       return updateGremlinGraph(databaseId, collectionId, subscriptionId, resourceGroup, accountName, newCollection);
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       return updateTable(collectionId, subscriptionId, resourceGroup, accountName, newCollection);
+    case "Mongo":
+      return updateMongoDBCollection(
+        databaseId,
+        collectionId,
+        subscriptionId,
+        resourceGroup,
+        accountName,
+        newCollection
+      );
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }
 
@@ -96,7 +92,7 @@ async function updateSqlContainer(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Collection
+  newCollection: Partial<Collection>
 ): Promise<Collection> {
   const getResponse = await getSqlContainer(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -115,35 +111,26 @@ async function updateSqlContainer(
   throw new Error(`Sql container to update does not exist. Database id: ${databaseId} Collection id: ${collectionId}`);
 }
 
-export async function updateMongoDBCollectionThroughRP(
+export async function updateMongoDBCollection(
   databaseId: string,
   collectionId: string,
-  newCollection: MongoDBCollectionResource,
-  updateOptions?: CreateUpdateOptions
-): Promise<MongoDBCollectionResource> {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-
+  subscriptionId: string,
+  resourceGroup: string,
+  accountName: string,
+  newCollection: Partial<Collection>
+): Promise<Collection> {
   const getResponse = await getMongoDBCollection(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
-    const updateParams: MongoDBCollectionCreateUpdateParameters = {
-      properties: {
-        resource: newCollection,
-        options: updateOptions,
-      },
-    };
-
+    getResponse.properties.resource = newCollection as SqlContainerResource & ExtendedResourceProperties;
     const updateResponse = await createUpdateMongoDBCollection(
       subscriptionId,
       resourceGroup,
       accountName,
       databaseId,
       collectionId,
-      updateParams
+      getResponse as MongoDBCollectionCreateUpdateParameters
     );
-
-    return updateResponse && (updateResponse.properties.resource as MongoDBCollectionResource);
+    return updateResponse && (updateResponse.properties.resource as Collection);
   }
 
   throw new Error(
@@ -157,7 +144,7 @@ async function updateCassandraTable(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Collection
+  newCollection: Partial<Collection>
 ): Promise<Collection> {
   const getResponse = await getCassandraTable(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -184,7 +171,7 @@ async function updateGremlinGraph(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Collection
+  newCollection: Partial<Collection>
 ): Promise<Collection> {
   const getResponse = await getGremlinGraph(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {
@@ -208,7 +195,7 @@ async function updateTable(
   subscriptionId: string,
   resourceGroup: string,
   accountName: string,
-  newCollection: Collection
+  newCollection: Partial<Collection>
 ): Promise<Collection> {
   const getResponse = await getTable(subscriptionId, resourceGroup, accountName, collectionId);
   if (getResponse && getResponse.properties && getResponse.properties.resource) {

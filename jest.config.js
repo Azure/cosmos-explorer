@@ -21,17 +21,13 @@ module.exports = {
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: [
-  //   "src/Common/Headers*"
-  // ],
+  collectCoverageFrom: ["src/**/*.{js,jsx,ts,tsx}"],
 
   // The directory where Jest should output its coverage files
   coverageDirectory: "coverage",
 
   // An array of regexp pattern strings used to skip coverage collection
-  // coveragePathIgnorePatterns: [
-  //   "/node_modules/"
-  // ],
+  coveragePathIgnorePatterns: ["/node_modules/"],
 
   // A list of reporter names that Jest uses when writing coverage reports
   coverageReporters: ["json", "text", "cobertura"],
@@ -39,10 +35,10 @@ module.exports = {
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
     global: {
-      branches: 22,
-      functions: 28,
-      lines: 33,
-      statements: 31,
+      branches: 25,
+      functions: 25,
+      lines: 30,
+      statements: 30,
     },
   },
 
@@ -71,9 +67,10 @@ module.exports = {
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   moduleNameMapper: {
-    "^.*[.](svg|png|gif|less)$": "<rootDir>/mockModule",
-    "worker-loader": "<rootDir>/mockModule",
-    "office-ui-fabric-react/lib/(.*)$": "office-ui-fabric-react/lib-commonjs/$1", // https://github.com/OfficeDev/office-ui-fabric-react/wiki/Fabric-6-Release-Notes
+    "^.*[.](svg|png|gif|less|css)$": "<rootDir>/mockModule",
+    "@nteract/stateful-components/(.*)$": "<rootDir>/mockModule",
+    "@fluentui/react/lib/(.*)$": "@fluentui/react/lib-commonjs/$1", // https://github.com/microsoft/fluentui/wiki/Version-8-release-notes
+    "monaco-editor/(.*)$": "<rootDir>/__mocks__/monaco-editor",
     "^dnd-core$": "dnd-core/dist/cjs",
     "^react-dnd$": "react-dnd/dist/cjs",
     "^react-dnd-html5-backend$": "react-dnd-html5-backend/dist/cjs",

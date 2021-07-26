@@ -1,21 +1,19 @@
+import { ChoiceGroup, IChoiceGroupOption, ITextFieldProps, Stack, TextField } from "@fluentui/react";
 import * as React from "react";
-import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as DataModels from "../../../../Contracts/DataModels";
-import Explorer from "../../../Explorer";
+import * as ViewModels from "../../../../Contracts/ViewModels";
 import {
-  getTextFieldStyles,
-  conflictResolutionLwwTooltip,
   conflictResolutionCustomToolTip,
-  subComponentStackProps,
+  conflictResolutionLwwTooltip,
   getChoiceGroupStyles,
+  getTextFieldStyles,
+  subComponentStackProps,
 } from "../SettingsRenderUtils";
-import { TextField, ITextFieldProps, Stack, IChoiceGroupOption, ChoiceGroup } from "office-ui-fabric-react";
-import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 import { isDirty } from "../SettingsUtils";
+import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface ConflictResolutionComponentProps {
   collection: ViewModels.Collection;
-  container: Explorer;
   conflictResolutionPolicyMode: DataModels.ConflictResolutionMode;
   conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode;
   onConflictResolutionPolicyModeChange: (newMode: DataModels.ConflictResolutionMode) => void;

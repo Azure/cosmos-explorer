@@ -2,12 +2,12 @@
  * Wrapper around Notebook server terminal
  */
 
+import postRobot from "post-robot";
 import * as React from "react";
 import * as DataModels from "../../../Contracts/DataModels";
-import { StringUtils } from "../../../Utils/StringUtils";
+import { TerminalProps } from "../../../Terminal/TerminalProps";
 import { userContext } from "../../../UserContext";
-import { TerminalQueryParams } from "../../../Common/Constants";
-import { handleError } from "../../../Common/ErrorHandlingUtils";
+import * as StringUtils from "../../../Utils/StringUtils";
 
 export interface NotebookTerminalComponentProps {
   notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo;
@@ -15,8 +15,14 @@ export interface NotebookTerminalComponentProps {
 }
 
 export class NotebookTerminalComponent extends React.Component<NotebookTerminalComponentProps> {
+  private terminalWindow: Window;
+
   constructor(props: NotebookTerminalComponentProps) {
     super(props);
+  }
+
+  componentDidMount(): void {
+    this.sendPropsToTerminalFrame();
   }
 
   public render(): JSX.Element {
@@ -24,70 +30,54 @@ export class NotebookTerminalComponent extends React.Component<NotebookTerminalC
       <div className="notebookTerminalContainer">
         <iframe
           title="Terminal to Notebook Server"
-          src={NotebookTerminalComponent.createNotebookAppSrc(this.props.notebookServerInfo, this.getTerminalParams())}
+          onLoad={(event) => this.handleFrameLoad(event)}
+          src="terminal.html"
         />
       </div>
     );
   }
 
-  public getTerminalParams(): Map<string, string> {
-    let params: Map<string, string> = new Map<string, string>();
-    params.set(TerminalQueryParams.Terminal, "true");
-
-    const terminalEndpoint: string = this.tryGetTerminalEndpoint();
-    if (terminalEndpoint) {
-      params.set(TerminalQueryParams.TerminalEndpoint, terminalEndpoint);
-    }
-
-    return params;
+  handleFrameLoad(event: React.SyntheticEvent<HTMLIFrameElement, Event>): void {
+    this.terminalWindow = (event.target as HTMLIFrameElement).contentWindow;
+    this.sendPropsToTerminalFrame();
   }
 
-  public tryGetTerminalEndpoint(): string | null {
-    let terminalEndpoint: string | null;
+  sendPropsToTerminalFrame(): void {
+    if (!this.terminalWindow) {
+      return;
+    }
 
-    const notebookServerEndpoint: string = this.props.notebookServerInfo.notebookServerEndpoint;
+    const props: TerminalProps = {
+      terminalEndpoint: this.tryGetTerminalEndpoint(),
+      notebookServerEndpoint: this.props.notebookServerInfo?.notebookServerEndpoint,
+      authToken: this.props.notebookServerInfo?.authToken,
+      subscriptionId: userContext.subscriptionId,
+      apiType: userContext.apiType,
+      authType: userContext.authType,
+      databaseAccount: userContext.databaseAccount,
+    };
+
+    postRobot.send(this.terminalWindow, "props", props, {
+      domain: window.location.origin,
+    });
+  }
+
+  public tryGetTerminalEndpoint(): string | undefined {
+    let terminalEndpoint: string | undefined;
+
+    const notebookServerEndpoint = this.props.notebookServerInfo?.notebookServerEndpoint;
     if (StringUtils.endsWith(notebookServerEndpoint, "mongo")) {
-      let mongoShellEndpoint: string = this.props.databaseAccount.properties.mongoEndpoint;
-      if (!mongoShellEndpoint) {
-        // mongoEndpoint is only available for Mongo 3.6 and higher.
-        // Fallback to documentEndpoint otherwise.
-        mongoShellEndpoint = this.props.databaseAccount.properties.documentEndpoint;
-      }
-      terminalEndpoint = mongoShellEndpoint;
+      // mongoEndpoint is only available for Mongo 3.6 and higher, fallback to documentEndpoint otherwise
+      terminalEndpoint =
+        this.props.databaseAccount?.properties.mongoEndpoint || this.props.databaseAccount?.properties.documentEndpoint;
     } else if (StringUtils.endsWith(notebookServerEndpoint, "cassandra")) {
-      terminalEndpoint = this.props.databaseAccount.properties.cassandraEndpoint;
+      terminalEndpoint = this.props.databaseAccount?.properties.cassandraEndpoint;
     }
 
     if (terminalEndpoint) {
       return new URL(terminalEndpoint).host;
     }
-    return null;
-  }
 
-  public static createNotebookAppSrc(
-    serverInfo: DataModels.NotebookWorkspaceConnectionInfo,
-    params: Map<string, string>
-  ): string {
-    if (!serverInfo.notebookServerEndpoint) {
-      handleError(
-        "Notebook server endpoint not defined. Terminal will fail to connect to jupyter server.",
-        "NotebookTerminalComponent/createNotebookAppSrc"
-      );
-      return "";
-    }
-
-    params.set(TerminalQueryParams.Server, serverInfo.notebookServerEndpoint);
-    if (serverInfo.authToken && serverInfo.authToken.length > 0) {
-      params.set(TerminalQueryParams.Token, serverInfo.authToken);
-    }
-
-    params.set(TerminalQueryParams.SubscriptionId, userContext.subscriptionId);
-
-    let result: string = "terminal.html?";
-    for (let key of params.keys()) {
-      result += `${key}=${encodeURIComponent(params.get(key))}&`;
-    }
-
-    return result;
+    return undefined;
   }
 }

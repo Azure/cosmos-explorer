@@ -1,18 +1,19 @@
-import _ from "underscore";
+import {
+  Dropdown,
+  ICommandBarItemProps,
+  IComponentAsProps,
+  IconType,
+  IDropdownOption,
+  IDropdownStyles,
+} from "@fluentui/react";
 import * as React from "react";
-import { Observable } from "knockout";
-import { IconType } from "office-ui-fabric-react/lib/Icon";
-import { IComponentAsProps } from "office-ui-fabric-react/lib/Utilities";
-import { StyleConstants } from "../../../Common/Constants";
-import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
-import { Dropdown, IDropdownStyles, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
-import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
-import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
-import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
-import { MemoryUsageInfo } from "../../../Contracts/DataModels";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { StyleConstants } from "../../../Common/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { MemoryTracker } from "./MemoryTrackerComponent";
 
 /**
  * Convert our NavbarButtonConfig to UI Fabric buttons
@@ -164,10 +165,6 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           };
         }
 
-        if (btn.isArcadiaPicker && btn.arcadiaProps) {
-          result.commandBarButtonAs = () => <ArcadiaMenuPicker {...btn.arcadiaProps} />;
-        }
-
         return result;
       }
     );
@@ -186,12 +183,9 @@ export const createDivider = (key: string): ICommandBarItemProps => {
   };
 };
 
-export const createMemoryTracker = (
-  key: string,
-  memoryUsageInfo: Observable<MemoryUsageInfo>
-): ICommandBarItemProps => {
+export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   return {
     key,
-    onRender: () => <MemoryTrackerComponent memoryUsageInfo={memoryUsageInfo} />,
+    onRender: () => <MemoryTracker />,
   };
 };

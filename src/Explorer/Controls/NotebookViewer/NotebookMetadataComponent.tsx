@@ -1,20 +1,10 @@
 /**
  * Wrapper around Notebook metadata
  */
-import {
-  FontWeights,
-  Icon,
-  IconButton,
-  Link,
-  Persona,
-  PersonaSize,
-  PrimaryButton,
-  Stack,
-  Text,
-} from "office-ui-fabric-react";
+import { FontWeights, Icon, IconButton, Link, Persona, PersonaSize, PrimaryButton, Stack, Text } from "@fluentui/react";
 import * as React from "react";
 import { IGalleryItem } from "../../../Juno/JunoClient";
-import { FileSystemUtil } from "../../Notebook/FileSystemUtil";
+import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import "./NotebookViewerComponent.less";
 import CosmosDBLogo from "../../../../images/CosmosDB-logo.svg";
 import { InfoComponent } from "../NotebookGallery/InfoComponent/InfoComponent";

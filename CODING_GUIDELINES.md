@@ -153,7 +153,7 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 
 ✅ DO
 
-- Use [Puppeteer](https://developers.google.com/web/tools/puppeteer) and [Jest](https://jestjs.io/)
+- Use [Playwright](https://github.com/microsoft/playwright) and [Jest](https://jestjs.io/)
 - Write or modify an existing E2E test that covers the primary use case of any major feature.
   - Use caution. Do not try to cover every case. End to End tests can be slow and brittle.
 
@@ -188,7 +188,3 @@ Cosmos Explorer has been under constant development for over 5 years. As a resul
 ✅ DO
 
 - Support all [browsers supported by the Azure Portal](https://docs.microsoft.com/en-us/azure/azure-portal/azure-portal-supported-browsers-devices)
-- Support IE11
-  - In practice, this should not need to be considered as part of a normal development workflow
-  - Polyfills and transpilation are already provided by our engineering systems.
-  - This requirement will be removed on March 30th, 2021 when Azure drops IE11 support.

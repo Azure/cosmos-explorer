@@ -4,8 +4,8 @@
  */
 
 import * as React from "react";
-import { GraphHighlightedNodeData } from "./GraphExplorer";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { GraphHighlightedNodeData } from "./GraphExplorer";
 
 export interface ReadOnlyNodePropertiesComponentProps {
   node: GraphHighlightedNodeData;

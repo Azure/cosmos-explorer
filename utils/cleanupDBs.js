@@ -1,51 +1,98 @@
-const { CosmosClient } = require("@azure/cosmos");
+const msRestNodeAuth = require("@azure/ms-rest-nodeauth");
+const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
+const ms = require("ms");
 
-// TODO: Add support for other API connection strings
-const mongoRegex = RegExp("mongodb://.*:(.*)@(.*).mongo.cosmos.azure.com");
+const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
+const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
+const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
+const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
+const resourceGroupName = "runners";
 
-const connectionString = process.env.PORTAL_RUNNER_CONNECTION_STRING;
+const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 30).getTime();
 
-async function cleanup() {
-  if (!connectionString) {
-    throw new Error("Connection string not provided");
+function friendlyTime(date) {
+  try {
+    return ms(date);
+  } catch (error) {
+    return "Unknown";
   }
-
-  let client;
-  switch (true) {
-    case connectionString.includes("mongodb://"): {
-      const [, key, accountName] = connectionString.match(mongoRegex);
-      client = new CosmosClient({
-        key,
-        endpoint: `https://${accountName}.documents.azure.com:443/`,
-      });
-      break;
-    }
-    // TODO: Add support for other API connection strings
-    default:
-      client = new CosmosClient(connectionString);
-      break;
-  }
-
-  const response = await client.databases.readAll().fetchAll();
-  return Promise.all(
-    response.resources.map(async (db) => {
-      const dbTimestamp = new Date(db._ts * 1000);
-      const twentyMinutesAgo = new Date(Date.now() - 1000 * 60 * 20);
-      if (dbTimestamp < twentyMinutesAgo) {
-        await client.database(db.id).delete();
-        console.log(`DELETED: ${db.id} | Timestamp: ${dbTimestamp}`);
-      } else {
-        console.log(`SKIPPED: ${db.id} | Timestamp: ${dbTimestamp}`);
-      }
-    })
-  );
 }
 
-cleanup()
+async function main() {
+  const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
+  const client = new CosmosDBManagementClient(credentials, subscriptionId);
+  const accounts = await client.databaseAccounts.list(resourceGroupName);
+  for (const account of accounts) {
+    if (account.kind === "MongoDB") {
+      const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
+      for (const database of mongoDatabases) {
+        // Unfortunately Mongo does not provide a timestamp in ARM. There is no way to tell how old the DB is other thn encoding it in the ID :(
+        const timestamp = Number(database.name.split("-")[1]);
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    } else if (account.capabilities.find((c) => c.name === "EnableCassandra")) {
+      const cassandraDatabases = await client.cassandraResources.listCassandraKeyspaces(
+        resourceGroupName,
+        account.name
+      );
+      for (const database of cassandraDatabases) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.cassandraResources.deleteCassandraKeyspace(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    } else if (account.capabilities.find((c) => c.name === "EnableTable")) {
+      const tablesDatabase = await client.tableResources.listTables(resourceGroupName, account.name);
+      for (const database of tablesDatabase) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.tableResources.deleteTable(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    } else if (account.capabilities.find((c) => c.name === "EnableGremlin")) {
+      const graphDatabases = await client.gremlinResources.listGremlinDatabases(resourceGroupName, account.name);
+      for (const database of graphDatabases) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.gremlinResources.deleteGremlinDatabase(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    } else if (account.kind === "GlobalDocumentDB") {
+      const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
+      for (const database of sqlDatabases) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    }
+  }
+}
+
+main()
   .then(() => {
+    console.log("Completed");
     process.exit(0);
   })
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
+  .catch((err) => {
+    console.log(err);
+    console.log("Cleanup failed! Exiting with success. Cleanup should always fail safe.");
+    process.exit(0);
   });
