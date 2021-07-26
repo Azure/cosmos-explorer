@@ -40,7 +40,7 @@
     "CosmosD4Details": "General Purpose Cosmos Compute with 4 vCPUs, 16 GB Memory",
     "CosmosD8Details": "General Purpose Cosmos Compute with 8 vCPUs, 32 GB Memory",
     "CosmosD16Details": "General Purpose Cosmos Compute with 16 vCPUs, 64 GB Memory",
-    "Cost": "Cost",
+    "ApproximateCost": "Approximate Cost Per Hour",
     "CostText": "Hourly cost of the dedicated gateway resource depends on the SKU selection, number of instances per region, and number of regions.",
     "ConnectionString": "Connection String",
     "ConnectionStringText": "To use the dedicated gateway, use the connection string shown in ",
