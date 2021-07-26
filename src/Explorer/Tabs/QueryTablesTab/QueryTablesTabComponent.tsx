@@ -127,6 +127,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         isSelected: false,
       },
     };
+    this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
     // console.log(
     //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 24 ~ QueryTablesTabComponent ~ constructor ~ props",
     //   props
@@ -137,9 +138,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       ", ",
       this.state.queryViewModel.queryBuilderViewModel().andLabel,
       ", ",
-      this.state.queryViewModel.queryBuilderViewModel().clauseArray()
+      this.state.queryViewModel.queryBuilderViewModel().clauseArray(),
+      ", ",
+      this.state.tableEntityListViewModel.items()
     );
-
+    const x = this.state.tableEntityListViewModel.items();
+    console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 146 ~ QueryTablesTabComponent ~ constructor ~ x", x);
     this.andLabel = this.state.queryViewModel.queryBuilderViewModel().andLabel;
     this.actionLabel = this.state.queryViewModel.queryBuilderViewModel().actionLabel;
     this.fieldLabel = this.state.queryViewModel.queryBuilderViewModel().fieldLabel;
@@ -148,7 +152,19 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.valueLabel = this.state.queryViewModel.queryBuilderViewModel().valueLabel;
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
-
+    this.state.tableEntityListViewModel.items.subscribe(() => {
+      console.log(
+        "🚀 ~ file: QueryTablesTab.tsx ~ line 54 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.tableEntityListViewModel().items().length",
+        this.state.tableEntityListViewModel.items()
+      );
+      if (this.state.tableEntityListViewModel.items().length > 0 && userContext.apiType === "Tables") {
+        // this.state.queryViewModel.queryBuilderViewModel.setExample();
+        // console.log(
+        //   "🚀 ~ file: QueryTablesTab.tsx ~ line 55 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.queryViewModel().queryBuilderViewModel().setExample()",
+        //   this.state.queryViewModel.queryBuilderViewModel.setExample()
+        // );
+      }
+    });
     this.buildCommandBarOptions();
   }
 
@@ -273,32 +289,37 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   }
 
   render(): JSX.Element {
-    useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    // useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
     return (
-      <div className="tab-pane tableContainer" data-bind="attr:{id: tabId}" role="tabpanel">
+      <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
         <div className="query-builder">
           <div className="error-bar">
-            <div className="error-message" aria-label="Error Message">
-              <span>
-                <img className="entity-error-Img" src={ErrorRed} />
-              </span>
-              <span className="error-text" role="alert"></span>
-            </div>
+            {this.state.queryViewModel.hasQueryError() && (
+              <div className="error-message" aria-label="Error Message">
+                <span>
+                  <img className="entity-error-Img" src={ErrorRed} />
+                </span>
+                <span className="error-text" role="alert"></span>
+              </div>
+            )}
           </div>
-          <div className="query-editor-panel">
-            <div>
-              <textarea
-                className="query-editor-text"
-                data-bind="textInput: queryText,
-                css: { 'query-editor-text-invalid': hasQueryError },
-                readOnly: true"
-                name="query-editor"
-                rows="5"
-                cols="100"
-              ></textarea>
+          {this.state.queryViewModel.isEditorActive() && (
+            <div className="query-editor-panel">
+              <div>
+                <textarea
+                  className={`query-editor-text ${
+                    this.state.queryViewModel.hasQueryError() ? "query-editor-text-invalid" : ""
+                  } `}
+                  value={this.state.queryText}
+                  readOnly={true}
+                  name="query-editor"
+                  rows={5}
+                  cols={100}
+                ></textarea>
+              </div>
             </div>
-          </div>
+          )}
           {this.state.queryViewModel.isHelperActive() && (
             <div style={{ paddingLeft: "13px" }}>
               <div className="clause-table">
@@ -338,6 +359,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                 <div
                   className="addClause"
                   role="button"
+                  onClick={this.state.queryViewModel.queryBuilderViewModel().addNewClause}
                   // data-bind="click: addNewClause, event: { keydown: onAddNewClauseKeyDown }, attr: { title: addNewClauseLine }"
                   tabIndex={0}
                 >
@@ -352,7 +374,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                       <span
                         style={{ marginLeft: "5px" }}
                         // data-bind="text: addNewClauseLine"
-                      ></span>
+                      >
+                        {this.state.queryViewModel.queryBuilderViewModel().addNewClauseLine}
+                      </span>
                     </span>
                   </div>
                 </div>
