@@ -1,7 +1,10 @@
 jest.mock("../../Utils/arm/request");
 jest.mock("../CosmosClient");
+import ko from "knockout";
 import { AuthType } from "../../AuthType";
 import { CreateCollectionParams, DatabaseAccount } from "../../Contracts/DataModels";
+import { Database } from "../../Contracts/ViewModels";
+import { useDatabases } from "../../Explorer/useDatabases";
 import { updateUserContext } from "../../UserContext";
 import { armRequest } from "../../Utils/arm/request";
 import { client } from "../CosmosClient";
@@ -22,6 +25,15 @@ describe("createCollection", () => {
         name: "test",
       } as DatabaseAccount,
       apiType: "SQL",
+    });
+    useDatabases.setState({
+      databases: [
+        {
+          id: ko.observable("testDatabase"),
+          loadCollections: () => undefined,
+          collections: ko.observableArray([]),
+        } as Database,
+      ],
     });
   });
 

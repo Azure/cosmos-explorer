@@ -2,6 +2,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 export class DataSamplesUtil {
@@ -17,7 +18,7 @@ export class DataSamplesUtil {
 
     const databaseName = generator.getDatabaseId();
     const containerName = generator.getCollectionId();
-    if (this.hasContainer(databaseName, containerName, this.container.databases())) {
+    if (this.hasContainer(databaseName, containerName, useDatabases.getState().databases)) {
       const msg = `The container ${containerName} in database ${databaseName} already exists. Please delete it and retry.`;
       this.container.showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
       logConsoleError(msg);

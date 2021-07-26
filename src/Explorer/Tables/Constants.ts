@@ -1,4 +1,4 @@
-export var TableType = {
+export const TableType = {
   String: "String",
   Boolean: "Boolean",
   Binary: "Binary",
@@ -9,7 +9,7 @@ export var TableType = {
   Int64: "Int64",
 };
 
-export var CassandraType = {
+export const CassandraType = {
   Ascii: "Ascii",
   Bigint: "Bigint",
   Blob: "Blob",
@@ -27,12 +27,12 @@ export var CassandraType = {
   Tinyint: "Tinyint",
 };
 
-export var ClauseRule = {
+export const ClauseRule = {
   And: "And",
   Or: "Or",
 };
 
-export var Operator = {
+export const Operator = {
   EqualTo: "==",
   GreaterThan: ">",
   GreaterThanOrEqualTo: ">=",
@@ -42,7 +42,7 @@ export var Operator = {
   Equal: "=",
 };
 
-export var ODataOperator = {
+export const ODataOperator = {
   EqualTo: "eq",
   GreaterThan: "gt",
   GreaterThanOrEqualTo: "ge",
@@ -51,7 +51,7 @@ export var ODataOperator = {
   NotEqualTo: "ne",
 };
 
-export var timeOptions = {
+export const timeOptions = {
   lastHour: "Last hour",
   last24Hours: "Last 24 hours",
   last7Days: "Last 7 days",
@@ -62,7 +62,7 @@ export var timeOptions = {
   custom: "Custom...",
 };
 
-export var htmlSelectors = {
+export const htmlSelectors = {
   dataTableSelector: "#storageTable",
   dataTableAllRowsSelector: "#storageTable tbody tr",
   dataTableHeadRowSelector: ".dataTable thead tr",
@@ -84,9 +84,9 @@ export var htmlSelectors = {
   selectAllDropdownSelector: "#select-all-dropdown",
 };
 
-export var defaultHeader = " ";
+export const defaultHeader = " ";
 
-export var EntityKeyNames = {
+export const EntityKeyNames = {
   PartitionKey: "PartitionKey",
   RowKey: "RowKey",
   Timestamp: "Timestamp",
@@ -94,7 +94,7 @@ export var EntityKeyNames = {
   Etag: "etag",
 };
 
-export var htmlAttributeNames = {
+export const htmlAttributeNames = {
   dataTableNameAttr: "name_attr",
   dataTableContentTypeAttr: "contentType_attr",
   dataTableSnapshotAttr: "snapshot_attr",
@@ -103,14 +103,14 @@ export var htmlAttributeNames = {
   dataTableHeaderIndex: "data-column-index",
 };
 
-export var cssColors = {
+export const cssColors = {
   commonControlsButtonActive: "#B4C7DC" /* A darker shade of [{common-controls-button-hover-background}] */,
 };
 
-export var clauseGroupColors = ["#ffe1ff", "#fffacd", "#f0ffff", "#ffefd5", "#f0fff0"];
-export var transparentColor = "transparent";
+export const clauseGroupColors = ["#ffe1ff", "#fffacd", "#f0ffff", "#ffefd5", "#f0fff0"];
+export const transparentColor = "transparent";
 
-export var keyCodes = {
+export const keyCodes = {
   RightClick: 3,
   Enter: 13,
   Esc: 27,
@@ -163,7 +163,7 @@ export var keyCodes = {
   Dash: 189,
 };
 
-export var InputType = {
+export const InputType = {
   Text: "text",
   // Chrome doesn't support datetime, instead, datetime-local is supported.
   DateTime: "datetime-local",

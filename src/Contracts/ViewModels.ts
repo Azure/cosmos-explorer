@@ -5,9 +5,8 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer/Explorer";
-import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import ConflictId from "../Explorer/Tree/ConflictId";
 import DocumentId from "../Explorer/Tree/DocumentId";
@@ -15,6 +14,8 @@ import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
+import { CollectionCreationDefaults } from "../UserContext";
+import { SqlTriggerResource } from "../Utils/arm/generatedClients/cosmos/types";
 import * as DataModels from "./DataModels";
 import { SubscriptionType } from "./SubscriptionType";
 
@@ -88,7 +89,6 @@ export interface Database extends TreeNode {
 
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
 
-  selectDatabase(): void;
   expandDatabase(): Promise<void>;
   collapseDatabase(): void;
 
@@ -175,7 +175,7 @@ export interface Collection extends CollectionBase {
 
   createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
   createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;
-  createTriggerNode(data: TriggerDefinition & Resource): Trigger;
+  createTriggerNode(data: TriggerDefinition | SqlTriggerResource): Trigger;
   findStoredProcedureWithId(sprocRid: string): StoredProcedure;
   findTriggerWithId(triggerRid: string): Trigger;
   findUserDefinedFunctionWithId(udfRid: string): UserDefinedFunction;
@@ -274,8 +274,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  hashLocation: string;
-  onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
   isTabsContentExpanded?: ko.Observable<boolean>;
   onLoadStartKey?: number;
 
@@ -286,6 +284,7 @@ export interface TabOptions {
   rid?: string;
   node?: TreeNode;
   theme?: string;
+  index?: number;
 }
 
 export interface DocumentsTabOptions extends TabOptions {
@@ -408,25 +407,6 @@ export interface SelfServeFrameInputs {
   authorizationToken: string;
   csmEndpoint: string;
   flights?: readonly string[];
-}
-
-export interface CollectionCreationDefaults {
-  storage: string;
-  throughput: ThroughputDefaults;
-}
-
-export interface ThroughputDefaults {
-  fixed: number;
-  unlimited:
-    | number
-    | {
-        collectionThreshold: number;
-        lessThanOrEqualToThreshold: number;
-        greatThanThreshold: number;
-      };
-  unlimitedmax: number;
-  unlimitedmin: number;
-  shared: number;
 }
 
 export class MonacoEditorSettings {

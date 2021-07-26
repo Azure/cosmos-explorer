@@ -1,13 +1,12 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { ConflictResolutionComponentProps, ConflictResolutionComponent } from "./ConflictResolutionComponent";
-import { container, collection } from "../TestUtils";
 import * as DataModels from "../../../../Contracts/DataModels";
+import { collection } from "../TestUtils";
+import { ConflictResolutionComponent, ConflictResolutionComponentProps } from "./ConflictResolutionComponent";
 
 describe("ConflictResolutionComponent", () => {
   const baseProps: ConflictResolutionComponentProps = {
     collection: collection,
-    container: container,
     conflictResolutionPolicyMode: DataModels.ConflictResolutionMode.Custom,
     conflictResolutionPolicyModeBaseline: DataModels.ConflictResolutionMode.Custom,
     onConflictResolutionPolicyModeChange: () => {

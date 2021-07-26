@@ -1,6 +1,6 @@
-import * as DataModels from "../Contracts/DataModels";
-import * as Logger from "../Common/Logger";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import * as Logger from "../Common/Logger";
+import * as DataModels from "../Contracts/DataModels";
 
 interface KernelConnectionMetadata {
   name: string;
@@ -64,14 +64,13 @@ export const configureServiceEndpoints = async (
     return Promise.reject("Invalid or missing cluster connection info");
   }
 
-  const dataExplorer = window.dataExplorer;
   const notebookEndpointInfo: DataModels.NotebookConfigurationEndpointInfo[] = clusterConnectionInfo.endpoints.map(
     (clusterEndpoint) => ({
       type: clusterEndpoint.kind.toLowerCase(),
       endpoint: clusterEndpoint && clusterEndpoint.endpoint,
       username: clusterConnectionInfo.userName,
       password: clusterConnectionInfo.password,
-      token: dataExplorer && dataExplorer.arcadiaToken(),
+      token: "", // TODO. This was arcadiaToken() when our synapse/spark integration comes back
     })
   );
   const configurationEndpoints: DataModels.NotebookConfigurationEndpoints = {

@@ -21,7 +21,7 @@ import {
   makeStateRecord,
   makeTransformsRecord,
 } from "@nteract/core";
-import { configOption, createConfigCollection, defineConfigOption } from "@nteract/mythic-configuration";
+import { configOption, defineConfigOption } from "@nteract/mythic-configuration";
 import { Media } from "@nteract/outputs";
 import TransformVDOM from "@nteract/transform-vdom";
 import * as Immutable from "immutable";
@@ -242,22 +242,27 @@ export class NotebookClientV2 {
     );
 
     // Additional configuration
-    this.store.dispatch(configOption("editorType").action(params.cellEditorType ?? "monaco"));
+    this.store.dispatch(configOption("editorType").action(params.cellEditorType ?? "codemirror"));
     this.store.dispatch(
       configOption("autoSaveInterval").action(params.autoSaveInterval ?? Constants.Notebook.autoSaveIntervalMs)
     );
-    createConfigCollection({
-      key: "monaco",
-    });
-    defineConfigOption({
-      label: "Show Line numbers",
-      key: "monaco.lineNumbers",
-      values: [
-        { label: "Yes", value: true },
-        { label: "No", value: false },
-      ],
-      defaultValue: true,
-    });
+    this.store.dispatch(configOption("codeMirror.lineNumbers").action(true));
+
+    const readOnlyConfigOption = configOption("codeMirror.readOnly");
+    const readOnlyValue = params.isReadOnly ? "nocursor" : undefined;
+    if (!readOnlyConfigOption) {
+      defineConfigOption({
+        label: "Read-only",
+        key: "codeMirror.readOnly",
+        values: [
+          { label: "Read-Only", value: "nocursor" },
+          { label: "Not read-only", value: undefined },
+        ],
+        defaultValue: readOnlyValue,
+      });
+    } else {
+      this.store.dispatch(readOnlyConfigOption.action(readOnlyValue));
+    }
   }
 
   /**

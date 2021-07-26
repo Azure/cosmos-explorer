@@ -3,7 +3,7 @@
 exports[`ThroughputInput Pane should render Default properly 1`] = `
 <ThroughputInput
   isDatabase={false}
-  isSharded={false}
+  isSharded={true}
   onCostAcknowledgeChange={[Function]}
   setIsAutoscale={[Function]}
   setThroughputValue={[Function]}

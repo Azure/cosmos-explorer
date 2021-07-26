@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { configContext } from "../ConfigContext";
 
 export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
   const headers = new Headers();
@@ -12,7 +13,7 @@ export async function fetchPhoto(accessToken: string): Promise<Blob | void> {
     headers: headers,
   };
 
-  return fetch("https://graph.windows.net/me/thumbnailPhoto?api-version=1.6", options).then((response) =>
+  return fetch(`${configContext.GRAPH_ENDPOINT}/me/thumbnailPhoto?api-version=1.6`, options).then((response) =>
     response.blob()
   );
 }

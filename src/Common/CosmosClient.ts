@@ -10,6 +10,13 @@ const _global = typeof self === "undefined" ? window : self;
 
 export const tokenProvider = async (requestInfo: RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
+
+  if (userContext.features.enableAadDataPlane && userContext.aadToken) {
+    const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+    const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
+    return authorizationToken;
+  }
+
   if (configContext.platform === Platform.Emulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);

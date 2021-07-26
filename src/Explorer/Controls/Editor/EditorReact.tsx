@@ -1,6 +1,11 @@
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
 import { loadMonaco, monaco } from "../../LazyMonaco";
+// import "./EditorReact.less";
 
+interface EditorReactStates {
+  showEditor: boolean;
+}
 export interface EditorReactProps {
   language: string;
   content: string;
@@ -12,22 +17,26 @@ export interface EditorReactProps {
   theme?: string; // Monaco editor theme
 }
 
-export class EditorReact extends React.Component<EditorReactProps> {
+export class EditorReact extends React.Component<EditorReactProps, EditorReactStates> {
   private rootNode: HTMLElement;
   private editor: monaco.editor.IStandaloneCodeEditor;
   private selectionListener: monaco.IDisposable;
 
   public constructor(props: EditorReactProps) {
     super(props);
+    this.state = {
+      showEditor: false,
+    };
   }
 
   public componentDidMount(): void {
     this.createEditor(this.configureEditor.bind(this));
   }
 
-  public shouldComponentUpdate(): boolean {
-    // Prevents component re-rendering
-    return false;
+  public componentDidUpdate(previous: EditorReactProps) {
+    if (this.props.content !== previous.content) {
+      this.editor.setValue(this.props.content);
+    }
   }
 
   public componentWillUnmount(): void {
@@ -35,14 +44,19 @@ export class EditorReact extends React.Component<EditorReactProps> {
   }
 
   public render(): JSX.Element {
-    return <div className="jsonEditor" ref={(elt: HTMLElement) => this.setRef(elt)} />;
+    return (
+      <React.Fragment>
+        {!this.state.showEditor && <Spinner size={SpinnerSize.large} className="spinner" />}
+        <div className="jsonEditor" ref={(elt: HTMLElement) => this.setRef(elt)} />
+      </React.Fragment>
+    );
   }
 
   protected configureEditor(editor: monaco.editor.IStandaloneCodeEditor) {
     this.editor = editor;
     const queryEditorModel = this.editor.getModel();
     if (!this.props.isReadOnly && this.props.onContentChanged) {
-      queryEditorModel.onDidChangeContent((e: monaco.editor.IModelContentChangedEvent) => {
+      queryEditorModel.onDidChangeContent(() => {
         const queryEditorModel = this.editor.getModel();
         this.props.onContentChanged(queryEditorModel.getValue());
       });
@@ -76,6 +90,12 @@ export class EditorReact extends React.Component<EditorReactProps> {
     this.rootNode.innerHTML = "";
     const monaco = await loadMonaco();
     createCallback(monaco.editor.create(this.rootNode, options));
+
+    if (this.rootNode.innerHTML) {
+      this.setState({
+        showEditor: true,
+      });
+    }
   }
 
   private setRef(element: HTMLElement): void {
