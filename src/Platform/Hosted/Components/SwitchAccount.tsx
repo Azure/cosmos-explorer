@@ -1,4 +1,4 @@
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
+import { Dropdown } from "@fluentui/react";
 import * as React from "react";
 import { FunctionComponent } from "react";
 import { DatabaseAccount } from "../../../Contracts/DataModels";
@@ -26,7 +26,7 @@ export const SwitchAccount: FunctionComponent<Props> = ({
         data: account,
       }))}
       onChange={(_, option) => {
-        setSelectedAccountName(String(option.key));
+        setSelectedAccountName(String(option?.key));
         dismissMenu();
       }}
       defaultSelectedKey={selectedAccount?.name}

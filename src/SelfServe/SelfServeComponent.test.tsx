@@ -1,7 +1,7 @@
-import React from "react";
 import { shallow } from "enzyme";
+import React from "react";
 import { SelfServeComponent, SelfServeComponentState } from "./SelfServeComponent";
-import { NumberUiType, SelfServeDescriptor, SelfServeNotificationType, SmartUiInput } from "./SelfServeTypes";
+import { NumberUiType, OnSaveResult, SelfServeDescriptor, SmartUiInput } from "./SelfServeTypes";
 
 describe("SelfServeComponent", () => {
   const defaultValues = new Map<string, SmartUiInput>([
@@ -17,13 +17,20 @@ describe("SelfServeComponent", () => {
 
   const initializeMock = jest.fn(async () => new Map(defaultValues));
   const onSaveMock = jest.fn(async () => {
-    return { message: "submitted successfully", type: SelfServeNotificationType.info };
+    return {
+      operationStatusUrl: undefined,
+    } as OnSaveResult;
   });
+  const refreshResult = {
+    isUpdateInProgress: false,
+    updateInProgressMessageTKey: "refresh performed successfully",
+  };
+
   const onRefreshMock = jest.fn(async () => {
-    return { isUpdateInProgress: false, notificationMessage: "refresh performed successfully" };
+    return { ...refreshResult };
   });
   const onRefreshIsUpdatingMock = jest.fn(async () => {
-    return { isUpdateInProgress: true, notificationMessage: "refresh performed successfully" };
+    return { ...refreshResult, isUpdateInProgress: true };
   });
 
   const exampleData: SelfServeDescriptor = {
@@ -80,9 +87,9 @@ describe("SelfServeComponent", () => {
             dataFieldName: "database",
             type: "object",
             choices: [
-              { label: "Database 1", key: "db1" },
-              { label: "Database 2", key: "db2" },
-              { label: "Database 3", key: "db3" },
+              { labelTKey: "Database 1", key: "db1" },
+              { labelTKey: "Database 2", key: "db2" },
+              { labelTKey: "Database 3", key: "db3" },
             ],
             defaultKey: "db2",
           },
@@ -99,7 +106,9 @@ describe("SelfServeComponent", () => {
   };
 
   it("should render and honor save, discard, refresh actions", async () => {
-    const wrapper = shallow(<SelfServeComponent descriptor={exampleData} />);
+    const wrapper = shallow(
+      <SelfServeComponent descriptor={exampleData} t={undefined} i18n={undefined} tReady={undefined} />
+    );
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(wrapper).toMatchSnapshot();
 
@@ -136,23 +145,24 @@ describe("SelfServeComponent", () => {
     wrapper.update();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, updatedValues);
-    selfServeComponent.resetBaselineValues();
+    selfServeComponent.updateBaselineValues();
     state = wrapper.state() as SelfServeComponentState;
     isEqual(state.baselineValues, defaultValues);
     isEqual(state.currentValues, state.baselineValues);
 
-    // clicking refresh calls onRefresh. If component is not updating, it calls initialize() as well
+    // clicking refresh calls onRefresh.
     selfServeComponent.onRefreshClicked();
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(onRefreshMock).toHaveBeenCalledTimes(2);
-    expect(initializeMock).toHaveBeenCalledTimes(2);
 
     selfServeComponent.onSaveButtonClick();
     expect(onSaveMock).toHaveBeenCalledTimes(1);
   });
 
   it("getResolvedValue", async () => {
-    const wrapper = shallow(<SelfServeComponent descriptor={exampleData} />);
+    const wrapper = shallow(
+      <SelfServeComponent descriptor={exampleData} t={undefined} i18n={undefined} tReady={undefined} />
+    );
     await new Promise((resolve) => setTimeout(resolve, 0));
     const selfServeComponent = wrapper.instance() as SelfServeComponent;
 
@@ -173,7 +183,9 @@ describe("SelfServeComponent", () => {
 
   it("message bar and spinner snapshots", async () => {
     const newDescriptor = { ...exampleData, onRefresh: onRefreshIsUpdatingMock };
-    let wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} />);
+    let wrapper = shallow(
+      <SelfServeComponent descriptor={newDescriptor} t={undefined} i18n={undefined} tReady={undefined} />
+    );
     await new Promise((resolve) => setTimeout(resolve, 0));
     let selfServeComponent = wrapper.instance() as SelfServeComponent;
     selfServeComponent.onSaveButtonClick();
@@ -181,7 +193,9 @@ describe("SelfServeComponent", () => {
     expect(wrapper).toMatchSnapshot();
 
     newDescriptor.onRefresh = onRefreshMock;
-    wrapper = shallow(<SelfServeComponent descriptor={newDescriptor} />);
+    wrapper = shallow(
+      <SelfServeComponent descriptor={newDescriptor} t={undefined} i18n={undefined} tReady={undefined} />
+    );
     await new Promise((resolve) => setTimeout(resolve, 0));
     selfServeComponent = wrapper.instance() as SelfServeComponent;
     selfServeComponent.onSaveButtonClick();

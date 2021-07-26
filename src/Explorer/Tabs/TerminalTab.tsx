@@ -1,12 +1,15 @@
+import { Spinner, SpinnerSize } from "@fluentui/react";
 import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import TabsBase from "./TabsBase";
 import * as React from "react";
 import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { userContext } from "../../UserContext";
+import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
-import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { useNotebook } from "../Notebook/useNotebook";
+import TabsBase from "./TabsBase";
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
@@ -32,12 +35,13 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
         databaseAccount={this.getDatabaseAccount()}
       />
     ) : (
-      <></>
+      <Spinner styles={{ root: { marginTop: 10 } }} size={SpinnerSize.large}></Spinner>
     );
   }
 }
 
 export default class TerminalTab extends TabsBase {
+  public readonly html = '<div style="height: 100%" data-bind="react:notebookTerminalComponentAdapter"></div>  ';
   private container: Explorer;
   private notebookTerminalComponentAdapter: NotebookTerminalComponentAdapter;
 
@@ -46,10 +50,14 @@ export default class TerminalTab extends TabsBase {
     this.container = options.container;
     this.notebookTerminalComponentAdapter = new NotebookTerminalComponentAdapter(
       () => this.getNotebookServerInfo(options),
-      () => this.getContainer().databaseAccount()
+      () => userContext?.databaseAccount
     );
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
-      if (this.isTemplateReady() && this.container.isNotebookEnabled()) {
+      if (
+        this.isTemplateReady() &&
+        useNotebook.getState().isNotebookEnabled &&
+        useNotebook.getState().notebookServerInfo?.notebookServerEndpoint
+      ) {
         return true;
       }
       return false;
@@ -88,7 +96,7 @@ export default class TerminalTab extends TabsBase {
         throw new Error(`Terminal kind: ${options.kind} not supported`);
     }
 
-    const info: DataModels.NotebookWorkspaceConnectionInfo = options.container.notebookServerInfo();
+    const info: DataModels.NotebookWorkspaceConnectionInfo = useNotebook.getState().notebookServerInfo;
     return {
       authToken: info.authToken,
       notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,

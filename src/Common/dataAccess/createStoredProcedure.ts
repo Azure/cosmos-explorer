@@ -1,18 +1,17 @@
-import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
-import {
-  SqlStoredProcedureCreateUpdateParameters,
-  SqlStoredProcedureResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
+import { AuthType } from "../../AuthType";
+import { userContext } from "../../UserContext";
 import {
   createUpdateSqlStoredProcedure,
   getSqlStoredProcedure,
-} from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
+} from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import {
+  SqlStoredProcedureCreateUpdateParameters,
+  SqlStoredProcedureResource,
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function createStoredProcedure(
   databaseId: string,
@@ -21,11 +20,7 @@ export async function createStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating stored procedure ${storedProcedure.id}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       try {
         const getResponse = await getSqlStoredProcedure(
           userContext.subscriptionId,

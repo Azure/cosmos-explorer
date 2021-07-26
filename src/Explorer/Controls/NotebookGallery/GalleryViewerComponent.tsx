@@ -19,20 +19,19 @@ import {
   SpinnerSize,
   Stack,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import * as React from "react";
-import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
-import * as GalleryUtils from "../../../Utils/GalleryUtils";
-import { Dialog, DialogProps } from "../Dialog";
-import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
-import "./GalleryViewerComponent.less";
 import { HttpStatusCodes } from "../../../Common/Constants";
-import Explorer from "../../Explorer";
-import { CodeOfConductComponent } from "./CodeOfConductComponent";
-import { InfoComponent } from "./InfoComponent/InfoComponent";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
-import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { IGalleryItem, IJunoResponse, IPublicGalleryData, JunoClient } from "../../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { trace } from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as GalleryUtils from "../../../Utils/GalleryUtils";
+import Explorer from "../../Explorer";
+import { GalleryCardComponent, GalleryCardComponentProps } from "./Cards/GalleryCardComponent";
+import { CodeOfConduct } from "./CodeOfConduct/CodeOfConduct";
+import "./GalleryViewerComponent.less";
+import { InfoComponent } from "./InfoComponent/InfoComponent";
 
 export interface GalleryViewerComponentProps {
   container?: Explorer;
@@ -68,7 +67,6 @@ interface GalleryViewerComponentState {
   selectedTab: GalleryTab;
   sortBy: SortBy;
   searchText: string;
-  dialogProps: DialogProps;
   isCodeOfConductAccepted: boolean;
   isFetchingPublishedNotebooks: boolean;
   isFetchingFavouriteNotebooks: boolean;
@@ -86,7 +84,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   public static readonly PublishedTitle = "My published work";
 
   private static readonly rowsPerPage = 5;
-
+  private static readonly CARD_WIDTH = 256;
   private static readonly mostViewedText = "Most viewed";
   private static readonly mostDownloadedText = "Most downloaded";
   private static readonly mostFavoritedText = "Most favorited";
@@ -119,7 +117,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
       selectedTab: props.selectedTab,
       sortBy: props.sortBy,
       searchText: props.searchText,
-      dialogProps: undefined,
       isCodeOfConductAccepted: undefined,
       isFetchingFavouriteNotebooks: true,
       isFetchingPublishedNotebooks: true,
@@ -138,11 +135,11 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         key: SortBy.MostRecent,
         text: GalleryViewerComponent.mostRecentText,
       },
+      {
+        key: SortBy.MostFavorited,
+        text: GalleryViewerComponent.mostFavoritedText,
+      },
     ];
-    this.sortingOptions.push({
-      key: SortBy.MostFavorited,
-      text: GalleryViewerComponent.mostFavoritedText,
-    });
 
     this.loadTabContent(this.state.selectedTab, this.state.searchText, this.state.sortBy, false);
     this.loadFavoriteNotebooks(this.state.searchText, this.state.sortBy, false); // Need this to show correct favorite button state
@@ -187,8 +184,6 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     return (
       <div className="galleryContainer">
         <Pivot {...pivotProps}>{pivotItems}</Pivot>
-
-        {this.state.dialogProps && <Dialog {...this.state.dialogProps} />}
       </div>
     );
   }
@@ -372,7 +367,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
         {acceptedCodeOfConduct === false && (
           <Overlay isDarkThemed>
             <div className="publicGalleryTabOverlayContent">
-              <CodeOfConductComponent
+              <CodeOfConduct
                 junoClient={this.props.junoClient}
                 onAcceptCodeOfConduct={(result: boolean) => {
                   this.setState({ isCodeOfConductAccepted: result });
@@ -388,7 +383,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   private createSearchBarHeader(content: JSX.Element): JSX.Element {
     return (
       <Stack tokens={{ childrenGap: 10 }}>
-        <Stack horizontal tokens={{ childrenGap: 20, padding: 10 }}>
+        <Stack horizontal wrap tokens={{ childrenGap: 20, padding: 10 }}>
           <Stack.Item grow>
             <SearchBox value={this.state.searchText} placeholder="Search" onChange={this.onSearchBoxChange} />
           </Stack.Item>
@@ -643,7 +638,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
 
   private getPageSpecification = (itemIndex?: number, visibleRect?: IRectangle): IPageSpecification => {
     if (itemIndex === 0) {
-      this.columnCount = Math.floor(visibleRect.width / GalleryCardComponent.CARD_WIDTH) || this.columnCount;
+      this.columnCount = Math.floor(visibleRect.width / GalleryViewerComponent.CARD_WIDTH) || this.columnCount;
       this.rowCount = GalleryViewerComponent.rowsPerPage;
     }
 
@@ -654,7 +649,8 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
   };
 
   private onRenderCell = (data?: IGalleryItem): JSX.Element => {
-    const isFavorite = this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
+    const isFavorite =
+      this.props.container && this.favoriteNotebooks?.find((item) => item.id === data.id) !== undefined;
     const props: GalleryCardComponentProps = {
       data,
       isFavorite,
@@ -670,7 +666,7 @@ export class GalleryViewerComponent extends React.Component<GalleryViewerCompone
     };
 
     return (
-      <div style={{ float: "left", padding: 10 }}>
+      <div style={{ float: "left", padding: 5 }}>
         <GalleryCardComponent {...props} />
       </div>
     );

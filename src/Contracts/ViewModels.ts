@@ -5,9 +5,8 @@ import {
   TriggerDefinition,
   UserDefinedFunctionDefinition,
 } from "@azure/cosmos";
-import { CommandButtonComponentProps } from "../Explorer/Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../Explorer/Explorer";
-import { ConsoleData } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleData } from "../Explorer/Menus/NotificationConsole/ConsoleData";
 import { CassandraTableKey, CassandraTableKeys } from "../Explorer/Tables/TableDataClient";
 import ConflictId from "../Explorer/Tree/ConflictId";
 import DocumentId from "../Explorer/Tree/DocumentId";
@@ -15,12 +14,21 @@ import StoredProcedure from "../Explorer/Tree/StoredProcedure";
 import Trigger from "../Explorer/Tree/Trigger";
 import UserDefinedFunction from "../Explorer/Tree/UserDefinedFunction";
 import { SelfServeType } from "../SelfServe/SelfServeUtils";
-import { UploadDetails } from "../workers/upload/definitions";
+import { CollectionCreationDefaults } from "../UserContext";
+import { SqlTriggerResource } from "../Utils/arm/generatedClients/cosmos/types";
 import * as DataModels from "./DataModels";
 import { SubscriptionType } from "./SubscriptionType";
 
 export interface TokenProvider {
   getAuthHeader(): Promise<Headers>;
+}
+
+export interface UploadDetailsRecord {
+  fileName: string;
+  numSucceeded: number;
+  numFailed: number;
+  numThrottled: number;
+  errors: string[];
 }
 
 export interface QueryResultsMetadata {
@@ -81,14 +89,12 @@ export interface Database extends TreeNode {
 
   selectedSubnodeKind: ko.Observable<CollectionTabKind>;
 
-  selectDatabase(): void;
   expandDatabase(): Promise<void>;
   collapseDatabase(): void;
 
   loadCollections(): Promise<void>;
   findCollectionWithId(collectionId: string): Collection;
   openAddCollection(database: Database, event: MouseEvent): void;
-  onDeleteDatabaseContextMenuClick(source: Database, event: MouseEvent | KeyboardEvent): void;
   onSettingsClick: () => void;
   loadOffer(): Promise<void>;
   getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
@@ -135,6 +141,7 @@ export interface Collection extends CollectionBase {
   onTableEntitiesClick(): void;
   onGraphDocumentsClick(): void;
   onMongoDBDocumentsClick(): void;
+  onSchemaAnalyzerClick(): void;
   openTab(): void;
 
   onSettingsClick: () => Promise<void>;
@@ -168,14 +175,14 @@ export interface Collection extends CollectionBase {
 
   createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure;
   createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction;
-  createTriggerNode(data: TriggerDefinition & Resource): Trigger;
+  createTriggerNode(data: TriggerDefinition | SqlTriggerResource): Trigger;
   findStoredProcedureWithId(sprocRid: string): StoredProcedure;
   findTriggerWithId(triggerRid: string): Trigger;
   findUserDefinedFunctionWithId(udfRid: string): UserDefinedFunction;
 
   onDragOver(source: Collection, event: { originalEvent: DragEvent }): void;
   onDrop(source: Collection, event: { originalEvent: DragEvent }): void;
-  uploadFiles(fileList: FileList): Promise<UploadDetails>;
+  uploadFiles(fileList: FileList): Promise<{ data: UploadDetailsRecord[] }>;
 
   getLabel(): string;
   getPendingThroughputSplitNotification(): Promise<DataModels.Notification>;
@@ -199,17 +206,14 @@ export enum NeighborType {
   BOTH,
 }
 
-/**
- * Set of observable related to graph configuration by user
- */
-export interface GraphConfigUiData {
-  showNeighborType: ko.Observable<NeighborType>;
-  nodeProperties: ko.ObservableArray<string>;
-  nodePropertiesWithNone: ko.ObservableArray<string>;
-  nodeCaptionChoice: ko.Observable<string>;
-  nodeColorKeyChoice: ko.Observable<string>;
-  nodeIconChoice: ko.Observable<string>;
-  nodeIconSet: ko.Observable<string>;
+export interface IGraphConfigUiData {
+  showNeighborType: NeighborType;
+  nodeProperties: string[];
+  nodePropertiesWithNone: string[];
+  nodeCaptionChoice: string;
+  nodeColorKeyChoice: string;
+  nodeIconChoice: string;
+  nodeIconSet: string;
 }
 
 /**
@@ -270,9 +274,6 @@ export interface TabOptions {
   tabKind: CollectionTabKind;
   title: string;
   tabPath: string;
-  isActive: ko.Observable<boolean>;
-  hashLocation: string;
-  onUpdateTabsButtons: (buttons: CommandButtonComponentProps[]) => void;
   isTabsContentExpanded?: ko.Observable<boolean>;
   onLoadStartKey?: number;
 
@@ -283,6 +284,7 @@ export interface TabOptions {
   rid?: string;
   node?: TreeNode;
   theme?: string;
+  index?: number;
 }
 
 export interface DocumentsTabOptions extends TabOptions {
@@ -361,6 +363,7 @@ export enum CollectionTabKind {
   Schema = 19,
   CollectionSettingsV2 = 20,
   DatabaseSettingsV2 = 21,
+  SchemaAnalyzer = 22,
 }
 
 export enum TerminalKind {
@@ -376,7 +379,6 @@ export interface DataExplorerInputsFrame {
   masterKey?: string;
   hasWriteAccess?: boolean;
   authorizationToken?: string;
-  features: { [key: string]: string };
   csmEndpoint?: string;
   dnsSuffix?: string;
   serverId?: string;
@@ -390,29 +392,21 @@ export interface DataExplorerInputsFrame {
   sharedThroughputMaximum?: number;
   sharedThroughputDefault?: number;
   dataExplorerVersion?: string;
-  isAuthWithresourceToken?: boolean;
   defaultCollectionThroughput?: CollectionCreationDefaults;
   flights?: readonly string[];
-  selfServeType?: SelfServeType;
+  features?: {
+    [key: string]: string;
+  };
 }
 
-export interface CollectionCreationDefaults {
-  storage: string;
-  throughput: ThroughputDefaults;
-}
-
-export interface ThroughputDefaults {
-  fixed: number;
-  unlimited:
-    | number
-    | {
-        collectionThreshold: number;
-        lessThanOrEqualToThreshold: number;
-        greatThanThreshold: number;
-      };
-  unlimitedmax: number;
-  unlimitedmin: number;
-  shared: number;
+export interface SelfServeFrameInputs {
+  selfServeType: SelfServeType;
+  databaseAccount: any;
+  subscriptionId: string;
+  resourceGroup: string;
+  authorizationToken: string;
+  csmEndpoint: string;
+  flights?: readonly string[];
 }
 
 export class MonacoEditorSettings {

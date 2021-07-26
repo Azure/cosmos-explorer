@@ -1,9 +1,11 @@
+import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
-import { useBoolean } from "@uifabric/react-hooks";
-import { HttpHeaders } from "../../../Common/Constants";
-import { GenerateTokenResponse } from "../../../Contracts/DataModels";
-import { configContext } from "../../../ConfigContext";
+import ErrorImage from "../../../../images/error.svg";
+import ConnectImage from "../../../../images/HdeConnectCosmosDB.svg";
 import { AuthType } from "../../../AuthType";
+import { HttpHeaders } from "../../../Common/Constants";
+import { configContext } from "../../../ConfigContext";
+import { GenerateTokenResponse } from "../../../Contracts/DataModels";
 import { isResourceTokenConnectionString } from "../Helpers/ResourceTokenUtils";
 
 interface Props {
@@ -28,7 +30,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
       <div className="connectExplorerFormContainer">
         <div className="connectExplorer">
           <p className="connectExplorerContent">
-            <img src="images/HdeConnectCosmosDB.svg" alt="Azure Cosmos DB" />
+            <img src={ConnectImage} alt="Azure Cosmos DB" />
           </p>
           <p className="welcomeText">Welcome to Azure Cosmos DB</p>
           {isFormVisible ? (
@@ -68,7 +70,7 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
                   }}
                 />
                 <span className="errorDetailsInfoTooltip" style={{ display: "none" }}>
-                  <img className="errorImg" src="images/error.svg" alt="Error notification" />
+                  <img className="errorImg" src={ErrorImage} alt="Error notification" />
                   <span className="errorDetails"></span>
                 </span>
               </p>

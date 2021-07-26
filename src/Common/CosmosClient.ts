@@ -1,15 +1,22 @@
 import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
 import { configContext, Platform } from "../ConfigContext";
-import { getErrorMessage } from "./ErrorHandlingUtils";
+import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { EmulatorMasterKey, HttpHeaders } from "./Constants";
-import { userContext } from "../UserContext";
+import { getErrorMessage } from "./ErrorHandlingUtils";
 
 const _global = typeof self === "undefined" ? window : self;
 
 export const tokenProvider = async (requestInfo: RequestInfo) => {
   const { verb, resourceId, resourceType, headers } = requestInfo;
+
+  if (userContext.features.enableAadDataPlane && userContext.aadToken) {
+    const AUTH_PREFIX = `type=aad&ver=1.0&sig=`;
+    const authorizationToken = `${AUTH_PREFIX}${userContext.aadToken}`;
+    return authorizationToken;
+  }
+
   if (configContext.platform === Platform.Emulator) {
     // TODO This SDK method mutates the headers object. Find a better one or fix the SDK.
     await setAuthorizationTokenHeaderUsingMasterKey(verb, resourceId, resourceType, headers, EmulatorMasterKey);
@@ -32,7 +39,7 @@ export const tokenProvider = async (requestInfo: RequestInfo) => {
 };
 
 export const requestPlugin: Cosmos.Plugin<any> = async (requestContext, next) => {
-  requestContext.endpoint = configContext.PROXY_PATH;
+  requestContext.endpoint = new URL(configContext.PROXY_PATH, window.location.href).href;
   requestContext.headers["x-ms-proxy-target"] = endpoint();
   return next(requestContext);
 };
@@ -43,12 +50,7 @@ export const endpoint = () => {
     const location = _global.parent ? _global.parent.location : _global.location;
     return configContext.EMULATOR_ENDPOINT || location.origin;
   }
-  return (
-    userContext.endpoint ||
-    (userContext.databaseAccount &&
-      userContext.databaseAccount.properties &&
-      userContext.databaseAccount.properties.documentEndpoint)
-  );
+  return userContext.endpoint || userContext?.databaseAccount?.properties?.documentEndpoint;
 };
 
 export async function getTokenFromAuthService(verb: string, resourceType: string, resourceId?: string): Promise<any> {
@@ -75,7 +77,10 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
   }
 }
 
+let _client: Cosmos.CosmosClient;
+
 export function client(): Cosmos.CosmosClient {
+  if (_client) return _client;
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
@@ -89,5 +94,6 @@ export function client(): Cosmos.CosmosClient {
   if (configContext.PROXY_PATH !== undefined) {
     (options as any).plugins = [{ on: "request", plugin: requestPlugin }];
   }
-  return new Cosmos.CosmosClient(options);
+  _client = new Cosmos.CosmosClient(options);
+  return _client;
 }

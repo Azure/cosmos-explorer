@@ -1,49 +1,51 @@
+import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
 import * as React from "react";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import * as Constants from "../../../Common/Constants";
-import * as DataModels from "../../../Contracts/DataModels";
-import * as ViewModels from "../../../Contracts/ViewModels";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
-import { traceStart, traceFailure, traceSuccess, trace } from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import Explorer from "../../Explorer";
+import { AuthType } from "../../../AuthType";
+import * as Constants from "../../../Common/Constants";
+import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
+import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
+import { updateCollection } from "../../../Common/dataAccess/updateCollection";
 import { updateOffer } from "../../../Common/dataAccess/updateOffer";
-import { updateCollection, updateMongoDBCollectionThroughRP } from "../../../Common/dataAccess/updateCollection";
+import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import * as DataModels from "../../../Contracts/DataModels";
+import * as ViewModels from "../../../Contracts/ViewModels";
+import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import { trace, traceFailure, traceStart, traceSuccess } from "../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../UserContext";
+import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/cosmos/types";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { SettingsTabV2 } from "../../Tabs/SettingsTabV2";
+import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
-import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
-import {
-  MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps,
-} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
-import {
-  hasDatabaseSharedThroughput,
-  GeospatialConfigType,
-  TtlType,
-  ChangeFeedPolicyState,
-  SettingsV2TabTypes,
-  getTabTitle,
-  isDirty,
-  AddMongoIndexProps,
-  MongoIndexTypes,
-  parseConflictResolutionMode,
-  parseConflictResolutionProcedure,
-  getMongoNotification,
-} from "./SettingsUtils";
 import {
   ConflictResolutionComponent,
   ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
-import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
-import { Pivot, PivotItem, IPivotProps, IPivotItemProps } from "office-ui-fabric-react";
-import "./SettingsComponent.less";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
-import { MongoDBCollectionResource, MongoIndex } from "../../../Utils/arm/generatedClients/2020-04-01/types";
-import { readMongoDBCollectionThroughRP } from "../../../Common/dataAccess/readMongoDBCollection";
-import { getIndexTransformationProgress } from "../../../Common/dataAccess/getIndexTransformationProgress";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
+import {
+  MongoIndexingPolicyComponent,
+  MongoIndexingPolicyComponentProps,
+} from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
+import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
+import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
+import {
+  AddMongoIndexProps,
+  ChangeFeedPolicyState,
+  GeospatialConfigType,
+  getMongoNotification,
+  getTabTitle,
+  hasDatabaseSharedThroughput,
+  isDirty,
+  MongoIndexTypes,
+  parseConflictResolutionMode,
+  parseConflictResolutionProcedure,
+  SettingsV2TabTypes,
+  TtlType,
+} from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
   tab: SettingsV2TabTypes;
@@ -119,7 +121,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private collection: ViewModels.Collection;
   private database: ViewModels.Database;
   private offer: DataModels.Offer;
-  private container: Explorer;
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
@@ -131,23 +132,17 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.isCollectionSettingsTab = this.props.settingsTab.tabKind === ViewModels.CollectionTabKind.CollectionSettingsV2;
     if (this.isCollectionSettingsTab) {
       this.collection = this.props.settingsTab.collection as ViewModels.Collection;
-      this.container = this.collection?.container;
       this.offer = this.collection?.offer();
       this.isAnalyticalStorageEnabled = !!this.collection?.analyticalStorageTtl();
-      this.shouldShowIndexingPolicyEditor =
-        this.container && !this.container.isPreferredApiCassandra() && !this.container.isPreferredApiMongoDB();
+      this.shouldShowIndexingPolicyEditor = userContext.apiType !== "Cassandra" && userContext.apiType !== "Mongo";
 
-      this.changeFeedPolicyVisible = this.collection?.container.isFeatureEnabled(
-        Constants.Features.enableChangeFeedPolicy
-      );
+      this.changeFeedPolicyVisible = userContext.features.enableChangeFeedPolicy;
 
       // Mongo container with system partition key still treat as "Fixed"
       this.isFixedContainer =
-        this.container.isPreferredApiMongoDB() &&
-        (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
+        userContext.apiType === "Mongo" && (!this.collection?.partitionKey || this.collection?.partitionKey.systemKey);
     } else {
       this.database = this.props.settingsTab.database;
-      this.container = this.database?.container;
       this.offer = this.database?.offer();
     }
 
@@ -224,22 +219,18 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.setAutoPilotStates();
     this.setBaseline();
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
   componentDidUpdate(): void {
     if (this.props.settingsTab.isActive()) {
-      this.props.settingsTab.getContainer().onUpdateTabsButtons(this.getTabsButtons());
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
     }
   }
 
   public loadMongoIndexes = async (): Promise<void> => {
-    if (
-      this.container.isPreferredApiMongoDB() &&
-      this.container.isEnableMongoCapabilityPresent() &&
-      this.container.databaseAccount()
-    ) {
+    if (userContext.apiType === "Mongo" && userContext?.databaseAccount) {
       this.mongoDBCollectionResource = await readMongoDBCollectionThroughRP(
         this.collection.databaseId,
         this.collection.id()
@@ -299,11 +290,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     this.state.wasAutopilotOriginallySet !== this.state.isAutoPilotSelected;
 
   public shouldShowKeyspaceSharedThroughputMessage = (): boolean =>
-    this.container && this.container.isPreferredApiCassandra() && hasDatabaseSharedThroughput(this.collection);
+    userContext.apiType === "Cassandra" && hasDatabaseSharedThroughput(this.collection);
 
   public hasConflictResolution = (): boolean =>
-    this.container?.databaseAccount &&
-    this.container.databaseAccount()?.properties?.enableMultipleWriteLocations &&
+    userContext?.databaseAccount?.properties?.enableMultipleWriteLocations &&
     this.collection.conflictResolutionPolicy &&
     !!this.collection.conflictResolutionPolicy();
 
@@ -325,7 +315,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         ? this.saveCollectionSettings(startKey)
         : this.saveDatabaseSettings(startKey));
     } catch (error) {
-      this.container.isRefreshingExplorer(false);
       this.props.settingsTab.isExecutionError(true);
       console.error(error);
       traceFailure(
@@ -699,7 +688,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       }
     }
 
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(
@@ -784,12 +772,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     if (this.state.isMongoIndexingPolicySaveable && this.mongoDBCollectionResource) {
       try {
         const newMongoIndexes = this.getMongoIndexesToSave();
-        const newMongoCollection: MongoDBCollectionResource = {
+        const newMongoCollection = {
           ...this.mongoDBCollectionResource,
           indexes: newMongoIndexes,
         };
 
-        this.mongoDBCollectionResource = await updateMongoDBCollectionThroughRP(
+        this.mongoDBCollectionResource = await updateCollection(
           this.collection.databaseId,
           this.collection.id(),
           newMongoCollection
@@ -862,7 +850,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         });
       }
     }
-    this.container.isRefreshingExplorer(false);
     this.setBaseline();
     this.setState({ wasAutopilotOriginallySet: this.state.isAutoPilotSelected });
     traceSuccess(
@@ -877,11 +864,22 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     );
   };
 
+  public getMongoIndexTabContent = (
+    mongoIndexingPolicyComponentProps: MongoIndexingPolicyComponentProps
+  ): JSX.Element => {
+    if (userContext.authType === AuthType.AAD) {
+      if (userContext.apiType === "Mongo") {
+        return <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />;
+      }
+      return undefined;
+    }
+    return mongoIndexingPolicyAADError;
+  };
+
   public render(): JSX.Element {
     const scaleComponentProps: ScaleComponentProps = {
       collection: this.collection,
       database: this.database,
-      container: this.container,
       isFixedContainer: this.isFixedContainer,
       onThroughputChange: this.onThroughputChange,
       throughput: this.state.throughput,
@@ -909,7 +907,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     const subSettingsComponentProps: SubSettingsComponentProps = {
       collection: this.collection,
-      container: this.container,
       isAnalyticalStorageEnabled: this.isAnalyticalStorageEnabled,
       changeFeedPolicyVisible: this.changeFeedPolicyVisible,
       timeToLive: this.state.timeToLive,
@@ -962,7 +959,6 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     const conflictResolutionPolicyComponentProps: ConflictResolutionComponentProps = {
       collection: this.collection,
-      container: this.container,
       conflictResolutionPolicyMode: this.state.conflictResolutionPolicyMode,
       conflictResolutionPolicyModeBaseline: this.state.conflictResolutionPolicyModeBaseline,
       onConflictResolutionPolicyModeChange: this.onConflictResolutionPolicyModeChange,
@@ -993,16 +989,12 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         tab: SettingsV2TabTypes.IndexingPolicyTab,
         content: <IndexingPolicyComponent {...indexingPolicyComponentProps} />,
       });
-    } else if (this.container.isPreferredApiMongoDB()) {
-      if (this.container.isEnableMongoCapabilityPresent()) {
+    } else if (userContext.apiType === "Mongo") {
+      const mongoIndexTabContext = this.getMongoIndexTabContent(mongoIndexingPolicyComponentProps);
+      if (mongoIndexTabContext) {
         tabs.push({
           tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: <MongoIndexingPolicyComponent {...mongoIndexingPolicyComponentProps} />,
-        });
-      } else {
-        tabs.push({
-          tab: SettingsV2TabTypes.IndexingPolicyTab,
-          content: mongoIndexingPolicyAADError,
+          content: mongoIndexTabContext,
         });
       }
     }

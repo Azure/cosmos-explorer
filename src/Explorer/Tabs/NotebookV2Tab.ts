@@ -1,95 +1,60 @@
-import * as _ from "underscore";
-import * as Q from "q";
+import { stringifyNotebook, toJS } from "@nteract/commutable";
 import * as ko from "knockout";
-
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as DataModels from "../../Contracts/DataModels";
-import TabsBase from "./TabsBase";
-
-import NewCellIcon from "../../../images/notebook/Notebook-insert-cell.svg";
-import CutIcon from "../../../images/notebook/Notebook-cut.svg";
-import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
-import PasteIcon from "../../../images/notebook/Notebook-paste.svg";
-import RunIcon from "../../../images/notebook/Notebook-run.svg";
-import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
-import RestartIcon from "../../../images/notebook/Notebook-restart.svg";
-import SaveIcon from "../../../images/save-cosmos.svg";
+import * as Q from "q";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
-import InterruptKernelIcon from "../../../images/notebook/Notebook-stop.svg";
-import KillKernelIcon from "../../../images/notebook/Notebook-stop.svg";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
+import CutIcon from "../../../images/notebook/Notebook-cut.svg";
+import NewCellIcon from "../../../images/notebook/Notebook-insert-cell.svg";
+import PasteIcon from "../../../images/notebook/Notebook-paste.svg";
+import RestartIcon from "../../../images/notebook/Notebook-restart.svg";
+import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
+import RunIcon from "../../../images/notebook/Notebook-run.svg";
+import { default as InterruptKernelIcon, default as KillKernelIcon } from "../../../images/notebook/Notebook-stop.svg";
+import SaveIcon from "../../../images/save-cosmos.svg";
+import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
-import { Areas, ArmApiVersions } from "../../Common/Constants";
-import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
-import { NotebookConfigurationUtils } from "../../Utils/NotebookConfigurationUtils";
-import { KernelSpecsDisplay, NotebookClientV2 } from "../Notebook/NotebookClientV2";
-import { configContext } from "../../ConfigContext";
-import Explorer from "../Explorer";
-import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
+import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { toJS, stringifyNotebook } from "@nteract/commutable";
-import { appInsights } from "../../Shared/appInsights";
-import { userContext } from "../../UserContext";
+import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
+import { KernelSpecsDisplay } from "../Notebook/NotebookClientV2";
+import * as CdbActions from "../Notebook/NotebookComponent/actions";
+import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
+import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
+import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { useNotebook } from "../Notebook/useNotebook";
+import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
 
-export interface NotebookTabOptions extends ViewModels.TabOptions {
-  account: DataModels.DatabaseAccount;
-  masterKey: string;
-  container: Explorer;
+export interface NotebookTabOptions extends NotebookTabBaseOptions {
   notebookContentItem: NotebookContentItem;
 }
 
-export default class NotebookTabV2 extends TabsBase {
-  private static clientManager: NotebookClientV2;
-  private container: Explorer;
+export default class NotebookTabV2 extends NotebookTabBase {
+  public readonly html = '<div data-bind="react:notebookComponentAdapter" style="height: 100%"></div>';
   public notebookPath: ko.Observable<string>;
-  private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
 
   constructor(options: NotebookTabOptions) {
     super(options);
 
     this.container = options.container;
-
-    if (!NotebookTabV2.clientManager) {
-      NotebookTabV2.clientManager = new NotebookClientV2({
-        connectionInfo: this.container.notebookServerInfo(),
-        databaseAccountName: this.container.databaseAccount().name,
-        defaultExperience: this.container.defaultExperience(),
-        contentProvider: this.container.notebookManager?.notebookContentProvider,
-      });
-    }
-
     this.notebookPath = ko.observable(options.notebookContentItem.path);
-
-    this.container.notebookServerInfo.subscribe((newValue: DataModels.NotebookWorkspaceConnectionInfo) => {
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, "New notebook server info received.");
-    });
-
+    useNotebook.subscribe(
+      () => logConsoleInfo("New notebook server info received."),
+      (state) => state.notebookServerInfo
+    );
     this.notebookComponentAdapter = new NotebookComponentAdapter({
       contentItem: options.notebookContentItem,
-      notebooksBasePath: this.container.getNotebookBasePath(),
-      notebookClient: NotebookTabV2.clientManager,
+      notebooksBasePath: useNotebook.getState().notebookBasePath,
+      notebookClient: NotebookTabBase.clientManager,
       onUpdateKernelInfo: this.onKernelUpdate,
     });
-
-    this.selectedSparkPool = ko.observable<string>(null);
-    this.container &&
-      this.container.arcadiaToken.subscribe(async () => {
-        const currentKernel = this.notebookComponentAdapter.getCurrentKernelName();
-        if (!currentKernel) {
-          return;
-        }
-        await this.configureServiceEndpoints(currentKernel);
-      });
   }
 
   public onCloseTabButtonClick(): Q.Promise<any> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
-      this.isActive(false);
       super.onCloseTabButtonClick();
     };
 
@@ -115,10 +80,6 @@ export default class NotebookTabV2 extends TabsBase {
     }
 
     return await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName());
-  }
-
-  public getContainer(): Explorer {
-    return this.container;
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
@@ -387,82 +348,12 @@ export default class NotebookTabV2 extends TabsBase {
       },
       // TODO: Uncomment when undo/redo is reimplemented in nteract
     ];
-
-    if (this.container.hasStorageAnalyticsAfecFeature()) {
-      const arcadiaWorkspaceDropdown: CommandButtonComponentProps = {
-        iconSrc: null,
-        iconAlt: workspaceLabel,
-        ariaLabel: workspaceLabel,
-        onCommandClick: () => {},
-        commandButtonLabel: null,
-        hasPopup: false,
-        disabled: this.container.arcadiaWorkspaces.length < 1,
-        isDropdown: false,
-        isArcadiaPicker: true,
-        arcadiaProps: {
-          selectedSparkPool: this.selectedSparkPool(),
-          workspaces: this.container.arcadiaWorkspaces(),
-          onSparkPoolSelect: this.onSparkPoolSelect,
-          onCreateNewWorkspaceClicked: () => {
-            this.container.createWorkspace();
-          },
-          onCreateNewSparkPoolClicked: (workspaceResourceId: string) => {
-            this.container.createSparkPool(workspaceResourceId);
-          },
-        },
-      };
-      buttons.splice(1, 0, arcadiaWorkspaceDropdown);
-    }
     return buttons;
   }
 
   protected buildCommandBarOptions(): void {
     this.updateNavbarWithTabsButtons();
   }
-
-  private onSparkPoolSelect = (evt: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>, item: any) => {
-    if (!item || !item.text) {
-      this.selectedSparkPool(null);
-      return;
-    }
-
-    appInsights.trackEvent(
-      { name: "SparkPoolSelected" },
-      {
-        subscriptionId: userContext.subscriptionId,
-        accountName: userContext.databaseAccount?.name,
-        accountId: userContext.databaseAccount?.id,
-      }
-    );
-
-    this.container &&
-      this.container.arcadiaWorkspaces &&
-      this.container.arcadiaWorkspaces() &&
-      this.container.arcadiaWorkspaces().forEach(async (workspace) => {
-        if (workspace && workspace.name && workspace.sparkPools) {
-          const selectedPoolIndex = _.findIndex(workspace.sparkPools, (pool) => pool && pool.name === item.text);
-          if (selectedPoolIndex >= 0) {
-            const selectedPool = workspace.sparkPools[selectedPoolIndex];
-            if (selectedPool && selectedPool.name) {
-              this.container.sparkClusterConnectionInfo({
-                userName: undefined,
-                password: undefined,
-                endpoints: [
-                  {
-                    endpoint: `https://${workspace.name}.${configContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE}/livyApi/versions/${ArmApiVersions.arcadiaLivy}/sparkPools/${selectedPool.name}/`,
-                    kind: DataModels.SparkClusterEndpointKind.Livy,
-                  },
-                ],
-              });
-              this.selectedSparkPool(item.text);
-              await this.reconfigureServiceEndpoints();
-              this.container.sparkClusterConnectionInfo.valueHasMutated();
-              return;
-            }
-          }
-        }
-      });
-  };
 
   private onKernelUpdate = async () => {
     await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName()).catch((reason) => {
@@ -472,8 +363,8 @@ export default class NotebookTabV2 extends TabsBase {
   };
 
   private async configureServiceEndpoints(kernelName: string) {
-    const notebookConnectionInfo = this.container && this.container.notebookServerInfo();
-    const sparkClusterConnectionInfo = this.container && this.container.sparkClusterConnectionInfo();
+    const notebookConnectionInfo = useNotebook.getState().notebookServerInfo;
+    const sparkClusterConnectionInfo = useNotebook.getState().sparkClusterConnectionInfo;
     await NotebookConfigurationUtils.configureServiceEndpoints(
       this.notebookPath(),
       notebookConnectionInfo,
@@ -487,11 +378,32 @@ export default class NotebookTabV2 extends TabsBase {
       source: Source.CommandBarMenu,
     });
 
+    const notebookReduxStore = NotebookTabV2.clientManager.getStore();
+    const unsubscribe = notebookReduxStore.subscribe(() => {
+      const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
+      useNotebookSnapshotStore.setState({
+        snapshot: cdbState.notebookSnapshot?.imageSrc,
+        error: cdbState.notebookSnapshotError,
+      });
+    });
+
     const notebookContent = this.notebookComponentAdapter.getContent();
+    const notebookContentRef = this.notebookComponentAdapter.contentRef;
+    const onPanelClose = (): void => {
+      unsubscribe();
+      useNotebookSnapshotStore.setState({
+        snapshot: undefined,
+        error: undefined,
+      });
+      notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(undefined));
+    };
+
     await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      this.notebookComponentAdapter.getNotebookParentElement()
+      notebookContentRef,
+      (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request)),
+      onPanelClose
     );
   };
 
@@ -506,10 +418,4 @@ export default class NotebookTabV2 extends TabsBase {
 
     this.container.copyNotebook(notebookContent.name, content);
   };
-
-  private traceTelemetry(actionType: number) {
-    TelemetryProcessor.trace(actionType, ActionModifiers.Mark, {
-      dataExplorerArea: Areas.Notebook,
-    });
-  }
 }

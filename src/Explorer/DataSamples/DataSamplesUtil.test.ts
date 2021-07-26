@@ -1,9 +1,10 @@
-import { DataSamplesUtil } from "./DataSamplesUtil";
-import * as sinon from "sinon";
-import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 import * as ko from "knockout";
+import * as sinon from "sinon";
+import { Collection, Database } from "../../Contracts/ViewModels";
 import Explorer from "../Explorer";
-import { Database, Collection } from "../../Contracts/ViewModels";
+import { useDatabases } from "../useDatabases";
+import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
+import { DataSamplesUtil } from "./DataSamplesUtil";
 
 describe("DataSampleUtils", () => {
   const sampleCollectionId = "sampleCollectionId";
@@ -16,8 +17,8 @@ describe("DataSampleUtils", () => {
       collections: ko.observableArray<Collection>([collection]),
     } as Database;
     const explorer = {} as Explorer;
-    explorer.nonSystemDatabases = ko.computed(() => [database]);
     explorer.showOkModalDialog = () => {};
+    useDatabases.getState().addDatabases([database]);
     const dataSamplesUtil = new DataSamplesUtil(explorer);
 
     const fakeGenerator = sinon.createStubInstance<ContainerSampleGenerator>(ContainerSampleGenerator as any);

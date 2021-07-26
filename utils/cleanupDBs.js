@@ -1,7 +1,6 @@
 const msRestNodeAuth = require("@azure/ms-rest-nodeauth");
 const { CosmosDBManagementClient } = require("@azure/arm-cosmosdb");
 const ms = require("ms");
-const { time } = require("console");
 
 const clientId = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_ID"];
 const secret = process.env["NOTEBOOKS_TEST_RUNNER_CLIENT_SECRET"];
@@ -9,9 +8,16 @@ const tenantId = "72f988bf-86f1-41af-91ab-2d7cd011db47";
 const subscriptionId = "69e02f2d-f059-4409-9eac-97e8a276ae2c";
 const resourceGroupName = "runners";
 
-const sixtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 60).getTime();
+const thirtyMinutesAgo = new Date(Date.now() - 1000 * 60 * 30).getTime();
 
-// Deletes all SQL and Mongo databases created more than 20 minutes ago in the test runner accounts
+function friendlyTime(date) {
+  try {
+    return ms(date);
+  } catch (error) {
+    return "Unknown";
+  }
+}
+
 async function main() {
   const credentials = await msRestNodeAuth.loginWithServicePrincipalSecret(clientId, secret, tenantId);
   const client = new CosmosDBManagementClient(credentials, subscriptionId);
@@ -20,23 +26,60 @@ async function main() {
     if (account.kind === "MongoDB") {
       const mongoDatabases = await client.mongoDBResources.listMongoDBDatabases(resourceGroupName, account.name);
       for (const database of mongoDatabases) {
+        // Unfortunately Mongo does not provide a timestamp in ARM. There is no way to tell how old the DB is other thn encoding it in the ID :(
         const timestamp = Number(database.name.split("-")[1]);
-        if (timestamp && timestamp < sixtyMinutesAgo) {
+        if (timestamp && timestamp < thirtyMinutesAgo) {
           await client.mongoDBResources.deleteMongoDBDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    } else if (account.capabilities.find((c) => c.name === "EnableCassandra")) {
+      const cassandraDatabases = await client.cassandraResources.listCassandraKeyspaces(
+        resourceGroupName,
+        account.name
+      );
+      for (const database of cassandraDatabases) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.cassandraResources.deleteCassandraKeyspace(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    } else if (account.capabilities.find((c) => c.name === "EnableTable")) {
+      const tablesDatabase = await client.tableResources.listTables(resourceGroupName, account.name);
+      for (const database of tablesDatabase) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.tableResources.deleteTable(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        }
+      }
+    } else if (account.capabilities.find((c) => c.name === "EnableGremlin")) {
+      const graphDatabases = await client.gremlinResources.listGremlinDatabases(resourceGroupName, account.name);
+      for (const database of graphDatabases) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
+          await client.gremlinResources.deleteGremlinDatabase(resourceGroupName, account.name, database.name);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
+        } else {
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         }
       }
     } else if (account.kind === "GlobalDocumentDB") {
       const sqlDatabases = await client.sqlResources.listSqlDatabases(resourceGroupName, account.name);
       for (const database of sqlDatabases) {
-        const timestamp = Number(database.name.split("-")[1]);
-        if (timestamp && timestamp < sixtyMinutesAgo) {
+        const timestamp = Number(database.resource._ts) * 1000;
+        if (timestamp && timestamp < thirtyMinutesAgo) {
           await client.sqlResources.deleteSqlDatabase(resourceGroupName, account.name, database.name);
-          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`DELETED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         } else {
-          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${ms(Date.now() - timestamp)}`);
+          console.log(`SKIPPED: ${account.name} | ${database.name} | Age: ${friendlyTime(Date.now() - timestamp)}`);
         }
       }
     }

@@ -1,43 +1,46 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as _ from "underscore";
-import UploadWorker from "worker-loader!../../workers/upload";
-import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { bulkCreateDocument } from "../../Common/dataAccess/bulkCreateDocument";
+import { createDocument } from "../../Common/dataAccess/createDocument";
+import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
+import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
 import { readStoredProcedures } from "../../Common/dataAccess/readStoredProcedures";
 import { readTriggers } from "../../Common/dataAccess/readTriggers";
 import { readUserDefinedFunctions } from "../../Common/dataAccess/readUserDefinedFunctions";
-import { readCollectionOffer } from "../../Common/dataAccess/readCollectionOffer";
-import { getCollectionUsageSizeInKB } from "../../Common/dataAccess/getCollectionDataUsageSize";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
+import { fetchPortalNotifications } from "../../Common/PortalNotifications";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { UploadDetailsRecord } from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import { StartUploadMessageParams, UploadDetails, UploadDetailsRecord } from "../../workers/upload/definitions";
-import { ConsoleDataType } from "../Menus/NotificationConsole/NotificationConsoleComponent";
+import { userContext } from "../../UserContext";
+import { SqlTriggerResource } from "../../Utils/arm/generatedClients/cosmos/types";
+import { isServerlessAccount } from "../../Utils/CapabilityUtils";
+import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
+import Explorer from "../Explorer";
+import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { CassandraAPIDataClient, CassandraTableKey, CassandraTableKeys } from "../Tables/TableDataClient";
 import ConflictsTab from "../Tabs/ConflictsTab";
 import DocumentsTab from "../Tabs/DocumentsTab";
 import GraphTab from "../Tabs/GraphTab";
 import MongoDocumentsTab from "../Tabs/MongoDocumentsTab";
-import MongoQueryTab from "../Tabs/MongoQueryTab";
-import MongoShellTab from "../Tabs/MongoShellTab";
-import QueryTab from "../Tabs/QueryTab";
+import { NewMongoQueryTab } from "../Tabs/MongoQueryTab/MongoQueryTab";
+import { NewMongoShellTab } from "../Tabs/MongoShellTab/MongoShellTab";
+import { NewQueryTab } from "../Tabs/QueryTab/QueryTab";
 import QueryTablesTab from "../Tabs/QueryTablesTab";
 import { CollectionSettingsTabV2 } from "../Tabs/SettingsTabV2";
+import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 import ConflictId from "./ConflictId";
 import DocumentId from "./DocumentId";
 import StoredProcedure from "./StoredProcedure";
 import Trigger from "./Trigger";
 import UserDefinedFunction from "./UserDefinedFunction";
-import { configContext, Platform } from "../../ConfigContext";
-import Explorer from "../Explorer";
-import { userContext } from "../../UserContext";
-import { fetchPortalNotifications } from "../../Common/PortalNotifications";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { createDocument } from "../../Common/dataAccess/createDocument";
 
 export default class Collection implements ViewModels.Collection {
   public nodeKind: string;
@@ -93,6 +96,7 @@ export default class Collection implements ViewModels.Collection {
   public storedProceduresFocused: ko.Observable<boolean>;
   public userDefinedFunctionsFocused: ko.Observable<boolean>;
   public triggersFocused: ko.Observable<boolean>;
+  private isOfferRead: boolean;
 
   constructor(container: Explorer, databaseId: string, data: DataModels.Collection) {
     this.nodeKind = "Collection";
@@ -130,16 +134,12 @@ export default class Collection implements ViewModels.Collection {
         this.partitionKey.paths[0]) ||
       null;
 
-    if (!!container.isPreferredApiMongoDB() && this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
+    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && ~this.partitionKeyProperty.indexOf(`"`)) {
       this.partitionKeyProperty = this.partitionKeyProperty.replace(/["]+/g, "");
     }
 
     // TODO #10738269 : Add this logic in a derived class for Mongo
-    if (
-      !!container.isPreferredApiMongoDB() &&
-      this.partitionKeyProperty &&
-      this.partitionKeyProperty.indexOf("$v") > -1
-    ) {
+    if (userContext.apiType === "Mongo" && this.partitionKeyProperty && this.partitionKeyProperty.indexOf("$v") > -1) {
       // From $v.shard.$v.key.$v > shard.key
       this.partitionKeyProperty = this.partitionKeyProperty.replace(/.\$v/g, "").replace(/\$v./g, "");
       this.partitionKeyPropertyHeader = "/" + this.partitionKeyProperty;
@@ -177,6 +177,19 @@ export default class Collection implements ViewModels.Collection {
     });
 
     this.children = ko.observableArray<ViewModels.TreeNode>([]);
+    this.children.subscribe(() => {
+      // update the database in zustand store
+      const database = this.getDatabase();
+      database.collections(
+        database.collections()?.map((collection) => {
+          if (collection.id() === this.id()) {
+            return this;
+          }
+          return collection;
+        })
+      );
+      useDatabases.getState().updateDatabase(database);
+    });
 
     this.storedProcedures = ko.computed(() => {
       return this.children()
@@ -196,28 +209,23 @@ export default class Collection implements ViewModels.Collection {
         .map((node) => <Trigger>node);
     });
 
-    const showScriptsMenus: boolean = container.isPreferredApiDocumentDB() || container.isPreferredApiGraph();
+    const showScriptsMenus: boolean = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
     this.showStoredProcedures = ko.observable<boolean>(showScriptsMenus);
     this.showTriggers = ko.observable<boolean>(showScriptsMenus);
     this.showUserDefinedFunctions = ko.observable<boolean>(showScriptsMenus);
 
     this.showConflicts = ko.observable<boolean>(
-      container &&
-        container.databaseAccount &&
-        container.databaseAccount() &&
-        container.databaseAccount().properties &&
-        container.databaseAccount().properties.enableMultipleWriteLocations &&
-        data &&
-        !!data.conflictResolutionPolicy
+      userContext?.databaseAccount?.properties.enableMultipleWriteLocations && data && !!data.conflictResolutionPolicy
     );
 
     this.isStoredProceduresExpanded = ko.observable<boolean>(false);
     this.isUserDefinedFunctionsExpanded = ko.observable<boolean>(false);
     this.isTriggersExpanded = ko.observable<boolean>(false);
+    this.isOfferRead = false;
   }
 
   public expandCollapseCollection() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Collection node",
 
@@ -231,10 +239,12 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandCollection();
     }
-    this.container.onUpdateTabsButtons([]);
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useCommandBar.getState().setContextButtons([]);
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public collapseCollection() {
@@ -270,7 +280,7 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public onDocumentDBDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -281,14 +291,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const documentsTabs: DocumentsTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Documents,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as DocumentsTab[];
+    const documentsTabs: DocumentsTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Documents,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as DocumentsTab[];
     let documentsTab: DocumentsTab = documentsTabs && documentsTabs[0];
 
     if (documentsTab) {
-      this.container.tabsManager.activateTab(documentsTab);
+      useTabs.getState().activateTab(documentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.databaseId,
@@ -304,21 +316,18 @@ export default class Collection implements ViewModels.Collection {
         documentIds: ko.observableArray<DocumentId>([]),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Items",
-        isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Documents`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/documents`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
-      this.container.tabsManager.activateNewTab(documentsTab);
+      useTabs.getState().activateNewTab(documentsTab);
     }
   }
 
   public onConflictsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Conflicts node",
@@ -329,14 +338,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const conflictsTabs: ConflictsTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Conflicts,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as ConflictsTab[];
+    const conflictsTabs: ConflictsTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Conflicts,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as ConflictsTab[];
     let conflictsTab: ConflictsTab = conflictsTabs && conflictsTabs[0];
 
     if (conflictsTab) {
-      this.container.tabsManager.activateTab(conflictsTab);
+      useTabs.getState().activateTab(conflictsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.databaseId,
@@ -352,21 +363,18 @@ export default class Collection implements ViewModels.Collection {
         conflictIds: ko.observableArray<ConflictId>([]),
         tabKind: ViewModels.CollectionTabKind.Conflicts,
         title: "Conflicts",
-        isActive: ko.observable<boolean>(false),
         collection: this,
         node: this,
         tabPath: `${this.databaseId}>${this.id()}>Conflicts`,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/conflicts`,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
-      this.container.tabsManager.activateNewTab(conflictsTab);
+      useTabs.getState().activateNewTab(conflictsTab);
     }
   }
 
   public onTableEntitiesClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.QueryTables);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Entities node",
@@ -377,24 +385,26 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    if (this.container.isPreferredApiCassandra() && !this.cassandraKeys) {
+    if (userContext.apiType === "Cassandra" && !this.cassandraKeys) {
       (<CassandraAPIDataClient>this.container.tableDataClient).getTableKeys(this).then((keys: CassandraTableKeys) => {
         this.cassandraKeys = keys;
       });
     }
 
-    const queryTablesTabs: QueryTablesTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.QueryTables,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as QueryTablesTab[];
+    const queryTablesTabs: QueryTablesTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.QueryTables,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as QueryTablesTab[];
     let queryTablesTab: QueryTablesTab = queryTablesTabs && queryTablesTabs[0];
 
     if (queryTablesTab) {
-      this.container.tabsManager.activateTab(queryTablesTab);
+      useTabs.getState().activateTab(queryTablesTab);
     } else {
       this.documentIds([]);
       let title = `Entities`;
-      if (this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType === "Cassandra") {
         title = `Rows`;
       }
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -409,22 +419,17 @@ export default class Collection implements ViewModels.Collection {
         tabKind: ViewModels.CollectionTabKind.QueryTables,
         title: title,
         tabPath: "",
-
         collection: this,
-
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/entities`,
-        isActive: ko.observable(false),
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
-      this.container.tabsManager.activateNewTab(queryTablesTab);
+      useTabs.getState().activateNewTab(queryTablesTab);
     }
   }
 
   public onGraphDocumentsClick() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -435,14 +440,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const graphTabs: GraphTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Graph,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as GraphTab[];
+    const graphTabs: GraphTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Graph,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as GraphTab[];
     let graphTab: GraphTab = graphTabs && graphTabs[0];
 
     if (graphTab) {
-      this.container.tabsManager.activateTab(graphTab);
+      useTabs.getState().activateTab(graphTab);
     } else {
       this.documentIds([]);
       const title = "Graph";
@@ -464,21 +471,18 @@ export default class Collection implements ViewModels.Collection {
         collection: this,
         masterKey: userContext.masterKey || "",
         collectionPartitionKeyProperty: this.partitionKeyProperty,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
         collectionId: this.id(),
-        isActive: ko.observable(false),
         databaseId: this.databaseId,
         isTabsContentExpanded: this.container.isTabsContentExpanded,
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
-      this.container.tabsManager.activateNewTab(graphTab);
+      useTabs.getState().activateNewTab(graphTab);
     }
   }
 
   public onMongoDBDocumentsClick = () => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Documents node",
@@ -489,14 +493,16 @@ export default class Collection implements ViewModels.Collection {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    const mongoDocumentsTabs: MongoDocumentsTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Documents,
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    ) as MongoDocumentsTab[];
+    const mongoDocumentsTabs: MongoDocumentsTab[] = useTabs
+      .getState()
+      .getTabs(
+        ViewModels.CollectionTabKind.Documents,
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      ) as MongoDocumentsTab[];
     let mongoDocumentsTab: MongoDocumentsTab = mongoDocumentsTabs && mongoDocumentsTabs[0];
 
     if (mongoDocumentsTab) {
-      this.container.tabsManager.activateTab(mongoDocumentsTab);
+      useTabs.getState().activateTab(mongoDocumentsTab);
     } else {
       const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
         databaseName: this.databaseId,
@@ -513,21 +519,60 @@ export default class Collection implements ViewModels.Collection {
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "Documents",
         tabPath: "",
-
         collection: this,
-
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoDocuments`,
-        isActive: ko.observable(false),
         onLoadStartKey: startKey,
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
-      this.container.tabsManager.activateNewTab(mongoDocumentsTab);
+      useTabs.getState().activateNewTab(mongoDocumentsTab);
     }
   };
 
+  public onSchemaAnalyzerClick = async () => {
+    useSelectedNode.getState().setSelectedNode(this);
+    this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
+    const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
+    TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
+      description: "Schema node",
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.ResourceTree,
+    });
+
+    for (const tab of useTabs.getState().openedTabs) {
+      if (
+        tab instanceof SchemaAnalyzerTab &&
+        tab.collection?.databaseId === this.databaseId &&
+        tab.collection?.id() === this.id()
+      ) {
+        return useTabs.getState().activateTab(tab);
+      }
+    }
+
+    const startKey = TelemetryProcessor.traceStart(Action.Tab, {
+      databaseName: this.databaseId,
+      collectionName: this.id(),
+      dataExplorerArea: Constants.Areas.Tab,
+      tabTitle: "Schema",
+    });
+    this.documentIds([]);
+    useTabs.getState().activateNewTab(
+      new SchemaAnalyzerTab({
+        account: userContext.databaseAccount,
+        masterKey: userContext.masterKey || "",
+        container: this.container,
+        tabKind: ViewModels.CollectionTabKind.SchemaAnalyzer,
+        title: "Schema",
+        tabPath: "",
+        collection: this,
+        node: this,
+        onLoadStartKey: startKey,
+      })
+    );
+  };
+
   public onSettingsClick = async (): Promise<void> => {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
+    await this.loadOffer();
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
@@ -539,12 +584,9 @@ export default class Collection implements ViewModels.Collection {
     });
 
     const tabTitle = !this.offer() ? "Settings" : "Scale & Settings";
-    const matchingTabs = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.CollectionSettingsV2,
-      (tab) => {
-        return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
-      }
-    );
+    const matchingTabs = useTabs.getState().getTabs(ViewModels.CollectionTabKind.CollectionSettingsV2, (tab) => {
+      return tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id();
+    });
 
     const traceStartData = {
       databaseName: this.databaseId,
@@ -560,9 +602,6 @@ export default class Collection implements ViewModels.Collection {
       tabPath: "",
       collection: this,
       node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/settings`,
-      isActive: ko.observable(false),
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     };
 
     let settingsTabV2 = matchingTabs && (matchingTabs[0] as CollectionSettingsTabV2);
@@ -579,15 +618,15 @@ export default class Collection implements ViewModels.Collection {
       settingsTabOptions.onLoadStartKey = startKey;
       settingsTabOptions.tabKind = ViewModels.CollectionTabKind.CollectionSettingsV2;
       settingsTabV2 = new CollectionSettingsTabV2(settingsTabOptions);
-      this.container.tabsManager.activateNewTab(settingsTabV2);
+      useTabs.getState().activateNewTab(settingsTabV2);
     } else {
-      this.container.tabsManager.activateTab(settingsTabV2);
+      useTabs.getState().activateTab(settingsTabV2);
     }
   };
 
   public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
     const collection: ViewModels.Collection = source.collection || source;
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
       databaseName: this.databaseId,
@@ -597,26 +636,26 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const queryTab: QueryTab = new QueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/query`,
-      isActive: ko.observable(false),
-      queryText: queryText,
-      partitionKey: collection.partitionKey,
-      onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-    });
-
-    this.container.tabsManager.activateNewTab(queryTab);
+    useTabs.getState().activateNewTab(
+      new NewQueryTab(
+        {
+          tabKind: ViewModels.CollectionTabKind.Query,
+          title: title,
+          tabPath: "",
+          collection: this,
+          node: this,
+          queryText: queryText,
+          partitionKey: collection.partitionKey,
+          onLoadStartKey: startKey,
+        },
+        { container: this.container }
+      )
+    );
   }
 
   public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
     const collection: ViewModels.Collection = source.collection || source;
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Query).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
 
     const title = "Query " + id;
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -627,24 +666,27 @@ export default class Collection implements ViewModels.Collection {
       tabTitle: title,
     });
 
-    const mongoQueryTab: MongoQueryTab = new MongoQueryTab({
-      tabKind: ViewModels.CollectionTabKind.Query,
-      title: title,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoQuery`,
-      isActive: ko.observable(false),
-      partitionKey: collection.partitionKey,
-      onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-    });
+    const newMongoQueryTab: NewMongoQueryTab = new NewMongoQueryTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.Query,
+        title: title,
+        tabPath: "",
+        collection: this,
+        node: this,
+        partitionKey: collection.partitionKey,
+        onLoadStartKey: startKey,
+      },
+      {
+        container: this.container,
+        viewModelcollection: this,
+      }
+    );
 
-    this.container.tabsManager.activateNewTab(mongoQueryTab);
+    useTabs.getState().activateNewTab(newMongoQueryTab);
   }
 
   public onNewGraphClick() {
-    const id: number = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Graph).length + 1;
+    const id: number = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Graph).length + 1;
     const title: string = "Graph Query " + id;
 
     const startKey: number = TelemetryProcessor.traceStart(Action.Tab, {
@@ -664,40 +706,46 @@ export default class Collection implements ViewModels.Collection {
       collection: this,
       masterKey: userContext.masterKey || "",
       collectionPartitionKeyProperty: this.partitionKeyProperty,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/graphs`,
       collectionId: this.id(),
-      isActive: ko.observable(false),
       databaseId: this.databaseId,
       isTabsContentExpanded: this.container.isTabsContentExpanded,
       onLoadStartKey: startKey,
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
     });
 
-    this.container.tabsManager.activateNewTab(graphTab);
+    useTabs.getState().activateNewTab(graphTab);
   }
 
   public onNewMongoShellClick() {
-    const id = this.container.tabsManager.getTabs(ViewModels.CollectionTabKind.MongoShell).length + 1;
-    const mongoShellTab: MongoShellTab = new MongoShellTab({
-      tabKind: ViewModels.CollectionTabKind.MongoShell,
-      title: "Shell " + id,
-      tabPath: "",
-      collection: this,
-      node: this,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(this.databaseId, this.id())}/mongoShell`,
-      isActive: ko.observable(false),
-      onUpdateTabsButtons: this.container.onUpdateTabsButtons,
-    });
+    const mongoShellTabs = useTabs.getState().getTabs(ViewModels.CollectionTabKind.MongoShell) as NewMongoShellTab[];
 
-    this.container.tabsManager.activateNewTab(mongoShellTab);
+    let index = 1;
+    if (mongoShellTabs.length > 0) {
+      index = mongoShellTabs[mongoShellTabs.length - 1].index + 1;
+    }
+
+    const mongoShellTab: NewMongoShellTab = new NewMongoShellTab(
+      {
+        tabKind: ViewModels.CollectionTabKind.MongoShell,
+        title: "Shell " + index,
+        tabPath: "",
+        collection: this,
+        node: this,
+        index: index,
+      },
+      {
+        container: this.container,
+      }
+    );
+
+    useTabs.getState().activateNewTab(mongoShellTab);
   }
 
   public onNewStoredProcedureClick(source: ViewModels.Collection, event: MouseEvent) {
     StoredProcedure.create(source, event);
   }
 
-  public onNewUserDefinedFunctionClick(source: ViewModels.Collection, event: MouseEvent) {
-    UserDefinedFunction.create(source, event);
+  public onNewUserDefinedFunctionClick(source: ViewModels.Collection) {
+    UserDefinedFunction.create(source);
   }
 
   public onNewTriggerClick(source: ViewModels.Collection, event: MouseEvent) {
@@ -706,21 +754,21 @@ export default class Collection implements ViewModels.Collection {
 
   public createStoredProcedureNode(data: StoredProcedureDefinition & Resource): StoredProcedure {
     const node = new StoredProcedure(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
 
   public createUserDefinedFunctionNode(data: UserDefinedFunctionDefinition & Resource): UserDefinedFunction {
     const node = new UserDefinedFunction(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
 
   public createTriggerNode(data: TriggerDefinition & Resource): Trigger {
     const node = new Trigger(this.container, this, data);
-    this.container.selectedNode(node);
+    useSelectedNode.getState().setSelectedNode(node);
     this.children.push(node);
     return node;
   }
@@ -747,9 +795,11 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandStoredProcedures();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public expandStoredProcedures() {
@@ -806,9 +856,11 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandUserDefinedFunctions();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public expandUserDefinedFunctions() {
@@ -865,9 +917,11 @@ export default class Collection implements ViewModels.Collection {
     } else {
       this.expandTriggers();
     }
-    this.container.tabsManager.refreshActiveTab(
-      (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
-    );
+    useTabs
+      .getState()
+      .refreshActiveTab(
+        (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
+      );
   }
 
   public expandTriggers() {
@@ -942,7 +996,9 @@ export default class Collection implements ViewModels.Collection {
 
   public loadTriggers(): Promise<any> {
     return readTriggers(this.databaseId, this.id()).then((triggers) => {
-      const triggerNodes: ViewModels.TreeNode[] = triggers.map((trigger) => new Trigger(this.container, this, trigger));
+      const triggerNodes: ViewModels.TreeNode[] = triggers.map(
+        (trigger: SqlTriggerResource | TriggerDefinition) => new Trigger(this.container, this, trigger)
+      );
       const otherNodes = this.children().filter((node) => node.nodeKind !== "Trigger");
       const allNodes = otherNodes.concat(triggerNodes);
       this.children(allNodes);
@@ -959,73 +1015,6 @@ export default class Collection implements ViewModels.Collection {
     event.originalEvent.preventDefault();
     this.uploadFiles(event.originalEvent.dataTransfer.files);
   }
-
-  public uploadFiles = (fileList: FileList): Promise<UploadDetails> => {
-    // TODO: right now web worker is not working with AAD flow. Use main thread for upload for now until we have backend upload capability
-    if (configContext.platform === Platform.Hosted && userContext.authType === AuthType.AAD) {
-      return this._uploadFilesCors(fileList);
-    }
-    const documentUploader: Worker = new UploadWorker();
-    let inProgressNotificationId: string = "";
-
-    if (!fileList || fileList.length === 0) {
-      return Promise.reject("No files specified");
-    }
-
-    const onmessage = (resolve: (value: UploadDetails) => void, reject: (reason: any) => void, event: MessageEvent) => {
-      const numSuccessful: number = event.data.numUploadsSuccessful;
-      const numFailed: number = event.data.numUploadsFailed;
-      const runtimeError: string = event.data.runtimeError;
-      const uploadDetails: UploadDetails = event.data.uploadDetails;
-
-      NotificationConsoleUtils.clearInProgressMessageWithId(inProgressNotificationId);
-      documentUploader.terminate();
-      if (!!runtimeError) {
-        reject(runtimeError);
-      } else if (numSuccessful === 0) {
-        // all uploads failed
-        NotificationConsoleUtils.logConsoleError(`Failed to upload all documents to container ${this.id()}`);
-      } else if (numFailed > 0) {
-        NotificationConsoleUtils.logConsoleError(
-          `Failed to upload ${numFailed} of ${numSuccessful + numFailed} documents to container ${this.id()}`
-        );
-      } else {
-        NotificationConsoleUtils.logConsoleInfo(
-          `Successfully uploaded all ${numSuccessful} documents to container ${this.id()}`
-        );
-      }
-      this._logUploadDetailsInConsole(uploadDetails);
-      resolve(uploadDetails);
-    };
-    function onerror(reject: (reason: any) => void, event: ErrorEvent) {
-      documentUploader.terminate();
-      reject(event.error);
-    }
-
-    const uploaderMessage: StartUploadMessageParams = {
-      files: fileList,
-      documentClientParams: {
-        databaseId: this.databaseId,
-        containerId: this.id(),
-        masterKey: userContext.masterKey,
-        endpoint: userContext.endpoint,
-        accessToken: userContext.accessToken,
-        platform: configContext.platform,
-        databaseAccount: userContext.databaseAccount,
-      },
-    };
-
-    return new Promise<UploadDetails>((resolve, reject) => {
-      documentUploader.onmessage = onmessage.bind(null, resolve, reject);
-      documentUploader.onerror = onerror.bind(null, reject);
-
-      documentUploader.postMessage(uploaderMessage);
-      inProgressNotificationId = NotificationConsoleUtils.logConsoleMessage(
-        ConsoleDataType.InProgress,
-        `Uploading and creating documents in container ${this.id()}`
-      );
-    });
-  };
 
   public async getPendingThroughputSplitNotification(): Promise<DataModels.Notification> {
     if (!this.container) {
@@ -1051,7 +1040,7 @@ export default class Collection implements ViewModels.Collection {
       Logger.logError(
         JSON.stringify({
           error: getErrorMessage(error),
-          accountName: this.container && this.container.databaseAccount(),
+          accountName: userContext?.databaseAccount,
           databaseName: this.databaseId,
           collectionName: this.id(),
         }),
@@ -1062,13 +1051,13 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  private async _uploadFilesCors(files: FileList): Promise<UploadDetails> {
-    const data = await Promise.all(Array.from(files).map((file) => this._uploadFile(file)));
+  public async uploadFiles(files: FileList): Promise<{ data: UploadDetailsRecord[] }> {
+    const data = await Promise.all(Array.from(files).map((file) => this.uploadFile(file)));
 
     return { data };
   }
 
-  private _uploadFile(file: File): Promise<UploadDetailsRecord> {
+  private uploadFile(file: File): Promise<UploadDetailsRecord> {
     const reader = new FileReader();
     const onload = (resolve: (value: UploadDetailsRecord) => void, evt: any): void => {
       const fileData: string = evt.target.result;
@@ -1079,6 +1068,7 @@ export default class Collection implements ViewModels.Collection {
       resolve({
         fileName: file.name,
         numSucceeded: 0,
+        numThrottled: 0,
         numFailed: 1,
         errors: [(evt as any).error.message],
       });
@@ -1096,21 +1086,47 @@ export default class Collection implements ViewModels.Collection {
       fileName: fileName,
       numSucceeded: 0,
       numFailed: 0,
+      numThrottled: 0,
       errors: [],
     };
 
     try {
-      const content = JSON.parse(documentContent);
-
-      if (Array.isArray(content)) {
-        await Promise.all(
-          content.map(async (documentContent) => {
-            await createDocument(this, documentContent);
-            record.numSucceeded++;
-          })
+      const parsedContent = JSON.parse(documentContent);
+      if (Array.isArray(parsedContent)) {
+        const chunkSize = 100; // 100 is the max # of bulk operations the SDK currently accepts
+        const chunkedContent = Array.from({ length: Math.ceil(parsedContent.length / chunkSize) }, (_, index) =>
+          parsedContent.slice(index * chunkSize, index * chunkSize + chunkSize)
         );
+        for (const chunk of chunkedContent) {
+          let retryAttempts = 0;
+          let chunkComplete = false;
+          let documentsToAttempt = chunk;
+          while (retryAttempts < 10 && !chunkComplete) {
+            const responses = await bulkCreateDocument(this, documentsToAttempt);
+            const attemptedDocuments = [...documentsToAttempt];
+            documentsToAttempt = [];
+            responses.forEach((response, index) => {
+              if (response.statusCode === 201) {
+                record.numSucceeded++;
+              } else if (response.statusCode === 429) {
+                documentsToAttempt.push(attemptedDocuments[index]);
+              } else {
+                record.numFailed++;
+              }
+            });
+            if (documentsToAttempt.length === 0) {
+              chunkComplete = true;
+              break;
+            }
+            logConsoleInfo(
+              `${documentsToAttempt.length} document creations were throttled. Waiting ${retryAttempts} seconds and retrying throttled documents`
+            );
+            retryAttempts++;
+            await sleep(retryAttempts);
+          }
+        }
       } else {
-        await createDocument(this, documentContent);
+        await createDocument(this, parsedContent);
         record.numSucceeded++;
       }
 
@@ -1122,54 +1138,20 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  private _logUploadDetailsInConsole(uploadDetails: UploadDetails): void {
-    const uploadDetailsRecords: UploadDetailsRecord[] = uploadDetails.data;
-    const numFiles: number = uploadDetailsRecords.length;
-    const stackTraceLimit: number = 100;
-    let stackTraceCount: number = 0;
-    let currentFileIndex = 0;
-    while (stackTraceCount < stackTraceLimit && currentFileIndex < numFiles) {
-      const errors: string[] = uploadDetailsRecords[currentFileIndex].errors;
-      for (let i = 0; i < errors.length; i++) {
-        if (stackTraceCount >= stackTraceLimit) {
-          break;
-        }
-        NotificationConsoleUtils.logConsoleMessage(
-          ConsoleDataType.Error,
-          `Document creation error for container ${this.id()} - file ${
-            uploadDetailsRecords[currentFileIndex].fileName
-          }: ${errors[i]}`
-        );
-        stackTraceCount++;
-      }
-      currentFileIndex++;
-    }
-
-    uploadDetailsRecords.forEach((record: UploadDetailsRecord) => {
-      const consoleDataType: ConsoleDataType = record.numFailed > 0 ? ConsoleDataType.Error : ConsoleDataType.Info;
-      NotificationConsoleUtils.logConsoleMessage(
-        consoleDataType,
-        `Item creation summary for container ${this.id()} - file ${record.fileName}: ${
-          record.numSucceeded
-        } items created, ${record.numFailed} errors`
-      );
-    });
-  }
-
   /**
    * Top-level method that will open the correct tab type depending on account API
    */
   public openTab(): void {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       this.onTableEntitiesClick();
       return;
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       this.onGraphDocumentsClick();
       return;
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       this.onMongoDBDocumentsClick();
       return;
     }
@@ -1181,13 +1163,13 @@ export default class Collection implements ViewModels.Collection {
    * Get correct collection label depending on account API
    */
   public getLabel(): string {
-    if (this.container.isPreferredApiTable()) {
+    if (userContext.apiType === "Tables") {
       return "Entities";
-    } else if (this.container.isPreferredApiCassandra()) {
+    } else if (userContext.apiType === "Cassandra") {
       return "Rows";
-    } else if (this.container.isPreferredApiGraph()) {
+    } else if (userContext.apiType === "Gremlin") {
       return "Graph";
-    } else if (this.container.isPreferredApiMongoDB()) {
+    } else if (userContext.apiType === "Mongo") {
       return "Documents";
     }
 
@@ -1195,12 +1177,11 @@ export default class Collection implements ViewModels.Collection {
   }
 
   public getDatabase(): ViewModels.Database {
-    return this.container.findDatabaseWithId(this.databaseId);
+    return useDatabases.getState().findDatabaseWithId(this.databaseId);
   }
 
   public async loadOffer(): Promise<void> {
-    if (!this.container.isServerlessEnabled() && !this.offer()) {
-      this.container.isRefreshingExplorer(true);
+    if (!this.isOfferRead && !isServerlessAccount() && !this.offer()) {
       const startKey: number = TelemetryProcessor.traceStart(Action.LoadOffers, {
         databaseName: this.databaseId,
         collectionName: this.id(),
@@ -1215,6 +1196,7 @@ export default class Collection implements ViewModels.Collection {
       try {
         this.offer(await readCollectionOffer(params));
         this.usageSizeInKB(await getCollectionUsageSizeInKB(this.databaseId, this.id()));
+        this.isOfferRead = true;
 
         TelemetryProcessor.traceSuccess(
           Action.LoadOffers,
@@ -1237,9 +1219,11 @@ export default class Collection implements ViewModels.Collection {
           startKey
         );
         throw error;
-      } finally {
-        this.container.isRefreshingExplorer(false);
       }
     }
   }
+}
+
+function sleep(seconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
 }

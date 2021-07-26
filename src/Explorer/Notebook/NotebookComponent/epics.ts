@@ -1,52 +1,49 @@
-import { EMPTY, merge, of, timer, concat, Subject, Subscriber, Observable, Observer } from "rxjs";
-import { webSocket } from "rxjs/webSocket";
-import { StateObservable } from "redux-observable";
-import { ofType } from "redux-observable";
 import {
-  mergeMap,
-  tap,
-  retryWhen,
-  delayWhen,
-  map,
-  switchMap,
-  take,
-  filter,
-  catchError,
-  first,
-  concatMap,
-  timeout,
-} from "rxjs/operators";
-import {
-  AppState,
-  ServerConfig as JupyterServerConfig,
-  JupyterHostRecordProps,
-  RemoteKernelProps,
-  castToSessionId,
-  createKernelRef,
-  KernelRef,
-  ContentRef,
-  KernelInfo,
   actions,
+  AppState,
+  castToSessionId,
+  ContentRef,
+  createKernelRef,
+  JupyterHostRecordProps,
+  KernelInfo,
+  KernelRef,
+  RemoteKernelProps,
   selectors,
+  ServerConfig as JupyterServerConfig,
 } from "@nteract/core";
-import { message, JupyterMessage, Channels, createMessage, childOf, ofMessageType } from "@nteract/messaging";
-import { sessions, kernels } from "rx-jupyter";
+import { Channels, childOf, createMessage, JupyterMessage, message, ofMessageType } from "@nteract/messaging";
 import { RecordOf } from "immutable";
 import { AnyAction } from "redux";
-
+import { ofType, StateObservable } from "redux-observable";
+import { kernels, sessions } from "rx-jupyter";
+import { concat, EMPTY, from, merge, Observable, Observer, of, Subject, Subscriber, timer } from "rxjs";
+import {
+  catchError,
+  concatMap,
+  delayWhen,
+  filter,
+  first,
+  map,
+  mergeMap,
+  retryWhen,
+  switchMap,
+  take,
+  tap,
+  timeout,
+} from "rxjs/operators";
+import { webSocket } from "rxjs/webSocket";
 import * as Constants from "../../../Common/Constants";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as CdbActions from "./actions";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import { CdbAppState } from "./types";
-import { decryptJWTToken } from "../../../Utils/AuthorizationUtils";
-import * as TextFile from "./contents/file/text-file";
-import { NotebookUtil } from "../NotebookUtil";
-import { FileSystemUtil } from "../FileSystemUtil";
-import * as cdbActions from "../NotebookComponent/actions";
 import { Areas } from "../../../Common/Constants";
+import { useTabs } from "../../../hooks/useTabs";
+import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { logConsoleError, logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
+import * as FileSystemUtil from "../FileSystemUtil";
+import * as cdbActions from "../NotebookComponent/actions";
+import { NotebookUtil } from "../NotebookUtil";
+import * as CdbActions from "./actions";
+import * as TextFile from "./contents/file/text-file";
+import { CdbAppState } from "./types";
 
 interface NotebookServiceConfig extends JupyterServerConfig {
   userPuid?: string;
@@ -106,11 +103,6 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
   }
   if (sessionId) {
     params.append("session_id", sessionId);
-  }
-
-  const userId = getUserPuid();
-  if (userId) {
-    params.append("user_id", userId);
   }
 
   const q = params.toString();
@@ -292,7 +284,6 @@ export const launchWebSocketKernelEpic = (
         return EMPTY;
       }
       const serverConfig: NotebookServiceConfig = selectors.serverConfig(host);
-      serverConfig.userPuid = getUserPuid();
 
       const {
         payload: { kernelSpecName, cwd, kernelRef, contentRef },
@@ -311,7 +302,7 @@ export const launchWebSocketKernelEpic = (
         if (currentKernelspecs) {
           kernelSpecToLaunch = currentKernelspecs.defaultKernelName;
           const msg = `No kernelspec name specified to launch, using default kernel: ${kernelSpecToLaunch}`;
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
+          logConsoleInfo(msg);
           logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
         } else {
           return of(
@@ -337,7 +328,7 @@ export const launchWebSocketKernelEpic = (
           kernelSpecToLaunch = currentKernelspecs.defaultKernelName;
           msg += ` Using default kernel: ${kernelSpecToLaunch}`;
         }
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
+        logConsoleInfo(msg);
         logFailureToTelemetry(state$.value, "Launching alternate kernel", msg);
       }
 
@@ -634,7 +625,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
         case actions.RESTART_KERNEL_SUCCESSFUL: {
           const title = "Kernel restart";
           const msg = "Kernel successfully restarted";
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Info, msg);
+          logConsoleInfo(msg);
           logFailureToTelemetry(state$.value, title, msg);
           break;
         }
@@ -645,7 +636,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
         case actions.SAVE_FAILED: {
           const title = "Save failure";
           const msg = `Failed to save notebook: ${(action as actions.SaveFailed).payload.error}`;
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+          logConsoleError(msg);
           logFailureToTelemetry(state$.value, title, msg);
           break;
         }
@@ -654,7 +645,7 @@ const notificationsToUserEpic = (action$: Observable<any>, state$: StateObservab
           const filepath = selectors.filepath(state$.value, { contentRef: typedAction.payload.contentRef });
           const title = "Fetching content failure";
           const msg = `Failed to fetch notebook content: ${filepath}, error: ${typedAction.payload.error}`;
-          NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+          logConsoleError(msg);
           logFailureToTelemetry(state$.value, title, msg);
           break;
         }
@@ -679,7 +670,7 @@ const handleKernelConnectionLostEpic = (
       const state = state$.value;
 
       const msg = "Notebook was disconnected from kernel";
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+      logConsoleError(msg);
       logFailureToTelemetry(state, "Error", "Kernel connection error");
 
       const host = selectors.currentHost(state);
@@ -692,7 +683,7 @@ const handleKernelConnectionLostEpic = (
       if (delayMs > Constants.Notebook.kernelRestartMaxDelayMs) {
         const msg =
           "Restarted kernel too many times. Please reload the page to enable Data Explorer to restart the kernel automatically.";
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+        logConsoleError(msg);
         logFailureToTelemetry(state, "Kernel restart error", msg);
 
         const explorer = window.dataExplorer;
@@ -769,25 +760,6 @@ const executeFocusedCellAndFocusNextEpic = (
   );
 };
 
-function getUserPuid(): string {
-  const arcadiaToken = window.dataExplorer && window.dataExplorer.arcadiaToken();
-  if (!arcadiaToken) {
-    return undefined;
-  }
-
-  let userPuid;
-  try {
-    const tokenPayload = decryptJWTToken(arcadiaToken);
-    if (tokenPayload && tokenPayload.hasOwnProperty("puid")) {
-      userPuid = tokenPayload.puid;
-    }
-  } catch (error) {
-    // ignore
-  }
-
-  return userPuid;
-}
-
 /**
  * Close tab if mimetype not supported
  * @param action$
@@ -805,12 +777,14 @@ const closeUnsupportedMimetypesEpic = (
       if (explorer && !TextFile.handles(mimetype)) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.tabsManager.closeTabsByComparator(
-          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
-        );
+        useTabs
+          .getState()
+          .closeTabsByComparator(
+            (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+          );
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
         explorer.showOkModalDialog("File cannot be rendered", msg);
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+        logConsoleError(msg);
       }
       return EMPTY;
     })
@@ -833,12 +807,14 @@ const closeContentFailedToFetchEpic = (
       if (explorer) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
-        explorer.tabsManager.closeTabsByComparator(
-          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
-        );
+        useTabs
+          .getState()
+          .closeTabsByComparator(
+            (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+          );
         const msg = `Failed to load file: ${filepath}.`;
         explorer.showOkModalDialog("Failure to load", msg);
-        NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, msg);
+        logConsoleError(msg);
       }
       return EMPTY;
     })
@@ -944,6 +920,39 @@ const traceNotebookKernelEpic = (
   );
 };
 
+const resetCellStatusOnExecuteCanceledEpic = (
+  action$: Observable<actions.ExecuteCanceled>,
+  state$: StateObservable<AppState>
+): Observable<actions.UpdateCellStatus> => {
+  return action$.pipe(
+    ofType(actions.EXECUTE_CANCELED),
+    mergeMap((action) => {
+      const contentRef = action.payload.contentRef;
+      const model = state$.value.core.entities.contents.byRef.get(contentRef).model;
+      let busyCellIds: string[] = [];
+
+      if (model.type === "notebook") {
+        const cellMap = model.transient.get("cellMap");
+        if (cellMap) {
+          for (const entry of cellMap.toArray()) {
+            const cellId = entry[0];
+            const status = model.transient.getIn(["cellMap", cellId, "status"]);
+            if (status === "busy") {
+              busyCellIds.push(cellId);
+            }
+          }
+        }
+      }
+
+      return from(busyCellIds).pipe(
+        map((busyCellId) => {
+          return actions.updateCellStatus({ id: busyCellId, contentRef, status: undefined });
+        })
+      );
+    })
+  );
+};
+
 export const allEpics = [
   addInitialCodeCellEpic,
   focusInitialCodeCellEpic,
@@ -960,4 +969,5 @@ export const allEpics = [
   traceNotebookTelemetryEpic,
   traceNotebookInfoEpic,
   traceNotebookKernelEpic,
+  resetCellStatusOnExecuteCanceledEpic,
 ];

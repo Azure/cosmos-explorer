@@ -2,38 +2,22 @@
  * React component for control bar
  */
 
+import { Dropdown, IDropdownOption } from "@fluentui/react";
 import * as React from "react";
-import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
 import AnimateHeight from "react-animate-height";
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
-import LoadingIcon from "../../../../images/loading.svg";
+import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
+import ClearIcon from "../../../../images/Clear.svg";
 import ErrorBlackIcon from "../../../../images/error_black.svg";
+import ErrorRedIcon from "../../../../images/error_red.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
 import InfoIcon from "../../../../images/info_color.svg";
-import ErrorRedIcon from "../../../../images/error_red.svg";
-import ClearIcon from "../../../../images/Clear.svg";
-import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
-import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
+import LoadingIcon from "../../../../images/loading.svg";
 import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
-
-/**
- * Log levels
- */
-export enum ConsoleDataType {
-  Info = 0,
-  Error = 1,
-  InProgress = 2,
-}
-
-/**
- * Interface for the data/content that will be recorded
- */
-export interface ConsoleData {
-  type: ConsoleDataType;
-  date: string;
-  message: string;
-  id?: string;
-}
+import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
+import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
+import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
+import { userContext } from "../../../UserContext";
+import { ConsoleData, ConsoleDataType } from "./ConsoleData";
 
 export interface NotificationConsoleComponentProps {
   isConsoleExpanded: boolean;
@@ -76,7 +60,7 @@ export class NotificationConsoleComponent extends React.Component<
   public componentDidUpdate(
     prevProps: NotificationConsoleComponentProps,
     prevState: NotificationConsoleComponentState
-  ) {
+  ): void {
     const currentHeaderStatus = NotificationConsoleComponent.extractHeaderStatus(this.props.consoleData);
 
     if (
@@ -97,7 +81,7 @@ export class NotificationConsoleComponent extends React.Component<
     }
   }
 
-  public setElememntRef = (element: HTMLElement) => {
+  public setElememntRef = (element: HTMLElement): void => {
     this.consoleHeaderElement = element;
   };
 
@@ -116,7 +100,7 @@ export class NotificationConsoleComponent extends React.Component<
           className="notificationConsoleHeader"
           id="notificationConsoleHeader"
           ref={this.setElememntRef}
-          onClick={(event: React.MouseEvent<HTMLDivElement>) => this.expandCollapseConsole()}
+          onClick={() => this.expandCollapseConsole()}
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
           tabIndex={0}
         >
@@ -135,6 +119,7 @@ export class NotificationConsoleComponent extends React.Component<
                 <span className="numInfoItems">{numInfoItems}</span>
               </span>
             </span>
+            {userContext.features.pr && <PrPreview pr={userContext.features.pr} />}
             <span className="consoleSplitter" />
             <span className="headerStatus">
               <span className="headerStatusEllipsis">{this.state.headerStatus}</span>
@@ -304,3 +289,37 @@ export class NotificationConsoleComponent extends React.Component<
     );
   };
 }
+
+const PrPreview = (props: { pr: string }) => {
+  const url = new URL(props.pr);
+  const [, ref] = url.hash.split("#");
+  url.hash = "";
+
+  return (
+    <>
+      <span className="consoleSplitter" />
+      <a target="_blank" rel="noreferrer" href={url.href} style={{ marginRight: "1em", fontWeight: "bold" }}>
+        {ref}
+      </a>
+    </>
+  );
+};
+
+export const NotificationConsole: React.FC = () => {
+  const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
+  const isExpanded = useNotificationConsole((state) => state.isExpanded);
+  const consoleData = useNotificationConsole((state) => state.consoleData);
+  const inProgressConsoleDataIdToBeDeleted = useNotificationConsole(
+    (state) => state.inProgressConsoleDataIdToBeDeleted
+  );
+  // TODO Refactor NotificationConsoleComponent into a functional component and remove this wrapper
+  // This component only exists so we can use hooks and pass them down to a non-functional component
+  return (
+    <NotificationConsoleComponent
+      consoleData={consoleData}
+      inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
+      isConsoleExpanded={isExpanded}
+      setIsConsoleExpanded={setIsExpanded}
+    />
+  );
+};

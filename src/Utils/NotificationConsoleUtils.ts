@@ -1,81 +1,25 @@
 import * as _ from "underscore";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
+import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/ConsoleData";
+import { useNotificationConsole } from "../hooks/useNotificationConsole";
 
-const _global = typeof self === "undefined" ? window : self;
+function log(type: ConsoleDataType, message: string): () => void {
+  const id = _.uniqueId();
+  const date = new Intl.DateTimeFormat("en-EN", {
+    hour12: true,
+    hour: "numeric",
+    minute: "numeric",
+  }).format(new Date());
 
-/**
- * @deprecated
- * Use logConsoleInfo, logConsoleError, logConsoleProgress instead
- * */
-export function logConsoleMessage(type: ConsoleDataType, message: string, id?: string): string {
-  const dataExplorer = _global.dataExplorer;
-  if (dataExplorer) {
-    const date = new Date();
-    const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
-      hour12: true,
-      hour: "numeric",
-      minute: "numeric",
-    }).format(date);
-    if (!id) {
-      id = _.uniqueId();
-    }
-    dataExplorer.logConsoleData({ type, date: formattedDate, message, id });
-  }
-  return id || "";
+  useNotificationConsole.getState().setNotificationConsoleData({ type, date, message, id });
+  return () => useNotificationConsole.getState().setInProgressConsoleDataIdToBeDeleted(id);
 }
 
-export function clearInProgressMessageWithId(id: string): void {
-  _global.dataExplorer?.deleteInProgressConsoleDataWithId(id);
-}
+export const logConsoleProgress = (msg: string): (() => void) => log(ConsoleDataType.InProgress, msg);
 
-export function logConsoleProgress(message: string): () => void {
-  const type = ConsoleDataType.InProgress;
-  const dataExplorer = _global.dataExplorer;
-  if (dataExplorer) {
-    const id = _.uniqueId();
-    const date = new Date();
-    const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
-      hour12: true,
-      hour: "numeric",
-      minute: "numeric",
-    }).format(date);
-    dataExplorer.logConsoleData({ type, date: formattedDate, message, id });
-    return () => {
-      dataExplorer.deleteInProgressConsoleDataWithId(id);
-    };
-  } else {
-    return () => {
-      return;
-    };
-  }
-}
+export const logConsoleError = (msg: string): void => {
+  log(ConsoleDataType.Error, msg);
+};
 
-export function logConsoleError(message: string): void {
-  const type = ConsoleDataType.Error;
-  const dataExplorer = _global.dataExplorer;
-  if (dataExplorer) {
-    const id = _.uniqueId();
-    const date = new Date();
-    const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
-      hour12: true,
-      hour: "numeric",
-      minute: "numeric",
-    }).format(date);
-    dataExplorer.logConsoleData({ type, date: formattedDate, message, id });
-  }
-}
-
-export function logConsoleInfo(message: string): void {
-  const type = ConsoleDataType.Info;
-  const dataExplorer = _global.dataExplorer;
-  if (dataExplorer) {
-    const id = _.uniqueId();
-    const date = new Date();
-    const formattedDate: string = new Intl.DateTimeFormat("en-EN", {
-      hour12: true,
-      hour: "numeric",
-      minute: "numeric",
-    }).format(date);
-    dataExplorer.logConsoleData({ type, date: formattedDate, message, id });
-  }
-}
+export const logConsoleInfo = (msg: string): void => {
+  log(ConsoleDataType.Info, msg);
+};

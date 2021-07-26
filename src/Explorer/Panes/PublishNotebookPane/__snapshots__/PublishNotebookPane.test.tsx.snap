@@ -1,0 +1,116 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PublishNotebookPaneComponent renders 1`] = `
+<div
+  className="publishNotebookPanelContent"
+>
+  <Stack
+    className="panelMainContent"
+    tokens={
+      Object {
+        "childrenGap": 20,
+      }
+    }
+  >
+    <StackItem>
+      <Text>
+        When published, this notebook will appear in the Azure Cosmos DB notebooks public gallery. Make sure you have removed any sensitive data or output before publishing.
+      </Text>
+    </StackItem>
+    <StackItem>
+      <Text>
+        Would you like to publish and share "SampleNotebook" to the gallery?
+      </Text>
+    </StackItem>
+    <StackItem>
+      <StyledTextFieldBase
+        ariaLabel="Name"
+        defaultValue="SampleNotebook"
+        label="Name"
+        onChange={[Function]}
+        required={true}
+      />
+    </StackItem>
+    <StackItem>
+      <StyledTextFieldBase
+        ariaLabel="Description"
+        label="Description"
+        multiline={true}
+        onChange={[Function]}
+        required={true}
+        rows={3}
+      />
+    </StackItem>
+    <StackItem>
+      <StyledTextFieldBase
+        ariaLabel="Tags"
+        label="Tags"
+        onChange={[Function]}
+        placeholder="Optional tag 1, Optional tag 2"
+      />
+    </StackItem>
+    <StackItem>
+      <Dropdown
+        ariaLabel="Cover image"
+        label="Cover image"
+        onChange={[Function]}
+        options={
+          Array [
+            Object {
+              "key": "Custom Image",
+              "text": "Custom Image",
+            },
+            Object {
+              "key": "URL",
+              "text": "URL",
+            },
+          ]
+        }
+        selectedKey="Custom Image"
+      />
+    </StackItem>
+    <StackItem>
+      <input
+        accept="image/*"
+        id="selectImageFile"
+        onChange={[Function]}
+        type="file"
+      />
+    </StackItem>
+    <StackItem>
+      <Text>
+        Preview
+      </Text>
+    </StackItem>
+    <StackItem>
+      <GalleryCardComponent
+        data={
+          Object {
+            "author": "CosmosDB",
+            "created": "2020-07-17T00:00:00Z",
+            "description": "sample description",
+            "downloads": undefined,
+            "favorites": undefined,
+            "gitSha": undefined,
+            "id": undefined,
+            "isSample": false,
+            "name": "SampleNotebook.ipynb",
+            "newCellId": undefined,
+            "pendingScanJobIds": undefined,
+            "policyViolations": undefined,
+            "tags": Array [
+              "tag1",
+              " tag2",
+            ],
+            "thumbnailUrl": "https://i.ytimg.com/vi/E_lByLdKeKY/maxresdefault.jpg",
+            "views": undefined,
+          }
+        }
+        onClick={[Function]}
+        showDelete={false}
+        showDownload={false}
+      />
+    </StackItem>
+  </Stack>
+</div>
+`;

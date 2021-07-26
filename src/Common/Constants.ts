@@ -44,7 +44,7 @@ export class ArmResourceTypes {
 }
 
 export class BackendDefaults {
-  public static partitionKeyKind: string = "Hash";
+  public static partitionKeyKind = "Hash";
   public static singlePartitionStorageInGb: string = "10";
   public static multiPartitionStorageInGb: string = "100";
   public static maxChangeFeedRetentionDuration: number = 10;
@@ -65,26 +65,16 @@ export class ClientDefaults {
   public static readonly arcadiaTokenRefreshIntervalPaddingMs: number = 2000;
 }
 
-export class AccountKind {
-  public static DocumentDB: string = "DocumentDB";
-  public static MongoDB: string = "MongoDB";
-  public static Parse: string = "Parse";
-  public static GlobalDocumentDB: string = "GlobalDocumentDB";
-  public static Default: string = AccountKind.DocumentDB;
+export enum AccountKind {
+  DocumentDB = "DocumentDB",
+  MongoDB = "MongoDB",
+  Parse = "Parse",
+  GlobalDocumentDB = "GlobalDocumentDB",
+  Default = "DocumentDB",
 }
 
 export class CorrelationBackend {
   public static Url: string = "https://aka.ms/cosmosdbanalytics";
-}
-
-export class DefaultAccountExperience {
-  public static DocumentDB: string = "DocumentDB";
-  public static Graph: string = "Graph";
-  public static MongoDB: string = "MongoDB";
-  public static ApiForMongoDB: string = "Azure Cosmos DB for MongoDB API";
-  public static Table: string = "Table";
-  public static Cassandra: string = "Cassandra";
-  public static Default: string = DefaultAccountExperience.DocumentDB;
 }
 
 export class CapabilityNames {
@@ -98,36 +88,13 @@ export class CapabilityNames {
   public static readonly EnableServerless: string = "EnableServerless";
 }
 
-export class Features {
-  public static readonly cosmosdb = "cosmosdb";
-  public static readonly enableChangeFeedPolicy = "enablechangefeedpolicy";
-  public static readonly executeSproc = "dataexplorerexecutesproc";
-  public static readonly hostedDataExplorer = "hosteddataexplorerenabled";
-  public static readonly enableTtl = "enablettl";
-  public static readonly enableNotebooks = "enablenotebooks";
-  public static readonly enableSpark = "enablespark";
-  public static readonly livyEndpoint = "livyendpoint";
-  public static readonly notebookServerUrl = "notebookserverurl";
-  public static readonly notebookServerToken = "notebookservertoken";
-  public static readonly notebookBasePath = "notebookbasepath";
-  public static readonly canExceedMaximumValue = "canexceedmaximumvalue";
-  public static readonly enableFixedCollectionWithSharedThroughput = "enablefixedcollectionwithsharedthroughput";
-  public static readonly ttl90Days = "ttl90days";
-  public static readonly enableRightPanelV2 = "enablerightpanelv2";
-  public static readonly enableSchema = "enableschema";
-  public static readonly enableSDKoperations = "enablesdkoperations";
-  public static readonly showMinRUSurvey = "showminrusurvey";
-  public static readonly enableDatabaseSettingsTabV1 = "enabledbsettingsv1";
-  public static readonly selfServeType = "selfservetype";
-  public static readonly enableKOPanel = "enablekopanel";
-}
-
 // flight names returned from the portal are always lowercase
 export class Flights {
   public static readonly SettingsV2 = "settingsv2";
   public static readonly MongoIndexEditor = "mongoindexeditor";
   public static readonly MongoIndexing = "mongoindexing";
   public static readonly AutoscaleTest = "autoscaletest";
+  public static readonly PartitionKeyTest = "partitionkeytest";
 }
 
 export class AfecFeatures {
@@ -189,16 +156,6 @@ export class DocumentsGridMetrics {
 
   public static DocumentEditorMinWidthRatio: number = 0.2;
   public static DocumentEditorMaxWidthRatio: number = 0.4;
-}
-
-export class ExplorerMetrics {
-  public static SplitterMinWidth: number = 240;
-  public static SplitterMaxWidth: number = 400;
-  public static CollapsedResourceTreeWidth: number = 36;
-}
-
-export class SplitterMetrics {
-  public static CollapsedPositionLeft: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 }
 
 export class Areas {

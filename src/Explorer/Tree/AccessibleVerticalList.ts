@@ -23,7 +23,7 @@ export class AccessibleVerticalList {
     this.onSelect = onSelect;
   }
 
-  public onKeyDown = (source: any, event: KeyboardEvent): boolean => {
+  public onKeyDown = (_src: unknown, event: KeyboardEvent): boolean => {
     const targetContainer: Element = <Element>event.target;
     if (this.items == null || this.items.length === 0) {
       // no items so this should be a noop

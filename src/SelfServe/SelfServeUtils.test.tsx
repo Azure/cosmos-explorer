@@ -1,11 +1,11 @@
-import { NumberUiType, RefreshResult, SelfServeBaseClass, SelfServeNotification, SmartUiInput } from "./SelfServeTypes";
+import { NumberUiType, OnSaveResult, RefreshResult, SelfServeBaseClass, SmartUiInput } from "./SelfServeTypes";
 import { DecoratorProperties, mapToSmartUiDescriptor, updateContextWithDecorator } from "./SelfServeUtils";
 
 describe("SelfServeUtils", () => {
   it("initialize should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize: () => Promise<Map<string, SmartUiInput>>;
-      public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<SelfServeNotification>;
+      public onSave: (currentValues: Map<string, SmartUiInput>) => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("initialize() was not declared for the class 'Test'");
@@ -14,7 +14,7 @@ describe("SelfServeUtils", () => {
   it("onSave should be declared for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize = jest.fn();
-      public onSave: () => Promise<SelfServeNotification>;
+      public onSave: () => Promise<OnSaveResult>;
       public onRefresh: () => Promise<RefreshResult>;
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onSave() was not declared for the class 'Test'");
@@ -29,14 +29,14 @@ describe("SelfServeUtils", () => {
     expect(() => new Test().toSelfServeDescriptor()).toThrow("onRefresh() was not declared for the class 'Test'");
   });
 
-  it("@SmartUi decorator must be present for self serve classes", () => {
+  it("@IsDisplayable decorator must be present for self serve classes", () => {
     class Test extends SelfServeBaseClass {
       public initialize = jest.fn();
       public onSave = jest.fn();
       public onRefresh = jest.fn();
     }
     expect(() => new Test().toSelfServeDescriptor()).toThrow(
-      "@SmartUi decorator was not declared for the class 'Test'"
+      "@IsDisplayable decorator was not declared for the class 'Test'"
     );
   });
 
@@ -131,9 +131,9 @@ describe("SelfServeUtils", () => {
           type: "object",
           labelTKey: "Regions",
           choices: [
-            { label: "South West US", key: "SWUS" },
-            { label: "North Central US", key: "NCUS" },
-            { label: "East US 2", key: "EUS2" },
+            { labelTKey: "South West US", key: "SWUS" },
+            { labelTKey: "North Central US", key: "NCUS" },
+            { labelTKey: "East US 2", key: "EUS2" },
           ],
         },
       ],
@@ -150,7 +150,6 @@ describe("SelfServeUtils", () => {
     ]);
     const expectedDescriptor = {
       root: {
-        id: "TestClass",
         children: [
           {
             id: "dbThroughput",
@@ -191,7 +190,8 @@ describe("SelfServeUtils", () => {
               max: 5,
               step: 1,
               uiType: "Spinner",
-              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidThroughput'.",
+              errorMessage:
+                "labelTkey, trueLabelTKey and falseLabelTKey are required for boolean input 'invalidThroughput'.",
             },
             children: [] as Node[],
           },
@@ -226,7 +226,8 @@ describe("SelfServeUtils", () => {
               type: "boolean",
               labelTKey: "Invalid Enable Logging",
               placeholderTKey: "placeholder text",
-              errorMessage: "label, truelabel and falselabel are required for boolean input 'invalidEnableLogging'.",
+              errorMessage:
+                "labelTkey, trueLabelTKey and falseLabelTKey are required for boolean input 'invalidEnableLogging'.",
             },
             children: [] as Node[],
           },
@@ -238,9 +239,9 @@ describe("SelfServeUtils", () => {
               type: "object",
               labelTKey: "Regions",
               choices: [
-                { label: "South West US", key: "SWUS" },
-                { label: "North Central US", key: "NCUS" },
-                { label: "East US 2", key: "EUS2" },
+                { labelTKey: "South West US", key: "SWUS" },
+                { labelTKey: "North Central US", key: "NCUS" },
+                { labelTKey: "East US 2", key: "EUS2" },
               ],
             },
             children: [] as Node[],
@@ -253,7 +254,7 @@ describe("SelfServeUtils", () => {
               type: "object",
               labelTKey: "Invalid Regions",
               placeholderTKey: "placeholder text",
-              errorMessage: "label and choices are required for Choice input 'invalidRegions'.",
+              errorMessage: "labelTKey and choices are required for Choice input 'invalidRegions'.",
             },
             children: [] as Node[],
           },
@@ -270,7 +271,7 @@ describe("SelfServeUtils", () => {
         "invalidRegions",
       ],
     };
-    const descriptor = mapToSmartUiDescriptor("TestClass", context);
+    const descriptor = mapToSmartUiDescriptor(context);
     expect(descriptor).toEqual(expectedDescriptor);
   });
 });
