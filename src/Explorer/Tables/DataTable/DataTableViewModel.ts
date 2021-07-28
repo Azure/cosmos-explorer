@@ -187,6 +187,8 @@ abstract class DataTableViewModel {
 
     this.items(renderData);
 
+    console.log("🚀 ~ file: DataTableViewModel.ts ~ line 191 ~ DataTableViewModel ~ renderData", renderData);
+    console.log("🚀 ~ file: DataTableViewModel.ts ~ line 192 ~ DataTableViewModel ~ this.items", this.items());
     var render: IDataTableRenderData = {
       draw: draw,
       aaData: renderData,

@@ -15,9 +15,11 @@ class NewQueryTablesTab extends TabsBase {
   public collection: ViewModels.Collection;
   public tableEntityListViewModel: TableEntityListViewModel;
   public tableCommands: TableCommands;
+  public container: Explorer;
 
   constructor(options: ViewModels.TabOptions, props: QueryTablesTabProps) {
     super(options);
+    this.container = props.container;
     this.tableCommands = new TableCommands(props.container);
     this.tableEntityListViewModel = new TableEntityListViewModel(this.tableCommands, this);
     this.iQueryTablesTabCompProps = {

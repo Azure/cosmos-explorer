@@ -1,3 +1,4 @@
+import * as ko from "knockout";
 import React, { Component } from "react";
 import QueryInformation from "../../../../images//QueryBuilder/QueryInformation_16x.png";
 import AddProperty from "../../../../images/Add-property.svg";
@@ -26,6 +27,7 @@ import QueryViewModel from "../../Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataClient";
 import TabsBase from "../TabsBase";
 import NewQueryTablesTab from "./QueryTablesTab";
+
 export interface Button {
   visible: boolean;
   enabled: boolean;
@@ -82,15 +84,33 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   public dataTypeLabel: string;
   public operatorLabel: string;
   public valueLabel: string;
+  public tableEntityListViewModel1: TableEntityListViewModel;
+  public tableEntityListViewModel2 = ko.observable<TableEntityListViewModel>();
 
   constructor(props: IQueryTablesTabComponentProps) {
     super(props);
     this.container = props.collection && props.collection.container;
     this.tableCommands = new TableCommands(this.container);
     this.tableDataClient = this.container.tableDataClient;
-
+    this.tableEntityListViewModel2(new TableEntityListViewModel(this.tableCommands, props.queryTablesTab));
+    const sampleQuerySubscription = this.tableEntityListViewModel2().items.subscribe(() => {
+      if (this.tableEntityListViewModel2().items().length > 0 && userContext.apiType === "Tables") {
+        // this.queryViewModel().queryBuilderViewModel().setExample();
+        console.log(
+          "🚀 ~ file: QueryTablesTab.tsx ~ line 55 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.queryViewModel().queryBuilderViewModel().setExample()"
+          // this.queryViewModel().queryBuilderViewModel().setExample()
+        );
+      }
+      sampleQuerySubscription.dispose();
+    });
+    console.log(
+      "🚀 ~ file: QueryTablesTab.tsx ~ line 54 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.tableEntityListViewModel().items().length",
+      this.tableEntityListViewModel2().items()
+    );
+    this.tableEntityListViewModel1 = new TableEntityListViewModel(this.tableCommands, props.queryTablesTab);
     this.state = {
       tableEntityListViewModel: new TableEntityListViewModel(this.tableCommands, props.queryTablesTab),
+
       // tableEntityListViewModel.queryTablesTab : this.props.queryTablesTab
       queryViewModel: new QueryViewModel(this.props.queryTablesTab),
       queryText: "PartitionKey eq 'partionKey1'",
@@ -140,7 +160,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       ", ",
       this.state.queryViewModel.queryBuilderViewModel().clauseArray(),
       ", ",
-      this.state.tableEntityListViewModel.items()
+      this.state.tableEntityListViewModel.items(),
+      ", tableEntityList > ",
+      this.state.tableEntityListViewModel
     );
     const x = this.state.tableEntityListViewModel.items();
     console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 146 ~ QueryTablesTabComponent ~ constructor ~ x", x);
@@ -165,6 +187,11 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         // );
       }
     });
+    this.props.queryTablesTab.container.tableDataClient.queryDocuments(
+      this.props.queryTablesTab.collection,
+      "SELECT * FROM c",
+      true
+    );
     this.buildCommandBarOptions();
   }
 
@@ -289,7 +316,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   }
 
   render(): JSX.Element {
-    // useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
     return (
       <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
@@ -459,17 +486,20 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
             </div>
           </div>
         </div>
+        {this.state.tableEntityListViewModel.items().map((item, index) => (
+          <label key={index}>{item}</label>
+        ))}
         <div
           className="tablesQueryTab tableContainer"
-          //   data-bind="with: tableEntityListViewModel, attr: {
-          //                                         id: tableEntityListViewModel.id
-          //                                     }"
+          data-bind="with: tableEntityListViewModel, attr: {
+                                                  id: tableEntityListViewModel.id
+                                              }"
         >
           <table
             id="storageTable"
             className="storage azure-table show-gridlines"
             tabIndex={0}
-            // data-bind="tableSource: items, tableSelection: selected"
+            data-bind="tableSource: items, tableSelection: selected"
           ></table>
         </div>
       </div>
