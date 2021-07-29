@@ -15,6 +15,7 @@ const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require("webpack");
 const isCI = require("is-ci");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
@@ -110,6 +111,9 @@ module.exports = function (_env = {}, argv = {}) {
 
   const plugins = [
     new CleanWebpackPlugin(["dist"]),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+    }),
     new CreateFileWebpack({
       path: "./dist",
       fileName: "version.txt",
@@ -210,23 +214,25 @@ module.exports = function (_env = {}, argv = {}) {
       selfServe: "./src/SelfServe/SelfServe.tsx",
       connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     },
-    node: {
-      util: true,
-      tls: "empty",
-      net: "empty",
-      fs: "empty",
-    },
     output: {
       chunkFilename: "[name].[chunkhash:6].js",
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist"),
+      publicPath: "",
     },
-    devtool: mode === "development" ? "cheap-eval-source-map" : "source-map",
+    devtool: mode === "development" ? "eval-source-map" : "source-map",
     plugins,
     module: {
       rules,
     },
     resolve: {
+      alias: {
+        process: "process/browser",
+      },
+      fallback: {
+        crypto: false,
+        fs: false,
+      },
       extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
