@@ -79,6 +79,13 @@ export class JunoClient {
   }
 
   public async getPinnedRepos(scope: string): Promise<IJunoResponse<IPinnedRepo[]>> {
+    if (this.cachedPinnedRepos()?.length > 0) {
+      return {
+        status: HttpStatusCodes.OK,
+        data: this.cachedPinnedRepos(),
+      };
+    }
+
     const response = await window.fetch(`${this.getNotebooksSubscriptionIdAccountUrl()}/github/pinnedrepos`, {
       headers: JunoClient.getHeaders(),
     });
