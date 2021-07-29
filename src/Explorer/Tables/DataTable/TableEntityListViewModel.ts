@@ -149,10 +149,10 @@ export default class TableEntityListViewModel extends DataTableViewModel {
 
   public updateHeaders(newHeaders: string[], notifyColumnChanges: boolean = false, enablePrompt: boolean = true): void {
     this.headers = newHeaders;
-    if (notifyColumnChanges) {
-      this.clearSelection();
-      this.notifyColumnChanges(enablePrompt, this.queryTablesTab);
-    }
+    // if (notifyColumnChanges) {
+    //   this.clearSelection();
+    //   this.notifyColumnChanges(enablePrompt, this.queryTablesTab);
+    // }
   }
 
   /**
@@ -162,7 +162,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
    * fnCallback - is the render callback with data to render.
    * oSetting: current settings used for table initialization.
    */
-  public renderNextPageAndupdateCache(sSource: any, aoData: any, fnCallback: any, oSettings: any) {
+  public renderNextPageAndupdateCache(sSource?: any, aoData?: any, fnCallback?: any, oSettings?: any): Promise<void> {
     var tablePageSize: number;
     var draw: number;
     var prefetchNeeded = true;
@@ -172,21 +172,21 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     var prefetchThreshold = 10;
     var tableQuery = this.tableQuery;
 
-    for (var index in aoData) {
-      var data = aoData[index];
-      if (data.name === "length") {
-        tablePageSize = data.value;
-      }
-      if (data.name === "start") {
-        this.tablePageStartIndex = data.value;
-      }
-      if (data.name === "draw") {
-        draw = data.value;
-      }
-      if (data.name === "order") {
-        columnSortOrder = data.value;
-      }
-    }
+    // for (var index in aoData) {
+    //   var data = aoData[index];
+    //   if (data.name === "length") {
+    //     tablePageSize = data.value;
+    //   }
+    //   if (data.name === "start") {
+    //     this.tablePageStartIndex = data.value;
+    //   }
+    //   if (data.name === "draw") {
+    //     draw = data.value;
+    //   }
+    //   if (data.name === "order") {
+    //     columnSortOrder = data.value;
+    //   }
+    // }
     // Try cache if valid.
     if (this.isCacheValid(tableQuery)) {
       // Check if prefetch needed.
@@ -195,7 +195,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         if (columnSortOrder && (!this.cache.sortOrder || !_.isEqual(this.cache.sortOrder, columnSortOrder))) {
           this.sortColumns(columnSortOrder, oSettings);
         }
-        this.renderPage(fnCallback, draw, this.tablePageStartIndex, tablePageSize, oSettings);
+        this.renderPage(this.tablePageStartIndex, tablePageSize);
         if (
           !this.allDownloaded &&
           this.tablePageStartIndex > 0 && // This is a case now that we can hit this as we re-construct table when we update column
@@ -218,11 +218,11 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         tablePageSize,
         downloadSize,
         draw,
-        fnCallback,
         oSettings,
         columnSortOrder
       );
     }
+    return undefined;
   }
 
   public addEntityToCache(entity: Entities.ITableEntity): Q.Promise<any> {
@@ -402,7 +402,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     tablePageSize: number,
     downloadSize: number,
     draw: number,
-    renderCallBack: Function,
+    // renderCallBack: Function,
     oSettings: any,
     columnSortOrder: any
   ): void {
@@ -432,6 +432,10 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             userContext.apiType === "Cassandra"
           );
           var newHeaders: string[] = _.difference(selectedHeadersUnion, this.headers);
+          console.log(
+            "🚀 ~ file: TableEntityListViewModel.ts ~ line 435 ~ TableEntityListViewModel ~ .then ~ newHeaders",
+            newHeaders
+          );
           if (newHeaders.length > 0) {
             // Any new columns found will be added into headers array, which will trigger a re-render of the DataTable.
             // So there is no need to call it here.
@@ -440,8 +444,9 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             if (columnSortOrder) {
               this.sortColumns(columnSortOrder, oSettings);
             }
-            this.renderPage(renderCallBack, draw, tablePageStartIndex, tablePageSize, oSettings);
+            // this.renderPage(renderCallBack, draw, tablePageStartIndex, tablePageSize, oSettings);
           }
+          this.renderPage(0, 100);
         }
 
         if (result.ExceedMaximumRetries) {
@@ -449,6 +454,10 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
       })
       .catch((error: any) => {
+        console.log(
+          "🚀 ~ file: TableEntityListViewModel.ts ~ line 452 ~ TableEntityListViewModel ~ //constructor ~ error",
+          error
+        );
         const parsedErrors = parseError(error);
         var errors = parsedErrors.map((error) => {
           return <ViewModels.QueryError>{
@@ -562,6 +571,10 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           } else {
             // Create cache.
             this.cache.data = entities;
+            console.log(
+              "🚀 ~ file: TableEntityListViewModel.ts ~ line 569 ~ TableEntityListViewModel ~ .then ~ this.cache.data",
+              this.cache.data
+            );
           }
 
           this.cache.tableQuery = tableQuery;

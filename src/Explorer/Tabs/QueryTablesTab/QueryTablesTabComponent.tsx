@@ -1,3 +1,4 @@
+import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
 import * as ko from "knockout";
 import React, { Component } from "react";
 import QueryInformation from "../../../../images//QueryBuilder/QueryInformation_16x.png";
@@ -33,7 +34,11 @@ export interface Button {
   enabled: boolean;
   isSelected?: boolean;
 }
-
+export interface IDocument {
+  partitionKey: string;
+  rowKey: string;
+  timeStamp: string;
+}
 export interface IQueryTablesTabComponentProps {
   tabKind: ViewModels.CollectionTabKind;
   title: string;
@@ -58,6 +63,9 @@ interface IQueryTablesTabComponentStates {
   editEntityButton: Button;
   deleteEntityButton: Button;
   isHelperActive: boolean;
+  columns: IColumn[];
+  items: IDocument[];
+  isExpanded: boolean;
 }
 
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
@@ -86,9 +94,38 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   public valueLabel: string;
   public tableEntityListViewModel1: TableEntityListViewModel;
   public tableEntityListViewModel2 = ko.observable<TableEntityListViewModel>();
-
+  public allItems: IDocument[];
+  // public columns: IColumn[];
   constructor(props: IQueryTablesTabComponentProps) {
     super(props);
+    // this.columns = [];
+    const columns: IColumn[] = [
+      {
+        key: "column1",
+        name: "PartitionKey",
+        minWidth: 100,
+        maxWidth: 200,
+        data: String,
+        fieldName: "partitionKey",
+        // onRender: this.onRenderColumnItem,
+      },
+      {
+        key: "column2",
+        name: "RowKey",
+        minWidth: 100,
+        maxWidth: 200,
+        data: String,
+        fieldName: "rowKey",
+      },
+      {
+        key: "column3",
+        name: "Timestamp",
+        minWidth: 200,
+        maxWidth: 200,
+        data: String,
+        fieldName: "timeStamp",
+      },
+    ];
     this.container = props.collection && props.collection.container;
     this.tableCommands = new TableCommands(this.container);
     this.tableDataClient = this.container.tableDataClient;
@@ -146,6 +183,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         visible: true,
         isSelected: false,
       },
+      columns: columns,
+      items: [],
+      isExpanded: false,
     };
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
     // console.log(
@@ -174,26 +214,72 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.valueLabel = this.state.queryViewModel.queryBuilderViewModel().valueLabel;
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
-    this.state.tableEntityListViewModel.items.subscribe(() => {
-      console.log(
-        "🚀 ~ file: QueryTablesTab.tsx ~ line 54 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.tableEntityListViewModel().items().length",
-        this.state.tableEntityListViewModel.items()
-      );
-      if (this.state.tableEntityListViewModel.items().length > 0 && userContext.apiType === "Tables") {
-        // this.state.queryViewModel.queryBuilderViewModel.setExample();
-        // console.log(
-        //   "🚀 ~ file: QueryTablesTab.tsx ~ line 55 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.queryViewModel().queryBuilderViewModel().setExample()",
-        //   this.state.queryViewModel.queryBuilderViewModel.setExample()
-        // );
-      }
-    });
-    this.props.queryTablesTab.container.tableDataClient.queryDocuments(
-      this.props.queryTablesTab.collection,
-      "SELECT * FROM c",
-      true
-    );
+    // this.state.tableEntityListViewModel.items.subscribe(() => {
+    //   console.log(
+    //     "🚀 ~ file: QueryTablesTab.tsx ~ line 54 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.tableEntityListViewModel().items().length",
+    //     this.state.tableEntityListViewModel.items()
+    //   );
+    //   if (this.state.tableEntityListViewModel.items().length > 0 && userContext.apiType === "Tables") {
+    //     // this.state.queryViewModel.queryBuilderViewModel.setExample();
+    //     // console.log(
+    //     //   "🚀 ~ file: QueryTablesTab.tsx ~ line 55 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.queryViewModel().queryBuilderViewModel().setExample()",
+    //     //   this.state.queryViewModel.queryBuilderViewModel.setExample()
+    //     // );
+    //   }
+    // });
+    // this.test();
+    // this.state.tableEntityListViewModel.renderNextPageAndupdateCache();
+    // setTimeout(() => {
+    //   console.log("items > ", this.state.tableEntityListViewModel.cache.data);
+    //   console.log("items > ", this.state.tableEntityListViewModel.items());
+    //   console.log("items1 > ", this.state.tableEntityListViewModel.items1);
+    //   console.log("items1 > simple > ", this.tableEntityListViewModel1.items1);
+    //   this.allItems = this.generateDetailsList();
+    //   this.setState({
+    //     items: this.allItems,
+    //   });
+    //   // this.state = {
+    //   //   items: this.generateDetailsList()
+    //   // }
+    // }, 10000);
+    //   this.props.queryTablesTab.container.tableDataClient.queryDocuments(
+    //     this.props.queryTablesTab.collection,
+    //     "SELECT * FROM c",
+    //     true
+    //   );
     this.buildCommandBarOptions();
   }
+
+  async componentDidMount(): Promise<void> {
+    const abc = await this.state.tableEntityListViewModel.renderNextPageAndupdateCache();
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 249 ~ QueryTablesTabComponent ~ componentDidMount ~ abc",
+      abc
+    );
+    setTimeout(() => {
+      console.log("items > ", this.state.tableEntityListViewModel.cache.data);
+      console.log("items > ", this.state.tableEntityListViewModel.items());
+      console.log("items1 > ", this.state.tableEntityListViewModel.headers);
+      console.log("items1 > simple > ", this.tableEntityListViewModel1.items1);
+      // this.state.tableEntityListViewModel.headers.map(header => {
+
+      // })
+      this.allItems = this.generateDetailsList();
+      this.setState({
+        items: this.allItems,
+      });
+      // this.state = {
+      //   items: this.generateDetailsList()
+      // }
+    }, 10000);
+  }
+
+  // public async test(): Promise<void> {
+  //   await this.state.tableEntityListViewModel.renderNextPageAndupdateCache().then(() => {
+  //     console.log("inside > ", this.state.tableEntityListViewModel.items());
+  //   });
+  //   console.log("items > ", this.state.tableEntityListViewModel.items());
+  // }
 
   public onAddEntityClick = (): void => {
     useSidePanel
@@ -315,6 +401,32 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.props.tabsBaseInstance.updateNavbarWithTabsButtons();
   }
 
+  public generateDetailsList(): IDocument[] {
+    const items: IDocument[] = [];
+
+    this.state.tableEntityListViewModel.items().map((item) => {
+      console.log("generateDetailsList > ", item["PartitionKey"]._);
+      items.push({
+        partitionKey: item["PartitionKey"]._,
+        rowKey: item["RowKey"]._,
+        timeStamp: item["Timestamp"]._,
+      });
+    });
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 383 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ items",
+      items
+    );
+    return items;
+  }
+
+  toggleAdvancedOptions(): void {
+    // console.log("toggleAdvancedOptions!");
+    this.setState({
+      isExpanded: !this.state.isExpanded,
+    });
+    this.state.queryViewModel.toggleAdvancedOptions();
+  }
+
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
@@ -411,96 +523,82 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
             </div>
           )}
           <div className="advanced-options-panel">
-            <div className="advanced-heading">
+            <div className="advanced-heading" onClick={() => this.toggleAdvancedOptions()}>
               <span
                 className="advanced-title"
                 role="button"
+                aria-expanded={this.state.isExpanded}
+                // onKeyDown = {() => this.state.queryViewModel.ontoggleAdvancedOptionsKeyDown}
                 // data-bind="click:toggleAdvancedOptions, event: { keydown: ontoggleAdvancedOptionsKeyDown }, attr:{ 'aria-expanded': isExpanded() ? 'true' : 'false' }"
                 tabIndex={0}
               >
-                <div
-                  className="themed-images"
-                  //   type="text/html"
-                  id="ExpandChevronRight"
-                  //   data-bind="hasFocus: focusExpandIcon"
-                >
-                  <img
-                    className="imgiconwidth expand-triangle expand-triangle-right"
-                    src={TriangleRight}
-                    alt="toggle"
-                  />
-                </div>
-                <div
-                  className="themed-images"
-                  // type="text/html"
-                  id="ExpandChevronDown"
-                >
-                  <img className="imgiconwidth expand-triangle" src={TriangleDown} alt="toggle" />
-                </div>
+                {!this.state.isExpanded && (
+                  <div className="themed-images" id="ExpandChevronRight">
+                    <img
+                      className="imgiconwidth expand-triangle expand-triangle-right"
+                      src={TriangleRight}
+                      alt="toggle"
+                    />
+                  </div>
+                )}
+                {this.state.queryViewModel.isExpanded() && (
+                  <div className="themed-images" id="ExpandChevronDown">
+                    <img className="imgiconwidth expand-triangle" src={TriangleDown} alt="toggle" />
+                  </div>
+                )}
                 <span>Advanced Options</span>
               </span>
             </div>
-            <div
-              className="advanced-options"
-              // data-bind="visible: isExpanded"
-            >
-              <div className="top">
-                <span>Show top results:</span>
-                <input
-                  className="top-input"
-                  type="number"
-                  //   data-bind="hasFocus: focusTopResult, textInput: topValue, attr: { title: topValueLimitMessage }"
-                  role="textbox"
-                  aria-label="Show top results"
-                />
-                <div
-                  role="alert"
-                  aria-atomic="true"
-                  className="inline-div"
-                  // data-bind="visible: isExceedingLimit"
-                >
-                  <img className="advanced-options-icon" src={StatusWraning} />
-                  <span data-bind="text: topValueLimitMessage"></span>
-                </div>
-              </div>
-              <div className="select">
-                <span> Select fields for query: </span>
-                <div
-                // data-bind="visible: isSelected"
-                >
-                  <img className="advanced-options-icon" src={QueryInformation} />
-                  <span
-                    className="select-options-text"
-                    //   data-bind="text: selectMessage"
+            {this.state.isExpanded && (
+              <div className="advanced-options">
+                <div className="top">
+                  <span>Show top results:</span>
+                  <input
+                    className="top-input"
+                    type="number"
+                    title={this.state.queryViewModel.topValueLimitMessage}
+                    //   data-bind="hasFocus: focusTopResult, textInput: topValue, attr: { title: topValueLimitMessage }"
+                    role="textbox"
+                    aria-label="Show top results"
                   />
+                  {this.state.queryViewModel.isExceedingLimit() && (
+                    <div role="alert" aria-atomic="true" className="inline-div">
+                      <img className="advanced-options-icon" src={StatusWraning} />
+                      <span>{this.state.queryViewModel.topValueLimitMessage}</span>
+                    </div>
+                  )}
                 </div>
-                <a
-                  className="select-options-link"
-                  //   data-bind="click: selectQueryOptions, event: { keydown: onselectQueryOptionsKeyDown }"
-                  tabIndex={0}
-                  role="link"
-                >
-                  <span>Choose Columns... </span>
-                </a>
+                <div className="select">
+                  <span> Select fields for query: </span>
+                  {this.state.queryViewModel.isSelected() && (
+                    <div>
+                      <img className="advanced-options-icon" src={QueryInformation} />
+                      <span className="select-options-text">{this.state.queryViewModel.selectMessage()}</span>
+                    </div>
+                  )}
+                  <a
+                    className="select-options-link"
+                    //   data-bind="click: selectQueryOptions, event: { keydown: onselectQueryOptionsKeyDown }"
+                    tabIndex={0}
+                    role="link"
+                    onClick={() => this.state.queryViewModel.selectQueryOptions()}
+                  >
+                    <span>Choose Columns... </span>
+                  </a>
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
-        {this.state.tableEntityListViewModel.items().map((item, index) => (
-          <label key={index}>{item}</label>
-        ))}
-        <div
-          className="tablesQueryTab tableContainer"
-          data-bind="with: tableEntityListViewModel, attr: {
-                                                  id: tableEntityListViewModel.id
-                                              }"
-        >
-          <table
-            id="storageTable"
-            className="storage azure-table show-gridlines"
-            tabIndex={0}
-            data-bind="tableSource: items, tableSelection: selected"
-          ></table>
+
+        <div className="tablesQueryTab tableContainer">
+          <DetailsList
+            items={this.state.items}
+            columns={this.state.columns}
+            selectionMode={SelectionMode.none}
+            layoutMode={DetailsListLayoutMode.justified}
+            compact={true}
+          />
         </div>
       </div>
     );

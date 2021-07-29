@@ -25,6 +25,7 @@ abstract class DataTableViewModel {
 
   /* Observables */
   public items = ko.observableArray<Entities.ITableEntity>();
+  public items1: Entities.ITableEntity[];
   public selected = ko.observableArray<Entities.ITableEntity>();
 
   public table: DataTables.DataTable;
@@ -54,6 +55,7 @@ abstract class DataTableViewModel {
 
   constructor() {
     this.items([]);
+    this.items1 = [];
     this.selected([]);
     // Late bound
     this.dataTableOperationManager = null;
@@ -172,36 +174,38 @@ abstract class DataTableViewModel {
   }
 
   protected renderPage(
-    renderCallBack: any,
-    draw: number,
+    // renderCallBack: any,
+    // draw: number,
     startIndex: number,
-    pageSize: number,
-    oSettings: any,
-    postRenderTasks: (startIndex: number, pageSize: number) => Promise<void> = null
+    pageSize: number
+    // oSettings: any,
+    // postRenderTasks: (startIndex: number, pageSize: number) => Promise<void> = null
   ) {
-    this.updatePaginationControls(oSettings);
+    // this.updatePaginationControls(oSettings);
 
     // pageSize < 0 means to show all data
     var endIndex = pageSize < 0 ? this.cache.length : startIndex + pageSize;
     var renderData = this.cache.data.slice(startIndex, endIndex);
 
     this.items(renderData);
+    this.items1 = renderData;
 
     console.log("🚀 ~ file: DataTableViewModel.ts ~ line 191 ~ DataTableViewModel ~ renderData", renderData);
     console.log("🚀 ~ file: DataTableViewModel.ts ~ line 192 ~ DataTableViewModel ~ this.items", this.items());
-    var render: IDataTableRenderData = {
-      draw: draw,
-      aaData: renderData,
-      recordsTotal: this.cache.length,
-      recordsFiltered: this.cache.length,
-    };
+    console.log("🚀 ~ file: DataTableViewModel.ts ~ line 192 ~ DataTableViewModel ~ this.items1", this.items1);
+    // var render: IDataTableRenderData = {
+    //   draw: draw,
+    //   aaData: renderData,
+    //   recordsTotal: this.cache.length,
+    //   recordsFiltered: this.cache.length,
+    // };
 
-    if (!!postRenderTasks) {
-      postRenderTasks(startIndex, pageSize).then(() => {
-        this.table.rows().invalidate();
-      });
-    }
-    renderCallBack(render);
+    // if (!!postRenderTasks) {
+    //   postRenderTasks(startIndex, pageSize).then(() => {
+    //     this.table.rows().invalidate();
+    //   });
+    // }
+    // renderCallBack(render);
     if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
       TelemetryProcessor.traceSuccess(
         Action.Tab,

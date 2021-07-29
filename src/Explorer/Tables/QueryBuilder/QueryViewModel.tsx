@@ -160,7 +160,7 @@ export default class QueryViewModel {
       notify: "always",
     });
 
-  public runQuery = (): DataTables.DataTable => {
+  public runQuery = (): void => {
     let filter = this.setFilter();
     if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
@@ -175,7 +175,7 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.sqlQuery(this.setSqlFilter());
     this._tableEntityListViewModel.cqlQuery(filter);
 
-    return this._tableEntityListViewModel.reloadTable(/*useSetting*/ false, /*resetHeaders*/ false);
+    // return this._tableEntityListViewModel.reloadTable(/*useSetting*/ false, /*resetHeaders*/ false);
   };
 
   public clearQuery = (): DataTables.DataTable => {
