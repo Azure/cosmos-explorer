@@ -108,9 +108,9 @@ export interface DialogProps {
   linkProps?: LinkProps;
   progressIndicatorProps?: IProgressIndicatorProps;
   primaryButtonText: string;
-  secondaryButtonText: string;
+  secondaryButtonText: string | undefined;
   onPrimaryButtonClick: () => void;
-  onSecondaryButtonClick: () => void;
+  onSecondaryButtonClick: () => void | undefined;
   primaryButtonDisabled?: boolean;
   type?: DialogType;
   showCloseButton?: boolean;
