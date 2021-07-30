@@ -1,4 +1,4 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
+import { DetailsList, DetailsListLayoutMode, IColumn, IDropdownOption, SelectionMode } from "@fluentui/react";
 import * as ko from "knockout";
 import React, { Component } from "react";
 import QueryInformation from "../../../../images//QueryBuilder/QueryInformation_16x.png";
@@ -26,47 +26,18 @@ import TableCommands from "../../Tables/DataTable/TableCommands";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import QueryViewModel from "../../Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataClient";
-import TabsBase from "../TabsBase";
-import NewQueryTablesTab from "./QueryTablesTab";
-
-export interface Button {
-  visible: boolean;
-  enabled: boolean;
-  isSelected?: boolean;
-}
-export interface IDocument {
-  partitionKey: string;
-  rowKey: string;
-  timeStamp: string;
-}
-export interface IQueryTablesTabComponentProps {
-  tabKind: ViewModels.CollectionTabKind;
-  title: string;
-  tabPath: string;
-  collection: ViewModels.CollectionBase;
-  node: ViewModels.TreeNode;
-  onLoadStartKey: number;
-  container: Explorer;
-  tabsBaseInstance: TabsBase;
-  queryTablesTab: NewQueryTablesTab;
-}
-
-interface IQueryTablesTabComponentStates {
-  tableEntityListViewModel: TableEntityListViewModel;
-  queryViewModel: QueryViewModel;
-  queryText: string;
-  selectedQueryText: string;
-  executeQueryButton: Button;
-  queryBuilderButton: Button;
-  queryTextButton: Button;
-  addEntityButton: Button;
-  editEntityButton: Button;
-  deleteEntityButton: Button;
-  isHelperActive: boolean;
-  columns: IColumn[];
-  items: IDocument[];
-  isExpanded: boolean;
-}
+import { QueryTableEntityClause } from "./QueryTableEntityClause";
+import {
+  entityTypeOptions,
+  fieldOptions,
+  IDocument,
+  IQueryTableRowsType,
+  IQueryTablesTabComponentProps,
+  IQueryTablesTabComponentStates,
+  opertionOptions,
+  opertorOptions,
+  timestampOptions,
+} from "./QueryTableTabUtils";
 
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
   // public readonly html = template;
@@ -186,6 +157,24 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       columns: columns,
       items: [],
       isExpanded: false,
+      queryTableRows: [
+        {
+          isQueryTableEntityChecked: false,
+          selectedOperator: "=",
+          opertorOptions,
+          selectedField: "PartitionKey",
+          fieldOptions,
+          id: 1,
+          entityTypeOptions,
+          selectedEntityType: "String",
+          opertionOptions,
+          selectedOperation: "And",
+          entityValue: "",
+          isTimeStampSelected: false,
+          timestampOptions,
+          selectedTimestamp: "Last hour",
+        },
+      ],
     };
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
     // console.log(
@@ -427,8 +416,68 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.state.queryViewModel.toggleAdvancedOptions();
   }
 
+  private onQueryTableEntityCheck = (index: number): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows[index].isQueryTableEntityChecked = !cloneQueryTableRows[index].isQueryTableEntityChecked;
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  private onDropdownChange = (selectedOption: IDropdownOption, selectedOptionType: string, index: number): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    cloneQueryTableRows[index][selectedOptionType] = selectedOption.text;
+    const { text } = selectedOption;
+    if (text === "DateTime" || text === "Timestamp") {
+      cloneQueryTableRows[index].isTimeStampSelected = true;
+      cloneQueryTableRows[index].selectedEntityType = "DateTime";
+    } else if (selectedOptionType !== "selectedTimestamp") {
+      cloneQueryTableRows[index].isTimeStampSelected = false;
+    }
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  onDeleteClause = (indexToRemove: number): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows.splice(indexToRemove, 1);
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  onAddNewClause = (): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows.splice(cloneQueryTableRows.length, 0, {
+      isQueryTableEntityChecked: false,
+      selectedOperator: "=",
+      opertorOptions,
+      id: cloneQueryTableRows.length + 1,
+      selectedField: "PartitionKey",
+      fieldOptions,
+      entityTypeOptions,
+      selectedEntityType: "String",
+      opertionOptions,
+      selectedOperation: "And",
+      entityValue: "",
+      isTimeStampSelected: false,
+      timestampOptions,
+      selectedTimestamp: "Last hour",
+    });
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  private onEntityValueChange = (newInput: string, index: number) => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows[index].entityValue = newInput;
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    const { queryTableRows } = this.state;
 
     return (
       <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
@@ -476,30 +525,57 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                         </th>
                         <th className="clause-table-cell header-background"></th>
                         <th className="clause-table-cell header-background and-or-header">
-                          <span>{this.andLabel}</span>
+                          <span className="and-or-label">{this.andLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background field-header">
-                          <span>{this.fieldLabel}</span>
+                          <span className="field-label">{this.fieldLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background type-header">
-                          <span>{this.dataTypeLabel}</span>
+                          <span className="data-type-label">{this.dataTypeLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background operator-header">
-                          <span>{this.operatorLabel}</span>
+                          <span className="operator-label">{this.operatorLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background value-header">
-                          <span>{this.valueLabel}</span>
+                          <span className="value-label">{this.valueLabel}</span>
                         </th>
                       </tr>
                     </thead>
                     <tbody></tbody>
                   </table>
                 </div>
+                <>
+                  {queryTableRows.map((queryTableRow, index) => (
+                    <QueryTableEntityClause
+                      key={queryTableRow.id}
+                      isQueryTableEntityChecked={queryTableRow.isQueryTableEntityChecked}
+                      selectedOperator={queryTableRow.selectedOperator}
+                      selectedField={queryTableRow.selectedField}
+                      selectedOperation={queryTableRow.selectedOperation}
+                      opertationOptions={queryTableRow.opertionOptions}
+                      entityValue={queryTableRow.entityValue}
+                      selectedEntityType={queryTableRow.selectedEntityType}
+                      entityTypeOptions={queryTableRow.entityTypeOptions}
+                      fieldOptions={queryTableRow.fieldOptions}
+                      selectedTimestamp={queryTableRow.selectedTimestamp}
+                      timestampOptions={queryTableRow.timestampOptions}
+                      opertorOptions={queryTableRow.opertorOptions}
+                      isTimeStampSelected={queryTableRow.isTimeStampSelected}
+                      onAddNewClause={this.onAddNewClause}
+                      onDeleteClause={() => this.onDeleteClause(index)}
+                      onQueryTableEntityCheck={() => this.onQueryTableEntityCheck(index)}
+                      onEntityValueChange={(_event, newInput?: string) => this.onEntityValueChange(newInput, index)}
+                      onDropdownChange={(selectedOption: IDropdownOption, selectedOptionType: string) =>
+                        this.onDropdownChange(selectedOption, selectedOptionType, index)
+                      }
+                    />
+                  ))}
+                </>
                 <div
                   className="addClause"
                   role="button"
-                  onClick={this.state.queryViewModel.queryBuilderViewModel().addNewClause}
-                  // data-bind="click: addNewClause, event: { keydown: onAddNewClauseKeyDown }, attr: { title: addNewClauseLine }"
+                  onClick={this.onAddNewClause}
+                  // onClick={this.state.queryViewModel.queryBuilderViewModel().addNewClause}
                   tabIndex={0}
                 >
                   <div className="addClause-heading">
