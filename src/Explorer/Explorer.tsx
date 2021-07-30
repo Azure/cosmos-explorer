@@ -1,4 +1,3 @@
-import { IChoiceGroupProps } from "@fluentui/react";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
@@ -35,7 +34,7 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import "./ComponentRegisterer";
-import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
+import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
@@ -548,7 +547,7 @@ export default class Explorer {
     const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent);
     promise
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason) => this.showOkModalDialog("Unable to upload file", reason));
+      .catch((reason) => useDialog.getState().showOkModalDialog("Unable to upload file", reason));
     return promise;
   }
 
@@ -612,51 +611,6 @@ export default class Explorer {
 
   public copyNotebook(name: string, content: string): void {
     this.notebookManager?.openCopyNotebookPane(name, content);
-  }
-
-  public showOkModalDialog(title: string, msg: string): void {
-    useDialog.getState().openDialog({
-      isModal: true,
-      title,
-      subText: msg,
-      primaryButtonText: "Close",
-      secondaryButtonText: undefined,
-      onPrimaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-      },
-      onSecondaryButtonClick: undefined,
-    });
-  }
-
-  public showOkCancelModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
-    onCancel: () => void,
-    choiceGroupProps?: IChoiceGroupProps,
-    textFieldProps?: TextFieldProps,
-    isPrimaryButtonDisabled?: boolean
-  ): void {
-    useDialog.getState().openDialog({
-      isModal: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      secondaryButtonText: cancelLabel,
-      onPrimaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        onOk && onOk();
-      },
-      onSecondaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        onCancel && onCancel();
-      },
-      choiceGroupProps,
-      textFieldProps,
-      primaryButtonDisabled: isPrimaryButtonDisabled,
-    });
   }
 
   /**
@@ -732,7 +686,9 @@ export default class Explorer {
         return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), notebookFile.path);
       });
     if (openedNotebookTabs.length > 0) {
-      this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
+      useDialog
+        .getState()
+        .showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
       useSidePanel.getState().openSidePanel(
         "Rename Notebook",
@@ -862,7 +818,9 @@ export default class Explorer {
         return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), item.path);
       });
     if (openedNotebookTabs.length > 0) {
-      this.showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
+      useDialog
+        .getState()
+        .showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
       return Promise.reject();
     }
 
