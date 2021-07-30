@@ -49,6 +49,10 @@ export default class QueryViewModel {
     this.queryTablesTab = queryTablesTab;
     this.id = `queryViewModel${this.queryTablesTab.tabId}`;
     this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel;
+    console.log(
+      "🚀 ~ file: QueryViewModel.tsx ~ line 52 ~ QueryViewModel ~ constructor ~ this._tableEntityListViewModel",
+      this._tableEntityListViewModel
+    );
 
     this.queryTextIsReadOnly = ko.computed<boolean>(() => {
       return userContext.apiType !== "Cassandra";
@@ -96,6 +100,7 @@ export default class QueryViewModel {
   };
 
   public selectEditor = (): void => {
+    console.log("🚀 ~ file: QueryViewModel.tsx ~ line 99 ~ QueryViewModel ~ //constructor ~ selectEditor");
     this.setFilter();
     if (!this.isEditorActive()) {
       this.unchangedText(this.queryText());
@@ -199,13 +204,24 @@ export default class QueryViewModel {
     return this._tableEntityListViewModel.reloadTable(false);
   };
 
-  public selectQueryOptions() {
-    useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={this} />);
+  public selectQueryOptions(headers: string[], getSelectMessage: (selectMessage: string) => void): void {
+    this.columnOptions(headers);
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Select Column",
+        <TableQuerySelectPanel queryViewModel={this} headers={headers} getSelectMessage={getSelectMessage} />
+      );
   }
 
-  public onselectQueryOptionsKeyDown = (source: string, event: KeyboardEvent): boolean => {
+  public onselectQueryOptionsKeyDown = (
+    source: string,
+    event: KeyboardEvent,
+    headers: string[],
+    getSelectMessage: (selectMessage: string) => void
+  ): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
-      this.selectQueryOptions();
+      this.selectQueryOptions(headers, getSelectMessage);
       event.stopPropagation();
       return false;
     }

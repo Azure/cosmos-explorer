@@ -43,6 +43,7 @@ interface AddTableEntityPanelProps {
   // queryTablesTab: QueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
+  reloadEntities: () => void;
 }
 
 interface EntityRowType {
@@ -62,6 +63,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   queryTablesTab,
   tableEntityListViewModel,
   cassandraApiClient,
+  reloadEntities,
 }: AddTableEntityPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [entities, setEntities] = useState<EntityRowType[]>([]);
@@ -108,9 +110,11 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
     const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
+    console.log("🚀 ~ file: AddTableEntityPanel.tsx ~ line 113 ~ submit ~ newEntity", newEntity);
     await tableEntityListViewModel.addEntityToCache(newEntity);
     if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
-      tableEntityListViewModel.redrawTableThrottled();
+      // tableEntityListViewModel.redrawTableThrottled();
+      reloadEntities();
     }
     closeSidePanel();
   };

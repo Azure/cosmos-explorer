@@ -195,7 +195,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         if (columnSortOrder && (!this.cache.sortOrder || !_.isEqual(this.cache.sortOrder, columnSortOrder))) {
           this.sortColumns(columnSortOrder, oSettings);
         }
-        this.renderPage(this.tablePageStartIndex, tablePageSize);
+        // this.renderPage(this.tablePageStartIndex, tablePageSize);
+        this.renderPage(0, 100);
         if (
           !this.allDownloaded &&
           this.tablePageStartIndex > 0 && // This is a case now that we can hit this as we re-construct table when we update column
@@ -234,19 +235,19 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     }
 
     // Find the first item which is greater than the added entity.
-    var oSettings: any = (<any>this.table).context[0];
-    var index: number = _.findIndex(this.cache.data, (data: any) => {
-      return this.dataComparer(data, entity, this.cache.sortOrder, oSettings) > 0;
-    });
+    // var oSettings: any = (<any>this.table).context[0];
+    // var index: number = _.findIndex(this.cache.data, (data: any) => {
+    //   return this.dataComparer(data, entity, this.cache.sortOrder, oSettings) > 0;
+    // });
 
     // If no such item, then insert at last.
-    var insertIndex: number = Utilities.ensureBetweenBounds(
-      index < 0 ? this.cache.length : index,
-      0,
-      this.cache.length
-    );
+    // var insertIndex: number = Utilities.ensureBetweenBounds(
+    //   index < 0 ? this.cache.length : index,
+    //   0,
+    //   this.cache.length
+    // );
 
-    this.cache.data.splice(insertIndex, 0, entity);
+    this.cache.data.splice(this.cache.length, 0, entity);
 
     // Finally, select newly added entity
     this.clearSelection();
@@ -297,12 +298,12 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     this.clearSelection();
 
     // Show last available page if there is not enough data
-    var pageInfo = this.table.page.info();
-    if (this.cache.length <= pageInfo.start) {
-      var availablePages = Math.ceil(this.cache.length / pageInfo.length);
-      var pageToShow = availablePages > 0 ? availablePages - 1 : 0;
-      this.table.page(pageToShow);
-    }
+    // var pageInfo = this.table.page.info();
+    // if (this.cache.length <= pageInfo.start) {
+    //   var availablePages = Math.ceil(this.cache.length / pageInfo.length);
+    //   var pageToShow = availablePages > 0 ? availablePages - 1 : 0;
+    //   this.table.page(pageToShow);
+    // }
 
     return Q.resolve(null);
   }

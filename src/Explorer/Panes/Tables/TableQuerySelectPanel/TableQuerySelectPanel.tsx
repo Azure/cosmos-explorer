@@ -8,6 +8,8 @@ import { RightPaneForm, RightPaneFormProps } from "../../RightPaneForm/RightPane
 
 interface TableQuerySelectPanelProps {
   queryViewModel: QueryViewModel;
+  headers: string[];
+  getSelectMessage: (selectMessage: string) => void;
 }
 
 interface ISelectColumn {
@@ -18,7 +20,10 @@ interface ISelectColumn {
 
 export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps> = ({
   queryViewModel,
+  headers,
+  getSelectMessage,
 }: TableQuerySelectPanelProps): JSX.Element => {
+  console.log("🚀 ~ file: TableQuerySelectPanel.tsx ~ line 22 ~ queryViewModel", queryViewModel);
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
 
   const [columnOptions, setColumnOptions] = useState<ISelectColumn[]>([
@@ -29,6 +34,11 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   const onSubmit = (): void => {
     queryViewModel.selectText(getParameters());
     queryViewModel.getSelectMessage();
+    console.log(
+      "🚀 ~ file: TableQuerySelectPanel.tsx ~ line 50 ~ onSubmit ~ queryViewModel.selectMessage()",
+      queryViewModel.selectMessage()
+    );
+    getSelectMessage(queryViewModel.selectMessage());
     closeSidePanel();
   };
 
@@ -52,7 +62,9 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   };
 
   useEffect(() => {
-    queryViewModel && setTableColumns(queryViewModel.columnOptions());
+    // queryViewModel && setTableColumns(queryViewModel.columnOptions());
+    headers && setTableColumns(headers);
+    console.log("🚀 ~ file: TableQuerySelectPanel.tsx ~ line 67 ~ useEffect ~ headers", headers);
   }, []);
 
   const setTableColumns = (columnNames: string[]): void => {
