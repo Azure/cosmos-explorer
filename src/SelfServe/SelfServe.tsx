@@ -50,6 +50,12 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
       await loadTranslations(sqlX.constructor.name);
       return sqlX.toSelfServeDescriptor();
     }
+    case SelfServeType.graphDedicatedGateway: {
+      const GraphDedicatedGateway = await import(/* webpackChunkName: "GraphDedicatedGateway" */ "./GraphDedicatedGateway/GraphDedicatedGateway");
+      const graphDedicatedGateway = new GraphDedicatedGateway.default();
+      await loadTranslations(graphDedicatedGateway.constructor.name);
+      return graphDedicatedGateway.toSelfServeDescriptor();
+    }
     default:
       return undefined;
   }
