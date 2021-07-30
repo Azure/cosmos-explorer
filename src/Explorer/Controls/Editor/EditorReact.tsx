@@ -33,14 +33,18 @@ export class EditorReact extends React.Component<EditorReactProps, EditorReactSt
     this.createEditor(this.configureEditor.bind(this));
   }
 
-  public componentDidUpdate(previous: EditorReactProps) {
-    if (this.props.content !== previous.content) {
-      this.editor.setValue(this.props.content);
-    }
+  public shouldComponentUpdate(): boolean {
+    return true;
   }
 
   public componentWillUnmount(): void {
     this.selectionListener && this.selectionListener.dispose();
+  }
+
+  public componentDidUpdate(prevProps: EditorReactProps): void {
+    if (this.props.content !== prevProps.content) {
+      this.editor.setValue(this.props.content);
+    }
   }
 
   public render(): JSX.Element {

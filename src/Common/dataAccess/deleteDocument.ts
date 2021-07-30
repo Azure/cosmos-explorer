@@ -1,9 +1,9 @@
 import { CollectionBase } from "../../Contracts/ViewModels";
+import DocumentId from "../../Explorer/Tree/DocumentId";
+import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { getEntityName } from "../DocumentUtility";
 import { handleError } from "../ErrorHandlingUtils";
-import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import DocumentId from "../../Explorer/Tree/DocumentId";
 
 export const deleteDocument = async (collection: CollectionBase, documentId: DocumentId): Promise<void> => {
   const entityName: string = getEntityName();
