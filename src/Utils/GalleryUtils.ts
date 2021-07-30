@@ -3,7 +3,7 @@ import { Notebook } from "@nteract/commutable";
 import { NotebookV4 } from "@nteract/commutable/lib/v4";
 import { HttpStatusCodes } from "../Common/Constants";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
-import { TextFieldProps } from "../Explorer/Controls/Dialog";
+import { TextFieldProps, useDialog } from "../Explorer/Controls/Dialog";
 import {
   GalleryTab,
   GalleryViewerComponent,
@@ -222,7 +222,7 @@ export function downloadItem(
   });
 
   const name = data.name;
-  container.showOkCancelModalDialog(
+  useDialog.getState().showOkCancelModalDialog(
     "Download to My Notebooks",
     `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
     "Download",
@@ -388,7 +388,7 @@ export function deleteItem(
   if (container) {
     trace(Action.NotebooksGalleryClickDelete, ActionModifiers.Mark, { notebookId: data.id });
 
-    container.showOkCancelModalDialog(
+    useDialog.getState().showOkCancelModalDialog(
       "Remove published notebook",
       `Would you like to remove ${data.name} from the gallery?`,
       "Remove",

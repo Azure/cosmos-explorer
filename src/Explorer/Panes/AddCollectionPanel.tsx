@@ -113,11 +113,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey:
-        (userContext.features.partitionKeyDefault && userContext.apiType === "SQL") ||
-        (userContext.features.partitionKeyDefault && userContext.apiType === "Mongo")
-          ? "/id"
-          : "",
+      partitionKey: this.getPartitionKey(),
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
       useHashV2: false,
@@ -813,6 +809,19 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return tooltipText;
+  }
+
+  private getPartitionKey(): string {
+    if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
+      return "";
+    }
+    if (userContext.features.partitionKeyDefault) {
+      return userContext.apiType === "SQL" ? "/id" : "_id";
+    }
+    if (userContext.features.partitionKeyDefault2) {
+      return userContext.apiType === "SQL" ? "/pk" : "pk";
+    }
+    return "";
   }
 
   private getPartitionKeySubtext(): string {

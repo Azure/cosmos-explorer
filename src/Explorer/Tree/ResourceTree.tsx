@@ -25,6 +25,7 @@ import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
+import { useDialog } from "../Controls/Dialog";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
@@ -270,14 +271,16 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         label: "Delete",
         iconSrc: DeleteIcon,
         onClick: () => {
-          container.showOkCancelModalDialog(
-            "Confirm delete",
-            `Are you sure you want to delete "${item.name}"`,
-            "Delete",
-            () => container.deleteNotebookFile(item, isGithubTree),
-            "Cancel",
-            undefined
-          );
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}"`,
+              "Delete",
+              () => container.deleteNotebookFile(item, isGithubTree),
+              "Cancel",
+              undefined
+            );
         },
       },
       {
@@ -339,14 +342,16 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         label: "Delete",
         iconSrc: DeleteIcon,
         onClick: () => {
-          container.showOkCancelModalDialog(
-            "Confirm delete",
-            `Are you sure you want to delete "${item.name}?"`,
-            "Delete",
-            () => container.deleteNotebookFile(item, isGithubTree),
-            "Cancel",
-            undefined
-          );
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}?"`,
+              "Delete",
+              () => container.deleteNotebookFile(item, isGithubTree),
+              "Cancel",
+              undefined
+            );
         },
       },
       {

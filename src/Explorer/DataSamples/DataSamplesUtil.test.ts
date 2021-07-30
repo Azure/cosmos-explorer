@@ -17,7 +17,6 @@ describe("DataSampleUtils", () => {
       collections: ko.observableArray<Collection>([collection]),
     } as Database;
     const explorer = {} as Explorer;
-    explorer.showOkModalDialog = () => {};
     useDatabases.getState().addDatabases([database]);
     const dataSamplesUtil = new DataSamplesUtil(explorer);
 
