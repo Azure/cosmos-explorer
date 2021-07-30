@@ -80,9 +80,10 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.push(createOpenTerminalButton(container));
-    notebookButtons.push(createOpenPostgreSQLTerminalButton(container));
 
     notebookButtons.push(createNotebookWorkspaceResetButton(container));
+
+    notebookButtons.push(createOpenPostgreSQLTerminalButton(container));
     if (
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
