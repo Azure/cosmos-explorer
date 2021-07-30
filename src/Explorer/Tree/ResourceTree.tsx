@@ -1,5 +1,6 @@
 import { Callout, DirectionalHint, ICalloutProps, ILinkProps, Link, Stack, Text } from "@fluentui/react";
 import * as React from "react";
+import shallow from "zustand/shallow";
 import CosmosDBIcon from "../../../images/Azure-Cosmos-DB.svg";
 import DeleteIcon from "../../../images/delete.svg";
 import GalleryIcon from "../../../images/GalleryIcon.svg";
@@ -55,7 +56,16 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     galleryContentRoot,
     gitHubNotebooksContentRoot,
     updateNotebookItem,
-  } = useNotebook();
+  } = useNotebook(
+    (state) => ({
+      isNotebookEnabled: state.isNotebookEnabled,
+      myNotebooksContentRoot: state.myNotebooksContentRoot,
+      galleryContentRoot: state.galleryContentRoot,
+      gitHubNotebooksContentRoot: state.gitHubNotebooksContentRoot,
+      updateNotebookItem: state.updateNotebookItem,
+    }),
+    shallow
+  );
   const { activeTab, refreshActiveTab } = useTabs();
   const showScriptNodes = userContext.apiType === "SQL" || userContext.apiType === "Gremlin";
   const pseudoDirPath = "PsuedoDir";
@@ -166,7 +176,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
             mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
           }
         });
-      }
+      },
+      true
     );
 
     gitHubNotebooksTree.contextMenu = [
@@ -202,9 +213,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   };
 
   const buildChildNodes = (
-    container: Explorer,
     item: NotebookContentItem,
-    onFileClick: (item: NotebookContentItem) => void
+    onFileClick: (item: NotebookContentItem) => void,
+    isGithubTree?: boolean
   ): TreeNode[] => {
     if (!item || !item.children) {
       return [];
@@ -212,8 +223,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       return item.children.map((item) => {
         const result =
           item.type === NotebookContentItemType.Directory
-            ? buildNotebookDirectoryNode(item, onFileClick)
-            : buildNotebookFileNode(item, onFileClick);
+            ? buildNotebookDirectoryNode(item, onFileClick, isGithubTree)
+            : buildNotebookFileNode(item, onFileClick, isGithubTree);
         result.timestamp = item.timestamp;
         return result;
       });
@@ -222,7 +233,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
   const buildNotebookFileNode = (
     item: NotebookContentItem,
-    onFileClick: (item: NotebookContentItem) => void
+    onFileClick: (item: NotebookContentItem) => void,
+    isGithubTree?: boolean
   ): TreeNode => {
     return {
       label: item.name,
@@ -239,17 +251,21 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           (activeTab as any).notebookPath() === item.path
         );
       },
-      contextMenu: createFileContextMenu(container, item),
+      contextMenu: createFileContextMenu(container, item, isGithubTree),
       data: item,
     };
   };
 
-  const createFileContextMenu = (container: Explorer, item: NotebookContentItem): TreeNodeMenuItem[] => {
+  const createFileContextMenu = (
+    container: Explorer,
+    item: NotebookContentItem,
+    isGithubTree?: boolean
+  ): TreeNodeMenuItem[] => {
     let items: TreeNodeMenuItem[] = [
       {
         label: "Rename",
         iconSrc: NotebookIcon,
-        onClick: () => container.renameNotebook(item),
+        onClick: () => container.renameNotebook(item, isGithubTree),
       },
       {
         label: "Delete",
@@ -261,7 +277,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
               "Confirm delete",
               `Are you sure you want to delete "${item.name}"`,
               "Delete",
-              () => container.deleteNotebookFile(item),
+              () => container.deleteNotebookFile(item, isGithubTree),
               "Cancel",
               undefined
             );
@@ -311,12 +327,16 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     }
   };
 
-  const createDirectoryContextMenu = (container: Explorer, item: NotebookContentItem): TreeNodeMenuItem[] => {
+  const createDirectoryContextMenu = (
+    container: Explorer,
+    item: NotebookContentItem,
+    isGithubTree?: boolean
+  ): TreeNodeMenuItem[] => {
     let items: TreeNodeMenuItem[] = [
       {
         label: "Refresh",
         iconSrc: RefreshIcon,
-        onClick: () => loadSubitems(item),
+        onClick: () => loadSubitems(item, isGithubTree),
       },
       {
         label: "Delete",
@@ -328,7 +348,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
               "Confirm delete",
               `Are you sure you want to delete "${item.name}?"`,
               "Delete",
-              () => container.deleteNotebookFile(item),
+              () => container.deleteNotebookFile(item, isGithubTree),
               "Cancel",
               undefined
             );
@@ -337,17 +357,17 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       {
         label: "Rename",
         iconSrc: NotebookIcon,
-        onClick: () => container.renameNotebook(item),
+        onClick: () => container.renameNotebook(item, isGithubTree),
       },
       {
         label: "New Directory",
         iconSrc: NewNotebookIcon,
-        onClick: () => container.onCreateDirectory(item),
+        onClick: () => container.onCreateDirectory(item, isGithubTree),
       },
       {
         label: "New Notebook",
         iconSrc: NewNotebookIcon,
-        onClick: () => container.onNewNotebookClicked(item),
+        onClick: () => container.onNewNotebookClicked(item, isGithubTree),
       },
       {
         label: "Upload File",
@@ -372,7 +392,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
   const buildNotebookDirectoryNode = (
     item: NotebookContentItem,
-    onFileClick: (item: NotebookContentItem) => void
+    onFileClick: (item: NotebookContentItem) => void,
+    isGithubTree?: boolean
   ): TreeNode => {
     return {
       label: item.name,
@@ -382,7 +403,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       isLeavesParentsSeparate: true,
       onClick: () => {
         if (!item.children) {
-          loadSubitems(item);
+          loadSubitems(item, isGithubTree);
         }
       },
       isSelected: () => {
@@ -395,9 +416,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           (activeTab as any).notebookPath() === item.path
         );
       },
-      contextMenu: item.path !== pseudoDirPath ? createDirectoryContextMenu(container, item) : undefined,
+      contextMenu: item.path !== pseudoDirPath ? createDirectoryContextMenu(container, item, isGithubTree) : undefined,
       data: item,
-      children: buildChildNodes(container, item, onFileClick),
+      children: buildChildNodes(item, onFileClick, isGithubTree),
     };
   };
 
@@ -699,9 +720,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     return traverse(schema);
   };
 
-  const loadSubitems = async (item: NotebookContentItem): Promise<void> => {
+  const loadSubitems = async (item: NotebookContentItem, isGithubTree?: boolean): Promise<void> => {
     const updatedItem = await container.notebookManager?.notebookContentClient?.updateItemChildren(item);
-    updateNotebookItem(updatedItem);
+    updateNotebookItem(updatedItem, isGithubTree);
   };
 
   const dataRootNode = buildDataTree();

@@ -537,17 +537,22 @@ export default class Explorer {
     }
   }
 
-  public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
+  public uploadFile(
+    name: string,
+    content: string,
+    parent: NotebookContentItem,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
       handleError(error, "Explorer/uploadFile");
       throw new Error(error);
     }
 
-    const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent);
+    const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent, isGithubTree);
     promise
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason) => useDialog.getState().showOkModalDialog("Unable to upload file", reason));
+      .catch((reason) => useDialog.getState().showOkModalDialog("Unable to upload file", getErrorMessage(reason)));
     return promise;
   }
 
@@ -672,7 +677,7 @@ export default class Explorer {
     return true;
   }
 
-  public renameNotebook(notebookFile: NotebookContentItem): void {
+  public renameNotebook(notebookFile: NotebookContentItem, isGithubTree?: boolean): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
       handleError(error, "Explorer/renameNotebook");
@@ -705,7 +710,7 @@ export default class Explorer {
           paneTitle="Rename Notebook"
           defaultInput={FileSystemUtil.stripExtension(notebookFile.name, "ipynb")}
           onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
-            this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
+            this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input, isGithubTree)
           }
           notebookFile={notebookFile}
         />
@@ -713,7 +718,7 @@ export default class Explorer {
     }
   }
 
-  public onCreateDirectory(parent: NotebookContentItem): void {
+  public onCreateDirectory(parent: NotebookContentItem, isGithubTree?: boolean): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
       handleError(error, "Explorer/onCreateDirectory");
@@ -735,7 +740,7 @@ export default class Explorer {
         submitButtonLabel="Create"
         defaultInput=""
         onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
-          this.notebookManager?.notebookContentClient.createDirectory(notebookFile, input)
+          this.notebookManager?.notebookContentClient.createDirectory(notebookFile, input, isGithubTree)
         }
         notebookFile={parent}
       />
@@ -804,7 +809,7 @@ export default class Explorer {
     }
   };
 
-  public deleteNotebookFile(item: NotebookContentItem): Promise<void> {
+  public deleteNotebookFile(item: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to delete notebook file, but notebook is not enabled";
       handleError(error, "Explorer/deleteNotebookFile");
@@ -837,7 +842,7 @@ export default class Explorer {
       return Promise.reject();
     }
 
-    return this.notebookManager?.notebookContentClient.deleteContentItem(item).then(
+    return this.notebookManager?.notebookContentClient.deleteContentItem(item, isGithubTree).then(
       () => logConsoleInfo(`Successfully deleted: ${item.path}`),
       (reason) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
     );
@@ -846,7 +851,7 @@ export default class Explorer {
   /**
    * This creates a new notebook file, then opens the notebook
    */
-  public onNewNotebookClicked(parent?: NotebookContentItem): void {
+  public onNewNotebookClicked(parent?: NotebookContentItem, isGithubTree?: boolean): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
       handleError(error, "Explorer/onNewNotebookClicked");
@@ -861,7 +866,7 @@ export default class Explorer {
     });
 
     this.notebookManager?.notebookContentClient
-      .createNewNotebookFile(parent)
+      .createNewNotebookFile(parent, isGithubTree)
       .then((newFile: NotebookContentItem) => {
         logConsoleInfo(`Successfully created: ${newFile.name}`);
         TelemetryProcessor.traceSuccess(
