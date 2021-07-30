@@ -10,6 +10,7 @@ export type Features = {
   readonly enableSchema: boolean;
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;
+  partitionKeyDefault2: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -72,5 +73,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     ttl90Days: "true" === get("ttl90days"),
     autoscaleDefault: "true" === get("autoscaledefault"),
     partitionKeyDefault: "true" === get("partitionkeytest"),
+    partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
   };
 }
