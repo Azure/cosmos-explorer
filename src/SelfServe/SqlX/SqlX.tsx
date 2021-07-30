@@ -1,28 +1,27 @@
-import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
+import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Styles, Values } from "../Decorators";
 import { selfServeTrace } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
-  DescriptionType,
-  Info,
+  DescriptionType, Info,
   InputType,
   NumberUiType,
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  updateDedicatedGatewayResource
 } from "./SqlX.rp";
 
 const costPerHourValue: Description = {
   textTKey: "CostText",
-  type: DescriptionType.Text,
+  type: DescriptionType.Card,
   link: {
     href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
     textTKey: "DedicatedGatewayPricing",
@@ -338,6 +337,7 @@ export default class SqlX extends SelfServeBaseClass {
   })
   instances: number;
 
+  @Styles({ isFloatRight: true })
   @Values({
     labelTKey: "Cost",
     isDynamicDescription: true,

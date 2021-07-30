@@ -1,4 +1,4 @@
-import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
+import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Styles, Values } from "../Decorators";
 import { selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
@@ -10,7 +10,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput,
+  SmartUiInput
 } from "../SelfServeTypes";
 import {
   getMaxCollectionThroughput,
@@ -19,7 +19,7 @@ import {
   getMinDatabaseThroughput,
   initialize,
   onRefreshSelfServeExample,
-  update,
+  update
 } from "./SelfServeExample.rp";
 import { AccountProps, Regions } from "./SelfServeExample.types";
 
@@ -202,6 +202,20 @@ export default class SelfServeExample extends SelfServeBaseClass {
     falseLabelTKey: "Disable",
   })
   enableLogging: boolean;
+
+  @Styles({ isFloatRight: true })
+  @Values({
+    labelTKey: "DescriptionLabel",
+    description: {
+      textTKey: "DescriptionText",
+      type: DescriptionType.Card,
+      link: {
+        href: "https://aka.ms/cosmos-create-account-portal",
+        textTKey: "DecriptionLinkText",
+      },
+    },
+  })
+  rightDescription: string;
 
   @Values({
     labelTKey: "Account Name",

@@ -1,6 +1,7 @@
 import {
-  Dropdown,
-  IDropdownOption,
+  DocumentCard,
+  DocumentCardDetails,
+  Dropdown, IDropdownOption,
   IStackTokens,
   Label,
   Link,
@@ -12,19 +13,19 @@ import {
   Stack,
   Text,
   TextField,
-  Toggle,
+  Toggle
 } from "@fluentui/react";
 import { TFunction } from "i18next";
 import * as React from "react";
 import {
   ChoiceItem,
   Description,
-  DescriptionType,
-  Info,
+  DescriptionType, Info,
   InputType,
   InputTypeValue,
   NumberUiType,
   SmartUiInput,
+  Style
 } from "../../../SelfServe/SelfServeTypes";
 import { ToolTipLabelComponent } from "../Settings/SettingsSubComponents/ToolTipLabelComponent";
 import * as InputUtils from "./InputUtils";
@@ -87,6 +88,7 @@ interface Node {
   info?: Info;
   input?: AnyDisplay;
   children?: Node[];
+  style?: Style
 }
 
 export interface SmartUiDescriptor {
@@ -194,6 +196,14 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
 
     if (description.type === DescriptionType.Text) {
       return descriptionElement;
+    } else if (description.type === DescriptionType.Card) {
+      return (
+        <DocumentCard styles={{ root: { display: "inline-block", padding: 10 } }}>
+          <DocumentCardDetails>
+            {descriptionElement}
+          </DocumentCardDetails>
+        </DocumentCard>
+      )
     }
     const messageBarType =
       description.type === DescriptionType.InfoMessageBar ? MessageBarType.info : MessageBarType.warning;
@@ -396,18 +406,29 @@ export class SmartUiComponent extends React.Component<SmartUiComponentProps, Sma
     }
   }
 
-  private renderNode(node: Node): JSX.Element {
+  private renderNode(node: Node, isSectionFloatRight: boolean): JSX.Element {
     const containerStackTokens: IStackTokens = { childrenGap: 10 };
-
+    const isNodeFloatRight = node.style?.isFloatRight === true;
+    console.log(isSectionFloatRight, isNodeFloatRight, node.id)
     return (
       <Stack tokens={containerStackTokens} className="widgetRendererContainer">
-        <Stack.Item>{node.input && this.renderElement(node.input, node.info as Info)}</Stack.Item>
-        {node.children && node.children.map((child) => <div key={child.id}>{this.renderNode(child)}</div>)}
+        {isSectionFloatRight === isNodeFloatRight ?
+          <>
+            <Stack.Item>{node.input && this.renderElement(node.input, node.info as Info)}</Stack.Item>
+          </>
+          : <></>
+        }
+        {node.children && node.children.map((child) => <div key={child.id}>{this.renderNode(child, isSectionFloatRight)}</div>)}
       </Stack>
     );
   }
 
   render(): JSX.Element {
-    return this.renderNode(this.props.descriptor.root);
+    return (
+      <Stack horizontal tokens={{ childrenGap: 50 }}>
+        {this.renderNode(this.props.descriptor.root, false)}
+        {this.renderNode(this.props.descriptor.root, true)}
+      </Stack>
+    );
   }
 }

@@ -20,6 +20,7 @@ import {
   SelfServeDescriptor,
   SmartUiInput,
   StringInput,
+  Style
 } from "./SelfServeTypes";
 
 /**
@@ -92,6 +93,7 @@ export interface DecoratorProperties {
   description?: (() => Promise<Description>) | Description;
   isDynamicDescription?: boolean;
   refreshParams?: RefreshParams;
+  style?: (() => Promise<Style>) | Style;
   onChange?: (
     newValue: InputType,
     currentState: Map<string, SmartUiInput>,
@@ -197,6 +199,7 @@ const addToDescriptor = (
     info: value.info,
     input: getInput(value),
     children: [],
+    style: value.style
   } as Node;
   context.delete(key);
   root.children.push(element);

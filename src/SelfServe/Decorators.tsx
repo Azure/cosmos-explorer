@@ -2,7 +2,7 @@
  * @module SelfServe/Decorators
  */
 
-import { ChoiceItem, Description, Info, NumberUiType, OnChangeCallback, RefreshParams } from "./SelfServeTypes";
+import { ChoiceItem, Description, Info, NumberUiType, OnChangeCallback, RefreshParams, Style } from "./SelfServeTypes";
 import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
@@ -160,6 +160,14 @@ export const OnChange = (onChange: OnChangeCallback): PropertyDecorator => {
  */
 export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecorator => {
   return addToMap({ name: "info", value: info });
+};
+
+/**
+ * Indicates that the UI element corresponding to the property should have an Info bubble. The Info
+ * bubble is the icon that looks like an "i" which users click on to get more information about the UI element.
+ */
+export const Styles = (style: (() => Promise<Style>) | Style): PropertyDecorator => {
+  return addToMap({ name: "style", value: style });
 };
 
 /**

@@ -7,7 +7,7 @@ import {
   Spinner,
   SpinnerSize,
   Stack,
-  Text,
+  Text
 } from "@fluentui/react";
 import { TFunction } from "i18next";
 import promiseRetry, { AbortError } from "p-retry";
@@ -32,7 +32,7 @@ import {
   SelfServeComponentTelemetryType,
   SelfServeDescriptor,
   SmartUiInput,
-  StringInput,
+  StringInput
 } from "./SelfServeTypes";
 
 interface SelfServeNotification {
@@ -186,6 +186,7 @@ export class SelfServeComponent extends React.Component<SelfServeComponentProps,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<void> => {
     currentNode.info = await this.getResolvedValue(currentNode.info);
+    currentNode.style = await this.getResolvedValue(currentNode.style);
 
     if (currentNode.input) {
       currentNode.input = await this.getResolvedInput(currentNode.input, currentValues, baselineValues);

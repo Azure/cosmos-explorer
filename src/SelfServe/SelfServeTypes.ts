@@ -55,6 +55,7 @@ export interface Node {
   info?: (() => Promise<Info>) | Info;
   input?: AnyDisplay;
   children?: Node[];
+  style?: (() => Promise<Style>) | Style;
 }
 
 /**@internal */
@@ -81,6 +82,13 @@ export type AnyDisplay = NumberInput | BooleanInput | StringInput | ChoiceInput 
 
 /**@internal */
 export type InputTypeValue = "number" | "string" | "boolean" | "object";
+
+/**
+ * Describes the styling of the UI element.
+ */
+export interface Style {
+  isFloatRight: boolean
+}
 
 export type initializeCallback =
   /**
@@ -228,6 +236,7 @@ export enum DescriptionType {
    * Show the description as a Warning Message bar.
    */
   WarningMessageBar,
+  Card
 }
 
 /**
