@@ -9,7 +9,7 @@ const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").def
 const { EnvironmentPlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
@@ -110,7 +110,7 @@ module.exports = function (_env = {}, argv = {}) {
   }
 
   const plugins = [
-    new CleanWebpackPlugin(["dist"]),
+    new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: "process/browser",
     }),
