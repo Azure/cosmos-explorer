@@ -1,5 +1,12 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, Selection, SelectionMode } from "@fluentui/react";
-import { Dropdown, IDropdownOption, IDropdownStyles } from "@fluentui/react/lib/Dropdown";
+import {
+  DetailsList,
+  DetailsListLayoutMode,
+  IColumn,
+  IDropdownOption,
+  IDropdownStyles,
+  Selection,
+  SelectionMode,
+} from "@fluentui/react";
 import * as ko from "knockout";
 import React, { Component } from "react";
 import QueryInformation from "../../../../images//QueryBuilder/QueryInformation_16x.png";
@@ -8,7 +15,6 @@ import AddEntityIcon from "../../../../images/AddEntity.svg";
 import AndOr from "../../../../images/And-Or.svg";
 import DeleteEntitiesIcon from "../../../../images/DeleteEntities.svg";
 import EditEntityIcon from "../../../../images/Edit-entity.svg";
-import EntityCancel from "../../../../images/Entity_cancel.svg";
 import ErrorRed from "../../../../images/error_red.svg";
 import ExecuteQueryIcon from "../../../../images/ExecuteQuery.svg";
 import QueryBuilderIcon from "../../../../images/Query-Builder.svg";
@@ -29,55 +35,67 @@ import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListView
 import * as Entities from "../../Tables/Entities";
 import QueryViewModel from "../../Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataClient";
-import TabsBase from "../TabsBase";
-import NewQueryTablesTab from "./QueryTablesTab";
-
+// import TabsBase from "../TabsBase";
+// import NewQueryTablesTab from "./QueryTablesTab";
+import { QueryTableEntityClause } from "./QueryTableEntityClause";
+import {
+  entityTypeOptions,
+  fieldOptions,
+  IDocument,
+  IQueryTableRowsType,
+  IQueryTablesTabComponentProps,
+  IQueryTablesTabComponentStates,
+  opertionOptions,
+  opertorOptions,
+  timestampOptions,
+} from "./QueryTableTabUtils";
 export interface Button {
   visible: boolean;
   enabled: boolean;
   isSelected?: boolean;
 }
-export interface IDocument {
-  partitionKey: string;
-  rowKey: string;
-  timeStamp: string;
-}
-export interface IQueryTablesTabComponentProps {
-  tabKind: ViewModels.CollectionTabKind;
-  title: string;
-  tabPath: string;
-  collection: ViewModels.CollectionBase;
-  node: ViewModels.TreeNode;
-  onLoadStartKey: number;
-  container: Explorer;
-  tabsBaseInstance: TabsBase;
-  queryTablesTab: NewQueryTablesTab;
-}
+// export interface IDocument {
+//   partitionKey: string;
+//   rowKey: string;
+//   timeStamp: string;
+// }
+// export interface IQueryTablesTabComponentProps {
+//   tabKind: ViewModels.CollectionTabKind;
+//   title: string;
+//   tabPath: string;
+//   collection: ViewModels.CollectionBase;
+//   node: ViewModels.TreeNode;
+//   onLoadStartKey: number;
+//   container: Explorer;
+//   tabsBaseInstance: TabsBase;
+//   queryTablesTab: NewQueryTablesTab;
+// }
 
-interface IQueryTablesTabComponentStates {
-  tableEntityListViewModel: TableEntityListViewModel;
-  queryViewModel: QueryViewModel;
-  queryText: string;
-  selectedQueryText: string;
-  executeQueryButton: Button;
-  queryBuilderButton: Button;
-  queryTextButton: Button;
-  addEntityButton: Button;
-  editEntityButton: Button;
-  deleteEntityButton: Button;
-  isHelperActive: boolean;
-  columns: IColumn[];
-  items: IDocument[];
-  isExpanded: boolean;
-  isEditorActive: boolean;
-  selectedItems: Entities.ITableEntity[];
-  isValue: boolean;
-  isTimestamp: boolean;
-  isCustomLastTimestamp: boolean;
-  isCustomRangeTimestamp: boolean;
-  operators: string[];
-  selectMessage: string;
-}
+// interface IQueryTablesTabComponentStates {
+//   tableEntityListViewModel: TableEntityListViewModel;
+//   queryViewModel: QueryViewModel;
+//   queryText: string;
+//   selectedQueryText: string;
+//   executeQueryButton: Button;
+//   queryBuilderButton: Button;
+//   queryTextButton: Button;
+//   addEntityButton: Button;
+//   editEntityButton: Button;
+//   deleteEntityButton: Button;
+//   isHelperActive: boolean;
+//   columns: IColumn[];
+//   items: IDocument[];
+//   isExpanded: boolean;
+//   isEditorActive: boolean;
+//   selectedItems: Entities.ITableEntity[];
+//   isValue: boolean;
+//   isTimestamp: boolean;
+//   isCustomLastTimestamp: boolean;
+//   isCustomRangeTimestamp: boolean;
+//   operators: string[];
+//   selectMessage: string;
+//   queryTableRows: IQueryTableRowsType[];
+// }
 
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
   // public readonly html = template;
@@ -207,12 +225,31 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       isCustomLastTimestamp: false,
       isCustomRangeTimestamp: false,
       operators: [],
+      selectMessage: "",
+      queryTableRows: [
+        {
+          isQueryTableEntityChecked: false,
+          selectedOperator: "=",
+          opertorOptions,
+          selectedField: "PartitionKey",
+          fieldOptions,
+          id: 1,
+          entityTypeOptions,
+          selectedEntityType: "String",
+          opertionOptions,
+          selectedOperation: "And",
+          entityValue: "",
+          isTimeStampSelected: false,
+          timestampOptions,
+          selectedTimestamp: "Last hour",
+        },
+      ],
     };
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
-    // console.log(
-    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 24 ~ QueryTablesTabComponent ~ constructor ~ props",
-    //   props
-    // );
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 24 ~ QueryTablesTabComponent ~ constructor ~ props",
+      props
+    );
     console.log(
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 85 ~ QueryTablesTabComponent ~ constructor ~ this.state",
       this.state,
@@ -225,18 +262,18 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       ", tableEntityList > ",
       this.state.tableEntityListViewModel
     );
-    const x = this.state.tableEntityListViewModel.items();
-    console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 146 ~ QueryTablesTabComponent ~ constructor ~ x", x);
+    // const x = this.state.tableEntityListViewModel.items();
+    // console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 146 ~ QueryTablesTabComponent ~ constructor ~ x", x);
     this.andLabel = this.state.queryViewModel.queryBuilderViewModel().andLabel;
     this.actionLabel = this.state.queryViewModel.queryBuilderViewModel().actionLabel;
     this.fieldLabel = this.state.queryViewModel.queryBuilderViewModel().fieldLabel;
     this.dataTypeLabel = this.state.queryViewModel.queryBuilderViewModel().dataTypeLabel;
     this.operatorLabel = this.state.queryViewModel.queryBuilderViewModel().operatorLabel;
     this.valueLabel = this.state.queryViewModel.queryBuilderViewModel().valueLabel;
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 232 ~ QueryTablesTabComponent ~ constructor ~ this.state.queryViewModel.queryBuilderViewModel().operators",
-      this.state.queryViewModel.queryBuilderViewModel().operators()
-    );
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 232 ~ QueryTablesTabComponent ~ constructor ~ this.state.queryViewModel.queryBuilderViewModel().operators",
+    //   this.state.queryViewModel.queryBuilderViewModel().operators()
+    // );
 
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
 
@@ -276,17 +313,14 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
 
   /****************** Constructor Ends */
 
-  async componentDidMount(): Promise<void> {
-    const abc = await this.state.tableEntityListViewModel.renderNextPageAndupdateCache();
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 249 ~ QueryTablesTabComponent ~ componentDidMount ~ abc",
-      abc
-    );
+  componentDidMount(): void {
+    this.state.tableEntityListViewModel.renderNextPageAndupdateCache();
+
     setTimeout(() => {
-      console.log("items > ", this.state.tableEntityListViewModel.cache.data);
-      console.log("items > ", this.state.tableEntityListViewModel.items());
-      console.log("items1 > ", this.state.tableEntityListViewModel.headers);
-      console.log("items1 > simple > ", this.tableEntityListViewModel1.items1);
+      // console.log("items > ", this.state.tableEntityListViewModel.cache.data);
+      // console.log("items > ", this.state.tableEntityListViewModel.items());
+      // console.log("items1 > ", this.state.tableEntityListViewModel.headers);
+      // console.log("items1 > simple > ", this.tableEntityListViewModel1.items1);
       this.columns = [];
       this.state.tableEntityListViewModel.headers.map((header) => {
         this.columns.push({
@@ -309,10 +343,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         // isValue:
       });
       setTimeout(() => {
-        console.log(
-          "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 248 ~ QueryTablesTabComponent ~ setTimeout ~ columns",
-          this.state.columns
-        );
+        // console.log(
+        //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 248 ~ QueryTablesTabComponent ~ setTimeout ~ columns",
+        //   this.state.columns
+        // );
       }, 1000);
       this.allItems = this.generateDetailsList();
       this.setState({
@@ -329,10 +363,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   // }
 
   public getSelectMessage(selectMessage: string): void {
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 332 ~ QueryTablesTabComponent ~ getSelectMessage ~ selectMessage",
-      selectMessage
-    );
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 332 ~ QueryTablesTabComponent ~ getSelectMessage ~ selectMessage",
+    //   selectMessage
+    // );
     this.setState({
       selectMessage: selectMessage,
     });
@@ -345,15 +379,15 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     //   ", ",
     //   this.selection.getSelection()[0]["Timestamp"]
     // );
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 338 ~ QueryTablesTabComponent ~ this.selection.getSelection().length",
-      this.selection.getSelection().length
-    );
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 338 ~ QueryTablesTabComponent ~ this.selection.getSelection().length",
+    //   this.selection.getSelection().length
+    // );
     if (this.selection.getSelection().length > 0) {
       const a = this.state.tableEntityListViewModel
         .items()
         .filter((item) => item["Timestamp"]._ === Object.values(this.selection.getSelection()[0])[2]);
-      console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 293 ~ QueryTablesTabComponent ~ a", a);
+      // console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 293 ~ QueryTablesTabComponent ~ a", a);
 
       this.setState({
         // selectionCount: this._selection.getSelectedCount(),
@@ -436,6 +470,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     if (window.confirm(deleteMessage)) {
       this.state.tableEntityListViewModel.queryTablesTab.container.tableDataClient
         .deleteDocuments(this.state.tableEntityListViewModel.queryTablesTab.collection, entitiesToDelete)
+        //eslint-disable-next-line
         .then((results: any) => {
           return this.state.tableEntityListViewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
             // this.state.tableEntityListViewModel.redrawTableThrottled();
@@ -543,23 +578,23 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     // const compare = ["PartitionKey", "RowKey", "Timestamp", "_rid", "_self", "_etag", "_attachments"];
 
     this.state.tableEntityListViewModel.items().map((item) => {
-      console.log("generateDetailsList > ", item["PartitionKey"]._);
+      // console.log("generateDetailsList > ", item["PartitionKey"]._);
       this.columns.map((col) => {
         // console.log(
         //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 403 ~ QueryTablesTabComponent ~ this.columns.map ~ col.name",
         //   col.name
         // );
         if (item[col.name]) {
-          console.log("Data > ", item[col.name]._);
+          // console.log("Data > ", item[col.name]._);
           obj = { ...obj, ...{ [col.name]: item[col.name]._ } };
         }
       });
       items.push(obj);
     });
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 383 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ items",
-      items
-    );
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 383 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ items",
+    //   items
+    // );
     return items;
   }
 
@@ -584,9 +619,68 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       isEditorActive: false,
     });
   }
+  private onQueryTableEntityCheck = (index: number): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows[index].isQueryTableEntityChecked = !cloneQueryTableRows[index].isQueryTableEntityChecked;
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  private onDropdownChange = (selectedOption: IDropdownOption, selectedOptionType: string, index: number): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    cloneQueryTableRows[index][selectedOptionType] = selectedOption.text;
+    const { text } = selectedOption;
+    if (text === "DateTime" || text === "Timestamp") {
+      cloneQueryTableRows[index].isTimeStampSelected = true;
+      cloneQueryTableRows[index].selectedEntityType = "DateTime";
+    } else if (selectedOptionType !== "selectedTimestamp") {
+      cloneQueryTableRows[index].isTimeStampSelected = false;
+    }
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  onDeleteClause = (indexToRemove: number): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows.splice(indexToRemove, 1);
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  onAddNewClause = (): void => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows.splice(cloneQueryTableRows.length, 0, {
+      isQueryTableEntityChecked: false,
+      selectedOperator: "=",
+      opertorOptions,
+      id: cloneQueryTableRows.length + 1,
+      selectedField: "PartitionKey",
+      fieldOptions,
+      entityTypeOptions,
+      selectedEntityType: "String",
+      opertionOptions,
+      selectedOperation: "And",
+      entityValue: "",
+      isTimeStampSelected: false,
+      timestampOptions,
+      selectedTimestamp: "Last hour",
+    });
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  private onEntityValueChange = (newInput: string, index: number) => {
+    const { queryTableRows } = this.state;
+    const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
+    cloneQueryTableRows[index].entityValue = newInput;
+    this.setState({ queryTableRows: cloneQueryTableRows });
+  };
 
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    const { queryTableRows } = this.state;
 
     return (
       <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
@@ -634,131 +728,56 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                         </th>
                         <th className="clause-table-cell header-background"></th>
                         <th className="clause-table-cell header-background and-or-header">
-                          <span>{this.andLabel}</span>
+                          <span className="and-or-label">{this.andLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background field-header">
-                          <span>{this.fieldLabel}</span>
+                          <span className="field-label">{this.fieldLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background type-header">
-                          <span>{this.dataTypeLabel}</span>
+                          <span className="data-type-label">{this.dataTypeLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background operator-header">
-                          <span>{this.operatorLabel}</span>
+                          <span className="operator-label">{this.operatorLabel}</span>
                         </th>
                         <th className="clause-table-cell header-background value-header">
-                          <span>{this.valueLabel}</span>
+                          <span className="value-label">{this.valueLabel}</span>
                         </th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr className="clause-table-row">
-                        {/* Add and Cancel */}
-                        <td className="clause-table-cell action-column">
-                          <span
-                            className="entity-Add-Cancel"
-                            role="button"
-                            tabIndex={0}
-                            // data-bind="click: $parent.addClauseIndex.bind($data, $index()), event: { keydown: $parent.onAddClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.insertNewFilterLine}"
-                          >
-                            <img className="querybuilder-addpropertyImg" src={AddProperty} alt="Add clause" />
-                          </span>
-                          <span
-                            className="entity-Add-Cancel"
-                            role="button"
-                            tabIndex={0}
-                            // data-bind="hasFocus: isDeleteButtonFocused, click: $parent.deleteClause.bind($data, $index()), event: { keydown: $parent.onDeleteClauseKeyDown.bind($data, $index()) }, attr:{title: $parent.removeThisFilterLine}"
-                          >
-                            <img className="querybuilder-cancelImg" src={EntityCancel} alt="Delete clause" />
-                          </span>
-                        </td>
-                        {/* Group and unGroup */}
-                        <td className="clause-table-cell group-control-column">
-                          <input type="checkbox" aria-label="And/Or" data-bind="checked: checkedForGrouping" />
-                        </td>
-                        <td>
-                          <table className="group-indicator-table">
-                            <tbody>
-                              <tr data-bind="template: { name: 'groupIndicator-template', foreach: $parent.getClauseGroupViewModels($data), as: 'gi' }"></tr>
-                            </tbody>
-                          </table>
-                        </td>
-                        {/* AndOr */}
-                        <td className="clause-table-cell and-or-column">
-                          <select
-                            className="clause-table-field and-or-column"
-                            aria-label="and_or"
-                            // data-bind="hasFocus: isAndOrFocused, options: $parent.clauseRules, value: and_or, visible: canAnd, attr:{ 'aria-label': and_or }"
-                          >
-                            {this.state.queryViewModel
-                              .queryBuilderViewModel()
-                              .clauseRules()
-                              .map((clause) => {
-                                <option>{clause}</option>;
-                              })}
-                          </select>
-                        </td>
-                        {/* Field */}
-                        <td className="clause-table-cell field-column" data-bind="click: $parent.updateColumnOptions">
-                          <select
-                            className="clause-table-field field-column"
-                            data-bind="options: $parent.columnOptions, value: field, attr:{ 'aria-label': field }"
-                          ></select>
-                        </td>
-                        {/* Type */}
-                        <td className="clause-table-cell type-column">
-                          <select
-                            className="clause-table-field type-column"
-                            data-bind="
-                  options: $parent.edmTypes,
-                  enable: isTypeEditable,
-                  value: type,
-                  css: {'query-builder-isDisabled': !isTypeEditable()},
-                  attr: { 'aria-label': type }"
-                          ></select>
-                        </td>
-                        {/* Operator */}
-                        <td className="clause-table-cell operator-column">
-                          <Dropdown
-                            placeholder="Select an option"
-                            // label="Basic uncontrolled example"
-                            options={this.options}
-                            styles={this.dropdownStyles}
-                          />
-                        </td>
-                        {/* Value */}
-                        <td className="clause-table-cell value-column">
-                          <input
-                            type="text"
-                            className="clause-table-field value-column"
-                            // type="search"
-                            data-bind="textInput: value, attr: {'aria-label': $parent.valueLabel}"
-                          />
-
-                          <select
-                            className="clause-table-field time-column"
-                            data-bind="options: $parent.timeOptions, value: timeValue"
-                          ></select>
-
-                          <input
-                            className="clause-table-field time-column"
-                            data-bind="value: customTimeValue, click: customTimestampDialog"
-                          />
-                          <input
-                            className="clause-table-field time-column"
-                            type="datetime-local"
-                            step="1"
-                            data-bind="value: customTimeValue"
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
                   </table>
                 </div>
+                <>
+                  {queryTableRows.map((queryTableRow, index) => (
+                    <QueryTableEntityClause
+                      key={queryTableRow.id}
+                      isQueryTableEntityChecked={queryTableRow.isQueryTableEntityChecked}
+                      selectedOperator={queryTableRow.selectedOperator}
+                      selectedField={queryTableRow.selectedField}
+                      selectedOperation={queryTableRow.selectedOperation}
+                      opertationOptions={queryTableRow.opertionOptions}
+                      entityValue={queryTableRow.entityValue}
+                      selectedEntityType={queryTableRow.selectedEntityType}
+                      entityTypeOptions={queryTableRow.entityTypeOptions}
+                      fieldOptions={queryTableRow.fieldOptions}
+                      selectedTimestamp={queryTableRow.selectedTimestamp}
+                      timestampOptions={queryTableRow.timestampOptions}
+                      opertorOptions={queryTableRow.opertorOptions}
+                      isTimeStampSelected={queryTableRow.isTimeStampSelected}
+                      onAddNewClause={this.onAddNewClause}
+                      onDeleteClause={() => this.onDeleteClause(index)}
+                      onQueryTableEntityCheck={() => this.onQueryTableEntityCheck(index)}
+                      onEntityValueChange={(_event, newInput?: string) => this.onEntityValueChange(newInput, index)}
+                      onDropdownChange={(selectedOption: IDropdownOption, selectedOptionType: string) =>
+                        this.onDropdownChange(selectedOption, selectedOptionType, index)
+                      }
+                    />
+                  ))}
+                </>
                 <div
                   className="addClause"
                   role="button"
-                  onClick={this.state.queryViewModel.queryBuilderViewModel().addNewClause}
-                  // data-bind="click: addNewClause, event: { keydown: onAddNewClauseKeyDown }, attr: { title: addNewClauseLine }"
+                  onClick={this.onAddNewClause}
+                  // onClick={this.state.queryViewModel.queryBuilderViewModel().addNewClause}
                   tabIndex={0}
                 >
                   <div className="addClause-heading">
