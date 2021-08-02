@@ -44,10 +44,6 @@ exports[`SettingsComponent renders 1`] = `
                   "copyNotebook": [Function],
                   "parameters": [Function],
                 },
-                "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-                  "container": [Circular],
-                  "parameters": [Function],
-                },
               },
               "databaseId": "test",
               "defaultTtl": [Function],
@@ -113,10 +109,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
-                  "parameters": [Function],
-                },
-                "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-                  "container": [Circular],
                   "parameters": [Function],
                 },
               },

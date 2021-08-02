@@ -6,10 +6,12 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
+import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
+import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
 
@@ -39,6 +41,7 @@ interface NotebookState {
   updateNotebookItem: (item: NotebookContentItem) => void;
   deleteNotebookItem: (item: NotebookContentItem) => void;
   initializeNotebooksTree: (notebookManager: NotebookManager) => Promise<void>;
+  initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -153,35 +156,31 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    set({
-      myNotebooksContentRoot: {
-        name: "My Notebooks",
-        path: get().notebookBasePath,
-        type: NotebookContentItemType.Directory,
-      },
-      galleryContentRoot: {
-        name: "Gallery",
-        path: "Gallery",
-        type: NotebookContentItemType.File,
-      },
-    });
-
-    if (notebookManager?.gitHubOAuthService?.isLoggedIn()) {
-      set({
-        gitHubNotebooksContentRoot: {
+    const myNotebooksContentRoot = {
+      name: "My Notebooks",
+      path: get().notebookBasePath,
+      type: NotebookContentItemType.Directory,
+    };
+    const galleryContentRoot = {
+      name: "Gallery",
+      path: "Gallery",
+      type: NotebookContentItemType.File,
+    };
+    const gitHubNotebooksContentRoot = notebookManager?.gitHubOAuthService?.isLoggedIn()
+      ? {
           name: "GitHub repos",
           path: "PsuedoDir",
           type: NotebookContentItemType.Directory,
-        },
-      });
-    }
+        }
+      : undefined;
+    set({
+      myNotebooksContentRoot,
+      galleryContentRoot,
+      gitHubNotebooksContentRoot,
+    });
 
     if (get().notebookServerInfo?.notebookServerEndpoint) {
-      const updatedRoot = await notebookManager?.notebookContentClient?.updateItemChildren({
-        name: "My Notebooks",
-        path: get().notebookBasePath,
-        type: NotebookContentItemType.Directory,
-      });
+      const updatedRoot = await notebookManager?.notebookContentClient?.updateItemChildren(myNotebooksContentRoot);
       set({ myNotebooksContentRoot: updatedRoot });
 
       if (updatedRoot?.children) {
@@ -204,6 +203,33 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
         });
         TelemetryProcessor.trace(Action.RefreshResourceTreeMyNotebooks, ActionModifiers.Mark, { ...nodeCounts });
       }
+    }
+  },
+  initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]): void => {
+    const gitHubNotebooksContentRoot = cloneDeep(get().gitHubNotebooksContentRoot);
+    if (gitHubNotebooksContentRoot) {
+      gitHubNotebooksContentRoot.children = [];
+      pinnedRepos?.forEach((pinnedRepo) => {
+        const repoFullName = GitHubUtils.toRepoFullName(pinnedRepo.owner, pinnedRepo.name);
+        const repoTreeItem: NotebookContentItem = {
+          name: repoFullName,
+          path: "PsuedoDir",
+          type: NotebookContentItemType.Directory,
+          children: [],
+        };
+
+        pinnedRepo.branches.forEach((branch) => {
+          repoTreeItem.children.push({
+            name: branch.name,
+            path: GitHubUtils.toContentUri(pinnedRepo.owner, pinnedRepo.name, branch.name, ""),
+            type: NotebookContentItemType.Directory,
+          });
+        });
+
+        gitHubNotebooksContentRoot.children.push(repoTreeItem);
+      });
+
+      set({ gitHubNotebooksContentRoot });
     }
   },
 }));

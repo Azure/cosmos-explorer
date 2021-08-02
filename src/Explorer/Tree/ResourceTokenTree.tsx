@@ -1,45 +1,18 @@
-import * as ko from "knockout";
-import * as React from "react";
+import React from "react";
 import CollectionIcon from "../../../images/tree-collection.svg";
-import { ReactAdapter } from "../../Bindings/ReactBindingHandler";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useTabs } from "../../hooks/useTabs";
 import { userContext } from "../../UserContext";
 import { TreeComponent, TreeNode } from "../Controls/TreeComponent/TreeComponent";
-import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
 import { mostRecentActivity } from "../MostRecentActivity/MostRecentActivity";
-import { NotebookContentItem } from "../Notebook/NotebookContentItem";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
-export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
-  public parameters: ko.Observable<number>;
-  public myNotebooksContentRoot: NotebookContentItem;
+export const ResourceTokenTree: React.FC = (): JSX.Element => {
+  const collection = useDatabases((state) => state.resourceTokenCollection);
 
-  public constructor(private container: Explorer) {
-    this.parameters = ko.observable(Date.now());
-
-    useDatabases.subscribe(
-      () => this.triggerRender(),
-      (state) => state.resourceTokenCollection
-    );
-    useSelectedNode.subscribe(() => this.triggerRender());
-    useTabs.subscribe(
-      () => this.triggerRender(),
-      (state) => state.activeTab
-    );
-
-    this.triggerRender();
-  }
-
-  public renderComponent(): JSX.Element {
-    const dataRootNode = this.buildCollectionNode();
-    return <TreeComponent className="dataResourceTree" rootNode={dataRootNode} />;
-  }
-
-  public buildCollectionNode(): TreeNode {
-    const collection: ViewModels.CollectionBase = useDatabases.getState().resourceTokenCollection;
+  const buildCollectionNode = (): TreeNode => {
     if (!collection) {
       return {
         label: undefined,
@@ -86,9 +59,7 @@ export class ResourceTreeAdapterForResourceToken implements ReactAdapter {
       isExpanded: true,
       children: [collectionNode],
     };
-  }
+  };
 
-  public triggerRender() {
-    window.requestAnimationFrame(() => this.parameters(Date.now()));
-  }
-}
+  return <TreeComponent className="dataResourceTree" rootNode={buildCollectionNode()} />;
+};
