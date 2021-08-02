@@ -1,4 +1,3 @@
-import { IChoiceGroupProps } from "@fluentui/react";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
@@ -35,7 +34,7 @@ import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../Utils/NotificationConsoleUtils";
 import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../Utils/NotificationConsoleUtils";
 import "./ComponentRegisterer";
-import { DialogProps, TextFieldProps, useDialog } from "./Controls/Dialog";
+import { DialogProps, useDialog } from "./Controls/Dialog";
 import { GalleryTab as GalleryTabKind } from "./Controls/NotebookGallery/GalleryViewerComponent";
 import { useCommandBar } from "./Menus/CommandBar/CommandBarComponentAdapter";
 import * as FileSystemUtil from "./Notebook/FileSystemUtil";
@@ -538,17 +537,22 @@ export default class Explorer {
     }
   }
 
-  public uploadFile(name: string, content: string, parent: NotebookContentItem): Promise<NotebookContentItem> {
+  public uploadFile(
+    name: string,
+    content: string,
+    parent: NotebookContentItem,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to upload notebook, but notebook is not enabled";
       handleError(error, "Explorer/uploadFile");
       throw new Error(error);
     }
 
-    const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent);
+    const promise = this.notebookManager?.notebookContentClient.uploadFileAsync(name, content, parent, isGithubTree);
     promise
       .then(() => this.resourceTree.triggerRender())
-      .catch((reason) => this.showOkModalDialog("Unable to upload file", reason));
+      .catch((reason) => useDialog.getState().showOkModalDialog("Unable to upload file", getErrorMessage(reason)));
     return promise;
   }
 
@@ -614,51 +618,6 @@ export default class Explorer {
     this.notebookManager?.openCopyNotebookPane(name, content);
   }
 
-  public showOkModalDialog(title: string, msg: string): void {
-    useDialog.getState().openDialog({
-      isModal: true,
-      title,
-      subText: msg,
-      primaryButtonText: "Close",
-      secondaryButtonText: undefined,
-      onPrimaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-      },
-      onSecondaryButtonClick: undefined,
-    });
-  }
-
-  public showOkCancelModalDialog(
-    title: string,
-    msg: string,
-    okLabel: string,
-    onOk: () => void,
-    cancelLabel: string,
-    onCancel: () => void,
-    choiceGroupProps?: IChoiceGroupProps,
-    textFieldProps?: TextFieldProps,
-    isPrimaryButtonDisabled?: boolean
-  ): void {
-    useDialog.getState().openDialog({
-      isModal: true,
-      title,
-      subText: msg,
-      primaryButtonText: okLabel,
-      secondaryButtonText: cancelLabel,
-      onPrimaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        onOk && onOk();
-      },
-      onSecondaryButtonClick: () => {
-        useDialog.getState().closeDialog();
-        onCancel && onCancel();
-      },
-      choiceGroupProps,
-      textFieldProps,
-      primaryButtonDisabled: isPrimaryButtonDisabled,
-    });
-  }
-
   /**
    * Note: To keep it simple, this creates a disconnected NotebookContentItem that is not connected to the resource tree.
    * Connecting it to a tree possibly requires the intermediate missing folders if the item is nested in a subfolder.
@@ -718,7 +677,7 @@ export default class Explorer {
     return true;
   }
 
-  public renameNotebook(notebookFile: NotebookContentItem): void {
+  public renameNotebook(notebookFile: NotebookContentItem, isGithubTree?: boolean): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to rename notebook, but notebook is not enabled";
       handleError(error, "Explorer/renameNotebook");
@@ -732,7 +691,9 @@ export default class Explorer {
         return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), notebookFile.path);
       });
     if (openedNotebookTabs.length > 0) {
-      this.showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
+      useDialog
+        .getState()
+        .showOkModalDialog("Unable to rename file", "This file is being edited. Please close the tab and try again.");
     } else {
       useSidePanel.getState().openSidePanel(
         "Rename Notebook",
@@ -749,7 +710,7 @@ export default class Explorer {
           paneTitle="Rename Notebook"
           defaultInput={FileSystemUtil.stripExtension(notebookFile.name, "ipynb")}
           onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
-            this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input)
+            this.notebookManager?.notebookContentClient.renameNotebook(notebookFile, input, isGithubTree)
           }
           notebookFile={notebookFile}
         />
@@ -757,7 +718,7 @@ export default class Explorer {
     }
   }
 
-  public onCreateDirectory(parent: NotebookContentItem): void {
+  public onCreateDirectory(parent: NotebookContentItem, isGithubTree?: boolean): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create notebook directory, but notebook is not enabled";
       handleError(error, "Explorer/onCreateDirectory");
@@ -779,7 +740,7 @@ export default class Explorer {
         submitButtonLabel="Create"
         defaultInput=""
         onSubmit={(notebookFile: NotebookContentItem, input: string): Promise<NotebookContentItem> =>
-          this.notebookManager?.notebookContentClient.createDirectory(notebookFile, input)
+          this.notebookManager?.notebookContentClient.createDirectory(notebookFile, input, isGithubTree)
         }
         notebookFile={parent}
       />
@@ -848,7 +809,7 @@ export default class Explorer {
     }
   };
 
-  public deleteNotebookFile(item: NotebookContentItem): Promise<void> {
+  public deleteNotebookFile(item: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to delete notebook file, but notebook is not enabled";
       handleError(error, "Explorer/deleteNotebookFile");
@@ -862,7 +823,9 @@ export default class Explorer {
         return tab.notebookPath && FileSystemUtil.isPathEqual(tab.notebookPath(), item.path);
       });
     if (openedNotebookTabs.length > 0) {
-      this.showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
+      useDialog
+        .getState()
+        .showOkModalDialog("Unable to delete file", "This file is being edited. Please close the tab and try again.");
       return Promise.reject();
     }
 
@@ -879,7 +842,7 @@ export default class Explorer {
       return Promise.reject();
     }
 
-    return this.notebookManager?.notebookContentClient.deleteContentItem(item).then(
+    return this.notebookManager?.notebookContentClient.deleteContentItem(item, isGithubTree).then(
       () => logConsoleInfo(`Successfully deleted: ${item.path}`),
       (reason) => logConsoleError(`Failed to delete "${item.path}": ${JSON.stringify(reason)}`)
     );
@@ -888,7 +851,7 @@ export default class Explorer {
   /**
    * This creates a new notebook file, then opens the notebook
    */
-  public onNewNotebookClicked(parent?: NotebookContentItem): void {
+  public onNewNotebookClicked(parent?: NotebookContentItem, isGithubTree?: boolean): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
       handleError(error, "Explorer/onNewNotebookClicked");
@@ -903,7 +866,7 @@ export default class Explorer {
     });
 
     this.notebookManager?.notebookContentClient
-      .createNewNotebookFile(parent)
+      .createNewNotebookFile(parent, isGithubTree)
       .then((newFile: NotebookContentItem) => {
         logConsoleInfo(`Successfully created: ${newFile.name}`);
         TelemetryProcessor.traceSuccess(

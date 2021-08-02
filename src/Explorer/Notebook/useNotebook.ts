@@ -38,8 +38,9 @@ interface NotebookState {
   setNotebookBasePath: (notebookBasePath: string) => void;
   refreshNotebooksEnabledStateForAccount: () => Promise<void>;
   findItem: (root: NotebookContentItem, item: NotebookContentItem) => NotebookContentItem;
-  updateNotebookItem: (item: NotebookContentItem) => void;
-  deleteNotebookItem: (item: NotebookContentItem) => void;
+  insertNotebookItem: (parent: NotebookContentItem, item: NotebookContentItem, isGithubTree?: boolean) => void;
+  updateNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
+  deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
   initializeNotebooksTree: (notebookManager: NotebookManager) => Promise<void>;
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
 }
@@ -141,19 +142,30 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
 
     return undefined;
   },
-  updateNotebookItem: (item: NotebookContentItem): void => {
-    const root = cloneDeep(get().myNotebooksContentRoot);
+  insertNotebookItem: (parent: NotebookContentItem, item: NotebookContentItem, isGithubTree?: boolean): void => {
+    const root = isGithubTree ? cloneDeep(get().gitHubNotebooksContentRoot) : cloneDeep(get().myNotebooksContentRoot);
+    const parentItem = get().findItem(root, parent);
+    item.parent = parentItem;
+    if (parentItem.children) {
+      parentItem.children.push(item);
+    } else {
+      parentItem.children = [item];
+    }
+    isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
+  },
+  updateNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean): void => {
+    const root = isGithubTree ? cloneDeep(get().gitHubNotebooksContentRoot) : cloneDeep(get().myNotebooksContentRoot);
     const parentItem = get().findItem(root, item.parent);
     parentItem.children = parentItem.children.filter((child) => child.path !== item.path);
     parentItem.children.push(item);
     item.parent = parentItem;
-    set({ myNotebooksContentRoot: root });
+    isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
-  deleteNotebookItem: (item: NotebookContentItem): void => {
-    const root = cloneDeep(get().myNotebooksContentRoot);
+  deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean): void => {
+    const root = isGithubTree ? cloneDeep(get().gitHubNotebooksContentRoot) : cloneDeep(get().myNotebooksContentRoot);
     const parentItem = get().findItem(root, item.parent);
     parentItem.children = parentItem.children.filter((child) => child.path !== item.path);
-    set({ myNotebooksContentRoot: root });
+    isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
     const myNotebooksContentRoot = {
@@ -216,6 +228,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           path: "PsuedoDir",
           type: NotebookContentItemType.Directory,
           children: [],
+          parent: gitHubNotebooksContentRoot,
         };
 
         pinnedRepo.branches.forEach((branch) => {
@@ -223,6 +236,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
             name: branch.name,
             path: GitHubUtils.toContentUri(pinnedRepo.owner, pinnedRepo.name, branch.name, ""),
             type: NotebookContentItemType.Directory,
+            parent: repoTreeItem,
           });
         });
 

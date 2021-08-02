@@ -98,6 +98,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
 
   const copyNotebook = async (location: Location): Promise<NotebookContentItem> => {
     let parent: NotebookContentItem;
+    let isGithubTree: boolean;
     switch (location.type) {
       case "MyNotebooks":
         parent = {
@@ -105,21 +106,23 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
           path: useNotebook.getState().notebookBasePath,
           type: NotebookContentItemType.Directory,
         };
+        isGithubTree = false;
         break;
 
       case "GitHub":
         parent = {
-          name: ResourceTreeAdapter.GitHubReposTitle,
+          name: selectedLocation.branch,
           path: GitHubUtils.toContentUri(selectedLocation.owner, selectedLocation.repo, selectedLocation.branch, ""),
           type: NotebookContentItemType.Directory,
         };
+        isGithubTree = true;
         break;
 
       default:
         throw new Error(`Unsupported location type ${location.type}`);
     }
 
-    return container.uploadFile(name, content, parent);
+    return container.uploadFile(name, content, parent, isGithubTree);
   };
 
   const onDropDownChange = (_: FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
