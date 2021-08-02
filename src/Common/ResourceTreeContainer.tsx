@@ -54,7 +54,7 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
         </div>
         {userContext.authType === AuthType.ResourceToken ? (
           <ResourceTokenTree />
-        ) : userContext.features.enableKOResourceTree ? (
+        ) : userContext.features.enableKoResourceTree ? (
           <div style={{ overflowY: "auto" }} data-bind="react:resourceTree" />
         ) : (
           <ResourceTree container={container} />

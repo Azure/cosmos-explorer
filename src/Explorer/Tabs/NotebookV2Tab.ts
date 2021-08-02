@@ -17,6 +17,7 @@ import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { useDialog } from "../Controls/Dialog";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { KernelSpecsDisplay } from "../Notebook/NotebookClientV2";
 import * as CdbActions from "../Notebook/NotebookComponent/actions";
@@ -59,14 +60,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
     };
 
     if (this.notebookComponentAdapter.isContentDirty()) {
-      this.container.showOkCancelModalDialog(
-        "Close without saving?",
-        `File has unsaved changes, close without saving?`,
-        "Close",
-        cleanup,
-        "Cancel",
-        undefined
-      );
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          "Close without saving?",
+          `File has unsaved changes, close without saving?`,
+          "Close",
+          cleanup,
+          "Cancel",
+          undefined
+        );
       return Q.resolve(null);
     } else {
       cleanup();

@@ -38,6 +38,7 @@ import { useTabs } from "../../../hooks/useTabs";
 import { Action as TelemetryAction, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { logConsoleError, logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
+import { useDialog } from "../../Controls/Dialog";
 import * as FileSystemUtil from "../FileSystemUtil";
 import * as cdbActions from "../NotebookComponent/actions";
 import { NotebookUtil } from "../NotebookUtil";
@@ -686,10 +687,8 @@ const handleKernelConnectionLostEpic = (
         logConsoleError(msg);
         logFailureToTelemetry(state, "Kernel restart error", msg);
 
-        const explorer = window.dataExplorer;
-        if (explorer) {
-          explorer.showOkModalDialog("kernel restarts", msg);
-        }
+        useDialog.getState().showOkModalDialog("kernel restarts", msg);
+
         return of(EMPTY);
       }
 
@@ -773,8 +772,7 @@ const closeUnsupportedMimetypesEpic = (
     ofType(actions.FETCH_CONTENT_FULFILLED),
     mergeMap((action) => {
       const mimetype = action.payload.model.mimetype;
-      const explorer = window.dataExplorer;
-      if (explorer && !TextFile.handles(mimetype)) {
+      if (!TextFile.handles(mimetype)) {
         const filepath = action.payload.filepath;
         // Close tab and show error message
         useTabs
@@ -783,7 +781,7 @@ const closeUnsupportedMimetypesEpic = (
             (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
           );
         const msg = `${filepath} cannot be rendered. Please download the file, in order to view it outside of Data Explorer.`;
-        explorer.showOkModalDialog("File cannot be rendered", msg);
+        useDialog.getState().showOkModalDialog("File cannot be rendered", msg);
         logConsoleError(msg);
       }
       return EMPTY;
@@ -803,19 +801,16 @@ const closeContentFailedToFetchEpic = (
   return action$.pipe(
     ofType(actions.FETCH_CONTENT_FAILED),
     mergeMap((action) => {
-      const explorer = window.dataExplorer;
-      if (explorer) {
-        const filepath = action.payload.filepath;
-        // Close tab and show error message
-        useTabs
-          .getState()
-          .closeTabsByComparator(
-            (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
-          );
-        const msg = `Failed to load file: ${filepath}.`;
-        explorer.showOkModalDialog("Failure to load", msg);
-        logConsoleError(msg);
-      }
+      const filepath = action.payload.filepath;
+      // Close tab and show error message
+      useTabs
+        .getState()
+        .closeTabsByComparator(
+          (tab: any) => (tab as any).notebookPath && FileSystemUtil.isPathEqual((tab as any).notebookPath(), filepath)
+        );
+      const msg = `Failed to load file: ${filepath}.`;
+      useDialog.getState().showOkModalDialog("Failure to load", msg);
+      logConsoleError(msg);
       return EMPTY;
     })
   );

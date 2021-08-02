@@ -29,6 +29,7 @@ import { QueriesClient } from "../../../Common/QueriesClient";
 import * as DataModels from "../../../Contracts/DataModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { useDialog } from "../Dialog";
 
 const title = "Open Saved Queries";
 
@@ -222,35 +223,42 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                   key: "Delete",
                   text: "Delete query",
                   onClick: async () => {
-                    if (window.confirm("Are you sure you want to delete this query?")) {
-                      const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
-                        dataExplorerArea: Constants.Areas.ContextualPane,
-                        paneTitle: title,
-                      });
-                      try {
-                        await this.props.queriesClient.deleteQuery(query);
-                        TelemetryProcessor.traceSuccess(
-                          Action.DeleteSavedQuery,
-                          {
-                            dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: title,
-                          },
-                          startKey
-                        );
-                      } catch (error) {
-                        TelemetryProcessor.traceFailure(
-                          Action.DeleteSavedQuery,
-                          {
-                            dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: title,
-                            error: getErrorMessage(error),
-                            errorStack: getErrorStack(error),
-                          },
-                          startKey
-                        );
-                      }
-                      await this.fetchSavedQueries(); // get latest state
-                    }
+                    useDialog.getState().showOkCancelModalDialog(
+                      "Confirm delete",
+                      "Are you sure you want to delete this query?",
+                      "Delete",
+                      async () => {
+                        const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
+                          dataExplorerArea: Constants.Areas.ContextualPane,
+                          paneTitle: title,
+                        });
+                        try {
+                          await this.props.queriesClient.deleteQuery(query);
+                          TelemetryProcessor.traceSuccess(
+                            Action.DeleteSavedQuery,
+                            {
+                              dataExplorerArea: Constants.Areas.ContextualPane,
+                              paneTitle: title,
+                            },
+                            startKey
+                          );
+                        } catch (error) {
+                          TelemetryProcessor.traceFailure(
+                            Action.DeleteSavedQuery,
+                            {
+                              dataExplorerArea: Constants.Areas.ContextualPane,
+                              paneTitle: title,
+                              error: getErrorMessage(error),
+                              errorStack: getErrorStack(error),
+                            },
+                            startKey
+                          );
+                        }
+                        await this.fetchSavedQueries(); // get latest state
+                      },
+                      "Cancel",
+                      undefined
+                    );
                   },
                 },
               ],

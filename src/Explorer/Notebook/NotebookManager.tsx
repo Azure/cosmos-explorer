@@ -18,6 +18,7 @@ import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstan
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
 import { getFullName } from "../../Utils/UserUtils";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import { CopyNotebookPane } from "../Panes/CopyNotebookPane/CopyNotebookPane";
 import { GitHubReposPanel } from "../Panes/GitHubReposPanel/GitHubReposPanel";
@@ -172,31 +173,33 @@ export default class NotebookManager {
     if (error.status === HttpStatusCodes.Unauthorized) {
       this.gitHubOAuthService.resetToken();
 
-      this.params.container.showOkCancelModalDialog(
-        undefined,
-        "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
-        "Connect to GitHub",
-        () =>
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Connect to GitHub",
-              <GitHubReposPanel
-                explorer={this.params.container}
-                gitHubClientProp={this.params.container.notebookManager.gitHubClient}
-                junoClientProp={this.junoClient}
-              />
-            ),
-        "Cancel",
-        undefined
-      );
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          undefined,
+          "Cosmos DB cannot access your Github account anymore. Please connect to GitHub again.",
+          "Connect to GitHub",
+          () =>
+            useSidePanel
+              .getState()
+              .openSidePanel(
+                "Connect to GitHub",
+                <GitHubReposPanel
+                  explorer={this.params.container}
+                  gitHubClientProp={this.params.container.notebookManager.gitHubClient}
+                  junoClientProp={this.junoClient}
+                />
+              ),
+          "Cancel",
+          undefined
+        );
     }
   };
 
   private promptForCommitMsg = (title: string, primaryButtonLabel: string) => {
     return new Promise<string>((resolve, reject) => {
       let commitMsg = "Committed from Azure Cosmos DB Notebooks";
-      this.params.container.showOkCancelModalDialog(
+      useDialog.getState().showOkCancelModalDialog(
         title || "Commit",
         undefined,
         primaryButtonLabel || "Commit",
