@@ -49,7 +49,7 @@ const metricsStringValue: Description = {
   },
 };
 
-const CosmosD4s = "Cosmos.D4s";
+const CosmosD4s = "CosmosD4s111";
 const CosmosD8s = "Cosmos.D8s";
 const CosmosD16s = "Cosmos.D16s";
 
@@ -229,7 +229,7 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
 @IsDisplayable()
 @RefreshOptions({ retryIntervalInMs: 20000 })
-export default class GraphDedicatedGateway extends SelfServeBaseClass {
+export default class SqlX extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
     return await refreshDedicatedGatewayProvisioning();
   };
@@ -238,7 +238,7 @@ export default class GraphDedicatedGateway extends SelfServeBaseClass {
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
-    selfServeTrace({ selfServeClassName: GraphDedicatedGateway.name });
+    selfServeTrace({ selfServeClassName: SqlX.name });
 
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
@@ -354,7 +354,7 @@ export default class GraphDedicatedGateway extends SelfServeBaseClass {
 
   @Values({
     description: {
-      textTKey: "DedicatedGatewayDescription",
+      textTKey: "GraphAPIDescription",
       type: DescriptionType.Text,
       link: {
         href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
@@ -367,7 +367,7 @@ export default class GraphDedicatedGateway extends SelfServeBaseClass {
   @OnChange(onEnableDedicatedGatewayChange)
   @Values({
     labelTKey: "DedicatedGateway",
-    trueLabelTKey: "Provisioned",
+    trueLabelTKey: "Provision",
     falseLabelTKey: "Deprovisioned",
   })
   enableDedicatedGateway: boolean;

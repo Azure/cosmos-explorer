@@ -9,7 +9,7 @@ import {
   RegionsResponse,
   GraphDedicatedGatewayServiceResource,
   UpdateDedicatedGatewayRequestParameters,
-} from "./GraphDedicatedGatewayTypes";
+} from "./GraphDedicatedGateway.types";
 
 const apiVersion = "2021-04-01-preview";
 

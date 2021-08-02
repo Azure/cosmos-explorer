@@ -31,7 +31,7 @@ export enum SelfServeType {
   // Add your self serve types here
   example = "example",
   sqlx = "sqlx",
-  graphDedicatedGateway = "graphDedicatedGateway"
+  graphdedicatedgateway = "graphdedicatedgateway",
 }
 
 /**
@@ -86,7 +86,7 @@ export interface DecoratorProperties {
   max?: (() => Promise<number>) | number;
   step?: (() => Promise<number>) | number;
   trueLabelTKey?: (() => Promise<string>) | string;
-  falseLabelTKey?: (() => Promise<string>) | string;s
+  falseLabelTKey?: (() => Promise<string>) | string;
   choices?: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
   uiType?: string;
   errorMessage?: string;
