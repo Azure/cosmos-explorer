@@ -70,50 +70,15 @@ export interface IQueryTableRowsType {
   selectedOperation: string;
   selectedTimestamp: string;
   fieldOptions: IOption[];
-  opertorOptions: IOption[];
+  operatorOptions: IOption[];
   entityTypeOptions: IOption[];
-  opertionOptions: IOption[];
+  operationOptions: IOption[];
   timestampOptions: IOption[];
   id: number;
 }
 
-export const opertionOptions = [
-  { key: "And", text: "And" },
-  { key: "Or", text: "Or" },
-];
-export const opertorOptions = [
-  { key: "=", text: "=" },
-  { key: ">", text: ">" },
-  { key: ">=", text: ">=" },
-  { key: "<", text: "<" },
-  { key: "<=", text: "<=" },
-  { key: "<>", text: "<>" },
-];
-
-export const fieldOptions = [
-  { key: "PartitionKey", text: "PartitionKey" },
-  { key: "RowKey", text: "RowKey" },
-  { key: "Timestamp", text: "Timestamp" },
-  { key: "t3PN", text: "t3PN" },
-];
-
-export const entityTypeOptions = [
-  { key: "String", text: "String" },
-  { key: "Boolean", text: "Boolean" },
-  { key: "Binary", text: "Binary" },
-  { key: "DateTime", text: "DateTime" },
-  { key: "Double", text: "Double" },
-  { key: "Guid", text: "Guid" },
-  { key: "Int32", text: "Int32" },
-  { key: "Int64", text: "Int64" },
-];
-
-export const timestampOptions = [
-  { key: "Last hour", text: "Last hour" },
-  { key: "Last 24 hours", text: "Last 24 hours" },
-  { key: "Last 7 days", text: "Last 7 days" },
-  { key: "Last 31 days", text: "Last 31 days" },
-  { key: "Last 365 days", text: "Last 365 days" },
-  { key: "Current month", text: "Current month" },
-  { key: "Current year", text: "Current year" },
-];
+export const getformattedOptions = (options: Array<string>): IOption[] => {
+  return options.map((option) => {
+    return { key: option, text: option };
+  });
+};

@@ -8,7 +8,7 @@ import {
   IStackTokens,
   Stack,
   TextField,
-  TooltipHost
+  TooltipHost,
 } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import AddIcon from "../../../../images/Add.svg";
@@ -21,8 +21,8 @@ export interface IQueryTableEntityClauseProps {
   entityValuePlaceHolder?: string;
   selectedOperator: string;
   selectedOperation: string;
-  opertorOptions: IOption[];
-  opertationOptions: IOption[];
+  operatorOptions: IOption[];
+  operationOptions: IOption[];
   isQueryTableEntityChecked: boolean;
   selectedField: string;
   fieldOptions: IOption[];
@@ -42,14 +42,14 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
   entityValue,
   entityValuePlaceHolder,
   selectedOperator,
-  opertorOptions,
+  operatorOptions,
   selectedField,
   isQueryTableEntityChecked,
   fieldOptions,
   entityTypeOptions,
   selectedEntityType,
   selectedOperation,
-  opertationOptions,
+  operationOptions,
   isTimeStampSelected,
   selectedTimestamp,
   timestampOptions,
@@ -92,7 +92,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
           onChange={(_event: React.FormEvent<HTMLElement>, selectedOption: IDropdownOption) =>
             onDropdownChange(selectedOption, "selectedOperation")
           }
-          options={opertationOptions}
+          options={operationOptions}
           id="operatorOptionId"
           styles={dropdownStyles}
         />
@@ -120,7 +120,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
           onChange={(_event: React.FormEvent<HTMLElement>, selectedOption: IDropdownOption) =>
             onDropdownChange(selectedOption, "selectedOperator")
           }
-          options={opertorOptions}
+          options={operatorOptions}
           id="operatorOptionId"
           styles={dropdownStyles}
         />
