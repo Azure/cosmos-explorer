@@ -74,7 +74,7 @@ export interface IQueryTableRowsType {
   entityTypeOptions: IOption[];
   opertionOptions: IOption[];
   timestampOptions: IOption[];
-  id: number;
+  id: string;
 }
 
 export const opertionOptions = [

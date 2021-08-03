@@ -8,7 +8,7 @@ import {
   IStackTokens,
   Stack,
   TextField,
-  TooltipHost
+  TooltipHost,
 } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
 import AddIcon from "../../../../images/Add.svg";
@@ -136,7 +136,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
           />
         ) : (
           <TextField
-            id="entityValueId"
+            // id="entityValueId"
             autoFocus
             placeholder={entityValuePlaceHolder}
             value={entityValue}

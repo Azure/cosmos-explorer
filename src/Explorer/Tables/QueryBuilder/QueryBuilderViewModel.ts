@@ -106,14 +106,15 @@ export default class QueryBuilderViewModel {
     });
   }
 
-  public setExample() {
+  public setExample(pk: string, rk: string) {
     var example1 = new QueryClauseViewModel(
       this,
       "",
       "PartitionKey",
       this.edmTypes()[0],
       Constants.Operator.Equal,
-      this.tableEntityListViewModel.items()[0].PartitionKey._,
+      // this.tableEntityListViewModel.items()[0].PartitionKey._,
+      pk,
       false,
       "",
       "",
@@ -127,7 +128,8 @@ export default class QueryBuilderViewModel {
       "RowKey",
       this.edmTypes()[0],
       Constants.Operator.Equal,
-      this.tableEntityListViewModel.items()[0].RowKey._,
+      // this.tableEntityListViewModel.items()[0].RowKey._,
+      rk,
       true,
       "",
       "",
