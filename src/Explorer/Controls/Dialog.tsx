@@ -49,7 +49,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
         showOkCancelModalDialog: state.showOkCancelModalDialog,
         showOkModalDialog: state.showOkModalDialog,
       }),
-      true
+      true // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
     ),
   showOkCancelModalDialog: (
     title: string,
