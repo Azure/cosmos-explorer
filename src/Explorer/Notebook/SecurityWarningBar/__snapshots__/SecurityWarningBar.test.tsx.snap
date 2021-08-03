@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SecurityWarningBar renders if notebook is trusted 1`] = `<Fragment />`;
+
+exports[`SecurityWarningBar renders if notebook is untrusted 1`] = `
+<StyledMessageBar
+  actions={
+    <div>
+      <CustomizedMessageBarButton
+        onClick={[Function]}
+      >
+        Trust Notebook
+      </CustomizedMessageBarButton>
+    </div>
+  }
+  isMultiline={false}
+  messageBarType={5}
+  onDismiss={[Function]}
+>
+  <b>
+    SECURITY WARNING
+  </b>
+    Be careful - this notebook is from an untrusted author. Run code cells at your own risk.
+</StyledMessageBar>
+`;
