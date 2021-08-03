@@ -243,6 +243,10 @@ export function downloadItem(
         const notebook = JSON.parse(response.data) as Notebook;
         removeNotebookViewerLink(notebook, data.newCellId);
 
+        if (!data.isSample) {
+          markNotebookAsUntrusted(notebook);
+        }
+
         await container.importAndOpenContent(data.name, JSON.stringify(notebook));
         logConsoleInfo(`Successfully downloaded ${name} to My Notebooks`);
 
@@ -276,6 +280,30 @@ export function downloadItem(
     "Cancel",
     undefined
   );
+}
+
+export function markNotebookAsUntrusted(notebook: Notebook): void {
+  if (!notebook.metadata) {
+    notebook.metadata = {};
+  }
+
+  const metadata = notebook.metadata as { [name: string]: unknown };
+  if (!metadata.hasOwnProperty("cosmos")) {
+    metadata.cosmos = {};
+  }
+
+  const cosmosMetadata = metadata.cosmos as { [name: string]: unknown };
+  cosmosMetadata.untrusted = true;
+}
+
+export function markNotebookAsTrusted(notebook: Notebook): void {
+  const metadata = notebook.metadata as { [name: string]: unknown };
+  if (metadata?.hasOwnProperty("cosmos")) {
+    const cosmosMetadata = metadata.cosmos as { [name: string]: unknown };
+    if (cosmosMetadata?.hasOwnProperty("untrusted")) {
+      delete cosmosMetadata.untrusted;
+    }
+  }
 }
 
 export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {

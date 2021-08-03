@@ -14,6 +14,7 @@ import * as cdbActions from "../NotebookComponent/actions";
 import loadTransform from "../NotebookComponent/loadTransform";
 import { CdbAppState, SnapshotFragment, SnapshotRequest } from "../NotebookComponent/types";
 import { NotebookUtil } from "../NotebookUtil";
+import SecurityWarningBar from "../SecurityWarningBar/SecurityWarningBar";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import CellCreator from "./decorators/CellCreator";
@@ -110,6 +111,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
           <div className="NotebookRenderer" ref={this.notebookRendererRef}>
             <DndProvider backend={HTML5Backend}>
               <KeyboardShortcuts contentRef={this.props.contentRef}>
+                <SecurityWarningBar contentRef={this.props.contentRef} />
                 <Cells contentRef={this.props.contentRef}>
                   {{
                     code: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) =>
