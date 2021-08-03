@@ -288,22 +288,12 @@ export function markNotebookAsUntrusted(notebook: Notebook): void {
   }
 
   const metadata = notebook.metadata as { [name: string]: unknown };
-  if (!metadata.hasOwnProperty("cosmos")) {
+  if (!metadata["cosmos"]) {
     metadata.cosmos = {};
   }
 
   const cosmosMetadata = metadata.cosmos as { [name: string]: unknown };
   cosmosMetadata.untrusted = true;
-}
-
-export function markNotebookAsTrusted(notebook: Notebook): void {
-  const metadata = notebook.metadata as { [name: string]: unknown };
-  if (metadata?.hasOwnProperty("cosmos")) {
-    const cosmosMetadata = metadata.cosmos as { [name: string]: unknown };
-    if (cosmosMetadata?.hasOwnProperty("untrusted")) {
-      delete cosmosMetadata.untrusted;
-    }
-  }
 }
 
 export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {

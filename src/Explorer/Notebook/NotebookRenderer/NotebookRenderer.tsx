@@ -108,10 +108,10 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     return (
       <>
         <div className="NotebookRendererContainer">
-          <div className="NotebookRenderer" ref={this.notebookRendererRef}>
-            <DndProvider backend={HTML5Backend}>
+          <DndProvider backend={HTML5Backend}>
+            <SecurityWarningBar contentRef={this.props.contentRef} />
+            <div className="NotebookRenderer" ref={this.notebookRendererRef}>
               <KeyboardShortcuts contentRef={this.props.contentRef}>
-                <SecurityWarningBar contentRef={this.props.contentRef} />
                 <Cells contentRef={this.props.contentRef}>
                   {{
                     code: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) =>
@@ -175,9 +175,9 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                 </Cells>
               </KeyboardShortcuts>
               <AzureTheme />
-            </DndProvider>
-          </div>
-          <StatusBar contentRef={this.props.contentRef} />
+            </div>
+            <StatusBar contentRef={this.props.contentRef} />
+          </DndProvider>
         </div>
       </>
     );
