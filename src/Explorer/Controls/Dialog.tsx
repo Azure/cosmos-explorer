@@ -41,7 +41,16 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
   visible: false,
   openDialog: (props: DialogProps) => set(() => ({ visible: true, dialogProps: props })),
   closeDialog: () =>
-    set((state) => ({ visible: false, openDialog: state.openDialog, closeDialog: state.closeDialog }), true),
+    set(
+      (state) => ({
+        visible: false,
+        openDialog: state.openDialog,
+        closeDialog: state.closeDialog,
+        showOkCancelModalDialog: state.showOkCancelModalDialog,
+        showOkModalDialog: state.showOkModalDialog,
+      }),
+      true // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
+    ),
   showOkCancelModalDialog: (
     title: string,
     subText: string,
