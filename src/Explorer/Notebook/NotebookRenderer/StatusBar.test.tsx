@@ -1,6 +1,5 @@
 import { shallow } from "enzyme";
 import React from "react";
-
 import { StatusBar } from "./StatusBar";
 
 describe("StatusBar", () => {
@@ -28,8 +27,8 @@ describe("StatusBar", () => {
         kernelSpecDisplayName: "javascript",
         kernelStatus: "kernelStatus",
       },
-      null,
-      null
+      undefined,
+      undefined
     );
     expect(shouldUpdate).toBe(true);
   });
@@ -47,8 +46,8 @@ describe("StatusBar", () => {
         kernelSpecDisplayName: "python3",
         kernelStatus: "kernelStatus",
       },
-      null,
-      null
+      undefined,
+      undefined
     );
     expect(shouldUpdate).toBe(true);
   });

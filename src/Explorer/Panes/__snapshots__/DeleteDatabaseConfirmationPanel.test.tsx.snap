@@ -2,15 +2,7 @@
 
 exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
 <DeleteDatabaseConfirmationPanel
-  explorer={
-    Object {
-      "refreshAllDatabases": [Function],
-      "tabsManager": TabsManager {
-        "activeTab": [Function],
-        "openedTabs": [Function],
-      },
-    }
-  }
+  refreshDatabases={[Function]}
 >
   <RightPaneForm
     formError=""

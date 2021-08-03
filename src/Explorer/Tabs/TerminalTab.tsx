@@ -8,6 +8,7 @@ import { userContext } from "../../UserContext";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
 import { NotebookTerminalComponent } from "../Controls/Notebook/NotebookTerminalComponent";
 import Explorer from "../Explorer";
+import { useNotebook } from "../Notebook/useNotebook";
 import TabsBase from "./TabsBase";
 
 export interface TerminalTabOptions extends ViewModels.TabOptions {
@@ -54,8 +55,8 @@ export default class TerminalTab extends TabsBase {
     this.notebookTerminalComponentAdapter.parameters = ko.computed<boolean>(() => {
       if (
         this.isTemplateReady() &&
-        this.container.isNotebookEnabled() &&
-        this.container.notebookServerInfo().notebookServerEndpoint
+        useNotebook.getState().isNotebookEnabled &&
+        useNotebook.getState().notebookServerInfo?.notebookServerEndpoint
       ) {
         return true;
       }
@@ -95,7 +96,7 @@ export default class TerminalTab extends TabsBase {
         throw new Error(`Terminal kind: ${options.kind} not supported`);
     }
 
-    const info: DataModels.NotebookWorkspaceConnectionInfo = options.container.notebookServerInfo();
+    const info: DataModels.NotebookWorkspaceConnectionInfo = useNotebook.getState().notebookServerInfo;
     return {
       authToken: info.authToken,
       notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,

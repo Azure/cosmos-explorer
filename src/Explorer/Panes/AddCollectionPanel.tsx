@@ -113,7 +113,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey: "",
+      partitionKey: this.getPartitionKey(),
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
       useHashV2: false,
@@ -412,6 +412,10 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   <Icon iconName="Info" className="panelInfoIcon" />
                 </TooltipHost>
               </Stack>
+
+              <Text variant="small" aria-label="pkDescription">
+                {this.getPartitionKeySubtext()}
+              </Text>
 
               <input
                 type="text"
@@ -805,6 +809,30 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return tooltipText;
+  }
+
+  private getPartitionKey(): string {
+    if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
+      return "";
+    }
+    if (userContext.features.partitionKeyDefault) {
+      return userContext.apiType === "SQL" ? "/id" : "_id";
+    }
+    if (userContext.features.partitionKeyDefault2) {
+      return userContext.apiType === "SQL" ? "/pk" : "pk";
+    }
+    return "";
+  }
+
+  private getPartitionKeySubtext(): string {
+    if (
+      userContext.features.partitionKeyDefault &&
+      (userContext.apiType === "SQL" || userContext.apiType === "Mongo")
+    ) {
+      const subtext = "For small workloads, the item ID is a suitable choice for the partition key.";
+      return subtext;
+    }
+    return "";
   }
 
   private getAnalyticalStorageTooltipContent(): JSX.Element {

@@ -1,17 +1,13 @@
-import _ from "underscore";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
-import TabsBase from "./Tabs/TabsBase";
-import { useDatabases } from "./useDatabases";
+import { useTabs } from "../hooks/useTabs";
 
 export interface SelectedNodeState {
   selectedNode: ViewModels.TreeNode;
   setSelectedNode: (node: ViewModels.TreeNode) => void;
   isDatabaseNodeOrNoneSelected: () => boolean;
-  findSelectedDatabase: () => ViewModels.Database;
   findSelectedCollection: () => ViewModels.Collection;
   isDataNodeSelected: (
-    activeTab: TabsBase,
     databaseId: string,
     collectionId?: string,
     subnodeKinds?: ViewModels.CollectionTabKind[]
@@ -25,30 +21,11 @@ export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) =>
     const selectedNode = get().selectedNode;
     return !selectedNode || selectedNode.nodeKind === "Database";
   },
-  findSelectedDatabase: (): ViewModels.Database => {
-    const selectedNode = get().selectedNode;
-    if (!selectedNode) {
-      return undefined;
-    }
-    if (selectedNode.nodeKind === "Database") {
-      return _.find(
-        useDatabases.getState().databases,
-        (database: ViewModels.Database) => database.id() === selectedNode.id()
-      );
-    }
-
-    if (selectedNode.nodeKind === "Collection") {
-      return selectedNode.database;
-    }
-
-    return selectedNode.collection?.database;
-  },
   findSelectedCollection: (): ViewModels.Collection => {
     const selectedNode = get().selectedNode;
     return (selectedNode.nodeKind === "Collection" ? selectedNode : selectedNode.collection) as ViewModels.Collection;
   },
   isDataNodeSelected: (
-    activeTab: TabsBase,
     databaseId: string,
     collectionId?: string,
     subnodeKinds?: ViewModels.CollectionTabKind[]
@@ -70,6 +47,7 @@ export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) =>
       return true;
     }
 
+    const activeTab = useTabs.getState().activeTab;
     const selectedSubnodeKind = collectionId
       ? (selectedNode as ViewModels.Collection).selectedSubnodeKind()
       : (selectedNode as ViewModels.Database).selectedSubnodeKind();

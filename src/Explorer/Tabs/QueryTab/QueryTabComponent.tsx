@@ -22,14 +22,16 @@ import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import * as QueryUtils from "../../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import { EditorReact } from "../../Controls/Editor/EditorReact";
 import Explorer from "../../Explorer";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
+import { BrowseQueriesPane } from "../../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { SaveQueryPane } from "../../Panes/SaveQueryPane/SaveQueryPane";
 import TabsBase from "../TabsBase";
-import { TabsManager } from "../TabsManager";
 import "./QueryTabComponent.less";
 
 enum ToggleState {
@@ -65,7 +67,6 @@ export interface IQueryTabComponentProps {
   partitionKey: DataModels.PartitionKey;
   container: Explorer;
   activeTab?: TabsBase;
-  tabManager?: TabsManager;
   onTabAccessor: (instance: ITabAccessor) => void;
   isPreferredApiMongoDB?: boolean;
   monacoEditorSetting?: string;
@@ -391,13 +392,13 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   };
 
   public onSaveQueryClick = (): void => {
-    this.props.collection && this.props.collection.container && this.props.collection.container.openSaveQueryPanel();
+    useSidePanel.getState().openSidePanel("Save Query", <SaveQueryPane explorer={this.props.collection.container} />);
   };
 
   public onSavedQueriesClick = (): void => {
-    this.props.collection &&
-      this.props.collection.container &&
-      this.props.collection.container.openBrowseQueriesPanel();
+    useSidePanel
+      .getState()
+      .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.props.collection.container} />);
   };
 
   public async onFetchNextPageClick(): Promise<void> {

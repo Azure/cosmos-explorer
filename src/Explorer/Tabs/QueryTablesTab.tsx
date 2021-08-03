@@ -137,13 +137,14 @@ export default class QueryTablesTab extends TabsBase {
     useSidePanel
       .getState()
       .openSidePanel(
-        "Add Table Entity",
+        "Add Table Row",
         <AddTableEntityPanel
           tableDataClient={this.tableDataClient}
           queryTablesTab={this}
           tableEntityListViewModel={this.tableEntityListViewModel()}
           cassandraApiClient={new CassandraAPIDataClient()}
-        />
+        />,
+        "700px"
       );
   };
 
@@ -157,7 +158,8 @@ export default class QueryTablesTab extends TabsBase {
           queryTablesTab={this}
           tableEntityListViewModel={this.tableEntityListViewModel()}
           cassandraApiClient={new CassandraAPIDataClient()}
-        />
+        />,
+        "700px"
       );
   };
 
