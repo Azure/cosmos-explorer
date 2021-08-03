@@ -39,21 +39,18 @@ import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataC
 // import NewQueryTablesTab from "./QueryTablesTab";
 import { QueryTableEntityClause } from "./QueryTableEntityClause";
 import {
-  entityTypeOptions,
-  fieldOptions,
+  getformattedOptions,
   IDocument,
   IQueryTableRowsType,
   IQueryTablesTabComponentProps,
   IQueryTablesTabComponentStates,
-  opertionOptions,
-  opertorOptions,
-  timestampOptions,
 } from "./QueryTableTabUtils";
 export interface Button {
   visible: boolean;
   enabled: boolean;
   isSelected?: boolean;
 }
+
 // export interface IDocument {
 //   partitionKey: string;
 //   rowKey: string;
@@ -164,9 +161,28 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.tableCommands = new TableCommands(this.container);
     this.tableDataClient = this.container.tableDataClient;
     this.tableEntityListViewModel2(new TableEntityListViewModel(this.tableCommands, props.queryTablesTab));
-    this.tableEntityListViewModel1 = new TableEntityListViewModel(this.tableCommands, props.queryTablesTab);
+    // const sampleQuerySubscription = this.tableEntityListViewModel2().items.subscribe(() => {
+    //   if (this.tableEntityListViewModel2().items().length > 0 && userContext.apiType === "Tables") {
+    //     // this.queryViewModel().queryBuilderViewModel().setExample();
+    //     console.log(
+    //       "🚀 ~ file: QueryTablesTab.tsx ~ line 55 ~ QueryTablesTab ~ sampleQuerySubscription ~ this.queryViewModel().queryBuilderViewModel().setExample()"
+    //       // this.queryViewModel().queryBuilderViewModel().setExample()
+    //     );
+    //   }
+    //   sampleQuerySubscription.dispose();
+    // });
+
+    const tableEntityListViewModel = new TableEntityListViewModel(this.tableCommands, props.queryTablesTab);
+    // this._queryViewModel = new QueryViewModel(this.props.queryTablesTab);
+    const queryBuilderViewModel = new QueryViewModel(this.props.queryTablesTab).queryBuilderViewModel();
+
+    const entityTypeOptions = queryBuilderViewModel.edmTypes();
+    const timestampOptions = queryBuilderViewModel.timeOptions();
+    const operatorsOptions = queryBuilderViewModel.operators();
+    const operationOptions = queryBuilderViewModel.clauseRules();
+
     this.state = {
-      tableEntityListViewModel: new TableEntityListViewModel(this.tableCommands, props.queryTablesTab),
+      tableEntityListViewModel,
       queryViewModel: new QueryViewModel(this.props.queryTablesTab),
       queryText: "PartitionKey eq 'partionKey1'",
       selectedQueryText: "",
@@ -216,21 +232,22 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         {
           isQueryTableEntityChecked: false,
           selectedOperator: "=",
-          opertorOptions,
-          selectedField: "PartitionKey",
-          fieldOptions,
           id: 1,
-          entityTypeOptions,
-          selectedEntityType: "String",
-          opertionOptions,
+          selectedField: "PartitionKey",
           selectedOperation: "And",
           entityValue: "",
+          selectedEntityType: "String",
           isTimeStampSelected: false,
-          timestampOptions,
           selectedTimestamp: "Last hour",
+          operatorOptions: getformattedOptions(operatorsOptions),
+          fieldOptions: getformattedOptions(tableEntityListViewModel.headers),
+          entityTypeOptions: getformattedOptions(entityTypeOptions),
+          operationOptions: getformattedOptions(operationOptions),
+          timestampOptions: getformattedOptions(timestampOptions),
         },
       ],
     };
+
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
     console.log(
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 24 ~ QueryTablesTabComponent ~ constructor ~ props",
@@ -280,14 +297,15 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   /****************** Constructor Ends */
 
   componentDidMount(): void {
-    this.state.tableEntityListViewModel.renderNextPageAndupdateCache();
+    const { tableEntityListViewModel, queryTableRows } = this.state;
+    tableEntityListViewModel.renderNextPageAndupdateCache();
 
     setTimeout(() => {
       // console.log("items > ", this.state.tableEntityListViewModel.cache.data);
       // console.log("items > ", this.state.tableEntityListViewModel.items());
       // console.log("items1 > ", this.state.tableEntityListViewModel.headers);
       this.columns = [];
-      this.state.tableEntityListViewModel.headers.map((header) => {
+      tableEntityListViewModel.headers.map((header) => {
         this.columns.push({
           key: header,
           name: header,
@@ -302,11 +320,16 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           sortDescendingAriaLabel: "Sorted Z to A",
         });
       });
+
+      const queryTableRowsClone = [...queryTableRows];
+      queryTableRowsClone[0].fieldOptions = getformattedOptions(tableEntityListViewModel.headers);
       this.setState({
         columns: this.columns,
         operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
+        queryTableRows: queryTableRowsClone,
         // isValue:
       });
+
       setTimeout(() => {
         // console.log(
         //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 248 ~ QueryTablesTabComponent ~ setTimeout ~ columns",
@@ -320,17 +343,17 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           id: clause._id,
           isQueryTableEntityChecked: false,
           selectedOperator: clause.operator(),
-          opertorOptions,
           selectedField: clause.field(),
-          fieldOptions,
-          entityTypeOptions,
           selectedEntityType: clause.type(),
-          opertionOptions,
           selectedOperation: clause.and_or(),
           entityValue: clause.value(),
           isTimeStampSelected: false,
-          timestampOptions,
           selectedTimestamp: "Last hour",
+          operatorOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().operators()),
+          fieldOptions: getformattedOptions(tableEntityListViewModel.headers),
+          entityTypeOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().edmTypes()),
+          operationOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().clauseRules()),
+          timestampOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().timeOptions()),
         });
         console.log(
           "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 336 ~ QueryTablesTabComponent ~ this.state.queryViewModel.queryBuilderViewModel ~ clause._id",
@@ -347,8 +370,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         items: this.allItems,
         queryTableRows: this.allQueryTableRows,
       });
-      // this.state.queryViewModel.queryBuilderViewModel().setExample();
-    }, 5000);
+    }, 7000);
   }
 
   // public async test(): Promise<void> {
@@ -639,12 +661,15 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     cloneQueryTableRows[index][selectedOptionType] = selectedOption.text;
-    const { text } = selectedOption;
-    if (text === "DateTime" || text === "Timestamp") {
-      cloneQueryTableRows[index].isTimeStampSelected = true;
-      cloneQueryTableRows[index].selectedEntityType = "DateTime";
-    } else if (selectedOptionType !== "selectedTimestamp") {
-      cloneQueryTableRows[index].isTimeStampSelected = false;
+    if (selectedOptionType !== "selectedOperation" && selectedOptionType !== "selectedOperator") {
+      cloneQueryTableRows[index].selectedEntityType = "String";
+      const { text } = selectedOption;
+      if (text === "DateTime" || text === "Timestamp") {
+        cloneQueryTableRows[index].isTimeStampSelected = true;
+        cloneQueryTableRows[index].selectedEntityType = "DateTime";
+      } else if (selectedOptionType !== "selectedTimestamp") {
+        cloneQueryTableRows[index].isTimeStampSelected = false;
+      }
     }
     this.setState({ queryTableRows: cloneQueryTableRows });
   };
@@ -662,18 +687,18 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     cloneQueryTableRows.splice(cloneQueryTableRows.length, 0, {
       isQueryTableEntityChecked: false,
       selectedOperator: "=",
-      opertorOptions,
+      operatorOptions: queryTableRows[0].operatorOptions,
       // id: cloneQueryTableRows.length + 1,
       id: "newRow",
       selectedField: "PartitionKey",
-      fieldOptions,
-      entityTypeOptions,
+      fieldOptions: queryTableRows[0].fieldOptions,
+      entityTypeOptions: queryTableRows[0].entityTypeOptions,
       selectedEntityType: "String",
-      opertionOptions,
+      operationOptions: queryTableRows[0].operationOptions,
       selectedOperation: "And",
       entityValue: "",
       isTimeStampSelected: false,
-      timestampOptions,
+      timestampOptions: queryTableRows[0].timestampOptions,
       selectedTimestamp: "Last hour",
     });
     this.setState({ queryTableRows: cloneQueryTableRows });
@@ -762,14 +787,14 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                       selectedOperator={queryTableRow.selectedOperator}
                       selectedField={queryTableRow.selectedField}
                       selectedOperation={queryTableRow.selectedOperation}
-                      opertationOptions={queryTableRow.opertionOptions}
+                      operationOptions={queryTableRow.operationOptions}
                       entityValue={queryTableRow.entityValue}
                       selectedEntityType={queryTableRow.selectedEntityType}
                       entityTypeOptions={queryTableRow.entityTypeOptions}
                       fieldOptions={queryTableRow.fieldOptions}
                       selectedTimestamp={queryTableRow.selectedTimestamp}
                       timestampOptions={queryTableRow.timestampOptions}
-                      opertorOptions={queryTableRow.opertorOptions}
+                      operatorOptions={queryTableRow.operatorOptions}
                       isTimeStampSelected={queryTableRow.isTimeStampSelected}
                       onAddNewClause={this.onAddNewClause}
                       onDeleteClause={() => this.onDeleteClause(index)}
