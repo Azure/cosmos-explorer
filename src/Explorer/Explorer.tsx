@@ -28,8 +28,9 @@ import {
   get as getWorkspace,
   listByDatabaseAccount,
   listConnectionInfo,
-  start,
+  start
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
+import { decryptJWTToken } from "../Utils/AuthorizationUtils";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -85,6 +86,12 @@ export default class Explorer {
   // Notebooks
   public notebookManager?: NotebookManager;
 
+  public conversationToken: ko.Observable<string>;
+  public userToken: ko.Observable<string>;
+  public subId: ko.Observable<string>;
+  public rg: ko.Observable<string>;
+  public accName: ko.Observable<string>;
+
   private _isInitializingNotebooks: boolean;
   private notebookToImport: {
     name: string;
@@ -104,6 +111,10 @@ export default class Explorer {
     );
 
     this.queriesClient = new QueriesClient(this);
+
+    this.conversationToken = ko.observable<string>();
+
+    this.generateConversationToken();
 
     useSelectedNode.subscribe(() => {
       // Make sure switching tabs restores tabs display
@@ -390,6 +401,52 @@ export default class Explorer {
       onSecondaryButtonClick: () => useDialog.getState().closeDialog(),
     };
     useDialog.getState().openDialog(resetConfirmationDialogProps);
+  }
+
+  private getUserName() {
+    const accessToken = userContext?.authorizationToken;
+    if (!accessToken) {
+      return "Cosmos DB User";
+    }
+
+    let name;
+    try {
+      const tokenPayload = decryptJWTToken(accessToken);
+      if (tokenPayload && tokenPayload.hasOwnProperty("name")) {
+        name = tokenPayload.name;
+      }
+    } catch (error) {
+      // ignore
+    } finally {
+      return name;
+    }
+  }
+
+  private async generateConversationToken() {
+    const response = await fetch("https://directline.botframework.com/v3/directline/tokens/generate", {
+      method: "POST",
+      headers: {
+        [Constants.HttpHeaders.authorization]: "Bearer BSjLmJJHZRA.PxahjJGCNOKl7q9tiodWyVcqJOIzG894vAAqCme639o",
+        Accept: "application/json",
+        [Constants.HttpHeaders.contentType]: "application/json"
+      },
+      body: JSON.stringify({
+        "user": {
+          "id": `dl_${_.uniqueId()}`,
+          "name": this.getUserName()
+        }
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(await response.json());
+    }
+
+    const tokenResponse: { conversationId: string; token: string; expires_in: number } = await response.json();
+    this.conversationToken(tokenResponse?.token);
+    if (tokenResponse?.expires_in) {
+      setTimeout(() => this.generateConversationToken(), (tokenResponse?.expires_in - 1000) * 1000);
+    }
   }
 
   private async _containsDefaultNotebookWorkspace(databaseAccount: DataModels.DatabaseAccount): Promise<boolean> {
