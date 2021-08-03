@@ -41,7 +41,16 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
   visible: false,
   openDialog: (props: DialogProps) => set(() => ({ visible: true, dialogProps: props })),
   closeDialog: () =>
-    set((state) => ({ visible: false, openDialog: state.openDialog, closeDialog: state.closeDialog }), true),
+    set(
+      (state) => ({
+        visible: false,
+        openDialog: state.openDialog,
+        closeDialog: state.closeDialog,
+        showOkCancelModalDialog: state.showOkCancelModalDialog,
+        showOkModalDialog: state.showOkModalDialog,
+      }),
+      true
+    ),
   showOkCancelModalDialog: (
     title: string,
     subText: string,
