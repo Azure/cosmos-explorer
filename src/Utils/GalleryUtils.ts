@@ -282,18 +282,9 @@ export function downloadItem(
   );
 }
 
-export function markNotebookAsUntrusted(notebook: Notebook): void {
-  if (!notebook.metadata) {
-    notebook.metadata = {};
-  }
-
+function markNotebookAsUntrusted(notebook: Notebook): void {
   const metadata = notebook.metadata as { [name: string]: unknown };
-  if (!metadata["cosmos"]) {
-    metadata.cosmos = {};
-  }
-
-  const cosmosMetadata = metadata.cosmos as { [name: string]: unknown };
-  cosmosMetadata.untrusted = true;
+  metadata.untrusted = true;
 }
 
 export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {

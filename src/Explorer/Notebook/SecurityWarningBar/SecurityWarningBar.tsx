@@ -73,7 +73,7 @@ const makeMapStateToProps = (state: AppState, initialProps: InitialProps) => {
     const content = selectors.content(state, { contentRef });
     if (content?.type === "notebook") {
       const metadata = selectors.notebook.metadata(content.model);
-      isNotebookUntrusted = metadata.getIn(["cosmos", "untrusted"]) as boolean;
+      isNotebookUntrusted = metadata.getIn(["untrusted"]) as boolean;
     }
 
     return {
@@ -88,10 +88,9 @@ const makeMapDispatchToProps = () => {
     return {
       markNotebookAsTrusted: (contentRef: string) => {
         return dispatch(
-          actions.overwriteMetadataField({
+          actions.deleteMetadataField({
             contentRef,
-            field: "cosmos",
-            value: {},
+            field: "untrusted",
           })
         );
       },
