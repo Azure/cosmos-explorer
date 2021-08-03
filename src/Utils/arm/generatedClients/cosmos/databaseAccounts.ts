@@ -35,7 +35,6 @@ export async function update(
     method: "PATCH",
     apiVersion,
     body,
-    contentType: "application/json",
   });
 }
 

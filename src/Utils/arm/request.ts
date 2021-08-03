@@ -73,7 +73,7 @@ export async function armRequestWithoutPolling<T>({
     method,
     headers: {
       Authorization: userContext.authorizationToken,
-      [HttpHeaders.contentType]: contentType || "text/plain",
+      [HttpHeaders.contentType]: contentType || "application/json",
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
