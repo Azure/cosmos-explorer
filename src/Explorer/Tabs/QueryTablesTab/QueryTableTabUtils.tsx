@@ -58,6 +58,8 @@ export interface IQueryTablesTabComponentStates {
   operators: string[];
   selectMessage: string;
   queryTableRows: IQueryTableRowsType[];
+  entities: Entities.ITableEntity[];
+  headers: string[];
 }
 
 export interface IQueryTableRowsType {

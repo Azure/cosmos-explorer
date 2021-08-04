@@ -49,10 +49,6 @@ export default class QueryViewModel {
     this.queryTablesTab = queryTablesTab;
     this.id = `queryViewModel${this.queryTablesTab.tabId}`;
     this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel;
-    console.log(
-      "🚀 ~ file: QueryViewModel.tsx ~ line 52 ~ QueryViewModel ~ constructor ~ this._tableEntityListViewModel",
-      this._tableEntityListViewModel
-    );
 
     this.queryTextIsReadOnly = ko.computed<boolean>(() => {
       return userContext.apiType !== "Cassandra";
@@ -100,7 +96,6 @@ export default class QueryViewModel {
   };
 
   public selectEditor = (): void => {
-    console.log("🚀 ~ file: QueryViewModel.tsx ~ line 99 ~ QueryViewModel ~ //constructor ~ selectEditor");
     this.setFilter();
     if (!this.isEditorActive()) {
       this.unchangedText(this.queryText());

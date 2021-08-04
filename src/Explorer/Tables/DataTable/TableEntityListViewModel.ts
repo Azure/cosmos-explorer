@@ -433,10 +433,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             userContext.apiType === "Cassandra"
           );
           var newHeaders: string[] = _.difference(selectedHeadersUnion, this.headers);
-          console.log(
-            "🚀 ~ file: TableEntityListViewModel.ts ~ line 435 ~ TableEntityListViewModel ~ .then ~ newHeaders",
-            newHeaders
-          );
           if (newHeaders.length > 0) {
             // Any new columns found will be added into headers array, which will trigger a re-render of the DataTable.
             // So there is no need to call it here.
@@ -455,10 +451,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
       })
       .catch((error: any) => {
-        console.log(
-          "🚀 ~ file: TableEntityListViewModel.ts ~ line 452 ~ TableEntityListViewModel ~ //constructor ~ error",
-          error
-        );
         const parsedErrors = parseError(error);
         var errors = parsedErrors.map((error) => {
           return <ViewModels.QueryError>{
@@ -572,10 +564,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           } else {
             // Create cache.
             this.cache.data = entities;
-            console.log(
-              "🚀 ~ file: TableEntityListViewModel.ts ~ line 569 ~ TableEntityListViewModel ~ .then ~ this.cache.data",
-              this.cache.data
-            );
           }
 
           this.cache.tableQuery = tableQuery;
