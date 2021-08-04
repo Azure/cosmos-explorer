@@ -304,11 +304,11 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   /****************** Constructor Ends */
 
   componentDidMount(): void {
-    this.loadEntities();
+    this.loadEntities(true);
+
     // setTimeout(() => {
     //   this.loadFilterExample();
-    //   // this.setDefaultItemSelection();
-    // }, 7000);
+    // }, 1000);
   }
 
   public createSelection = (): Selection => {
@@ -322,24 +322,33 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public setDefaultItemSelection(): void {
-    const newSelection = this.createSelection();
-    const items: any = this.state.items;
-
-    newSelection.setItems(items);
-    for (let i = 1; i <= 3; i++) {
-      newSelection.setKeySelected(`${i}`, true, false);
-      console.log(" yooo > ", newSelection.setKeySelected(`${i}`, true, false));
-    }
-    this.setState({
-      selection: newSelection,
-      // selectedItems: this.onItemsSelectionChanged(),
-    });
+    // this.setState({
+    //   selectedItems: this.state.entities[0]
+    // })
     console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 342 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selection",
-      this.state.selection,
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 328 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selectedItems",
+      this.state.selectedItems,
       ", ",
-      this.state.selectedItems
+      this.state.entities[0]
     );
+    // const newSelection = this.createSelection();
+    // const items: any = this.state.items;
+
+    // newSelection.setItems(items);
+    // for (let i = 1; i <= 3; i++) {
+    //   newSelection.setKeySelected(`${i}`, true, false);
+    //   console.log(" yooo > ", newSelection.setKeySelected(`${i}`, true, false));
+    // }
+    // this.setState({
+    //   selection: newSelection,
+    //   // selectedItems: this.onItemsSelectionChanged(),
+    // });
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 342 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selection",
+    //   this.state.selection,
+    //   ", ",
+    //   this.state.selectedItems
+    // );
   }
 
   //NOT USED. Backup only
@@ -447,12 +456,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   }
 
   private onItemsSelectionChanged = (): Entities.ITableEntity[] => {
-    // console.log(
-    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 280 ~ QueryTablesTabComponent ~ onItemsSelectionChanged",
-    //   Object.values(this.selection.getSelection()[0])[2],
-    //   ", ",
-    //   this.selection.getSelection()[0]["Timestamp"]
-    // );
     console.log(
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 338 ~ QueryTablesTabComponent ~ this.selection.getSelection().length",
       this.state.selection.getSelection().length,
@@ -461,14 +464,14 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     );
     let selectedItems: Entities.ITableEntity[];
     if (this.state.selection.getSelection().length > 0) {
-      selectedItems = this.state.tableEntityListViewModel
-        .items()
-        .filter((item) => item["Timestamp"]._ === Object.values(this.state.selection.getSelection()[0])[2]);
+      selectedItems = this.state.entities.filter(
+        (item) => item["Timestamp"]._ === Object.values(this.state.selection.getSelection()[0])[2]
+      );
       // console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 293 ~ QueryTablesTabComponent ~ selectedItems", selectedItems);
 
       this.setState({
         // selectionCount: this._selection.getSelectedCount(),
-        selectedItems: selectedItems,
+        selectedItems,
         rowSelected: true,
       });
     }
@@ -476,7 +479,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public loadFilterExample(): void {
-    const { tableEntityListViewModel, queryTableRows, headers, entities } = this.state;
+    const { queryTableRows, headers, entities } = this.state;
     console.log(
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 480 ~ QueryTablesTabComponent ~ loadFilterExample ~ this.state",
       this.state.headers,
@@ -536,9 +539,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
   }
 
-  public async loadEntities(): Promise<void> {
-    // const { tableEntityListViewModel } = this.state;
-    // tableEntityListViewModel.renderNextPageAndupdateCache();
+  public async loadEntities(isInitialLoad: boolean): Promise<void> {
+    const { tableEntityListViewModel } = this.state;
+    tableEntityListViewModel.renderNextPageAndupdateCache();
 
     // setTimeout(() => {
     // console.log(
@@ -580,8 +583,15 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         originalItems: documentItems,
         queryText: this.state.queryViewModel.queryText(),
       },
-      () => this.loadFilterExample()
+      () => {
+        if (isInitialLoad) {
+          this.loadFilterExample();
+          this.setDefaultItemSelection();
+        }
+      }
     );
+
+    //If
   }
 
   private getFormattedHeaders = (entities: Entities.ITableEntity[]): string[] => {
@@ -667,7 +677,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 423 ~ QueryTablesTabComponent ~ reloadEntities ~ reloadEntities"
     );
     // this.componentDidMount();
-    this.loadEntities();
+    this.loadEntities(false);
     // console.log(
     //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 349 ~ QueryTablesTabComponent ~ addEntity ~ addedEntity",
     //   addedEntity,
@@ -1061,7 +1071,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
     const { queryTableRows } = this.state;
-
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 328 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selectedItems",
+      this.state.selectedItems,
+      ", ",
+      [this.state.items[0]]
+    );
     return (
       <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
         <div className="query-builder">
