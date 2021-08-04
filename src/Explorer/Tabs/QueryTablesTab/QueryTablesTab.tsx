@@ -33,7 +33,6 @@ class NewQueryTablesTab extends TabsBase {
       tabsBaseInstance: this,
       queryTablesTab: this,
     };
-    console.log("🚀 ~ file: QueryTablesTab.tsx ~ line 13 ~ NewQueryTablesTab ~ constructor ~ props", props);
   }
   public render(): JSX.Element {
     return <QueryTablesTabComponent {...this.iQueryTablesTabCompProps} />;

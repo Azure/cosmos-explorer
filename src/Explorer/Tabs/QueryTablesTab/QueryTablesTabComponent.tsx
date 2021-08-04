@@ -1,3 +1,4 @@
+import { FeedOptions } from "@azure/cosmos";
 import {
   DetailsList,
   DetailsListLayoutMode,
@@ -9,6 +10,7 @@ import {
 } from "@fluentui/react";
 import * as ko from "knockout";
 import React, { Component } from "react";
+import * as _ from "underscore";
 import QueryInformation from "../../../../images//QueryBuilder/QueryInformation_16x.png";
 import AddProperty from "../../../../images/Add-property.svg";
 import AddEntityIcon from "../../../../images/AddEntity.svg";
@@ -22,6 +24,9 @@ import QueryTextIcon from "../../../../images/Query-Text.svg";
 import StatusWraning from "../../../../images/QueryBuilder/StatusWarning_16x.png";
 import TriangleDown from "../../../../images/Triangle-down.svg";
 import TriangleRight from "../../../../images/Triangle-right.svg";
+import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
+import { handleError } from "../../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../../Common/HeadersUtility";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
@@ -30,11 +35,13 @@ import Explorer from "../../Explorer";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { AddTableEntityPanel } from "../../Panes/Tables/AddTableEntityPanel";
 import { EditTableEntityPanel } from "../../Panes/Tables/EditTableEntityPanel";
+import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableCommands from "../../Tables/DataTable/TableCommands";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
 import QueryViewModel from "../../Tables/QueryBuilder/QueryViewModel";
 import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataClient";
+import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 // import TabsBase from "../TabsBase";
 // import NewQueryTablesTab from "./QueryTablesTab";
 import { QueryTableEntityClause } from "./QueryTableEntityClause";
@@ -219,6 +226,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       selectMessage: "",
       rowSelected: false,
       selection: this.createSelection(),
+      entities: [],
+      headers: [],
       queryTableRows: [
         {
           isQueryTableEntityChecked: false,
@@ -247,22 +256,22 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     };
 
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 24 ~ QueryTablesTabComponent ~ constructor ~ props",
-      props
-    );
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 85 ~ QueryTablesTabComponent ~ constructor ~ this.state",
-      this.state,
-      ", ",
-      this.state.queryViewModel.queryBuilderViewModel(),
-      ", ",
-      this.state.queryViewModel.queryBuilderViewModel().clauseArray(),
-      ", ",
-      this.state.tableEntityListViewModel.items(),
-      ", tableEntityList > ",
-      this.state.tableEntityListViewModel
-    );
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 24 ~ QueryTablesTabComponent ~ constructor ~ props",
+    //   props
+    // );
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 85 ~ QueryTablesTabComponent ~ constructor ~ this.state",
+    //   this.state,
+    //   ", ",
+    //   this.state.queryViewModel.queryBuilderViewModel(),
+    //   ", ",
+    //   this.state.queryViewModel.queryBuilderViewModel().clauseArray(),
+    //   ", ",
+    //   this.state.tableEntityListViewModel.items(),
+    //   ", tableEntityList > ",
+    //   this.state.tableEntityListViewModel
+    // );
     this.andLabel = this.state.queryViewModel.queryBuilderViewModel().andLabel;
     this.actionLabel = this.state.queryViewModel.queryBuilderViewModel().actionLabel;
     this.fieldLabel = this.state.queryViewModel.queryBuilderViewModel().fieldLabel;
@@ -296,10 +305,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
 
   componentDidMount(): void {
     this.loadEntities();
-    setTimeout(() => {
-      this.loadFilterExample();
-      // this.setDefaultItemSelection();
-    }, 7000);
+    // setTimeout(() => {
+    //   this.loadFilterExample();
+    //   // this.setDefaultItemSelection();
+    // }, 7000);
   }
 
   public createSelection = (): Selection => {
@@ -467,9 +476,17 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public loadFilterExample(): void {
-    const { tableEntityListViewModel, queryTableRows } = this.state;
+    const { tableEntityListViewModel, queryTableRows, headers, entities } = this.state;
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 480 ~ QueryTablesTabComponent ~ loadFilterExample ~ this.state",
+      this.state.headers,
+      "Enitities > ",
+      this.state.entities,
+      ", operation > ",
+      this.state.queryViewModel.queryBuilderViewModel().operators()
+    );
     const queryTableRowsClone = [...queryTableRows];
-    queryTableRowsClone[0].fieldOptions = getformattedOptions(tableEntityListViewModel.headers);
+    queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
     this.setState({
       operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
       queryTableRows: queryTableRowsClone,
@@ -477,7 +494,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
 
     this.state.queryViewModel
       .queryBuilderViewModel()
-      .setExample(tableEntityListViewModel.items()[0].PartitionKey._, tableEntityListViewModel.items()[0].RowKey._);
+      .setExample(entities.length && entities[0].PartitionKey._, entities.length && entities[0].RowKey._);
+
     this.state.queryViewModel.queryBuilderViewModel().queryClauses.children.map((clause, index) => {
       this.allQueryTableRows.push({
         id: clause._id,
@@ -490,7 +508,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         isTimeStampSelected: false,
         selectedTimestamp: "Last hour",
         operatorOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().operators()),
-        fieldOptions: getformattedOptions(tableEntityListViewModel.headers),
+        fieldOptions: getformattedOptions(headers),
         entityTypeOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().edmTypes()),
         operationOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().clauseRules()),
         timestampOptions: getformattedOptions(this.state.queryViewModel.queryBuilderViewModel().timeOptions()),
@@ -518,48 +536,88 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
   }
 
-  public loadEntities(): void {
-    const { tableEntityListViewModel } = this.state;
-    tableEntityListViewModel.renderNextPageAndupdateCache();
+  public async loadEntities(): Promise<void> {
+    // const { tableEntityListViewModel } = this.state;
+    // tableEntityListViewModel.renderNextPageAndupdateCache();
 
-    setTimeout(() => {
-      console.log(
-        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 296 ~ QueryTablesTabComponent ~ componentDidMount ~ componentDidMount",
-        this.state.tableEntityListViewModel.items()
-      );
-
-      this.columns = [];
-      tableEntityListViewModel.headers.map((header) => {
-        this.columns.push({
-          key: header,
-          name: header,
-          minWidth: 100,
-          maxWidth: 200,
-          data: "string",
-          fieldName: header,
-          isResizable: true,
-          isSorted: true,
-          isSortedDescending: false,
-          sortAscendingAriaLabel: "Sorted A to Z",
-          sortDescendingAriaLabel: "Sorted Z to A",
-        });
+    // setTimeout(() => {
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 296 ~ QueryTablesTabComponent ~ componentDidMount ~ componentDidMount",
+    //   this.state.tableEntityListViewModel.items()
+    // );
+    // const { queryTableRows } = this.state;
+    const { collection } = this.props;
+    const documents = await this.getDocuments(collection, "Select * from c");
+    const headers = this.getFormattedHeaders(documents.Results);
+    this.columns = [];
+    headers.map((header) => {
+      this.columns.push({
+        key: header,
+        name: header,
+        minWidth: 100,
+        maxWidth: 200,
+        data: "string",
+        fieldName: header,
+        isResizable: true,
+        isSorted: true,
+        isSortedDescending: false,
+        sortAscendingAriaLabel: "Sorted A to Z",
+        sortDescendingAriaLabel: "Sorted Z to A",
       });
+    });
 
-      this.setState({
+    const documentItems = this.generateDetailsList(documents.Results);
+    // const queryTableRowsClone = [...queryTableRows];
+    // queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
+    this.setState(
+      {
         columns: this.columns,
-      });
-
-      this.allItems = this.generateDetailsList();
-
-      this.setState({
-        items: this.allItems,
-        originalItems: this.allItems,
+        headers,
+        operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
+        // queryTableRows: queryTableRowsClone,
+        items: documentItems,
+        entities: documents.Results,
+        originalItems: documentItems,
         queryText: this.state.queryViewModel.queryText(),
-      });
-    }, 7000);
+      },
+      () => this.loadFilterExample()
+    );
   }
 
-  public generateDetailsList(): IDocument[] {
+  private getFormattedHeaders = (entities: Entities.ITableEntity[]): string[] => {
+    const selectedHeadersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
+      entities,
+      userContext.apiType === "Cassandra"
+    );
+    const newHeaders: string[] = _.difference(selectedHeadersUnion, []);
+    return newHeaders;
+  };
+
+  public async getDocuments(
+    collection: ViewModels.CollectionBase,
+    query: string
+  ): Promise<Entities.IListTableEntitiesResult> {
+    try {
+      const options = {
+        enableCrossPartitionQuery: HeadersUtility.shouldEnableCrossPartitionKey(),
+      } as FeedOptions;
+      const iterator = queryDocuments(collection.databaseId, collection.id(), query, options);
+      const response = await iterator.fetchNext();
+      const documents = response?.resources;
+      const entities = TableEntityProcessor.convertDocumentsToEntities(documents);
+
+      return {
+        Results: entities,
+        ContinuationToken: iterator.hasMoreResults(),
+        iterator: iterator,
+      };
+    } catch (error) {
+      handleError(error, "TablesAPIDataClient/queryDocuments", "Query documents failed");
+      throw error;
+    }
+  }
+
+  public generateDetailsList(documents: Entities.ITableEntity[]): IDocument[] {
     // const items: IDocument[] = [];
     //eslint-disable-next-line
     const items: any[] = [];
@@ -570,9 +628,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
 
     console.log(
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 582 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ this.state.tableEntityListViewModel.items()",
-      this.state.tableEntityListViewModel.items()
+      documents
     );
-    this.state.tableEntityListViewModel.items().map((item) => {
+    documents.map((item) => {
       // console.log("generateDetailsList > ", item["PartitionKey"]._);
       this.columns.map((col) => {
         // console.log(
@@ -848,48 +906,46 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
 
   //NOT USED. Backup only
   public originalGenerateDetailsList(): IDocument[] {
-    // const items: IDocument[] = [];
-    //eslint-disable-next-line
-    const items: any[] = [];
-    //eslint-disable-next-line
-    let obj: any = undefined;
-    // const newColumns = [];
-    // const compare = ["PartitionKey", "RowKey", "Timestamp", "_rid", "_self", "_etag", "_attachments"];
-
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 582 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ this.state.tableEntityListViewModel.items()",
-      this.state.tableEntityListViewModel.items()
-    );
-    this.state.tableEntityListViewModel.items().map((item) => {
-      // console.log("generateDetailsList > ", item["PartitionKey"]._);
-      this.columns.map((col) => {
-        console.log(
-          "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 403 ~ QueryTablesTabComponent ~ this.columns.map ~ col.name",
-          col.name
-        );
-        if (item[col.name]) {
-          // console.log("Data > ", item[col.name]._);
-          obj = { ...obj, ...{ [col.name]: item[col.name]._ } };
-        }
-      });
-      items.push(obj);
-    });
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 814 ~ QueryTablesTabComponent ~ generateDetailsList ~ items",
-      items
-    );
-    this.state.queryViewModel
-      .queryBuilderViewModel()
-      .setExample(
-        this.state.tableEntityListViewModel.items()[0].PartitionKey._,
-        this.state.tableEntityListViewModel.items()[0].RowKey._
-      );
-
+    // // const items: IDocument[] = [];
+    // //eslint-disable-next-line
+    // const items: any[] = [];
+    // //eslint-disable-next-line
+    // let obj: any = undefined;
+    // // const newColumns = [];
+    // // const compare = ["PartitionKey", "RowKey", "Timestamp", "_rid", "_self", "_etag", "_attachments"];
     // console.log(
-    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 383 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ items",
-    //   this.state.queryViewModel.queryBuilderViewModel().queryClauses.children
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 582 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ this.state.tableEntityListViewModel.items()",
+    //   this.state.tableEntityListViewModel.items()
     // );
-    return items;
+    // this.state.tableEntityListViewModel.items().map((item) => {
+    //   // console.log("generateDetailsList > ", item["PartitionKey"]._);
+    //   this.columns.map((col) => {
+    //     console.log(
+    //       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 403 ~ QueryTablesTabComponent ~ this.columns.map ~ col.name",
+    //       col.name
+    //     );
+    //     if (item[col.name]) {
+    //       // console.log("Data > ", item[col.name]._);
+    //       obj = { ...obj, ...{ [col.name]: item[col.name]._ } };
+    //     }
+    //   });
+    //   items.push(obj);
+    // });
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 814 ~ QueryTablesTabComponent ~ generateDetailsList ~ items",
+    //   items
+    // );
+    // this.state.queryViewModel
+    //   .queryBuilderViewModel()
+    //   .setExample(
+    //     this.state.tableEntityListViewModel.items()[0].PartitionKey._,
+    //     this.state.tableEntityListViewModel.items()[0].RowKey._
+    //   );
+    // // console.log(
+    // //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 383 ~ QueryTablesTabComponent ~ this.state.tableEntityListViewModel.items ~ items",
+    // //   this.state.queryViewModel.queryBuilderViewModel().queryClauses.children
+    // // );
+    // return items;
   }
 
   public toggleAdvancedOptions(): void {
@@ -948,7 +1004,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   onAddNewClause = (): void => {
-    const { queryTableRows, queryViewModel, tableEntityListViewModel } = this.state;
+    const { queryTableRows, queryViewModel, headers } = this.state;
     this.state.queryViewModel.queryBuilderViewModel().addNewClause();
     console.log(
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 696 ~ QueryTablesTabComponent ~ this.state ~ onAddNewClause",
@@ -971,7 +1027,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       // id: cloneQueryTableRows.length + 1,
       id: newClause._id,
       selectedField: "PartitionKey",
-      fieldOptions: getformattedOptions(tableEntityListViewModel.headers),
+      fieldOptions: getformattedOptions(headers),
 
       entityTypeOptions: getformattedOptions(queryViewModel.queryBuilderViewModel().edmTypes()),
 
@@ -1185,9 +1241,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                     tabIndex={0}
                     role="link"
                     onClick={() =>
-                      this.state.queryViewModel.selectQueryOptions(
-                        this.state.tableEntityListViewModel.headers,
-                        (selectMessage: string) => this.getSelectMessage(selectMessage)
+                      this.state.queryViewModel.selectQueryOptions(this.state.headers, (selectMessage: string) =>
+                        this.getSelectMessage(selectMessage)
                       )
                     }
                   >

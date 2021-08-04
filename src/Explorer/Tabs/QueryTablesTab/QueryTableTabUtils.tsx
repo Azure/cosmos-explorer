@@ -61,6 +61,8 @@ export interface IQueryTablesTabComponentStates {
   originalItems: IDocument[];
   rowSelected: boolean;
   selection: Selection;
+  entities: Entities.ITableEntity[];
+  headers: string[];
 }
 
 export interface IQueryTableRowsType {
