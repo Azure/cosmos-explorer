@@ -1,3 +1,4 @@
+import { isNull } from "underscore";
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import { selfServeTrace } from "../SelfServeTelemetryProcessor";
 import {
@@ -49,7 +50,7 @@ const metricsStringValue: Description = {
   },
 };
 
-const CosmosD4s = "CosmosD4s111";
+const CosmosD4s = "Cosmos.D4s";
 const CosmosD8s = "Cosmos.D8s";
 const CosmosD16s = "Cosmos.D16s";
 
@@ -149,9 +150,9 @@ const onEnableDedicatedGatewayChange = (
     disabled: dedicatedGatewayOriginallyEnabled,
   });
   currentValues.set("instances", {
-    value: instances.value,
+    value: 1,
     hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
+    disabled: true,
   });
 
   currentValues.set("connectionString", {
@@ -177,20 +178,20 @@ const getSkus = async (): Promise<ChoiceItem[]> => {
   return skuDropDownItems;
 };
 
-const getInstancesMin = async (): Promise<number> => {
-  return 1;
-};
-
-const getInstancesMax = async (): Promise<number> => {
-  return 5;
-};
-
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: "ResizingDecisionText",
   link: {
     href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
     textTKey: "ResizingDecisionLink",
   },
+};
+
+const getInstancesMin = async (): Promise<number> => {
+  return 1;
+};
+
+const getInstancesMax = async (): Promise<number> => {
+  return 5;
 };
 
 const ApproximateCostDropDownInfo: Info = {
@@ -229,7 +230,7 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
 @IsDisplayable()
 @RefreshOptions({ retryIntervalInMs: 20000 })
-export default class SqlX extends SelfServeBaseClass {
+export default class GraphDedicatedGateway extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
     return await refreshDedicatedGatewayProvisioning();
   };
@@ -238,7 +239,7 @@ export default class SqlX extends SelfServeBaseClass {
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
-    selfServeTrace({ selfServeClassName: SqlX.name });
+    selfServeTrace({ selfServeClassName: GraphDedicatedGateway.name });
 
     const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
     const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
@@ -316,7 +317,7 @@ export default class SqlX extends SelfServeBaseClass {
     const defaults = new Map<string, SmartUiInput>();
     defaults.set("enableDedicatedGateway", { value: false });
     defaults.set("sku", { value: CosmosD4s, hidden: true });
-    defaults.set("instances", { value: await getInstancesMin(), hidden: true });
+    defaults.set("instances", { value: 1, hidden: true});
     defaults.set("costPerHour", undefined);
     defaults.set("connectionString", undefined);
     defaults.set("metricsString", {
@@ -326,23 +327,22 @@ export default class SqlX extends SelfServeBaseClass {
 
     regions = await getReadRegions();
     priceMap = await getPriceMap(regions);
-
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
-      defaults.set("instances", { value: response.instances, disabled: false });
+      defaults.set("instances", { value: response.instances});
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
         value: connectionStringValue,
         hidden: false,
       });
-
       defaults.set("metricsString", {
         value: metricsStringValue,
         hidden: false,
       });
     }
+
     defaults.set("warningBanner", undefined);
     return defaults;
   };
@@ -367,7 +367,7 @@ export default class SqlX extends SelfServeBaseClass {
   @OnChange(onEnableDedicatedGatewayChange)
   @Values({
     labelTKey: "DedicatedGateway",
-    trueLabelTKey: "Provision",
+    trueLabelTKey: "Provisioned",
     falseLabelTKey: "Deprovisioned",
   })
   enableDedicatedGateway: boolean;
