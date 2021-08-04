@@ -112,6 +112,10 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
     console.log("🚀 ~ file: AddTableEntityPanel.tsx ~ line 113 ~ submit ~ newEntity", newEntity);
     await tableEntityListViewModel.addEntityToCache(newEntity);
+    console.log(
+      "🚀 ~ file: AddTableEntityPanel.tsx ~ line 116 ~ submit ~ !tryInsertNewHeaders(tableEntityListViewModel, newEntity)",
+      !tryInsertNewHeaders(tableEntityListViewModel, newEntity)
+    );
     if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
       // tableEntityListViewModel.redrawTableThrottled();
       reloadEntities();

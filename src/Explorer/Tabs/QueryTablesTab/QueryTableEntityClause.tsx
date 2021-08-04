@@ -17,6 +17,7 @@ import { IOption } from "./QueryTableTabUtils";
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 
 export interface IQueryTableEntityClauseProps {
+  index: number;
   entityValue: string;
   entityValuePlaceHolder?: string;
   selectedOperator: string;
@@ -39,6 +40,7 @@ export interface IQueryTableEntityClauseProps {
 }
 
 export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClauseProps> = ({
+  index,
   entityValue,
   entityValuePlaceHolder,
   selectedOperator,
@@ -88,6 +90,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
         </TooltipHost>
         <Checkbox checked={isQueryTableEntityChecked} onChange={onQueryTableEntityCheck} />
         <Dropdown
+          style={{ visibility: index > 0 ? "visible" : "hidden" }}
           selectedKey={selectedOperation}
           onChange={(_event: React.FormEvent<HTMLElement>, selectedOption: IDropdownOption) =>
             onDropdownChange(selectedOption, "selectedOperation")

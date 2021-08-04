@@ -6,6 +6,7 @@ import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { TableQuerySelectPanel } from "../../Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
 import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
+import { IQueryTableRowsType } from "../../Tabs/QueryTablesTab/QueryTableTabUtils";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
@@ -133,12 +134,12 @@ export default class QueryViewModel {
     return this.selectText();
   };
 
-  private setFilter = (): string => {
+  private setFilter = (queryTableRows: IQueryTableRowsType[]): string => {
     const queryString = this.isEditorActive()
       ? this.queryText()
       : userContext.apiType === "Cassandra"
-      ? this.queryBuilderViewModel().getCqlFilterFromClauses()
-      : this.queryBuilderViewModel().getODataFilterFromClauses();
+      ? this.queryBuilderViewModel().getCqlFilterFromClauses(queryTableRows)
+      : this.queryBuilderViewModel().getODataFilterFromClauses(queryTableRows);
     const filter = queryString;
     this.queryText(filter);
     return this.queryText();
@@ -165,8 +166,12 @@ export default class QueryViewModel {
       notify: "always",
     });
 
-  public runQuery = (): void => {
-    let filter = this.setFilter();
+  public runQuery = (queryTableRows: IQueryTableRowsType[]): void => {
+    console.log(
+      "🚀 ~ file: QueryViewModel.tsx ~ line 169 ~ QueryViewModel ~ //constructor ~ queryTableRows",
+      queryTableRows
+    );
+    let filter = this.setFilter(queryTableRows);
     if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
     }

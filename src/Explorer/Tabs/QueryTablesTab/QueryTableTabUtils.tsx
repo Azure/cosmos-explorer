@@ -1,12 +1,12 @@
-import { IColumn } from "@fluentui/react";
+import { IColumn, Selection } from "@fluentui/react";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import Explorer from "../../Explorer";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
+import ClauseGroup from "../../Tables/QueryBuilder/ClauseGroup";
 import QueryViewModel from "../../Tables/QueryBuilder/QueryViewModel";
 import TabsBase from "../TabsBase";
 import NewQueryTablesTab from "./QueryTablesTab";
-
 export interface Button {
   visible: boolean;
   enabled: boolean;
@@ -58,6 +58,9 @@ export interface IQueryTablesTabComponentStates {
   operators: string[];
   selectMessage: string;
   queryTableRows: IQueryTableRowsType[];
+  originalItems: IDocument[];
+  rowSelected: boolean;
+  selection: Selection;
 }
 
 export interface IQueryTableRowsType {
@@ -75,6 +78,13 @@ export interface IQueryTableRowsType {
   operationOptions: IOption[];
   timestampOptions: IOption[];
   id: string;
+  clauseGroup: ClauseGroup;
+  isLocal: boolean;
+  isTimestamp: boolean;
+  isValue: boolean;
+  isCustomRangeTimestamp: boolean;
+  customTimeValue: string;
+  timeValue: string;
 }
 
 export const getformattedOptions = (options: Array<string>): IOption[] => {
