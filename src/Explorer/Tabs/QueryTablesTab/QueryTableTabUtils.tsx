@@ -63,6 +63,7 @@ export interface IQueryTablesTabComponentStates {
   selection: Selection;
   entities: Entities.ITableEntity[];
   headers: string[];
+  isLoading: boolean;
 }
 
 export interface IQueryTableRowsType {

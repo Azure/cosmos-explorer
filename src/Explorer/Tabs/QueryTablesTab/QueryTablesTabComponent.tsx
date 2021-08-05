@@ -7,6 +7,9 @@ import {
   IDropdownStyles,
   Selection,
   SelectionMode,
+  Spinner,
+  SpinnerSize,
+  Text,
 } from "@fluentui/react";
 import * as ko from "knockout";
 import React, { Component } from "react";
@@ -52,6 +55,7 @@ import {
   IQueryTablesTabComponentProps,
   IQueryTablesTabComponentStates,
 } from "./QueryTableTabUtils";
+
 export interface Button {
   visible: boolean;
   enabled: boolean;
@@ -137,33 +141,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     super(props);
     this.columns = [];
     this.allQueryTableRows = [];
-    const columns: IColumn[] = [
-      {
-        key: "column1",
-        name: "PartitionKey",
-        minWidth: 100,
-        maxWidth: 200,
-        data: String,
-        fieldName: "partitionKey",
-        // onRender: this.onRenderColumnItem,
-      },
-      {
-        key: "column2",
-        name: "RowKey",
-        minWidth: 100,
-        maxWidth: 200,
-        data: String,
-        fieldName: "rowKey",
-      },
-      {
-        key: "column3",
-        name: "Timestamp",
-        minWidth: 200,
-        maxWidth: 200,
-        data: String,
-        fieldName: "timeStamp",
-      },
-    ];
     this.container = props.collection && props.collection.container;
     this.tableCommands = new TableCommands(this.container);
     this.tableDataClient = this.container.tableDataClient;
@@ -212,7 +189,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         visible: true,
         isSelected: false,
       },
-      columns: columns,
+      columns: this.columns,
       items: [],
       originalItems: [],
       isExpanded: false,
@@ -253,6 +230,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           timeValue: "",
         },
       ],
+      isLoading: true,
     };
 
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
@@ -462,16 +440,25 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       ", ",
       this.state.selection.getSelection()
     );
+    let timeStamp: string;
     let selectedItems: Entities.ITableEntity[];
     if (this.state.selection.getSelection().length > 0) {
-      selectedItems = this.state.entities.filter(
-        (item) => item["Timestamp"]._ === Object.values(this.state.selection.getSelection()[0])[2]
+      Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
+        if (key === "Timestamp") {
+          timeStamp = Object.values(this.state.selection.getSelection()[0])[index];
+          console.log(
+            "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 445 ~ QueryTablesTabComponent ~ timeStamp",
+            timeStamp
+          );
+        }
+      });
+      selectedItems = this.state.entities.filter((item) => item["Timestamp"]._ === timeStamp);
+      console.log(
+        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 293 ~ QueryTablesTabComponent ~ selectedItems",
+        selectedItems
       );
-      // console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 293 ~ QueryTablesTabComponent ~ selectedItems", selectedItems);
-
       this.setState({
-        // selectionCount: this._selection.getSelectedCount(),
-        selectedItems,
+        selectedItems: selectedItems,
         rowSelected: true,
       });
     }
@@ -577,7 +564,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         columns: this.columns,
         headers,
         operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
-        // queryTableRows: queryTableRowsClone,
+        isLoading: false,
         items: documentItems,
         entities: documents.Results,
         originalItems: documentItems,
@@ -586,7 +573,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       () => {
         if (isInitialLoad) {
           this.loadFilterExample();
-          this.setDefaultItemSelection();
+          // this.setDefaultItemSelection();
         }
       }
     );
@@ -1071,12 +1058,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
     const { queryTableRows } = this.state;
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 328 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selectedItems",
-      this.state.selectedItems,
-      ", ",
-      [this.state.items[0]]
-    );
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 328 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selectedItems",
+    //   this.state.selectedItems,
+    //   ", ",
+    //   [this.state.items[0]]
+    // );
     return (
       <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
         <div className="query-builder">
@@ -1270,15 +1257,23 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         </div>
 
         <div className="tablesQueryTab tableContainer">
-          <DetailsList
-            items={this.state.items}
-            columns={this.state.columns}
-            selectionMode={SelectionMode.single}
-            layoutMode={DetailsListLayoutMode.justified}
-            compact={true}
-            selection={this.state.selection}
-            selectionPreservedOnEmptyClick={true}
-          />
+          {this.state.items.length === 0 && this.state.isLoading && (
+            <Spinner size={SpinnerSize.large} className="spinner" />
+          )}
+          {this.state.items.length > 0 && !this.state.isLoading && (
+            <DetailsList
+              items={this.state.items}
+              columns={this.state.columns}
+              selectionMode={SelectionMode.single}
+              layoutMode={DetailsListLayoutMode.justified}
+              compact={true}
+              selection={this.state.selection}
+              selectionPreservedOnEmptyClick={true}
+            />
+          )}
+          {this.state.items.length === 0 && !this.state.isLoading && (
+            <Text variant="mediumPlus">No data available in table</Text>
+          )}
         </div>
       </div>
     );
