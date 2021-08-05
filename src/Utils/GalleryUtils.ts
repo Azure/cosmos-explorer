@@ -244,7 +244,8 @@ export function downloadItem(
         removeNotebookViewerLink(notebook, data.newCellId);
 
         if (!data.isSample) {
-          markNotebookAsUntrusted(notebook);
+          const metadata = notebook.metadata as { [name: string]: unknown };
+          metadata.untrusted = true;
         }
 
         await container.importAndOpenContent(data.name, JSON.stringify(notebook));
@@ -280,11 +281,6 @@ export function downloadItem(
     "Cancel",
     undefined
   );
-}
-
-function markNotebookAsUntrusted(notebook: Notebook): void {
-  const metadata = notebook.metadata as { [name: string]: unknown };
-  metadata.untrusted = true;
 }
 
 export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {

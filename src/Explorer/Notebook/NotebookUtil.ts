@@ -1,4 +1,5 @@
 import { ImmutableCodeCell, ImmutableNotebook } from "@nteract/commutable";
+import { AppState, selectors } from "@nteract/core";
 import domtoimage from "dom-to-image";
 import Html2Canvas from "html2canvas";
 import path from "path";
@@ -151,6 +152,16 @@ export class NotebookUtil {
         output.output_type === "execute_result" ||
         output.output_type === "stream"
     );
+  }
+
+  public static isNotebookUntrusted(state: AppState, contentRef: string): boolean {
+    const content = selectors.content(state, { contentRef });
+    if (content?.type === "notebook") {
+      const metadata = selectors.notebook.metadata(content.model);
+      return metadata.getIn(["untrusted"]) as boolean;
+    }
+
+    return false;
   }
 
   /**

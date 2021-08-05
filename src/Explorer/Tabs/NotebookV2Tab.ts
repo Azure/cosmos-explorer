@@ -88,7 +88,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
     const saveLabel = "Save";
     const copyToLabel = "Copy to ...";
     const publishLabel = "Publish to gallery";
-    const workspaceLabel = "No Workspace";
     const kernelLabel = "No Kernel";
     const runLabel = "Run";
     const runActiveCellLabel = "Run Active Cell";
@@ -105,8 +104,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
     const copyLabel = "Copy";
     const cutLabel = "Cut";
     const pasteLabel = "Paste";
-    const undoLabel = "Undo";
-    const redoLabel = "Redo";
     const cellCodeType = "code";
     const cellMarkdownType = "markdown";
     const cellRawType = "raw";
@@ -189,7 +186,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
         commandButtonLabel: runLabel,
         ariaLabel: runLabel,
         hasPopup: false,
-        disabled: false,
+        disabled: this.notebookComponentAdapter.isNotebookUntrusted(),
         children: [
           {
             iconSrc: RunIcon,

@@ -22,7 +22,7 @@ export const promptContent = (props: PassedPromptProps): JSX.Element => {
         <Spinner size={SpinnerSize.large} style={{ position: "absolute", width: "100%", paddingTop: 5 }} />
       </div>
     );
-  } else if (props.isHovered) {
+  } else if (props.isHovered && !props.isHidden) {
     const playButtonText = "Run cell";
     return (
       <IconButton

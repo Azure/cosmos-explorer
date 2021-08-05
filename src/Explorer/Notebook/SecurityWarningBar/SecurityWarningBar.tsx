@@ -1,8 +1,9 @@
 import { MessageBar, MessageBarButton, MessageBarType } from "@fluentui/react";
-import { actions, AppState, selectors } from "@nteract/core";
+import { actions, AppState } from "@nteract/core";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { NotebookUtil } from "../NotebookUtil";
 
 export interface SecurityWarningBarPureProps {
   contentRef: string;
@@ -66,20 +67,9 @@ interface InitialProps {
 
 // Redux
 const makeMapStateToProps = (state: AppState, initialProps: InitialProps) => {
-  const { contentRef } = initialProps;
-  const mapStateToProps = (state: AppState): StateProps => {
-    let isNotebookUntrusted = false;
-
-    const content = selectors.content(state, { contentRef });
-    if (content?.type === "notebook") {
-      const metadata = selectors.notebook.metadata(content.model);
-      isNotebookUntrusted = metadata.getIn(["untrusted"]) as boolean;
-    }
-
-    return {
-      isNotebookUntrusted,
-    };
-  };
+  const mapStateToProps = (state: AppState): StateProps => ({
+    isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, initialProps.contentRef),
+  });
   return mapStateToProps;
 };
 
