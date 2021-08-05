@@ -13,6 +13,7 @@ import {
 import React, { FunctionComponent } from "react";
 import AddIcon from "../../../../images/Add.svg";
 import CancelIcon from "../../../../images/cancel.svg";
+import { userContext } from "../../../UserContext";
 import { IOption } from "./QueryTableTabUtils";
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
 
@@ -73,6 +74,15 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
 
   const sectionStackTokens: IStackTokens = { childrenGap: 12 };
 
+  const validateEntityTypeOption = (): boolean => {
+    if (userContext.apiType === "Cassandra") {
+      return true;
+    } else if (selectedField === "PartitionKey" || selectedField === "RowKey" || selectedField === "Timestamp") {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <>
       <Stack horizontal tokens={sectionStackTokens}>
@@ -115,7 +125,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
           }
           options={entityTypeOptions}
           id="entityOptionId"
-          disabled={selectedField !== "t3PN"}
+          disabled={validateEntityTypeOption()}
           styles={dropdownStyles}
         />
         <Dropdown
