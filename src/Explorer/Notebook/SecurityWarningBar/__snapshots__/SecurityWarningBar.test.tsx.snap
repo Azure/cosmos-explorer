@@ -20,6 +20,6 @@ exports[`SecurityWarningBar renders if notebook is untrusted 1`] = `
   <b>
     SECURITY WARNING
   </b>
-    Be careful - this notebook is from an untrusted author. Run code cells at your own risk.
+    This notebook was downloaded from the public gallery. Running code cells from a notebook authored by someone else may involve security risks. risk.
 </StyledMessageBar>
 `;

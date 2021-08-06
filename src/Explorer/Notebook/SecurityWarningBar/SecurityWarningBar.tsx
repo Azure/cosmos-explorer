@@ -48,8 +48,8 @@ export class SecurityWarningBar extends React.Component<SecurityWarningBarProps,
           </div>
         }
       >
-        <b>SECURITY WARNING</b>&nbsp; Be careful - this notebook is from an untrusted author. Run code cells at your own
-        risk.
+        <b>SECURITY WARNING</b>&nbsp; This notebook was downloaded from the public gallery. Running code cells from a
+        notebook authored by someone else may involve security risks. risk.
       </MessageBar>
     ) : (
       <></>
