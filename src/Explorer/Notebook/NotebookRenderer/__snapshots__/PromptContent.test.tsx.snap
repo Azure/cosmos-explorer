@@ -58,15 +58,3 @@ exports[`PromptContent renders when hovered 1`] = `
   />
 </div>
 `;
-
-exports[`SecurityWarningBar renders if notebook is untrusted 1`] = `
-<div
-  style={
-    Object {
-      "paddingTop": 7,
-    }
-  }
->
-  [ ]
-</div>
-`;
