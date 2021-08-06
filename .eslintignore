@@ -6,7 +6,6 @@ src/Api/Apis.ts
 src/AuthType.ts
 src/Bindings/BindingHandlersRegisterer.ts
 src/Bindings/ReactBindingHandler.ts
-src/Common/Constants.ts
 src/Common/CosmosClient.test.ts
 src/Common/CosmosClient.ts
 src/Common/DataAccessUtilityBase.test.ts
