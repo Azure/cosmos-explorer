@@ -1,5 +1,6 @@
 import { IconButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
+import { NotebookUtil } from "../NotebookUtil";
 import { PassedPromptProps } from "./Prompt";
 import "./Prompt.less";
 
@@ -22,16 +23,19 @@ export const promptContent = (props: PassedPromptProps): JSX.Element => {
         <Spinner size={SpinnerSize.large} style={{ position: "absolute", width: "100%", paddingTop: 5 }} />
       </div>
     );
-  } else if (props.isHovered && !props.isHidden) {
-    const playButtonText = "Run cell";
+  } else if (props.isHovered) {
+    const playButtonText = props.isRunDisabled ? NotebookUtil.UntrustedNotebookRunHint : "Run cell";
     return (
-      <IconButton
-        className="runCellButton"
-        iconProps={{ iconName: "MSNVideosSolid" }}
-        title={playButtonText}
-        ariaLabel={playButtonText}
-        onClick={props.runCell}
-      />
+      <div className={props.isRunDisabled ? "disabledRunCellButton" : ""}>
+        <IconButton
+          className="runCellButton"
+          iconProps={{ iconName: "MSNVideosSolid" }}
+          title={playButtonText}
+          ariaLabel={playButtonText}
+          disabled={props.isRunDisabled}
+          onClick={props.runCell}
+        />
+      </div>
     );
   } else {
     return <div style={{ paddingTop: 7 }}>{promptText(props)}</div>;

@@ -23,6 +23,7 @@ import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
 import { useNotebook } from "../Notebook/useNotebook";
 import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
 
@@ -84,6 +85,9 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
+    const isNotebookUntrusted = this.notebookComponentAdapter.isNotebookUntrusted();
+
+    const runBtnTooltip = isNotebookUntrusted ? NotebookUtil.UntrustedNotebookRunHint : undefined;
 
     const saveLabel = "Save";
     const copyToLabel = "Copy to ...";
@@ -184,9 +188,10 @@ export default class NotebookTabV2 extends NotebookTabBase {
           this.traceTelemetry(Action.ExecuteCell);
         },
         commandButtonLabel: runLabel,
+        tooltipText: runBtnTooltip,
         ariaLabel: runLabel,
         hasPopup: false,
-        disabled: this.notebookComponentAdapter.isNotebookUntrusted(),
+        disabled: isNotebookUntrusted,
         children: [
           {
             iconSrc: RunIcon,

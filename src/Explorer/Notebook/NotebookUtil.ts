@@ -12,6 +12,8 @@ import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentI
 export type FileType = "directory" | "file" | "notebook";
 // Utilities for notebooks
 export class NotebookUtil {
+  public static UntrustedNotebookRunHint = "Please trust notebook first before running any code cells";
+
   /**
    * It's a notebook file if the filename ends with .ipynb.
    */

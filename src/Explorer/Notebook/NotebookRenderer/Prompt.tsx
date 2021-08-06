@@ -13,7 +13,7 @@ export interface PassedPromptProps {
   status?: string;
   executionCount?: number;
   isHovered?: boolean;
-  isHidden?: boolean;
+  isRunDisabled?: boolean;
   runCell?: () => void;
   stopCell?: () => void;
 }
@@ -50,7 +50,7 @@ export class PromptPure extends React.Component<Props> {
           runCell: this.props.executeCell,
           stopCell: this.props.stopExecution,
           isHovered: this.props.isHovered,
-          isHidden: this.props.isNotebookUntrusted,
+          isRunDisabled: this.props.isNotebookUntrusted,
         })}
       </div>
     );
