@@ -140,13 +140,13 @@ export default class QueryViewModel {
     return this.queryText();
   };
 
-  private setSqlFilter = (): string => {
-    return this.queryBuilderViewModel().getSqlFilterFromClauses();
+  private setSqlFilter = (queryTableRows: IQueryTableRowsType[]): string => {
+    return this.queryBuilderViewModel().getSqlFilterFromClauses(queryTableRows);
   };
 
-  private setCqlFilter = (): string => {
-    return this.queryBuilderViewModel().getCqlFilterFromClauses();
-  };
+  // private setCqlFilter = (): string => {
+  //   return this.queryBuilderViewModel().getCqlFilterFromClauses();
+  // };
 
   public isHelperEnabled = ko
     .computed<boolean>(() => {
@@ -161,7 +161,7 @@ export default class QueryViewModel {
       notify: "always",
     });
 
-  public runQuery = (queryTableRows: IQueryTableRowsType[]): void => {
+  public runQuery = (queryTableRows: IQueryTableRowsType[]): string => {
     console.log(
       "🚀 ~ file: QueryViewModel.tsx ~ line 169 ~ QueryViewModel ~ //constructor ~ queryTableRows",
       queryTableRows
@@ -177,9 +177,10 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.tableQuery.top = top;
     this._tableEntityListViewModel.tableQuery.select = select;
     this._tableEntityListViewModel.oDataQuery(filter);
-    this._tableEntityListViewModel.sqlQuery(this.setSqlFilter());
+    this._tableEntityListViewModel.sqlQuery(this.setSqlFilter(queryTableRows));
     this._tableEntityListViewModel.cqlQuery(filter);
 
+    return this._tableEntityListViewModel.sqlQuery();
     // return this._tableEntityListViewModel.reloadTable(/*useSetting*/ false, /*resetHeaders*/ false);
   };
 

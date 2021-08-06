@@ -1,5 +1,6 @@
 import { FeedOptions } from "@azure/cosmos";
 import {
+  CheckboxVisibility,
   DetailsList,
   DetailsListLayoutMode,
   IColumn,
@@ -62,60 +63,11 @@ export interface Button {
   isSelected?: boolean;
 }
 
-// export interface IDocument {
-//   partitionKey: string;
-//   rowKey: string;
-//   timeStamp: string;
-// }
-// export interface IQueryTablesTabComponentProps {
-//   tabKind: ViewModels.CollectionTabKind;
-//   title: string;
-//   tabPath: string;
-//   collection: ViewModels.CollectionBase;
-//   node: ViewModels.TreeNode;
-//   onLoadStartKey: number;
-//   container: Explorer;
-//   tabsBaseInstance: TabsBase;
-//   queryTablesTab: NewQueryTablesTab;
-// }
-
-// interface IQueryTablesTabComponentStates {
-//   tableEntityListViewModel: TableEntityListViewModel;
-//   queryViewModel: QueryViewModel;
-//   queryText: string;
-//   selectedQueryText: string;
-//   executeQueryButton: Button;
-//   queryBuilderButton: Button;
-//   queryTextButton: Button;
-//   addEntityButton: Button;
-//   editEntityButton: Button;
-//   deleteEntityButton: Button;
-//   isHelperActive: boolean;
-//   columns: IColumn[];
-//   items: IDocument[];
-//   isExpanded: boolean;
-//   isEditorActive: boolean;
-//   selectedItems: Entities.ITableEntity[];
-//   isValue: boolean;
-//   isTimestamp: boolean;
-//   isCustomLastTimestamp: boolean;
-//   isCustomRangeTimestamp: boolean;
-//   operators: string[];
-//   selectMessage: string;
-//   queryTableRows: IQueryTableRowsType[];
-// }
-
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
-  // public readonly html = template;
   public collection: ViewModels.Collection;
-  // public tableEntityListViewModel = ko.observable<TableEntityListViewModel>();
   public _queryViewModel: QueryViewModel;
   public tableCommands: TableCommands;
   public tableDataClient: TableDataClient;
-
-  //   public queryText = ko.observable("PartitionKey eq 'partitionKey1'"); // Start out with an example they can modify
-  //   public selectedQueryText = ko.observable("").extend({ notify: "always" });
-
   public executeQueryButton: ViewModels.Button;
   public addEntityButton: ViewModels.Button;
   public editEntityButton: ViewModels.Button;
@@ -157,7 +109,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       tableEntityListViewModel,
       queryViewModel: new QueryViewModel(this.props.queryTablesTab),
       queryText: "PartitionKey eq 'partionKey1'",
-      selectedQueryText: "",
+      selectedQueryText: "Select * from c",
       isHelperActive: true,
       executeQueryButton: {
         enabled: true,
@@ -536,8 +488,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     //   this.state.tableEntityListViewModel.items()
     // );
     // const { queryTableRows } = this.state;
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 496 ~ QueryTablesTabComponent ~ //setTimeout ~ this.state.selectedQueryText",
+      this.state.selectedQueryText
+    );
     const { collection } = this.props;
-    const documents = await this.getDocuments(collection, "Select * from c");
+    const documents = await this.getDocuments(collection, this.state.selectedQueryText);
     const headers = this.getFormattedHeaders(documents.Results);
     this.columns = [];
     headers.map((header) => {
@@ -553,12 +509,25 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         isSortedDescending: false,
         sortAscendingAriaLabel: "Sorted A to Z",
         sortDescendingAriaLabel: "Sorted Z to A",
+        onColumnClick: this.onColumnClick,
+        // onRender: (item: Entities.ITableEntity) => {
+        //   // console.log(
+        //   //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 559 ~ QueryTablesTabComponent ~ headers.map ~ item",
+        //   //   item
+        //   // );
+        //   return (
+        //     <>
+        //       {item[header] && <div style={{ height: "100%" }}>{item[header]}</div>}
+        //       {!item[header] && (
+        //         <div style={{ height: "100%", backgroundColor: "lightgray", color: "lightgray" }}>{"."}</div>
+        //       )}
+        //     </>
+        //   );
+        // },
       });
     });
 
     const documentItems = this.generateDetailsList(documents.Results);
-    // const queryTableRowsClone = [...queryTableRows];
-    // queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
     this.setState(
       {
         columns: this.columns,
@@ -577,8 +546,32 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         }
       }
     );
+  }
 
-    //If
+  private onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
+    const { columns, items } = this.state;
+    const newColumns: IColumn[] = columns.slice();
+    const currColumn: IColumn = newColumns.filter((currCol) => column.key === currCol.key)[0];
+    newColumns.forEach((newCol: IColumn) => {
+      if (newCol === currColumn) {
+        currColumn.isSortedDescending = !currColumn.isSortedDescending;
+        currColumn.isSorted = true;
+      } else {
+        newCol.isSorted = false;
+        newCol.isSortedDescending = true;
+      }
+    });
+    //eslint-disable-next-line
+    const newItems = this.copyAndSort(items, currColumn.fieldName!, currColumn.isSortedDescending);
+    this.setState({
+      columns: newColumns,
+      items: newItems,
+    });
+  };
+
+  private copyAndSort<T>(items: T[], columnKey: string, isSortedDescending?: boolean): T[] {
+    const key = columnKey as keyof T;
+    return items.slice(0).sort((a: T, b: T) => ((isSortedDescending ? a[key] < b[key] : a[key] > b[key]) ? 1 : -1));
   }
 
   private getFormattedHeaders = (entities: Entities.ITableEntity[]): string[] => {
@@ -664,6 +657,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 423 ~ QueryTablesTabComponent ~ reloadEntities ~ reloadEntities"
     );
     // this.componentDidMount();
+    this.setState({
+      isLoading: true,
+    });
     this.loadEntities(false);
     // console.log(
     //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 349 ~ QueryTablesTabComponent ~ addEntity ~ addedEntity",
@@ -740,53 +736,75 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         //eslint-disable-next-line
         .then((results: any) => {
           return this.state.tableEntityListViewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
-            // this.state.tableEntityListViewModel.redrawTableThrottled();
-            this.componentDidMount();
+            this.setState({
+              isLoading: true,
+            });
+            this.loadEntities(false);
           });
         });
     }
   };
 
   public runQuery(queryTableRows: IQueryTableRowsType[]): void {
-    this.state.queryViewModel.runQuery(queryTableRows);
-    if (queryTableRows.length !== 0) {
+    // this.state.queryViewModel.runQuery(queryTableRows);
+    this.setState({
+      isLoading: true,
+      selectedQueryText: this.state.queryViewModel.runQuery(queryTableRows),
+    });
+    setTimeout(() => {
       console.log(
-        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 507 ~ QueryTablesTabComponent ~ runQuery ~ queryTableRows",
-        queryTableRows
+        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 775 ~ QueryTablesTabComponent ~ runQuery ~ selectedQueryText",
+        this.state.selectedQueryText
       );
-      let exp: string;
-      queryTableRows.map((row, index) => {
-        console.log(
-          "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 508 ~ QueryTablesTabComponent ~ runQuery ~ row",
-          row
-        );
-        const operation = row.selectedOperation === "And" ? " && " : " || ";
-        const operator = this.getOperator(row.selectedOperator);
-        if (index === 0) {
-          exp = "row['" + row.selectedField + "'] " + operator + "'" + row.entityValue + "'";
-        } else {
-          exp = exp + operation + "row['" + row.selectedField + "'] " + operator + "'" + row.entityValue + "'";
-        }
-      });
-      console.log(
-        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 519 ~ QueryTablesTabComponent ~ queryTableRows.map ~ exp",
-        exp
-      );
-      const filteredItems = this.state.originalItems.filter((row) => eval(exp));
-      console.log(
-        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 526 ~ QueryTablesTabComponent ~ runQuery ~ newRows",
-        filteredItems
-      );
-      this.setState({
-        queryText: this.state.queryViewModel.queryText(),
-        items: filteredItems,
-      });
-    } else {
-      this.setState({
-        queryText: this.state.queryViewModel.queryText(),
-        items: this.state.originalItems,
-      });
-    }
+      this.loadEntities(false);
+    }, 2000);
+    // if (queryTableRows.length !== 0) {
+    //   console.log(
+    //     "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 507 ~ QueryTablesTabComponent ~ runQuery ~ queryTableRows",
+    //     queryTableRows,
+    //     ", ",
+    //     this.state.tableEntityListViewModel.sqlQuery(),
+    //     ", ",
+    //     this.state.queryViewModel.runQuery(queryTableRows)
+    //   );
+
+    //   let exp: string;
+    //   queryTableRows.map((row, index) => {
+    //     console.log(
+    //       "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 508 ~ QueryTablesTabComponent ~ runQuery ~ row",
+    //       row
+    //     );
+    //     const operation = row.selectedOperation === "And" ? " && " : " || ";
+    //     const operator = this.getOperator(row.selectedOperator);
+    //     if (index === 0) {
+    //       exp = "row['" + row.selectedField + "'] " + operator + "'" + row.entityValue + "'";
+    //     } else {
+    //       exp = exp + operation + "row['" + row.selectedField + "'] " + operator + "'" + row.entityValue + "'";
+    //     }
+    //   });
+    //   console.log(
+    //     "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 519 ~ QueryTablesTabComponent ~ queryTableRows.map ~ exp",
+    //     exp
+    //   );
+    //   const filteredItems = this.state.originalItems.filter((row) => eval(exp));
+    //   console.log(
+    //     "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 526 ~ QueryTablesTabComponent ~ runQuery ~ newRows",
+    //     filteredItems
+    //   );
+    //   this.setState({
+    //     queryText: this.state.queryViewModel.queryText(),
+    //     items: filteredItems,
+    //   });
+    // } else {
+    //   this.setState({
+    //     queryText: this.state.queryViewModel.queryText(),
+    //     items: this.state.originalItems,
+    //   });
+    // }
+    this.setState({
+      queryText: this.state.queryViewModel.queryText(),
+      // items: this.state.originalItems,
+    });
   }
 
   public getOperator(operator: string): string {
@@ -1055,6 +1073,32 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({ queryTableRows: cloneQueryTableRows });
   };
 
+  // function _renderItemColumn(item: , index: number, column: IColumn) {
+
+  // const fieldContent = item[column.fieldName as keyof IExampleItem] as string;
+
+  // switch (column.key) {
+  //   case 'thumbnail':
+  //     return <Image src={fieldContent} width={50} height={50} imageFit={ImageFit.cover} />;
+
+  //   case 'name':
+  //     return <Link href="#">{fieldContent}</Link>;
+
+  //   case 'color':
+  //     return (
+  //       <span
+  //         data-selection-disabled={true}
+  //         className={mergeStyles({ color: fieldContent, height: '100%', display: 'block' })}
+  //       >
+  //         {fieldContent}
+  //       </span>
+  //     );
+
+  //   default:
+  //     return <span>{fieldContent}</span>;
+  // }
+  // }
+
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
     const { queryTableRows } = this.state;
@@ -1257,9 +1301,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         </div>
 
         <div className="tablesQueryTab tableContainer">
-          {this.state.items.length === 0 && this.state.isLoading && (
-            <Spinner size={SpinnerSize.large} className="spinner" />
-          )}
+          {this.state.isLoading && <Spinner size={SpinnerSize.large} className="spinner" />}
           {this.state.items.length > 0 && !this.state.isLoading && (
             <DetailsList
               items={this.state.items}
@@ -1269,6 +1311,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
               compact={true}
               selection={this.state.selection}
               selectionPreservedOnEmptyClick={true}
+              checkboxVisibility={CheckboxVisibility.always}
+              // onRenderItemColumn={_renderItemColumn(this.state.items)}
             />
           )}
           {this.state.items.length === 0 && !this.state.isLoading && (

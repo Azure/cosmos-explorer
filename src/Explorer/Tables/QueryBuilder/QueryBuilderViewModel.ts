@@ -177,7 +177,7 @@ export default class QueryBuilderViewModel {
     return filterString.trim();
   };
 
-  public getSqlFilterFromClauses = (): string => {
+  public getSqlFilterFromClauses = (queryTableRows: IQueryTableRowsType[]): string => {
     var filterString: string = "SELECT * FROM c";
     if (this._queryViewModel.selectText() && this._queryViewModel.selectText().length > 0) {
       filterString = "SELECT";
@@ -200,44 +200,45 @@ export default class QueryBuilderViewModel {
         });
       filterString = filterString.concat(" FROM c");
     }
-    if (this.queryClauses.children.length === 0) {
+    if (queryTableRows.length === 0) {
       return filterString;
     }
     filterString = filterString.concat(" WHERE");
     var first = true;
-    var treeTraversal = (group: ClauseGroup): void => {
-      for (var i = 0; i < group.children.length; i++) {
-        var currentItem = group.children[i];
+    // var treeTraversal = (group: ClauseGroup): void => {
+    for (var i = 0; i < queryTableRows.length; i++) {
+      var currentItem = queryTableRows[i];
 
-        if (currentItem instanceof QueryClauseViewModel) {
-          var clause = <QueryClauseViewModel>currentItem;
-          let timeStampValue: string = this.timestampToSqlValue(clause);
-          var value = clause.value();
-          if (!clause.isValue()) {
-            value = timeStampValue;
-          }
-          filterString = filterString.concat(
-            this.constructSqlClause(
-              first ? "" : clause.and_or(),
-              this.generateLeftParentheses(clause),
-              clause.field(),
-              clause.type(),
-              clause.operator(),
-              value,
-              this.generateRightParentheses(clause)
-            )
-          );
-          first = false;
-        }
-
-        if (currentItem instanceof ClauseGroup) {
-          treeTraversal(<ClauseGroup>currentItem);
-        }
+      // if (currentItem instanceof QueryClauseViewModel) {
+      // var clause = <QueryClauseViewModel>currentItem;
+      let timeStampValue: string = this.timestampToSqlValue(currentItem);
+      var value = currentItem.entityValue;
+      if (!currentItem.isValue) {
+        value = timeStampValue;
       }
-    };
+      filterString = filterString.concat(
+        this.constructSqlClause(
+          first ? "" : currentItem.selectedOperation,
+          this.generateLeftParentheses(currentItem),
+          currentItem.selectedField,
+          currentItem.selectedEntityType,
+          currentItem.selectedOperator,
+          value,
+          this.generateRightParentheses(currentItem)
+        )
+      );
+      first = false;
+      // }
 
-    treeTraversal(this.queryClauses);
+      // if (currentItem instanceof ClauseGroup) {
+      //   treeTraversal(<ClauseGroup>currentItem);
+      // }
+      // }
+    }
 
+    // treeTraversal(this.queryClauses);
+
+    console.log("🚀 ~ file: QueryBuilderViewModel.ts ~ line 250 ~ QueryBuilderViewModel ~ filterString", filterString);
     return filterString.trim();
   };
 
@@ -735,18 +736,18 @@ export default class QueryBuilderViewModel {
     }
   }
 
-  private timestampToSqlValue(clause: QueryClauseViewModel): string {
-    if (clause.isValue()) {
+  private timestampToSqlValue(clause: IQueryTableRowsType): string {
+    if (clause.isValue) {
       return null;
-    } else if (clause.isTimestamp()) {
+    } else if (clause.isTimestamp) {
       return this.getTimeStampToSqlQuery(clause);
       // } else if (clause.isCustomLastTimestamp()) {
       //     clause.value(CustomTimestampHelper._queryLastTime(clause.customLastTimestamp().lastNumber, clause.customLastTimestamp().lastTimeUnit));
-    } else if (clause.isCustomRangeTimestamp()) {
-      if (clause.isLocal()) {
-        return DateTimeUtilities.getUTCDateTime(clause.customTimeValue());
+    } else if (clause.isCustomRangeTimestamp) {
+      if (clause.isLocal) {
+        return DateTimeUtilities.getUTCDateTime(clause.customTimeValue);
       } else {
-        return clause.customTimeValue();
+        return clause.customTimeValue;
       }
     }
     return null;
@@ -778,8 +779,8 @@ export default class QueryBuilderViewModel {
     }
   }
 
-  private getTimeStampToSqlQuery(clause: QueryClauseViewModel): string {
-    switch (clause.timeValue()) {
+  private getTimeStampToSqlQuery(clause: IQueryTableRowsType): string {
+    switch (clause.timeValue) {
       case Constants.timeOptions.lastHour:
         return CustomTimestampHelper._queryLastDaysHours(0, 1);
       case Constants.timeOptions.last24Hours:
