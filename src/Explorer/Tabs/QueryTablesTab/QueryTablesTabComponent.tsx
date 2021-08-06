@@ -39,6 +39,7 @@ import Explorer from "../../Explorer";
 import { useCommandBar } from "../../Menus/CommandBar/CommandBarComponentAdapter";
 import { AddTableEntityPanel } from "../../Panes/Tables/AddTableEntityPanel";
 import { EditTableEntityPanel } from "../../Panes/Tables/EditTableEntityPanel";
+import { getQuotedCqlIdentifier } from "../../Tables/CqlUtilities";
 import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableCommands from "../../Tables/DataTable/TableCommands";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
@@ -162,7 +163,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           isQueryTableEntityChecked: false,
           selectedOperator: "=",
           id: "1",
-          selectedField: "PartitionKey",
+          selectedField: userContext.apiType === "Cassandra" ? "email" : "PartitionKey",
           selectedOperation: "",
           entityValue: "",
           selectedEntityType: "String",
@@ -392,19 +393,20 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       ", ",
       this.state.selection.getSelection()
     );
-    let timeStamp: string;
+    let itemValue: string;
+    const documentKey = userContext.apiType === "Cassandra" ? "userid" : "Timestamp";
     let selectedItems: Entities.ITableEntity[];
     if (this.state.selection.getSelection().length > 0) {
       Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
-        if (key === "Timestamp") {
-          timeStamp = Object.values(this.state.selection.getSelection()[0])[index];
+        if (key === documentKey) {
+          itemValue = Object.values(this.state.selection.getSelection()[0])[index];
           console.log(
             "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 445 ~ QueryTablesTabComponent ~ timeStamp",
-            timeStamp
+            itemValue
           );
         }
       });
-      selectedItems = this.state.entities.filter((item) => item["Timestamp"]._ === timeStamp);
+      selectedItems = this.state.entities.filter((item) => item[documentKey]._ === itemValue);
       console.log(
         "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 293 ~ QueryTablesTabComponent ~ selectedItems",
         selectedItems
@@ -434,9 +436,11 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       queryTableRows: queryTableRowsClone,
     });
 
-    this.state.queryViewModel
-      .queryBuilderViewModel()
-      .setExample(entities.length && entities[0].PartitionKey._, entities.length && entities[0].RowKey._);
+    if (userContext.apiType !== "Cassandra") {
+      this.state.queryViewModel
+        .queryBuilderViewModel()
+        .setExample(entities.length && entities[0].PartitionKey._, entities.length && entities[0].RowKey._);
+    }
 
     this.state.queryViewModel.queryBuilderViewModel().queryClauses.children.map((clause, index) => {
       this.allQueryTableRows.push({
@@ -479,22 +483,75 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   }
 
   public async loadEntities(isInitialLoad: boolean): Promise<void> {
-    const { tableEntityListViewModel } = this.state;
+    const { tableEntityListViewModel, selectedQueryText } = this.state;
     tableEntityListViewModel.renderNextPageAndupdateCache();
+    let headers: string[] = [];
+    let documents: any = {};
+    if (userContext.apiType === "Cassandra") {
+      const query = `SELECT * FROM ${getQuotedCqlIdentifier(
+        this.props.queryTablesTab.collection.databaseId
+      )}.${getQuotedCqlIdentifier(this.props.queryTablesTab.collection.id())}`;
+      documents = await this.props.queryTablesTab.container.tableDataClient.queryDocuments(
+        this.props.queryTablesTab.collection,
+        query,
+        true
+      );
+      headers = this.getFormattedHeaders(documents.Results);
+      this.setupIntialEntities(documents.Results, headers, isInitialLoad);
+    } else {
+      const { collection } = this.props;
+      documents = await this.getDocuments(collection, selectedQueryText);
+      headers = this.getFormattedHeaders(documents.Results);
+      this.setupIntialEntities(documents.Results, headers, isInitialLoad);
+    }
 
-    // setTimeout(() => {
-    // console.log(
-    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 296 ~ QueryTablesTabComponent ~ componentDidMount ~ componentDidMount",
-    //   this.state.tableEntityListViewModel.items()
+    // this.columns = [];
+    // headers.map((header) => {
+    //   this.columns.push({
+    //     key: header,
+    //     name: header,
+    //     minWidth: 100,
+    //     maxWidth: 200,
+    //     data: "string",
+    //     fieldName: header,
+    //     isResizable: true,
+    //     isSorted: true,
+    //     isSortedDescending: false,
+    //     sortAscendingAriaLabel: "Sorted A to Z",
+    //     sortDescendingAriaLabel: "Sorted Z to A",
+    //   });
+    // });
+
+    // const documentItems = this.generateDetailsList(documents.Results);
+    // // const queryTableRowsClone = [...queryTableRows];
+    // // queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
+    // this.setState(
+    //   {
+    //     columns: this.columns,
+    //     headers,
+    //     operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
+    //     isLoading: false,
+    //     items: documentItems,
+    //     entities: documents.Results,
+    //     originalItems: documentItems,
+    //     queryText: this.state.queryViewModel.queryText(),
+    //   },
+    //   () => {
+    //     if (isInitialLoad) {
+    //       this.loadFilterExample();
+    //       // this.setDefaultItemSelection();
+    //     }
+    //   }
     // );
-    // const { queryTableRows } = this.state;
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 496 ~ QueryTablesTabComponent ~ //setTimeout ~ this.state.selectedQueryText",
-      this.state.selectedQueryText
-    );
-    const { collection } = this.props;
-    const documents = await this.getDocuments(collection, this.state.selectedQueryText);
-    const headers = this.getFormattedHeaders(documents.Results);
+
+    //If
+  }
+
+  private setupIntialEntities = (
+    entities: Entities.ITableEntity[],
+    headers: string[],
+    isInitialLoad: boolean
+  ): void => {
     this.columns = [];
     headers.map((header) => {
       this.columns.push({
@@ -527,7 +584,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       });
     });
 
-    const documentItems = this.generateDetailsList(documents.Results);
+    const documentItems = this.generateDetailsList(entities);
+    // const queryTableRowsClone = [...queryTableRows];
+    // queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
     this.setState(
       {
         columns: this.columns,
@@ -535,18 +594,18 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
         isLoading: false,
         items: documentItems,
-        entities: documents.Results,
+        entities: entities,
         originalItems: documentItems,
         queryText: this.state.queryViewModel.queryText(),
       },
       () => {
         if (isInitialLoad) {
           this.loadFilterExample();
-          // this.setDefaultItemSelection();
+          this.setDefaultItemSelection();
         }
       }
     );
-  }
+  };
 
   private onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
     const { columns, items } = this.state;
@@ -998,14 +1057,23 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     cloneQueryTableRows[index][selectedOptionType] = selectedOption.text;
-    if (selectedOptionType !== "selectedOperation" && selectedOptionType !== "selectedOperator") {
-      cloneQueryTableRows[index].selectedEntityType = "String";
+    if (userContext.apiType !== "Cassandra") {
+      if (selectedOptionType !== "selectedOperation" && selectedOptionType !== "selectedOperator") {
+        cloneQueryTableRows[index].selectedEntityType = "String";
+        const { text } = selectedOption;
+        if (text === "DateTime" || text === "Timestamp") {
+          cloneQueryTableRows[index].isTimeStampSelected = true;
+          cloneQueryTableRows[index].selectedEntityType = "DateTime";
+        } else if (selectedOptionType !== "selectedTimestamp") {
+          cloneQueryTableRows[index].isTimeStampSelected = false;
+        }
+      }
+    } else {
       const { text } = selectedOption;
-      if (text === "DateTime" || text === "Timestamp") {
-        cloneQueryTableRows[index].isTimeStampSelected = true;
-        cloneQueryTableRows[index].selectedEntityType = "DateTime";
-      } else if (selectedOptionType !== "selectedTimestamp") {
-        cloneQueryTableRows[index].isTimeStampSelected = false;
+      if (text === "userid") {
+        cloneQueryTableRows[index].selectedEntityType = "Int";
+      } else {
+        cloneQueryTableRows[index].selectedEntityType = "Text";
       }
     }
     this.setState({ queryTableRows: cloneQueryTableRows });
@@ -1041,12 +1109,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       operatorOptions: getformattedOptions(queryViewModel.queryBuilderViewModel().operators()),
       // id: cloneQueryTableRows.length + 1,
       id: newClause._id,
-      selectedField: "PartitionKey",
+      selectedField: userContext.apiType === "Cassandra" ? "email" : "PartitionKey",
       fieldOptions: getformattedOptions(headers),
 
       entityTypeOptions: getformattedOptions(queryViewModel.queryBuilderViewModel().edmTypes()),
 
-      selectedEntityType: "String",
+      selectedEntityType: userContext.apiType === "Cassandra" ? "Text" : "String",
       operationOptions: getformattedOptions(queryViewModel.queryBuilderViewModel().clauseRules()),
       // operationOptions: queryTableRows[0].operationOptions,
       selectedOperation: "And",
