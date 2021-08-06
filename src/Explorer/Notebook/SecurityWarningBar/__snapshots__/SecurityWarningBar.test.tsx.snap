@@ -5,21 +5,18 @@ exports[`SecurityWarningBar renders if notebook is trusted 1`] = `<Fragment />`;
 exports[`SecurityWarningBar renders if notebook is untrusted 1`] = `
 <StyledMessageBar
   actions={
-    <div>
-      <CustomizedMessageBarButton
-        onClick={[Function]}
-      >
-        Trust Notebook
-      </CustomizedMessageBarButton>
-    </div>
+    <CustomizedMessageBarButton
+      onClick={[Function]}
+    >
+      Trust Notebook
+    </CustomizedMessageBarButton>
   }
+  dismissButtonAriaLabel="Close"
   isMultiline={false}
   messageBarType={5}
   onDismiss={[Function]}
 >
-  <b>
-    SECURITY WARNING
-  </b>
-    This notebook was downloaded from the public gallery. Running code cells from a notebook authored by someone else may involve security risks. risk.
+   
+  This notebook was downloaded from the public gallery. Running code cells from a notebook authored by someone else may involve security risks.
 </StyledMessageBar>
 `;

@@ -35,21 +35,21 @@ export class SecurityWarningBar extends React.Component<SecurityWarningBarProps,
         messageBarType={MessageBarType.warning}
         isMultiline={false}
         onDismiss={() => this.setState({ isBarDismissed: true })}
+        dismissButtonAriaLabel="Close"
         actions={
-          <div>
-            <MessageBarButton
-              onClick={() => {
-                this.props.markNotebookAsTrusted(this.props.contentRef);
-                this.props.saveNotebook(this.props.contentRef);
-              }}
-            >
-              Trust Notebook
-            </MessageBarButton>
-          </div>
+          <MessageBarButton
+            onClick={() => {
+              this.props.markNotebookAsTrusted(this.props.contentRef);
+              this.props.saveNotebook(this.props.contentRef);
+            }}
+          >
+            Trust Notebook
+          </MessageBarButton>
         }
       >
-        <b>SECURITY WARNING</b>&nbsp; This notebook was downloaded from the public gallery. Running code cells from a
-        notebook authored by someone else may involve security risks. risk.
+        {" "}
+        This notebook was downloaded from the public gallery. Running code cells from a notebook authored by someone
+        else may involve security risks.
       </MessageBar>
     ) : (
       <></>
