@@ -441,19 +441,20 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       ", ",
       this.state.selection.getSelection()
     );
-    let timeStamp: string;
+    let itemValue: string;
+    const documentKey = userContext.apiType === "Cassandra" ? "userid" : "Timestamp";
     let selectedItems: Entities.ITableEntity[];
     if (this.state.selection.getSelection().length > 0) {
       Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
-        if (key === "Timestamp") {
-          timeStamp = Object.values(this.state.selection.getSelection()[0])[index];
+        if (key === documentKey) {
+          itemValue = Object.values(this.state.selection.getSelection()[0])[index];
           console.log(
             "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 445 ~ QueryTablesTabComponent ~ timeStamp",
-            timeStamp
+            itemValue
           );
         }
       });
-      selectedItems = this.state.entities.filter((item) => item["Timestamp"]._ === timeStamp);
+      selectedItems = this.state.entities.filter((item) => item[documentKey]._ === itemValue);
       console.log(
         "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 293 ~ QueryTablesTabComponent ~ selectedItems",
         selectedItems
