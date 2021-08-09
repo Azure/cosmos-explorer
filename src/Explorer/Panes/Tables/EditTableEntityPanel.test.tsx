@@ -15,11 +15,14 @@ describe("Excute Edit Table Entity Pane", () => {
   fakeTableEntityListViewModel.headers = [];
   fakeTableEntityListViewModel.selected = ko.observableArray<Entities.ITableEntity>([{}]);
 
+  const fakeSelectedItem = [{ PartitionKey: { _: "test", $: "String" } }];
   const props = {
     tableDataClient: new TablesAPIDataClient(),
     queryTablesTab: fakeQueryTablesTab,
     tableEntityListViewModel: fakeTableEntityListViewModel,
     cassandraApiClient: fakeCassandraApiClient,
+    selectedEntity: fakeSelectedItem,
+    reloadEntities: () => "{}",
   };
 
   it("should render Default properly", () => {
@@ -29,13 +32,13 @@ describe("Excute Edit Table Entity Pane", () => {
 
   it("initially display 4 input field, 2 properties and 1 entity values", () => {
     const wrapper = mount(<EditTableEntityPanel {...props} />);
-    expect(wrapper.find("input[type='text']")).toHaveLength(0);
+    expect(wrapper.find("input[type='text']")).toHaveLength(1);
   });
 
   it("add a new entity row", () => {
     const wrapper = mount(<EditTableEntityPanel {...props} />);
     wrapper.find(".addButtonEntiy").last().simulate("click");
-    expect(wrapper.find("input[type='text']")).toHaveLength(1);
+    expect(wrapper.find("input[type='text']")).toHaveLength(2);
   });
 
   it("remove a entity field", () => {
@@ -43,6 +46,6 @@ describe("Excute Edit Table Entity Pane", () => {
     // Since default entity row doesn't have delete option, so added row then delete for test cases.
     wrapper.find(".addButtonEntiy").last().simulate("click");
     wrapper.find("#deleteEntity").last().simulate("click");
-    expect(wrapper.find("input[type='text']")).toHaveLength(0);
+    expect(wrapper.find("input[type='text']")).toHaveLength(1);
   });
 });

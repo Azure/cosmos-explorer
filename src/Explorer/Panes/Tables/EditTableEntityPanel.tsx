@@ -81,15 +81,8 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let originalDocument: { [key: string]: any } = {};
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // const entityAttribute: any = tableEntityListViewModel.selected();
-    // const entityFormattedAttribute = constructDisplayedAttributes(entityAttribute[0]);
     const entityAttribute: any = selectedEntity;
-    console.log("🚀 ~ file: EditTableEntityPanel.tsx ~ line 86 ~ useEffect ~ entityAttribute", entityAttribute);
-    const entityFormattedAttribute = constructDisplayedAttributes(entityAttribute[0]);
-    console.log(
-      "🚀 ~ file: EditTableEntityPanel.tsx ~ line 88 ~ useEffect ~ entityFormattedAttribute",
-      entityFormattedAttribute
-    );
+    const entityFormattedAttribute = constructDisplayedAttributes(entityAttribute && entityAttribute[0]);
     setEntities(entityFormattedAttribute);
 
     if (userContext.apiType === "Tables") {
