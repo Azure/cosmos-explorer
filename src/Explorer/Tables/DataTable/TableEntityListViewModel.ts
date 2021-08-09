@@ -6,7 +6,6 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-// import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
@@ -103,7 +102,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
 
   //public tableExplorerContext: TableExplorerContext;
   public notifyColumnChanges: (enablePrompt: boolean, queryTablesTab: NewQueryTablesTab) => void;
-  // public notifyColumnChanges: (enablePrompt: boolean, queryTablesTab: QueryTablesTab) => void;
 
   public tablePageStartIndex: number;
   public tableQuery: Entities.ITableQuery = {};
@@ -115,7 +113,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   public queryErrorMessage: ko.Observable<string>;
   public id: string;
 
-  // constructor(tableCommands: TableCommands, queryTablesTab: QueryTablesTab) {
   constructor(tableCommands: TableCommands, queryTablesTab: NewQueryTablesTab) {
     super();
     this.cache = new TableEntityCache();
@@ -149,10 +146,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
 
   public updateHeaders(newHeaders: string[], notifyColumnChanges: boolean = false, enablePrompt: boolean = true): void {
     this.headers = newHeaders;
-    // if (notifyColumnChanges) {
-    //   this.clearSelection();
-    //   this.notifyColumnChanges(enablePrompt, this.queryTablesTab);
-    // }
   }
 
   /**
@@ -172,21 +165,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     var prefetchThreshold = 10;
     var tableQuery = this.tableQuery;
 
-    // for (var index in aoData) {
-    //   var data = aoData[index];
-    //   if (data.name === "length") {
-    //     tablePageSize = data.value;
-    //   }
-    //   if (data.name === "start") {
-    //     this.tablePageStartIndex = data.value;
-    //   }
-    //   if (data.name === "draw") {
-    //     draw = data.value;
-    //   }
-    //   if (data.name === "order") {
-    //     columnSortOrder = data.value;
-    //   }
-    // }
     // Try cache if valid.
     if (this.isCacheValid(tableQuery)) {
       // Check if prefetch needed.
@@ -233,19 +211,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         return this.updateCachedEntity(entity);
       });
     }
-
-    // Find the first item which is greater than the added entity.
-    // var oSettings: any = (<any>this.table).context[0];
-    // var index: number = _.findIndex(this.cache.data, (data: any) => {
-    //   return this.dataComparer(data, entity, this.cache.sortOrder, oSettings) > 0;
-    // });
-
-    // If no such item, then insert at last.
-    // var insertIndex: number = Utilities.ensureBetweenBounds(
-    //   index < 0 ? this.cache.length : index,
-    //   0,
-    //   this.cache.length
-    // );
 
     this.cache.data.splice(this.cache.length, 0, entity);
 
@@ -296,14 +261,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
       });
     this.clearSelection();
-
-    // Show last available page if there is not enough data
-    // var pageInfo = this.table.page.info();
-    // if (this.cache.length <= pageInfo.start) {
-    //   var availablePages = Math.ceil(this.cache.length / pageInfo.length);
-    //   var pageToShow = availablePages > 0 ? availablePages - 1 : 0;
-    //   this.table.page(pageToShow);
-    // }
 
     return Q.resolve(null);
   }
@@ -403,7 +360,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     tablePageSize: number,
     downloadSize: number,
     draw: number,
-    // renderCallBack: Function,
     oSettings: any,
     columnSortOrder: any
   ): void {

@@ -521,7 +521,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public runQuery(queryTableRows: IQueryTableRowsType[]): void {
-    // this.state.queryViewModel.hasQueryError()
     this.setState({
       isLoading: true,
       selectedQueryText: this.state.queryViewModel.runQuery(queryTableRows),
@@ -532,10 +531,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({
       queryText: this.state.queryViewModel.queryText(),
     });
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 542 ~ QueryTablesTabComponent ~ runQuery ~ this.state.queryViewModel.hasQueryError()",
-      this.state.queryViewModel.hasQueryError()
-    );
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {

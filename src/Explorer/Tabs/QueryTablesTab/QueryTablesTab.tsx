@@ -4,7 +4,8 @@ import Explorer from "../../Explorer";
 import TableCommands from "../../Tables/DataTable/TableCommands";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import TabsBase from "../TabsBase";
-import QueryTablesTabComponent, { IQueryTablesTabComponentProps } from "./QueryTablesTabComponent";
+import QueryTablesTabComponent from "./QueryTablesTabComponent";
+import { IQueryTablesTabComponentProps } from "./QueryTableTabUtils";
 
 interface QueryTablesTabProps {
   container: Explorer;

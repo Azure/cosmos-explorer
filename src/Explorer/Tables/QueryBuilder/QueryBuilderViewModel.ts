@@ -114,7 +114,6 @@ export default class QueryBuilderViewModel {
       "PartitionKey",
       this.edmTypes()[0],
       Constants.Operator.Equal,
-      // this.tableEntityListViewModel.items()[0].PartitionKey._,
       pk,
       false,
       "",
@@ -129,7 +128,6 @@ export default class QueryBuilderViewModel {
       "RowKey",
       this.edmTypes()[0],
       Constants.Operator.Equal,
-      // this.tableEntityListViewModel.items()[0].RowKey._,
       rk,
       true,
       "",
@@ -144,13 +142,10 @@ export default class QueryBuilderViewModel {
 
   public getODataFilterFromClauses = (queryClauses: IQueryTableRowsType[]): string => {
     var filterString: string = "";
-    // var treeTraversal = (queryClauses: IQueryTableRowsType[]): void => {
     if (queryClauses != undefined) {
       for (var i = 0; i < queryClauses.length; i++) {
         var currentItem = queryClauses[i];
 
-        // if (currentItem instanceof QueryClauseViewModel) {
-        // var clause = <QueryClauseViewModel>currentItem;
         this.timestampToValue(currentItem);
         filterString = filterString.concat(
           this.constructODataClause(
@@ -163,16 +158,8 @@ export default class QueryBuilderViewModel {
             this.generateRightParentheses(currentItem)
           )
         );
-        // }
-
-        // if (currentItem instanceof ClauseGroup) {
-        //   treeTraversal(<ClauseGroup>currentItem);
-        // }
       }
     }
-    // };
-
-    // treeTraversal(this.queryClauses);
 
     return filterString.trim();
   };
@@ -205,12 +192,9 @@ export default class QueryBuilderViewModel {
     }
     filterString = filterString.concat(" WHERE");
     var first = true;
-    // var treeTraversal = (group: ClauseGroup): void => {
     for (var i = 0; i < queryTableRows.length; i++) {
       var currentItem = queryTableRows[i];
 
-      // if (currentItem instanceof QueryClauseViewModel) {
-      // var clause = <QueryClauseViewModel>currentItem;
       let timeStampValue: string = this.timestampToSqlValue(currentItem);
       var value = currentItem.entityValue;
       if (!currentItem.isValue) {
@@ -228,17 +212,8 @@ export default class QueryBuilderViewModel {
         )
       );
       first = false;
-      // }
-
-      // if (currentItem instanceof ClauseGroup) {
-      //   treeTraversal(<ClauseGroup>currentItem);
-      // }
-      // }
     }
 
-    // treeTraversal(this.queryClauses);
-
-    console.log("🚀 ~ file: QueryBuilderViewModel.ts ~ line 250 ~ QueryBuilderViewModel ~ filterString", filterString);
     return filterString.trim();
   };
 
@@ -262,12 +237,9 @@ export default class QueryBuilderViewModel {
     }
     filterString = filterString.concat(" WHERE");
     var first = true;
-    // var treeTraversal = (group: ClauseGroup): void => {
     for (var i = 0; i < queryTableRows.length; i++) {
       var currentItem = queryTableRows[i];
 
-      // if (currentItem instanceof QueryClauseViewModel) {
-      // var clause = <QueryClauseViewModel>currentItem;
       let timeStampValue: string = this.timestampToSqlValue(currentItem);
       var value = currentItem.entityValue;
       if (!currentItem.isValue) {
@@ -285,15 +257,7 @@ export default class QueryBuilderViewModel {
         )
       );
       first = false;
-      // }
-
-      if (currentItem instanceof ClauseGroup) {
-        // treeTraversal(<ClauseGroup>currentItem);
-      }
     }
-    // };
-
-    // treeTraversal(this.queryClauses);
 
     return filterString.trim();
   };
@@ -499,7 +463,6 @@ export default class QueryBuilderViewModel {
   // adds a new clause to the end of the array
   public addNewClause = (): void => {
     this.addClauseIndex(this.clauseArray().length, null);
-    // this.addClauseIndex(queryTableRows.length, null);
   };
 
   public onAddClauseKeyDown = (index: number, data: any, event: KeyboardEvent, source: any): boolean => {
@@ -637,16 +600,11 @@ export default class QueryBuilderViewModel {
     return groupViewModels;
   };
 
-  public runQuery = (): DataTables.DataTable => {
-    return this._queryViewModel.runQuery();
-  };
-
   public addCustomRange(timestamp: CustomTimestampHelper.ITimestampQuery, clauseToAdd: QueryClauseViewModel): void {
     var index = this.clauseArray.peek().indexOf(clauseToAdd);
 
     var newClause = new QueryClauseViewModel(
       this,
-      //this._tableEntityListViewModel.tableExplorerContext.hostProxy,
       "And",
       clauseToAdd.field(),
       "DateTime",

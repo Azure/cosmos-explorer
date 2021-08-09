@@ -3,7 +3,6 @@ import * as ko from "knockout";
 import * as _ from "underscore";
 import * as CommonConstants from "../../../Common/Constants";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-// import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 import * as Constants from "../Constants";
@@ -50,7 +49,6 @@ abstract class DataTableViewModel {
 
   private dataTableOperationManager: IDataTableOperation;
 
-  // public queryTablesTab: QueryTablesTab;
   public queryTablesTab: NewQueryTablesTab;
 
   constructor() {
@@ -173,36 +171,13 @@ abstract class DataTableViewModel {
     this.cache.sortOrder = sortOrder;
   }
 
-  protected renderPage(
-    // renderCallBack: any,
-    // draw: number,
-    startIndex: number,
-    pageSize: number
-    // oSettings: any,
-    // postRenderTasks: (startIndex: number, pageSize: number) => Promise<void> = null
-  ) {
-    // this.updatePaginationControls(oSettings);
-
-    // pageSize < 0 means to show all data
+  protected renderPage(startIndex: number, pageSize: number) {
     var endIndex = pageSize < 0 ? this.cache.length : startIndex + pageSize;
     var renderData = this.cache.data.slice(startIndex, endIndex);
 
     this.items(renderData);
     this.items1 = renderData;
 
-    // var render: IDataTableRenderData = {
-    //   draw: draw,
-    //   aaData: renderData,
-    //   recordsTotal: this.cache.length,
-    //   recordsFiltered: this.cache.length,
-    // };
-
-    // if (!!postRenderTasks) {
-    //   postRenderTasks(startIndex, pageSize).then(() => {
-    //     this.table.rows().invalidate();
-    //   });
-    // }
-    // renderCallBack(render);
     if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
       TelemetryProcessor.traceSuccess(
         Action.Tab,
@@ -221,16 +196,6 @@ abstract class DataTableViewModel {
   protected matchesKeys(item: Entities.ITableEntity, itemKeys: Entities.IProperty[]): boolean {
     return itemKeys.every((property: Entities.IProperty) => {
       var itemValue = item[property.key];
-
-      // if (itemValue && property.subkey) {
-      //     itemValue = itemValue._[property.subkey];
-      //     if (!itemValue) {
-      //         itemValue = "";
-      //     }
-      // } else if (property.subkey) {
-      //     itemValue = "";
-      // }
-
       return this.stringCompare(itemValue._, property.value);
     });
   }

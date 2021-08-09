@@ -41,11 +41,9 @@ export default class QueryViewModel {
   public columnOptions: ko.ObservableArray<string>;
 
   public queryTablesTab: NewQueryTablesTab;
-  // public queryTablesTab: QueryTablesTab;
   public id: string;
   private _tableEntityListViewModel: TableEntityListViewModel;
 
-  // constructor(queryTablesTab: QueryTablesTab) {
   constructor(queryTablesTab: NewQueryTablesTab) {
     this.queryTablesTab = queryTablesTab;
     this.id = `queryViewModel${this.queryTablesTab.tabId}`;
@@ -106,7 +104,7 @@ export default class QueryViewModel {
     DataTableUtilities.forceRecalculateTableSize();
   };
 
-  public toggleAdvancedOptions = () => {
+  public toggleAdvancedOptions = (): void => {
     this.isExpanded(!this.isExpanded());
     if (this.isExpanded()) {
       this.focusTopResult(true);
@@ -129,7 +127,7 @@ export default class QueryViewModel {
     return this.selectText();
   };
 
-  private setFilter = (queryTableRows: IQueryTableRowsType[]): string => {
+  private setFilter = (queryTableRows?: IQueryTableRowsType[]): string => {
     const queryString = this.isEditorActive()
       ? this.queryText()
       : userContext.apiType === "Cassandra"
@@ -143,10 +141,6 @@ export default class QueryViewModel {
   private setSqlFilter = (queryTableRows: IQueryTableRowsType[]): string => {
     return this.queryBuilderViewModel().getSqlFilterFromClauses(queryTableRows);
   };
-
-  // private setCqlFilter = (): string => {
-  //   return this.queryBuilderViewModel().getCqlFilterFromClauses();
-  // };
 
   public isHelperEnabled = ko
     .computed<boolean>(() => {
@@ -162,15 +156,8 @@ export default class QueryViewModel {
     });
 
   public runQuery = (queryTableRows: IQueryTableRowsType[]): string => {
-    console.log(
-      "🚀 ~ file: QueryViewModel.tsx ~ line 169 ~ QueryViewModel ~ //constructor ~ queryTableRows",
-      queryTableRows
-    );
     let filter = this.setFilter(queryTableRows);
-    console.log(
-      "🚀 ~ file: QueryViewModel.tsx ~ line 171 ~ QueryViewModel ~ //constructor ~ userContext.apiType",
-      userContext.apiType
-    );
+
     if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
     }
@@ -187,7 +174,6 @@ export default class QueryViewModel {
     return userContext.apiType !== "Cassandra"
       ? this._tableEntityListViewModel.sqlQuery()
       : this._tableEntityListViewModel.cqlQuery();
-    // return this._tableEntityListViewModel.reloadTable(/*useSetting*/ false, /*resetHeaders*/ false);
   };
 
   public clearQuery = (): DataTables.DataTable => {
