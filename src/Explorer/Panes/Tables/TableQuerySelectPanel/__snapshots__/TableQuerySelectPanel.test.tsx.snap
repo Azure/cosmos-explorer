@@ -2,8 +2,12 @@
 
 exports[`Table query select Panel should render Default properly 1`] = `
 <TableQuerySelectPanel
-  closePanel={[Function]}
-  explorer={Object {}}
+  getSelectMessage={[Function]}
+  headers={
+    Array [
+      "",
+    ]
+  }
   queryViewModel={
     Object {
       "columnOptions": [Function],
@@ -647,14 +651,14 @@ exports[`Table query select Panel should render Default properly 1`] = `
             </StyledCheckboxBase>
             <StyledCheckboxBase
               checked={true}
-              disabled={true}
+              disabled={false}
               key=""
               label=""
               onChange={[Function]}
             >
               <CheckboxBase
                 checked={true}
-                disabled={true}
+                disabled={false}
                 label=""
                 onChange={[Function]}
                 styles={[Function]}
@@ -933,34 +937,34 @@ exports[`Table query select Panel should render Default properly 1`] = `
                 }
               >
                 <div
-                  className="ms-Checkbox is-checked is-disabled root-62"
+                  className="ms-Checkbox is-checked is-enabled root-54"
                 >
                   <input
                     aria-checked="true"
-                    aria-disabled={true}
+                    aria-disabled={false}
                     aria-label=""
                     checked={true}
                     className="input-55"
                     data-ktp-execute-target={true}
-                    disabled={true}
+                    disabled={false}
                     id="checkbox-0"
                     onChange={[Function]}
                     type="checkbox"
                   />
                   <label
-                    className="ms-Checkbox-label label-63"
+                    className="ms-Checkbox-label label-56"
                     htmlFor="checkbox-0"
                   >
                     <div
-                      className="ms-Checkbox-checkbox checkbox-64"
+                      className="ms-Checkbox-checkbox checkbox-57"
                       data-ktp-target={true}
                     >
                       <StyledIconBase
-                        className="ms-Checkbox-checkmark checkmark-65"
+                        className="ms-Checkbox-checkmark checkmark-58"
                         iconName="CheckMark"
                       >
                         <IconBase
-                          className="ms-Checkbox-checkmark checkmark-65"
+                          className="ms-Checkbox-checkmark checkmark-58"
                           iconName="CheckMark"
                           styles={[Function]}
                           theme={
@@ -1239,7 +1243,7 @@ exports[`Table query select Panel should render Default properly 1`] = `
                         >
                           <i
                             aria-hidden={true}
-                            className="ms-Checkbox-checkmark checkmark-67"
+                            className="ms-Checkbox-checkmark checkmark-61"
                             data-icon-name="CheckMark"
                           >
                             

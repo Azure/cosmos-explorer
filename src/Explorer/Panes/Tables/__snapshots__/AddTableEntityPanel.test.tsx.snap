@@ -4,6 +4,7 @@ exports[`Excute Add Table Entity Pane should render Default properly 1`] = `
 <AddTableEntityPanel
   cassandraApiClient={Object {}}
   queryTablesTab={Object {}}
+  reloadEntities={[Function]}
   tableDataClient={TablesAPIDataClient {}}
   tableEntityListViewModel={
     Object {

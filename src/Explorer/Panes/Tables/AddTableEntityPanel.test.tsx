@@ -4,7 +4,7 @@ import React from "react";
 import TableListViewModal from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, TablesAPIDataClient } from "../../Tables/TableDataClient";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import QueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 import { AddTableEntityPanel } from "./AddTableEntityPanel";
 
 describe("Excute Add Table Entity Pane", () => {
@@ -18,6 +18,7 @@ describe("Excute Add Table Entity Pane", () => {
     queryTablesTab: fakeQueryTablesTab,
     tableEntityListViewModel: fakeTableEntityListViewModel,
     cassandraApiClient: fakeCassandraApiClient,
+    reloadEntities: () => "{}",
   };
 
   it("should render Default properly", () => {

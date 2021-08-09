@@ -23,7 +23,7 @@ const Index = (): JSX.Element => {
       <header className="header HeaderBg">
         <div className="items">
           <img className="DocDBicon" src={CosmosDB_20170829} alt="Azure Cosmos DB" />
-          <a className="createdocdbacnt" href="https://aka.ms/documentdbcreate" target="_blank">
+          <a className="createdocdbacnt" href="https://aka.ms/documentdbcreate" target="_blank" rel="noreferrer">
             Create an Azure Cosmos DB account <img className="rightarrowimg" src={Arrow} alt="" />
           </a>
           <span className="title">Azure Cosmos DB Emulator</span>

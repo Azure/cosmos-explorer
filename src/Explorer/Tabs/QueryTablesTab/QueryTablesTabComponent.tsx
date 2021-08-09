@@ -446,7 +446,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     //eslint-disable-next-line
     const items: any[] = [];
     //eslint-disable-next-line
-    let obj: any = undefined;
+    let obj: any;
     documents.map((item) => {
       this.columns.map((col) => {
         if (item[col.name]) {

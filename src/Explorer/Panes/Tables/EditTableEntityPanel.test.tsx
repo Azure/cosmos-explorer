@@ -4,7 +4,7 @@ import React from "react";
 import TableListViewModal from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, TablesAPIDataClient } from "../../Tables/TableDataClient";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import QueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 import { EditTableEntityPanel } from "./EditTableEntityPanel";
 
 describe("Excute Edit Table Entity Pane", () => {
