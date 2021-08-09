@@ -138,9 +138,9 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
 };
 
-export const getReadRegions = async (): Promise<Array<string>> => {
+export const getRegions = async (): Promise<Array<string>> => {
   try {
-    const readRegions = new Array<string>();
+    const regions = new Array<string>();
 
     const response = await armRequestWithoutPolling<RegionsResponse>({
       host: configContext.ARM_ENDPOINT,
@@ -150,13 +150,13 @@ export const getReadRegions = async (): Promise<Array<string>> => {
     });
 
     if (response.result.location !== undefined) {
-      readRegions.push(response.result.location.replace(" ", "").toLowerCase());
+      regions.push(response.result.location.replace(" ", "").toLowerCase());
     } else {
       for (const location of response.result.locations) {
-        readRegions.push(location.locationName.replace(" ", "").toLowerCase());
+        regions.push(location.locationName.replace(" ", "").toLowerCase());
       }
     }
-    return readRegions;
+    return regions;
   } catch (err) {
     return new Array<string>();
   }
