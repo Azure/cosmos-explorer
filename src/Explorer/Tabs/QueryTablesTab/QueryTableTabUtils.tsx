@@ -64,6 +64,8 @@ export interface IQueryTablesTabComponentStates {
   entities: Entities.ITableEntity[];
   headers: string[];
   isLoading: boolean;
+  queryErrorMessage: string;
+  hasQueryError: boolean;
 }
 
 export interface IQueryTableRowsType {

@@ -167,6 +167,10 @@ export default class QueryViewModel {
       queryTableRows
     );
     let filter = this.setFilter(queryTableRows);
+    console.log(
+      "🚀 ~ file: QueryViewModel.tsx ~ line 171 ~ QueryViewModel ~ //constructor ~ userContext.apiType",
+      userContext.apiType
+    );
     if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
     }
@@ -180,7 +184,9 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.sqlQuery(this.setSqlFilter(queryTableRows));
     this._tableEntityListViewModel.cqlQuery(filter);
 
-    return this._tableEntityListViewModel.sqlQuery();
+    return userContext.apiType !== "Cassandra"
+      ? this._tableEntityListViewModel.sqlQuery()
+      : this._tableEntityListViewModel.cqlQuery();
     // return this._tableEntityListViewModel.reloadTable(/*useSetting*/ false, /*resetHeaders*/ false);
   };
 

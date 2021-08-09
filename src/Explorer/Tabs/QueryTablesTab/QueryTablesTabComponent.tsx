@@ -108,7 +108,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       tableEntityListViewModel,
       queryViewModel: new QueryViewModel(this.props.queryTablesTab),
       queryText: "PartitionKey eq 'partionKey1'",
-      selectedQueryText: "Select * from c",
+      selectedQueryText:
+        userContext.apiType === "Cassandra"
+          ? `SELECT * FROM ${getQuotedCqlIdentifier(
+              this.props.queryTablesTab.collection.databaseId
+            )}.${getQuotedCqlIdentifier(this.props.queryTablesTab.collection.id())}`
+          : "Select * from c",
       isHelperActive: true,
       executeQueryButton: {
         enabled: true,
@@ -182,6 +187,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         },
       ],
       isLoading: true,
+      queryErrorMessage: "",
+      hasQueryError: false,
     };
 
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
@@ -326,22 +333,33 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let headers: string[] = [];
     //eslint-disable-next-line
     let documents: any = {};
-    if (userContext.apiType === "Cassandra") {
-      const query = `SELECT * FROM ${getQuotedCqlIdentifier(
-        this.props.queryTablesTab.collection.databaseId
-      )}.${getQuotedCqlIdentifier(this.props.queryTablesTab.collection.id())}`;
-      documents = await this.props.queryTablesTab.container.tableDataClient.queryDocuments(
-        this.props.queryTablesTab.collection,
-        query,
-        true
-      );
-      headers = this.getFormattedHeaders(documents.Results);
-      this.setupIntialEntities(documents.Results, headers, isInitialLoad);
-    } else {
-      const { collection } = this.props;
-      documents = await this.getDocuments(collection, selectedQueryText);
-      headers = this.getFormattedHeaders(documents.Results);
-      this.setupIntialEntities(documents.Results, headers, isInitialLoad);
+    try {
+      if (userContext.apiType === "Cassandra") {
+        documents = await this.props.queryTablesTab.container.tableDataClient.queryDocuments(
+          this.props.queryTablesTab.collection,
+          selectedQueryText,
+          true
+        );
+        headers = this.getFormattedHeaders(documents.Results);
+        this.setupIntialEntities(documents.Results, headers, isInitialLoad);
+      } else {
+        const { collection } = this.props;
+        documents = await this.getDocuments(collection, selectedQueryText);
+        headers = this.getFormattedHeaders(documents.Results);
+        this.setupIntialEntities(documents.Results, headers, isInitialLoad);
+      }
+      this.setState({
+        queryErrorMessage: "",
+        hasQueryError: false,
+      });
+    } catch (error) {
+      if (error.responseText) {
+        this.setState({
+          queryErrorMessage: error.responseText,
+          hasQueryError: true,
+          isLoading: false,
+        });
+      }
     }
   }
 
@@ -528,6 +546,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public runQuery(queryTableRows: IQueryTableRowsType[]): void {
+    // this.state.queryViewModel.hasQueryError()
     this.setState({
       isLoading: true,
       selectedQueryText: this.state.queryViewModel.runQuery(queryTableRows),
@@ -538,6 +557,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({
       queryText: this.state.queryViewModel.queryText(),
     });
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 542 ~ QueryTablesTabComponent ~ runQuery ~ this.state.queryViewModel.hasQueryError()",
+      this.state.queryViewModel.hasQueryError()
+    );
   }
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
@@ -738,12 +761,14 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
         <div className="query-builder">
           <div className="error-bar">
-            {this.state.queryViewModel.hasQueryError() && (
+            {this.state.hasQueryError && (
               <div className="error-message" aria-label="Error Message">
                 <span>
                   <img className="entity-error-Img" src={ErrorRed} />
                 </span>
-                <span className="error-text" role="alert"></span>
+                <span className="error-text" role="alert">
+                  {this.state.queryErrorMessage}
+                </span>
               </div>
             )}
           </div>
@@ -751,9 +776,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
             <div className="query-editor-panel">
               <div>
                 <textarea
-                  className={`query-editor-text ${
-                    this.state.queryViewModel.hasQueryError() ? "query-editor-text-invalid" : ""
-                  } `}
+                  className={`query-editor-text ${this.state.hasQueryError ? "query-editor-text-invalid" : ""} `}
                   value={this.state.queryText}
                   readOnly={true}
                   name="query-editor"

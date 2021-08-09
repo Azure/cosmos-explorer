@@ -257,43 +257,43 @@ export default class QueryBuilderViewModel {
         });
       filterString = filterString.concat(` FROM ${tableToQuery}`);
     }
-    if (this.queryClauses.children.length === 0) {
+    if (queryTableRows === undefined || queryTableRows.length === 0) {
       return filterString;
     }
     filterString = filterString.concat(" WHERE");
     var first = true;
-    var treeTraversal = (group: ClauseGroup): void => {
-      for (var i = 0; i < group.children.length; i++) {
-        var currentItem = group.children[i];
+    // var treeTraversal = (group: ClauseGroup): void => {
+    for (var i = 0; i < queryTableRows.length; i++) {
+      var currentItem = queryTableRows[i];
 
-        if (currentItem instanceof QueryClauseViewModel) {
-          var clause = <QueryClauseViewModel>currentItem;
-          let timeStampValue: string = this.timestampToSqlValue(clause);
-          var value = clause.value();
-          if (!clause.isValue()) {
-            value = timeStampValue;
-          }
-          filterString = filterString.concat(
-            this.constructCqlClause(
-              first ? "" : clause.and_or(),
-              this.generateLeftParentheses(clause),
-              clause.field(),
-              clause.type(),
-              clause.operator(),
-              value,
-              this.generateRightParentheses(clause)
-            )
-          );
-          first = false;
-        }
-
-        if (currentItem instanceof ClauseGroup) {
-          treeTraversal(<ClauseGroup>currentItem);
-        }
+      // if (currentItem instanceof QueryClauseViewModel) {
+      // var clause = <QueryClauseViewModel>currentItem;
+      let timeStampValue: string = this.timestampToSqlValue(currentItem);
+      var value = currentItem.entityValue;
+      if (!currentItem.isValue) {
+        value = timeStampValue;
       }
-    };
+      filterString = filterString.concat(
+        this.constructCqlClause(
+          first ? "" : currentItem.selectedOperation,
+          this.generateLeftParentheses(currentItem),
+          currentItem.selectedField,
+          currentItem.selectedEntityType,
+          currentItem.selectedOperator,
+          value,
+          this.generateRightParentheses(currentItem)
+        )
+      );
+      first = false;
+      // }
 
-    treeTraversal(this.queryClauses);
+      if (currentItem instanceof ClauseGroup) {
+        // treeTraversal(<ClauseGroup>currentItem);
+      }
+    }
+    // };
+
+    // treeTraversal(this.queryClauses);
 
     return filterString.trim();
   };
