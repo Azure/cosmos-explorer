@@ -216,38 +216,11 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
 
   public createSelection = (): Selection => {
     return new Selection({
-      onSelectionChanged: () => this.onItemsSelectionChanged(),
+      onSelectionChanged: () => this.onItemsSelectionChanged(false),
       //eslint-disable-next-line
       getKey: (item: any) => item.key,
     });
   };
-
-  public setDefaultItemSelection(): void {
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 328 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selectedItems",
-      this.state.selectedItems,
-      ", ",
-      this.state.entities[0]
-    );
-    // const newSelection = this.createSelection();
-    // const items: any = this.state.items;
-
-    // newSelection.setItems(items);
-    // for (let i = 1; i <= 3; i++) {
-    //   newSelection.setKeySelected(`${i}`, true, false);
-    //   console.log(" yooo > ", newSelection.setKeySelected(`${i}`, true, false));
-    // }
-    // this.setState({
-    //   selection: newSelection,
-    //   // selectedItems: this.onItemsSelectionChanged(),
-    // });
-    // console.log(
-    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 342 ~ QueryTablesTabComponent ~ setDefaultItemSelection ~ selection",
-    //   this.state.selection,
-    //   ", ",
-    //   this.state.selectedItems
-    // );
-  }
 
   public getSelectMessage(selectMessage: string): void {
     this.setState({
@@ -255,11 +228,13 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
   }
 
-  private onItemsSelectionChanged = (): Entities.ITableEntity[] => {
+  private onItemsSelectionChanged = (isFirstItemSelected: boolean): Entities.ITableEntity[] => {
     let itemValue: string;
     const documentKey = userContext.apiType === "Cassandra" ? "userid" : "Timestamp";
     let selectedItems: Entities.ITableEntity[];
-    if (this.state.selection.getSelection().length > 0) {
+    const { selection } = this.state;
+    isFirstItemSelected && selection.setIndexSelected(0, true, false);
+    if (selection.getSelection().length > 0) {
       Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
         if (key === documentKey) {
           itemValue = Object.values(this.state.selection.getSelection()[0])[index];
@@ -384,7 +359,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       () => {
         if (isInitialLoad) {
           this.loadFilterExample();
-          this.setDefaultItemSelection();
+          this.onItemsSelectionChanged(true);
         }
       }
     );
