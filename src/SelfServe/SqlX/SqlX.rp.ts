@@ -150,10 +150,10 @@ export const getRegions = async (): Promise<Array<string>> => {
     });
 
     if (response.result.location !== undefined) {
-      regions.push(response.result.location.replace(" ", "").toLowerCase());
+      regions.push(response.result.location.split(" ").join("").toLowerCase());
     } else {
       for (const location of response.result.locations) {
-        regions.push(location.locationName.replace(" ", "").toLowerCase());
+        regions.push(location.locationName.split(" ").join("").toLowerCase());
       }
     }
     return regions;
