@@ -62,6 +62,8 @@ export interface Button {
   isSelected?: boolean;
 }
 
+const dummyQueryDocumentsPages = [1, 2, 3];
+
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
   public collection: ViewModels.Collection;
   public _queryViewModel: QueryViewModel;
@@ -189,6 +191,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       isLoading: true,
       queryErrorMessage: "",
       hasQueryError: false,
+      currentPage: 0,
     };
 
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
@@ -724,9 +727,15 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({ queryTableRows: cloneQueryTableRows });
   };
 
+  private handlePagination = (pageNo: number): void => {
+    // eslint-disable-next-line no-console
+    console.log("pagination", pageNo);
+    this.setState({ currentPage: pageNo });
+  };
+
   render(): JSX.Element {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
-    const { queryTableRows } = this.state;
+    const { queryTableRows, currentPage } = this.state;
     return (
       <div className="tab-pane tableContainer" id={this.props.tabsBaseInstance.tabId} role="tabpanel">
         <div className="query-builder">
@@ -791,7 +800,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                     </thead>
                   </table>
                 </div>
-                <>
+                <div className="query-table-clause-container">
                   {queryTableRows.map((queryTableRow, index) => (
                     <QueryTableEntityClause
                       index={index}
@@ -818,7 +827,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                       }
                     />
                   ))}
-                </>
+                </div>
                 <div className="addClause" role="button" onClick={this.onAddNewClause} tabIndex={0}>
                   <div className="addClause-heading">
                     <span className="clause-table addClause-title">
@@ -910,16 +919,32 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         <div className="tablesQueryTab tableContainer">
           {this.state.isLoading && <Spinner size={SpinnerSize.large} className="spinner" />}
           {this.state.items.length > 0 && !this.state.isLoading && (
-            <DetailsList
-              items={this.state.items}
-              columns={this.state.columns}
-              selectionMode={SelectionMode.single}
-              layoutMode={DetailsListLayoutMode.justified}
-              compact={true}
-              selection={this.state.selection}
-              selectionPreservedOnEmptyClick={true}
-              checkboxVisibility={CheckboxVisibility.always}
-            />
+            <>
+              <DetailsList
+                className="query-document-detail-list"
+                items={this.state.items}
+                columns={this.state.columns}
+                selectionMode={SelectionMode.single}
+                layoutMode={DetailsListLayoutMode.justified}
+                compact={true}
+                selection={this.state.selection}
+                selectionPreservedOnEmptyClick={true}
+                checkboxVisibility={CheckboxVisibility.always}
+              />
+              <ul className="pagination query-tab-document-pagination">
+                <li>
+                  <div onClick={() => this.handlePagination(currentPage - 1)}>Previous</div>
+                </li>
+                {dummyQueryDocumentsPages.map((pageNo) => (
+                  <li key={pageNo} onClick={() => this.handlePagination(pageNo)}>
+                    <div>{pageNo}</div>
+                  </li>
+                ))}
+                <li>
+                  <div onClick={() => this.handlePagination(currentPage + 1)}>Next</div>
+                </li>
+              </ul>
+            </>
           )}
           {this.state.items.length === 0 && !this.state.isLoading && (
             <Text variant="mediumPlus">No data available in table</Text>

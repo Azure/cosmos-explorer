@@ -66,6 +66,7 @@ export interface IQueryTablesTabComponentStates {
   isLoading: boolean;
   queryErrorMessage: string;
   hasQueryError: boolean;
+  currentPage: number;
 }
 
 export interface IQueryTableRowsType {
