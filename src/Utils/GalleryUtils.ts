@@ -243,6 +243,11 @@ export function downloadItem(
         const notebook = JSON.parse(response.data) as Notebook;
         removeNotebookViewerLink(notebook, data.newCellId);
 
+        if (!data.isSample) {
+          const metadata = notebook.metadata as { [name: string]: unknown };
+          metadata.untrusted = true;
+        }
+
         await container.importAndOpenContent(data.name, JSON.stringify(notebook));
         logConsoleInfo(`Successfully downloaded ${name} to My Notebooks`);
 

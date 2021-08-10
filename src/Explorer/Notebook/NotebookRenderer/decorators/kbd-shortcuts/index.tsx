@@ -4,6 +4,7 @@ import Immutable from "immutable";
 import React from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { NotebookUtil } from "../../../NotebookUtil";
 
 interface ComponentProps {
   contentRef: ContentRef;
@@ -14,6 +15,7 @@ interface StateProps {
   cellMap: Immutable.Map<string, any>;
   cellOrder: Immutable.List<string>;
   focusedCell?: string | null;
+  isNotebookUntrusted: boolean;
 }
 
 interface DispatchProps {
@@ -59,7 +61,12 @@ export class KeyboardShortcuts extends React.Component<Props> {
       cellOrder,
       focusedCell,
       cellMap,
+      isNotebookUntrusted,
     } = this.props;
+
+    if (isNotebookUntrusted) {
+      return;
+    }
 
     let ctrlKeyPressed = e.ctrlKey;
     // Allow cmd + enter (macOS) to operate like ctrl + enter
@@ -125,6 +132,7 @@ export const makeMapStateToProps = (_state: AppState, ownProps: ComponentProps) 
       cellOrder,
       cellMap,
       focusedCell,
+      isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, contentRef),
     };
   };
   return mapStateToProps;

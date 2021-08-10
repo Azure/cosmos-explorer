@@ -24,6 +24,7 @@ import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
 import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
 import { useNotebook } from "../Notebook/useNotebook";
 import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
 
@@ -87,11 +88,13 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
+    const isNotebookUntrusted = this.notebookComponentAdapter.isNotebookUntrusted();
+
+    const runBtnTooltip = isNotebookUntrusted ? NotebookUtil.UntrustedNotebookRunHint : undefined;
 
     const saveLabel = "Save";
     const copyToLabel = "Copy to ...";
     const publishLabel = "Publish to gallery";
-    const workspaceLabel = "No Workspace";
     const kernelLabel = "No Kernel";
     const runLabel = "Run";
     const runActiveCellLabel = "Run Active Cell";
@@ -108,8 +111,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
     const copyLabel = "Copy";
     const cutLabel = "Cut";
     const pasteLabel = "Paste";
-    const undoLabel = "Undo";
-    const redoLabel = "Redo";
     const cellCodeType = "code";
     const cellMarkdownType = "markdown";
     const cellRawType = "raw";
@@ -190,9 +191,10 @@ export default class NotebookTabV2 extends NotebookTabBase {
           this.traceTelemetry(Action.ExecuteCell);
         },
         commandButtonLabel: runLabel,
+        tooltipText: runBtnTooltip,
         ariaLabel: runLabel,
         hasPopup: false,
-        disabled: false,
+        disabled: isNotebookUntrusted,
         children: [
           {
             iconSrc: RunIcon,
