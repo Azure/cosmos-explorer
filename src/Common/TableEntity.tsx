@@ -95,7 +95,6 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
       <Stack horizontal tokens={sectionStackTokens}>
         <TextField
           label={entityPropertyLabel && entityPropertyLabel}
-          id="entityPropertyId"
           autoFocus
           disabled={isPropertyTypeDisable}
           placeholder={entityPropertyPlaceHolder}
@@ -109,7 +108,6 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
           onChange={onEntityTypeChange}
           options={options}
           disabled={isPropertyTypeDisable}
-          id="entityTypeId"
           styles={dropdownStyles}
         />
         <EntityValue
@@ -126,12 +124,12 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         />
         {!isEntityValueDisable && (
           <TooltipHost content="Edit property" id="editTooltip">
-            <Image {...imageProps} src={EditIcon} alt="editEntity" id="editEntity" onClick={onEditEntity} />
+            <Image {...imageProps} src={EditIcon} alt="editEntity" onClick={onEditEntity} />
           </TooltipHost>
         )}
         {isDeleteOptionVisible && userContext.apiType !== "Cassandra" && (
           <TooltipHost content="Delete property" id="deleteTooltip">
-            <Image {...imageProps} src={DeleteIcon} alt="delete entity" id="deleteEntity" onClick={onDeleteEntity} />
+            <Image {...imageProps} src={DeleteIcon} alt="delete entity" onClick={onDeleteEntity} />
           </TooltipHost>
         )}
       </Stack>

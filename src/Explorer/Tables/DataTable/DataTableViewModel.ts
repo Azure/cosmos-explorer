@@ -24,7 +24,6 @@ abstract class DataTableViewModel {
 
   /* Observables */
   public items = ko.observableArray<Entities.ITableEntity>();
-  public items1: Entities.ITableEntity[];
   public selected = ko.observableArray<Entities.ITableEntity>();
 
   public table: DataTables.DataTable;
@@ -53,7 +52,6 @@ abstract class DataTableViewModel {
 
   constructor() {
     this.items([]);
-    this.items1 = [];
     this.selected([]);
     // Late bound
     this.dataTableOperationManager = null;
@@ -176,7 +174,6 @@ abstract class DataTableViewModel {
     var renderData = this.cache.data.slice(startIndex, endIndex);
 
     this.items(renderData);
-    this.items1 = renderData;
 
     if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
       TelemetryProcessor.traceSuccess(

@@ -1,7 +1,6 @@
 import { IDropdownOption, Image, IPanelProps, IRenderFunction, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import RevertBackIcon from "../../../../images/RevertBack.svg";
 import { TableEntity } from "../../../Common/TableEntity";
@@ -12,7 +11,6 @@ import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, CassandraTableKey, TableDataClient } from "../../Tables/TableDataClient";
-import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import * as Utilities from "../../Tables/Utilities";
 import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 // import QueryTablesTab from "../../Tabs/QueryTablesTab";
@@ -110,40 +108,9 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
 
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
     const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
-    await tableEntityListViewModel.addEntityToCache(newEntity);
-    if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
-      // tableEntityListViewModel.redrawTableThrottled();
-      reloadEntities();
-    }
+    // await tableEntityListViewModel.addEntityToCache(newEntity);
+    reloadEntities();
     closeSidePanel();
-  };
-
-  const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
-    let newHeaders: string[] = [];
-    const keys = Object.keys(newEntity);
-    keys &&
-      keys.forEach((key: string) => {
-        if (
-          !_.contains(viewModel.headers, key) &&
-          key !== TableEntityProcessor.keyProperties.attachments &&
-          key !== TableEntityProcessor.keyProperties.etag &&
-          key !== TableEntityProcessor.keyProperties.resourceId &&
-          key !== TableEntityProcessor.keyProperties.self &&
-          (!(userContext.apiType === "Cassandra") || key !== TableConstants.EntityKeyNames.RowKey)
-        ) {
-          newHeaders.push(key);
-        }
-      });
-
-    let newHeadersInserted = false;
-    if (newHeaders.length) {
-      if (!DataTableUtilities.checkForDefaultHeader(viewModel.headers)) {
-        newHeaders = viewModel.headers.concat(newHeaders);
-      }
-      viewModel.updateHeaders(newHeaders, /* notifyColumnChanges */ true, /* enablePrompt */ false);
-      newHeadersInserted = true;
-    }
-    return newHeadersInserted;
   };
 
   /* Add new entity row */

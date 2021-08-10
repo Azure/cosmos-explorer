@@ -474,7 +474,7 @@ export default class QueryBuilderViewModel {
     return true;
   };
 
-  public onAddNewClauseKeyDown = (source: any, event: KeyboardEvent): boolean => {
+  public onAddNewClauseKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
       this.addClauseIndex(this.clauseArray().length - 1, null);
       event.stopPropagation();

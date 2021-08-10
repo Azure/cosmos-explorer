@@ -28,6 +28,7 @@ import QueryTextIcon from "../../../../images/Query-Text.svg";
 import StatusWraning from "../../../../images/QueryBuilder/StatusWarning_16x.png";
 import TriangleDown from "../../../../images/Triangle-down.svg";
 import TriangleRight from "../../../../images/Triangle-right.svg";
+import { NormalizedEventKey } from "../../../Common/Constants";
 import { queryDocuments } from "../../../Common/dataAccess/queryDocuments";
 import { handleError } from "../../../Common/ErrorHandlingUtils";
 import * as HeadersUtility from "../../../Common/HeadersUtility";
@@ -97,12 +98,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.tableDataClient = this.container.tableDataClient;
     this.tableEntityListViewModel2(new TableEntityListViewModel(this.tableCommands, props.queryTablesTab));
     const tableEntityListViewModel = new TableEntityListViewModel(this.tableCommands, props.queryTablesTab);
-    const queryBuilderViewModel = new QueryViewModel(this.props.queryTablesTab).queryBuilderViewModel();
+    // const queryBuilderViewModel = new QueryViewModel(this.props.queryTablesTab).queryBuilderViewModel();
 
-    const entityTypeOptions = queryBuilderViewModel.edmTypes();
-    const timestampOptions = queryBuilderViewModel.timeOptions();
-    const operatorsOptions = queryBuilderViewModel.operators();
-    const operationOptions = queryBuilderViewModel.clauseRules();
+    // const entityTypeOptions = queryBuilderViewModel.edmTypes();
+    // const timestampOptions = queryBuilderViewModel.timeOptions();
+    // const operatorsOptions = queryBuilderViewModel.operators();
+    // const operationOptions = queryBuilderViewModel.clauseRules();
 
     this.state = {
       tableEntityListViewModel,
@@ -161,31 +162,32 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       selection: this.createSelection(),
       entities: [],
       headers: [],
-      queryTableRows: [
-        {
-          isQueryTableEntityChecked: false,
-          selectedOperator: "=",
-          id: "1",
-          selectedField: userContext.apiType === "Cassandra" ? "email" : "PartitionKey",
-          selectedOperation: "",
-          entityValue: "",
-          selectedEntityType: "String",
-          isTimeStampSelected: false,
-          selectedTimestamp: "Last hour",
-          operatorOptions: getformattedOptions(operatorsOptions),
-          fieldOptions: getformattedOptions(tableEntityListViewModel.headers),
-          entityTypeOptions: getformattedOptions(entityTypeOptions),
-          operationOptions: getformattedOptions(operationOptions),
-          timestampOptions: getformattedOptions(timestampOptions),
-          clauseGroup: queryBuilderViewModel.queryClauses,
-          isValue: true,
-          isLocal: false,
-          isTimestamp: false,
-          isCustomRangeTimestamp: false,
-          customTimeValue: "",
-          timeValue: "",
-        },
-      ],
+      queryTableRows: [],
+      // queryTableRows: [
+      //   {
+      //     isQueryTableEntityChecked: false,
+      //     selectedOperator: "=",
+      //     id: "1",
+      //     selectedField: userContext.apiType === "Cassandra" ? "email" : "PartitionKey",
+      //     selectedOperation: "",
+      //     entityValue: "",
+      //     selectedEntityType: "String",
+      //     isTimeStampSelected: false,
+      //     selectedTimestamp: "Last hour",
+      //     operatorOptions: getformattedOptions(operatorsOptions),
+      //     fieldOptions: getformattedOptions(tableEntityListViewModel.headers),
+      //     entityTypeOptions: getformattedOptions(entityTypeOptions),
+      //     operationOptions: getformattedOptions(operationOptions),
+      //     timestampOptions: getformattedOptions(timestampOptions),
+      //     clauseGroup: queryBuilderViewModel.queryClauses,
+      //     isValue: true,
+      //     isLocal: false,
+      //     isTimestamp: false,
+      //     isCustomRangeTimestamp: false,
+      //     customTimeValue: "",
+      //     timeValue: "",
+      //   },
+      // ],
       isLoading: true,
       queryErrorMessage: "",
       hasQueryError: false,
@@ -259,7 +261,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   public loadFilterExample(): void {
     const { queryTableRows, headers, entities } = this.state;
     const queryTableRowsClone = [...queryTableRows];
-    queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
+    // queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
     this.setState({
       operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
       queryTableRows: queryTableRowsClone,
@@ -304,7 +306,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
 
   public async loadEntities(isInitialLoad: boolean): Promise<void> {
     const { tableEntityListViewModel, selectedQueryText } = this.state;
-    tableEntityListViewModel.renderNextPageAndupdateCache();
+    // tableEntityListViewModel.renderNextPageAndupdateCache();
     let headers: string[] = [];
     //eslint-disable-next-line
     let documents: any = {};
@@ -362,6 +364,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
 
     const documentItems = this.generateDetailsList(entities);
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 367 ~ QueryTablesTabComponent ~ documentItems",
+      documentItems
+    );
 
     this.setState(
       {
@@ -373,9 +379,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         entities: entities,
         originalItems: documentItems,
         queryText: this.state.queryViewModel.queryText(),
+        // queryTableRows: headers.length === 0 ? [] : this.state.queryTableRows,
       },
       () => {
-        if (isInitialLoad) {
+        if (isInitialLoad && headers.length > 0) {
           this.loadFilterExample();
           this.onItemsSelectionChanged(true);
         }
@@ -628,6 +635,22 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.state.queryViewModel.toggleAdvancedOptions();
   }
 
+  public toggleAdvancedOptionsKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
+      this.toggleAdvancedOptions();
+      event.stopPropagation();
+    }
+  }
+
+  public selectQueryOptionsKeyDown(event: React.KeyboardEvent<HTMLAnchorElement>): void {
+    if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
+      this.state.queryViewModel.selectQueryOptions(this.state.headers, (selectMessage: string) =>
+        this.getSelectMessage(selectMessage)
+      );
+      event.stopPropagation();
+    }
+  }
+
   public selectEditor(): void {
     this.setState({
       isEditorActive: true,
@@ -684,6 +707,13 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({ queryTableRows: cloneQueryTableRows });
   };
 
+  public onDeleteClauseKeyDown(event: React.KeyboardEvent<HTMLDivElement>, indexToRemove: number): void {
+    if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
+      this.onDeleteClause(indexToRemove);
+      event.stopPropagation();
+    }
+  }
+
   onAddNewClause = (): void => {
     const { queryTableRows, queryViewModel, headers } = this.state;
     this.state.queryViewModel.queryBuilderViewModel().addNewClause();
@@ -716,6 +746,15 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
     this.setState({ queryTableRows: cloneQueryTableRows });
   };
+
+  public onAddNewClauseKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
+    console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 723 ~ QueryTablesTabComponent ~ event", event);
+    if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
+      this.state.queryViewModel.queryBuilderViewModel().onAddNewClauseKeyDown(event);
+      this.onAddNewClause();
+      event.stopPropagation();
+    }
+  }
 
   private onEntityValueChange = (newInput: string, index: number) => {
     const { queryTableRows } = this.state;
@@ -816,10 +855,22 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                       onDropdownChange={(selectedOption: IDropdownOption, selectedOptionType: string) =>
                         this.onDropdownChange(selectedOption, selectedOptionType, index)
                       }
+                      onAddNewClauseKeyDown={(event: React.KeyboardEvent<HTMLImageElement>) =>
+                        this.onAddNewClauseKeyDown(event)
+                      }
+                      onDeleteCaluseKeyDown={(event: React.KeyboardEvent<HTMLImageElement>) =>
+                        this.onDeleteClauseKeyDown(event, index)
+                      }
                     />
                   ))}
                 </>
-                <div className="addClause" role="button" onClick={this.onAddNewClause} tabIndex={0}>
+                <div
+                  className="addClause"
+                  role="button"
+                  onClick={this.onAddNewClause}
+                  onKeyDown={(ev: React.KeyboardEvent<HTMLDivElement>) => this.onAddNewClauseKeyDown(ev)}
+                  tabIndex={0}
+                >
                   <div className="addClause-heading">
                     <span className="clause-table addClause-title">
                       <img
@@ -838,15 +889,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
             </div>
           )}
           <div className="advanced-options-panel">
-            <div className="advanced-heading" onClick={() => this.toggleAdvancedOptions()}>
-              <span
-                className="advanced-title"
-                role="button"
-                aria-expanded={this.state.isExpanded}
-                // onKeyDown = {() => this.state.queryViewModel.ontoggleAdvancedOptionsKeyDown}
-                // data-bind="click:toggleAdvancedOptions, event: { keydown: ontoggleAdvancedOptionsKeyDown }, attr:{ 'aria-expanded': isExpanded() ? 'true' : 'false' }"
-                tabIndex={0}
-              >
+            <div
+              className="advanced-heading"
+              onClick={() => this.toggleAdvancedOptions()}
+              onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.toggleAdvancedOptionsKeyDown(event)}
+            >
+              <span className="advanced-title" role="button" aria-expanded={this.state.isExpanded} tabIndex={0}>
                 {!this.state.isExpanded && (
                   <div className="themed-images" id="ExpandChevronRight">
                     <img
@@ -890,7 +938,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                   </div>
                   <a
                     className="select-options-link"
-                    //   data-bind="click: selectQueryOptions, event: { keydown: onselectQueryOptionsKeyDown }"
                     tabIndex={0}
                     role="link"
                     onClick={() =>
@@ -898,6 +945,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                         this.getSelectMessage(selectMessage)
                       )
                     }
+                    onKeyDown={(event: React.KeyboardEvent<HTMLAnchorElement>) => this.selectQueryOptionsKeyDown(event)}
                   >
                     <span>Choose Columns... </span>
                   </a>

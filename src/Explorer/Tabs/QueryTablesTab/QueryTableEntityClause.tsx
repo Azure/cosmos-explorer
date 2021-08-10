@@ -38,6 +38,8 @@ export interface IQueryTableEntityClauseProps {
   onQueryTableEntityCheck: (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean) => void;
   onDropdownChange: (selectedOption: IDropdownOption, selectedOptionType: string) => void;
   onEntityValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
+  onAddNewClauseKeyDown?: (ev: React.KeyboardEvent<HTMLImageElement>) => void;
+  onDeleteCaluseKeyDown?: (ev: React.KeyboardEvent<HTMLImageElement>) => void;
 }
 
 export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClauseProps> = ({
@@ -61,6 +63,8 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
   onDeleteClause,
   onDropdownChange,
   onEntityValueChange,
+  onAddNewClauseKeyDown,
+  onDeleteCaluseKeyDown,
 }: IQueryTableEntityClauseProps): JSX.Element => {
   const cancelImageProps: IImageProps = {
     width: 14,
@@ -87,7 +91,15 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
     <>
       <Stack horizontal tokens={sectionStackTokens}>
         <TooltipHost content="Add new clause" id="addNewClause">
-          <Image {...addImageProps} src={AddIcon} alt="Add new clause" id="addNewClause" onClick={onAddNewClause} />
+          <Image
+            {...addImageProps}
+            src={AddIcon}
+            alt="Add new clause"
+            id="addNewClause"
+            onClick={onAddNewClause}
+            onKeyDown={onAddNewClauseKeyDown}
+            tabIndex={0}
+          />
         </TooltipHost>
         <TooltipHost content="Delete clause" id="deleteClause">
           <Image
@@ -96,6 +108,8 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             alt="delete clause"
             id="deleteClause"
             onClick={onDeleteClause}
+            onKeyDown={onDeleteCaluseKeyDown}
+            tabIndex={0}
           />
         </TooltipHost>
         <Checkbox checked={isQueryTableEntityChecked} onChange={onQueryTableEntityCheck} />
@@ -106,7 +120,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedOperation")
           }
           options={operationOptions}
-          id="operatorOptionId"
+          // id="operatorOptionId"
           styles={dropdownStyles}
         />
         <Dropdown
@@ -115,7 +129,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedField")
           }
           options={fieldOptions}
-          id="fieldOptionId"
+          // id="fieldOptionId"
           styles={dropdownStyles}
         />
         <Dropdown
@@ -124,7 +138,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedEntityType")
           }
           options={entityTypeOptions}
-          id="entityOptionId"
+          // id="entityOptionId"
           disabled={validateEntityTypeOption()}
           styles={dropdownStyles}
         />
@@ -134,7 +148,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedOperator")
           }
           options={operatorOptions}
-          id="operatorOptionId"
+          // id="operatorOptionId"
           styles={dropdownStyles}
         />
         {isTimeStampSelected ? (
@@ -144,7 +158,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
               onDropdownChange(selectedOption, "selectedTimestamp")
             }
             options={timestampOptions}
-            id="operatorOptionId"
+            // id="operatorOptionId"
             styles={dropdownStyles}
           />
         ) : (

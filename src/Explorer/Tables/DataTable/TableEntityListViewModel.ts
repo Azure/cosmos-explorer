@@ -155,11 +155,10 @@ export default class TableEntityListViewModel extends DataTableViewModel {
    * fnCallback - is the render callback with data to render.
    * oSetting: current settings used for table initialization.
    */
-  public renderNextPageAndupdateCache(sSource?: any, aoData?: any, fnCallback?: any, oSettings?: any): Promise<void> {
-    var tablePageSize: number;
-    var draw: number;
+  public renderNextPageAndupdateCache(sSource?: any, aoData?: any, fnCallback?: any): Promise<void> {
+    var tablePageSize: number = 100;
     var prefetchNeeded = true;
-    var columnSortOrder: any;
+    // var columnSortOrder: any;
     // Threshold(pages) for triggering cache prefetch.
     // If number remaining pages in cache falls below prefetchThreshold prefetch will be triggered.
     var prefetchThreshold = 10;
@@ -170,11 +169,12 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       // Check if prefetch needed.
       if (this.tablePageStartIndex + tablePageSize <= this.cache.length || this.allDownloaded) {
         prefetchNeeded = false;
-        if (columnSortOrder && (!this.cache.sortOrder || !_.isEqual(this.cache.sortOrder, columnSortOrder))) {
-          this.sortColumns(columnSortOrder, oSettings);
-        }
-        // this.renderPage(this.tablePageStartIndex, tablePageSize);
-        this.renderPage(0, 100);
+        // if (columnSortOrder && (!this.cache.sortOrder || !_.isEqual(this.cache.sortOrder, columnSortOrder))) {
+        //   this.sortColumns(columnSortOrder, oSettings);
+        // }
+        this.tablePageStartIndex = 0;
+        this.renderPage(this.tablePageStartIndex, tablePageSize);
+        // this.renderPage(0, 100);
         if (
           !this.allDownloaded &&
           this.tablePageStartIndex > 0 && // This is a case now that we can hit this as we re-construct table when we update column
@@ -195,10 +195,10 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         tableQuery,
         this.tablePageStartIndex,
         tablePageSize,
-        downloadSize,
-        draw,
-        oSettings,
-        columnSortOrder
+        downloadSize
+        // draw,
+        // oSettings,
+        // columnSortOrder
       );
     }
     return undefined;
@@ -358,11 +358,12 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     tableQuery: Entities.ITableQuery,
     tablePageStartIndex: number,
     tablePageSize: number,
-    downloadSize: number,
-    draw: number,
-    oSettings: any,
-    columnSortOrder: any
+    downloadSize: number
+    // draw: number,/
+    // oSettings: any,
+    // columnSortOrder: any
   ): void {
+    console.log("🚀 ~ file: TableEntityListViewModel.ts ~ line 366 ~ TableEntityListViewModel ~ prefetchAndRender");
     this.queryErrorMessage(null);
     if (this.cache.serverCallInProgress) {
       return;
@@ -452,6 +453,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     downloadSize: number,
     currentRetry: number = 0
   ): Q.Promise<any> {
+    console.log("🚀 ~ file: TableEntityListViewModel.ts ~ line 456 ~ TableEntityListViewModel ~ prefetchData");
     if (!this.cache.serverCallInProgress) {
       this.cache.serverCallInProgress = true;
       this.allDownloaded = false;
