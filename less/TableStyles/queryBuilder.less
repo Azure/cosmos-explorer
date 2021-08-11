@@ -99,7 +99,7 @@
 .tablesQueryTab {
   padding-left: @MediumSpace;
   width: 100%;
-  margin-bottom: @LargeSpace;
+  margin-bottom: 100px;
   position: relative;
   height: 100%;
 }
@@ -533,6 +533,44 @@ input::-webkit-inner-spin-button {
 .expand-triangle-right {
   margin-bottom: 5px;
 }
+
+.query-document-detail-list {
+  overflow-x: hidden;
+  height: 100%;
+}
+.query-table-clause-container {
+  max-height: 80px;
+  overflow: scroll;
+  overflow-x: hidden;
+}
+.query-tab-document-pagination {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 0;
+  padding-left: @MediumSpace;
+  padding-bottom: 45px;
+}
+.pagination {
+  margin: 15px 0 !important;
+  li > .item-link {
+    position: relative;
+    float: left;
+    padding: 6px 12px;
+    margin-left: -1px;
+    line-height: 1.42857143;
+    text-decoration: none;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    &:hover {
+      font-weight: bold;
+      background: #eef7ff;
+    }
+  }
+}
+// .pagination > li > div {
+// }
 
 /*
 @media only screen and (max-width: 1200px) {

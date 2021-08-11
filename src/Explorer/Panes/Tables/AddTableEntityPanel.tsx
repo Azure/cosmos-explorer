@@ -107,7 +107,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     event.preventDefault();
 
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
-    const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
+    await tableDataClient.createDocument(queryTablesTab.collection, entity);
     // await tableEntityListViewModel.addEntityToCache(newEntity);
     reloadEntities();
     closeSidePanel();

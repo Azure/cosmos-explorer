@@ -63,6 +63,8 @@ export interface Button {
   isSelected?: boolean;
 }
 
+const PAGESIZE = 10;
+
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
   public collection: ViewModels.Collection;
   public _queryViewModel: QueryViewModel;
@@ -163,34 +165,13 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       entities: [],
       headers: [],
       queryTableRows: [],
-      // queryTableRows: [
-      //   {
-      //     isQueryTableEntityChecked: false,
-      //     selectedOperator: "=",
-      //     id: "1",
-      //     selectedField: userContext.apiType === "Cassandra" ? "email" : "PartitionKey",
-      //     selectedOperation: "",
-      //     entityValue: "",
-      //     selectedEntityType: "String",
-      //     isTimeStampSelected: false,
-      //     selectedTimestamp: "Last hour",
-      //     operatorOptions: getformattedOptions(operatorsOptions),
-      //     fieldOptions: getformattedOptions(tableEntityListViewModel.headers),
-      //     entityTypeOptions: getformattedOptions(entityTypeOptions),
-      //     operationOptions: getformattedOptions(operationOptions),
-      //     timestampOptions: getformattedOptions(timestampOptions),
-      //     clauseGroup: queryBuilderViewModel.queryClauses,
-      //     isValue: true,
-      //     isLocal: false,
-      //     isTimestamp: false,
-      //     isCustomRangeTimestamp: false,
-      //     customTimeValue: "",
-      //     timeValue: "",
-      //   },
-      // ],
       isLoading: true,
       queryErrorMessage: "",
       hasQueryError: false,
+      currentPage: 0,
+      currentStartIndex: PAGESIZE,
+      fromDocument: 0,
+      toDocument: PAGESIZE,
     };
 
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
@@ -243,6 +224,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let selectedItems: Entities.ITableEntity[];
     const { selection } = this.state;
     isFirstItemSelected && selection.setIndexSelected(0, true, false);
+    console.log(
+      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 254 ~ QueryTablesTabComponent ~ selection.getSelection().length",
+      selection.getSelection().length
+    );
     if (selection.getSelection().length > 0) {
       Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
         if (key === documentKey) {
@@ -253,6 +238,11 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       this.setState({
         selectedItems: selectedItems,
         rowSelected: true,
+      });
+    } else {
+      this.setState({
+        selectedItems: [],
+        rowSelected: false,
       });
     }
     return selectedItems;
@@ -364,10 +354,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
 
     const documentItems = this.generateDetailsList(entities);
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 367 ~ QueryTablesTabComponent ~ documentItems",
-      documentItems
-    );
+
+    const filteredItems = documentItems.slice(0, PAGESIZE);
 
     this.setState(
       {
@@ -375,11 +363,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         headers,
         operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
         isLoading: false,
-        items: documentItems,
+        items: filteredItems,
         entities: entities,
         originalItems: documentItems,
         queryText: this.state.queryViewModel.queryText(),
-        // queryTableRows: headers.length === 0 ? [] : this.state.queryTableRows,
+        fromDocument: 0,
+        toDocument: PAGESIZE,
       },
       () => {
         if (isInitialLoad && headers.length > 0) {
@@ -488,6 +477,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public onEditEntityClick = (): void => {
+    if (!this.state.rowSelected) {
+      window.alert("Please select entity to edit");
+      return undefined;
+    }
     useSidePanel
       .getState()
       .openSidePanel(
@@ -504,7 +497,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public onDeleteEntityClick = (): void => {
-    if (!this.state.selectedItems) {
+    if (!this.state.rowSelected) {
+      window.alert("Please select entity to delete");
       return undefined;
     }
     const entitiesToDelete: Entities.ITableEntity[] = this.state.selectedItems;
@@ -517,12 +511,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         .deleteDocuments(this.state.tableEntityListViewModel.queryTablesTab.collection, entitiesToDelete)
         //eslint-disable-next-line
         .then((results: any) => {
-          return this.state.tableEntityListViewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
-            this.setState({
-              isLoading: true,
-            });
-            this.loadEntities(false);
+          this.setState({
+            isLoading: true,
           });
+          this.loadEntities(false);
         });
     }
   };
@@ -748,7 +740,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   };
 
   public onAddNewClauseKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
-    console.log("🚀 ~ file: QueryTablesTabComponent.tsx ~ line 723 ~ QueryTablesTabComponent ~ event", event);
     if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
       this.state.queryViewModel.queryBuilderViewModel().onAddNewClauseKeyDown(event);
       this.onAddNewClause();
@@ -761,6 +752,65 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     const cloneQueryTableRows: IQueryTableRowsType[] = [...queryTableRows];
     cloneQueryTableRows[index].entityValue = newInput;
     this.setState({ queryTableRows: cloneQueryTableRows });
+  };
+
+  private handlePagination = (action: string, items: IDocument[], startIndex: number, pageSize: number): void => {
+    let currentStartIndex: number;
+    let fromDocument: number;
+    let toDocument: number;
+    let filteredItems: IDocument[];
+    // eslint-disable-next-line no-console
+    switch (action) {
+      case "NEXT":
+        fromDocument = this.state.currentStartIndex;
+        toDocument = fromDocument + pageSize;
+        currentStartIndex = toDocument;
+        if (toDocument <= items.length) {
+          filteredItems = items.slice(fromDocument, toDocument);
+        } else {
+          filteredItems = items.slice(fromDocument, items.length);
+          toDocument = items.length;
+        }
+        break;
+
+      case "PREVIOUS":
+        fromDocument = this.state.currentStartIndex - pageSize * 2;
+        toDocument = fromDocument + pageSize;
+        currentStartIndex = toDocument;
+        if (fromDocument >= 0) {
+          filteredItems = items.slice(fromDocument, toDocument);
+        } else {
+          filteredItems = items.slice(0, toDocument);
+          fromDocument = 0;
+        }
+        break;
+
+      case "FIRST":
+        fromDocument = 0;
+        toDocument = fromDocument + pageSize;
+        currentStartIndex = toDocument;
+        filteredItems = items.slice(fromDocument, toDocument);
+        break;
+
+      case "LAST":
+        if (items.length % pageSize === 0) {
+          fromDocument = items.length - pageSize;
+        } else {
+          fromDocument = items.length - (items.length % pageSize);
+        }
+        toDocument = items.length;
+        currentStartIndex = fromDocument + pageSize;
+        filteredItems = items.slice(fromDocument, toDocument);
+        break;
+    }
+    if (filteredItems.length > 0) {
+      this.setState({
+        currentStartIndex: currentStartIndex,
+        fromDocument: fromDocument,
+        toDocument: toDocument,
+        items: filteredItems,
+      });
+    }
   };
 
   render(): JSX.Element {
@@ -830,7 +880,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                     </thead>
                   </table>
                 </div>
-                <>
+                <div className="query-table-clause-container">
                   {queryTableRows.map((queryTableRow, index) => (
                     <QueryTableEntityClause
                       index={index}
@@ -863,7 +913,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
                       }
                     />
                   ))}
-                </>
+                </div>
                 <div
                   className="addClause"
                   role="button"
@@ -959,6 +1009,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           {this.state.isLoading && <Spinner size={SpinnerSize.large} className="spinner" />}
           {this.state.items.length > 0 && !this.state.isLoading && (
             <DetailsList
+              className="query-document-detail-list"
               items={this.state.items}
               columns={this.state.columns}
               selectionMode={SelectionMode.single}
@@ -971,6 +1022,66 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           )}
           {this.state.items.length === 0 && !this.state.isLoading && (
             <Text variant="mediumPlus">No data available in table</Text>
+          )}
+        </div>
+        <div className="query-tab-document-pagination">
+          {this.state.items.length > 0 && !this.state.isLoading && (
+            <>
+              <ul className="pagination ">
+                <li>
+                  <div
+                    className="item-link"
+                    onClick={() =>
+                      this.handlePagination("FIRST", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
+                    }
+                  >
+                    First
+                  </div>
+                </li>
+                <li>
+                  <div
+                    className="item-link"
+                    onClick={() =>
+                      this.handlePagination(
+                        "PREVIOUS",
+                        this.state.originalItems,
+                        this.state.currentStartIndex,
+                        PAGESIZE
+                      )
+                    }
+                  >
+                    Previous
+                  </div>
+                </li>
+                <li>
+                  <div
+                    className="item-link"
+                    onClick={() =>
+                      this.handlePagination("NEXT", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
+                    }
+                  >
+                    Next
+                  </div>
+                </li>
+                <li>
+                  <div
+                    className="item-link"
+                    onClick={() =>
+                      this.handlePagination("LAST", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
+                    }
+                  >
+                    Last
+                  </div>
+                </li>
+              </ul>
+              <Text variant="medium">
+                Results {this.state.fromDocument + 1} -{" "}
+                {this.state.originalItems.length >= this.state.toDocument
+                  ? this.state.toDocument
+                  : this.state.items.length}{" "}
+                of {this.state.originalItems.length}
+              </Text>
+            </>
           )}
         </div>
       </div>

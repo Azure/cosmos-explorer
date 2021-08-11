@@ -8,7 +8,7 @@ import { TableEntity } from "../../../Common/TableEntity";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import * as TableConstants from "../../Tables/Constants";
-import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
+// import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataClient";
@@ -204,48 +204,44 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
     const entity: Entities.ITableEntity = entityFromAttributes(entities);
     const newTableDataClient = userContext.apiType === "Cassandra" ? cassandraApiClient : tableDataClient;
     const originalDocumentData = userContext.apiType === "Cassandra" ? originalDocument[0] : originalDocument;
-    const newEntity: Entities.ITableEntity = await newTableDataClient.updateDocument(
-      queryTablesTab.collection,
-      originalDocumentData,
-      entity
-    );
-    await tableEntityListViewModel.updateCachedEntity(newEntity);
-    if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
-      // tableEntityListViewModel.redrawTableThrottled();
-      reloadEntities();
-    }
-    tableEntityListViewModel.selected.removeAll();
-    tableEntityListViewModel.selected.push(newEntity);
+    await newTableDataClient.updateDocument(queryTablesTab.collection, originalDocumentData, entity);
+    // await tableEntityListViewModel.updateCachedEntity(newEntity);
+    // if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
+    // tableEntityListViewModel.redrawTableThrottled();
+    reloadEntities();
+    // }
+    // tableEntityListViewModel.selected.removeAll();
+    // tableEntityListViewModel.selected.push(newEntity);
     closeSidePanel();
   };
 
-  const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
-    let newHeaders: string[] = [];
-    const keys = Object.keys(newEntity);
-    keys &&
-      keys.forEach((key: string) => {
-        if (
-          !_.contains(viewModel.headers, key) &&
-          key !== TableEntityProcessor.keyProperties.attachments &&
-          key !== TableEntityProcessor.keyProperties.etag &&
-          key !== TableEntityProcessor.keyProperties.resourceId &&
-          key !== TableEntityProcessor.keyProperties.self &&
-          (!(userContext.apiType === "Cassandra") || key !== TableConstants.EntityKeyNames.RowKey)
-        ) {
-          newHeaders.push(key);
-        }
-      });
+  // const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
+  //   let newHeaders: string[] = [];
+  //   const keys = Object.keys(newEntity);
+  //   keys &&
+  //     keys.forEach((key: string) => {
+  //       if (
+  //         !_.contains(viewModel.headers, key) &&
+  //         key !== TableEntityProcessor.keyProperties.attachments &&
+  //         key !== TableEntityProcessor.keyProperties.etag &&
+  //         key !== TableEntityProcessor.keyProperties.resourceId &&
+  //         key !== TableEntityProcessor.keyProperties.self &&
+  //         (!(userContext.apiType === "Cassandra") || key !== TableConstants.EntityKeyNames.RowKey)
+  //       ) {
+  //         newHeaders.push(key);
+  //       }
+  //     });
 
-    let newHeadersInserted = false;
-    if (newHeaders.length) {
-      if (!DataTableUtilities.checkForDefaultHeader(viewModel.headers)) {
-        newHeaders = viewModel.headers.concat(newHeaders);
-      }
-      viewModel.updateHeaders(newHeaders, /* notifyColumnChanges */ true, /* enablePrompt */ false);
-      newHeadersInserted = true;
-    }
-    return newHeadersInserted;
-  };
+  //   let newHeadersInserted = false;
+  //   if (newHeaders.length) {
+  //     if (!DataTableUtilities.checkForDefaultHeader(viewModel.headers)) {
+  //       newHeaders = viewModel.headers.concat(newHeaders);
+  //     }
+  //     viewModel.updateHeaders(newHeaders, /* notifyColumnChanges */ true, /* enablePrompt */ false);
+  //     newHeadersInserted = true;
+  //   }
+  //   return newHeadersInserted;
+  // };
 
   // Add new entity row
   const addNewEntity = (): void => {
