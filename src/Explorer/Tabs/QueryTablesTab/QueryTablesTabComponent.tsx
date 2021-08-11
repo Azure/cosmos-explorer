@@ -10,7 +10,7 @@ import {
   SelectionMode,
   Spinner,
   SpinnerSize,
-  Text,
+  Text
 } from "@fluentui/react";
 import * as ko from "knockout";
 import React, { Component } from "react";
@@ -54,7 +54,7 @@ import {
   IDocument,
   IQueryTableRowsType,
   IQueryTablesTabComponentProps,
-  IQueryTablesTabComponentStates,
+  IQueryTablesTabComponentStates
 } from "./QueryTableTabUtils";
 
 export interface Button {
@@ -114,8 +114,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       selectedQueryText:
         userContext.apiType === "Cassandra"
           ? `SELECT * FROM ${getQuotedCqlIdentifier(
-              this.props.queryTablesTab.collection.databaseId
-            )}.${getQuotedCqlIdentifier(this.props.queryTablesTab.collection.id())}`
+            this.props.queryTablesTab.collection.databaseId
+          )}.${getQuotedCqlIdentifier(this.props.queryTablesTab.collection.id())}`
           : "Select * from c",
       isHelperActive: true,
       executeQueryButton: {
@@ -224,10 +224,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let selectedItems: Entities.ITableEntity[];
     const { selection } = this.state;
     isFirstItemSelected && selection.setIndexSelected(0, true, false);
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 254 ~ QueryTablesTabComponent ~ selection.getSelection().length",
-      selection.getSelection().length
-    );
     if (selection.getSelection().length > 0) {
       Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
         if (key === documentKey) {
@@ -295,7 +291,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   }
 
   public async loadEntities(isInitialLoad: boolean): Promise<void> {
-    const { tableEntityListViewModel, selectedQueryText } = this.state;
+    const { selectedQueryText } = this.state;
     // tableEntityListViewModel.renderNextPageAndupdateCache();
     let headers: string[] = [];
     //eslint-disable-next-line
@@ -307,6 +303,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           selectedQueryText,
           true
         );
+
         headers = this.getFormattedHeaders(documents.Results);
         this.setupIntialEntities(documents.Results, headers, isInitialLoad);
       } else {
@@ -336,6 +333,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     isInitialLoad: boolean
   ): void => {
     this.columns = [];
+    const { queryTableRows } = this.state;
+
     headers.map((header) => {
       this.columns.push({
         key: header,
@@ -354,8 +353,14 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
 
     const documentItems = this.generateDetailsList(entities);
-
     const filteredItems = documentItems.slice(0, PAGESIZE);
+
+    const queryTableRowsClone = [...queryTableRows];
+    const updatedQueryTableRows = queryTableRowsClone.map((queryTableRow) => {
+      const queryTableRowClone = { ...queryTableRow };
+      queryTableRowClone.fieldOptions = getformattedOptions(headers);
+      return queryTableRowClone;
+    });
 
     this.setState(
       {
@@ -369,6 +374,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         queryText: this.state.queryViewModel.queryText(),
         fromDocument: 0,
         toDocument: PAGESIZE,
+        queryTableRows: updatedQueryTableRows,
       },
       () => {
         if (isInitialLoad && headers.length > 0) {
