@@ -16,10 +16,9 @@ import { Areas } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
-import { GitHubOAuthService } from "../../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
-import { IPinnedRepo, JunoClient } from "../../Juno/JunoClient";
+import { IPinnedRepo } from "../../Juno/JunoClient";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -28,6 +27,7 @@ import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
+import { useDialog } from "../Controls/Dialog";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
@@ -56,8 +56,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
   public galleryContentRoot: NotebookContentItem;
   public myNotebooksContentRoot: NotebookContentItem;
   public gitHubNotebooksContentRoot: NotebookContentItem;
-  public junoClient: JunoClient;
-  public gitHubOAuthService: GitHubOAuthService;
 
   public constructor(private container: Explorer) {
     this.parameters = ko.observable(Date.now());
@@ -74,8 +72,6 @@ export class ResourceTreeAdapter implements ReactAdapter {
 
     useDatabases.subscribe(() => this.triggerRender());
     this.triggerRender();
-    this.junoClient = new JunoClient();
-    this.gitHubOAuthService = new GitHubOAuthService(this.junoClient);
   }
 
   private traceMyNotebookTreeInfo() {
@@ -639,7 +635,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
               <GitHubReposPanel
                 explorer={this.container}
                 gitHubClientProp={this.container.notebookManager.gitHubClient}
-                junoClientProp={this.junoClient}
+                junoClientProp={this.container.notebookManager.junoClient}
               />
             ),
       },
@@ -717,14 +713,16 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "Delete",
         iconSrc: DeleteIcon,
         onClick: () => {
-          this.container.showOkCancelModalDialog(
-            "Confirm delete",
-            `Are you sure you want to delete "${item.name}"`,
-            "Delete",
-            () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-            "Cancel",
-            undefined
-          );
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}"`,
+              "Delete",
+              () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+              "Cancel",
+              undefined
+            );
         },
       },
       {
@@ -782,14 +780,16 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "Delete",
         iconSrc: DeleteIcon,
         onClick: () => {
-          this.container.showOkCancelModalDialog(
-            "Confirm delete",
-            `Are you sure you want to delete "${item.name}?"`,
-            "Delete",
-            () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-            "Cancel",
-            undefined
-          );
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}?"`,
+              "Delete",
+              () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+              "Cancel",
+              undefined
+            );
         },
       },
       {

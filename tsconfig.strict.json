@@ -26,7 +26,6 @@
     "./src/Common/ObjectCache.ts",
     "./src/Common/OfferUtility.test.ts",
     "./src/Common/OfferUtility.ts",
-    "./src/Common/ResourceTree.tsx",
     "./src/Common/Splitter.ts",
     "./src/Common/ThemeUtility.ts",
     "./src/Common/UrlUtility.ts",
@@ -38,7 +37,6 @@
     "./src/Contracts/SelfServeContracts.ts",
     "./src/Contracts/SubscriptionType.ts",
     "./src/Contracts/Versions.ts",
-    "./src/Explorer/Controls/Dialog.tsx",
     "./src/Explorer/Controls/GitHub/GitHubStyleConstants.ts",
     "./src/Explorer/Controls/SmartUi/InputUtils.ts",
     "./src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts",
@@ -84,7 +82,6 @@
     "./src/Explorer/Tree/AccessibleVerticalList.ts",
     "./src/GitHub/GitHubConnector.ts",
     "./src/HostedExplorerChildFrame.ts",
-    "./src/Index.ts",
     "./src/Platform/Hosted/Authorization.ts",
     "./src/Platform/Hosted/Components/MeControl.test.tsx",
     "./src/Platform/Hosted/Components/MeControl.tsx",
@@ -142,7 +139,7 @@
     "./src/userContext.test.ts",
     "src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
-    "./src/Platform/Hosted/Components/SwitchSubscription.tsx",
+    "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
