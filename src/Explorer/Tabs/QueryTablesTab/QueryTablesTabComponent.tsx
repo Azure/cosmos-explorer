@@ -10,7 +10,7 @@ import {
   SelectionMode,
   Spinner,
   SpinnerSize,
-  Text
+  Text,
 } from "@fluentui/react";
 import * as ko from "knockout";
 import React, { Component } from "react";
@@ -54,7 +54,7 @@ import {
   IDocument,
   IQueryTableRowsType,
   IQueryTablesTabComponentProps,
-  IQueryTablesTabComponentStates
+  IQueryTablesTabComponentStates,
 } from "./QueryTableTabUtils";
 
 export interface Button {
@@ -114,8 +114,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       selectedQueryText:
         userContext.apiType === "Cassandra"
           ? `SELECT * FROM ${getQuotedCqlIdentifier(
-            this.props.queryTablesTab.collection.databaseId
-          )}.${getQuotedCqlIdentifier(this.props.queryTablesTab.collection.id())}`
+              this.props.queryTablesTab.collection.databaseId
+            )}.${getQuotedCqlIdentifier(this.props.queryTablesTab.collection.id())}`
           : "Select * from c",
       isHelperActive: true,
       executeQueryButton: {
@@ -172,6 +172,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       currentStartIndex: PAGESIZE,
       fromDocument: 0,
       toDocument: PAGESIZE,
+      selectedItem: 0,
     };
 
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
@@ -224,6 +225,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let selectedItems: Entities.ITableEntity[];
     const { selection } = this.state;
     isFirstItemSelected && selection.setIndexSelected(0, true, false);
+    this.setState({ selectedItem: selection.getSelectedIndices()?.[0] });
     if (selection.getSelection().length > 0) {
       Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
         if (key === documentKey) {
@@ -309,12 +311,15 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       } else {
         const { collection } = this.props;
         documents = await this.getDocuments(collection, selectedQueryText);
-        headers = documents.Results?.length ? this.getFormattedHeaders(documents.Results) : ["RowKey", "PartitionKey", "Timestamp"];
+        headers = documents.Results?.length
+          ? this.getFormattedHeaders(documents.Results)
+          : ["RowKey", "PartitionKey", "Timestamp"];
         this.setupIntialEntities(documents.Results, headers, isInitialLoad);
       }
       this.setState({
         queryErrorMessage: "",
         hasQueryError: false,
+        isLoading: false,
       });
     } catch (error) {
       if (error.responseText) {
@@ -464,6 +469,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({
       isLoading: true,
     });
+
+    const { selection, selectedItem } = this.state;
+    selection.setIndexSelected(selectedItem, false, false);
     this.loadEntities(false);
   }
 
@@ -473,7 +481,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       .openSidePanel(
         "Add Table Entity",
         <AddTableEntityPanel
-          headerItem={this.state.headers}
+          headerItems={this.state.headers}
           tableDataClient={this.tableDataClient}
           queryTablesTab={this.props.queryTablesTab}
           tableEntityListViewModel={this.state.tableEntityListViewModel}
