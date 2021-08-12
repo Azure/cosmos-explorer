@@ -304,12 +304,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           true
         );
 
-        headers = this.getFormattedHeaders(documents.Results);
+        headers = documents.Results?.length ? this.getFormattedHeaders(documents.Results) : ["userid", "name", "email"];
         this.setupIntialEntities(documents.Results, headers, isInitialLoad);
       } else {
         const { collection } = this.props;
         documents = await this.getDocuments(collection, selectedQueryText);
-        headers = this.getFormattedHeaders(documents.Results);
+        headers = documents.Results?.length ? this.getFormattedHeaders(documents.Results) : ["RowKey", "PartitionKey", "Timestamp"];
         this.setupIntialEntities(documents.Results, headers, isInitialLoad);
       }
       this.setState({
@@ -473,6 +473,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       .openSidePanel(
         "Add Table Entity",
         <AddTableEntityPanel
+          headerItem={this.state.headers}
           tableDataClient={this.tableDataClient}
           queryTablesTab={this.props.queryTablesTab}
           tableEntityListViewModel={this.state.tableEntityListViewModel}
