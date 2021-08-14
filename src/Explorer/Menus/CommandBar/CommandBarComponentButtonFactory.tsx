@@ -99,7 +99,13 @@ export function createStaticCommandBarButtons(
 
     notebookButtons.forEach((btn) => {
       if (userContext.features.notebooksTemporarilyDown) {
-        applyNotebooksTemporarilyDownStyle(btn);
+        if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
+        } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
+        } else {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
+        }
       }
       buttons.push(btn);
     });
@@ -161,7 +167,9 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          if (!userContext.features.notebooksTemporarilyDown) {
+            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          }
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
@@ -169,7 +177,13 @@ export function createContextCommandBarButtons(
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
+      tooltipText:
+        useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown
+          ? Constants.Notebook.mongoShellTemporarilyDownMsg
+          : undefined,
+      disabled:
+        (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
+        (useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown),
     };
     buttons.push(newMongoShellBtn);
   }
@@ -397,10 +411,10 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
   return buttons;
 }
 
-function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentProps): void {
+function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentProps, tooltip: string): void {
   if (!buttonProps.isDivider) {
     buttonProps.disabled = true;
-    buttonProps.tooltipText = Constants.Notebook.temporarilyDownMsg;
+    buttonProps.tooltipText = tooltip;
   }
 }
 

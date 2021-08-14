@@ -350,7 +350,11 @@ export class Notebook {
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
-  public static readonly temporarilyDownMsg = "Oops! Notebooks is currently not available. We are working on it.";
+  public static readonly temporarilyDownMsg = "Notebooks is currently not available. We are working on it.";
+  public static readonly mongoShellTemporarilyDownMsg =
+    "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";
+  public static readonly cassandraShellTemporarilyDownMsg =
+    "We have identified an issue with the Cassandra Shell and it is unavailable right now. We are actively working on the mitigation.";
 }
 
 export class SparkLibrary {
