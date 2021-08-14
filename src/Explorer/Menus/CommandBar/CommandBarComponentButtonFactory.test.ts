@@ -186,7 +186,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openMongoShellBtn).toBeUndefined();
     });
 
-    it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
+    it.skip("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
@@ -196,7 +196,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openMongoShellBtn.tooltipText).toBe("");
     });
 
-    it("Notebooks is enabled and is available - button should be shown and enabled", () => {
+    it.skip("Notebooks is enabled and is available - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
@@ -285,7 +285,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openCassandraShellBtn).toBeUndefined();
     });
 
-    it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
+    it.skip("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
@@ -295,7 +295,7 @@ describe("CommandBarComponentButtonFactory tests", () => {
       expect(openCassandraShellBtn.tooltipText).toBe("");
     });
 
-    it("Notebooks is enabled and is available - button should be shown and enabled", () => {
+    it.skip("Notebooks is enabled and is available - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 

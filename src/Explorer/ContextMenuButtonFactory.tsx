@@ -81,17 +81,19 @@ export const createCollectionContextMenuButton = (
       label: "New Query",
     });
 
+    const showNotebooksMongoShell =
+      useNotebook.getState().isShellEnabled && !userContext.features.notebooksTemporarilyDown;
     items.push({
       iconSrc: HostedTerminalIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (useNotebook.getState().isShellEnabled) {
+        if (showNotebooksMongoShell) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
+      label: showNotebooksMongoShell ? "Open Mongo Shell" : "New Shell",
     });
   }
 

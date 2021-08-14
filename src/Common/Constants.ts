@@ -350,6 +350,7 @@ export class Notebook {
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
+  public static readonly temporarilyDownMsg = "Oops! Notebooks is currently not available. We are working on it.";
 }
 
 export class SparkLibrary {

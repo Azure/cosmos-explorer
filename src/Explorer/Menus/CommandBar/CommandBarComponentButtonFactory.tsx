@@ -70,30 +70,39 @@ export function createStaticCommandBarButtons(
   buttons.push(createDivider());
 
   if (useNotebook.getState().isNotebookEnabled) {
+    const notebookButtons: CommandButtonComponentProps[] = [];
+
     const newNotebookButton = createNewNotebookButton(container);
     newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
-    buttons.push(newNotebookButton);
+    notebookButtons.push(newNotebookButton);
 
     if (container.notebookManager?.gitHubOAuthService) {
-      buttons.push(createManageGitHubAccountButton(container));
+      notebookButtons.push(createManageGitHubAccountButton(container));
     }
 
-    buttons.push(createOpenTerminalButton(container));
+    notebookButtons.push(createOpenTerminalButton(container));
 
-    buttons.push(createNotebookWorkspaceResetButton(container));
+    notebookButtons.push(createNotebookWorkspaceResetButton(container));
     if (
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
         selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
       userContext.apiType === "Cassandra"
     ) {
-      buttons.push(createDivider());
+      notebookButtons.push(createDivider());
       if (userContext.apiType === "Cassandra") {
-        buttons.push(createOpenCassandraTerminalButton(container));
+        notebookButtons.push(createOpenCassandraTerminalButton(container));
       } else {
-        buttons.push(createOpenMongoTerminalButton(container));
+        notebookButtons.push(createOpenMongoTerminalButton(container));
       }
     }
+
+    notebookButtons.forEach((btn) => {
+      if (userContext.features.notebooksTemporarilyDown) {
+        applyNotebooksTemporarilyDownStyle(btn);
+      }
+      buttons.push(btn);
+    });
   } else {
     if (!isRunningOnNationalCloud()) {
       buttons.push(createEnableNotebooksButton(container));
@@ -386,6 +395,13 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
   }
 
   return buttons;
+}
+
+function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentProps): void {
+  if (!buttonProps.isDivider) {
+    buttonProps.disabled = true;
+    buttonProps.tooltipText = Constants.Notebook.temporarilyDownMsg;
+  }
 }
 
 function createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
