@@ -1084,7 +1084,7 @@ export default class Explorer {
       dataExplorerArea: Constants.Areas.Notebook,
     });
 
-    if (isNotebookEnabled) {
+    if (isNotebookEnabled && !userContext.features.notebooksTemporarilyDown) {
       await this.initNotebooks(userContext.databaseAccount);
     } else if (this.notebookToImport) {
       // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
