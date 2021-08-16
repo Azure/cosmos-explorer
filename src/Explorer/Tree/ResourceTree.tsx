@@ -11,7 +11,7 @@ import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
-import { Areas } from "../../Common/Constants";
+import { Areas, Notebook } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -121,21 +121,32 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       children: [],
     };
 
-    if (galleryContentRoot) {
-      notebooksTree.children.push(buildGalleryNotebooksTree());
-    }
+    if (userContext.features.notebooksTemporarilyDown) {
+      notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
+    } else {
+      if (galleryContentRoot) {
+        notebooksTree.children.push(buildGalleryNotebooksTree());
+      }
 
-    if (myNotebooksContentRoot) {
-      notebooksTree.children.push(buildMyNotebooksTree());
-    }
+      if (myNotebooksContentRoot) {
+        notebooksTree.children.push(buildMyNotebooksTree());
+      }
 
-    if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      // collapse all other notebook nodes
-      notebooksTree.children.forEach((node) => (node.isExpanded = false));
-      notebooksTree.children.push(buildGitHubNotebooksTree());
+      if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
+        // collapse all other notebook nodes
+        notebooksTree.children.forEach((node) => (node.isExpanded = false));
+        notebooksTree.children.push(buildGitHubNotebooksTree());
+      }
     }
 
     return notebooksTree;
+  };
+
+  const buildNotebooksTemporarilyDownTree = (): TreeNode => {
+    return {
+      label: Notebook.temporarilyDownMsg,
+      className: "clickDisabled",
+    };
   };
 
   const buildGalleryNotebooksTree = (): TreeNode => {
@@ -503,7 +514,12 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       contextMenu: ResourceTreeContextMenuButtonFactory.createCollectionContextMenuButton(container, collection),
     });
 
-    if (isNotebookEnabled && userContext.apiType === "Mongo" && isPublicInternetAccessAllowed()) {
+    if (
+      isNotebookEnabled &&
+      userContext.apiType === "Mongo" &&
+      isPublicInternetAccessAllowed() &&
+      !userContext.features.notebooksTemporarilyDown
+    ) {
       children.push({
         label: "Schema (Preview)",
         onClick: collection.onSchemaAnalyzerClick.bind(collection),
