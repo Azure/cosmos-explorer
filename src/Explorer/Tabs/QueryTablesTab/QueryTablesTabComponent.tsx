@@ -293,12 +293,14 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     if (!isRunQuery) {
       try {
         documents = await tableEntityListViewModel.renderNextPageAndupdateCache();
-        if (userContext.apiType === "Cassandra") {
-          headers = documents?.length ? this.getFormattedHeaders(documents) : ["userid", "name", "email"];
-          this.setupIntialEntities(headers, documents, isInitialLoad);
-        } else {
-          headers = documents?.length ? this.getFormattedHeaders(documents) : ["RowKey", "PartitionKey", "Timestamp"];
-          this.setupIntialEntities(headers, documents, isInitialLoad);
+        if (documents) {
+          if (userContext.apiType === "Cassandra") {
+            headers = documents?.length ? this.getFormattedHeaders(documents) : ["userid", "name", "email"];
+            this.setupIntialEntities(headers, documents, isInitialLoad);
+          } else {
+            headers = documents?.length ? this.getFormattedHeaders(documents) : ["RowKey", "PartitionKey", "Timestamp"];
+            this.setupIntialEntities(headers, documents, isInitialLoad);
+          }
         }
       } catch (error) {
         this.setState({
@@ -351,6 +353,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let maxWidth: number;
     let documentItems: IDocument[] = [];
     let filteredItems: IDocument[] = [];
+    let updatedQueryTableRows: IQueryTableRowsType[] = [];
     this.columns = [];
     const { queryTableRows } = this.state;
 
@@ -385,15 +388,17 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       });
     });
 
-    documentItems = this.generateDetailsList(entities);
-    filteredItems = documentItems.slice(0, PAGESIZE);
+    if (entities.length > 0) {
+      documentItems = this.generateDetailsList(entities);
+      filteredItems = documentItems.slice(0, PAGESIZE);
 
-    const queryTableRowsClone = [...queryTableRows];
-    const updatedQueryTableRows = queryTableRowsClone.map((queryTableRow) => {
-      const queryTableRowClone = { ...queryTableRow };
-      queryTableRowClone.fieldOptions = getformattedOptions(headers);
-      return queryTableRowClone;
-    });
+      const queryTableRowsClone = [...queryTableRows];
+      updatedQueryTableRows = queryTableRowsClone.map((queryTableRow) => {
+        const queryTableRowClone = { ...queryTableRow };
+        queryTableRowClone.fieldOptions = getformattedOptions(headers);
+        return queryTableRowClone;
+      });
+    }
 
     this.setState(
       {
@@ -408,10 +413,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         fromDocument: 0,
         toDocument: PAGESIZE,
         currentStartIndex: PAGESIZE,
-        queryTableRows: updatedQueryTableRows,
+        queryTableRows: entities.length > 0 ? updatedQueryTableRows : [],
       },
       () => {
-        if (isInitialLoad && headers.length > 0) {
+        if (entities.length > 0 && isInitialLoad && headers.length > 0) {
           this.loadFilterExample();
           this.onItemsSelectionChanged(true);
         }
