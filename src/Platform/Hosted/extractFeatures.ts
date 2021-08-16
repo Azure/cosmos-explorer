@@ -27,6 +27,7 @@ export type Features = {
   readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
+  readonly notebooksTemporarilyDown: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -72,5 +73,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     autoscaleDefault: "true" === get("autoscaledefault"),
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
+    notebooksTemporarilyDown: "true" === get("notebooksTemporarilyDown", "true"),
   };
 }
