@@ -129,6 +129,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
       handleError(errorMessage, "AddTableRow");
       throw error;
     } finally {
+      closeSidePanel();
       setIsExecuting(false);
     }
   };
