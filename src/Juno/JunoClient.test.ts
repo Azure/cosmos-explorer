@@ -364,7 +364,6 @@ describe("Gallery", () => {
     const name = "name";
     const description = "description";
     const tags = ["tag"];
-    const author = "author";
     const thumbnailUrl = "thumbnailUrl";
     const content = `{ "key": "value" }`;
     const addLinkToNotebookViewer = true;
@@ -373,7 +372,7 @@ describe("Gallery", () => {
       json: () => undefined as any,
     });
 
-    const response = await junoClient.publishNotebook(name, description, tags, author, thumbnailUrl, content);
+    const response = await junoClient.publishNotebook(name, description, tags, thumbnailUrl, content);
 
     const authorizationHeader = getAuthorizationHeader();
     expect(response.status).toBe(HttpStatusCodes.OK);
@@ -391,7 +390,6 @@ describe("Gallery", () => {
           name,
           description,
           tags,
-          author,
           thumbnailUrl,
           content: JSON.parse(content),
           addLinkToNotebookViewer,

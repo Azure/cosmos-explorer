@@ -1,0 +1,60 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PromptContent renders for busy status 1`] = `
+<div
+  className="greyStopButton"
+  style={
+    Object {
+      "left": 0,
+      "maxHeight": "100%",
+      "position": "sticky",
+      "top": 0,
+      "width": "100%",
+      "zIndex": 300,
+    }
+  }
+>
+  <CustomizedIconButton
+    ariaLabel="Stop cell execution"
+    className="runCellButton"
+    iconProps={
+      Object {
+        "iconName": "CircleStopSolid",
+      }
+    }
+    style={
+      Object {
+        "position": "absolute",
+      }
+    }
+    title="Stop cell execution"
+  />
+  <StyledSpinnerBase
+    size={3}
+    style={
+      Object {
+        "paddingTop": 5,
+        "position": "absolute",
+        "width": "100%",
+      }
+    }
+  />
+</div>
+`;
+
+exports[`PromptContent renders when hovered 1`] = `
+<div
+  className=""
+>
+  <CustomizedIconButton
+    ariaLabel="Run cell"
+    className="runCellButton"
+    iconProps={
+      Object {
+        "iconName": "MSNVideosSolid",
+      }
+    }
+    title="Run cell"
+  />
+</div>
+`;
