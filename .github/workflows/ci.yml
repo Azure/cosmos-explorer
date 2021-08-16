@@ -143,7 +143,7 @@ jobs:
           - ./test/mongo/container.spec.ts
           - ./test/mongo/container32.spec.ts
           - ./test/selfServe/selfServeExample.spec.ts
-          - ./test/notebooks/upload.spec.ts
+          # - ./test/notebooks/upload.spec.ts // TEMP disabled since notebooks service is off
           - ./test/sql/resourceToken.spec.ts
           - ./test/tables/container.spec.ts
     steps:
