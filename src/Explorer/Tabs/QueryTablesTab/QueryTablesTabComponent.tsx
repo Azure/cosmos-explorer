@@ -63,7 +63,7 @@ export interface Button {
   isSelected?: boolean;
 }
 
-const PAGESIZE = 10;
+const PAGESIZE = 100;
 
 class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, IQueryTablesTabComponentStates> {
   public collection: ViewModels.Collection;
@@ -100,12 +100,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.tableDataClient = this.container.tableDataClient;
     this.tableEntityListViewModel2(new TableEntityListViewModel(this.tableCommands, props.queryTablesTab));
     const tableEntityListViewModel = new TableEntityListViewModel(this.tableCommands, props.queryTablesTab);
-    // const queryBuilderViewModel = new QueryViewModel(this.props.queryTablesTab).queryBuilderViewModel();
-
-    // const entityTypeOptions = queryBuilderViewModel.edmTypes();
-    // const timestampOptions = queryBuilderViewModel.timeOptions();
-    // const operatorsOptions = queryBuilderViewModel.operators();
-    // const operationOptions = queryBuilderViewModel.clauseRules();
 
     this.state = {
       tableEntityListViewModel,
@@ -201,7 +195,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   }
 
   componentDidMount(): void {
-    this.loadEntities(true);
+    this.loadEntities(true, false);
   }
 
   public createSelection = (): Selection => {
@@ -294,33 +288,77 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     });
   }
 
-  public async loadEntities(isInitialLoad: boolean): Promise<void> {
+  public async loadEntities(isInitialLoad: boolean, isRunQuery?: boolean): Promise<void> {
     const { tableEntityListViewModel, selectedQueryText } = this.state;
-    // tableEntityListViewModel.renderNextPageAndupdateCache();
     let headers: string[] = [];
     //eslint-disable-next-line
     let documents: any = {};
-    try {
-      if (userContext.apiType === "Cassandra") {
-        documents = await this.props.queryTablesTab.container.tableDataClient.queryDocuments(
-          this.props.queryTablesTab.collection,
-          selectedQueryText,
-          true
-        );
-        headers = this.getFormattedHeaders(documents.Results);
-        this.setupIntialEntities(documents.Results, headers, isInitialLoad);
-      } else {
-        const { collection } = this.props;
-        documents = await this.getDocuments(collection, selectedQueryText);
-        headers = this.getFormattedHeaders(documents.Results);
-        this.setupIntialEntities(documents.Results, headers, isInitialLoad);
+    // const data = await tableEntityListViewModel.a();
+    // console.log(
+    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
+    //   data
+    // );
+
+    // setTimeout(() => {
+    //   console.log("Items > ", this.state.tableEntityListViewModel.items());
+    // }, 10000);
+    // await tableEntityListViewModel.renderNextPageAndupdateCache(selectedQueryText);
+    // setTimeout(() => {
+    //   // console.log("Processing...");
+    //   this.isEntitiesAvailable(isInitialLoad);
+    // }, 0);
+    if (!isRunQuery) {
+      try {
+        documents = await tableEntityListViewModel.renderNextPageAndupdateCache();
+        // setTimeout(() => {
+        //   // console.log("Processing...");
+        //   this.isEntitiesAvailable(isInitialLoad);
+        // }, 0);
+        // const data = await tableEntityListViewModel.a();
+        if (userContext.apiType === "Cassandra") {
+          console.log(
+            "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
+            documents.Results
+          );
+          headers = this.getFormattedHeaders(documents.Results);
+          this.setupIntialEntities(headers, documents.Results, isInitialLoad);
+        } else {
+          console.log(
+            "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
+            documents
+          );
+          headers = this.getFormattedHeaders(documents);
+          this.setupIntialEntities(headers, documents, isInitialLoad);
+        }
+        // this.isEntitiesAvailable(isInitialLoad, data);
+      } catch (error) {
+        this.setState({
+          queryErrorMessage: error.responseText,
+          hasQueryError: true,
+          isLoading: false,
+        });
       }
-      this.setState({
-        queryErrorMessage: "",
-        hasQueryError: false,
-      });
-    } catch (error) {
-      if (error.responseText) {
+    } else {
+      try {
+        if (userContext.apiType === "Cassandra") {
+          documents = await this.props.queryTablesTab.container.tableDataClient.queryDocuments(
+            this.props.queryTablesTab.collection,
+            selectedQueryText,
+            true
+          );
+          headers = this.getFormattedHeaders(documents.Results);
+          this.setupIntialEntities(headers, documents.Results, isInitialLoad);
+        } else {
+          const { collection } = this.props;
+          documents = await this.getDocuments(collection, selectedQueryText);
+          headers = this.getFormattedHeaders(documents.Results);
+          this.setupIntialEntities(headers, documents.Results, isInitialLoad);
+        }
+        this.setState({
+          queryErrorMessage: "",
+          hasQueryError: false,
+        });
+      } catch (error) {
         this.setState({
           queryErrorMessage: error.responseText,
           hasQueryError: true,
@@ -331,17 +369,35 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   }
 
   private setupIntialEntities = (
-    entities: Entities.ITableEntity[],
     headers: string[],
-    isInitialLoad: boolean
+    entities?: Entities.ITableEntity[],
+    isInitialLoad?: boolean
   ): void => {
+    let minWidth: number;
+    let maxWidth: number;
+    let documentItems: IDocument[] = [];
+    let filteredItems: IDocument[] = [];
     this.columns = [];
     headers.map((header) => {
+      switch (header) {
+        case "PartitionKey":
+        case "RowKey":
+          minWidth = 50;
+          maxWidth = 100;
+          break;
+        case "Timestamp":
+          minWidth = 200;
+          maxWidth = 200;
+          break;
+        default:
+          minWidth = 30;
+          maxWidth = 50;
+      }
       this.columns.push({
         key: header,
         name: header,
-        minWidth: 100,
-        maxWidth: 200,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
         data: "string",
         fieldName: header,
         isResizable: true,
@@ -350,12 +406,14 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         sortAscendingAriaLabel: "Sorted A to Z",
         sortDescendingAriaLabel: "Sorted Z to A",
         onColumnClick: this.onColumnClick,
+        // onRender: (item: Entities.ITableEntity) => {
+        //   return <div className={!item[header] ? "noData" : ""}>{item[header] ? item[header] : " "}</div>;
+        // },
       });
     });
 
-    const documentItems = this.generateDetailsList(entities);
-
-    const filteredItems = documentItems.slice(0, PAGESIZE);
+    documentItems = this.generateDetailsList(entities);
+    filteredItems = documentItems.slice(0, PAGESIZE);
 
     this.setState(
       {
@@ -369,6 +427,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         queryText: this.state.queryViewModel.queryText(),
         fromDocument: 0,
         toDocument: PAGESIZE,
+        currentStartIndex: PAGESIZE,
       },
       () => {
         if (isInitialLoad && headers.length > 0) {
@@ -378,6 +437,36 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       }
     );
   };
+
+  // public isEntitiesAvailable(isInitialLoad: boolean, data?: Entities.ITableEntity[]): void {
+  //   let headers: string[] = [];
+  //   headers = this.getFormattedHeaders(data);
+  //   this.setupIntialEntities(false, headers);
+
+  //   const documentItems = this.generateDetailsList(data);
+  //   const filteredItems = documentItems.slice(0, PAGESIZE);
+
+  //   this.setState(
+  //     {
+  //       columns: this.columns,
+  //       headers,
+  //       operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
+  //       isLoading: false,
+  //       items: filteredItems,
+  //       entities: data,
+  //       originalItems: documentItems,
+  //       queryText: this.state.queryViewModel.queryText(),
+  //       fromDocument: 0,
+  //       toDocument: PAGESIZE,
+  //     },
+  //     () => {
+  //       if (isInitialLoad && headers.length > 0) {
+  //         this.loadFilterExample();
+  //         this.onItemsSelectionChanged(true);
+  //       }
+  //     }
+  //   );
+  // }
 
   private onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
     const { columns, items } = this.state;
@@ -444,6 +533,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     //eslint-disable-next-line
     let obj: any;
     documents.map((item) => {
+      obj = {};
       this.columns.map((col) => {
         if (item[col.name]) {
           obj = { ...obj, ...{ [col.name]: item[col.name]._ } };
@@ -458,7 +548,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({
       isLoading: true,
     });
-    this.loadEntities(false);
+    this.loadEntities(false, false);
   }
 
   public onAddEntityClick = (): void => {
@@ -472,7 +562,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           tableEntityListViewModel={this.state.tableEntityListViewModel}
           cassandraApiClient={new CassandraAPIDataClient()}
           reloadEntities={() => this.reloadEntities()}
-        />
+        />,
+        "700px"
       );
   };
 
@@ -492,7 +583,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           cassandraApiClient={new CassandraAPIDataClient()}
           selectedEntity={this.state.selectedItems}
           reloadEntities={() => this.reloadEntities()}
-        />
+        />,
+        "700px"
       );
   };
 
@@ -511,10 +603,12 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         .deleteDocuments(this.state.tableEntityListViewModel.queryTablesTab.collection, entitiesToDelete)
         //eslint-disable-next-line
         .then((results: any) => {
-          this.setState({
-            isLoading: true,
+          return this.state.tableEntityListViewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
+            this.setState({
+              isLoading: true,
+            });
+            this.loadEntities(false, false);
           });
-          this.loadEntities(false);
         });
     }
   };
@@ -525,7 +619,11 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       selectedQueryText: this.state.queryViewModel.runQuery(queryTableRows),
     });
     setTimeout(() => {
-      this.loadEntities(false);
+      console.log(
+        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 651 ~ QueryTablesTabComponent ~ runQuery ~ selectedQueryText",
+        this.state.selectedQueryText
+      );
+      this.loadEntities(false, queryTableRows.length > 0 ? true : false);
     }, 2000);
     this.setState({
       queryText: this.state.queryViewModel.queryText(),
@@ -1005,7 +1103,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           </div>
         </div>
 
-        <div className="tablesQueryTab tableContainer">
+        <div className="tablesQueryTab tableContainer" data-is-scrollable="true">
           {this.state.isLoading && <Spinner size={SpinnerSize.large} className="spinner" />}
           {this.state.items.length > 0 && !this.state.isLoading && (
             <DetailsList
@@ -1018,6 +1116,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
               selection={this.state.selection}
               selectionPreservedOnEmptyClick={true}
               checkboxVisibility={CheckboxVisibility.always}
+              onShouldVirtualize={() => false}
             />
           )}
           {this.state.items.length === 0 && !this.state.isLoading && (

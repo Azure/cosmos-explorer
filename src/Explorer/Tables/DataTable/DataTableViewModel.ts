@@ -170,6 +170,10 @@ abstract class DataTableViewModel {
   }
 
   protected renderPage(startIndex: number, pageSize: number) {
+    console.log(
+      "🚀 ~ file: DataTableViewModel.ts ~ line 179 ~ DataTableViewModel ~ renderPage ~ this.cache.data",
+      this.cache.data
+    );
     var endIndex = pageSize < 0 ? this.cache.length : startIndex + pageSize;
     var renderData = this.cache.data.slice(startIndex, endIndex);
 

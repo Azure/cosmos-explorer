@@ -170,6 +170,10 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.oDataQuery(filter);
     this._tableEntityListViewModel.sqlQuery(this.setSqlFilter(queryTableRows));
     this._tableEntityListViewModel.cqlQuery(filter);
+    console.log(
+      "🚀 ~ file: QueryViewModel.tsx ~ line 165 ~ QueryViewModel ~ this._tableEntityListViewModel.sqlQuery()",
+      this._tableEntityListViewModel.sqlQuery()
+    );
 
     return userContext.apiType !== "Cassandra"
       ? this._tableEntityListViewModel.sqlQuery()
