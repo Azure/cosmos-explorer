@@ -9,7 +9,6 @@ import "../externals/jquery-ui.structure.min.css";
 import "../externals/jquery-ui.theme.min.css";
 import "../externals/jquery.dataTables.min.css";
 import "../externals/jquery.typeahead.min.css";
-import "../externals/jquery.typeahead.min.js";
 // Image Dependencies
 import "../images/CosmosDB_rgb_ui_lighttheme.ico";
 import "../images/favicon.ico";
