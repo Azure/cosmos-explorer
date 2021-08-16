@@ -166,6 +166,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       currentStartIndex: PAGESIZE,
       fromDocument: 0,
       toDocument: PAGESIZE,
+      selectedItem: 0,
     };
 
     this.state.tableEntityListViewModel.queryTablesTab = this.props.queryTablesTab;
@@ -218,10 +219,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let selectedItems: Entities.ITableEntity[];
     const { selection } = this.state;
     isFirstItemSelected && selection.setIndexSelected(0, true, false);
-    console.log(
-      "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 254 ~ QueryTablesTabComponent ~ selection.getSelection().length",
-      selection.getSelection().length
-    );
+    this.setState({ selectedItem: selection.getSelectedIndices()?.[0] });
     if (selection.getSelection().length > 0) {
       Object.keys(this.state.selection.getSelection()[0]).map((key, index) => {
         if (key === documentKey) {
@@ -316,18 +314,22 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         // }, 0);
         // const data = await tableEntityListViewModel.a();
         if (userContext.apiType === "Cassandra") {
-          console.log(
-            "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
-            documents.Results
-          );
-          headers = this.getFormattedHeaders(documents.Results);
+          // console.log(
+          //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
+          //   documents.Results
+          // );
+          headers = documents.Results?.length
+            ? this.getFormattedHeaders(documents.Results)
+            : ["userid", "name", "email"];
           this.setupIntialEntities(headers, documents.Results, isInitialLoad);
         } else {
-          console.log(
-            "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
-            documents
-          );
-          headers = this.getFormattedHeaders(documents);
+          // console.log(
+          //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
+          //   documents
+          // );
+          headers = documents.Results?.length
+            ? this.getFormattedHeaders(documents.Results)
+            : ["RowKey", "PartitionKey", "Timestamp"];
           this.setupIntialEntities(headers, documents, isInitialLoad);
         }
         // this.isEntitiesAvailable(isInitialLoad, data);
@@ -346,17 +348,22 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
             selectedQueryText,
             true
           );
-          headers = this.getFormattedHeaders(documents.Results);
+          headers = documents.Results?.length
+            ? this.getFormattedHeaders(documents.Results)
+            : ["userid", "name", "email"];
           this.setupIntialEntities(headers, documents.Results, isInitialLoad);
         } else {
           const { collection } = this.props;
           documents = await this.getDocuments(collection, selectedQueryText);
-          headers = this.getFormattedHeaders(documents.Results);
+          headers = documents.Results?.length
+            ? this.getFormattedHeaders(documents.Results)
+            : ["RowKey", "PartitionKey", "Timestamp"];
           this.setupIntialEntities(headers, documents.Results, isInitialLoad);
         }
         this.setState({
           queryErrorMessage: "",
           hasQueryError: false,
+          isLoading: false,
         });
       } catch (error) {
         this.setState({
@@ -378,6 +385,8 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let documentItems: IDocument[] = [];
     let filteredItems: IDocument[] = [];
     this.columns = [];
+    const { queryTableRows } = this.state;
+
     headers.map((header) => {
       switch (header) {
         case "PartitionKey":
@@ -415,6 +424,13 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     documentItems = this.generateDetailsList(entities);
     filteredItems = documentItems.slice(0, PAGESIZE);
 
+    const queryTableRowsClone = [...queryTableRows];
+    const updatedQueryTableRows = queryTableRowsClone.map((queryTableRow) => {
+      const queryTableRowClone = { ...queryTableRow };
+      queryTableRowClone.fieldOptions = getformattedOptions(headers);
+      return queryTableRowClone;
+    });
+
     this.setState(
       {
         columns: this.columns,
@@ -428,6 +444,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         fromDocument: 0,
         toDocument: PAGESIZE,
         currentStartIndex: PAGESIZE,
+        queryTableRows: updatedQueryTableRows,
       },
       () => {
         if (isInitialLoad && headers.length > 0) {
@@ -548,6 +565,9 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     this.setState({
       isLoading: true,
     });
+
+    const { selection, selectedItem } = this.state;
+    selection.setIndexSelected(selectedItem, false, false);
     this.loadEntities(false, false);
   }
 
@@ -557,6 +577,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       .openSidePanel(
         "Add Table Entity",
         <AddTableEntityPanel
+          headerItems={this.state.headers}
           tableDataClient={this.tableDataClient}
           queryTablesTab={this.props.queryTablesTab}
           tableEntityListViewModel={this.state.tableEntityListViewModel}
@@ -619,10 +640,10 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       selectedQueryText: this.state.queryViewModel.runQuery(queryTableRows),
     });
     setTimeout(() => {
-      console.log(
-        "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 651 ~ QueryTablesTabComponent ~ runQuery ~ selectedQueryText",
-        this.state.selectedQueryText
-      );
+      // console.log(
+      //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 651 ~ QueryTablesTabComponent ~ runQuery ~ selectedQueryText",
+      //   this.state.selectedQueryText
+      // );
       this.loadEntities(false, queryTableRows.length > 0 ? true : false);
     }, 2000);
     this.setState({

@@ -70,6 +70,7 @@ export interface IQueryTablesTabComponentStates {
   currentStartIndex: number;
   fromDocument: number;
   toDocument: number;
+  selectedItem: number;
 }
 
 export interface IQueryTableRowsType {

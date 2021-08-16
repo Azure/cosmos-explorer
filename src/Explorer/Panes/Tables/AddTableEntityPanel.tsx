@@ -42,6 +42,7 @@ interface AddTableEntityPanelProps {
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
   reloadEntities: () => void;
+  headerItems: string[];
 }
 
 interface EntityRowType {
@@ -62,6 +63,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   tableEntityListViewModel,
   cassandraApiClient,
   reloadEntities,
+  headerItems,
 }: AddTableEntityPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [entities, setEntities] = useState<EntityRowType[]>([]);
@@ -81,7 +83,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   }, []);
 
   const getDefaultEntitiesAttribute = async (): Promise<void> => {
-    let headers = tableEntityListViewModel.headers;
+    let headers = tableEntityListViewModel.headers?.length > 1 ? tableEntityListViewModel.headers : headerItems;
     if (DataTableUtilities.checkForDefaultHeader(headers)) {
       headers = [];
       if (userContext.apiType === "Tables") {
