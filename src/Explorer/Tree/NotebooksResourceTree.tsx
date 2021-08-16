@@ -9,7 +9,7 @@ import NewNotebookIcon from "../../../images/notebook/Notebook-new.svg";
 import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
-import { Areas } from "../../Common/Constants";
+import { Areas, Notebook } from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { useSidePanel } from "../../hooks/useSidePanel";
 import { useTabs } from "../../hooks/useTabs";
@@ -108,21 +108,32 @@ export const NotebooksResourceTree: React.FC<NotebooksResourceTreeProps> = ({
       children: [],
     };
 
-    if (galleryContentRoot) {
-      notebooksTree.children.push(buildGalleryNotebooksTree());
-    }
+    if (userContext.features.notebooksTemporarilyDown) {
+      notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
+    } else {
+      if (galleryContentRoot) {
+        notebooksTree.children.push(buildGalleryNotebooksTree());
+      }
 
-    if (myNotebooksContentRoot) {
-      notebooksTree.children.push(buildMyNotebooksTree());
-    }
+      if (myNotebooksContentRoot) {
+        notebooksTree.children.push(buildMyNotebooksTree());
+      }
 
-    if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      // collapse all other notebook nodes
-      notebooksTree.children.forEach((node) => (node.isExpanded = false));
-      notebooksTree.children.push(buildGitHubNotebooksTree());
+      if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
+        // collapse all other notebook nodes
+        notebooksTree.children.forEach((node) => (node.isExpanded = false));
+        notebooksTree.children.push(buildGitHubNotebooksTree());
+      }
     }
 
     return notebooksTree;
+  };
+
+  const buildNotebooksTemporarilyDownTree = (): TreeNode => {
+    return {
+      label: Notebook.temporarilyDownMsg,
+      className: "clickDisabled",
+    };
   };
 
   const buildGalleryNotebooksTree = (): TreeNode => {
