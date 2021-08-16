@@ -170,17 +170,13 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.oDataQuery(filter);
     this._tableEntityListViewModel.sqlQuery(this.setSqlFilter(queryTableRows));
     this._tableEntityListViewModel.cqlQuery(filter);
-    console.log(
-      "🚀 ~ file: QueryViewModel.tsx ~ line 165 ~ QueryViewModel ~ this._tableEntityListViewModel.sqlQuery()",
-      this._tableEntityListViewModel.sqlQuery()
-    );
 
     return userContext.apiType !== "Cassandra"
       ? this._tableEntityListViewModel.sqlQuery()
       : this._tableEntityListViewModel.cqlQuery();
   };
 
-  public clearQuery = (): DataTables.DataTable => {
+  public clearQuery = (): void => {
     this.queryText();
     this.topValue();
     this.selectText();
@@ -198,7 +194,6 @@ export default class QueryViewModel {
         this.queryTablesTab.collection.id()
       )}`
     );
-    return this._tableEntityListViewModel.reloadTable(false);
   };
 
   public selectQueryOptions(headers: string[], getSelectMessage: (selectMessage: string) => void): void {

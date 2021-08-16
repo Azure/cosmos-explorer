@@ -94,8 +94,4 @@ export default class TableCommands {
 
     return null;
   }
-
-  public resetColumns(viewModel: TableEntityListViewModel): void {
-    viewModel.reloadTable();
-  }
 }

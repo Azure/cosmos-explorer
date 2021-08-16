@@ -5,7 +5,6 @@ import * as CommonConstants from "../../../Common/Constants";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
-import * as Constants from "../Constants";
 import * as Entities from "../Entities";
 import CacheBase from "./CacheBase";
 
@@ -46,19 +45,11 @@ abstract class DataTableViewModel {
   private pendingRedraw = false;
   private lastRedrawTime = new Date().getTime();
 
-  private dataTableOperationManager: IDataTableOperation;
-
   public queryTablesTab: NewQueryTablesTab;
 
   constructor() {
     this.items([]);
     this.selected([]);
-    // Late bound
-    this.dataTableOperationManager = null;
-  }
-
-  public bind(dataTableOperationManager: IDataTableOperation): void {
-    this.dataTableOperationManager = dataTableOperationManager;
   }
 
   public clearLastSelected(): void {
@@ -98,10 +89,6 @@ abstract class DataTableViewModel {
         setTimeout(() => redraw(), timeUntilNextRedraw);
       }
     }
-  }
-
-  public focusDataTable(): void {
-    this.dataTableOperationManager.focusTable();
   }
 
   public getItemFromSelectedItems(itemKeys: Entities.IProperty[]): Entities.ITableEntity {
@@ -170,10 +157,6 @@ abstract class DataTableViewModel {
   }
 
   protected renderPage(startIndex: number, pageSize: number) {
-    console.log(
-      "🚀 ~ file: DataTableViewModel.ts ~ line 179 ~ DataTableViewModel ~ renderPage ~ this.cache.data",
-      this.cache.data
-    );
     var endIndex = pageSize < 0 ? this.cache.length : startIndex + pageSize;
     var renderData = this.cache.data.slice(startIndex, endIndex);
 
@@ -207,27 +190,6 @@ abstract class DataTableViewModel {
    */
   protected stringCompare(s1: string, s2: string): boolean {
     return s1 === s2;
-  }
-
-  private updatePaginationControls(oSettings: any) {
-    var pageInfo = this.table.page.info();
-    var pageSize = pageInfo.length;
-    var paginateElement = $(oSettings.nTableWrapper).find(Constants.htmlSelectors.paginateSelector);
-
-    if (this.allDownloaded) {
-      if (this.cache.length <= pageSize) {
-        // Hide pagination controls if everything fits in one page!.
-        paginateElement.hide();
-      } else {
-        // Enable pagination controls.
-        paginateElement.show();
-        oSettings.oLanguage.oPaginate.sLast = DataTableViewModel.lastPageLabel;
-      }
-    } else {
-      // Enable pagination controls and show load more button.
-      paginateElement.show();
-      oSettings.oLanguage.oPaginate.sLast = DataTableViewModel.loadMoreLabel;
-    }
   }
 }
 

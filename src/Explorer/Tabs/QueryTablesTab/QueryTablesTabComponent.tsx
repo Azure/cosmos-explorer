@@ -243,7 +243,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
   public loadFilterExample(): void {
     const { queryTableRows, headers, entities } = this.state;
     const queryTableRowsClone = [...queryTableRows];
-    // queryTableRowsClone[0].fieldOptions = getformattedOptions(headers);
     this.setState({
       operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
       queryTableRows: queryTableRowsClone,
@@ -291,48 +290,16 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
     let headers: string[] = [];
     //eslint-disable-next-line
     let documents: any = {};
-    // const data = await tableEntityListViewModel.a();
-    // console.log(
-    //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
-    //   data
-    // );
-
-    // setTimeout(() => {
-    //   console.log("Items > ", this.state.tableEntityListViewModel.items());
-    // }, 10000);
-    // await tableEntityListViewModel.renderNextPageAndupdateCache(selectedQueryText);
-    // setTimeout(() => {
-    //   // console.log("Processing...");
-    //   this.isEntitiesAvailable(isInitialLoad);
-    // }, 0);
     if (!isRunQuery) {
       try {
         documents = await tableEntityListViewModel.renderNextPageAndupdateCache();
-        // setTimeout(() => {
-        //   // console.log("Processing...");
-        //   this.isEntitiesAvailable(isInitialLoad);
-        // }, 0);
-        // const data = await tableEntityListViewModel.a();
         if (userContext.apiType === "Cassandra") {
-          // console.log(
-          //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
-          //   documents.Results
-          // );
-          headers = documents.Results?.length
-            ? this.getFormattedHeaders(documents.Results)
-            : ["userid", "name", "email"];
-          this.setupIntialEntities(headers, documents.Results, isInitialLoad);
+          headers = documents?.length ? this.getFormattedHeaders(documents) : ["userid", "name", "email"];
+          this.setupIntialEntities(headers, documents, isInitialLoad);
         } else {
-          // console.log(
-          //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 311 ~ QueryTablesTabComponent ~ loadEntities ~ data",
-          //   documents
-          // );
-          headers = documents.Results?.length
-            ? this.getFormattedHeaders(documents.Results)
-            : ["RowKey", "PartitionKey", "Timestamp"];
+          headers = documents?.length ? this.getFormattedHeaders(documents) : ["RowKey", "PartitionKey", "Timestamp"];
           this.setupIntialEntities(headers, documents, isInitialLoad);
         }
-        // this.isEntitiesAvailable(isInitialLoad, data);
       } catch (error) {
         this.setState({
           queryErrorMessage: error.responseText,
@@ -415,9 +382,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         sortAscendingAriaLabel: "Sorted A to Z",
         sortDescendingAriaLabel: "Sorted Z to A",
         onColumnClick: this.onColumnClick,
-        // onRender: (item: Entities.ITableEntity) => {
-        //   return <div className={!item[header] ? "noData" : ""}>{item[header] ? item[header] : " "}</div>;
-        // },
       });
     });
 
@@ -454,36 +418,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       }
     );
   };
-
-  // public isEntitiesAvailable(isInitialLoad: boolean, data?: Entities.ITableEntity[]): void {
-  //   let headers: string[] = [];
-  //   headers = this.getFormattedHeaders(data);
-  //   this.setupIntialEntities(false, headers);
-
-  //   const documentItems = this.generateDetailsList(data);
-  //   const filteredItems = documentItems.slice(0, PAGESIZE);
-
-  //   this.setState(
-  //     {
-  //       columns: this.columns,
-  //       headers,
-  //       operators: this.state.queryViewModel.queryBuilderViewModel().operators(),
-  //       isLoading: false,
-  //       items: filteredItems,
-  //       entities: data,
-  //       originalItems: documentItems,
-  //       queryText: this.state.queryViewModel.queryText(),
-  //       fromDocument: 0,
-  //       toDocument: PAGESIZE,
-  //     },
-  //     () => {
-  //       if (isInitialLoad && headers.length > 0) {
-  //         this.loadFilterExample();
-  //         this.onItemsSelectionChanged(true);
-  //       }
-  //     }
-  //   );
-  // }
 
   private onColumnClick = (ev: React.MouseEvent<HTMLElement>, column: IColumn): void => {
     const { columns, items } = this.state;
@@ -640,10 +574,6 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
       selectedQueryText: this.state.queryViewModel.runQuery(queryTableRows),
     });
     setTimeout(() => {
-      // console.log(
-      //   "🚀 ~ file: QueryTablesTabComponent.tsx ~ line 651 ~ QueryTablesTabComponent ~ runQuery ~ selectedQueryText",
-      //   this.state.selectedQueryText
-      // );
       this.loadEntities(false, queryTableRows.length > 0 ? true : false);
     }, 2000);
     this.setState({
@@ -1147,53 +1077,55 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
         <div className="query-tab-document-pagination">
           {this.state.items.length > 0 && !this.state.isLoading && (
             <>
-              <ul className="pagination ">
-                <li>
-                  <div
-                    className="item-link"
-                    onClick={() =>
-                      this.handlePagination("FIRST", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
-                    }
-                  >
-                    First
-                  </div>
-                </li>
-                <li>
-                  <div
-                    className="item-link"
-                    onClick={() =>
-                      this.handlePagination(
-                        "PREVIOUS",
-                        this.state.originalItems,
-                        this.state.currentStartIndex,
-                        PAGESIZE
-                      )
-                    }
-                  >
-                    Previous
-                  </div>
-                </li>
-                <li>
-                  <div
-                    className="item-link"
-                    onClick={() =>
-                      this.handlePagination("NEXT", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
-                    }
-                  >
-                    Next
-                  </div>
-                </li>
-                <li>
-                  <div
-                    className="item-link"
-                    onClick={() =>
-                      this.handlePagination("LAST", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
-                    }
-                  >
-                    Last
-                  </div>
-                </li>
-              </ul>
+              {this.state.originalItems.length > PAGESIZE && (
+                <ul className="pagination ">
+                  <li>
+                    <div
+                      className="item-link"
+                      onClick={() =>
+                        this.handlePagination("FIRST", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
+                      }
+                    >
+                      First
+                    </div>
+                  </li>
+                  <li>
+                    <div
+                      className="item-link"
+                      onClick={() =>
+                        this.handlePagination(
+                          "PREVIOUS",
+                          this.state.originalItems,
+                          this.state.currentStartIndex,
+                          PAGESIZE
+                        )
+                      }
+                    >
+                      Previous
+                    </div>
+                  </li>
+                  <li>
+                    <div
+                      className="item-link"
+                      onClick={() =>
+                        this.handlePagination("NEXT", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
+                      }
+                    >
+                      Next
+                    </div>
+                  </li>
+                  <li>
+                    <div
+                      className="item-link"
+                      onClick={() =>
+                        this.handlePagination("LAST", this.state.originalItems, this.state.currentStartIndex, PAGESIZE)
+                      }
+                    >
+                      Last
+                    </div>
+                  </li>
+                </ul>
+              )}
               <Text variant="medium">
                 Results {this.state.fromDocument + 1} -{" "}
                 {this.state.originalItems.length >= this.state.toDocument

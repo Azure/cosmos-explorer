@@ -132,111 +132,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     return [{ key: Constants.EntityKeyNames.RowKey, value: rowKey }];
   }
 
-  public reloadTable(useSetting: boolean = true, resetHeaders: boolean = true): DataTables.DataTable {
-    this.clearCache();
-    this.clearSelection();
-    this.isCancelled = false;
-
-    this.useSetting = useSetting;
-    if (resetHeaders) {
-      this.updateHeaders([Constants.defaultHeader]);
-    }
-    return this.table.ajax.reload();
-  }
-
   public updateHeaders(newHeaders: string[], notifyColumnChanges: boolean = false, enablePrompt: boolean = true): void {
     this.headers = newHeaders;
-  }
-
-  public async a(): Promise<Entities.ITableEntity[]> {
-    const a = await this.b();
-    console.log("🚀 ~ file: TableEntityListViewModel.ts ~ line 153 ~ TableEntityListViewModel ~ a ~ a", a);
-    return a;
-  }
-
-  public async b(): Promise<Entities.ITableEntity[]> {
-    const b = await this.c();
-    console.log("🚀 ~ file: TableEntityListViewModel.ts ~ line 157 ~ TableEntityListViewModel ~ b ~ b", b);
-    return b;
-  }
-
-  public async c(tableQuery?: Entities.ITableQuery, downloadSize?: number): Promise<any> {
-    var c: any;
-    var d: any;
-    if (this._documentIterator && this.continuationToken) {
-      // TODO handle Cassandra case
-
-      d = await this._documentIterator.fetchNext();
-      let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(d.resources);
-      let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
-        Results: entities,
-        ContinuationToken: this._documentIterator.hasMoreResults(),
-      };
-      c = finalEntities;
-
-      // .fetchNext()
-      // .then((response) => response.resources)
-      // .then((documents: any[]) => {
-      //   let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
-      //   let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
-      //     Results: entities,
-      //     ContinuationToken: this._documentIterator.hasMoreResults(),
-      //   };
-      //   return Promise.resolve(finalEntities);
-      // });
-    } else {
-      c = await this.queryTablesTab.container.tableDataClient.queryDocuments(
-        this.queryTablesTab.collection,
-        this.sqlQuery(),
-        true
-      );
-    }
-
-    // const c = await this.queryTablesTab.container.tableDataClient.queryDocuments(
-    //   this.queryTablesTab.collection,
-    //   this.sqlQuery(),
-    //   true
-    // );
-    const result = c;
-    if (result) {
-      if (!this._documentIterator) {
-        this._documentIterator = result.iterator;
-      }
-      var actualDownloadSize: number = 0;
-      var entities = result.Results;
-      actualDownloadSize = entities.length;
-
-      this.continuationToken = this.isCancelled ? null : result.ContinuationToken;
-
-      if (!this.continuationToken) {
-        this.allDownloaded = true;
-      }
-      if (this.isCacheValid(this.tableQuery)) {
-        // Append to cache.
-        this.cache.data = this.cache.data.concat(entities.slice(0));
-      } else {
-        // Create cache.
-        this.cache.data = entities;
-        console.log(
-          "🚀 ~ file: TableEntityListViewModel.ts ~ line 797 ~ TableEntityListViewModel ~ .then ~ this.cache.data",
-          this.cache.data
-        );
-      }
-
-      this.cache.tableQuery = this.tableQuery;
-      this.cache.serverCallInProgress = false;
-
-      var nextDownloadSize: number = this.downloadSize - actualDownloadSize;
-      if (nextDownloadSize === 0 && this.tableQuery.top) {
-        this.allDownloaded = true;
-      }
-      if (this.allDownloaded || nextDownloadSize === 0) {
-        return Promise.resolve(this.cache.data);
-      }
-      return this.c(this.tableQuery, nextDownloadSize);
-    }
-    console.log("🚀 ~ file: TableEntityListViewModel.ts ~ line 161 ~ TableEntityListViewModel ~ c ~ data", c);
-    return this.cache.data;
   }
 
   /**
@@ -440,7 +337,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     tablePageSize: number,
     downloadSize: number
   ): Promise<Entities.ITableEntity[]> {
-    console.log("🚀 ~ file: TableEntityListViewModel.ts ~ line 366 ~ TableEntityListViewModel ~ prefetchAndRender");
     this.queryErrorMessage(null);
     if (this.cache.serverCallInProgress) {
       return undefined;
@@ -452,27 +348,15 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       }
       // Cache is assigned using prefetchData
       var entities = this.cache.data;
-      console.log(
-        "🚀 ~ file: TableEntityListViewModel.ts ~ line 430 ~ TableEntityListViewModel ~ .then ~ entities outside",
-        entities
-      );
       if (userContext.apiType === "Cassandra" && DataTableUtilities.checkForDefaultHeader(this.headers)) {
         (<CassandraAPIDataClient>this.queryTablesTab.container.tableDataClient)
           .getTableSchema(this.queryTablesTab.collection)
           .then((headers: CassandraTableKey[]) => {
-            console.log(
-              "🚀 ~ file: TableEntityListViewModel.ts ~ line 438 ~ TableEntityListViewModel ~ .then ~ headers",
-              headers
-            );
             this.updateHeaders(
               headers.map((header) => header.property),
               true
             );
           });
-        console.log(
-          "🚀 ~ file: TableEntityListViewModel.ts ~ line 430 ~ TableEntityListViewModel ~ .then ~ entities inside",
-          entities
-        );
       } else {
         var selectedHeadersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
           entities,
@@ -514,9 +398,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         );
         this.queryTablesTab.onLoadStartKey = null;
       }
-      DataTableUtilities.turnOffProgressIndicator();
     }
-    // return undefined;
+    return undefined;
   }
 
   /**
@@ -536,7 +419,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     downloadSize: number,
     currentRetry: number = 0
   ): Promise<any> {
-    console.log("🚀 ~ file: TableEntityListViewModel.ts ~ line 456 ~ TableEntityListViewModel ~ prefetchData");
     var entities: any;
     if (!this.cache.serverCallInProgress) {
       this.cache.serverCallInProgress = true;
@@ -544,7 +426,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
       this.lastPrefetchTime = new Date().getTime();
       var time = this.lastPrefetchTime;
 
-      var promise: Promise<IListTableEntitiesSegmentedResult>;
       try {
         if (this._documentIterator && this.continuationToken) {
           // TODO handle Cassandra case
@@ -558,7 +439,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           };
           entities = finalEntities;
         } else if (this.continuationToken && userContext.apiType === "Cassandra") {
-          entities = this.queryTablesTab.container.tableDataClient.queryDocuments(
+          entities = await this.queryTablesTab.container.tableDataClient.queryDocuments(
             this.queryTablesTab.collection,
             this.cqlQuery(),
             true,
@@ -603,10 +484,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           if (this.isCacheValid(tableQuery)) {
             // Append to cache.
             this.cache.data = this.cache.data.concat(entities.slice(0));
-            console.log(
-              "🚀 ~ file: TableEntityListViewModel.ts ~ line 667 ~ TableEntityListViewModel ~ .then ~ this.cache.data",
-              this.cache.data
-            );
             var p = new Promise<Entities.ITableEntity[]>((resolve) => {
               if (this.cache.data) {
                 resolve(this.cache.data);
@@ -616,10 +493,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           } else {
             // Create cache.
             this.cache.data = entities;
-            console.log(
-              "🚀 ~ file: TableEntityListViewModel.ts ~ line 671 ~ TableEntityListViewModel ~ .then ~ this.cache.data",
-              this.cache.data
-            );
           }
 
           this.cache.tableQuery = tableQuery;
