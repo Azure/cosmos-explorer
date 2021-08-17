@@ -15,9 +15,9 @@ export const ServiceUnavailable = 503;
 export const GatewayTimeout = 504;
 
 export const RetryableStatusCodes: number[] = [
-    TooManyRequests,
-    InternalServerError, // TODO: Handle all 500s on Portal backend and remove from retries list
-    BadGateway,
-    ServiceUnavailable,
-    GatewayTimeout,
+  TooManyRequests,
+  InternalServerError, // TODO: Handle all 500s on Portal backend and remove from retries list
+  BadGateway,
+  ServiceUnavailable,
+  GatewayTimeout,
 ];

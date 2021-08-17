@@ -1,8 +1,7 @@
 export const activityId = "x-ms-activity-id";
 export const apiType = "x-ms-cosmos-apitype";
 export const authorization = "authorization";
-export const collectionIndexTransformationProgress =
-    "x-ms-documentdb-collection-index-transformation-progress";
+export const collectionIndexTransformationProgress = "x-ms-documentdb-collection-index-transformation-progress";
 export const continuation = "x-ms-continuation";
 export const correlationRequestId = "x-ms-correlation-request-id";
 export const enableScriptLogging = "x-ms-documentdb-script-enable-logging";
