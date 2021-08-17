@@ -151,7 +151,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     // If number remaining pages in cache falls below prefetchThreshold prefetch will be triggered.
     var prefetchThreshold = 10;
     var tableQuery = this.tableQuery;
-
     // Try cache if valid.
     if (this.isCacheValid(tableQuery)) {
       // Check if prefetch needed.
@@ -484,12 +483,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           if (this.isCacheValid(tableQuery)) {
             // Append to cache.
             this.cache.data = this.cache.data.concat(entities.slice(0));
-            var p = new Promise<Entities.ITableEntity[]>((resolve) => {
-              if (this.cache.data) {
-                resolve(this.cache.data);
-              }
-            });
-            return p;
           } else {
             // Create cache.
             this.cache.data = entities;
@@ -504,12 +497,12 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           }
 
           if (this.allDownloaded || nextDownloadSize === 0) {
-            return Promise.resolve(result);
+            return Promise.resolve(this.cache.data);
           }
 
           if (currentRetry >= TableEntityListViewModel._maximumNumberOfPrefetchRetries) {
             result.ExceedMaximumRetries = true;
-            return Promise.resolve(result);
+            return Promise.resolve(this.cache.data);
           }
           return this.prefetchData(tableQuery, nextDownloadSize, currentRetry + 1);
         }
