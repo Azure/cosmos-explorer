@@ -32,7 +32,7 @@ import * as TerminalQueryParams from "./TerminalQueryParams";
 import * as TryCosmosExperience from "./TryCosmosExperience";
 import * as Urls from "./Urls";
 
-const StyleConstants = require("less-vars-loader!../../less/Common/Constants.less");
+const StyleConstants = require("less-vars-loader!../../../less/Common/Constants.less");
 
 export {
   StyleConstants,
