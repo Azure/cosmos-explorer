@@ -153,7 +153,6 @@ src/Juno/JunoClient.test.ts
 src/Juno/JunoClient.ts
 src/Platform/Hosted/Authorization.ts
 src/ReactDevTools.ts
-src/Shared/Constants.ts
 src/Shared/DefaultExperienceUtility.test.ts
 src/Shared/DefaultExperienceUtility.ts
 src/Shared/appInsights.ts
