@@ -13,21 +13,21 @@ import {
   Text,
   TooltipHost,
 } from "@fluentui/react";
+import * as Constants from "Common/Constants";
+import { createCollection } from "Common/dataAccess/createCollection";
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { configContext, Platform } from "ConfigContext";
+import * as DataModels from "Contracts/DataModels";
+import { SubscriptionType } from "Contracts/SubscriptionType";
+import { useSidePanel } from "hooks/useSidePanel";
 import React from "react";
-import * as Constants from "../../Common/Constants";
-import { createCollection } from "../../Common/dataAccess/createCollection";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { configContext, Platform } from "../../ConfigContext";
-import * as DataModels from "../../Contracts/DataModels";
-import { SubscriptionType } from "../../Contracts/SubscriptionType";
-import { useSidePanel } from "../../hooks/useSidePanel";
-import { CollectionCreation } from "../../Shared/Constants";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
-import { getCollectionName } from "../../Utils/APITypeUtils";
-import { isCapabilityEnabled, isServerlessAccount } from "../../Utils/CapabilityUtils";
-import { getUpsellMessage } from "../../Utils/PricingUtils";
+import { CollectionCreation } from "Shared/Constants";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "UserContext";
+import { getCollectionName } from "Utils/APITypeUtils";
+import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils";
+import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../Explorer";
