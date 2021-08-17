@@ -1,18 +1,19 @@
-import _ from "underscore";
+import {
+  Dropdown,
+  ICommandBarItemProps,
+  IComponentAsProps,
+  IconType,
+  IDropdownOption,
+  IDropdownStyles,
+} from "@fluentui/react";
 import * as React from "react";
-import { Observable } from "knockout";
-import { IconType } from "office-ui-fabric-react/lib/Icon";
-import { IComponentAsProps } from "office-ui-fabric-react/lib/Utilities";
-import { StyleConstants } from "../../../Common/Constants";
-import { ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
-import { Dropdown, IDropdownStyles, IDropdownOption } from "office-ui-fabric-react/lib/Dropdown";
-import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
-import { ArcadiaMenuPicker } from "../../Controls/Arcadia/ArcadiaMenuPicker";
-import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
-import { MemoryUsageInfo } from "../../../Contracts/DataModels";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { StyleConstants } from "../../../Common/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import { MemoryTracker } from "./MemoryTrackerComponent";
 
 /**
  * Convert our NavbarButtonConfig to UI Fabric buttons
@@ -20,6 +21,13 @@ import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryCons
  */
 export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
   const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
+
+  const getFilter = (isDisabled: boolean): string => {
+    if (isDisabled) {
+      return StyleConstants.GrayScale;
+    }
+    return undefined;
+  };
 
   return btns
     .filter((btn) => btn)
@@ -36,6 +44,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             style: {
               width: StyleConstants.CommandBarIconWidth, // 16
               alignSelf: btn.iconName ? "baseline" : undefined,
+              filter: getFilter(btn.disabled),
             },
             imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
             iconName: btn.iconName,
@@ -122,8 +131,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               width: 12,
               paddingLeft: 1,
               paddingTop: 6,
+              filter: getFilter(btn.disabled),
             },
-            imageProps: { src: ChevronDownIcon, alt: btn.iconAlt },
+            imageProps: {
+              src: ChevronDownIcon,
+              alt: btn.iconAlt,
+            },
           };
         }
 
@@ -164,10 +177,6 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
           };
         }
 
-        if (btn.isArcadiaPicker && btn.arcadiaProps) {
-          result.commandBarButtonAs = () => <ArcadiaMenuPicker {...btn.arcadiaProps} />;
-        }
-
         return result;
       }
     );
@@ -186,12 +195,9 @@ export const createDivider = (key: string): ICommandBarItemProps => {
   };
 };
 
-export const createMemoryTracker = (
-  key: string,
-  memoryUsageInfo: Observable<MemoryUsageInfo>
-): ICommandBarItemProps => {
+export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   return {
     key,
-    onRender: () => <MemoryTrackerComponent memoryUsageInfo={memoryUsageInfo} />,
+    onRender: () => <MemoryTracker />,
   };
 };

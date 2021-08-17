@@ -3,10 +3,13 @@ import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
 import { deleteTrigger } from "../../Common/dataAccess/deleteTrigger";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import TriggerTab from "../Tabs/TriggerTab";
+import { useSelectedNode } from "../useSelectedNode";
 
 export default class Trigger {
   public nodeKind: string;
@@ -32,7 +35,7 @@ export default class Trigger {
   }
 
   public select() {
-    this.container.selectedNode(this);
+    useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Trigger node",
 
@@ -41,7 +44,7 @@ export default class Trigger {
   }
 
   public static create(source: ViewModels.Collection, event: MouseEvent) {
-    const id = source.container.tabsManager.getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
+    const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
     const trigger = <StoredProcedureDefinition>{
       id: "",
       body: "function trigger(){}",
@@ -57,25 +60,21 @@ export default class Trigger {
       tabPath: "",
       collection: source,
       node: source,
-      hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(source.databaseId, source.id())}/trigger`,
-      isActive: ko.observable(false),
-      onUpdateTabsButtons: source.container.onUpdateTabsButtons,
     });
 
-    source.container.tabsManager.activateNewTab(triggerTab);
+    useTabs.getState().activateNewTab(triggerTab);
   }
 
   public open = () => {
     this.select();
 
-    const triggerTabs: TriggerTab[] = this.container.tabsManager.getTabs(
-      ViewModels.CollectionTabKind.Triggers,
-      (tab) => tab.node && tab.node.rid === this.rid
-    ) as TriggerTab[];
+    const triggerTabs: TriggerTab[] = useTabs
+      .getState()
+      .getTabs(ViewModels.CollectionTabKind.Triggers, (tab) => tab.node && tab.node.rid === this.rid) as TriggerTab[];
     let triggerTab: TriggerTab = triggerTabs && triggerTabs[0];
 
     if (triggerTab) {
-      this.container.tabsManager.activateTab(triggerTab);
+      useTabs.getState().activateTab(triggerTab);
     } else {
       const triggerData = <StoredProcedureDefinition>{
         _rid: this.rid,
@@ -94,29 +93,28 @@ export default class Trigger {
         tabPath: "",
         collection: this.collection,
         node: this,
-        hashLocation: `${Constants.HashRoutePrefixes.collectionsWithIds(
-          this.collection.databaseId,
-          this.collection.id()
-        )}/triggers/${this.id()}`,
-        isActive: ko.observable(false),
-        onUpdateTabsButtons: this.container.onUpdateTabsButtons,
       });
 
-      this.container.tabsManager.activateNewTab(triggerTab);
+      useTabs.getState().activateNewTab(triggerTab);
     }
   };
 
   public delete() {
-    if (!window.confirm("Are you sure you want to delete the trigger?")) {
-      return;
-    }
-
-    deleteTrigger(this.collection.databaseId, this.collection.id(), this.id()).then(
+    useDialog.getState().showOkCancelModalDialog(
+      "Confirm delete",
+      "Are you sure you want to delete the trigger?",
+      "Delete",
       () => {
-        this.container.tabsManager.removeTabByComparator((tab) => tab.node && tab.node.rid === this.rid);
-        this.collection.children.remove(this);
+        deleteTrigger(this.collection.databaseId, this.collection.id(), this.id()).then(
+          () => {
+            useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
+            this.collection.children.remove(this);
+          },
+          (reason) => {}
+        );
       },
-      (reason) => {}
+      "Cancel",
+      undefined
     );
   }
 }

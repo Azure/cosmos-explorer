@@ -1,15 +1,98 @@
-import * as React from "react";
-import { Dialog as FluentDialog, DialogType, DialogFooter, IDialogProps } from "office-ui-fabric-react/lib/Dialog";
-import { IButtonProps, PrimaryButton, DefaultButton } from "office-ui-fabric-react/lib/Button";
-import { ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
-import { Link } from "office-ui-fabric-react/lib/Link";
 import {
   ChoiceGroup,
+  DefaultButton,
+  Dialog as FluentDialog,
+  DialogFooter,
+  DialogType,
   FontIcon,
+  IButtonProps,
   IChoiceGroupProps,
+  IDialogProps,
   IProgressIndicatorProps,
+  ITextFieldProps,
+  Link,
+  PrimaryButton,
   ProgressIndicator,
-} from "office-ui-fabric-react";
+  TextField,
+} from "@fluentui/react";
+import React, { FC } from "react";
+import create, { UseStore } from "zustand";
+
+export interface DialogState {
+  visible: boolean;
+  dialogProps?: DialogProps;
+  openDialog: (props: DialogProps) => void;
+  closeDialog: () => void;
+  showOkCancelModalDialog: (
+    title: string,
+    subText: string,
+    okLabel: string,
+    onOk: () => void,
+    cancelLabel: string,
+    onCancel: () => void,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
+    primaryButtonDisabled?: boolean
+  ) => void;
+  showOkModalDialog: (title: string, subText: string) => void;
+}
+
+export const useDialog: UseStore<DialogState> = create((set, get) => ({
+  visible: false,
+  openDialog: (props: DialogProps) => set(() => ({ visible: true, dialogProps: props })),
+  closeDialog: () =>
+    set(
+      (state) => ({
+        visible: false,
+        openDialog: state.openDialog,
+        closeDialog: state.closeDialog,
+        showOkCancelModalDialog: state.showOkCancelModalDialog,
+        showOkModalDialog: state.showOkModalDialog,
+      }),
+      true // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
+    ),
+  showOkCancelModalDialog: (
+    title: string,
+    subText: string,
+    okLabel: string,
+    onOk: () => void,
+    cancelLabel: string,
+    onCancel: () => void,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
+    primaryButtonDisabled?: boolean
+  ): void =>
+    get().openDialog({
+      isModal: true,
+      title,
+      subText,
+      primaryButtonText: okLabel,
+      secondaryButtonText: cancelLabel,
+      onPrimaryButtonClick: () => {
+        get().closeDialog();
+        onOk && onOk();
+      },
+      onSecondaryButtonClick: () => {
+        get().closeDialog();
+        onCancel && onCancel();
+      },
+      choiceGroupProps,
+      textFieldProps,
+      primaryButtonDisabled,
+    }),
+  showOkModalDialog: (title: string, subText: string): void =>
+    get().openDialog({
+      isModal: true,
+      title,
+      subText,
+      primaryButtonText: "Close",
+      secondaryButtonText: undefined,
+      onPrimaryButtonClick: () => {
+        get().closeDialog();
+      },
+      onSecondaryButtonClick: undefined,
+    }),
+}));
 
 export interface TextFieldProps extends ITextFieldProps {
   label: string;
@@ -29,7 +112,6 @@ export interface DialogProps {
   title: string;
   subText: string;
   isModal: boolean;
-  visible: boolean;
   choiceGroupProps?: IChoiceGroupProps;
   textFieldProps?: TextFieldProps;
   linkProps?: LinkProps;
@@ -50,61 +132,73 @@ const DIALOG_TITLE_FONT_SIZE = "17px";
 const DIALOG_TITLE_FONT_WEIGHT = 400;
 const DIALOG_SUBTEXT_FONT_SIZE = "15px";
 
-export class Dialog extends React.Component<DialogProps> {
-  constructor(props: DialogProps) {
-    super(props);
-  }
+export const Dialog: FC = () => {
+  const { visible, dialogProps: props } = useDialog();
+  const {
+    title,
+    subText,
+    isModal,
+    choiceGroupProps,
+    textFieldProps,
+    linkProps,
+    progressIndicatorProps,
+    primaryButtonText,
+    secondaryButtonText,
+    onPrimaryButtonClick,
+    onSecondaryButtonClick,
+    primaryButtonDisabled,
+    type,
+    showCloseButton,
+    onDismiss,
+  } = props || {};
 
-  public render(): JSX.Element {
-    const dialogProps: IDialogProps = {
-      hidden: !this.props.visible,
-      dialogContentProps: {
-        type: this.props.type || DialogType.normal,
-        title: this.props.title,
-        subText: this.props.subText,
-        styles: {
-          title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
-          subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE },
-        },
-        showCloseButton: this.props.showCloseButton || false,
-        onDismiss: this.props.onDismiss,
+  const dialogProps: IDialogProps = {
+    hidden: !visible,
+    dialogContentProps: {
+      type: type || DialogType.normal,
+      title,
+      subText,
+      styles: {
+        title: { fontSize: DIALOG_TITLE_FONT_SIZE, fontWeight: DIALOG_TITLE_FONT_WEIGHT },
+        subText: { fontSize: DIALOG_SUBTEXT_FONT_SIZE },
       },
-      modalProps: { isBlocking: this.props.isModal, isDarkOverlay: false },
-      minWidth: DIALOG_MIN_WIDTH,
-      maxWidth: DIALOG_MAX_WIDTH,
-    };
-    const choiceGroupProps: IChoiceGroupProps = this.props.choiceGroupProps;
-    const textFieldProps: ITextFieldProps = this.props.textFieldProps;
-    const linkProps: LinkProps = this.props.linkProps;
-    const progressIndicatorProps: IProgressIndicatorProps = this.props.progressIndicatorProps;
-    const primaryButtonProps: IButtonProps = {
-      text: this.props.primaryButtonText,
-      disabled: this.props.primaryButtonDisabled || false,
-      onClick: this.props.onPrimaryButtonClick,
-    };
-    const secondaryButtonProps: IButtonProps =
-      this.props.secondaryButtonText && this.props.onSecondaryButtonClick
-        ? {
-            text: this.props.secondaryButtonText,
-            onClick: this.props.onSecondaryButtonClick,
-          }
-        : undefined;
+      showCloseButton: showCloseButton || false,
+      onDismiss,
+    },
+    modalProps: { isBlocking: isModal, isDarkOverlay: false },
+    minWidth: DIALOG_MIN_WIDTH,
+    maxWidth: DIALOG_MAX_WIDTH,
+  };
 
-    return (
-      <FluentDialog {...dialogProps}>
-        {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
-        {textFieldProps && <TextField {...textFieldProps} />}
-        {linkProps && (
-          <Link href={linkProps.linkUrl} target="_blank">
-            {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
-          </Link>
-        )}
-        {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
-        <DialogFooter>
-          <PrimaryButton {...primaryButtonProps} />
-          {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
-        </DialogFooter>
-      </FluentDialog>
-    );
-  }
-}
+  const primaryButtonProps: IButtonProps = {
+    text: primaryButtonText,
+    disabled: primaryButtonDisabled || false,
+    onClick: onPrimaryButtonClick,
+  };
+  const secondaryButtonProps: IButtonProps =
+    secondaryButtonText && onSecondaryButtonClick
+      ? {
+          text: secondaryButtonText,
+          onClick: onSecondaryButtonClick,
+        }
+      : {};
+
+  return visible ? (
+    <FluentDialog {...dialogProps}>
+      {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
+      {textFieldProps && <TextField {...textFieldProps} />}
+      {linkProps && (
+        <Link href={linkProps.linkUrl} target="_blank">
+          {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
+        </Link>
+      )}
+      {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
+      <DialogFooter>
+        <PrimaryButton {...primaryButtonProps} />
+        {secondaryButtonProps && <DefaultButton {...secondaryButtonProps} />}
+      </DialogFooter>
+    </FluentDialog>
+  ) : (
+    <></>
+  );
+};

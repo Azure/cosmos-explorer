@@ -23,7 +23,6 @@ import {
   ITextStyles,
   IDetailsRowStyles,
   IStackStyles,
-  IIconStyles,
   IDetailsListStyles,
   IDropdownStyles,
   ISeparatorStyles,
@@ -39,7 +38,7 @@ import {
   IDetailsRowProps,
   DetailsRow,
   IDetailsColumnStyles,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import { isDirtyTypes, isDirty } from "./SettingsUtils";
 
 export interface EstimatedSpendingDisplayProps {
@@ -115,8 +114,6 @@ export const accordionStackTokens: IStackTokens = {
 export const addMongoIndexSubElementsTokens: IStackTokens = {
   childrenGap: 20,
 };
-
-export const accordionIconStyles: IIconStyles = { root: { paddingTop: 7 } };
 
 export const mediumWidthStackStyles: IStackStyles = { root: { width: 600 } };
 

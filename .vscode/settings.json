@@ -1,21 +1,26 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    "files.exclude": {
-        ".vs": true,
-        ".vscode/**": true,
-        "*.trx": true,
-        "**/.DS_Store": true,
-        "**/.git": true,
-        "**/.hg": true,
-        "**/.svn": true,
-        "built/**": true,
-        "coverage/**": true,
-        "libs/**": true,
-        "node_modules/**": true,
-        "package-lock.json": true,
-        "quickstart/**": true,
-        "test/out/**": true,
-        "workers/libs/**": true
-    },
-    "typescript.tsdk": "node_modules/typescript/lib"
+  "files.exclude": {
+    ".vs": true,
+    ".vscode/**": true,
+    "*.trx": true,
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.svn": true,
+    "built/**": true,
+    "coverage/**": true,
+    "libs/**": true,
+    "node_modules/**": true,
+    "package-lock.json": true,
+    "quickstart/**": true,
+    "test/out/**": true,
+    "workers/libs/**": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": true
+  }
 }

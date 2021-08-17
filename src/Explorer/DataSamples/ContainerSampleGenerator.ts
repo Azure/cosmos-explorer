@@ -1,12 +1,13 @@
-import * as DataModels from "../../Contracts/DataModels";
-import * as ViewModels from "../../Contracts/ViewModels";
-import GraphTab from ".././Tabs/GraphTab";
-import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
-import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
-import Explorer from "../Explorer";
 import { createCollection } from "../../Common/dataAccess/createCollection";
 import { createDocument } from "../../Common/dataAccess/createDocument";
+import * as DataModels from "../../Contracts/DataModels";
+import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
+import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils";
+import GraphTab from ".././Tabs/GraphTab";
+import Explorer from "../Explorer";
+import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
+import { useDatabases } from "../useDatabases";
 
 interface SampleDataFile extends DataModels.CreateCollectionParams {
   data: any[];
@@ -23,16 +24,16 @@ export class ContainerSampleGenerator {
   public static async createSampleGeneratorAsync(container: Explorer): Promise<ContainerSampleGenerator> {
     const generator = new ContainerSampleGenerator(container);
     let dataFileContent: any;
-    if (container.isPreferredApiGraph()) {
+    if (userContext.apiType === "Gremlin") {
       dataFileContent = await import(
         /* webpackChunkName: "gremlinSampleJsonData" */ "../../../sampleData/gremlinSampleData.json"
       );
-    } else if (container.isPreferredApiDocumentDB()) {
+    } else if (userContext.apiType === "SQL") {
       dataFileContent = await import(
         /* webpackChunkName: "sqlSampleJsonData" */ "../../../sampleData/sqlSampleData.json"
       );
     } else {
-      return Promise.reject(`Sample generation not supported for this API ${container.defaultExperience()}`);
+      return Promise.reject(`Sample generation not supported for this API ${userContext.apiType}`);
     }
 
     generator.setData(dataFileContent);
@@ -59,7 +60,7 @@ export class ContainerSampleGenerator {
 
     await createCollection(createRequest);
     await this.container.refreshAllDatabases();
-    const database = this.container.findDatabaseWithId(this.sampleDataFile.databaseId);
+    const database = useDatabases.getState().findDatabaseWithId(this.sampleDataFile.databaseId);
     if (!database) {
       return undefined;
     }
@@ -73,14 +74,14 @@ export class ContainerSampleGenerator {
     }
     const promises: Q.Promise<any>[] = [];
 
-    if (this.container.isPreferredApiGraph()) {
+    if (userContext.apiType === "Gremlin") {
       // For Gremlin, all queries are executed sequentially, because some queries might be dependent on other queries
       // (e.g. adding edge requires vertices to be present)
       const queries: string[] = this.sampleDataFile.data;
       if (!queries || queries.length < 1) {
         return;
       }
-      const account = userContext.databaseAccount;
+      const { databaseAccount: account } = userContext;
       const databaseId = collection.databaseId;
       const gremlinClient = new GremlinClient();
       gremlinClient.initialize({

@@ -1,25 +1,23 @@
 import { shallow } from "enzyme";
+import ko from "knockout";
 import React from "react";
-import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
-import { container, collection } from "../TestUtils";
-import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
-import Explorer from "../../../Explorer";
 import * as Constants from "../../../../Common/Constants";
 import * as DataModels from "../../../../Contracts/DataModels";
-import { throughputUnit } from "../SettingsRenderUtils";
 import * as SharedConstants from "../../../../Shared/Constants";
-import ko from "knockout";
+import { updateUserContext } from "../../../../UserContext";
+import Explorer from "../../../Explorer";
+import { throughputUnit } from "../SettingsRenderUtils";
+import { collection } from "../TestUtils";
+import { ScaleComponent, ScaleComponentProps } from "./ScaleComponent";
+import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 describe("ScaleComponent", () => {
   const nonNationalCloudContainer = new Explorer();
-  nonNationalCloudContainer.isRunningOnNationalCloud = () => false;
-
   const targetThroughput = 6000;
 
   const baseProps: ScaleComponentProps = {
     collection: collection,
     database: undefined,
-    container: container,
     isFixedContainer: false,
     onThroughputChange: () => {
       return;
@@ -80,25 +78,25 @@ describe("ScaleComponent", () => {
 
   it("autoScale enabled", () => {
     const newContainer = new Explorer();
-
-    newContainer.databaseAccount({
-      id: undefined,
-      name: undefined,
-      location: undefined,
-      type: undefined,
-      kind: "documentdb",
-      tags: undefined,
-      properties: {
-        documentEndpoint: undefined,
-        tableEndpoint: undefined,
-        gremlinEndpoint: undefined,
-        cassandraEndpoint: undefined,
-        capabilities: [
-          {
-            name: Constants.CapabilityNames.EnableAutoScale.toLowerCase(),
-            description: undefined,
-          },
-        ],
+    updateUserContext({
+      databaseAccount: {
+        id: undefined,
+        name: undefined,
+        location: undefined,
+        type: undefined,
+        kind: "documentdb",
+        properties: {
+          documentEndpoint: undefined,
+          tableEndpoint: undefined,
+          gremlinEndpoint: undefined,
+          cassandraEndpoint: undefined,
+          capabilities: [
+            {
+              name: Constants.CapabilityNames.EnableAutoScale.toLowerCase(),
+              description: undefined,
+            },
+          ],
+        },
       },
     });
     const props = { ...baseProps, container: newContainer };
@@ -110,7 +108,7 @@ describe("ScaleComponent", () => {
     let scaleComponent = new ScaleComponent(baseProps);
     expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - unlimited RU/s)");
 
-    let newProps = { ...baseProps, container: nonNationalCloudContainer };
+    let newProps = { ...baseProps };
     scaleComponent = new ScaleComponent(newProps);
     expect(scaleComponent.getThroughputTitle()).toEqual("Throughput (6,000 - unlimited RU/s)");
 
@@ -123,7 +121,7 @@ describe("ScaleComponent", () => {
     let scaleComponent = new ScaleComponent(baseProps);
     expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
 
-    const newProps = { ...baseProps, container: nonNationalCloudContainer };
+    const newProps = { ...baseProps };
     scaleComponent = new ScaleComponent(newProps);
     expect(scaleComponent.canThroughputExceedMaximumValue()).toEqual(true);
   });

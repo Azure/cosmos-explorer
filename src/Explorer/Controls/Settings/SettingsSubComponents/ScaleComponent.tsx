@@ -1,28 +1,28 @@
+import { Label, Link, MessageBar, MessageBarType, Stack, Text, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as Constants from "../../../../Common/Constants";
-import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
-import * as ViewModels from "../../../../Contracts/ViewModels";
+import { configContext, Platform } from "../../../../ConfigContext";
 import * as DataModels from "../../../../Contracts/DataModels";
+import * as ViewModels from "../../../../Contracts/ViewModels";
 import * as SharedConstants from "../../../../Shared/Constants";
-import Explorer from "../../../Explorer";
+import { userContext } from "../../../../UserContext";
+import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
+import { isRunningOnNationalCloud } from "../../../../Utils/CloudUtils";
 import {
   getTextFieldStyles,
-  subComponentStackProps,
-  titleAndInputStackProps,
-  throughputUnit,
   getThroughputApplyLongDelayMessage,
   getThroughputApplyShortDelayMessage,
+  subComponentStackProps,
+  throughputUnit,
+  titleAndInputStackProps,
   updateThroughputBeyondLimitWarningMessage,
 } from "../SettingsRenderUtils";
 import { hasDatabaseSharedThroughput } from "../SettingsUtils";
-import * as AutoPilotUtils from "../../../../Utils/AutoPilotUtils";
-import { Link, Text, TextField, Stack, Label, MessageBar, MessageBarType } from "office-ui-fabric-react";
-import { configContext, Platform } from "../../../../ConfigContext";
+import { ThroughputInputAutoPilotV3Component } from "./ThroughputInputComponents/ThroughputInputAutoPilotV3Component";
 
 export interface ScaleComponentProps {
   collection: ViewModels.Collection;
   database: ViewModels.Database;
-  container: Explorer;
   isFixedContainer: boolean;
   onThroughputChange: (newThroughput: number) => void;
   throughput: number;
@@ -53,8 +53,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   }
 
   public isAutoScaleEnabled = (): boolean => {
-    const accountCapabilities: DataModels.Capability[] = this.props.container?.databaseAccount()?.properties
-      ?.capabilities;
+    const accountCapabilities: DataModels.Capability[] = userContext?.databaseAccount?.properties?.capabilities;
     const enableAutoScaleCapability =
       accountCapabilities &&
       accountCapabilities.find((capability: DataModels.Capability) => {
@@ -79,7 +78,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getMaxRUs = (): number => {
-    if (this.props.container?.isTryCosmosDBSubscription()) {
+    if (userContext.isTryCosmosDBSubscription) {
       return Constants.TryCosmosExperience.maxRU;
     }
 
@@ -91,7 +90,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public getMinRUs = (): number => {
-    if (this.props.container?.isTryCosmosDBSubscription()) {
+    if (userContext.isTryCosmosDBSubscription) {
       return SharedConstants.CollectionCreation.DefaultCollectionRUs400;
     }
 
@@ -109,11 +108,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   };
 
   public canThroughputExceedMaximumValue = (): boolean => {
-    return (
-      !this.props.isFixedContainer &&
-      configContext.platform === Platform.Portal &&
-      !this.props.container.isRunningOnNationalCloud()
-    );
+    return !this.props.isFixedContainer && configContext.platform === Platform.Portal && !isRunningOnNationalCloud();
   };
 
   public getInitialNotificationElement = (): JSX.Element => {
@@ -169,10 +164,9 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
 
   private getThroughputInputComponent = (): JSX.Element => (
     <ThroughputInputAutoPilotV3Component
-      databaseAccount={this.props.container.databaseAccount()}
+      databaseAccount={userContext?.databaseAccount}
       databaseName={this.databaseId}
       collectionName={this.collectionId}
-      serverId={this.props.container.serverId()}
       throughput={this.props.throughput}
       throughputBaseline={this.props.throughputBaseline}
       onThroughputChange={this.props.onThroughputChange}
@@ -199,15 +193,16 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
   );
 
   private isFreeTierAccount(): boolean {
-    const databaseAccount = this.props.container?.databaseAccount();
-    return databaseAccount?.properties?.enableFreeTier;
+    return userContext?.databaseAccount?.properties?.enableFreeTier;
   }
 
   private getFreeTierInfoMessage(): JSX.Element {
+    const freeTierLimits = SharedConstants.FreeTierLimits;
     return (
       <Text>
-        With free tier, you will get the first 400 RU/s and 5 GB of storage in this account for free. To keep your
-        account free, keep the total RU/s across all resources in the account to 400 RU/s.
+        With free tier, you will get the first {freeTierLimits.RU} RU/s and {freeTierLimits.Storage} GB of storage in
+        this account for free. To keep your account free, keep the total RU/s across all resources in the account to{" "}
+        {freeTierLimits.RU} RU/s.
         <Link
           href="https://docs.microsoft.com/en-us/azure/cosmos-db/understand-your-bill#billing-examples-with-free-tier-accounts"
           target="_blank"

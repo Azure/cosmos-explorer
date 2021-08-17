@@ -1,25 +1,31 @@
-import * as DataModels from "../../Contracts/DataModels";
-import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import * as StringUtils from "../../Utils/StringUtils";
-import { FileSystemUtil } from "./FileSystemUtil";
-import { NotebookUtil } from "./NotebookUtil";
-
-import { ServerConfig, IContent, IContentProvider, FileType, IEmptyContent } from "@nteract/core";
-import { AjaxResponse } from "rxjs/ajax";
 import { stringifyNotebook } from "@nteract/commutable";
+import { FileType, IContent, IContentProvider, IEmptyContent, ServerConfig } from "@nteract/core";
+import { cloneDeep } from "lodash";
+import { AjaxResponse } from "rxjs/ajax";
+import * as StringUtils from "../../Utils/StringUtils";
+import * as FileSystemUtil from "./FileSystemUtil";
+import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
+import { NotebookUtil } from "./NotebookUtil";
+import { useNotebook } from "./useNotebook";
 
 export class NotebookContentClient {
-  constructor(
-    private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
-    public notebookBasePath: ko.Observable<string>,
-    private contentProvider: IContentProvider
-  ) {}
+  constructor(private contentProvider: IContentProvider) {}
 
   /**
    * This updates the item and points all the children's parent to this item
    * @param item
    */
-  public updateItemChildren(item: NotebookContentItem): Promise<void> {
+  public async updateItemChildren(item: NotebookContentItem): Promise<NotebookContentItem> {
+    const subItems = await this.fetchNotebookFiles(item.path);
+    const clonedItem = cloneDeep(item);
+    subItems.forEach((subItem) => (subItem.parent = clonedItem));
+    clonedItem.children = subItems;
+
+    return clonedItem;
+  }
+
+  // TODO: Delete this function when ResourceTreeAdapter is removed.
+  public async updateItemChildrenInPlace(item: NotebookContentItem): Promise<void> {
     return this.fetchNotebookFiles(item.path).then((subItems) => {
       item.children = subItems;
       subItems.forEach((subItem) => (subItem.parent = item));
@@ -30,7 +36,7 @@ export class NotebookContentClient {
    *
    * @param parent parent folder
    */
-  public createNewNotebookFile(parent: NotebookContentItem): Promise<NotebookContentItem> {
+  public createNewNotebookFile(parent: NotebookContentItem, isGithubTree?: boolean): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
@@ -51,6 +57,8 @@ export class NotebookContentClient {
         const notebookFile = xhr.response;
 
         const item = NotebookUtil.createNotebookContentItem(notebookFile.name, notebookFile.path, notebookFile.type);
+        useNotebook.getState().insertNotebookItem(parent, cloneDeep(item), isGithubTree);
+        // TODO: delete when ResourceTreeAdapter is removed
         if (parent.children) {
           item.parent = parent;
           parent.children.push(item);
@@ -60,18 +68,20 @@ export class NotebookContentClient {
       });
   }
 
-  public deleteContentItem(item: NotebookContentItem): Promise<void> {
-    return this.deleteNotebookFile(item.path).then((path: string) => {
-      if (!path || path !== item.path) {
-        throw new Error("No path provided");
-      }
+  public async deleteContentItem(item: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
+    const path = await this.deleteNotebookFile(item.path);
+    useNotebook.getState().deleteNotebookItem(item, isGithubTree);
 
-      if (item.parent && item.parent.children) {
-        // Remove deleted child
-        const newChildren = item.parent.children.filter((child) => child.path !== path);
-        item.parent.children = newChildren;
-      }
-    });
+    // TODO: Delete once old resource tree is removed
+    if (!path || path !== item.path) {
+      throw new Error("No path provided");
+    }
+
+    if (item.parent && item.parent.children) {
+      // Remove deleted child
+      const newChildren = item.parent.children.filter((child) => child.path !== path);
+      item.parent.children = newChildren;
+    }
   }
 
   /**
@@ -83,7 +93,8 @@ export class NotebookContentClient {
   public async uploadFileAsync(
     name: string,
     content: string,
-    parent: NotebookContentItem
+    parent: NotebookContentItem,
+    isGithubTree?: boolean
   ): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
@@ -107,6 +118,8 @@ export class NotebookContentClient {
       .then((xhr: AjaxResponse) => {
         const notebookFile = xhr.response;
         const item = NotebookUtil.createNotebookContentItem(notebookFile.name, notebookFile.path, notebookFile.type);
+        useNotebook.getState().insertNotebookItem(parent, cloneDeep(item), isGithubTree);
+        // TODO: delete when ResourceTreeAdapter is removed
         if (parent.children) {
           item.parent = parent;
           parent.children.push(item);
@@ -129,7 +142,11 @@ export class NotebookContentClient {
    * @param sourcePath
    * @param targetName is not prefixed with path
    */
-  public renameNotebook(item: NotebookContentItem, targetName: string): Promise<NotebookContentItem> {
+  public renameNotebook(
+    item: NotebookContentItem,
+    targetName: string,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     const sourcePath = item.path;
     // Match extension
     if (sourcePath.indexOf(".") !== -1) {
@@ -155,6 +172,9 @@ export class NotebookContentClient {
         item.name = notebookFile.name;
         item.path = notebookFile.path;
         item.timestamp = NotebookUtil.getCurrentTimestamp();
+
+        useNotebook.getState().updateNotebookItem(item, isGithubTree);
+
         return item;
       });
   }
@@ -164,7 +184,11 @@ export class NotebookContentClient {
    * @param parent
    * @param newDirectoryName basename of the new directory
    */
-  public async createDirectory(parent: NotebookContentItem, newDirectoryName: string): Promise<NotebookContentItem> {
+  public async createDirectory(
+    parent: NotebookContentItem,
+    newDirectoryName: string,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     if (parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent is not a directory: ${parent.path}`);
     }
@@ -191,8 +215,11 @@ export class NotebookContentClient {
 
         const dir = xhr.response;
         const item = NotebookUtil.createNotebookContentItem(dir.name, dir.path, dir.type);
+        useNotebook.getState().insertNotebookItem(parent, cloneDeep(item), isGithubTree);
+        // TODO: delete when ResourceTreeAdapter is removed
         item.parent = parent;
         parent.children?.push(item);
+
         return item;
       });
   }
@@ -221,7 +248,7 @@ export class NotebookContentClient {
     return this.contentProvider
       .remove(this.getServerConfig(), path)
       .toPromise()
-      .then((xhr: AjaxResponse) => path);
+      .then(() => path);
   }
 
   /**
@@ -272,9 +299,10 @@ export class NotebookContentClient {
   }
 
   private getServerConfig(): ServerConfig {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     return {
-      endpoint: this.notebookServerInfo().notebookServerEndpoint,
-      token: this.notebookServerInfo().authToken,
+      endpoint: notebookServerInfo.notebookServerEndpoint,
+      token: notebookServerInfo.authToken,
       crossDomain: true,
     };
   }

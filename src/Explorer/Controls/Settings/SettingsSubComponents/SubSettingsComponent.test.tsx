@@ -1,18 +1,15 @@
 import { shallow } from "enzyme";
 import React from "react";
-import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
-import { container, collection } from "../TestUtils";
-import { TtlType, GeospatialConfigType, ChangeFeedPolicyState, TtlOnNoDefault, TtlOn, TtlOff } from "../SettingsUtils";
-import ko from "knockout";
+import { DatabaseAccount } from "../../../../Contracts/DataModels";
+import { updateUserContext } from "../../../../UserContext";
 import Explorer from "../../../Explorer";
+import { ChangeFeedPolicyState, GeospatialConfigType, TtlOff, TtlOn, TtlOnNoDefault, TtlType } from "../SettingsUtils";
+import { collection } from "../TestUtils";
+import { SubSettingsComponent, SubSettingsComponentProps } from "./SubSettingsComponent";
 
 describe("SubSettingsComponent", () => {
-  container.isPreferredApiDocumentDB = ko.computed(() => true);
-
   const baseProps: SubSettingsComponentProps = {
     collection: collection,
-    container: container,
-
     timeToLive: TtlType.On,
     timeToLiveBaseline: TtlType.On,
     onTtlChange: () => {
@@ -106,8 +103,13 @@ describe("SubSettingsComponent", () => {
 
   it("partitionKey not visible", () => {
     const newContainer = new Explorer();
-
-    newContainer.isPreferredApiCassandra = ko.computed(() => true);
+    updateUserContext({
+      databaseAccount: {
+        properties: {
+          capabilities: [{ name: "EnableCassandra" }],
+        },
+      } as DatabaseAccount,
+    });
     const props = { ...baseProps, container: newContainer };
     const subSettingsComponent = new SubSettingsComponent(props);
     expect(subSettingsComponent.getPartitionKeyVisible()).toEqual(false);

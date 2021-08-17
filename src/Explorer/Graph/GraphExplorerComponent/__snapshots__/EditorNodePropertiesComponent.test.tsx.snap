@@ -37,7 +37,7 @@ exports[`<EditorNodePropertiesComponent /> renders component 1`] = `
       </td>
       <td
         className="valueCol"
-        title="efgh, 1234, true, false, undefined, null"
+        title="efgh, 1234, true, false, undefined"
       >
         <div
           className="propertyValue"
@@ -68,12 +68,6 @@ exports[`<EditorNodePropertiesComponent /> renders component 1`] = `
           key="undefined"
         >
           undefined
-        </div>
-        <div
-          className="propertyValue isNull"
-          key="null"
-        >
-          null
         </div>
       </td>
     </tr>
@@ -177,12 +171,6 @@ exports[`<EditorNodePropertiesComponent /> renders component 1`] = `
           key="undefined"
         >
           undefined
-        </div>
-        <div
-          className="propertyValue isNull"
-          key="null"
-        >
-          null
         </div>
       </td>
       <td />

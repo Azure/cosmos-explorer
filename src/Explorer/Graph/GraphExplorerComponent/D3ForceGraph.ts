@@ -1,24 +1,21 @@
-﻿import * as ko from "knockout";
-import Q from "q";
-import { schemeCategory10 } from "d3-scale-chromatic";
-import { selectAll, select } from "d3-selection";
-import { zoom, zoomIdentity } from "d3-zoom";
-import { scaleOrdinal } from "d3-scale";
-import { forceSimulation, forceLink, forceCollide, forceManyBody } from "d3-force";
-import { interpolateNumber, interpolate } from "d3-interpolate";
+﻿import { BaseType } from "d3";
 import { map as d3Map } from "d3-collection";
-import { drag, D3DragEvent } from "d3-drag";
-
+import { D3DragEvent, drag } from "d3-drag";
+import { forceCollide, forceLink, forceManyBody, forceSimulation } from "d3-force";
+import { interpolate, interpolateNumber } from "d3-interpolate";
+import { scaleOrdinal } from "d3-scale";
+import { schemeCategory10 } from "d3-scale-chromatic";
+import { select, selectAll } from "d3-selection";
+import { zoom, zoomIdentity } from "d3-zoom";
+import * as ko from "knockout";
+import Q from "q";
 import _ from "underscore";
-import { NeighborType } from "../../../Contracts/ViewModels";
-import { GraphData, D3Node, D3Link } from "./GraphData";
-import { HashMap } from "../../../Common/HashMap";
-import { BaseType } from "d3";
-import { ConsoleDataType } from "../../Menus/NotificationConsole/NotificationConsoleComponent";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import { GraphConfig } from "../../Tabs/GraphTab";
-import { GraphExplorer } from "./GraphExplorer";
 import * as Constants from "../../../Common/Constants";
+import { NeighborType } from "../../../Contracts/ViewModels";
+import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
+import { IGraphConfig } from "./../../Tabs/GraphTab";
+import { D3Link, D3Node, GraphData } from "./GraphData";
+import { GraphExplorer } from "./GraphExplorer";
 
 export interface D3GraphIconMap {
   [key: string]: { data: string; format: string };
@@ -51,21 +48,22 @@ interface ZoomTransform extends Point2D {
 
 export interface D3ForceGraphParameters {
   // Graph to parent
-  graphConfig: GraphConfig;
-  onHighlightedNode: (highlightedNode: D3GraphNodeData) => void; // a new node has been highlighted in the graph
-  onLoadMoreData: (action: LoadMoreDataAction) => void;
+
+  igraphConfig: IGraphConfig;
+  onHighlightedNode?: (highlightedNode: D3GraphNodeData) => void; // a new node has been highlighted in the graph
+  onLoadMoreData?: (action: LoadMoreDataAction) => void;
 
   // parent to graph
-  onInitialized: (instance: GraphRenderer) => void;
+  onInitialized?: (instance: GraphRenderer) => void;
 
   // For unit testing purposes
-  onGraphUpdated: (timestamp: number) => void;
+  onGraphUpdated?: (timestamp: number) => void;
 }
 
 export interface GraphRenderer {
   selectNode(id: string): void;
   resetZoom(): void;
-  updateGraph(graphData: GraphData<D3Node, D3Link>): void;
+  updateGraph(graphData: GraphData<D3Node, D3Link>, igraphConfigParam?: IGraphConfig): void;
   enableHighlight(enable: boolean): void;
 }
 
@@ -111,7 +109,7 @@ export class D3ForceGraph implements GraphRenderer {
   private viewCenter: Point2D;
 
   // Map a property to a graph node attribute (such as color)
-  private uniqueValues: (string | number)[]; // keep track of unique values
+  private uniqueValues: (string | number)[] = []; // keep track of unique values
   private graphDataWrapper: GraphData<D3Node, D3Link>;
 
   // Communication with outside
@@ -122,9 +120,11 @@ export class D3ForceGraph implements GraphRenderer {
   // outside -> Graph
   private idToSelect: ko.Observable<string>; // Programmatically select node by id outside graph
   private isHighlightDisabled: boolean;
+  public igraphConfig: IGraphConfig;
 
   public constructor(params: D3ForceGraphParameters) {
     this.params = params;
+    this.igraphConfig = this.params.igraphConfig;
     this.idToSelect = ko.observable(null);
     this.errorMsgs = ko.observableArray([]);
     this.graphDataWrapper = null;
@@ -154,7 +154,10 @@ export class D3ForceGraph implements GraphRenderer {
     this.g.remove();
   }
 
-  public updateGraph(newGraph: GraphData<D3Node, D3Link>): void {
+  public updateGraph(newGraph: GraphData<D3Node, D3Link>, igraphConfigParam?: IGraphConfig): void {
+    if (igraphConfigParam) {
+      this.igraphConfig = igraphConfigParam;
+    }
     if (!newGraph || !this.simulation) {
       return;
     }
@@ -162,7 +165,8 @@ export class D3ForceGraph implements GraphRenderer {
     this.graphDataWrapper = new GraphData<D3Node, D3Link>();
     this.graphDataWrapper.setData(newGraph);
 
-    const key = this.params.graphConfig.nodeColorKey();
+    const key = this.igraphConfig.nodeColorKey;
+
     if (key !== GraphExplorer.NONE_CHOICE) {
       this.updateUniqueValues(key);
     }
@@ -197,8 +201,8 @@ export class D3ForceGraph implements GraphRenderer {
    * Count edges and store in a hashmap: vertex id <--> number of links
    * @param linkSelection
    */
-  public static countEdges(links: D3Link[]): HashMap<number> {
-    const countMap = new HashMap<number>();
+  public static countEdges(links: D3Link[]): Map<string, number> {
+    const countMap = new Map<string, number>();
     links.forEach((l: D3Link) => {
       let val = countMap.get(l.inV) || 0;
       val += 1;
@@ -268,20 +272,7 @@ export class D3ForceGraph implements GraphRenderer {
         });
     });
 
-    // Redraw if any of these configs change
-    this.params.graphConfig.nodeColor.subscribe(this.redrawGraph.bind(this));
-    this.params.graphConfig.nodeColorKey.subscribe((key: string) => {
-      // Compute colormap
-      this.uniqueValues = [];
-      this.updateUniqueValues(key);
-      this.redrawGraph();
-    });
-    this.params.graphConfig.linkColor.subscribe(() => this.redrawGraph());
-    this.params.graphConfig.showNeighborType.subscribe(() => this.redrawGraph());
-    this.params.graphConfig.nodeCaption.subscribe(() => this.redrawGraph());
-    this.params.graphConfig.nodeSize.subscribe(() => this.redrawGraph());
-    this.params.graphConfig.linkWidth.subscribe(() => this.redrawGraph());
-    this.params.graphConfig.nodeIconKey.subscribe(() => this.redrawGraph());
+    this.redrawGraph();
     this.instantiateSimulation();
   } // initialize
 
@@ -374,7 +365,10 @@ export class D3ForceGraph implements GraphRenderer {
    */
   private shiftGraph(targetPosition: Point2D): Q.Promise<Point2D> {
     const deferred: Q.Deferred<Point2D> = Q.defer<Point2D>();
-    const offset = { x: this.width / 2 - targetPosition.x, y: this.height / 2 - targetPosition.y };
+    const offset = {
+      x: this.width / 2 - targetPosition.x,
+      y: this.height / 2 - targetPosition.y,
+    };
     this.viewCenter = targetPosition;
 
     if (Math.abs(offset.x) > 0.5 && Math.abs(offset.y) > 0.5) {
@@ -409,7 +403,7 @@ export class D3ForceGraph implements GraphRenderer {
     const rootId = graph.findRootNodeId();
 
     // Remember nodes current position
-    const posMap = new HashMap<Point2D>();
+    const posMap = new Map<string, Point2D>();
     this.simulation.nodes().forEach((d: D3Node) => {
       if (d.x == undefined || d.y == undefined) {
         return;
@@ -503,8 +497,8 @@ export class D3ForceGraph implements GraphRenderer {
     if (!nodes || nodes.length === 0) {
       return;
     }
-    const nodeFinalPositionMap = new HashMap<Point2D>();
 
+    const nodeFinalPositionMap = new Map<string, Point2D>();
     const viewCenter = this.viewCenter;
     const nonFixedNodes = _.filter(nodes, (node: D3Node) => {
       return !node._isFixedPosition && node.x === viewCenter.x && node.y === viewCenter.y;
@@ -529,7 +523,10 @@ export class D3ForceGraph implements GraphRenderer {
       .transition()
       .duration(D3ForceGraph.TRANSITION_STEP3_MS)
       .attrTween("transform", (d: D3Node) => {
-        const finalPos = nodeFinalPositionMap.get(d.id) || { x: viewCenter.x, y: viewCenter.y };
+        const finalPos = nodeFinalPositionMap.get(d.id) || {
+          x: viewCenter.x,
+          y: viewCenter.y,
+        };
         const ix = interpolateNumber(viewCenter.x, finalPos.x);
         const iy = interpolateNumber(viewCenter.y, finalPos.y);
         return (t: number) => {
@@ -561,7 +558,7 @@ export class D3ForceGraph implements GraphRenderer {
     newNodes.selectAll(".loadmore").attr("visibility", "hidden").transition().delay(600).attr("visibility", "visible");
   }
 
-  private restartSimulation(graph: GraphData<D3Node, D3Link>, posMap: HashMap<Point2D>) {
+  private restartSimulation(graph: GraphData<D3Node, D3Link>, posMap: Map<string, Point2D>) {
     if (!graph) {
       return;
     }
@@ -629,10 +626,10 @@ export class D3ForceGraph implements GraphRenderer {
 
       this.addNewLinks();
 
-      const nodes = this.simulation.nodes();
+      const nodes1 = this.simulation.nodes();
       this.redrawGraph();
 
-      this.animateBigBang(nodes, newNodes);
+      this.animateBigBang(nodes1, newNodes);
 
       this.simulation.alpha(1).restart();
       this.params.onGraphUpdated(new Date().getTime());
@@ -660,8 +657,8 @@ export class D3ForceGraph implements GraphRenderer {
       .append("path")
       .attr("class", "link")
       .attr("fill", "none")
-      .attr("stroke-width", this.params.graphConfig.linkWidth())
-      .attr("stroke", this.params.graphConfig.linkColor());
+      .attr("stroke-width", this.igraphConfig.linkWidth)
+      .attr("stroke", this.igraphConfig.linkColor);
 
     if (D3ForceGraph.useSvgMarkerEnd()) {
       line.attr("marker-end", `url(#${this.getArrowHeadSymbolId()}-marker)`);
@@ -671,7 +668,7 @@ export class D3ForceGraph implements GraphRenderer {
         .append("use")
         .attr("xlink:href", `#${this.getArrowHeadSymbolId()}-nonMarker`)
         .attr("class", "markerEnd link")
-        .attr("fill", this.params.graphConfig.linkColor())
+        .attr("fill", this.igraphConfig.linkColor)
         .classed(`${this.getArrowHeadSymbolId()}`, true);
     }
 
@@ -727,7 +724,7 @@ export class D3ForceGraph implements GraphRenderer {
       .append("circle")
       .attr("fill", this.getNodeColor.bind(this))
       .attr("class", "main")
-      .attr("r", this.params.graphConfig.nodeSize());
+      .attr("r", this.igraphConfig.nodeSize);
 
     var iconGroup = newNodes
       .append("g")
@@ -736,22 +733,23 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("aria-label", (d: D3Node) => {
         return this.retrieveNodeCaption(d);
       })
-      .on("dblclick", function (_: MouseEvent, d: D3Node) {
+      .on("dblclick", function (this: Element, _: MouseEvent, d: D3Node) {
+        // https://stackoverflow.com/a/41945742 ('this' implicitly has type 'any' because it does not have a type annotation)
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("click", function (_: MouseEvent, d: D3Node) {
+      .on("click", function (this: Element, _: MouseEvent, d: D3Node) {
         // this is the <g> element
         self.onNodeClicked(this.parentNode, d);
       })
-      .on("keypress", function (event: KeyboardEvent, d: D3Node) {
+      .on("keypress", function (this: Element, event: KeyboardEvent, d: D3Node) {
         if (event.charCode === Constants.KeyCodes.Space || event.charCode === Constants.KeyCodes.Enter) {
           event.stopPropagation();
           // this is the <g> element
           self.onNodeClicked(this.parentNode, d);
         }
       });
-    var nodeSize = this.params.graphConfig.nodeSize();
+    var nodeSize = this.igraphConfig.nodeSize;
     var bgsize = nodeSize + 1;
 
     iconGroup
@@ -761,7 +759,7 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("width", bgsize * 2)
       .attr("height", bgsize * 2)
       .attr("fill-opacity", (d: D3Node) => {
-        return this.params.graphConfig.nodeIconKey() ? 1 : 0;
+        return this.igraphConfig.nodeIconKey ? 1 : 0;
       })
       .attr("class", "icon-background");
 
@@ -769,14 +767,13 @@ export class D3ForceGraph implements GraphRenderer {
     iconGroup
       .append("svg:image")
       .attr("xlink:href", (d: D3Node) => {
-        return D3ForceGraph.computeImageData(d, this.params.graphConfig);
+        return D3ForceGraph.computeImageData(d, this.igraphConfig);
       })
       .attr("x", -nodeSize)
       .attr("y", -nodeSize)
       .attr("height", nodeSize * 2)
       .attr("width", nodeSize * 2)
       .attr("class", "icon");
-
     newNodes
       .append("text")
       .attr("class", "caption")
@@ -810,7 +807,7 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("x2", 0)
       .attr("y2", gaugeYOffset)
       .style("stroke-width", 1)
-      .style("stroke", this.params.graphConfig.linkColor());
+      .style("stroke", this.igraphConfig.linkColor);
     parent
       .append("use")
       .attr("xlink:href", "#triangleRight")
@@ -879,7 +876,7 @@ export class D3ForceGraph implements GraphRenderer {
       .attr("height", gaugeHeight)
       .style("fill", "white")
       .style("stroke-width", 1)
-      .style("stroke", this.params.graphConfig.linkColor());
+      .style("stroke", this.igraphConfig.linkColor);
     parent
       .append("rect")
       .attr("x", (d: D3Node) => {
@@ -896,7 +893,7 @@ export class D3ForceGraph implements GraphRenderer {
           : 0;
       })
       .attr("height", gaugeHeight)
-      .style("fill", this.params.graphConfig.nodeColor())
+      .style("fill", this.igraphConfig.nodeColor)
       .attr("visibility", (d: D3Node) => (d._pagination && d._pagination.total ? "visible" : "hidden"));
     parent
       .append("text")
@@ -973,7 +970,7 @@ export class D3ForceGraph implements GraphRenderer {
     const self = this;
     nodeSelection.selectAll(".loadmore").remove();
 
-    var nodeSize = this.params.graphConfig.nodeSize();
+    var nodeSize = this.igraphConfig.nodeSize;
     const rootSelectionG = nodeSelection
       .filter((d: D3Node) => {
         return !!d._isRoot && !!d._pagination;
@@ -997,7 +994,7 @@ export class D3ForceGraph implements GraphRenderer {
     this.createLoadMoreControl(missingNeighborNonRootG, nodeSize);
 
     // Don't color icons individually, just the definitions
-    this.svg.selectAll("#loadMoreIcon ellipse").attr("fill", this.params.graphConfig.nodeColor());
+    this.svg.selectAll("#loadMoreIcon ellipse").attr("fill", this.igraphConfig.nodeColor);
   }
 
   /**
@@ -1005,7 +1002,7 @@ export class D3ForceGraph implements GraphRenderer {
    */
   private loadNeighbors(v: D3Node, pageAction: PAGE_ACTION) {
     if (!this.graphDataWrapper.hasVertexId(v.id)) {
-      NotificationConsoleUtils.logConsoleMessage(ConsoleDataType.Error, `Clicked node not in graph data. id: ${v.id}`);
+      logConsoleError(`Clicked node not in graph data. id: ${v.id}`);
       return;
     }
 
@@ -1034,11 +1031,11 @@ export class D3ForceGraph implements GraphRenderer {
    * @param d
    */
   private getNodeColor(d: D3Node): string {
-    if (this.params.graphConfig.nodeColorKey()) {
-      const val = GraphData.getNodePropValue(d, this.params.graphConfig.nodeColorKey());
+    if (this.igraphConfig.nodeColorKey) {
+      const val = GraphData.getNodePropValue(d, this.igraphConfig.nodeColorKey);
       return this.lookupColorFromKey(<string>val);
     } else {
-      return this.params.graphConfig.nodeColor();
+      return this.igraphConfig.nodeColor;
     }
   }
 
@@ -1105,12 +1102,12 @@ export class D3ForceGraph implements GraphRenderer {
               this.graphDataWrapper.getTargetsForId(nodeId)
             );
         }
-      })(this.params.graphConfig.showNeighborType());
+      })(this.igraphConfig.showNeighborType);
       return (!neighbors || neighbors.indexOf(d.id) === -1) && d.id !== nodeId;
     });
 
     this.g.selectAll(".link").classed("inactive", (l: D3Link) => {
-      switch (this.params.graphConfig.showNeighborType()) {
+      switch (this.igraphConfig.showNeighborType) {
         case NeighborType.SOURCES_ONLY:
           return (<D3Node>l.target).id !== nodeId;
         case NeighborType.TARGETS_ONLY:
@@ -1154,7 +1151,7 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private retrieveNodeCaption(d: D3Node) {
-    let key = this.params.graphConfig.nodeCaption();
+    let key = this.igraphConfig.nodeCaption;
     let value: string = d.id || d.label;
     if (key) {
       value = <string>GraphData.getNodePropValue(d, key) || "";
@@ -1196,10 +1193,16 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private positionLinkEnd(l: D3Link) {
-    const source: Point2D = { x: (<D3Node>l.source).x, y: (<D3Node>l.source).y };
-    const target: Point2D = { x: (<D3Node>l.target).x, y: (<D3Node>l.target).y };
+    const source: Point2D = {
+      x: (<D3Node>l.source).x,
+      y: (<D3Node>l.source).y,
+    };
+    const target: Point2D = {
+      x: (<D3Node>l.target).x,
+      y: (<D3Node>l.target).y,
+    };
     const d1 = D3ForceGraph.calculateControlPoint(source, target);
-    var radius = this.params.graphConfig.nodeSize() + 3;
+    var radius = this.igraphConfig.nodeSize + 3;
 
     // End
     const dx = target.x - d1.x;
@@ -1212,10 +1215,16 @@ export class D3ForceGraph implements GraphRenderer {
   }
 
   private positionLink(l: D3Link) {
-    const source: Point2D = { x: (<D3Node>l.source).x, y: (<D3Node>l.source).y };
-    const target: Point2D = { x: (<D3Node>l.target).x, y: (<D3Node>l.target).y };
+    const source: Point2D = {
+      x: (<D3Node>l.source).x,
+      y: (<D3Node>l.source).y,
+    };
+    const target: Point2D = {
+      x: (<D3Node>l.target).x,
+      y: (<D3Node>l.target).y,
+    };
     const d1 = D3ForceGraph.calculateControlPoint(source, target);
-    var radius = this.params.graphConfig.nodeSize() + 3;
+    var radius = this.igraphConfig.nodeSize + 3;
 
     // Start
     var dx = d1.x - source.x;
@@ -1247,13 +1256,13 @@ export class D3ForceGraph implements GraphRenderer {
       return d._isRoot ? "node root" : "node";
     });
 
-    this.applyConfig(this.params.graphConfig);
+    this.applyConfig(this.igraphConfig);
   }
 
-  private static computeImageData(d: D3Node, config: GraphConfig): string {
-    let propValue = <string>GraphData.getNodePropValue(d, config.nodeIconKey()) || "";
+  private static computeImageData(d: D3Node, config: IGraphConfig): string {
+    let propValue = <string>GraphData.getNodePropValue(d, config.nodeIconKey) || "";
     // Trim leading and trailing spaces to make comparison more forgiving.
-    let value = config.iconsMap()[propValue.trim()];
+    let value = config.iconsMap[propValue.trim()];
     if (!value) {
       return undefined;
     }
@@ -1263,48 +1272,46 @@ export class D3ForceGraph implements GraphRenderer {
   /**
    * Update graph according to configuration or use default
    */
-  private applyConfig(config: GraphConfig) {
-    if (config.nodeIconKey()) {
+  private applyConfig(config: IGraphConfig) {
+    if (config.nodeIconKey) {
       this.g
         .selectAll(".node .icon")
         .attr("xlink:href", (d: D3Node) => {
           return D3ForceGraph.computeImageData(d, config);
         })
-        .attr("x", -config.nodeSize())
-        .attr("y", -config.nodeSize())
-        .attr("height", config.nodeSize() * 2)
-        .attr("width", config.nodeSize() * 2)
+        .attr("x", -config.nodeSize)
+        .attr("y", -config.nodeSize)
+        .attr("height", config.nodeSize * 2)
+        .attr("width", config.nodeSize * 2)
         .attr("class", "icon");
     } else {
       // clear icons
       this.g.selectAll(".node .icon").attr("xlink:href", undefined);
     }
     this.g.selectAll(".node .icon-background").attr("fill-opacity", (d: D3Node) => {
-      return config.nodeIconKey() ? 1 : 0;
+      return config.nodeIconKey ? 1 : 0;
     });
-
     this.g.selectAll(".node text.caption").text((d: D3Node) => {
       return this.retrieveNodeCaption(d);
     });
 
-    this.g.selectAll(".node circle.main").attr("r", config.nodeSize());
-    this.g.selectAll(".node text.caption").attr("dx", config.nodeSize() + 2);
+    this.g.selectAll(".node circle.main").attr("r", config.nodeSize);
+    this.g.selectAll(".node text.caption").attr("dx", config.nodeSize + 2);
 
     this.g.selectAll(".node circle").attr("fill", this.getNodeColor.bind(this));
 
     // Can't color nodes individually if using defs
-    this.svg.selectAll("#loadMoreIcon ellipse").attr("fill", this.params.graphConfig.nodeColor());
+    this.svg.selectAll("#loadMoreIcon ellipse").attr("fill", config.nodeColor);
+    this.g.selectAll(".link").attr("stroke-width", config.linkWidth);
 
-    this.g.selectAll(".link").attr("stroke-width", config.linkWidth());
-
-    this.g.selectAll(".link").attr("stroke", config.linkColor());
+    this.g.selectAll(".link").attr("stroke", config.linkColor);
     if (D3ForceGraph.useSvgMarkerEnd()) {
       this.svg
         .select(`#${this.getArrowHeadSymbolId()}-marker`)
-        .attr("fill", config.linkColor())
-        .attr("stroke", config.linkColor());
+        .attr("fill", config.linkColor)
+        .attr("stroke", config.linkColor);
     } else {
-      this.svg.select(`#${this.getArrowHeadSymbolId()}-nonMarker`).attr("fill", config.linkColor());
+      this.svg.select(`#${this.getArrowHeadSymbolId()}-nonMarker`).attr("fill", config.linkColor);
     }
 
     // Reset highlight

@@ -58,7 +58,7 @@ export class TabComponent extends React.Component<TabComponentProps> {
             as="span"
             className={className}
             role="presentation"
-            onActivated={(e) => this.setActiveTab(index)}
+            onActivated={() => this.setActiveTab(index)}
             aria-label={`Select tab: ${tab.title}`}
           >
             {tab.title}

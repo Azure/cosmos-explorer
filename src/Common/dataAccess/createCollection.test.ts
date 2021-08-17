@@ -1,12 +1,14 @@
 jest.mock("../../Utils/arm/request");
 jest.mock("../CosmosClient");
+import ko from "knockout";
 import { AuthType } from "../../AuthType";
 import { CreateCollectionParams, DatabaseAccount } from "../../Contracts/DataModels";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import { Database } from "../../Contracts/ViewModels";
+import { useDatabases } from "../../Explorer/useDatabases";
+import { updateUserContext } from "../../UserContext";
 import { armRequest } from "../../Utils/arm/request";
 import { client } from "../CosmosClient";
-import { createCollection, constructRpOptions } from "./createCollection";
-import { updateUserContext } from "../../UserContext";
+import { constructRpOptions, createCollection } from "./createCollection";
 
 describe("createCollection", () => {
   const createCollectionParams: CreateCollectionParams = {
@@ -22,7 +24,16 @@ describe("createCollection", () => {
       databaseAccount: {
         name: "test",
       } as DatabaseAccount,
-      defaultExperience: DefaultAccountExperienceType.DocumentDB,
+      apiType: "SQL",
+    });
+    useDatabases.setState({
+      databases: [
+        {
+          id: ko.observable("testDatabase"),
+          loadCollections: () => undefined,
+          collections: ko.observableArray([]),
+        } as Database,
+      ],
     });
   });
 

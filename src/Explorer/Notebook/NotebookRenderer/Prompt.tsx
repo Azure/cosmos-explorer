@@ -5,6 +5,7 @@ import { Dispatch } from "redux";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as cdbActions from "../NotebookComponent/actions";
 import { CdbAppState } from "../NotebookComponent/types";
+import { NotebookUtil } from "../NotebookUtil";
 
 export interface PassedPromptProps {
   id: string;
@@ -12,6 +13,7 @@ export interface PassedPromptProps {
   status?: string;
   executionCount?: number;
   isHovered?: boolean;
+  isRunDisabled?: boolean;
   runCell?: () => void;
   stopCell?: () => void;
 }
@@ -20,6 +22,7 @@ interface ComponentProps {
   id: string;
   contentRef: ContentRef;
   isHovered?: boolean;
+  isNotebookUntrusted?: boolean;
   children: (props: PassedPromptProps) => React.ReactNode;
 }
 
@@ -47,13 +50,14 @@ export class PromptPure extends React.Component<Props> {
           runCell: this.props.executeCell,
           stopCell: this.props.stopExecution,
           isHovered: this.props.isHovered,
+          isRunDisabled: this.props.isNotebookUntrusted,
         })}
       </div>
     );
   }
 }
 
-const makeMapStateToProps = (state: CdbAppState, ownProps: ComponentProps): ((state: CdbAppState) => StateProps) => {
+const makeMapStateToProps = (_state: CdbAppState, ownProps: ComponentProps): ((state: CdbAppState) => StateProps) => {
   const mapStateToProps = (state: CdbAppState) => {
     const { contentRef, id } = ownProps;
     const model = selectors.model(state, { contentRef });
@@ -75,6 +79,7 @@ const makeMapStateToProps = (state: CdbAppState, ownProps: ComponentProps): ((st
       status,
       executionCount,
       isHovered,
+      isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, contentRef),
     };
   };
   return mapStateToProps;

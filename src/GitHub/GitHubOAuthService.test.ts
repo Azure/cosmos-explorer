@@ -1,27 +1,9 @@
-import ko from "knockout";
 import { HttpStatusCodes } from "../Common/Constants";
-import * as DataModels from "../Contracts/DataModels";
-import { JunoClient } from "../Juno/JunoClient";
-import { GitHubConnector, IGitHubConnectorParams } from "./GitHubConnector";
-import { GitHubOAuthService } from "./GitHubOAuthService";
-import { ConsoleDataType } from "../Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
-import NotebookManager from "../Explorer/Notebook/NotebookManager";
 import Explorer from "../Explorer/Explorer";
-
-const sampleDatabaseAccount: DataModels.DatabaseAccount = {
-  id: "id",
-  name: "name",
-  location: "location",
-  type: "type",
-  kind: "kind",
-  tags: [],
-  properties: {
-    documentEndpoint: "documentEndpoint",
-    gremlinEndpoint: "gremlinEndpoint",
-    tableEndpoint: "tableEndpoint",
-    cassandraEndpoint: "cassandraEndpoint",
-  },
-};
+import NotebookManager from "../Explorer/Notebook/NotebookManager";
+import { JunoClient } from "../Juno/JunoClient";
+import { IGitHubConnectorParams } from "./GitHubConnector";
+import { GitHubOAuthService } from "./GitHubOAuthService";
 
 describe("GitHubOAuthService", () => {
   let junoClient: JunoClient;
@@ -29,13 +11,11 @@ describe("GitHubOAuthService", () => {
   let originalDataExplorer: Explorer;
 
   beforeEach(() => {
-    junoClient = new JunoClient(ko.observable<DataModels.DatabaseAccount>(sampleDatabaseAccount));
+    junoClient = new JunoClient();
     gitHubOAuthService = new GitHubOAuthService(junoClient);
     originalDataExplorer = window.dataExplorer;
     window.dataExplorer = {
       ...originalDataExplorer,
-      logConsoleData: (data): void =>
-        data.type === ConsoleDataType.Error ? console.error(data.message) : console.error(data.message),
     } as Explorer;
     window.dataExplorer.notebookManager = new NotebookManager();
     window.dataExplorer.notebookManager.junoClient = junoClient;
@@ -83,25 +63,6 @@ describe("GitHubOAuthService", () => {
     const newParams = new URLSearchParams(new URL(url).search);
     expect(newParams.get("state")).toBeDefined();
     expect(newParams.get("state")).not.toEqual(initialParams.get("state"));
-  });
-
-  it("finishOAuth is called whenever GitHubConnector is started", async () => {
-    const finishOAuthCallback = jest.fn().mockImplementation();
-    gitHubOAuthService.finishOAuth = finishOAuthCallback;
-
-    const params: IGitHubConnectorParams = {
-      state: "state",
-      code: "code",
-    };
-    const searchParams = new URLSearchParams({ ...params });
-
-    const gitHubConnector = new GitHubConnector();
-    gitHubConnector.start(searchParams, window);
-
-    // GitHubConnector uses Window.postMessage and there's no good way to know when the message has received
-    await new Promise((resolve) => setTimeout(resolve, 100));
-
-    expect(finishOAuthCallback).toBeCalledWith(params);
   });
 
   it("finishOAuth updates token", async () => {

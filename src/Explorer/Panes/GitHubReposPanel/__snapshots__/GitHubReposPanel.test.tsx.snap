@@ -1,0 +1,70 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GitHub Repos Panel should render Default properly 1`] = `
+<form
+  className="panelFormWrapper"
+>
+  <div
+    className="panelMainContent"
+    style={
+      Object {
+        "display": "flex",
+        "flexDirection": "column",
+      }
+    }
+  >
+    <GitHubReposComponent
+      addRepoProps={
+        Object {
+          "container": Explorer {
+            "_isInitializingNotebooks": false,
+            "_resetNotebookWorkspace": [Function],
+            "isFixedCollectionWithSharedThroughputSupported": [Function],
+            "isTabsContentExpanded": [Function],
+            "onRefreshDatabasesKeyPress": [Function],
+            "onRefreshResourcesClick": [Function],
+            "provideFeedbackEmail": [Function],
+            "queriesClient": QueriesClient {
+              "container": [Circular],
+            },
+            "refreshNotebookList": [Function],
+            "resourceTree": ResourceTreeAdapter {
+              "container": [Circular],
+              "copyNotebook": [Function],
+              "parameters": [Function],
+            },
+          },
+          "getRepo": [Function],
+          "pinRepo": [Function],
+        }
+      }
+      authorizeAccessProps={
+        Object {
+          "authorizeAccess": [Function],
+          "scope": "public_repo",
+        }
+      }
+      onCancelClick={[Function]}
+      onOkClick={[Function]}
+      reposListProps={
+        Object {
+          "branchesProps": Object {},
+          "pinRepo": [Function],
+          "pinnedReposProps": Object {
+            "repos": Array [],
+          },
+          "unpinRepo": [Function],
+          "unpinnedReposProps": Object {
+            "hasMore": true,
+            "isLoading": true,
+            "loadMore": [Function],
+            "repos": Array [],
+          },
+        }
+      }
+      resetConnection={[Function]}
+      showAuthorizeAccess={true}
+    />
+  </div>
+</form>
+`;

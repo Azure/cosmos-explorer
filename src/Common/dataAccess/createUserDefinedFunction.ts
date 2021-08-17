@@ -1,18 +1,17 @@
-import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
 import { Resource, UserDefinedFunctionDefinition } from "@azure/cosmos";
-import {
-  SqlUserDefinedFunctionCreateUpdateParameters,
-  SqlUserDefinedFunctionResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
-import { client } from "../CosmosClient";
+import { AuthType } from "../../AuthType";
+import { userContext } from "../../UserContext";
 import {
   createUpdateSqlUserDefinedFunction,
   getSqlUserDefinedFunction,
-} from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { handleError } from "../ErrorHandlingUtils";
+} from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import {
+  SqlUserDefinedFunctionCreateUpdateParameters,
+  SqlUserDefinedFunctionResource,
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
+import { client } from "../CosmosClient";
+import { handleError } from "../ErrorHandlingUtils";
 
 export async function createUserDefinedFunction(
   databaseId: string,
@@ -21,11 +20,7 @@ export async function createUserDefinedFunction(
 ): Promise<UserDefinedFunctionDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Creating user defined function ${userDefinedFunction.id}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience === DefaultAccountExperienceType.DocumentDB
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
       try {
         const getResponse = await getSqlUserDefinedFunction(
           userContext.subscriptionId,

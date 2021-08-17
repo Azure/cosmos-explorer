@@ -6,6 +6,7 @@ Instead, generate ARM clients that consume this function with stricter typing.
 */
 
 import promiseRetry, { AbortError } from "p-retry";
+import { HttpHeaders } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
 
@@ -45,17 +46,18 @@ interface Options {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
   body?: unknown;
   queryParams?: ARMQueryParams;
+  contentType?: string;
 }
 
-// TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
-export async function armRequest<T>({
+export async function armRequestWithoutPolling<T>({
   host,
   path,
   apiVersion,
   method,
   body: requestBody,
   queryParams,
-}: Options): Promise<T> {
+  contentType,
+}: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
   if (queryParams) {
@@ -71,6 +73,7 @@ export async function armRequest<T>({
     method,
     headers: {
       Authorization: userContext.authorizationToken,
+      [HttpHeaders.contentType]: contentType || "application/json",
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
@@ -92,13 +95,35 @@ export async function armRequest<T>({
     throw error;
   }
 
-  const operationStatusUrl = response.headers && response.headers.get("location");
+  const operationStatusUrl = (response.headers && response.headers.get("location")) || "";
+  const responseBody = (await response.json()) as T;
+  return { result: responseBody, operationStatusUrl: operationStatusUrl };
+}
+
+// TODO: This is very similar to what is happening in ResourceProviderClient.ts. Should probably merge them.
+export async function armRequest<T>({
+  host,
+  path,
+  apiVersion,
+  method,
+  body: requestBody,
+  queryParams,
+  contentType,
+}: Options): Promise<T> {
+  const armRequestResult = await armRequestWithoutPolling<T>({
+    host,
+    path,
+    apiVersion,
+    method,
+    body: requestBody,
+    queryParams,
+    contentType,
+  });
+  const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
     return await promiseRetry(() => getOperationStatus(operationStatusUrl));
   }
-
-  const responseBody = (await response.json()) as T;
-  return responseBody;
+  return armRequestResult.result;
 }
 
 async function getOperationStatus(operationStatusUrl: string) {
@@ -125,13 +150,13 @@ async function getOperationStatus(operationStatusUrl: string) {
 
   const body = await response.json();
   const status = body.status;
-  if (!status && response.status === 200) {
-    return body;
-  }
   if (status === "Canceled" || status === "Failed") {
     const errorMessage = body.error ? JSON.stringify(body.error) : "Operation could not be completed";
     const error = new Error(errorMessage);
     throw new AbortError(error);
+  }
+  if (response.status === 200) {
+    return body;
   }
   throw new Error(`Operation Response: ${JSON.stringify(body)}. Retrying.`);
 }

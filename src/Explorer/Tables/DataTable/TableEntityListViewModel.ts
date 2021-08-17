@@ -1,22 +1,22 @@
 import * as ko from "knockout";
-import * as _ from "underscore";
 import Q from "q";
-
+import * as _ from "underscore";
+import { Areas } from "../../../Common/Constants";
+import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import { CassandraTableKey, CassandraAPIDataClient } from "../TableDataClient";
-import DataTableViewModel from "./DataTableViewModel";
-import * as DataTableUtilities from "./DataTableUtilities";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../../../UserContext";
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
+import * as Entities from "../Entities";
+import { CassandraAPIDataClient, CassandraTableKey } from "../TableDataClient";
+import * as TableEntityProcessor from "../TableEntityProcessor";
+import * as Utilities from "../Utilities";
+import * as DataTableUtilities from "./DataTableUtilities";
+import DataTableViewModel from "./DataTableViewModel";
 import TableCommands from "./TableCommands";
 import TableEntityCache from "./TableEntityCache";
-import * as Constants from "../Constants";
-import { Areas } from "../../../Common/Constants";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
-import * as TableEntityProcessor from "../TableEntityProcessor";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as ViewModels from "../../../Contracts/ViewModels";
 
 interface IListTableEntitiesSegmentedResult extends Entities.IListTableEntitiesResult {
   ExceedMaximumRetries?: boolean;
@@ -354,8 +354,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           itemB = new Date(<string>(<any>rowB[col])._);
           break;
         default:
-          itemA = <string>(<any>rowA[col])._.toLowerCase();
-          itemB = <string>(<any>rowB[col])._.toLowerCase();
+          itemA = <string>(<any>rowA[col])._?.toLowerCase();
+          itemB = <string>(<any>rowB[col])._?.toLowerCase();
       }
       var compareResult: number = itemA < itemB ? -1 : itemA > itemB ? 1 : 0;
       if (compareResult !== 0) {
@@ -413,10 +413,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
 
         var entities = this.cache.data;
-        if (
-          this.queryTablesTab.container.isPreferredApiCassandra() &&
-          DataTableUtilities.checkForDefaultHeader(this.headers)
-        ) {
+        if (userContext.apiType === "Cassandra" && DataTableUtilities.checkForDefaultHeader(this.headers)) {
           (<CassandraAPIDataClient>this.queryTablesTab.container.tableDataClient)
             .getTableSchema(this.queryTablesTab.collection)
             .then((headers: CassandraTableKey[]) => {
@@ -428,7 +425,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         } else {
           var selectedHeadersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
             entities,
-            this.queryTablesTab.container.isPreferredApiCassandra()
+            userContext.apiType === "Cassandra"
           );
           var newHeaders: string[] = _.difference(selectedHeadersUnion, this.headers);
           if (newHeaders.length > 0) {
@@ -513,7 +510,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             return Q.resolve(finalEntities);
           }
         );
-      } else if (this.continuationToken && this.queryTablesTab.container.isPreferredApiCassandra()) {
+      } else if (this.continuationToken && userContext.apiType === "Cassandra") {
         promise = Q(
           this.queryTablesTab.container.tableDataClient.queryDocuments(
             this.queryTablesTab.collection,
@@ -524,7 +521,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         );
       } else {
         let query = this.sqlQuery();
-        if (this.queryTablesTab.container.isPreferredApiCassandra()) {
+        if (userContext.apiType === "Cassandra") {
           query = this.cqlQuery();
         }
         promise = Q(

@@ -1,23 +1,15 @@
 import * as DataModels from "../../Contracts/DataModels";
-import * as ko from "knockout";
-import * as ViewModels from "../../Contracts/ViewModels";
-import Collection from "./Collection";
 import Explorer from "../Explorer";
+import Collection from "./Collection";
 jest.mock("monaco-editor");
 
 describe("Collection", () => {
-  function generateCollection(
-    container: Explorer,
-    databaseId: string,
-    data: DataModels.Collection,
-    offer: DataModels.Offer
-  ): Collection {
-    return new Collection(container, databaseId, data);
-  }
+  const generateCollection = (container: Explorer, databaseId: string, data: DataModels.Collection): Collection =>
+    new Collection(container, databaseId, data);
 
-  function generateMockCollectionsDataModelWithPartitionKey(
+  const generateMockCollectionsDataModelWithPartitionKey = (
     partitionKey: DataModels.PartitionKey
-  ): DataModels.Collection {
+  ): DataModels.Collection => {
     return {
       defaultTtl: 1,
       indexingPolicy: {} as DataModels.IndexingPolicy,
@@ -28,29 +20,12 @@ describe("Collection", () => {
       _ts: 1,
       id: "",
     };
-  }
+  };
 
-  function generateMockCollectionWithDataModel(data: DataModels.Collection): Collection {
+  const generateMockCollectionWithDataModel = (data: DataModels.Collection): Collection => {
     const mockContainer = {} as Explorer;
-    mockContainer.isPreferredApiMongoDB = ko.computed(() => {
-      return false;
-    });
-    mockContainer.isPreferredApiCassandra = ko.computed(() => {
-      return false;
-    });
-    mockContainer.isDatabaseNodeOrNoneSelected = () => {
-      return false;
-    };
-    mockContainer.isPreferredApiDocumentDB = ko.computed(() => {
-      return true;
-    });
-    mockContainer.isPreferredApiGraph = ko.computed(() => {
-      return false;
-    });
-    mockContainer.deleteCollectionText = ko.observable<string>("delete collection");
-
-    return generateCollection(mockContainer, "abc", data, {} as DataModels.Offer);
-  }
+    return generateCollection(mockContainer, "abc", data);
+  };
 
   describe("Partition key path parsing", () => {
     let collection: Collection;
@@ -106,7 +81,7 @@ describe("Collection", () => {
         kind: "Hash",
       });
       collection = generateMockCollectionWithDataModel(collectionsDataModel);
-      expect(collection.partitionKeyPropertyHeader).toBeNull;
+      expect(collection.partitionKeyPropertyHeader).toBeNull();
     });
   });
 });

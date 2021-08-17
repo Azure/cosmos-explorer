@@ -1,8 +1,9 @@
-import { ARMError } from "../Utils/arm/request";
-import { HttpStatusCodes } from "./Constants";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { SubscriptionType } from "../Contracts/SubscriptionType";
+import { userContext } from "../UserContext";
+import { ARMError } from "../Utils/arm/request";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
+import { HttpStatusCodes } from "./Constants";
 import { logError } from "./Logger";
 import { sendMessage } from "./MessageHandler";
 
@@ -44,7 +45,7 @@ const sendNotificationForError = (errorMessage: string, errorCode: number | stri
 
 const replaceKnownError = (errorMessage: string): string => {
   if (
-    window.dataExplorer?.subscriptionType() === SubscriptionType.Internal &&
+    userContext.subscriptionType === SubscriptionType.Internal &&
     errorMessage?.indexOf("SharedOffer is Disabled for your account") >= 0
   ) {
     return "Database throughput is not supported for internal subscriptions.";

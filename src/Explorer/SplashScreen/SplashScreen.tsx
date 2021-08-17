@@ -1,25 +1,33 @@
 /**
  * Accordion top class
  */
+import { Link } from "@fluentui/react";
 import * as React from "react";
-import * as ViewModels from "../../Contracts/ViewModels";
-import * as Constants from "../../Common/Constants";
-import { Link } from "office-ui-fabric-react/lib/Link";
+import AddDatabaseIcon from "../../../images/AddDatabase.svg";
+import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
+import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
+import OpenQueryIcon from "../../../images/BrowseQuery.svg";
 import NewContainerIcon from "../../../images/Hero-new-container.svg";
 import NewNotebookIcon from "../../../images/Hero-new-notebook.svg";
-import NewQueryIcon from "../../../images/AddSqlQuery_16x16.svg";
-import OpenQueryIcon from "../../../images/BrowseQuery.svg";
-import NewStoredProcedureIcon from "../../../images/AddStoredProcedure.svg";
-import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
-import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
-import AddDatabaseIcon from "../../../images/AddDatabase.svg";
 import SampleIcon from "../../../images/Hero-sample.svg";
+import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import ScaleAndSettingsIcon from "../../../images/Scale_15x15.svg";
+import CollectionIcon from "../../../images/tree-collection.svg";
+import { AuthType } from "../../AuthType";
+import * as Constants from "../../Common/Constants";
+import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
+import { userContext } from "../../UserContext";
+import { getCollectionName, getDatabaseName } from "../../Utils/APITypeUtils";
+import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
-import { userContext } from "../../UserContext";
-import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
-import CollectionIcon from "../../../images/tree-collection.svg";
-import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
+import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { useNotebook } from "../Notebook/useNotebook";
+import { AddDatabasePanel } from "../Panes/AddDatabasePanel/AddDatabasePanel";
+import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
+import { useDatabases } from "../useDatabases";
+import { useSelectedNode } from "../useSelectedNode";
 
 export interface SplashScreenItem {
   iconSrc: string;
@@ -49,10 +57,6 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     this.subscriptions = [];
   }
 
-  public shouldComponentUpdate() {
-    return this.container.tabsManager.openedTabs.length === 0;
-  }
-
   public componentWillUnmount() {
     while (this.subscriptions.length) {
       this.subscriptions.pop().dispose();
@@ -61,9 +65,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      this.container.tabsManager.openedTabs.subscribe(() => this.setState({})),
-      this.container.selectedNode.subscribe(() => this.setState({})),
-      this.container.isNotebookEnabled.subscribe(() => this.setState({}))
+      {
+        dispose: useNotebook.subscribe(
+          () => this.setState({}),
+          (state) => state.isNotebookEnabled
+        ),
+      },
+      { dispose: useSelectedNode.subscribe(() => this.setState({})) }
     );
   }
 
@@ -75,11 +83,21 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public render(): JSX.Element {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
-    const recentItems = this.createRecentItems();
+    let recentItems = this.createRecentItems();
+    if (userContext.features.notebooksTemporarilyDown) {
+      recentItems = recentItems.filter((item) => item.description !== "Notebook");
+    }
+
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
 
-    return (
+    const formContainer = (jsx: JSX.Element) => (
+      <div className="connectExplorerContainer">
+        <form className="connectExplorerFormContainer">{jsx}</form>
+      </div>
+    );
+
+    return formContainer(
       <div className="splashScreenContainer">
         <div className="splashScreen">
           <div className="title">
@@ -162,7 +180,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </li>
                 ))}
                 <li>
-                  <a role="link" href={SplashScreen.seeMoreItemUrl} target="_blank" tabIndex={0}>
+                  <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
                     {SplashScreen.seeMoreItemTitle}
                   </a>
                 </li>
@@ -189,7 +207,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const heroes: SplashScreenItem[] = [
       {
         iconSrc: NewContainerIcon,
-        title: this.container.addCollectionText(),
+        title: `New ${getCollectionName()}`,
         description: "Create a new container for storage and throughput",
         onClick: () => this.container.onNewCollectionClicked(),
       },
@@ -205,7 +223,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (this.container.isNotebookEnabled()) {
+    if (useNotebook.getState().isNotebookEnabled && !userContext.features.notebooksTemporarilyDown) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
@@ -217,157 +235,145 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     return heroes;
   }
 
-  private getItemIcon(item: MostRecentActivity.Item): string {
-    switch (item.type) {
-      case MostRecentActivity.Type.OpenCollection:
-        return CollectionIcon;
-      case MostRecentActivity.Type.OpenNotebook:
-        return NotebookIcon;
-      default:
-        return null;
-    }
-  }
-
-  private onItemClicked(item: MostRecentActivity.Item) {
-    switch (item.type) {
-      case MostRecentActivity.Type.OpenCollection: {
-        const openCollectionitem = item.data as MostRecentActivity.OpenCollectionItem;
-        const collection = this.container.findCollection(
-          openCollectionitem.databaseId,
-          openCollectionitem.collectionId
-        );
-        if (collection) {
-          collection.openTab();
-        }
-        break;
-      }
-      case MostRecentActivity.Type.OpenNotebook: {
-        const openNotebookItem = item.data as MostRecentActivity.OpenNotebookItem;
-        const notebookItem = this.container.createNotebookContentItemFile(openNotebookItem.name, openNotebookItem.path);
-        notebookItem && this.container.openNotebook(notebookItem);
-        break;
-      }
-      default:
-        console.error("Unknown item type", item);
-        break;
-    }
-  }
-
   private createCommonTaskItems(): SplashScreenItem[] {
     const items: SplashScreenItem[] = [];
 
-    if (this.container.isAuthWithResourceToken()) {
+    if (userContext.authType === AuthType.ResourceToken) {
       return items;
     }
 
-    if (!this.container.isDatabaseNodeOrNoneSelected()) {
-      if (this.container.isPreferredApiDocumentDB() || this.container.isPreferredApiGraph()) {
+    if (!useSelectedNode.getState().isDatabaseNodeOrNoneSelected()) {
+      if (userContext.apiType === "SQL" || userContext.apiType === "Gremlin") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null);
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined);
           },
           title: "New SQL Query",
-          description: null,
+          description: undefined,
         });
-      } else if (this.container.isPreferredApiMongoDB()) {
+      } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null);
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
           },
           title: "New Query",
-          description: null,
+          description: undefined,
         });
       }
 
-      items.push({
-        iconSrc: OpenQueryIcon,
-        title: "Open Query",
-        description: null,
-        onClick: () => this.container.browseQueriesPane.open(),
-      });
+      if (userContext.apiType === "SQL") {
+        items.push({
+          iconSrc: OpenQueryIcon,
+          title: "Open Query",
+          description: undefined,
+          onClick: () =>
+            useSidePanel
+              .getState()
+              .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.container} />),
+        });
+      }
 
-      if (!this.container.isPreferredApiCassandra()) {
+      if (userContext.apiType !== "Cassandra") {
         items.push({
           iconSrc: NewStoredProcedureIcon,
           title: "New Stored Procedure",
-          description: null,
+          description: undefined,
           onClick: () => {
-            const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
-            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
+            const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
+            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
           },
         });
       }
 
       /* Scale & Settings */
-      let isShared = false;
-      if (this.container.isDatabaseNodeSelected()) {
-        isShared = this.container.findSelectedDatabase().isDatabaseShared();
-      } else if (this.container.isNodeKindSelected("Collection")) {
-        const database: ViewModels.Database = this.container.findSelectedCollection().getDatabase();
-        isShared = database && database.isDatabaseShared();
-      }
+      const isShared = useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
 
       const label = isShared ? "Settings" : "Scale & Settings";
       items.push({
         iconSrc: ScaleAndSettingsIcon,
         title: label,
-        description: null,
+        description: undefined,
         onClick: () => {
-          const selectedCollection: ViewModels.Collection = this.container.findSelectedCollection();
+          const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && selectedCollection.onSettingsClick();
         },
       });
     } else {
       items.push({
         iconSrc: AddDatabaseIcon,
-        title: this.container.addDatabaseText(),
-        description: null,
-        onClick: () => this.container.addDatabasePane.open(),
+        title: "New " + getDatabaseName(),
+        description: undefined,
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
       });
     }
 
     return items;
   }
 
-  private static getInfo(item: MostRecentActivity.Item): string {
-    if (item.type === MostRecentActivity.Type.OpenNotebook) {
-      const data = item.data as MostRecentActivity.OpenNotebookItem;
-      return data.path;
-    } else {
-      return undefined;
-    }
+  private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
+    return {
+      iconSrc: NotebookIcon,
+      title: collectionId,
+      description: "Data",
+      onClick: () => {
+        const collection = useDatabases.getState().findCollection(databaseId, collectionId);
+        collection?.openTab();
+      },
+    };
+  }
+
+  private decorateOpenNotebookActivity({ name, path }: MostRecentActivity.OpenNotebookItem) {
+    return {
+      info: path,
+      iconSrc: CollectionIcon,
+      title: name,
+      description: "Notebook",
+      onClick: () => {
+        const notebookItem = this.container.createNotebookContentItemFile(name, path);
+        notebookItem && this.container.openNotebook(notebookItem);
+      },
+    };
   }
 
   private createRecentItems(): SplashScreenItem[] {
-    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((item) => ({
-      iconSrc: this.getItemIcon(item),
-      title: item.title,
-      description: item.description,
-      info: SplashScreen.getInfo(item),
-      onClick: () => this.onItemClicked(item),
-    }));
+    return MostRecentActivity.mostRecentActivity.getItems(userContext.databaseAccount?.id).map((activity) => {
+      switch (activity.type) {
+        default: {
+          const unknownActivity: never = activity;
+          throw new Error(`Unknown activity: ${unknownActivity}`);
+        }
+        case MostRecentActivity.Type.OpenNotebook:
+          return this.decorateOpenNotebookActivity(activity);
+
+        case MostRecentActivity.Type.OpenCollection:
+          return this.decorateOpenCollectionActivity(activity);
+      }
+    });
   }
 
   private createTipsItems(): SplashScreenItem[] {
     return [
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Data Modeling",
         description: "Learn more about modeling",
         onClick: () => window.open(SplashScreen.dataModelingUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Cost & Throughput Calculation",
         description: "Learn more about cost calculation",
         onClick: () => window.open(SplashScreen.throughputEstimatorUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Configure automatic failover",
         description: "Learn more about Cosmos DB high-availability",
         onClick: () => window.open(SplashScreen.failoverUrl),

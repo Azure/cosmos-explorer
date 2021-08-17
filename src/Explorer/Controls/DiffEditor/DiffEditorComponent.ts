@@ -1,6 +1,6 @@
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { loadMonaco, monaco } from "../../LazyMonaco";
 import template from "./diff-editor-component.html";
-import * as monaco from "monaco-editor";
 
 /**
  * Helper class for ko component registration
@@ -92,7 +92,7 @@ export class DiffEditorViewModel {
   /**
    * Create the monaco editor on diff mode and attach to DOM
    */
-  protected createDiffEditor(
+  protected async createDiffEditor(
     originalContent: string,
     modifiedContent: string,
     createCallback: (e: monaco.editor.IStandaloneDiffEditor) => void
@@ -111,7 +111,7 @@ export class DiffEditorViewModel {
     }
 
     const language = this.params.editorLanguage || "json";
-
+    const monaco = await loadMonaco();
     const originalModel = monaco.editor.createModel(originalContent, language);
     const modifiedModel = monaco.editor.createModel(modifiedContent, language);
     const diffEditor: monaco.editor.IStandaloneDiffEditor = monaco.editor.createDiffEditor(

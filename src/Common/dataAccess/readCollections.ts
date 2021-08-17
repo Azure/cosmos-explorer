@@ -1,25 +1,19 @@
-import * as DataModels from "../../Contracts/DataModels";
 import { AuthType } from "../../AuthType";
-import { DefaultAccountExperienceType } from "../../DefaultAccountExperienceType";
+import * as DataModels from "../../Contracts/DataModels";
+import { userContext } from "../../UserContext";
+import { listCassandraTables } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { listGremlinGraphs } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { listMongoDBCollections } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { listSqlContainers } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { listTables } from "../../Utils/arm/generatedClients/cosmos/tableResources";
+import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
-import { listSqlContainers } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { listCassandraTables } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { listMongoDBCollections } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { listGremlinGraphs } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { listTables } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
-import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { userContext } from "../../UserContext";
 
 export async function readCollections(databaseId: string): Promise<DataModels.Collection[]> {
   const clearMessage = logConsoleProgress(`Querying containers for database ${databaseId}`);
   try {
-    if (
-      userContext.authType === AuthType.AAD &&
-      !userContext.useSDKOperations &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.MongoDB &&
-      userContext.defaultExperience !== DefaultAccountExperienceType.Table
-    ) {
+    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType !== "Tables") {
       return await readCollectionsWithARM(databaseId);
     }
 
@@ -35,29 +29,28 @@ export async function readCollections(databaseId: string): Promise<DataModels.Co
 
 async function readCollectionsWithARM(databaseId: string): Promise<DataModels.Collection[]> {
   let rpResponse;
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.defaultExperience;
 
-  switch (defaultExperience) {
-    case DefaultAccountExperienceType.DocumentDB:
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
+
+  switch (apiType) {
+    case "SQL":
       rpResponse = await listSqlContainers(subscriptionId, resourceGroup, accountName, databaseId);
       break;
-    case DefaultAccountExperienceType.MongoDB:
+    case "Mongo":
       rpResponse = await listMongoDBCollections(subscriptionId, resourceGroup, accountName, databaseId);
       break;
-    case DefaultAccountExperienceType.Cassandra:
+    case "Cassandra":
       rpResponse = await listCassandraTables(subscriptionId, resourceGroup, accountName, databaseId);
       break;
-    case DefaultAccountExperienceType.Graph:
+    case "Gremlin":
       rpResponse = await listGremlinGraphs(subscriptionId, resourceGroup, accountName, databaseId);
       break;
-    case DefaultAccountExperienceType.Table:
+    case "Tables":
       rpResponse = await listTables(subscriptionId, resourceGroup, accountName);
       break;
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 
   return rpResponse?.value?.map((collection) => collection.properties?.resource as DataModels.Collection);

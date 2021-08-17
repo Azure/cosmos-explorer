@@ -1,33 +1,35 @@
+import { ConflictDefinition, FeedOptions, QueryIterator, Resource } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
+import DeleteIcon from "../../../images/delete.svg";
+import DiscardIcon from "../../../images/discard.svg";
+import SaveIcon from "../../../images/save-cosmos.svg";
 import * as Constants from "../../Common/Constants";
+import { DocumentsGridMetrics, KeyCodes } from "../../Common/Constants";
+import { createDocument } from "../../Common/dataAccess/createDocument";
+import { deleteConflict } from "../../Common/dataAccess/deleteConflict";
+import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
+import { queryConflicts } from "../../Common/dataAccess/queryConflicts";
+import { updateDocument } from "../../Common/dataAccess/updateDocument";
+import editable from "../../Common/EditableUtility";
+import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
+import * as HeadersUtility from "../../Common/HeadersUtility";
+import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
+import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
-import { KeyCodes } from "../../Common/Constants";
-import ConflictId from "../Tree/ConflictId";
-import editable from "../../Common/EditableUtility";
-import * as HeadersUtility from "../../Common/HeadersUtility";
-import TabsBase from "./TabsBase";
-import { DocumentsGridMetrics } from "../../Common/Constants";
-import { Splitter, SplitterBounds, SplitterDirection } from "../../Common/Splitter";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import SaveIcon from "../../../images/save-cosmos.svg";
-import DiscardIcon from "../../../images/discard.svg";
-import DeleteIcon from "../../../images/delete.svg";
-import { QueryIterator, Resource, ConflictDefinition, FeedOptions } from "@azure/cosmos";
-import { MinimalQueryIterator } from "../../Common/IteratorUtilities";
-import Explorer from "../Explorer";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { createDocument } from "../../Common/dataAccess/createDocument";
-import { deleteDocument } from "../../Common/dataAccess/deleteDocument";
-import { updateDocument } from "../../Common/dataAccess/updateDocument";
-import { deleteConflict } from "../../Common/dataAccess/deleteConflict";
-import { queryConflicts } from "../../Common/dataAccess/queryConflicts";
+import { useDialog } from "../Controls/Dialog";
+import Explorer from "../Explorer";
+import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
+import ConflictId from "../Tree/ConflictId";
+import template from "./ConflictsTab.html";
+import TabsBase from "./TabsBase";
 
 export default class ConflictsTab extends TabsBase {
+  public readonly html = template;
   public selectedConflictId: ko.Observable<ConflictId>;
   public selectedConflictContent: ViewModels.Editable<string>;
   public selectedConflictCurrent: ViewModels.Editable<string>;
@@ -227,7 +229,7 @@ export default class ConflictsTab extends TabsBase {
       this._documentsIterator = this.createIterator();
       await this.loadNextPage();
     } catch (error) {
-      window.alert(getErrorMessage(error));
+      useDialog.getState().showOkModalDialog("Refresh documents grid failed", getErrorMessage(error));
     }
   }
 
@@ -251,10 +253,23 @@ export default class ConflictsTab extends TabsBase {
   }
 
   public onAcceptChangesClick = async (): Promise<void> => {
-    if (this.isEditorDirty() && !this._isIgnoreDirtyEditor()) {
-      return;
+    if (this.isEditorDirty()) {
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          "Unsaved changes",
+          "Changes will be lost. Do you want to continue?",
+          "OK",
+          async () => await this.resolveConflict(),
+          "Cancel",
+          undefined
+        );
+    } else {
+      await this.resolveConflict();
     }
+  };
 
+  private resolveConflict = async (): Promise<void> => {
     this.isExecutionError(false);
     this.isExecuting(true);
 
@@ -317,7 +332,7 @@ export default class ConflictsTab extends TabsBase {
     } catch (error) {
       this.isExecutionError(true);
       const errorMessage = getErrorMessage(error);
-      window.alert(errorMessage);
+      useDialog.getState().showOkModalDialog("Resolve conflict failed", errorMessage);
       TelemetryProcessor.traceFailure(
         Action.ResolveConflict,
         {
@@ -371,7 +386,7 @@ export default class ConflictsTab extends TabsBase {
     } catch (error) {
       this.isExecutionError(true);
       const errorMessage = getErrorMessage(error);
-      window.alert(errorMessage);
+      useDialog.getState().showOkModalDialog("Delete conflict failed", errorMessage);
       TelemetryProcessor.traceFailure(
         Action.DeleteConflict,
         {
@@ -660,11 +675,6 @@ export default class ConflictsTab extends TabsBase {
 
     return jsonObject;
   }
-
-  private _isIgnoreDirtyEditor = (): boolean => {
-    var msg: string = "Changes will be lost. Do you want to continue?";
-    return window.confirm(msg);
-  };
 
   private _getPartitionKeyPropertyHeader(): string {
     return (

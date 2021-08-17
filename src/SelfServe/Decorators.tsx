@@ -1,5 +1,9 @@
-import { ChoiceItem, Description, Info, InputType, NumberUiType, SmartUiInput } from "./SelfServeTypes";
-import { addPropertyToMap, DecoratorProperties, buildSmartUiDescriptor } from "./SelfServeUtils";
+/**
+ * @module SelfServe/Decorators
+ */
+
+import { ChoiceItem, Description, Info, NumberUiType, OnChangeCallback, RefreshParams } from "./SelfServeTypes";
+import { addPropertyToMap, buildSmartUiDescriptor, DecoratorProperties } from "./SelfServeUtils";
 
 type ValueOf<T> = T[keyof T];
 interface Decorator {
@@ -8,35 +12,99 @@ interface Decorator {
 }
 
 interface InputOptionsBase {
+  /**
+   * Key used to pickup the string corresponding to the label of the UI element, from the strings JSON file.
+   */
   labelTKey: string;
 }
 
+/**
+ * Numeric input UI element is rendered. The current options are to render it as a slider or a spinner.
+ */
 export interface NumberInputOptions extends InputOptionsBase {
+  /**
+   * Min value of the numeric input UI element
+   */
   min: (() => Promise<number>) | number;
+  /**
+   * Max value of the numeric input UI element
+   */
   max: (() => Promise<number>) | number;
+  /**
+   * Value by which the numeric input is incremented or decremented in the UI.
+   */
   step: (() => Promise<number>) | number;
+  /**
+   * The type of the numeric input UI element
+   */
   uiType: NumberUiType;
 }
 
+/**
+ * Text box is rendered.
+ */
 export interface StringInputOptions extends InputOptionsBase {
+  /**
+   * Key used to pickup the string corresponding to the place holder text of the text box, from the strings JSON file.
+   */
   placeholderTKey?: (() => Promise<string>) | string;
 }
 
+/**
+ * Toggle is rendered.
+ */
 export interface BooleanInputOptions extends InputOptionsBase {
+  /**
+   * Key used to pickup the string corresponding to the true label of the toggle, from the strings JSON file.
+   */
   trueLabelTKey: (() => Promise<string>) | string;
+  /**
+   * Key used to pickup the string corresponding to the false label of the toggle, from the strings JSON file.
+   */
   falseLabelTKey: (() => Promise<string>) | string;
 }
 
+/**
+ * Dropdown is rendered.
+ */
 export interface ChoiceInputOptions extends InputOptionsBase {
+  /**
+   * Choices to be shown in the dropdown
+   */
   choices: (() => Promise<ChoiceItem[]>) | ChoiceItem[];
+  /**
+   * Key used to pickup the string corresponding to the placeholder text of the dropdown, from the strings JSON file.
+   */
   placeholderTKey?: (() => Promise<string>) | string;
 }
 
+/**
+ * Text is rendered.
+ */
 export interface DescriptionDisplayOptions {
+  /**
+   * Optional heading for the text displayed by this description element.
+   */
+  labelTKey?: string;
+  /**
+   * Static description to be shown as text.
+   */
   description?: (() => Promise<Description>) | Description;
+  /**
+   * If true, Indicates that the Description will be populated dynamically and that it may not be present in some scenarios.
+   */
+  isDynamicDescription?: boolean;
 }
 
-type InputOptions =
+/**
+ * Interprets the type of the UI element and correspondingly renders
+ * - slider or spinner
+ * - text box
+ * - toggle
+ * - drop down
+ * - plain text or message bar
+ */
+export type InputOptions =
   | NumberInputOptions
   | StringInputOptions
   | BooleanInputOptions
@@ -56,7 +124,7 @@ const isChoiceInputOptions = (inputOptions: InputOptions): inputOptions is Choic
 };
 
 const isDescriptionDisplayOptions = (inputOptions: InputOptions): inputOptions is DescriptionDisplayOptions => {
-  return "description" in inputOptions;
+  return "description" in inputOptions || "isDynamicDescription" in inputOptions;
 };
 
 const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
@@ -79,16 +147,24 @@ const addToMap = (...decorators: Decorator[]): PropertyDecorator => {
   };
 };
 
-export const OnChange = (
-  onChange: (currentState: Map<string, SmartUiInput>, newValue: InputType) => Map<string, SmartUiInput>
-): PropertyDecorator => {
+/**
+ * Indicates the callback to be fired when the UI element corresponding to the property is changed.
+ */
+export const OnChange = (onChange: OnChangeCallback): PropertyDecorator => {
   return addToMap({ name: "onChange", value: onChange });
 };
 
+/**
+ * Indicates that the UI element corresponding to the property should have an Info bubble. The Info
+ * bubble is the icon that looks like an "i" which users click on to get more information about the UI element.
+ */
 export const PropertyInfo = (info: (() => Promise<Info>) | Info): PropertyDecorator => {
   return addToMap({ name: "info", value: info });
 };
 
+/**
+ * Indicates that this property should correspond to a UI element with the given parameters.
+ */
 export const Values = (inputOptions: InputOptions): PropertyDecorator => {
   if (isNumberInputOptions(inputOptions)) {
     return addToMap(
@@ -111,7 +187,11 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
       { name: "choices", value: inputOptions.choices }
     );
   } else if (isDescriptionDisplayOptions(inputOptions)) {
-    return addToMap({ name: "description", value: inputOptions.description });
+    return addToMap(
+      { name: "labelTKey", value: inputOptions.labelTKey },
+      { name: "description", value: inputOptions.description },
+      { name: "isDynamicDescription", value: inputOptions.isDynamicDescription }
+    );
   } else {
     return addToMap(
       { name: "labelTKey", value: inputOptions.labelTKey },
@@ -120,14 +200,22 @@ export const Values = (inputOptions: InputOptions): PropertyDecorator => {
   }
 };
 
+/**
+ * Indicates to the compiler that UI should be generated from this class.
+ */
 export const IsDisplayable = (): ClassDecorator => {
   return (target) => {
     buildSmartUiDescriptor(target.name, target.prototype);
   };
 };
 
-export const ClassInfo = (info: (() => Promise<Info>) | Info): ClassDecorator => {
+/**
+ * If there is a long running operation in your page after the {@linkcode onSave} action, the page can
+ * optionally auto refresh itself using the {@linkcode onRefresh} action. The 'RefreshOptions' indicate
+ * how often the auto refresh of the page occurs.
+ */
+export const RefreshOptions = (refreshParams: RefreshParams): ClassDecorator => {
   return (target) => {
-    addPropertyToMap(target.prototype, "root", target.name, "info", info);
+    addPropertyToMap(target.prototype, "root", target.name, "refreshParams", refreshParams);
   };
 };

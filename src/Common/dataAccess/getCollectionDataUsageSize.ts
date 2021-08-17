@@ -1,8 +1,8 @@
 import { AuthType } from "../../AuthType";
-import { armRequest } from "../../Utils/arm/request";
 import { configContext } from "../../ConfigContext";
-import { handleError } from "../ErrorHandlingUtils";
 import { userContext } from "../../UserContext";
+import { armRequest } from "../../Utils/arm/request";
+import { handleError } from "../ErrorHandlingUtils";
 
 interface TimeSeriesData {
   data: {
@@ -45,9 +45,9 @@ export const getCollectionUsageSizeInKB = async (databaseName: string, container
     return undefined;
   }
 
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
+  const { subscriptionId, resourceGroup, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
+
   const filter = `DatabaseName eq '${databaseName}' and CollectionName eq '${containerName}'`;
   const metricNames = "DataUsage,IndexUsage";
   const path = `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${accountName}/providers/microsoft.insights/metrics`;
