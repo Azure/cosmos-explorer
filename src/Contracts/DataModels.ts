@@ -9,6 +9,7 @@ export interface DatabaseAccount {
 
 export interface DatabaseAccountExtendedProperties {
   documentEndpoint?: string;
+  disableLocalAuth?: boolean;
   tableEndpoint?: string;
   gremlinEndpoint?: string;
   cassandraEndpoint?: string;

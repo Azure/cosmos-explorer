@@ -27,7 +27,7 @@ interface DispatchProps {
   moveCell: (destinationId: CellId, above: boolean) => void;
   clearOutputs: () => void;
   deleteCell: () => void;
-  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) => void;
+  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: string) => void;
   takeNotebookSnapshot: (payload: SnapshotRequest) => void;
 }
 
@@ -36,6 +36,7 @@ interface StateProps {
   cellIdAbove: CellId;
   cellIdBelow: CellId;
   hasCodeOutput: boolean;
+  isNotebookUntrusted: boolean;
 }
 
 class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & StateProps> {
@@ -43,12 +44,16 @@ class BaseToolbar extends React.PureComponent<ComponentProps & DispatchProps & S
 
   render(): JSX.Element {
     let items: IContextualMenuItem[] = [];
+    const isNotebookUntrusted = this.props.isNotebookUntrusted;
+    const runTooltip = isNotebookUntrusted ? NotebookUtil.UntrustedNotebookRunHint : undefined;
 
     if (this.props.cellType === "code") {
       items = items.concat([
         {
           key: "Run",
           text: "Run",
+          title: runTooltip,
+          disabled: isNotebookUntrusted,
           onClick: () => {
             this.props.executeCell();
             this.props.traceNotebookTelemetry(Action.NotebooksExecuteCellFromMenu, ActionModifiers.Mark);
@@ -203,7 +208,7 @@ const mapDispatchToProps = (
     dispatch(actions.moveCell({ id, contentRef, destinationId, above })),
   clearOutputs: () => dispatch(actions.clearOutputs({ id, contentRef })),
   deleteCell: () => dispatch(actions.deleteCell({ id, contentRef })),
-  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: any) =>
+  traceNotebookTelemetry: (action: Action, actionModifier?: string, data?: string) =>
     dispatch(cdbActions.traceNotebookTelemetry({ action, actionModifier, data })),
   takeNotebookSnapshot: (request: SnapshotRequest) => dispatch(cdbActions.takeNotebookSnapshot(request)),
 });
@@ -223,6 +228,7 @@ const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state
       cellIdAbove,
       cellIdBelow,
       hasCodeOutput: cellType === "code" && NotebookUtil.hasCodeCellOutput(cell as ImmutableCodeCell),
+      isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, ownProps.contentRef),
     };
   };
   return mapStateToProps;

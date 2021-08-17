@@ -2,6 +2,7 @@ import React from "react";
 import { ExecuteSprocResult } from "../../../Common/dataAccess/executeStoredProcedure";
 import * as DataModels from "../../../Contracts/DataModels";
 import * as ViewModels from "../../../Contracts/ViewModels";
+import { useTabs } from "../../../hooks/useTabs";
 import Explorer from "../../Explorer";
 import StoredProcedure from "../../Tree/StoredProcedure";
 import ScriptTabBase from "../ScriptTabBase";
@@ -51,12 +52,12 @@ export class NewStoredProcedureTab extends ScriptTabBase {
   }
 
   public onTabClick(): void {
-    this.manager?.activateTab(this);
+    useTabs.getState().activateTab(this);
     this.iStoreProcAccessor.onTabClickEvent();
   }
 
   public onCloseTabButtonClick(): void {
-    this.manager?.closeTab(this);
+    useTabs.getState().closeTab(this);
   }
 
   public onExecuteSprocsResult(result: ExecuteSprocResult): void {

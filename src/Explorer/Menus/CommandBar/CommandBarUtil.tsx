@@ -6,16 +6,14 @@ import {
   IDropdownOption,
   IDropdownStyles,
 } from "@fluentui/react";
-import { Observable } from "knockout";
 import * as React from "react";
 import _ from "underscore";
 import ChevronDownIcon from "../../../../images/Chevron_down.svg";
 import { StyleConstants } from "../../../Common/Constants";
-import { MemoryUsageInfo } from "../../../Contracts/DataModels";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
-import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
+import { MemoryTracker } from "./MemoryTrackerComponent";
 
 /**
  * Convert our NavbarButtonConfig to UI Fabric buttons
@@ -23,6 +21,13 @@ import { MemoryTrackerComponent } from "./MemoryTrackerComponent";
  */
 export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
   const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
+
+  const getFilter = (isDisabled: boolean): string => {
+    if (isDisabled) {
+      return StyleConstants.GrayScale;
+    }
+    return undefined;
+  };
 
   return btns
     .filter((btn) => btn)
@@ -39,6 +44,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             style: {
               width: StyleConstants.CommandBarIconWidth, // 16
               alignSelf: btn.iconName ? "baseline" : undefined,
+              filter: getFilter(btn.disabled),
             },
             imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
             iconName: btn.iconName,
@@ -125,8 +131,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               width: 12,
               paddingLeft: 1,
               paddingTop: 6,
+              filter: getFilter(btn.disabled),
             },
-            imageProps: { src: ChevronDownIcon, alt: btn.iconAlt },
+            imageProps: {
+              src: ChevronDownIcon,
+              alt: btn.iconAlt,
+            },
           };
         }
 
@@ -185,12 +195,9 @@ export const createDivider = (key: string): ICommandBarItemProps => {
   };
 };
 
-export const createMemoryTracker = (
-  key: string,
-  memoryUsageInfo: Observable<MemoryUsageInfo>
-): ICommandBarItemProps => {
+export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   return {
     key,
-    onRender: () => <MemoryTrackerComponent memoryUsageInfo={memoryUsageInfo} />,
+    onRender: () => <MemoryTracker />,
   };
 };

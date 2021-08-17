@@ -16,12 +16,16 @@ import CollectionIcon from "../../../images/tree-collection.svg";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
 import * as ViewModels from "../../Contracts/ViewModels";
+import { useSidePanel } from "../../hooks/useSidePanel";
 import { userContext } from "../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../Utils/APITypeUtils";
 import { FeaturePanelLauncher } from "../Controls/FeaturePanel/FeaturePanelLauncher";
 import { DataSamplesUtil } from "../DataSamples/DataSamplesUtil";
 import Explorer from "../Explorer";
 import * as MostRecentActivity from "../MostRecentActivity/MostRecentActivity";
+import { useNotebook } from "../Notebook/useNotebook";
+import { AddDatabasePanel } from "../Panes/AddDatabasePanel/AddDatabasePanel";
+import { BrowseQueriesPane } from "../Panes/BrowseQueriesPane/BrowseQueriesPane";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 
@@ -61,8 +65,13 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
 
   public componentDidMount() {
     this.subscriptions.push(
-      { dispose: useSelectedNode.subscribe(() => this.setState({})) },
-      this.container.isNotebookEnabled.subscribe(() => this.setState({}))
+      {
+        dispose: useNotebook.subscribe(
+          () => this.setState({}),
+          (state) => state.isNotebookEnabled
+        ),
+      },
+      { dispose: useSelectedNode.subscribe(() => this.setState({})) }
     );
   }
 
@@ -74,7 +83,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public render(): JSX.Element {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
-    const recentItems = this.createRecentItems();
+    let recentItems = this.createRecentItems();
+    if (userContext.features.notebooksTemporarilyDown) {
+      recentItems = recentItems.filter((item) => item.description !== "Notebook");
+    }
+
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
 
@@ -167,7 +180,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
                   </li>
                 ))}
                 <li>
-                  <a role="link" href={SplashScreen.seeMoreItemUrl} target="_blank" tabIndex={0}>
+                  <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
                     {SplashScreen.seeMoreItemTitle}
                   </a>
                 </li>
@@ -210,7 +223,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (this.container.isNotebookEnabled()) {
+    if (useNotebook.getState().isNotebookEnabled && !userContext.features.notebooksTemporarilyDown) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
@@ -235,20 +248,20 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           iconSrc: NewQueryIcon,
           onClick: () => {
             const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, null);
+            selectedCollection && selectedCollection.onNewQueryClick(selectedCollection, undefined);
           },
           title: "New SQL Query",
-          description: null,
+          description: undefined,
         });
       } else if (userContext.apiType === "Mongo") {
         items.push({
           iconSrc: NewQueryIcon,
           onClick: () => {
             const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, null);
+            selectedCollection && selectedCollection.onNewMongoQueryClick(selectedCollection, undefined);
           },
           title: "New Query",
-          description: null,
+          description: undefined,
         });
       }
 
@@ -256,8 +269,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         items.push({
           iconSrc: OpenQueryIcon,
           title: "Open Query",
-          description: null,
-          onClick: () => this.container.openBrowseQueriesPanel(),
+          description: undefined,
+          onClick: () =>
+            useSidePanel
+              .getState()
+              .openSidePanel("Open Saved Queries", <BrowseQueriesPane explorer={this.container} />),
         });
       }
 
@@ -265,22 +281,22 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         items.push({
           iconSrc: NewStoredProcedureIcon,
           title: "New Stored Procedure",
-          description: null,
+          description: undefined,
           onClick: () => {
             const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, null);
+            selectedCollection && selectedCollection.onNewStoredProcedureClick(selectedCollection, undefined);
           },
         });
       }
 
       /* Scale & Settings */
-      const isShared = useSelectedNode.getState().findSelectedDatabase()?.isDatabaseShared();
+      const isShared = useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
 
       const label = isShared ? "Settings" : "Scale & Settings";
       items.push({
         iconSrc: ScaleAndSettingsIcon,
         title: label,
-        description: null,
+        description: undefined,
         onClick: () => {
           const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
           selectedCollection && selectedCollection.onSettingsClick();
@@ -290,8 +306,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       items.push({
         iconSrc: AddDatabaseIcon,
         title: "New " + getDatabaseName(),
-        description: null,
-        onClick: () => this.container.openAddDatabasePane(),
+        description: undefined,
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
       });
     }
 
@@ -342,19 +361,19 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   private createTipsItems(): SplashScreenItem[] {
     return [
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Data Modeling",
         description: "Learn more about modeling",
         onClick: () => window.open(SplashScreen.dataModelingUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Cost & Throughput Calculation",
         description: "Learn more about cost calculation",
         onClick: () => window.open(SplashScreen.throughputEstimatorUrl),
       },
       {
-        iconSrc: null,
+        iconSrc: undefined,
         title: "Configure automatic failover",
         description: "Learn more about Cosmos DB high-availability",
         onClick: () => window.open(SplashScreen.failoverUrl),

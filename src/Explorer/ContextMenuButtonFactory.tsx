@@ -16,6 +16,7 @@ import { userContext } from "../UserContext";
 import { getCollectionName, getDatabaseName } from "../Utils/APITypeUtils";
 import { TreeNodeMenuItem } from "./Controls/TreeComponent/TreeComponent";
 import Explorer from "./Explorer";
+import { useNotebook } from "./Notebook/useNotebook";
 import { DeleteCollectionConfirmationPane } from "./Panes/DeleteCollectionConfirmationPane/DeleteCollectionConfirmationPane";
 import { DeleteDatabaseConfirmationPanel } from "./Panes/DeleteDatabaseConfirmationPanel";
 import StoredProcedure from "./Tree/StoredProcedure";
@@ -49,7 +50,10 @@ export const createDatabaseContextMenu = (container: Explorer, databaseId: strin
       onClick: () =>
         useSidePanel
           .getState()
-          .openSidePanel("Delete " + getDatabaseName(), <DeleteDatabaseConfirmationPanel explorer={container} />),
+          .openSidePanel(
+            "Delete " + getDatabaseName(),
+            <DeleteDatabaseConfirmationPanel refreshDatabases={() => container.refreshAllDatabases()} />
+          ),
       label: `Delete ${getDatabaseName()}`,
       styleClass: "deleteDatabaseMenuItem",
     });
@@ -79,15 +83,16 @@ export const createCollectionContextMenuButton = (
 
     items.push({
       iconSrc: HostedTerminalIcon,
+      isDisabled: useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        if (container.isShellEnabled()) {
+        if (useNotebook.getState().isShellEnabled) {
           container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
       },
-      label: container.isShellEnabled() ? "Open Mongo Shell" : "New Shell",
+      label: useNotebook.getState().isShellEnabled ? "Open Mongo Shell" : "New Shell",
     });
   }
 
@@ -105,7 +110,7 @@ export const createCollectionContextMenuButton = (
       iconSrc: AddUdfIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection, undefined);
+        selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
       },
       label: "New UDF",
     });
@@ -125,7 +130,10 @@ export const createCollectionContextMenuButton = (
     onClick: () =>
       useSidePanel
         .getState()
-        .openSidePanel("Delete " + getCollectionName(), <DeleteCollectionConfirmationPane explorer={container} />),
+        .openSidePanel(
+          "Delete " + getCollectionName(),
+          <DeleteCollectionConfirmationPane refreshDatabases={() => container.refreshAllDatabases()} />
+        ),
     label: `Delete ${getCollectionName()}`,
     styleClass: "deleteCollectionMenuItem",
   });

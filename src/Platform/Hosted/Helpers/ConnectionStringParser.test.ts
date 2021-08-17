@@ -2,8 +2,8 @@ import * as DataModels from "../../../Contracts/DataModels";
 import { parseConnectionString } from "./ConnectionStringParser";
 
 describe("ConnectionStringParser", () => {
-  const mockAccountName: string = "Test";
-  const mockMasterKey: string = "some-key";
+  const mockAccountName = "Test";
+  const mockMasterKey = "some-key";
 
   it("should parse a valid sql account connection string", () => {
     const metadata = parseConnectionString(

@@ -120,6 +120,7 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
         handleError(error, "GitHubReposPane/submit", "Failed to save pinned repos");
       }
     }
+    useSidePanel.getState().closeSidePanel();
   }
 
   public resetData(): void {
@@ -144,11 +145,18 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
 
   private setup(forceShowConnectToGitHub = false): void {
     forceShowConnectToGitHub || !this.props.explorer.notebookManager?.gitHubOAuthService.isLoggedIn()
-      ? this.setupForConnectToGitHub()
+      ? this.setupForConnectToGitHub(forceShowConnectToGitHub)
       : this.setupForManageRepos();
   }
 
-  private setupForConnectToGitHub(): void {
+  private setupForConnectToGitHub(forceShowConnectToGitHub: boolean): void {
+    if (forceShowConnectToGitHub) {
+      const newState = { ...this.state.gitHubReposState };
+      newState.showAuthorizeAccess = forceShowConnectToGitHub;
+      this.setState({
+        gitHubReposState: newState,
+      });
+    }
     this.setState({
       isExecuting: false,
     });
@@ -368,45 +376,27 @@ export class GitHubReposPanel extends React.Component<IGitHubReposPanelProps, IG
           isLoading: true,
           loadMore: (): Promise<void> => this.loadMoreBranches(item.repo),
         };
-        this.setState({
-          gitHubReposState: {
-            ...this.state.gitHubReposState,
-            reposListProps: {
-              ...this.state.gitHubReposState.reposListProps,
-              branchesProps: {
-                ...this.state.gitHubReposState.reposListProps.branchesProps,
-                [GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)]: this.branchesProps[item.key],
-              },
-              pinnedReposProps: {
-                repos: this.pinnedReposProps.repos,
-              },
-              unpinnedReposProps: {
-                ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
-                repos: this.unpinnedReposProps.repos,
-              },
-            },
-          },
-        });
         this.loadMoreBranches(item.repo);
-      } else {
-        if (this.isAddedRepo === false) {
-          this.setState({
-            gitHubReposState: {
-              ...this.state.gitHubReposState,
-              reposListProps: {
-                ...this.state.gitHubReposState.reposListProps,
-                pinnedReposProps: {
-                  repos: this.pinnedReposProps.repos,
-                },
-                unpinnedReposProps: {
-                  ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
-                  repos: this.unpinnedReposProps.repos,
-                },
-              },
-            },
-          });
-        }
       }
+    });
+
+    this.setState({
+      gitHubReposState: {
+        ...this.state.gitHubReposState,
+        reposListProps: {
+          ...this.state.gitHubReposState.reposListProps,
+          branchesProps: {
+            ...this.branchesProps,
+          },
+          pinnedReposProps: {
+            repos: this.pinnedReposProps.repos,
+          },
+          unpinnedReposProps: {
+            ...this.state.gitHubReposState.reposListProps.unpinnedReposProps,
+            repos: this.unpinnedReposProps.repos,
+          },
+        },
+      },
     });
     this.isAddedRepo = false;
   }

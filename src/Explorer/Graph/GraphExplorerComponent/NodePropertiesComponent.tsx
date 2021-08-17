@@ -6,9 +6,9 @@
 
 import * as React from "react";
 import CancelIcon from "../../../../images/cancel.svg";
-import CheckIcon from "../../../../images/check.svg";
+import CheckIcon from "../../../../images/check-1.svg";
 import DeleteIcon from "../../../../images/delete.svg";
-import EditIcon from "../../../../images/edit.svg";
+import EditIcon from "../../../../images/edit-1.svg";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
 import { CollapsiblePanel } from "../../Controls/CollapsiblePanel/CollapsiblePanel";
