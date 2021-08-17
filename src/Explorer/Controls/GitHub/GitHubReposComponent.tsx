@@ -56,7 +56,7 @@ export class GitHubReposComponent extends React.Component<GitHubReposComponentPr
 
     return (
       <>
-        <div className={"paneMainContent"}>{content}</div>
+        <div>{content}</div>
         {!this.props.showAuthorizeAccess && (
           <>
             <div className={"paneFooter"} style={ContentFooterStyle}>

@@ -22,6 +22,7 @@ import * as Constants from "../../../Common/Constants";
 import { configContext, Platform } from "../../../ConfigContext";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useSidePanel } from "../../../hooks/useSidePanel";
+import { JunoClient } from "../../../Juno/JunoClient";
 import { userContext } from "../../../UserContext";
 import { getCollectionName, getDatabaseName } from "../../../Utils/APITypeUtils";
 import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
@@ -66,35 +67,50 @@ export function createStaticCommandBarButtons(
     newCollectionBtn.children.push(newDatabaseBtn);
   }
 
-  buttons.push(createDivider());
-
   if (useNotebook.getState().isNotebookEnabled) {
+    buttons.push(createDivider());
+    const notebookButtons: CommandButtonComponentProps[] = [];
+
     const newNotebookButton = createNewNotebookButton(container);
     newNotebookButton.children = [createNewNotebookButton(container), createuploadNotebookButton(container)];
-    buttons.push(newNotebookButton);
+    notebookButtons.push(newNotebookButton);
 
     if (container.notebookManager?.gitHubOAuthService) {
-      buttons.push(createManageGitHubAccountButton(container));
+      notebookButtons.push(createManageGitHubAccountButton(container));
     }
 
-    buttons.push(createOpenTerminalButton(container));
+    notebookButtons.push(createOpenTerminalButton(container));
 
-    buttons.push(createNotebookWorkspaceResetButton(container));
+    notebookButtons.push(createNotebookWorkspaceResetButton(container));
     if (
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
         selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
       userContext.apiType === "Cassandra"
     ) {
-      buttons.push(createDivider());
+      notebookButtons.push(createDivider());
       if (userContext.apiType === "Cassandra") {
-        buttons.push(createOpenCassandraTerminalButton(container));
+        notebookButtons.push(createOpenCassandraTerminalButton(container));
       } else {
-        buttons.push(createOpenMongoTerminalButton(container));
+        notebookButtons.push(createOpenMongoTerminalButton(container));
       }
     }
+
+    notebookButtons.forEach((btn) => {
+      if (userContext.features.notebooksTemporarilyDown) {
+        if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
+        } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.mongoShellTemporarilyDownMsg);
+        } else {
+          applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.temporarilyDownMsg);
+        }
+      }
+      buttons.push(btn);
+    });
   } else {
-    if (!isRunningOnNationalCloud()) {
+    if (!isRunningOnNationalCloud() && !userContext.features.notebooksTemporarilyDown) {
+      buttons.push(createDivider());
       buttons.push(createEnableNotebooksButton(container));
     }
   }
@@ -151,7 +167,9 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          if (!userContext.features.notebooksTemporarilyDown) {
+            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          }
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
@@ -159,7 +177,13 @@ export function createContextCommandBarButtons(
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo",
+      tooltipText:
+        useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown
+          ? Constants.Notebook.mongoShellTemporarilyDownMsg
+          : undefined,
+      disabled:
+        (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
+        (useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown),
     };
     buttons.push(newMongoShellBtn);
   }
@@ -387,6 +411,13 @@ export function createScriptCommandButtons(selectedNodeState: SelectedNodeState)
   return buttons;
 }
 
+function applyNotebooksTemporarilyDownStyle(buttonProps: CommandButtonComponentProps, tooltip: string): void {
+  if (!buttonProps.isDivider) {
+    buttonProps.disabled = true;
+    buttonProps.tooltipText = tooltip;
+  }
+}
+
 function createNewNotebookButton(container: Explorer): CommandButtonComponentProps {
   const label = "New Notebook";
   return {
@@ -560,6 +591,7 @@ function createNotebookWorkspaceResetButton(container: Explorer): CommandButtonC
 function createManageGitHubAccountButton(container: Explorer): CommandButtonComponentProps {
   const connectedToGitHub: boolean = container.notebookManager?.gitHubOAuthService.isLoggedIn();
   const label = connectedToGitHub ? "Manage GitHub settings" : "Connect to GitHub";
+  const junoClient = new JunoClient();
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
@@ -568,7 +600,11 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
         .getState()
         .openSidePanel(
           label,
-          <GitHubReposPanel explorer={container} gitHubClientProp={container.notebookManager.gitHubClient} />
+          <GitHubReposPanel
+            explorer={container}
+            gitHubClientProp={container.notebookManager.gitHubClient}
+            junoClientProp={junoClient}
+          />
         ),
     commandButtonLabel: label,
     hasPopup: false,

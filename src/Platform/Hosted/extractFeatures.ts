@@ -8,13 +8,15 @@ export type Features = {
   readonly enableReactPane: boolean;
   readonly enableRightPanelV2: boolean;
   readonly enableSchema: boolean;
-  enableSchemaAnalyzer: boolean;
   autoscaleDefault: boolean;
+  partitionKeyDefault: boolean;
+  partitionKeyDefault2: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
   readonly executeSproc: boolean;
   readonly enableAadDataPlane: boolean;
+  readonly enableKoResourceTree: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
   readonly livyEndpoint?: string;
@@ -26,6 +28,7 @@ export type Features = {
   readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
+  readonly notebooksTemporarilyDown: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -53,10 +56,10 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableReactPane: "true" === get("enablereactpane"),
     enableRightPanelV2: "true" === get("enablerightpanelv2"),
     enableSchema: "true" === get("enableschema"),
-    enableSchemaAnalyzer: "true" === get("enableschemaanalyzer"),
     enableSDKoperations: "true" === get("enablesdkoperations"),
     enableSpark: "true" === get("enablespark"),
     enableTtl: "true" === get("enablettl"),
+    enableKoResourceTree: "true" === get("enablekoresourcetree"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
     junoEndpoint: get("junoendpoint"),
@@ -70,5 +73,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     showMinRUSurvey: "true" === get("showminrusurvey"),
     ttl90Days: "true" === get("ttl90days"),
     autoscaleDefault: "true" === get("autoscaledefault"),
+    partitionKeyDefault: "true" === get("partitionkeytest"),
+    partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
+    notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
   };
 }

@@ -1,5 +1,6 @@
 import Q from "q";
 import { userContext } from "../../../UserContext";
+import { useDialog } from "../../Controls/Dialog";
 import Explorer from "../../Explorer";
 import * as Entities from "../Entities";
 import * as DataTableUtilities from "./DataTableUtilities";
@@ -69,19 +70,28 @@ export default class TableCommands {
       return null; // Error
     }
     var entitiesToDelete: Entities.ITableEntity[] = viewModel.selected();
-    let deleteMessage: string = "Are you sure you want to delete the selected entities?";
-    if (userContext.apiType === "Cassandra") {
-      deleteMessage = "Are you sure you want to delete the selected rows?";
-    }
-    if (window.confirm(deleteMessage)) {
-      viewModel.queryTablesTab.container.tableDataClient
-        .deleteDocuments(viewModel.queryTablesTab.collection, entitiesToDelete)
-        .then((results: any) => {
-          return viewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
-            viewModel.redrawTableThrottled();
+    const deleteMessage: string =
+      userContext.apiType === "Cassandra"
+        ? "Are you sure you want to delete the selected rows?"
+        : "Are you sure you want to delete the selected entities?";
+
+    useDialog.getState().showOkCancelModalDialog(
+      "Confirm delete",
+      deleteMessage,
+      "Delete",
+      () => {
+        viewModel.queryTablesTab.container.tableDataClient
+          .deleteDocuments(viewModel.queryTablesTab.collection, entitiesToDelete)
+          .then((results: any) => {
+            return viewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
+              viewModel.redrawTableThrottled();
+            });
           });
-        });
-    }
+      },
+      "Cancel",
+      undefined
+    );
+
     return null;
   }
 

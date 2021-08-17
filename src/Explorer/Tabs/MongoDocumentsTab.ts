@@ -16,6 +16,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
 import { Action } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { useDialog } from "../Controls/Dialog";
 import DocumentId from "../Tree/DocumentId";
 import ObjectId from "../Tree/ObjectId";
 import DocumentsTab from "./DocumentsTab";
@@ -111,7 +112,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
         (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
-          window.alert(errorMessage);
+          useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
           TelemetryProcessor.traceFailure(
             Action.CreateDocument,
             {
@@ -169,7 +170,7 @@ export default class MongoDocumentsTab extends DocumentsTab {
         (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
-          window.alert(errorMessage);
+          useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {

@@ -142,18 +142,15 @@ src/Explorer/Tree/ResourceTokenCollection.ts
 src/Explorer/Tree/StoredProcedure.ts
 src/Explorer/Tree/TreeComponents.ts
 src/Explorer/Tree/Trigger.ts
-src/Explorer/Tree/UserDefinedFunction.ts
+src/Explorer/WaitsForTemplateViewModel.ts
 src/GitHub/GitHubClient.test.ts
 src/GitHub/GitHubClient.ts
 src/GitHub/GitHubConnector.ts
-src/GitHub/GitHubContentProvider.test.ts
-src/GitHub/GitHubContentProvider.ts
 src/GitHub/GitHubOAuthService.ts
 src/Index.ts
 src/Juno/JunoClient.test.ts
 src/Juno/JunoClient.ts
 src/Platform/Hosted/Authorization.ts
-src/Platform/Hosted/Helpers/ConnectionStringParser.test.ts
 src/ReactDevTools.ts
 src/Shared/Constants.ts
 src/Shared/appInsights.ts
@@ -191,4 +188,4 @@ src/Explorer/Notebook/NotebookRenderer/decorators/kbd-shortcuts/index.tsx
 src/Explorer/Notebook/temp/inputs/connected-editors/codemirror.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
 __mocks__/monaco-editor.ts
-src/Explorer/Tree/ResourceTreeAdapterForResourceToken.test.tsx
+src/Explorer/Tree/ResourceTree.tsx

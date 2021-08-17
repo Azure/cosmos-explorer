@@ -35,7 +35,7 @@ describe("Default Experience Utility", () => {
   });
 
   describe("getApiKindFromDefaultExperience()", () => {
-    const runScenario = (defaultExperience: typeof userContext.apiType, expectedApiKind: number): void => {
+    function runScenario(defaultExperience: typeof userContext.apiType | null, expectedApiKind: number): void {
       const resolvedApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
       expect(resolvedApiKind).toEqual(expectedApiKind);
     };

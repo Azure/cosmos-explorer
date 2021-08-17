@@ -2,6 +2,7 @@ import _ from "underscore";
 import create, { UseStore } from "zustand";
 import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
+import { userContext } from "../UserContext";
 import { useSelectedNode } from "./useSelectedNode";
 
 interface DatabasesState {
@@ -19,6 +20,8 @@ interface DatabasesState {
   loadDatabaseOffers: () => Promise<void>;
   isFirstResourceCreated: () => boolean;
   findSelectedDatabase: () => ViewModels.Database;
+  validateDatabaseId: (id: string) => boolean;
+  validateCollectionId: (databaseId: string, collectionId: string) => Promise<boolean>;
 }
 
 export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
@@ -128,5 +131,18 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     }
 
     return selectedNode.collection?.database;
+  },
+  validateDatabaseId: (id: string): boolean => {
+    return !get().databases.some((database) => database.id() === id);
+  },
+  validateCollectionId: async (databaseId: string, collectionId: string): Promise<boolean> => {
+    const database = get().databases.find((db) => db.id() === databaseId);
+    // For a new tables account, database is undefined when creating the first table
+    if (!database && userContext.apiType === "Tables") {
+      return true;
+    }
+
+    await database.loadCollections();
+    return !database.collections().some((collection) => collection.id() === collectionId);
   },
 }));

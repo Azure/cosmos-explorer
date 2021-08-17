@@ -4,8 +4,8 @@ import { useNotificationConsole } from "../../hooks/useNotificationConsole";
 import { useSidePanel } from "../../hooks/useSidePanel";
 
 export interface PanelContainerProps {
-  headerText: string;
-  panelContent: JSX.Element;
+  headerText?: string;
+  panelContent?: JSX.Element;
   isConsoleExpanded: boolean;
   isOpen: boolean;
   panelWidth?: string;
@@ -66,8 +66,8 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     );
   }
 
-  private onDissmiss = (ev?: React.SyntheticEvent<HTMLElement>): void => {
-    if ((ev.target as HTMLElement).id === "notificationConsoleHeader") {
+  private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
+    if (ev && (ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
     } else {
       useSidePanel.getState().closeSidePanel();
@@ -85,11 +85,12 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
 
 export const SidePanel: React.FC = () => {
   const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
-  const { isOpen, panelContent, headerText } = useSidePanel((state) => {
+  const { isOpen, panelContent, panelWidth, headerText } = useSidePanel((state) => {
     return {
       isOpen: state.isOpen,
       panelContent: state.panelContent,
       headerText: state.headerText,
+      panelWidth: state.panelWidth,
     };
   });
   // TODO Refactor PanelContainerComponent into a functional component and remove this wrapper
@@ -100,6 +101,7 @@ export const SidePanel: React.FC = () => {
       panelContent={panelContent}
       headerText={headerText}
       isConsoleExpanded={isConsoleExpanded}
+      panelWidth={panelWidth}
     />
   );
 };

@@ -57,7 +57,7 @@ export default class Database implements ViewModels.Database {
     this.isOfferRead = false;
   }
 
-  public onSettingsClick = () => {
+  public onSettingsClick = (): void => {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -193,6 +193,8 @@ export default class Database implements ViewModels.Database {
     //merge collections
     this.addCollectionsToList(collectionVMs);
     this.deleteCollectionsFromList(deltaCollections.toDelete);
+
+    useDatabases.getState().updateDatabase(this);
   }
 
   public async openAddCollection(database: Database): Promise<void> {

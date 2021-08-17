@@ -27,7 +27,6 @@ export interface ConfigContext {
   hostedExplorerURL: string;
   armAPIVersion?: string;
   allowedJunoOrigins: string[];
-  enableSchemaAnalyzer: boolean;
   msalRedirectURI?: string;
 }
 
@@ -63,7 +62,6 @@ let configContext: Readonly<ConfigContext> = {
     "https://tools-staging.cosmos.azure.com",
     "https://localhost",
   ],
-  enableSchemaAnalyzer: false,
 };
 
 export function resetConfigContext(): void {

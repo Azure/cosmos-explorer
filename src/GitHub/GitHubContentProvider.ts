@@ -1,15 +1,15 @@
-import { Notebook, stringifyNotebook, makeNotebookRecord, toJS } from "@nteract/commutable";
+import { makeNotebookRecord, Notebook, stringifyNotebook, toJS } from "@nteract/commutable";
 import { FileType, IContent, IContentProvider, IEmptyContent, IGetParams, ServerConfig } from "@nteract/core";
 import { from, Observable, of } from "rxjs";
 import { AjaxResponse } from "rxjs/ajax";
-import * as Base64Utils from "../Utils/Base64Utils";
 import { HttpStatusCodes } from "../Common/Constants";
-import * as Logger from "../Common/Logger";
-import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
-import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
-import * as GitHubUtils from "../Utils/GitHubUtils";
-import * as UrlUtility from "../Common/UrlUtility";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import * as Logger from "../Common/Logger";
+import * as UrlUtility from "../Common/UrlUtility";
+import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
+import * as Base64Utils from "../Utils/Base64Utils";
+import * as GitHubUtils from "../Utils/GitHubUtils";
+import { GitHubClient, IGitHubFile, IGitHubResponse } from "./GitHubClient";
 
 export interface GitHubContentProviderParams {
   gitHubClient: GitHubClient;
@@ -267,25 +267,25 @@ export class GitHubContentProvider implements IContentProvider {
     );
   }
 
-  public listCheckpoints(_: ServerConfig, path: string): Observable<AjaxResponse> {
+  public listCheckpoints(): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
     Logger.logError(error.message, "GitHubContentProvider/listCheckpoints", error.errno);
     return of(this.createErrorAjaxResponse(error));
   }
 
-  public createCheckpoint(_: ServerConfig, path: string): Observable<AjaxResponse> {
+  public createCheckpoint(): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
     Logger.logError(error.message, "GitHubContentProvider/createCheckpoint", error.errno);
     return of(this.createErrorAjaxResponse(error));
   }
 
-  public deleteCheckpoint(_: ServerConfig, path: string, checkpointID: string): Observable<AjaxResponse> {
+  public deleteCheckpoint(): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
     Logger.logError(error.message, "GitHubContentProvider/deleteCheckpoint", error.errno);
     return of(this.createErrorAjaxResponse(error));
   }
 
-  public restoreFromCheckpoint(_: ServerConfig, path: string, checkpointID: string): Observable<AjaxResponse> {
+  public restoreFromCheckpoint(): Observable<AjaxResponse> {
     const error = new GitHubContentProviderError("Not implemented");
     Logger.logError(error.message, "GitHubContentProvider/restoreFromCheckpoint", error.errno);
     return of(this.createErrorAjaxResponse(error));
