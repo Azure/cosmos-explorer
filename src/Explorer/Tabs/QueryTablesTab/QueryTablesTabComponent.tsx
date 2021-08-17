@@ -566,6 +566,7 @@ class QueryTablesTabComponent extends Component<IQueryTablesTabComponentProps, I
           return this.state.tableEntityListViewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
             this.setState({
               isLoading: true,
+              rowSelected: false,
             });
             this.loadEntities(false, false);
           });

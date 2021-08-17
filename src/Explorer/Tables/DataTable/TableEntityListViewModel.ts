@@ -497,12 +497,12 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           }
 
           if (this.allDownloaded || nextDownloadSize === 0) {
-            return Promise.resolve(result.Results);
+            return Promise.resolve(this.cache.data);
           }
 
           if (currentRetry >= TableEntityListViewModel._maximumNumberOfPrefetchRetries) {
             result.ExceedMaximumRetries = true;
-            return Promise.resolve(result.Results);
+            return Promise.resolve(this.cache.data);
           }
           return this.prefetchData(tableQuery, nextDownloadSize, currentRetry + 1);
         }
