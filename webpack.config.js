@@ -226,6 +226,7 @@ module.exports = function (_env = {}, argv = {}) {
       rules,
     },
     resolve: {
+      modules: [path.resolve(__dirname, "src"), "node_modules"],
       alias: {
         process: "process/browser",
       },
