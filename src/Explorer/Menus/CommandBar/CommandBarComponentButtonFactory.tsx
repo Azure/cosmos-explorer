@@ -67,9 +67,8 @@ export function createStaticCommandBarButtons(
     newCollectionBtn.children.push(newDatabaseBtn);
   }
 
-  buttons.push(createDivider());
-
   if (useNotebook.getState().isNotebookEnabled) {
+    buttons.push(createDivider());
     const notebookButtons: CommandButtonComponentProps[] = [];
 
     const newNotebookButton = createNewNotebookButton(container);
@@ -110,7 +109,8 @@ export function createStaticCommandBarButtons(
       buttons.push(btn);
     });
   } else {
-    if (!isRunningOnNationalCloud()) {
+    if (!isRunningOnNationalCloud() && !userContext.features.notebooksTemporarilyDown) {
+      buttons.push(createDivider());
       buttons.push(createEnableNotebooksButton(container));
     }
   }

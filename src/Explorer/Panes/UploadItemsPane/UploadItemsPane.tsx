@@ -91,9 +91,7 @@ export const UploadItemsPane: FunctionComponent = () => {
           accept="application/json"
           multiple
           tabIndex={0}
-          tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON
-              documents. The combined size of all files in an individual upload operation must be less than 2 MB. You
-              can perform multiple upload operations for larger data sets."
+          tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets."
         />
         {uploadFileData?.length > 0 && (
           <div className="fileUploadSummaryContainer">

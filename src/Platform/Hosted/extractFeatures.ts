@@ -75,6 +75,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     autoscaleDefault: "true" === get("autoscaledefault"),
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
-    notebooksTemporarilyDown: "true" === get("notebooksTemporarilyDown", "true"),
+    notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
   };
 }

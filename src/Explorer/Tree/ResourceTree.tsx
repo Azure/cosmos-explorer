@@ -145,6 +145,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   const buildNotebooksTemporarilyDownTree = (): TreeNode => {
     return {
       label: Notebook.temporarilyDownMsg,
+      className: "clickDisabled",
     };
   };
 
