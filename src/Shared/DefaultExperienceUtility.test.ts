@@ -38,7 +38,7 @@ describe("Default Experience Utility", () => {
     const runScenario = (defaultExperience: typeof userContext.apiType | null, expectedApiKind: number): void => {
       const resolvedApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
       expect(resolvedApiKind).toEqual(expectedApiKind);
-    }
+    };
 
     describe("On SQL", () => {
       it("should return SQL", () => runScenario("SQL", DataModels.ApiKind.SQL));
