@@ -139,7 +139,9 @@
     "./src/userContext.test.ts",
     "src/Common/EntityValue.tsx",
     "./src/Platform/Hosted/Components/SwitchAccount.tsx",
-    "./src/Platform/Hosted/Components/SwitchSubscription.tsx"
+    "./src/Platform/Hosted/Components/SwitchSubscription.tsx",
+    "./src/Common/ErrorHandlingUtils.ts",
+    "./src/Explorer/Controls/AccessibleElement/AccessibleElement.tsx"
   ],
   "include": [
     "src/CellOutputViewer/transforms/**/*",
