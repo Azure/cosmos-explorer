@@ -6,7 +6,7 @@ import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import * as React from "react";
 import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import HTML5Backend from "react-dnd-html5-backend";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { userContext } from "../../../UserContext";
