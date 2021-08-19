@@ -113,6 +113,7 @@ module.exports = function (_env = {}, argv = {}) {
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
     }),
     new CreateFileWebpack({
       path: "./dist",
@@ -229,6 +230,7 @@ module.exports = function (_env = {}, argv = {}) {
       alias: {
         process: "process/browser",
       },
+
       fallback: {
         crypto: false,
         fs: false,
