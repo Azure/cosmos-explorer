@@ -2,6 +2,7 @@
  * @module SelfServe/SelfServeTypes
  */
 
+import "reflect-metadata";
 import { TelemetryData } from "../Shared/Telemetry/TelemetryProcessor";
 
 interface BaseInput {

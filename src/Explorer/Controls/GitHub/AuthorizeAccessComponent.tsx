@@ -1,4 +1,4 @@
-import { ChoiceGroup, IButtonProps, IChoiceGroupProps, PrimaryButton, IChoiceGroupOption } from "@fluentui/react";
+import { ChoiceGroup, IButtonProps, IChoiceGroupOption, IChoiceGroupProps, PrimaryButton } from "@fluentui/react";
 import * as React from "react";
 import { ChildrenMargin } from "./GitHubStyleConstants";
 
@@ -34,9 +34,12 @@ export class AuthorizeAccessComponent extends React.Component<
     "Complete setup by authorizing Azure Cosmos DB to access the repositories in your GitHub account: ";
   private static readonly AuthorizeButtonText = "Authorize access";
 
-  private onChoiceGroupChange = (event: React.SyntheticEvent<HTMLElement>, option: IChoiceGroupOption): void =>
+  private onChoiceGroupChange = (
+    _: React.FormEvent<HTMLElement | HTMLInputElement> | undefined,
+    option: IChoiceGroupOption | undefined
+  ): void =>
     this.setState({
-      scope: option.key,
+      scope: option !== undefined ? option.key : "",
     });
 
   private onButtonClick = (): void => this.props.authorizeAccess(this.state.scope);
@@ -64,7 +67,7 @@ export class AuthorizeAccessComponent extends React.Component<
         },
       ],
       selectedKey: this.state.scope,
-      onChange: this.onChoiceGroupChange,
+      onChange: (_, option: IChoiceGroupOption | undefined) => this.onChoiceGroupChange(_, option),
     };
 
     const buttonProps: IButtonProps = {
