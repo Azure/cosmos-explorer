@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import dayjs from "dayjs";
 import { handleMessage, Heatmap, isDarkTheme } from "./Heatmap";
 import { PortalTheme } from "./HeatmapDatatypes";
@@ -22,8 +23,8 @@ describe("The Heatmap Control", () => {
   };
 
   let heatmap: Heatmap;
-  let theme: PortalTheme = 1;
-  const divElement: string = `<div id="${Heatmap.elementId}"></div>`;
+  const theme: PortalTheme = 1;
+  const divElement = `<div id="${Heatmap.elementId}"></div>`;
 
   describe("drawHeatmap rendering", () => {
     beforeEach(() => {
@@ -100,7 +101,7 @@ describe("iframe rendering when there is no data", () => {
   });
 
   it("should show a no data message with a dark theme", () => {
-    let data = {
+    const data = {
       data: {
         signature: "pcIframe",
         data: {
@@ -111,7 +112,7 @@ describe("iframe rendering when there is no data", () => {
       },
     };
 
-    const divElement: string = `<div id="${Heatmap.elementId}"></div>`;
+    const divElement = `<div id="${Heatmap.elementId}"></div>`;
     document.body.innerHTML = divElement;
 
     handleMessage(data as MessageEvent);
@@ -120,7 +121,7 @@ describe("iframe rendering when there is no data", () => {
   });
 
   it("should show a no data message with a white theme", () => {
-    let data = {
+    const data = {
       data: {
         signature: "pcIframe",
         data: {
@@ -131,7 +132,7 @@ describe("iframe rendering when there is no data", () => {
       },
     };
 
-    const divElement: string = `<div id="${Heatmap.elementId}"></div>`;
+    const divElement = `<div id="${Heatmap.elementId}"></div>`;
     document.body.innerHTML = divElement;
 
     handleMessage(data as MessageEvent);

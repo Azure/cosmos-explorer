@@ -39,7 +39,7 @@ export class Heatmap {
     }
   }
 
-  private _getFontStyles(size: number = StyleConstants.MediumFontSize, color: string = "#838383"): FontSettings {
+  private _getFontStyles(size: number = StyleConstants.MediumFontSize, color = "#838383"): FontSettings {
     return {
       family: StyleConstants.DataExplorerFont,
       size,
@@ -78,9 +78,9 @@ export class Heatmap {
     // go thru all rows and create 2d matrix for heatmap...
     for (let i = 0; i < rows.length; i++) {
       output.yAxisPoints.push(rows[i]);
-      let dataPoints: number[] = [];
+      const dataPoints: number[] = [];
       for (let a = 0; a < output.xAxisPoints.length; a++) {
-        let row: PartitionTimeStampToData = data[rows[i]];
+        const row: PartitionTimeStampToData = data[rows[i]];
         dataPoints.push(row[output.xAxisPoints[a]]["Normalized Throughput"]);
       }
       output.dataPoints.push(dataPoints);
@@ -193,8 +193,8 @@ export class Heatmap {
       this._getLayoutSettings(),
       this._getChartDisplaySettings()
     );
-    let plotDiv: any = document.getElementById(Heatmap.elementId);
-    plotDiv.on("plotly_click", (data: any) => {
+    const plotDiv = document.getElementById(Heatmap.elementId) as HTMLFormElement;
+    plotDiv.on("plotly_click", (data: HTMLFormElement) => {
       let timeSelected: string = data.points[0].x;
       timeSelected = timeSelected.replace(" ", "T");
       timeSelected = `${timeSelected}Z`;
@@ -205,7 +205,7 @@ export class Heatmap {
           break;
         }
       }
-      let output = [];
+      const output = [];
       for (let i = 0; i < this._chartData.dataPoints.length; i++) {
         output.push(this._chartData.dataPoints[i][xAxisIndex]);
       }
