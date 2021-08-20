@@ -89,7 +89,7 @@ export class InMemoryContentProvider implements IContentProvider {
       request: {},
       status,
       response: content ? content : undefined,
-      responseText: content ? JSON.stringify(content) : undefined,
+      responseText: content ? JSON.stringify(content) : "",
       responseType: "json",
     };
   }
