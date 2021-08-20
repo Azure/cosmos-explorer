@@ -5,7 +5,7 @@ import * as AutoPilotUtils from "../Utils/AutoPilotUtils";
 interface ComputeRUUsagePriceHourlyArgs {
   serverId: string;
   requestUnits: number;
-  numberOfRegions: number;
+  numberOfRegions?: number;
   multimasterEnabled: boolean;
   isAutoscale: boolean;
 }
@@ -34,7 +34,7 @@ export function getRuToolTipText(): string {
  * Otherwise, return numberOfRegions
  * @param numberOfRegions
  */
-export function getRegionMultiplier(numberOfRegions: number, multimasterEnabled: boolean): number {
+export function getRegionMultiplier(numberOfRegions: number | undefined, multimasterEnabled: boolean): number {
   const normalizedNumberOfRegions: number = normalizeNumber(numberOfRegions);
 
   if (normalizedNumberOfRegions <= 0) {
@@ -45,6 +45,10 @@ export function getRegionMultiplier(numberOfRegions: number, multimasterEnabled:
     return numberOfRegions;
   }
 
+  if (!numberOfRegions) {
+    return 0;
+  }
+
   if (multimasterEnabled) {
     return numberOfRegions + 1;
   }
@@ -52,7 +56,7 @@ export function getRegionMultiplier(numberOfRegions: number, multimasterEnabled:
   return numberOfRegions;
 }
 
-export function getMultimasterMultiplier(numberOfRegions: number, multimasterEnabled: boolean): number {
+export function getMultimasterMultiplier(numberOfRegions: number | undefined, multimasterEnabled: boolean): number {
   const regionMultiplier: number = getRegionMultiplier(numberOfRegions, multimasterEnabled);
   const multimasterMultiplier: number = !multimasterEnabled ? 1 : regionMultiplier > 1 ? 2 : 1;
 
@@ -118,7 +122,7 @@ export function numberWithCommasFormatter(n: number): string {
   return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-export function isLargerThanDefaultMinRU(ru: number): boolean {
+export function isLargerThanDefaultMinRU(ru: number | undefined): boolean {
   if (typeof ru === "number" && ru > Constants.CollectionCreation.DefaultCollectionRUs400) {
     return true;
   }

@@ -8,6 +8,7 @@
     "noUnusedParameters": true
   },
   "files": [
+    "./src/Utils/PricingUtils.test.ts",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",
