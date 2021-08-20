@@ -72,21 +72,19 @@ export function createStaticCommandBarButtons(
     }
 
     buttons.push(createOpenTerminalButton(container));
-    buttons.push(createOpenPostgreSQLTerminalButton(container));
 
     buttons.push(createNotebookWorkspaceResetButton(container));
-    if (
-      (userContext.apiType === "Mongo" &&
+
+    buttons.push(createDivider());
+    buttons.push(createOpenPostgreSQLTerminalButton(container));
+
+    if (userContext.apiType === "Mongo" &&
         container.isShellEnabled() &&
-        selectedNodeState.isDatabaseNodeOrNoneSelected()) ||
-      userContext.apiType === "Cassandra"
-    ) {
-      buttons.push(createDivider());
-      if (userContext.apiType === "Cassandra") {
-        buttons.push(createOpenCassandraTerminalButton(container));
-      } else {
+        selectedNodeState.isDatabaseNodeOrNoneSelected()){
         buttons.push(createOpenMongoTerminalButton(container));
-      }
+    }
+    if (userContext.apiType === "Cassandra") {
+      buttons.push(createOpenCassandraTerminalButton(container));
     }
   } else {
     if (!isRunningOnNationalCloud()) {
