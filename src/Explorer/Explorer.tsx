@@ -132,8 +132,8 @@ export default class Explorer {
         await this._refreshNotebooksEnabledStateForAccount();
         this.isNotebookEnabled(
           userContext.authType !== AuthType.ResourceToken &&
-            ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-              userContext.features.enableNotebooks)
+          ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+            userContext.features.enableNotebooks)
         );
 
         this.isShellEnabled(this.isNotebookEnabled() && isPublicInternetAccessAllowed());
@@ -468,7 +468,10 @@ export default class Explorer {
       cosmosKey: userContext.masterKey,
       cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
       resourceId: userContext.databaseAccount.id,
-      dbAcountName: userContext.databaseAccount.name
+      dbAccountName: userContext.databaseAccount.name,
+      aadToken: userContext.authorizationToken,
+      resourceGroup: userContext.resourceGroup,
+      subscriptionId: userContext.subscriptionId
     }
     const response = await window.fetch("http://localhost:443/api/containerpooling/provision", {
       method: "POST",
@@ -483,15 +486,15 @@ export default class Explorer {
       websocketId: websocketId
     }
 
-      window.addEventListener("beforeunload", async () => {
-        const response = await window.fetch("http://localhost:443/api/containerpooling/unprovision", {
-          method: "POST",
-          headers: {
-            [HttpHeaders.contentType]: "application/json",
-          },
-          body: JSON.stringify(unprovisionData)
-        })
+    window.addEventListener("beforeunload", async () => {
+      const response = await window.fetch("http://localhost:443/api/containerpooling/unprovision", {
+        method: "POST",
+        headers: {
+          [HttpHeaders.contentType]: "application/json",
+        },
+        body: JSON.stringify(unprovisionData)
       })
+    })
 
     this.notebookServerInfo({
       notebookServerEndpoint: userContext.features.notebookServerUrl || `http://localhost:443/api/containerpooling/resid${userContext.databaseAccount.id}/forward/`,
@@ -542,7 +545,7 @@ export default class Explorer {
       return false;
     }
     */
-   return true
+    return true
   }
 
   private async ensureNotebookWorkspaceRunning() {
@@ -1164,10 +1167,10 @@ export default class Explorer {
         title = "Cassandra Shell";
         break;
 
-        case ViewModels.TerminalKind.PostgreSQL:
-          title = "PostgreSQL Shell";
-          break;
-  
+      case ViewModels.TerminalKind.PostgreSQL:
+        title = "PostgreSQL Shell";
+        break;
+
       default:
         throw new Error("Terminal kind: ${kind} not supported");
     }
