@@ -255,7 +255,9 @@ export class NotebookContentClient {
 
   private fetchNotebookFiles(path: string): Promise<NotebookContentItem[]> {
     return this.contentProvider
-      .get(this.getServerConfig(), path + "/directory", {})
+      .get(this.getServerConfig(), path, {
+        type: "directory",
+      })
       .toPromise()
       .then((xhr) => {
         if (xhr.status !== 200) {
