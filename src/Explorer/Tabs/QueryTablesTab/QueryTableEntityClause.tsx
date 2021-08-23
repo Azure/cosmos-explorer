@@ -11,7 +11,7 @@ import {
   TooltipHost,
 } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
-import AddIcon from "../../../../images/Add.svg";
+// import AddIcon from "../../../../images/Add.svg";
 import CancelIcon from "../../../../images/cancel.svg";
 import { userContext } from "../../../UserContext";
 import { IOption } from "./QueryTableTabUtils";
@@ -93,7 +93,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
         <TooltipHost content="Add new clause" id="addNewClause">
           <Image
             {...addImageProps}
-            src={AddIcon}
+            // src={AddIcon}
             alt="Add new clause"
             id="addNewClause"
             onClick={onAddNewClause}
