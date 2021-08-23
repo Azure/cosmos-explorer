@@ -1,5 +1,5 @@
+import { SimulationLinkDatum, SimulationNodeDatum } from "d3";
 import _ from "underscore";
-import { SimulationNodeDatum, SimulationLinkDatum } from "d3";
 
 export interface PaginationInfo {
   total: number;
@@ -10,7 +10,7 @@ export interface PaginationInfo {
 
 export interface GremlinVertex {
   id: string;
-  label: string;
+  label?: string;
   inE?: { [label: string]: GremlinShortInEdge[] };
   outE?: { [label: string]: GremlinShortOutEdge[] };
   properties?: { [propName: string]: GremlinProperty[] };

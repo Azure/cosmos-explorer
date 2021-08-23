@@ -66,7 +66,7 @@ interface InitialProps {
 }
 
 // Redux
-const makeMapStateToProps = (state: AppState, initialProps: InitialProps) => {
+const makeMapStateToProps = (_state: AppState, initialProps: InitialProps) => {
   const mapStateToProps = (state: AppState): StateProps => ({
     isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, initialProps.contentRef),
   });

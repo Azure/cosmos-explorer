@@ -1,7 +1,5 @@
 jest.mock("./MessageHandler");
-import { LogEntryLevel } from "../Contracts/Diagnostics";
 import * as Logger from "./Logger";
-import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { sendMessage } from "./MessageHandler";
 
 describe("Logger", () => {
