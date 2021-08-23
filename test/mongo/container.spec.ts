@@ -16,7 +16,7 @@ test("Mongo CRUD", async () => {
   await explorer.click('[data-test="New Collection"]');
   await explorer.fill('[aria-label="New database id"]', databaseId);
   await explorer.fill('[aria-label="Collection id"]', containerId);
-  await explorer.fill('[aria-label="Shard key"]', "/pk");
+  await explorer.fill('[aria-label="Shard key"]', "pk");
   await explorer.click("#sidePanelOkButton");
   await explorer.click(`.nodeItem >> text=${databaseId}`);
   await explorer.click(`.nodeItem >> text=${containerId}`);
