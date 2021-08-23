@@ -40,13 +40,16 @@ interface MetricsResponse {
   value: MetricsData[];
 }
 
-export const getCollectionUsageSizeInKB = async (databaseName: string, containerName: string): Promise<number> => {
+export const getCollectionUsageSizeInKB = async (
+  databaseName: string,
+  containerName: string
+): Promise<number | undefined> => {
   if (userContext.authType !== AuthType.AAD) {
     return undefined;
   }
 
   const { subscriptionId, resourceGroup, databaseAccount } = userContext;
-  const accountName = databaseAccount.name;
+  const accountName = databaseAccount !== undefined ? databaseAccount.name : "";
 
   const filter = `DatabaseName eq '${databaseName}' and CollectionName eq '${containerName}'`;
   const metricNames = "DataUsage,IndexUsage";
