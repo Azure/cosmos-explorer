@@ -8,6 +8,8 @@
     "noUnusedParameters": true
   },
   "files": [
+    "./src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.tsx",
+    "./src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.test.tsx",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",

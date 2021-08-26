@@ -1,7 +1,7 @@
-import React from "react";
 import { shallow } from "enzyme";
-import { InputTypeaheadComponent, InputTypeaheadComponentProps } from "./InputTypeaheadComponent";
+import React from "react";
 import "../../../../externals/jquery.typeahead.min.js";
+import { InputTypeaheadComponent, InputTypeaheadComponentProps } from "./InputTypeaheadComponent";
 
 describe("inputTypeahead", () => {
   it("renders <input />", () => {
@@ -12,6 +12,12 @@ describe("inputTypeahead", () => {
       ],
       placeholder: "placeholder",
       useTextarea: false,
+      onNewValue: () => {
+        ("");
+      },
+      submitFct: () => {
+        ("");
+      },
     };
 
     const wrapper = shallow(<InputTypeaheadComponent {...props} />);
@@ -26,6 +32,12 @@ describe("inputTypeahead", () => {
       ],
       placeholder: "placeholder",
       useTextarea: true,
+      onNewValue: () => {
+        ("");
+      },
+      submitFct: () => {
+        ("");
+      },
     };
 
     const wrapper = shallow(<InputTypeaheadComponent {...props} />);
