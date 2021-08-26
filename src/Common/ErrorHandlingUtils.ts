@@ -28,10 +28,10 @@ export const getErrorMessage = (error: string | Error = ""): string => {
 };
 
 export const getErrorStack = (error: string | Error): string => {
-  return typeof error === "string" ? undefined : error.stack;
+  return typeof error === "string" ? "" : error.stack === undefined ? "" : error.stack;
 };
 
-const sendNotificationForError = (errorMessage: string, errorCode: number | string): void => {
+const sendNotificationForError = (errorMessage: string, errorCode: number | string | undefined): void => {
   if (errorCode === HttpStatusCodes.Forbidden) {
     if (errorMessage?.toLowerCase().indexOf("sharedoffer is disabled for your account") > 0) {
       return;
