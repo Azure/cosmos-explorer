@@ -9,7 +9,7 @@ import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContentClient {
-  constructor(private contentProvider: IContentProvider) {}
+  constructor(private contentProvider: IContentProvider) { }
 
   /**
    * This updates the item and points all the children's parent to this item
@@ -39,21 +39,12 @@ export class NotebookContentClient {
    *
    * @param parent parent folder
    */
-  public createNewNotebookFile(parent: NotebookContentItem, isGithubTree?: boolean): Promise<NotebookContentItem> {
+  public async createNewNotebookFile(parent: NotebookContentItem, isGithubTree?: boolean): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
 
     const type = "notebook";
-    const item = NotebookUtil.createNotebookContentItem("Sample.ipynb", "notebooks/Sample.ipynb", "notebook");
-    if (parent.children) {
-      item.parent = parent;
-      parent.children.push(item);
-    }
-    return this.sleep(1000).then(() => item);
-   
-    /*
-
     return this.contentProvider
       .create<"notebook">(this.getServerConfig(), parent.path, { type })
       .toPromise()
@@ -78,7 +69,7 @@ export class NotebookContentClient {
 
         return item;
       });
-      */
+
   }
 
   public async deleteContentItem(item: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
@@ -112,7 +103,6 @@ export class NotebookContentClient {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
-
     const filepath = NotebookUtil.getFilePath(parent.path, name);
     if (await this.checkIfFilepathExists(filepath)) {
       throw new Error(`File already exists: ${filepath}`);

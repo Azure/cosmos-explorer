@@ -131,14 +131,15 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       if (myNotebooksContentRoot) {
         notebooksTree.children.push(buildMyNotebooksTree());
       }
-
       if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
         // collapse all other notebook nodes
         notebooksTree.children.forEach((node) => (node.isExpanded = false));
-        notebooksTree.children.push(buildGitHubNotebooksTree());
+        notebooksTree.children.push(buildGitHubNotebooksTree(true));
+      }
+      else if (container.notebookManager && !container.notebookManager.gitHubOAuthService.isLoggedIn()) {
+        notebooksTree.children.push(buildGitHubNotebooksTree(false));
       }
     }
-
     return notebooksTree;
   };
 
@@ -160,6 +161,9 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
   };
 
   const buildMyNotebooksTree = (): TreeNode => {
+    if (userContext.features.phoenix) {
+      myNotebooksContentRoot.name = "My Notebooks Scratch";
+    }
     const myNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       myNotebooksContentRoot,
       (item: NotebookContentItem) => {
@@ -178,7 +182,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     return myNotebooksTree;
   };
 
-  const buildGitHubNotebooksTree = (): TreeNode => {
+  const buildGitHubNotebooksTree = (isConnected: boolean): TreeNode => {
     const gitHubNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
@@ -190,8 +194,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
       true
     );
-
-    gitHubNotebooksTree.contextMenu = [
+    gitHubNotebooksTree.contextMenu = isConnected ? [
       {
         label: "Manage GitHub settings",
         onClick: () =>
@@ -214,7 +217,22 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
           });
           container.notebookManager?.gitHubOAuthService.logout();
         },
-      },
+      }
+    ] : [
+      {
+        label: "Connect to GitHub",
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Connect to GitHub",
+              <GitHubReposPanel
+                explorer={container}
+                gitHubClientProp={container.notebookManager.gitHubClient}
+                junoClientProp={container.notebookManager.junoClient}
+              />
+            ),
+      }
     ];
 
     gitHubNotebooksTree.isExpanded = true;

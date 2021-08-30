@@ -7,10 +7,11 @@ import {
   Label,
   SelectableOptionMenuItemType,
   Stack,
-  Text,
+  Text
 } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";
+import { userContext } from "../../../UserContext";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
 
@@ -46,11 +47,14 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
 
   const getDropDownOptions = (): IDropdownOption[] => {
     const options: IDropdownOption[] = [];
-
+    let notebookText = ResourceTreeAdapter.MyNotebooksTitle;
+    if (userContext.features.phoenix) {
+      notebookText = ResourceTreeAdapter.MyNotebooksScratchTitle;
+    }
     options.push({
       key: "MyNotebooks-Item",
-      text: ResourceTreeAdapter.MyNotebooksTitle,
-      title: ResourceTreeAdapter.MyNotebooksTitle,
+      text: notebookText,
+      title: notebookText,
       data: {
         type: "MyNotebooks",
       } as Location,

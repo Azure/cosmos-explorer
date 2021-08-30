@@ -4,11 +4,11 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { HttpHeaders } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
+import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
 import * as DataModels from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
@@ -16,12 +16,19 @@ import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
 import { useTabs } from "../hooks/useTabs";
 import { IGalleryItem } from "../Juno/JunoClient";
+import { PhoenixClient } from "../Phoenix/PhoenixClient";
 import * as ExplorerSettings from "../Shared/ExplorerSettings";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getCollectionName, getUploadName } from "../Utils/APITypeUtils";
 import { update } from "../Utils/arm/generatedClients/cosmos/databaseAccounts";
+import {
+  get as getWorkspace,
+  listByDatabaseAccount,
+  listConnectionInfo,
+  start
+} from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
 import { fromContentUri, toRawContentUri } from "../Utils/GitHubUtils";
@@ -83,12 +90,13 @@ export default class Explorer {
   };
 
   private static readonly MaxNbDatabasesToAutoExpand = 5;
-
+  private phoenixClient: PhoenixClient;
   constructor() {
     const startKey: number = TelemetryProcessor.traceStart(Action.InitializeDataExplorer, {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
     this._isInitializingNotebooks = false;
+    this.phoenixClient = new PhoenixClient();
     useNotebook.subscribe(
       () => this.refreshCommandBarButtons(),
       (state) => state.isNotebooksEnabledForAccount
@@ -339,38 +347,36 @@ export default class Explorer {
       return;
     }
     this._isInitializingNotebooks = true;
+    if (userContext.features.phoenix) {
+      const provisionData = {
+        cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        resourceId: userContext.databaseAccount.id,
+        dbAccountName: userContext.databaseAccount.name,
+        aadToken: userContext.authorizationToken,
+        resourceGroup: userContext.resourceGroup,
+        subscriptionId: userContext.subscriptionId
+      }
+      const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
 
-    await this.ensureNotebookWorkspaceRunning();
-    /*
-    const connectionInfo = await listConnectionInfo(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      databaseAccount.name,
-      "default"
-    );
-    */
+      let notebookServerEndpoint = `${this.phoenixClient.getPhoenixContainerPoolingEndPoint()}/${connectionInfo.data.forwardingId}/forward/`;
+      useNotebook.getState().setNotebookServerInfo({
+        notebookServerEndpoint: userContext.features.notebookServerUrl || notebookServerEndpoint,
+        authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookServerToken,
+      });
+    } else {
+      await this.ensureNotebookWorkspaceRunning();
+      const connectionInfo = await listConnectionInfo(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        databaseAccount.name,
+        "default"
+      );
 
-    const provisionData = {
-      cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
-      resourceId: userContext.databaseAccount.id,
-      dbAccountName: userContext.databaseAccount.name,
-      aadToken: userContext.authorizationToken,
-      resourceGroup: userContext.resourceGroup,
-      subscriptionId: userContext.subscriptionId
+      useNotebook.getState().setNotebookServerInfo({
+        notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
+        authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+      });
     }
-    const response = await window.fetch("http://localhost:443/api/containerpooling/provision", {
-      method: "POST",
-      headers: {
-        [HttpHeaders.contentType]: "application/json",
-      },
-      body: JSON.stringify(provisionData)
-    })
-    var notebookServerInfo = await response.json();
-
-    useNotebook.getState().setNotebookServerInfo({
-      notebookServerEndpoint: userContext.features.notebookServerUrl || `http://localhost:443/api/containerpooling/${notebookServerInfo.forwardingId}/forward/`,
-      authToken: userContext.features.notebookServerToken || notebookServerInfo.notebookServerToken,
-    });
 
     useNotebook.getState().initializeNotebooksTree(this.notebookManager);
 
@@ -404,8 +410,6 @@ export default class Explorer {
     if (!databaseAccount) {
       return false;
     }
-
-    /*
     try {
       const { value: workspaces } = await listByDatabaseAccount(
         userContext.subscriptionId,
@@ -417,8 +421,6 @@ export default class Explorer {
       Logger.logError(getErrorMessage(error), "Explorer/_containsDefaultNotebookWorkspace");
       return false;
     }
-    */
-    return true
   }
 
   private async ensureNotebookWorkspaceRunning() {
@@ -426,7 +428,6 @@ export default class Explorer {
       return;
     }
 
-    /*
     let clearMessage;
     try {
       const notebookWorkspace = await getWorkspace(
@@ -449,7 +450,7 @@ export default class Explorer {
     } finally {
       clearMessage && clearMessage();
     }
-    */
+
   }
 
   private _resetNotebookWorkspace = async () => {

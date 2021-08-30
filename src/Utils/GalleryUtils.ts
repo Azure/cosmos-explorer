@@ -7,12 +7,13 @@ import { TextFieldProps, useDialog } from "../Explorer/Controls/Dialog";
 import {
   GalleryTab,
   GalleryViewerComponent,
-  SortBy,
+  SortBy
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../UserContext";
 import { logConsoleInfo, logConsoleProgress } from "./NotificationConsoleUtils";
 
 const defaultSelectedAbuseCategory = "Other";
@@ -223,11 +224,11 @@ export function downloadItem(
 
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
-    "Download to My Notebooks",
-    `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
+    `Download to My Notebooks ${userContext.features.phoenix ? 'Scratch' : ''}`,
+    `Download ${name} from gallery as a copy to your notebooks ${userContext.features.phoenix ? 'scratch' : ''} to run and/or edit the notebook.`,
     "Download",
     async () => {
-      const clearInProgressMessage = logConsoleProgress(`Downloading ${name} to My Notebooks`);
+      const clearInProgressMessage = logConsoleProgress(`Downloading ${name} to My Notebooks ${userContext.features.phoenix ? 'Scratch' : ''}`);
       const startKey = traceStart(Action.NotebooksGalleryDownload, {
         notebookId: data.id,
         downloadCount: data.downloads,
