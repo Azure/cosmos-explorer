@@ -8,6 +8,9 @@
     "noUnusedParameters": true
   },
   "files": [
+    "./src/hooks/useDatabaseAccounts.tsx",
+    "./src/hooks/useSubscriptions.tsx",
+    "./src/Explorer/Notebook/NotebookComponent/contents/file/text-file.tsx",
     "./src/AuthType.ts",
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",

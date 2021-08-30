@@ -34,8 +34,9 @@ export async function fetchSubscriptions(accessToken: string): Promise<Subscript
 
 export function useSubscriptions(armToken: string): Subscription[] | undefined {
   const { data } = useSWR(
-    () => (armToken ? ["subscriptions", armToken] : undefined),
-    (_, armToken) => fetchSubscriptions(armToken)
+    // eslint-disable-next-line no-null/no-null
+    () => (armToken ? ["subscriptions", armToken] : null),
+    (_: string, armToken: string) => fetchSubscriptions(armToken)
   );
   return data;
 }
