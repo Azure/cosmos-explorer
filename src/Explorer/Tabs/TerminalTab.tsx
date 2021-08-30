@@ -26,7 +26,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
   constructor(
     private getNotebookServerInfo: () => DataModels.NotebookWorkspaceConnectionInfo,
     private getDatabaseAccount: () => DataModels.DatabaseAccount
-  ) {}
+  ) { }
 
   public renderComponent(): JSX.Element {
     return this.parameters() ? (
@@ -92,10 +92,6 @@ export default class TerminalTab extends TabsBase {
         endpointSuffix = "cassandra";
         break;
 
-      case ViewModels.TerminalKind.PostgreSQL:
-          endpointSuffix = "postgreSQL";
-          break;
-  
       default:
         throw new Error(`Terminal kind: ${options.kind} not supported`);
     }

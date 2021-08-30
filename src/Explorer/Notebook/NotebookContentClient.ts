@@ -32,9 +32,6 @@ export class NotebookContentClient {
     });
   }
 
-  private sleep = (milliseconds: number) => {
-    return new Promise(resolve => setTimeout(resolve, milliseconds))
-  }
   /**
    *
    * @param parent parent folder

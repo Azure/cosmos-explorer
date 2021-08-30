@@ -82,8 +82,6 @@ export function createStaticCommandBarButtons(
     notebookButtons.push(createOpenTerminalButton(container));
 
     notebookButtons.push(createNotebookWorkspaceResetButton(container));
-
-    notebookButtons.push(createOpenPostgreSQLTerminalButton(container));
     if (
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
@@ -506,19 +504,6 @@ function createOpenTerminalButton(container: Explorer): CommandButtonComponentPr
     iconSrc: CosmosTerminalIcon,
     iconAlt: label,
     onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.Default),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: false,
-    ariaLabel: label,
-  };
-}
-
-function createOpenPostgreSQLTerminalButton(container: Explorer): CommandButtonComponentProps {
-  const label = "Open PostgreSQL Shell";
-  return {
-    iconSrc: HostedTerminalIcon,
-    iconAlt: label,
-    onCommandClick: () => container.openNotebookTerminal(ViewModels.TerminalKind.PostgreSQL),
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

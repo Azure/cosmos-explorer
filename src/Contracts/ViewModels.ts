@@ -369,8 +369,7 @@ export enum CollectionTabKind {
 export enum TerminalKind {
   Default = 0,
   Mongo = 1,
-  Cassandra = 2,
-  PostgreSQL = 3
+  Cassandra = 2
 }
 
 export interface DataExplorerInputsFrame {
