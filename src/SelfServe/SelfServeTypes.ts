@@ -188,9 +188,9 @@ export type ChoiceItem = {
    * Key used to pickup the string that uniquely identifies the dropdown choice item, from the strings JSON file.
    */
   key: string;
-};
+}
 
-export type InputType = number | string | boolean | ChoiceItem | Description;
+export type InputType = number | string | boolean | ChoiceItem | Description
 
 /**
  * Data to be shown within the info bubble of the property.
