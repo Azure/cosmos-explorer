@@ -50,11 +50,11 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
       await loadTranslations(sqlX.constructor.name);
       return sqlX.toSelfServeDescriptor();
     }
-    case SelfServeType.graphdedicatedgateway: {
-      const GraphDedicatedGateway = await import(/* webpackChunkName: "GraphDedicatedGateway" */ "./GraphDedicatedGateway/GraphDedicatedGateway");
-      const graphDedicatedGateway = new GraphDedicatedGateway.default();
-      await loadTranslations(graphDedicatedGateway.constructor.name);
-      return graphDedicatedGateway.toSelfServeDescriptor();
+    case SelfServeType.graphapicompute: {
+      const GraphAPICompute = await import(/* webpackChunkName: "GraphAPICompute" */ "./GraphAPICompute/GraphAPICompute");
+      const graphAPICompute = new GraphAPICompute.default();
+      await loadTranslations(graphAPICompute.constructor.name);
+      return graphAPICompute.toSelfServeDescriptor();
     }
     default:
       return undefined;
