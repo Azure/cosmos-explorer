@@ -159,7 +159,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: kernelLabel,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         hasPopup: false,
         disabled: availableKernels.length < 1,
@@ -169,16 +169,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
         dropdownWidth: 100,
         children: availableKernels.map(
           (kernel: KernelSpecsDisplay) =>
-            ({
-              iconSrc: null,
-              iconAlt: kernel.displayName,
-              onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
-              commandButtonLabel: kernel.displayName,
-              dropdownItemKey: kernel.name,
-              hasPopup: false,
-              disabled: false,
-              ariaLabel: kernel.displayName,
-            } as CommandButtonComponentProps)
+          ({
+            iconSrc: null,
+            iconAlt: kernel.displayName,
+            onCommandClick: () => this.notebookComponentAdapter.notebookChangeKernel(kernel.name),
+            commandButtonLabel: kernel.displayName,
+            dropdownItemKey: kernel.name,
+            hasPopup: false,
+            disabled: false,
+            ariaLabel: kernel.displayName,
+          } as CommandButtonComponentProps)
         ),
         ariaLabel: kernelLabel,
       },
@@ -270,7 +270,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: null,
-        onCommandClick: () => {},
+        onCommandClick: () => { },
         commandButtonLabel: null,
         ariaLabel: cellTypeLabel,
         hasPopup: false,
@@ -369,14 +369,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
   private async configureServiceEndpoints(kernelName: string) {
     const notebookConnectionInfo = useNotebook.getState().notebookServerInfo;
     const sparkClusterConnectionInfo = useNotebook.getState().sparkClusterConnectionInfo;
-    /*
-    await NotebookConfigurationUtils.configureServiceEndpoints(
-      this.notebookPath(),
-      notebookConnectionInfo,
-      kernelName,
-      sparkClusterConnectionInfo
-    );
-    */
   }
 
   private publishToGallery = async () => {

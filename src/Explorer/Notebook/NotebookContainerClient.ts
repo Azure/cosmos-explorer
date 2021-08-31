@@ -10,7 +10,7 @@ import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
-  private clearReconnectionAttemptMessage? = () => {};
+  private clearReconnectionAttemptMessage?= () => { };
   private isResettingWorkspace: boolean;
 
   constructor(private onConnectionLost: () => void) {
@@ -133,19 +133,5 @@ export class NotebookContainerClient {
     if (!databaseAccount?.id) {
       throw new Error("DataExplorer not initialized");
     }
-    /*
-    try {
-      await destroy(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
-      await createOrUpdate(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
-        "default"
-      );
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
-      return Promise.reject(error);
-    }
-    */
   }
 }
