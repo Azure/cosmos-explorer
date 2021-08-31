@@ -7,7 +7,7 @@ import { TextFieldProps, useDialog } from "../Explorer/Controls/Dialog";
 import {
   GalleryTab,
   GalleryViewerComponent,
-  SortBy
+  SortBy,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
@@ -225,7 +225,8 @@ export function downloadItem(
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
     `Download to My Notebooks ${userContext.features.phoenix ? "Scratch" : ""}`,
-    `Download ${name} from gallery as a copy to your notebooks ${userContext.features.phoenix ? "scratch" : ""
+    `Download ${name} from gallery as a copy to your notebooks ${
+      userContext.features.phoenix ? "scratch" : ""
     } to run and/or edit the notebook.`,
     "Download",
     async () => {
