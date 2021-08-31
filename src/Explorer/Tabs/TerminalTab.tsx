@@ -26,7 +26,7 @@ class NotebookTerminalComponentAdapter implements ReactAdapter {
   constructor(
     private getNotebookServerInfo: () => DataModels.NotebookWorkspaceConnectionInfo,
     private getDatabaseAccount: () => DataModels.DatabaseAccount
-  ) { }
+  ) {}
 
   public renderComponent(): JSX.Element {
     return this.parameters() ? (

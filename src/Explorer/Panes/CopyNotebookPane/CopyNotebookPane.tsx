@@ -77,7 +77,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
           selectedLocation.repo
         )} - ${selectedLocation.branch}`;
       } else if (selectedLocation.type === "MyNotebooks" && userContext.features.phoenix) {
-        destination = "My Notebooks Scratch"
+        destination = "My Notebooks Scratch";
       }
 
       clearMessage = NotificationConsoleUtils.logConsoleProgress(`Copying ${name} to ${destination}`);

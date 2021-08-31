@@ -13,7 +13,7 @@ import {
   Link,
   PrimaryButton,
   ProgressIndicator,
-  TextField
+  TextField,
 } from "@fluentui/react";
 import React, { FC } from "react";
 import create, { UseStore } from "zustand";
@@ -178,9 +178,9 @@ export const Dialog: FC = () => {
   const secondaryButtonProps: IButtonProps =
     secondaryButtonText && onSecondaryButtonClick
       ? {
-        text: secondaryButtonText,
-        onClick: onSecondaryButtonClick,
-      }
+          text: secondaryButtonText,
+          onClick: onSecondaryButtonClick,
+        }
       : undefined;
   return visible ? (
     <FluentDialog {...dialogProps}>

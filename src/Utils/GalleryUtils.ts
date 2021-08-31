@@ -224,11 +224,14 @@ export function downloadItem(
 
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
-    `Download to My Notebooks ${userContext.features.phoenix ? 'Scratch' : ''}`,
-    `Download ${name} from gallery as a copy to your notebooks ${userContext.features.phoenix ? 'scratch' : ''} to run and/or edit the notebook.`,
+    `Download to My Notebooks ${userContext.features.phoenix ? "Scratch" : ""}`,
+    `Download ${name} from gallery as a copy to your notebooks ${userContext.features.phoenix ? "scratch" : ""
+    } to run and/or edit the notebook.`,
     "Download",
     async () => {
-      const clearInProgressMessage = logConsoleProgress(`Downloading ${name} to My Notebooks ${userContext.features.phoenix ? 'Scratch' : ''}`);
+      const clearInProgressMessage = logConsoleProgress(
+        `Downloading ${name} to My Notebooks ${userContext.features.phoenix ? "Scratch" : ""}`
+      );
       const startKey = traceStart(Action.NotebooksGalleryDownload, {
         notebookId: data.id,
         downloadCount: data.downloads,

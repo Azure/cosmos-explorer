@@ -63,8 +63,6 @@ import StoredProcedure from "./Tree/StoredProcedure";
 import { useDatabases } from "./useDatabases";
 import { useSelectedNode } from "./useSelectedNode";
 
-
-
 BindingHandlersRegisterer.registerBindingHandlers();
 
 export default class Explorer {
@@ -354,8 +352,8 @@ export default class Explorer {
         dbAccountName: userContext.databaseAccount.name,
         aadToken: userContext.authorizationToken,
         resourceGroup: userContext.resourceGroup,
-        subscriptionId: userContext.subscriptionId
-      }
+        subscriptionId: userContext.subscriptionId,
+      };
       const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
 
       const notebookServerEndpoint = `${this.phoenixClient.getPhoenixContainerPoolingEndPoint()}/${connectionInfo.data.forwardingId}/forward/`;
@@ -450,7 +448,6 @@ export default class Explorer {
     } finally {
       clearMessage && clearMessage();
     }
-
   }
 
   private _resetNotebookWorkspace = async () => {

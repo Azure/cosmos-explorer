@@ -9,7 +9,7 @@ import {
   KernelRef,
   RemoteKernelProps,
   selectors,
-  ServerConfig as JupyterServerConfig
+  ServerConfig as JupyterServerConfig,
 } from "@nteract/core";
 import { Channels, childOf, createMessage, JupyterMessage, message, ofMessageType } from "@nteract/messaging";
 import { RecordOf } from "immutable";
@@ -29,7 +29,7 @@ import {
   switchMap,
   take,
   tap,
-  timeout
+  timeout,
 } from "rxjs/operators";
 import { webSocket } from "rxjs/webSocket";
 import * as Constants from "../../../Common/Constants";

@@ -135,8 +135,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         // collapse all other notebook nodes
         notebooksTree.children.forEach((node) => (node.isExpanded = false));
         notebooksTree.children.push(buildGitHubNotebooksTree(true));
-      }
-      else if (container.notebookManager && !container.notebookManager.gitHubOAuthService.isLoggedIn()) {
+      } else if (container.notebookManager && !container.notebookManager.gitHubOAuthService.isLoggedIn()) {
         notebooksTree.children.push(buildGitHubNotebooksTree(false));
       }
     }
@@ -194,46 +193,48 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
       true
     );
-    gitHubNotebooksTree.contextMenu = isConnected ? [
-      {
-        label: "Manage GitHub settings",
-        onClick: () =>
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Manage GitHub settings",
-              <GitHubReposPanel
-                explorer={container}
-                gitHubClientProp={container.notebookManager.gitHubClient}
-                junoClientProp={container.notebookManager.junoClient}
-              />
-            ),
-      },
-      {
-        label: "Disconnect from GitHub",
-        onClick: () => {
-          TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
-            dataExplorerArea: Areas.Notebook,
-          });
-          container.notebookManager?.gitHubOAuthService.logout();
-        },
-      }
-    ] : [
-      {
-        label: "Connect to GitHub",
-        onClick: () =>
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Connect to GitHub",
-              <GitHubReposPanel
-                explorer={container}
-                gitHubClientProp={container.notebookManager.gitHubClient}
-                junoClientProp={container.notebookManager.junoClient}
-              />
-            ),
-      }
-    ];
+    gitHubNotebooksTree.contextMenu = isConnected
+      ? [
+          {
+            label: "Manage GitHub settings",
+            onClick: () =>
+              useSidePanel
+                .getState()
+                .openSidePanel(
+                  "Manage GitHub settings",
+                  <GitHubReposPanel
+                    explorer={container}
+                    gitHubClientProp={container.notebookManager.gitHubClient}
+                    junoClientProp={container.notebookManager.junoClient}
+                  />
+                ),
+          },
+          {
+            label: "Disconnect from GitHub",
+            onClick: () => {
+              TelemetryProcessor.trace(Action.NotebooksGitHubDisconnect, ActionModifiers.Mark, {
+                dataExplorerArea: Areas.Notebook,
+              });
+              container.notebookManager?.gitHubOAuthService.logout();
+            },
+          },
+        ]
+      : [
+          {
+            label: "Connect to GitHub",
+            onClick: () =>
+              useSidePanel
+                .getState()
+                .openSidePanel(
+                  "Connect to GitHub",
+                  <GitHubReposPanel
+                    explorer={container}
+                    gitHubClientProp={container.notebookManager.gitHubClient}
+                    junoClientProp={container.notebookManager.junoClient}
+                  />
+                ),
+          },
+        ];
 
     gitHubNotebooksTree.isExpanded = true;
     gitHubNotebooksTree.isAlphaSorted = true;

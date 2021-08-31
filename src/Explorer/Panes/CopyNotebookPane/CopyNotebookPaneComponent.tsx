@@ -7,7 +7,7 @@ import {
   Label,
   SelectableOptionMenuItemType,
   Stack,
-  Text
+  Text,
 } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";

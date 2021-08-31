@@ -12,26 +12,25 @@ export interface IPhoenixConnectionInfoResult {
     readonly notebookServerToken?: string;
     /* Specifies the endpoint of container server. */
     readonly forwardingId?: string;
-
 }
 export interface IProvosionData {
-    cosmosEndpoint: string,
-    resourceId: string,
-    dbAccountName: string,
-    aadToken: string,
-    resourceGroup: string,
-    subscriptionId: string
+    cosmosEndpoint: string;
+    resourceId: string;
+    dbAccountName: string;
+    aadToken: string;
+    resourceGroup: string;
+    subscriptionId: string;
 }
 export class PhoenixClient {
-
     /* Retrieves the connection info of the Container */
-    public async containerConnectionInfo(provisionData: IProvosionData): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
+    public async containerConnectionInfo(
+        provisionData: IProvosionData
+    ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
         const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
             method: "POST",
             headers: PhoenixClient.getHeaders(),
-            body: JSON.stringify(provisionData)
-        }
-        );
+            body: JSON.stringify(provisionData),
+        });
         return {
             status: response.status,
             data: await response.json(),
