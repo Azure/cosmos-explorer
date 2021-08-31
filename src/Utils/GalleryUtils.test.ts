@@ -34,7 +34,7 @@ describe("GalleryUtils", () => {
 
     expect(useDialog.getState().visible).toBe(true);
     expect(useDialog.getState().dialogProps).toBeDefined();
-    expect(useDialog.getState().dialogProps.title).toBe("Download to My Notebooks");
+    expect(useDialog.getState().dialogProps.title).toBe("Download to My Notebooks ");
   });
 
   it("favoriteItem favorites item", async () => {
