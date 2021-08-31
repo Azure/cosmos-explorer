@@ -8,10 +8,11 @@ import {
   FetchPricesResponse,
   RegionsResponse,
   GraphAPIComputeServiceResource,
-  UpdateDedicatedGatewayRequestParameters,
+  UpdateComputeRequestParameters,
 } from "./GraphAPICompute.types";
 
 const apiVersion = "2021-04-01-preview";
+const gremlinV2 = "GremlinV2"
 
 export enum ResourceStatus {
   Running = "Running",
@@ -20,7 +21,7 @@ export enum ResourceStatus {
   Deleting = "Deleting",
 }
 
-export interface DedicatedGatewayResponse {
+export interface ComputeResponse {
   sku: string;
   instances: number;
   status: string;
@@ -28,16 +29,16 @@ export interface DedicatedGatewayResponse {
 }
 
 export const getPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
-  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/GremlinV2`;
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/${gremlinV2}`;
 };
 
-export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<string> => {
+export const updateComputeResource = async (sku: string, instances: number): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const body: UpdateDedicatedGatewayRequestParameters = {
+  const body: UpdateComputeRequestParameters = {
     properties: {
       instanceSize: sku,
       instanceCount: instances,
-      serviceType: "GremlinV2",
+      serviceType: gremlinV2,
     },
   };
   const telemetryData = { ...body, httpMethod: "PUT", selfServeClassName: GraphAPICompute.name };
@@ -60,7 +61,7 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
   return armRequestResult?.operationStatusUrl;
 };
 
-export const deleteDedicatedGatewayResource = async (): Promise<string> => {
+export const deleteComputeResource = async (): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const telemetryData = { httpMethod: "DELETE", selfServeClassName: GraphAPICompute.name };
   const deleteTimeStamp = selfServeTraceStart(telemetryData);
@@ -81,7 +82,7 @@ export const deleteDedicatedGatewayResource = async (): Promise<string> => {
   return armRequestResult?.operationStatusUrl;
 };
 
-export const getDedicatedGatewayResource = async (): Promise<GraphAPIComputeServiceResource> => {
+export const getComputeResource = async (): Promise<GraphAPIComputeServiceResource> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
   const telemetryData = { httpMethod: "GET", selfServeClassName: GraphAPICompute.name };
   const getResourceTimeStamp = selfServeTraceStart(telemetryData);
@@ -102,9 +103,9 @@ export const getDedicatedGatewayResource = async (): Promise<GraphAPIComputeServ
   return armRequestResult?.result;
 };
 
-export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayResponse> => {
+export const getCurrentProvisioningState = async (): Promise<ComputeResponse> => {
   try {
-    const response = await getDedicatedGatewayResource();
+    const response = await getComputeResource();
     return {
       sku: response.properties.instanceSize,
       instances: response.properties.instanceCount,
@@ -116,9 +117,9 @@ export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayRes
   }
 };
 
-export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResult> => {
+export const refreshComputeProvisioning = async (): Promise<RefreshResult> => {
   try {
-    const response = await getDedicatedGatewayResource();
+    const response = await getComputeResource();
     if (response.properties.status === ResourceStatus.Running.toString()) {
       return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
     } else if (response.properties.status === ResourceStatus.Creating.toString()) {

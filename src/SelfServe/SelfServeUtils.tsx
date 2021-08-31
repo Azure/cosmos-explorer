@@ -31,7 +31,7 @@ export enum SelfServeType {
   // Add your self serve types here
   example = "example",
   sqlx = "sqlx",
-  graphdedicatedgateway = "graphdedicatedgateway",
+  graphapicompute = "graphapicompute",
 }
 
 /**

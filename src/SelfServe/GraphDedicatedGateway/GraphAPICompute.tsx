@@ -1,4 +1,3 @@
-import { isNull } from "underscore";
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
 import { selfServeTrace } from "../SelfServeTelemetryProcessor";
 import {
@@ -15,12 +14,12 @@ import {
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
-  deleteDedicatedGatewayResource,
+  deleteComputeResource,
   getCurrentProvisioningState,
   getPriceMap,
   getReadRegions,
-  refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
+  refreshComputeProvisioning,
+  updateComputeResource,
 } from "./GraphAPICompute.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -28,7 +27,7 @@ const costPerHourDefaultValue: Description = {
   type: DescriptionType.Text,
   link: {
     href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-    textTKey: "DedicatedGatewayPricing",
+    textTKey: "ComputePricing",
   },
 };
 
@@ -69,15 +68,15 @@ const onNumberOfInstancesChange = (
   baselineValues: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
-  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+  const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
   const baselineInstances = baselineValues.get("instances")?.value as number;
-  if (!dedicatedGatewayOriginallyEnabled || baselineInstances !== newValue) {
+  if (!ComputeOriginallyEnabled || baselineInstances !== newValue) {
     currentValues.set("warningBanner", {
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
           href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
-          textTKey: "DedicatedGatewayPricing",
+          textTKey: "ComputePricing",
         },
       } as Description,
       hidden: false,
@@ -93,14 +92,14 @@ const onNumberOfInstancesChange = (
   return currentValues;
 };
 
-const onEnableDedicatedGatewayChange = (
+const onEnableComputeChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
-  currentValues.set("enableDedicatedGateway", { value: newValue });
-  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
-  if (dedicatedGatewayOriginallyEnabled === newValue) {
+  currentValues.set("enableCompute", { value: newValue });
+  const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
+  if (ComputeOriginallyEnabled === newValue) {
     currentValues.set("sku", baselineValues.get("sku"));
     currentValues.set("instances", baselineValues.get("instances"));
     currentValues.set("costPerHour", baselineValues.get("costPerHour"));
@@ -117,7 +116,7 @@ const onEnableDedicatedGatewayChange = (
         textTKey: "WarningBannerOnUpdate",
         link: {
           href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-          textTKey: "DedicatedGatewayPricing",
+          textTKey: "ComputePricing",
         },
       } as Description,
       hidden: false,
@@ -147,7 +146,7 @@ const onEnableDedicatedGatewayChange = (
   currentValues.set("sku", {
     value: sku.value,
     hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
+    disabled: ComputeOriginallyEnabled,
   });
   currentValues.set("instances", {
     value: 1,
@@ -157,12 +156,12 @@ const onEnableDedicatedGatewayChange = (
 
   currentValues.set("connectionString", {
     value: connectionStringValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+    hidden: !newValue || !ComputeOriginallyEnabled,
   });
 
   currentValues.set("metricsString", {
     value: metricsStringValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+    hidden: !newValue || !ComputeOriginallyEnabled,
   });
 
   return currentValues;
@@ -198,7 +197,7 @@ const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
     href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-    textTKey: "DedicatedGatewayPricing",
+    textTKey: "ComputePricing",
   },
 };
 
@@ -232,7 +231,7 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 @RefreshOptions({ retryIntervalInMs: 20000 })
 export default class GraphAPICompute extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
-    return await refreshDedicatedGatewayProvisioning();
+    return await refreshComputeProvisioning();
   };
 
   public onSave = async (
@@ -241,14 +240,14 @@ export default class GraphAPICompute extends SelfServeBaseClass {
   ): Promise<OnSaveResult> => {
     selfServeTrace({ selfServeClassName: GraphAPICompute.name });
 
-    const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
-    const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+    const ComputeCurrentlyEnabled = currentValues.get("enableCompute")?.value as boolean;
+    const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
 
     currentValues.set("warningBanner", undefined);
 
-    if (dedicatedGatewayOriginallyEnabled) {
-      if (!dedicatedGatewayCurrentlyEnabled) {
-        const operationStatusUrl = await deleteDedicatedGatewayResource();
+    if (ComputeOriginallyEnabled) {
+      if (!ComputeCurrentlyEnabled) {
+        const operationStatusUrl = await deleteComputeResource();
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
@@ -269,7 +268,7 @@ export default class GraphAPICompute extends SelfServeBaseClass {
       } else {
         const sku = currentValues.get("sku")?.value as string;
         const instances = currentValues.get("instances").value as number;
-        const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+        const operationStatusUrl = await updateComputeResource(sku, instances);
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
@@ -291,7 +290,7 @@ export default class GraphAPICompute extends SelfServeBaseClass {
     } else {
       const sku = currentValues.get("sku")?.value as string;
       const instances = currentValues.get("instances").value as number;
-      const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+      const operationStatusUrl = await updateComputeResource(sku, instances);
       return {
         operationStatusUrl: operationStatusUrl,
         portalNotification: {
@@ -313,9 +312,9 @@ export default class GraphAPICompute extends SelfServeBaseClass {
   };
 
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-    // Based on the RP call enableDedicatedGateway will be true if it has not yet been enabled and false if it has.
+    // Based on the RP call enableCompute will be true if it has not yet been enabled and false if it has.
     const defaults = new Map<string, SmartUiInput>();
-    defaults.set("enableDedicatedGateway", { value: false });
+    defaults.set("enableCompute", { value: false });
     defaults.set("sku", { value: CosmosD4s, hidden: true });
     defaults.set("instances", { value: 1, hidden: true});
     defaults.set("costPerHour", undefined);
@@ -329,7 +328,7 @@ export default class GraphAPICompute extends SelfServeBaseClass {
     priceMap = await getPriceMap(regions);
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
-      defaults.set("enableDedicatedGateway", { value: true });
+      defaults.set("enableCompute", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances});
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
@@ -358,19 +357,19 @@ export default class GraphAPICompute extends SelfServeBaseClass {
       type: DescriptionType.Text,
       link: {
         href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
-        textTKey: "LearnAboutDedicatedGateway",
+        textTKey: "LearnAboutCompute",
       },
     },
   })
   description: string;
 
-  @OnChange(onEnableDedicatedGatewayChange)
+  @OnChange(onEnableComputeChange)
   @Values({
-    labelTKey: "DedicatedGateway",
+    labelTKey: "Compute",
     trueLabelTKey: "Provisioned",
     falseLabelTKey: "Deprovisioned",
   })
-  enableDedicatedGateway: boolean;
+  enableCompute: boolean;
 
   @OnChange(onSKUChange)
   @Values({

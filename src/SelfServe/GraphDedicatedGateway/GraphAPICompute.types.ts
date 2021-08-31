@@ -34,11 +34,11 @@ export type GraphAPIComputeServiceLocations = {
   GraphAPIComputeEndpoint: string;
 };
 
-export type UpdateDedicatedGatewayRequestParameters = {
-  properties: UpdateDedicatedGatewayRequestProperties;
+export type UpdateComputeRequestParameters = {
+  properties: UpdateComputeRequestProperties;
 };
 
-export type UpdateDedicatedGatewayRequestProperties = {
+export type UpdateComputeRequestProperties = {
   instanceSize: string;
   instanceCount: number;
   serviceType: string;
