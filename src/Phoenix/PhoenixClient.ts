@@ -36,7 +36,7 @@ export class PhoenixClient {
             status: response.status,
             data: await response.json(),
         };
-    };
+    }
 
     public static getPhoenixEndpoint(): string {
         const junoEndpoint = userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;

@@ -358,7 +358,7 @@ export default class Explorer {
       }
       const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
 
-      let notebookServerEndpoint = `${this.phoenixClient.getPhoenixContainerPoolingEndPoint()}/${connectionInfo.data.forwardingId}/forward/`;
+      const notebookServerEndpoint = `${this.phoenixClient.getPhoenixContainerPoolingEndPoint()}/${connectionInfo.data.forwardingId}/forward/`;
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl || notebookServerEndpoint,
         authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookServerToken,
@@ -385,7 +385,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public resetNotebookWorkspace() {
+  public resetNotebookWorkspace(): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookClient) {
       handleError(
         "Attempt to reset notebook workspace, but notebook is not enabled",
@@ -927,7 +927,7 @@ export default class Explorer {
     await this.notebookManager?.notebookContentClient.updateItemChildrenInPlace(item);
   }
 
-  public openNotebookTerminal(kind: ViewModels.TerminalKind) {
+  public openNotebookTerminal(kind: ViewModels.TerminalKind): void {
     let title: string;
 
     switch (kind) {
