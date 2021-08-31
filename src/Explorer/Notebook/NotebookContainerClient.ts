@@ -10,7 +10,7 @@ import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
-  private clearReconnectionAttemptMessage?= () => { };
+  private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
 
   constructor(private onConnectionLost: () => void) {
