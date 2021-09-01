@@ -213,7 +213,7 @@ const mapDispatchToProps = (
   takeNotebookSnapshot: (request: SnapshotRequest) => dispatch(cdbActions.takeNotebookSnapshot(request)),
 });
 
-const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
+const makeMapStateToProps = (_: AppState, ownProps: ComponentProps): ((state: AppState) => StateProps) => {
   const mapStateToProps = (state: AppState) => {
     const cell = selectors.cell.cellFromState(state, { id: ownProps.id, contentRef: ownProps.contentRef });
     const cellType = cell.cell_type;
@@ -225,8 +225,8 @@ const makeMapStateToProps = (state: AppState, ownProps: ComponentProps): ((state
 
     return {
       cellType,
-      cellIdAbove,
-      cellIdBelow,
+      cellIdAbove: cellIdAbove ? cellIdAbove : "",
+      cellIdBelow: cellIdBelow ? cellIdBelow : "",
       hasCodeOutput: cellType === "code" && NotebookUtil.hasCodeCellOutput(cell as ImmutableCodeCell),
       isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, ownProps.contentRef),
     };
