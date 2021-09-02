@@ -12,7 +12,7 @@ import {
 } from "./GraphAPICompute.types";
 
 const apiVersion = "2021-04-01-preview";
-const gremlinV2 = "GremlinV2"
+const gremlinV2 = "GremlinV2";
 
 export enum ResourceStatus {
   Running = "Running",

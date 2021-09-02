@@ -131,7 +131,7 @@ const onEnableComputeChange = (
       value: {
         textTKey: "WarningBannerOnDelete",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",  // needs updating
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview", // needs updating
           textTKey: "DeprovisioningDetailsText",
         },
       } as Description,
@@ -141,7 +141,6 @@ const onEnableComputeChange = (
     currentValues.set("costPerHour", { value: costPerHourDefaultValue, hidden: true });
   }
   const sku = currentValues.get("sku");
-  const instances = currentValues.get("instances");
   const hideAttributes = newValue === undefined || !(newValue as boolean);
   currentValues.set("sku", {
     value: sku.value,
@@ -196,7 +195,7 @@ const getInstancesMax = async (): Promise<number> => {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",  //todo
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing", //todo
     textTKey: "ComputePricing",
   },
 };
@@ -316,7 +315,7 @@ export default class GraphAPICompute extends SelfServeBaseClass {
     const defaults = new Map<string, SmartUiInput>();
     defaults.set("enableCompute", { value: false });
     defaults.set("sku", { value: CosmosD4s, hidden: true });
-    defaults.set("instances", { value: 1, hidden: true});
+    defaults.set("instances", { value: 1, hidden: true });
     defaults.set("costPerHour", undefined);
     defaults.set("connectionString", undefined);
     defaults.set("metricsString", {
@@ -327,11 +326,10 @@ export default class GraphAPICompute extends SelfServeBaseClass {
     regions = await getReadRegions();
     priceMap = await getPriceMap(regions);
     const response = await getCurrentProvisioningState();
-    if (response.status && response.status == "Creating")
-    {
+    if (response.status && response.status === "Creating") {
       defaults.set("enableCompute", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
-      defaults.set("instances", { value: response.instances, disabled: true});
+      defaults.set("instances", { value: response.instances, disabled: true });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
         value: connectionStringValue,
@@ -341,11 +339,10 @@ export default class GraphAPICompute extends SelfServeBaseClass {
         value: metricsStringValue,
         hidden: true,
       });
-    }
-    else if (response.status && response.status !== "Deleting") {
+    } else if (response.status && response.status !== "Deleting") {
       defaults.set("enableCompute", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
-      defaults.set("instances", { value: response.instances});
+      defaults.set("instances", { value: response.instances });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
         value: connectionStringValue,
