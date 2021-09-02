@@ -3,6 +3,7 @@
   "GraphAPICompute": "Graph GraphAPI Compute",
   "Provisioned": "Provisioned",
   "Deprovisioned": "Deprovisioned",
+  "Compute": "Compute",
   "GremlinV2": "GremlinV2",
   "LearnAboutCompute": "Learn more about GraphAPI Compute.",
   "DeprovisioningDetailsText": "Learn more about deprovisioning the GraphAPI Compute.",
