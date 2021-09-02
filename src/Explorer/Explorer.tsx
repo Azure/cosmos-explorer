@@ -482,7 +482,7 @@ export default class Explorer {
     var notebookServerInfo = await response.json();
 
     this.notebookServerInfo({
-      notebookServerEndpoint: userContext.features.notebookServerUrl || `http://localhost:443/api/containerpooling/${notebookServerInfo.forwardingId}/forward/`,
+      notebookServerEndpoint: userContext.features.notebookServerUrl || notebookServerInfo.notebookServerUrl,
       authToken: userContext.features.notebookServerToken || notebookServerInfo.notebookServerToken,
     });
     this.notebookServerInfo.valueHasMutated();

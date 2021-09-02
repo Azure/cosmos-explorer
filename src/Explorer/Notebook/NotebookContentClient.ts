@@ -12,7 +12,7 @@ export class NotebookContentClient {
     private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
     public notebookBasePath: ko.Observable<string>,
     private contentProvider: IContentProvider
-  ) {}
+  ) { }
 
   /**
    * This updates the item and points all the children's parent to this item
@@ -38,14 +38,6 @@ export class NotebookContentClient {
     }
 
     const type = "notebook";
-    const item = NotebookUtil.createNotebookContentItem("Sample.ipynb", "notebooks/Sample.ipynb", "notebook");
-    if (parent.children) {
-      item.parent = parent;
-      parent.children.push(item);
-    }
-    return this.sleep(1000).then(() => item);
-   
-    /*
 
     return this.contentProvider
       .create<"notebook">(this.getServerConfig(), parent.path, { type })
@@ -69,7 +61,6 @@ export class NotebookContentClient {
 
         return item;
       });
-      */
   }
 
   public deleteContentItem(item: NotebookContentItem): Promise<void> {
