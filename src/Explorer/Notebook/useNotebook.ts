@@ -28,6 +28,7 @@ interface NotebookState {
   myNotebooksContentRoot: NotebookContentItem;
   gitHubNotebooksContentRoot: NotebookContentItem;
   galleryContentRoot: NotebookContentItem;
+  connectionInfo: DataModels.ContainerConnectionInfo;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -43,6 +44,7 @@ interface NotebookState {
   deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
   initializeNotebooksTree: (notebookManager: NotebookManager) => Promise<void>;
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
+  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -65,6 +67,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   myNotebooksContentRoot: undefined,
   gitHubNotebooksContentRoot: undefined,
   galleryContentRoot: undefined,
+  connectionInfo: undefined,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -244,4 +247,5 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       set({ gitHubNotebooksContentRoot });
     }
   },
+  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => set({ connectionInfo }),
 }));

@@ -1,5 +1,7 @@
-import { HttpHeaders } from "../Common/Constants";
+import { ConnectionStatusType, HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
+import * as DataModels from "../Contracts/DataModels";
+import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
@@ -11,7 +13,7 @@ export interface IPhoenixConnectionInfoResult {
   /* Specifies auth token used for connecting to container. */
   readonly notebookServerToken?: string;
   /* Specifies the endpoint of container server. */
-  readonly forwardingId?: string;
+  readonly notebookServerUrl?: string;
 }
 export interface IProvosionData {
   cosmosEndpoint: string;
@@ -31,9 +33,19 @@ export class PhoenixClient {
       headers: PhoenixClient.getHeaders(),
       body: JSON.stringify(provisionData),
     });
+    let data: IPhoenixConnectionInfoResult;
+    if (response.status === HttpStatusCodes.OK) {
+      data = await response.json();
+    } else {
+      const connectionStatus: DataModels.ContainerConnectionInfo = {
+        status: ConnectionStatusType.Failed,
+      };
+      useNotebook.getState().setConnectionInfo(connectionStatus);
+    }
+
     return {
       status: response.status,
-      data: await response.json(),
+      data,
     };
   }
 
