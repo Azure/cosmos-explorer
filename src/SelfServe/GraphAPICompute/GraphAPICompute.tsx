@@ -115,7 +115,7 @@ const onEnableComputeChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing", //needs updating
           textTKey: "ComputePricing",
         },
       } as Description,
@@ -131,7 +131,7 @@ const onEnableComputeChange = (
       value: {
         textTKey: "WarningBannerOnDelete",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",  // needs updating
           textTKey: "DeprovisioningDetailsText",
         },
       } as Description,
@@ -180,7 +180,7 @@ const getSkus = async (): Promise<ChoiceItem[]> => {
 const NumberOfInstancesDropdownInfo: Info = {
   messageTKey: "ResizingDecisionText",
   link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-size", // todo
     textTKey: "ResizingDecisionLink",
   },
 };
@@ -196,7 +196,7 @@ const getInstancesMax = async (): Promise<number> => {
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",  //todo
     textTKey: "ComputePricing",
   },
 };
@@ -327,7 +327,22 @@ export default class GraphAPICompute extends SelfServeBaseClass {
     regions = await getReadRegions();
     priceMap = await getPriceMap(regions);
     const response = await getCurrentProvisioningState();
-    if (response.status && response.status !== "Deleting") {
+    if (response.status && response.status == "Creating")
+    {
+      defaults.set("enableCompute", { value: true });
+      defaults.set("sku", { value: response.sku, disabled: true });
+      defaults.set("instances", { value: response.instances, disabled: true});
+      defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
+      defaults.set("connectionString", {
+        value: connectionStringValue,
+        hidden: true,
+      });
+      defaults.set("metricsString", {
+        value: metricsStringValue,
+        hidden: true,
+      });
+    }
+    else if (response.status && response.status !== "Deleting") {
       defaults.set("enableCompute", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances});
@@ -356,7 +371,7 @@ export default class GraphAPICompute extends SelfServeBaseClass {
       textTKey: "GraphAPIDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
+        href: "https://aka.ms/cosmos-db-dedicated-gateway-overview", //todo
         textTKey: "LearnAboutCompute",
       },
     },

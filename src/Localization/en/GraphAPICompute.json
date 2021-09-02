@@ -1,5 +1,5 @@
 {
-    "GraphAPIDescription": "Provision a Graph GraphAPI Compute for your Azure Cosmos DB account.",
+    "GraphAPIDescription": "Provision a Graph API Compute for your Azure Cosmos DB account.",
     "GraphAPICompute": "Graph GraphAPI Compute",
     "Provisioned": "Provisioned",
     "Deprovisioned": "Deprovisioned",
