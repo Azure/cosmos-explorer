@@ -51,7 +51,9 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
       return sqlX.toSelfServeDescriptor();
     }
     case SelfServeType.graphapicompute: {
-      const GraphAPICompute = await import(/* webpackChunkName: "GraphAPICompute" */ "./GraphAPICompute/GraphAPICompute");
+      const GraphAPICompute = await import(
+        /* webpackChunkName: "GraphAPICompute" */ "./GraphAPICompute/GraphAPICompute"
+      );
       const graphAPICompute = new GraphAPICompute.default();
       await loadTranslations(graphAPICompute.constructor.name);
       return graphAPICompute.toSelfServeDescriptor();
