@@ -390,6 +390,7 @@ export default class Explorer {
 
     this._isInitializingNotebooks = false;
   }
+
   public resetNotebookWorkspace(): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookClient) {
       handleError(

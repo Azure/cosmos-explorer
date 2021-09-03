@@ -10,9 +10,7 @@ export interface IPhoenixResponse<T> {
   data: T;
 }
 export interface IPhoenixConnectionInfoResult {
-  /* Specifies auth token used for connecting to container. */
   readonly notebookServerToken?: string;
-  /* Specifies the endpoint of container server. */
   readonly notebookServerUrl?: string;
 }
 export interface IProvosionData {
@@ -24,7 +22,6 @@ export interface IProvosionData {
   subscriptionId: string;
 }
 export class PhoenixClient {
-  /* Retrieves the connection info of the Container */
   public async containerConnectionInfo(
     provisionData: IProvosionData
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
@@ -50,14 +47,14 @@ export class PhoenixClient {
   }
 
   public static getPhoenixEndpoint(): string {
-    const junoEndpoint = userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
-    if (configContext.allowedJunoOrigins.indexOf(new URL(junoEndpoint).origin) === -1) {
-      const error = `${junoEndpoint} not allowed as juno endpoint`;
+    const phoenixEndpoint = userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
+    if (configContext.allowedJunoOrigins.indexOf(new URL(phoenixEndpoint).origin) === -1) {
+      const error = `${phoenixEndpoint} not allowed as juno endpoint`;
       console.error(error);
       throw new Error(error);
     }
 
-    return junoEndpoint;
+    return phoenixEndpoint;
   }
 
   public getPhoenixContainerPoolingEndPoint(): string {
