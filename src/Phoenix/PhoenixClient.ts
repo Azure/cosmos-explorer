@@ -10,7 +10,7 @@ export interface IPhoenixResponse<T> {
   data: T;
 }
 export interface IPhoenixConnectionInfoResult {
-  readonly notebookServerToken?: string;
+  readonly notebookAuthToken?: string;
   readonly notebookServerUrl?: string;
 }
 export interface IProvosionData {
