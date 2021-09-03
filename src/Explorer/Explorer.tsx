@@ -366,7 +366,7 @@ export default class Explorer {
 
         useNotebook.getState().setNotebookServerInfo({
           notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
-          authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookServerToken,
+          authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
         });
       }
     } else {
