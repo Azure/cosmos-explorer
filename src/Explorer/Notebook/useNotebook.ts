@@ -29,7 +29,7 @@ interface NotebookState {
   gitHubNotebooksContentRoot: NotebookContentItem;
   galleryContentRoot: NotebookContentItem;
   connectionInfo: DataModels.ContainerConnectionInfo;
-  NotebookScratchText: string;
+  NotebookFolderName: string;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -69,7 +69,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   gitHubNotebooksContentRoot: undefined,
   galleryContentRoot: undefined,
   connectionInfo: undefined,
-  NotebookScratchText: userContext.features.phoenix ? "My Notebooks Scratch" : "My Notebooks",
+  NotebookFolderName: userContext.features.phoenix ? "My Notebooks Scratch" : "My Notebooks",
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -174,7 +174,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
     const myNotebooksContentRoot = {
-      name: get().NotebookScratchText,
+      name: get().NotebookFolderName,
       path: get().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };

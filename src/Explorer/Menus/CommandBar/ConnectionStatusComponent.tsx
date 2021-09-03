@@ -9,11 +9,9 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
   const [minute, setMinute] = React.useState("00");
   const [isActive, setIsActive] = React.useState(false);
   const [counter, setCounter] = React.useState(0);
-  const [lastSec, setLastSecond] = React.useState("00");
-  const [lastMin, setLastMinute] = React.useState("00");
-  const [toolTipContent, setToolTipContent] = React.useState("Connecting to hosted runtime environment.");
   const [statusColor, setStatusColor] = React.useState("locationYellowDot");
   const [statusColorAnimation, setStatusColorAnimation] = React.useState("ringringYellow");
+  const toolTipContent = "Hosted runtime status.";
   React.useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
@@ -51,17 +49,11 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
   }
   if (connectionInfo && connectionInfo.status === ConnectionStatusType.Allocating && isActive === false) {
     setIsActive(true);
-    setToolTipContent("Allocating to hosted runtime environment.");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connected && isActive === true) {
-    setLastMinute(minute);
-    setLastSecond(second);
     stopTimer();
     setStatusColor("locationGreenDot");
     setStatusColorAnimation("ringringGreen");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Failed && isActive === true) {
-    setToolTipContent(
-      "Failed to connect to hosted runtime environment. Please refresh to get connected to a hosted runtime."
-    );
     stopTimer();
     setStatusColor("locationRedDot");
     setStatusColorAnimation("ringringRed");
@@ -78,9 +70,6 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
         </span>
         {connectionInfo.status === ConnectionStatusType.Allocating && isActive && (
           <ProgressIndicator description={minute + ":" + second} />
-        )}
-        {connectionInfo.status === ConnectionStatusType.Connected && (
-          <ProgressIndicator description={lastMin + ":" + lastSec} percentComplete={1} />
         )}
       </Stack>
     </TooltipHost>

@@ -7,7 +7,7 @@ import { TextFieldProps, useDialog } from "../Explorer/Controls/Dialog";
 import {
   GalleryTab,
   GalleryViewerComponent,
-  SortBy,
+  SortBy
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
@@ -224,12 +224,12 @@ export function downloadItem(
 
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
-    `Download to ${useNotebook.getState().NotebookScratchText}`,
+    `Download to ${useNotebook.getState().NotebookFolderName}`,
     `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
     "Download",
     async () => {
       const clearInProgressMessage = logConsoleProgress(
-        `Downloading ${name} to ${useNotebook.getState().NotebookScratchText}`
+        `Downloading ${name} to ${useNotebook.getState().NotebookFolderName}`
       );
       const startKey = traceStart(Action.NotebooksGalleryDownload, {
         notebookId: data.id,

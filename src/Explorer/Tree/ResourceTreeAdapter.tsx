@@ -131,12 +131,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       path: "Gallery",
       type: NotebookContentItemType.File,
     };
-    let notebookText = ResourceTreeAdapter.MyNotebooksTitle;
-    if (userContext.features.phoenix) {
-      notebookText = ResourceTreeAdapter.MyNotebooksScratchTitle;
-    }
     this.myNotebooksContentRoot = {
-      name: notebookText,
+      name: useNotebook.getState().NotebookFolderName,
       path: useNotebook.getState().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };
