@@ -1052,7 +1052,10 @@ export default class Explorer {
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (!(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
+    if (
+      userContext.features.phoenix === false &&
+      !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))
+    ) {
       this._openSetupNotebooksPaneForQuickstart();
     }
 
@@ -1098,10 +1101,13 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
-    const isNotebookEnabled: boolean =
-      userContext.authType !== AuthType.ResourceToken &&
-      ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-        userContext.features.enableNotebooks);
+    let isNotebookEnabled = true;
+    if (!userContext.features.phoenix) {
+      isNotebookEnabled =
+        userContext.authType !== AuthType.ResourceToken &&
+        ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
+          userContext.features.enableNotebooks);
+    }
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook.getState().setIsShellEnabled(isNotebookEnabled && isPublicInternetAccessAllowed());
 
