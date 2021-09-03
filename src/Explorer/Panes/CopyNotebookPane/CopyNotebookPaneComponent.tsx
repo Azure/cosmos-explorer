@@ -11,8 +11,8 @@ import {
 } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";
-import { userContext } from "../../../UserContext";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
 
 interface Location {
@@ -47,14 +47,10 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
 
   const getDropDownOptions = (): IDropdownOption[] => {
     const options: IDropdownOption[] = [];
-    let notebookText = ResourceTreeAdapter.MyNotebooksTitle;
-    if (userContext.features.phoenix) {
-      notebookText = ResourceTreeAdapter.MyNotebooksScratchTitle;
-    }
     options.push({
       key: "MyNotebooks-Item",
-      text: notebookText,
-      title: notebookText,
+      text: useNotebook.getState().NotebookFolderName,
+      title: useNotebook.getState().NotebookFolderName,
       data: {
         type: "MyNotebooks",
       } as Location,
