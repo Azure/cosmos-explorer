@@ -11,6 +11,7 @@ export type Features = {
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;
   partitionKeyDefault2: boolean;
+  phoenix: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -76,5 +77,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
     notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
+    phoenix: "true" === get("phoenix"),
   };
 }

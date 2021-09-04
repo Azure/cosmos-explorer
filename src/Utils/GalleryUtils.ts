@@ -10,6 +10,7 @@ import {
   SortBy,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
+import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
@@ -223,11 +224,13 @@ export function downloadItem(
 
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
-    "Download to My Notebooks",
+    `Download to ${useNotebook.getState().NotebookFolderName}`,
     `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
     "Download",
     async () => {
-      const clearInProgressMessage = logConsoleProgress(`Downloading ${name} to My Notebooks`);
+      const clearInProgressMessage = logConsoleProgress(
+        `Downloading ${name} to ${useNotebook.getState().NotebookFolderName}`
+      );
       const startKey = traceStart(Action.NotebooksGalleryDownload, {
         notebookId: data.id,
         downloadCount: data.downloads,

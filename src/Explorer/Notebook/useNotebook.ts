@@ -28,6 +28,8 @@ interface NotebookState {
   myNotebooksContentRoot: NotebookContentItem;
   gitHubNotebooksContentRoot: NotebookContentItem;
   galleryContentRoot: NotebookContentItem;
+  connectionInfo: DataModels.ContainerConnectionInfo;
+  NotebookFolderName: string;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -43,6 +45,7 @@ interface NotebookState {
   deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
   initializeNotebooksTree: (notebookManager: NotebookManager) => Promise<void>;
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
+  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -65,6 +68,8 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   myNotebooksContentRoot: undefined,
   gitHubNotebooksContentRoot: undefined,
   galleryContentRoot: undefined,
+  connectionInfo: undefined,
+  NotebookFolderName: userContext.features.phoenix ? "My Notebooks Scratch" : "My Notebooks",
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -169,7 +174,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
     const myNotebooksContentRoot = {
-      name: "My Notebooks",
+      name: get().NotebookFolderName,
       path: get().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };
@@ -178,13 +183,11 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       path: "Gallery",
       type: NotebookContentItemType.File,
     };
-    const gitHubNotebooksContentRoot = notebookManager?.gitHubOAuthService?.isLoggedIn()
-      ? {
-          name: "GitHub repos",
-          path: "PsuedoDir",
-          type: NotebookContentItemType.Directory,
-        }
-      : undefined;
+    const gitHubNotebooksContentRoot = {
+      name: "GitHub repos",
+      path: "PsuedoDir",
+      type: NotebookContentItemType.Directory,
+    };
     set({
       myNotebooksContentRoot,
       galleryContentRoot,
@@ -246,4 +249,5 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       set({ gitHubNotebooksContentRoot });
     }
   },
+  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => set({ connectionInfo }),
 }));
