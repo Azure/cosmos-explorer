@@ -45,7 +45,7 @@ export interface NodePropertiesComponentProps {
   selectNode: (id: string) => void;
   updatePossibleVertices: () => Q.Promise<PossibleVertex[]>;
   possibleEdgeLabels: Item[];
-  editGraphEdges: (editedEdges: EditedEdges) => Q.Promise<any>;
+  editGraphEdges: (editedEdges: EditedEdges) => Q.Promise<unknown>;
   deleteHighlightedNode: () => void;
   onModeChanged: (newMode: Mode) => void;
   viewMode: Mode; // If viewMode is specified in parent, keep state in sync with it
@@ -72,7 +72,7 @@ export class NodePropertiesComponent extends React.Component<
     super(props);
     this.state = {
       editedProperties: {
-        pkId: null,
+        pkId: undefined,
         readOnlyProperties: [],
         existingProperties: [],
         addedProperties: [],
@@ -98,15 +98,12 @@ export class NodePropertiesComponent extends React.Component<
     };
   }
 
-  public static getDerivedStateFromProps(
-    props: NodePropertiesComponentProps,
-    state: NodePropertiesComponentState
-  ): Partial<NodePropertiesComponentState> {
+  public static getDerivedStateFromProps(props: NodePropertiesComponentProps): Partial<NodePropertiesComponentState> {
     if (props.viewMode !== Mode.READONLY_PROP) {
       return { isDeleteConfirm: false };
     }
 
-    return null;
+    return undefined;
   }
 
   public render(): JSX.Element {
@@ -137,11 +134,14 @@ export class NodePropertiesComponent extends React.Component<
    * Get type option. Limit to string, number or boolean
    * @param value
    */
-  private static getTypeOption(value: any): ViewModels.InputPropertyValueTypeString {
-    if (value == null) {
+  private static getTypeOption(
+    value: null | string | number | undefined | boolean
+  ): ViewModels.InputPropertyValueTypeString {
+    // eslint-disable-next-line no-null/no-null
+    if (value === null) {
       return "null";
     }
-    let type = typeof value;
+    const type = typeof value;
     switch (type) {
       case "number":
       case "boolean":
@@ -173,9 +173,10 @@ export class NodePropertiesComponent extends React.Component<
 
     const existingProps: ViewModels.InputProperty[] = [];
 
+    // eslint-disable-next-line no-prototype-builtins
     if (this.props.node.hasOwnProperty("properties")) {
       const hProps = this.props.node["properties"];
-      for (let p in hProps) {
+      for (const p in hProps) {
         const propValues = hProps[p];
         (p === partitionKeyProperty ? readOnlyProps : existingProps).push({
           key: p,
@@ -437,7 +438,7 @@ export class NodePropertiesComponent extends React.Component<
         </div>
       );
     } else {
-      return null;
+      return undefined;
     }
   }
 

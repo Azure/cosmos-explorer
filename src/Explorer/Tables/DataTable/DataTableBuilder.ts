@@ -19,7 +19,7 @@ export function createDataTable($dataTableElem: JQuery, settings: any): DataTabl
  * @return The given settings with all columns having a rendering function
  */
 function applyDefaultRendering(settings: any): DataTables.SettingsLegacy {
-  var tableColumns: DataTables.ColumnLegacy[] = null;
+  let tableColumns: DataTables.ColumnLegacy[] = null;
 
   if (settings.aoColumns) {
     tableColumns = settings.aoColumns;
@@ -34,7 +34,7 @@ function applyDefaultRendering(settings: any): DataTables.SettingsLegacy {
     return settings;
   }
 
-  for (var i = 0; i < tableColumns.length; i++) {
+  for (let i = 0; i < tableColumns.length; i++) {
     // the column does not have a render function
     if (!tableColumns[i].mRender) {
       tableColumns[i].mRender = defaultDataRender;

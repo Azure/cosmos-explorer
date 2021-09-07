@@ -264,6 +264,6 @@ export class NotebookViewerComponent
   };
 
   private reportAbuse = (): void => {
-    GalleryUtils.reportAbuse(this.props.junoClient, this.state.galleryItem, this, () => {});
+    GalleryUtils.reportAbuse(this.props.junoClient, this.state.galleryItem, this, () => ({}));
   };
 }

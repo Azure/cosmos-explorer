@@ -50,7 +50,7 @@ export interface InputTypeaheadComponentProps {
    * Override default jquery-typeahead options
    * WARNING: do not override input, source or callback to avoid breaking the components behavior.
    */
-  typeaheadOverrideOptions?: any;
+  typeaheadOverrideOptions?: { dynamic: boolean };
 
   /**
    * This function gets called when pressing ENTER on the input box
@@ -132,6 +132,7 @@ export class InputTypeaheadComponent extends React.Component<
 
   private filterChoiceByValue = (choices: Item[], searchKeyword: string): Item[] => {
     return choices.filter((choice) =>
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       Object.keys(choice).some((key) => choice[key].toLowerCase().includes(searchKeyword.toLowerCase()))
     );
