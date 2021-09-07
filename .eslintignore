@@ -137,18 +137,10 @@ src/Terminal/NotebookAppContracts.d.ts
 src/applyExplorerBindings.ts
 src/global.d.ts
 src/setupTests.ts
-; src/Explorer/Controls/InputTypeahead/InputTypeaheadComponent.tsx
-; src/Explorer/Controls/Notebook/NotebookTerminalComponent.test.tsx
-; src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
-; src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
 src/Explorer/Controls/TreeComponent/TreeComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphVizComponent.tsx
-; src/Explorer/Graph/GraphExplorerComponent/LeftPaneComponent.tsx
-; src/Explorer/Graph/GraphExplorerComponent/MiddlePaneComponent.tsx
-; src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.test.tsx
-; src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
