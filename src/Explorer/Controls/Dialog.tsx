@@ -181,8 +181,7 @@ export const Dialog: FC = () => {
           text: secondaryButtonText,
           onClick: onSecondaryButtonClick,
         }
-      : {};
-
+      : undefined;
   return visible ? (
     <FluentDialog {...dialogProps}>
       {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}

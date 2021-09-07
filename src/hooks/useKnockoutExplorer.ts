@@ -339,6 +339,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.PKPartitionKeyTest) !== -1) {
       userContext.features.partitionKeyDefault2 = true;
     }
+    if (inputs.flights.indexOf(Flights.Phoenix) !== -1) {
+      userContext.features.phoenix = true;
+    }
   }
 }
 

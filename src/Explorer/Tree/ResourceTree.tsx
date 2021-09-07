@@ -131,14 +131,14 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       if (myNotebooksContentRoot) {
         notebooksTree.children.push(buildMyNotebooksTree());
       }
-
       if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
         // collapse all other notebook nodes
         notebooksTree.children.forEach((node) => (node.isExpanded = false));
-        notebooksTree.children.push(buildGitHubNotebooksTree());
+        notebooksTree.children.push(buildGitHubNotebooksTree(true));
+      } else if (container.notebookManager && !container.notebookManager.gitHubOAuthService.isLoggedIn()) {
+        notebooksTree.children.push(buildGitHubNotebooksTree(false));
       }
     }
-
     return notebooksTree;
   };
 
@@ -178,7 +178,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     return myNotebooksTree;
   };
 
-  const buildGitHubNotebooksTree = (): TreeNode => {
+  const buildGitHubNotebooksTree = (isConnected: boolean): TreeNode => {
     const gitHubNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
@@ -190,8 +190,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
       true
     );
-
-    gitHubNotebooksTree.contextMenu = [
+    const manageGitContextMenu: TreeNodeMenuItem[] = [
       {
         label: "Manage GitHub settings",
         onClick: () =>
@@ -216,7 +215,23 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         },
       },
     ];
-
+    const connectGitContextMenu: TreeNodeMenuItem[] = [
+      {
+        label: "Connect to GitHub",
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Connect to GitHub",
+              <GitHubReposPanel
+                explorer={container}
+                gitHubClientProp={container.notebookManager.gitHubClient}
+                junoClientProp={container.notebookManager.junoClient}
+              />
+            ),
+      },
+    ];
+    gitHubNotebooksTree.contextMenu = isConnected ? manageGitContextMenu : connectGitContextMenu;
     gitHubNotebooksTree.isExpanded = true;
     gitHubNotebooksTree.isAlphaSorted = true;
 

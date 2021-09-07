@@ -45,6 +45,7 @@ import UserDefinedFunction from "./UserDefinedFunction";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   public static readonly MyNotebooksTitle = "My Notebooks";
+  public static readonly MyNotebooksScratchTitle = "My Notebooks Scratch";
   public static readonly GitHubReposTitle = "GitHub repos";
 
   private static readonly DataTitle = "DATA";
@@ -130,9 +131,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       path: "Gallery",
       type: NotebookContentItemType.File,
     };
-
     this.myNotebooksContentRoot = {
-      name: ResourceTreeAdapter.MyNotebooksTitle,
+      name: useNotebook.getState().NotebookFolderName,
       path: useNotebook.getState().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };
@@ -146,16 +146,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
         })
       );
     }
-
-    if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      this.gitHubNotebooksContentRoot = {
-        name: ResourceTreeAdapter.GitHubReposTitle,
-        path: ResourceTreeAdapter.PseudoDirPath,
-        type: NotebookContentItemType.Directory,
-      };
-    } else {
-      this.gitHubNotebooksContentRoot = undefined;
-    }
+    this.gitHubNotebooksContentRoot = {
+      name: ResourceTreeAdapter.GitHubReposTitle,
+      path: ResourceTreeAdapter.PseudoDirPath,
+      type: NotebookContentItemType.Directory,
+    };
 
     return Promise.all(refreshTasks);
   }
