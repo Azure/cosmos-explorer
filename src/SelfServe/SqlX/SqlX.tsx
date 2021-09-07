@@ -3,7 +3,7 @@ import {
   selfServeTrace,
   selfServeTraceFailure,
   selfServeTraceStart,
-  selfServeTraceSuccess
+  selfServeTraceSuccess,
 } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
@@ -15,7 +15,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -24,7 +24,7 @@ import {
   getPriceMap,
   getRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {
@@ -210,7 +210,12 @@ let priceMap: Map<string, Map<string, number>>;
 let regions: Array<string>;
 
 const calculateCost = (skuName: string, instanceCount: number): Description => {
-  const telemetryData = { feature: "Calculate approximate cost", function: "calculateCost", description: "performs final calculation", selfServeClassName: SqlX.name };
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "calculateCost",
+    description: "performs final calculation",
+    selfServeClassName: SqlX.name,
+  };
   const calculateCostTimestamp = selfServeTraceStart(telemetryData);
 
   try {

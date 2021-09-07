@@ -174,7 +174,12 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
 };
 
 export const getPriceMap = async (regions: Array<string>): Promise<Map<string, Map<string, number>>> => {
-  const telemetryData = { feature: "Calculate approximate cost", function: "getPriceMap", description: "fetch prices API call", selfServeClassName: SqlX.name };
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getPriceMap",
+    description: "fetch prices API call",
+    selfServeClassName: SqlX.name,
+  };
   const getPriceMapTimestamp = selfServeTraceStart(telemetryData);
 
   try {
