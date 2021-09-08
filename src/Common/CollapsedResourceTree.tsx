@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef } from "react";
+import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import { userContext } from "../UserContext";
 import { NormalizedEventKey } from "./Constants";
@@ -12,7 +12,7 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
   toggleLeftPaneExpanded,
   isLeftPaneExpanded,
 }: CollapsedResourceTreeProps): JSX.Element => {
-  const focusButton = useRef<HTMLLIElement>();
+  const focusButton = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
 
   useEffect(() => {
     if (focusButton.current) {
