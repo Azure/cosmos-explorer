@@ -42,7 +42,7 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
   if (!connectionInfo) {
     return <></>;
   }
-  if (connectionInfo && connectionInfo.status === ConnectionStatusType.Allocating && isActive === false) {
+  if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connecting && isActive === false) {
     setIsActive(true);
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connected && isActive === true) {
     stopTimer();
@@ -63,7 +63,7 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
         <span className={connectionInfo.status === ConnectionStatusType.Failed ? "connectionStatusFailed" : ""}>
           {connectionInfo.status}
         </span>
-        {connectionInfo.status === ConnectionStatusType.Allocating && isActive && (
+        {connectionInfo.status === ConnectionStatusType.Connecting && isActive && (
           <ProgressIndicator description={minute + ":" + second} />
         )}
       </Stack>

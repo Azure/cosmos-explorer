@@ -27,7 +27,7 @@ export class PhoenixClient {
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
     try {
       const connectionStatus: ContainerConnectionInfo = {
-        status: ConnectionStatusType.Allocating,
+        status: ConnectionStatusType.Connecting,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
       const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
