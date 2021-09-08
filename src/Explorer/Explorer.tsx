@@ -28,7 +28,7 @@ import {
   get as getWorkspace,
   listByDatabaseAccount,
   listConnectionInfo,
-  start,
+  start
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -347,10 +347,6 @@ export default class Explorer {
     }
     this._isInitializingNotebooks = true;
     if (userContext.features.phoenix) {
-      const connectionStatus: DataModels.ContainerConnectionInfo = {
-        status: ConnectionStatusType.Connecting,
-      };
-      useNotebook.getState().setConnectionInfo(connectionStatus);
       const provisionData = {
         cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
         resourceId: userContext.databaseAccount.id,
@@ -361,7 +357,9 @@ export default class Explorer {
       };
       const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
       if (connectionInfo.data && connectionInfo.data.notebookServerUrl) {
-        connectionStatus.status = ConnectionStatusType.Connected;
+        const connectionStatus: DataModels.ContainerConnectionInfo = {
+          status: ConnectionStatusType.Connected,
+        };
         useNotebook.getState().setConnectionInfo(connectionStatus);
 
         useNotebook.getState().setNotebookServerInfo({

@@ -339,7 +339,6 @@ export enum ConflictOperationType {
 }
 
 export enum ConnectionStatusType {
-  Connecting = "Connecting",
   Allocating = "Allocating",
   Connected = "Connected",
   Failed = "Connection Failed",
