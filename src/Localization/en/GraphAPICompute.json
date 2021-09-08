@@ -38,7 +38,6 @@
   "DeleteFailureMessage": "GraphAPI Compute resource deletion failed.",
   "CannotSave": "Cannot save the changes to the GraphAPI Compute resource at the moment.",
   "GraphAccountEndpoint": "Graph Account Endpoint",
-  "NoValue": "",
   "CosmosD4Details": "General Purpose Cosmos Compute with 4 vCPUs, 16 GB Memory",
   "CosmosD8Details": "General Purpose Cosmos Compute with 8 vCPUs, 32 GB Memory",
   "CosmosD16Details": "General Purpose Cosmos Compute with 16 vCPUs, 64 GB Memory",
