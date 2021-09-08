@@ -161,7 +161,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   true
                 ).toLocaleLowerCase()}.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
               </TooltipHost>
             </Stack>
 
@@ -210,6 +210,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   className="panelTextField"
                   aria-label="New database id"
                   autoFocus
+                  tabIndex={0}
                   value={this.state.newDatabaseId}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                     this.setState({ newDatabaseId: event.target.value })
@@ -236,7 +237,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         true
                       ).toLocaleLowerCase()} within the database.`}
                     >
-                      <Icon iconName="Info" className="panelInfoIcon" />
+                      <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                     </TooltipHost>
                   </Stack>
                 )}
@@ -279,7 +280,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
               </TooltipHost>
             </Stack>
 
@@ -362,7 +363,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
                     }
                   >
-                    <Icon iconName="Info" className="panelInfoIcon" />
+                    <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                   </TooltipHost>
                 </Stack>
 
@@ -376,7 +377,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     type="radio"
                     role="radio"
                     id="unshardedOption"
-                    tabIndex={0}
+                    // tabIndex={0}
                     onChange={this.onUnshardedRadioBtnChange.bind(this)}
                   />
                   <span className="panelRadioBtnLabel">Unsharded (20GB limit)</span>
@@ -390,7 +391,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     type="radio"
                     role="radio"
                     id="shardedOption"
-                    tabIndex={0}
+                    // tabIndex={0}
                     onChange={this.onShardedRadioBtnChange.bind(this)}
                   />
                   <span className="panelRadioBtnLabel">Sharded</span>
@@ -409,7 +410,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   directionalHint={DirectionalHint.bottomLeftEdge}
                   content={this.getPartitionKeyTooltipText()}
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" />
+                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                 </TooltipHost>
               </Stack>
 
@@ -467,7 +468,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
               </TooltipHost>
             </Stack>
           )}
@@ -497,7 +498,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       creating a unique key policy when a container is created, you ensure the uniqueness of one or more values
                       per partition key."
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" />
+                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                 </TooltipHost>
               </Stack>
 
@@ -560,7 +561,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   directionalHint={DirectionalHint.bottomLeftEdge}
                   content={this.getAnalyticalStorageTooltipContent()}
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" />
+                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                 </TooltipHost>
               </Stack>
 
@@ -575,7 +576,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   type="radio"
                   role="radio"
                   id="enableAnalyticalStoreBtn"
-                  tabIndex={0}
+                  // tabIndex={0}
                   onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
                 />
                 <span className="panelRadioBtnLabel">On</span>
@@ -590,7 +591,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   type="radio"
                   role="radio"
                   id="disableAnalyticalStoreBtn"
-                  tabIndex={0}
+                  // tabIndex={0}
                   onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
                 />
                 <span className="panelRadioBtnLabel">Off</span>
@@ -637,7 +638,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         directionalHint={DirectionalHint.bottomLeftEdge}
                         content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
                       >
-                        <Icon iconName="Info" className="panelInfoIcon" />
+                        <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                       </TooltipHost>
                     </Stack>
 
