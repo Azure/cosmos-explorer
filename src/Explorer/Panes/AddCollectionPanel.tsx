@@ -576,7 +576,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   type="radio"
                   role="radio"
                   id="enableAnalyticalStoreBtn"
-                  // tabIndex={0}
+                  tabIndex={0}
                   onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
                 />
                 <span className="panelRadioBtnLabel">On</span>
@@ -591,7 +591,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   type="radio"
                   role="radio"
                   id="disableAnalyticalStoreBtn"
-                  // tabIndex={0}
+                  tabIndex={0}
                   onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
                 />
                 <span className="panelRadioBtnLabel">Off</span>
