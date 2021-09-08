@@ -377,7 +377,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     type="radio"
                     role="radio"
                     id="unshardedOption"
-                    // tabIndex={0}
+                    tabIndex={0}
                     onChange={this.onUnshardedRadioBtnChange.bind(this)}
                   />
                   <span className="panelRadioBtnLabel">Unsharded (20GB limit)</span>
@@ -391,7 +391,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     type="radio"
                     role="radio"
                     id="shardedOption"
-                    // tabIndex={0}
+                    tabIndex={0}
                     onChange={this.onShardedRadioBtnChange.bind(this)}
                   />
                   <span className="panelRadioBtnLabel">Sharded</span>
