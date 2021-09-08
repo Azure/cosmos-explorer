@@ -17,7 +17,7 @@ import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   getPriceMap,
-  getReadRegions,
+  getRegions,
   refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource,
 } from "./SqlX.rp";
@@ -324,7 +324,7 @@ export default class SqlX extends SelfServeBaseClass {
       hidden: true,
     });
 
-    regions = await getReadRegions();
+    regions = await getRegions();
     priceMap = await getPriceMap(regions);
 
     const response = await getCurrentProvisioningState();
