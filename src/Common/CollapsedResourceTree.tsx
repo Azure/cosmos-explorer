@@ -1,7 +1,6 @@
-import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
+import React, { FunctionComponent } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import { userContext } from "../UserContext";
-import { NormalizedEventKey } from "./Constants";
 
 export interface CollapsedResourceTreeProps {
   toggleLeftPaneExpanded: () => void;
@@ -12,21 +11,6 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
   toggleLeftPaneExpanded,
   isLeftPaneExpanded,
 }: CollapsedResourceTreeProps): JSX.Element => {
-  const focusButton = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
-
-  useEffect(() => {
-    if (focusButton.current) {
-      focusButton.current.focus();
-    }
-  }, [focusButton]);
-
-  const onKeyPressToggleLeftPaneExpanded = (event: React.KeyboardEvent) => {
-    if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
-      toggleLeftPaneExpanded();
-      event.stopPropagation();
-    }
-  };
-
   return (
     <div id="mini" className={!isLeftPaneExpanded ? "mini toggle-mini" : "hiddenMain"}>
       <div className="main-nav nav">
@@ -37,14 +21,11 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
             role="button"
             tabIndex={0}
             aria-label="Expand Tree"
-            onClick={toggleLeftPaneExpanded}
-            onKeyPress={onKeyPressToggleLeftPaneExpanded}
-            ref={focusButton}
           >
-            <span className="leftarrowCollapsed">
+            <span className="leftarrowCollapsed" onClick={toggleLeftPaneExpanded}>
               <img className="arrowCollapsed" src={arrowLeftImg} alt="Expand" />
             </span>
-            <span className="collectionCollapsed">
+            <span className="collectionCollapsed" onClick={toggleLeftPaneExpanded}>
               <span>{userContext.apiType} API</span>
             </span>
           </li>
