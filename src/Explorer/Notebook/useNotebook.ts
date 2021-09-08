@@ -29,7 +29,7 @@ interface NotebookState {
   gitHubNotebooksContentRoot: NotebookContentItem;
   galleryContentRoot: NotebookContentItem;
   connectionInfo: DataModels.ContainerConnectionInfo;
-  NotebookFolderName: string;
+  notebookFolderName: string;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -38,6 +38,7 @@ interface NotebookState {
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => void;
   setIsShellEnabled: (isShellEnabled: boolean) => void;
   setNotebookBasePath: (notebookBasePath: string) => void;
+  setNotebookFolderName: (notebookFolderName: string) => void;
   refreshNotebooksEnabledStateForAccount: () => Promise<void>;
   findItem: (root: NotebookContentItem, item: NotebookContentItem) => NotebookContentItem;
   insertNotebookItem: (parent: NotebookContentItem, item: NotebookContentItem, isGithubTree?: boolean) => void;
@@ -69,7 +70,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   gitHubNotebooksContentRoot: undefined,
   galleryContentRoot: undefined,
   connectionInfo: undefined,
-  NotebookFolderName: userContext.features.phoenix ? "My Notebooks Scratch" : "My Notebooks",
+  notebookFolderName: undefined,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -80,6 +81,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => set({ memoryUsageInfo }),
   setIsShellEnabled: (isShellEnabled: boolean) => set({ isShellEnabled }),
   setNotebookBasePath: (notebookBasePath: string) => set({ notebookBasePath }),
+  setNotebookFolderName: (notebookFolderName: string) => set({ notebookFolderName }),
   refreshNotebooksEnabledStateForAccount: async (): Promise<void> => {
     const { databaseAccount, authType } = userContext;
     if (
@@ -173,8 +175,10 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
+    const notebookFolderName = userContext.features.phoenix === true ? "My Notebooks Scratch" : "My Notebooks";
+    set({ notebookFolderName });
     const myNotebooksContentRoot = {
-      name: get().NotebookFolderName,
+      name: get().notebookFolderName,
       path: get().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };

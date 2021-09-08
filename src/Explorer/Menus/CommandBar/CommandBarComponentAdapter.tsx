@@ -9,6 +9,7 @@ import create, { UseStore } from "zustand";
 import { StyleConstants } from "../../../Common/Constants";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { useTabs } from "../../../hooks/useTabs";
+import { userContext } from "../../../UserContext";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
 import Explorer from "../../Explorer";
 import { useSelectedNode } from "../../useSelectedNode";
@@ -54,7 +55,9 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, backgroundColor);
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
-  uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus("connectionStatus"));
+  if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+    uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus("connectionStatus"));
+  }
 
   if (useTabs.getState().activeTab?.tabKind === ViewModels.CollectionTabKind.NotebookV2) {
     uiFabricControlButtons.unshift(CommandBarUtil.createMemoryTracker("memoryTracker"));

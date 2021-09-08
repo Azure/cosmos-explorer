@@ -348,7 +348,7 @@ export default class Explorer {
     this._isInitializingNotebooks = true;
     if (userContext.features.phoenix) {
       const connectionStatus: DataModels.ContainerConnectionInfo = {
-        status: ConnectionStatusType.Allocating,
+        status: ConnectionStatusType.Connecting,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
       const provisionData = {

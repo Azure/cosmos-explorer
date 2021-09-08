@@ -25,6 +25,10 @@ export class PhoenixClient {
   public async containerConnectionInfo(
     provisionData: IProvosionData
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
+    const connectionStatus: DataModels.ContainerConnectionInfo = {
+      status: ConnectionStatusType.Allocating,
+    };
+    useNotebook.getState().setConnectionInfo(connectionStatus);
     const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
       method: "POST",
       headers: PhoenixClient.getHeaders(),
@@ -34,9 +38,7 @@ export class PhoenixClient {
     if (response.status === HttpStatusCodes.OK) {
       data = await response.json();
     } else {
-      const connectionStatus: DataModels.ContainerConnectionInfo = {
-        status: ConnectionStatusType.Failed,
-      };
+      connectionStatus.status = ConnectionStatusType.Failed;
       useNotebook.getState().setConnectionInfo(connectionStatus);
     }
 

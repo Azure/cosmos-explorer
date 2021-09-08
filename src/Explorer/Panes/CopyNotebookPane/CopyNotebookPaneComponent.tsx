@@ -49,8 +49,8 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
     const options: IDropdownOption[] = [];
     options.push({
       key: "MyNotebooks-Item",
-      text: useNotebook.getState().NotebookFolderName,
-      title: useNotebook.getState().NotebookFolderName,
+      text: useNotebook.getState().notebookFolderName,
+      title: useNotebook.getState().notebookFolderName,
       data: {
         type: "MyNotebooks",
       } as Location,

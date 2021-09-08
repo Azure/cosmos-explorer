@@ -40,6 +40,9 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
 
   const connectionInfo = useNotebook((state) => state.connectionInfo);
   if (!connectionInfo) {
+    return <></>;
+  }
+  if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connecting) {
     return (
       <Stack className="connectionStatusContainer" horizontal>
         <span>Connecting</span>
