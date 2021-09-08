@@ -51,12 +51,13 @@ export class PhoenixClient {
         status: response.status,
         data,
       };
-    } catch {
+    } catch (error) {
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
-      return {} as IPhoenixResponse<IPhoenixConnectionInfoResult>;
+      console.error(error);
+      throw error;
     }
   }
 
