@@ -25,27 +25,35 @@ export class PhoenixClient {
   public async containerConnectionInfo(
     provisionData: IProvosionData
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
-    const connectionStatus: DataModels.ContainerConnectionInfo = {
-      status: ConnectionStatusType.Allocating,
-    };
-    useNotebook.getState().setConnectionInfo(connectionStatus);
-    const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
-      method: "POST",
-      headers: PhoenixClient.getHeaders(),
-      body: JSON.stringify(provisionData),
-    });
-    let data: IPhoenixConnectionInfoResult;
-    if (response.status === HttpStatusCodes.OK) {
-      data = await response.json();
-    } else {
-      connectionStatus.status = ConnectionStatusType.Failed;
+    try {
+      const connectionStatus: DataModels.ContainerConnectionInfo = {
+        status: ConnectionStatusType.Allocating,
+      };
       useNotebook.getState().setConnectionInfo(connectionStatus);
-    }
+      const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
+        method: "POST",
+        headers: PhoenixClient.getHeaders(),
+        body: JSON.stringify(provisionData),
+      });
+      let data: IPhoenixConnectionInfoResult;
+      if (response.status === HttpStatusCodes.OK) {
+        data = await response.json();
+      } else {
+        connectionStatus.status = ConnectionStatusType.Failed;
+        useNotebook.getState().setConnectionInfo(connectionStatus);
+      }
 
-    return {
-      status: response.status,
-      data,
-    };
+      return {
+        status: response.status,
+        data,
+      };
+    } catch {
+      const connectionStatus: DataModels.ContainerConnectionInfo = {
+        status: ConnectionStatusType.Failed,
+      };
+      useNotebook.getState().setConnectionInfo(connectionStatus);
+      return {} as IPhoenixResponse<IPhoenixConnectionInfoResult>;
+    }
   }
 
   public static getPhoenixEndpoint(): string {
