@@ -1,6 +1,6 @@
 import { ConnectionStatusType, HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
-import * as DataModels from "../Contracts/DataModels";
+import { ContainerConnectionInfo } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
@@ -26,7 +26,7 @@ export class PhoenixClient {
     provisionData: IProvosionData
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
     try {
-      const connectionStatus: DataModels.ContainerConnectionInfo = {
+      const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Allocating,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
@@ -38,6 +38,10 @@ export class PhoenixClient {
       let data: IPhoenixConnectionInfoResult;
       if (response.status === HttpStatusCodes.OK) {
         data = await response.json();
+        if (data && data.notebookServerUrl) {
+          connectionStatus.status = ConnectionStatusType.Connected;
+          useNotebook.getState().setConnectionInfo(connectionStatus);
+        }
       } else {
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().setConnectionInfo(connectionStatus);
@@ -48,7 +52,7 @@ export class PhoenixClient {
         data,
       };
     } catch {
-      const connectionStatus: DataModels.ContainerConnectionInfo = {
+      const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
