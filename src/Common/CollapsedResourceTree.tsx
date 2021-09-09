@@ -18,7 +18,7 @@ export const CollapsedResourceTree: FunctionComponent<CollapsedResourceTreeProps
     if (focusButton.current) {
       focusButton.current.focus();
     }
-  }, [focusButton]);
+  });
 
   const onKeyPressToggleLeftPaneExpanded = (event: React.KeyboardEvent) => {
     if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
