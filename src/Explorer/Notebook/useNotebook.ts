@@ -175,7 +175,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    const notebookFolderName = userContext.features.phoenix === true ? "My Notebooks Scratch" : "My Notebooks";
+    const notebookFolderName = userContext.features.phoenix === true ? "Temporary Notebooks" : "My Notebooks";
     set({ notebookFolderName });
     const myNotebooksContentRoot = {
       name: get().notebookFolderName,
