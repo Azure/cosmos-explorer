@@ -56,7 +56,7 @@ export class NotebookContainerClient {
 
     const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
     try {
-      const response = await fetch(`${notebookServerEndpoint}/api/metrics/memory`, {
+      const response = await fetch(`${notebookServerEndpoint}api/metrics/memory`, {
         method: "GET",
         headers: {
           Authorization: authToken,

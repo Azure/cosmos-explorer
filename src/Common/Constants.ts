@@ -96,6 +96,7 @@ export class Flights {
   public static readonly AutoscaleTest = "autoscaletest";
   public static readonly PartitionKeyTest = "partitionkeytest";
   public static readonly PKPartitionKeyTest = "pkpartitionkeytest";
+  public static readonly Phoenix = "phoenix";
 }
 
 export class AfecFeatures {
@@ -335,6 +336,13 @@ export enum ConflictOperationType {
   Replace = "replace",
   Create = "create",
   Delete = "delete",
+}
+
+export enum ConnectionStatusType {
+  Connecting = "Connecting",
+  Allocating = "Allocating",
+  Connected = "Connected",
+  Failed = "Connection Failed",
 }
 
 export const EmulatorMasterKey =

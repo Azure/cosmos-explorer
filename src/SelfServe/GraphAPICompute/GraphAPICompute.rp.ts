@@ -3,15 +3,16 @@ import { userContext } from "../../UserContext";
 import { armRequestWithoutPolling } from "../../Utils/arm/request";
 import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import { RefreshResult } from "../SelfServeTypes";
-import SqlX from "./SqlX";
+import GraphAPICompute from "./GraphAPICompute";
 import {
   FetchPricesResponse,
   RegionsResponse,
-  SqlxServiceResource,
-  UpdateDedicatedGatewayRequestParameters,
-} from "./SqlxTypes";
+  GraphAPIComputeServiceResource,
+  UpdateComputeRequestParameters,
+} from "./GraphAPICompute.types";
 
 const apiVersion = "2021-04-01-preview";
+const gremlinV2 = "GremlinV2";
 
 export enum ResourceStatus {
   Running = "Running",
@@ -20,7 +21,7 @@ export enum ResourceStatus {
   Deleting = "Deleting",
 }
 
-export interface DedicatedGatewayResponse {
+export interface ComputeResponse {
   sku: string;
   instances: number;
   status: string;
@@ -28,19 +29,19 @@ export interface DedicatedGatewayResponse {
 }
 
 export const getPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
-  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/SqlDedicatedGateway`;
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/${gremlinV2}`;
 };
 
-export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<string> => {
+export const updateComputeResource = async (sku: string, instances: number): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const body: UpdateDedicatedGatewayRequestParameters = {
+  const body: UpdateComputeRequestParameters = {
     properties: {
       instanceSize: sku,
       instanceCount: instances,
-      serviceType: "SqlDedicatedGateway",
+      serviceType: gremlinV2,
     },
   };
-  const telemetryData = { ...body, httpMethod: "PUT", selfServeClassName: SqlX.name };
+  const telemetryData = { ...body, httpMethod: "PUT", selfServeClassName: GraphAPICompute.name };
   const updateTimeStamp = selfServeTraceStart(telemetryData);
   let armRequestResult;
   try {
@@ -53,16 +54,16 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
     });
     selfServeTraceSuccess(telemetryData, updateTimeStamp);
   } catch (e) {
-    const failureTelemetry = { ...body, e, selfServeClassName: SqlX.name };
+    const failureTelemetry = { ...body, e, selfServeClassName: GraphAPICompute.name };
     selfServeTraceFailure(failureTelemetry, updateTimeStamp);
     throw e;
   }
   return armRequestResult?.operationStatusUrl;
 };
 
-export const deleteDedicatedGatewayResource = async (): Promise<string> => {
+export const deleteComputeResource = async (): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const telemetryData = { httpMethod: "DELETE", selfServeClassName: SqlX.name };
+  const telemetryData = { httpMethod: "DELETE", selfServeClassName: GraphAPICompute.name };
   const deleteTimeStamp = selfServeTraceStart(telemetryData);
   let armRequestResult;
   try {
@@ -74,20 +75,20 @@ export const deleteDedicatedGatewayResource = async (): Promise<string> => {
     });
     selfServeTraceSuccess(telemetryData, deleteTimeStamp);
   } catch (e) {
-    const failureTelemetry = { e, selfServeClassName: SqlX.name };
+    const failureTelemetry = { e, selfServeClassName: GraphAPICompute.name };
     selfServeTraceFailure(failureTelemetry, deleteTimeStamp);
     throw e;
   }
   return armRequestResult?.operationStatusUrl;
 };
 
-export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource> => {
+export const getComputeResource = async (): Promise<GraphAPIComputeServiceResource> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const telemetryData = { httpMethod: "GET", selfServeClassName: SqlX.name };
+  const telemetryData = { httpMethod: "GET", selfServeClassName: GraphAPICompute.name };
   const getResourceTimeStamp = selfServeTraceStart(telemetryData);
   let armRequestResult;
   try {
-    armRequestResult = await armRequestWithoutPolling<SqlxServiceResource>({
+    armRequestResult = await armRequestWithoutPolling<GraphAPIComputeServiceResource>({
       host: configContext.ARM_ENDPOINT,
       path,
       method: "GET",
@@ -95,30 +96,30 @@ export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource
     });
     selfServeTraceSuccess(telemetryData, getResourceTimeStamp);
   } catch (e) {
-    const failureTelemetry = { e, selfServeClassName: SqlX.name };
+    const failureTelemetry = { e, selfServeClassName: GraphAPICompute.name };
     selfServeTraceFailure(failureTelemetry, getResourceTimeStamp);
     throw e;
   }
   return armRequestResult?.result;
 };
 
-export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayResponse> => {
+export const getCurrentProvisioningState = async (): Promise<ComputeResponse> => {
   try {
-    const response = await getDedicatedGatewayResource();
+    const response = await getComputeResource();
     return {
       sku: response.properties.instanceSize,
       instances: response.properties.instanceCount,
       status: response.properties.status,
-      endpoint: response.properties.sqlxEndPoint,
+      endpoint: response.properties.GraphAPIComputeEndPoint,
     };
   } catch (e) {
     return { sku: undefined, instances: undefined, status: undefined, endpoint: undefined };
   }
 };
 
-export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResult> => {
+export const refreshComputeProvisioning = async (): Promise<RefreshResult> => {
   try {
-    const response = await getDedicatedGatewayResource();
+    const response = await getComputeResource();
     if (response.properties.status === ResourceStatus.Running.toString()) {
       return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
     } else if (response.properties.status === ResourceStatus.Creating.toString()) {
@@ -138,9 +139,9 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
 };
 
-export const getRegions = async (): Promise<Array<string>> => {
+export const getReadRegions = async (): Promise<Array<string>> => {
   try {
-    const regions = new Array<string>();
+    const readRegions = new Array<string>();
 
     const response = await armRequestWithoutPolling<RegionsResponse>({
       host: configContext.ARM_ENDPOINT,
@@ -150,13 +151,13 @@ export const getRegions = async (): Promise<Array<string>> => {
     });
 
     if (response.result.location !== undefined) {
-      regions.push(response.result.location.split(" ").join("").toLowerCase());
+      readRegions.push(response.result.location.replace(" ", "").toLowerCase());
     } else {
       for (const location of response.result.locations) {
-        regions.push(location.locationName.split(" ").join("").toLowerCase());
+        readRegions.push(location.locationName.replace(" ", "").toLowerCase());
       }
     }
-    return regions;
+    return readRegions;
   } catch (err) {
     return new Array<string>();
   }

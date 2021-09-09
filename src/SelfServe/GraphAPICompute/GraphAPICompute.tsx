@@ -14,20 +14,20 @@ import {
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
-  deleteDedicatedGatewayResource,
+  deleteComputeResource,
   getCurrentProvisioningState,
   getPriceMap,
-  getRegions,
-  refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource,
-} from "./SqlX.rp";
+  getReadRegions,
+  refreshComputeProvisioning,
+  updateComputeResource,
+} from "./GraphAPICompute.rp";
 
 const costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
     href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-    textTKey: "DedicatedGatewayPricing",
+    textTKey: "ComputePricing",
   },
 };
 
@@ -68,15 +68,15 @@ const onNumberOfInstancesChange = (
   baselineValues: Map<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
   currentValues.set("instances", { value: newValue });
-  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+  const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
   const baselineInstances = baselineValues.get("instances")?.value as number;
-  if (!dedicatedGatewayOriginallyEnabled || baselineInstances !== newValue) {
+  if (!ComputeOriginallyEnabled || baselineInstances !== newValue) {
     currentValues.set("warningBanner", {
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
           href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
-          textTKey: "DedicatedGatewayPricing",
+          textTKey: "ComputePricing",
         },
       } as Description,
       hidden: false,
@@ -92,14 +92,14 @@ const onNumberOfInstancesChange = (
   return currentValues;
 };
 
-const onEnableDedicatedGatewayChange = (
+const onEnableComputeChange = (
   newValue: InputType,
   currentValues: Map<string, SmartUiInput>,
   baselineValues: ReadonlyMap<string, SmartUiInput>
 ): Map<string, SmartUiInput> => {
-  currentValues.set("enableDedicatedGateway", { value: newValue });
-  const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
-  if (dedicatedGatewayOriginallyEnabled === newValue) {
+  currentValues.set("enableCompute", { value: newValue });
+  const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
+  if (ComputeOriginallyEnabled === newValue) {
     currentValues.set("sku", baselineValues.get("sku"));
     currentValues.set("instances", baselineValues.get("instances"));
     currentValues.set("costPerHour", baselineValues.get("costPerHour"));
@@ -115,8 +115,8 @@ const onEnableDedicatedGatewayChange = (
       value: {
         textTKey: "WarningBannerOnUpdate",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-          textTKey: "DedicatedGatewayPricing",
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing", //needs updating
+          textTKey: "ComputePricing",
         },
       } as Description,
       hidden: false,
@@ -131,7 +131,7 @@ const onEnableDedicatedGatewayChange = (
       value: {
         textTKey: "WarningBannerOnDelete",
         link: {
-          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
+          href: "https://aka.ms/cosmos-db-dedicated-gateway-overview", // needs updating
           textTKey: "DeprovisioningDetailsText",
         },
       } as Description,
@@ -141,27 +141,26 @@ const onEnableDedicatedGatewayChange = (
     currentValues.set("costPerHour", { value: costPerHourDefaultValue, hidden: true });
   }
   const sku = currentValues.get("sku");
-  const instances = currentValues.get("instances");
   const hideAttributes = newValue === undefined || !(newValue as boolean);
   currentValues.set("sku", {
     value: sku.value,
     hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
+    disabled: ComputeOriginallyEnabled,
   });
   currentValues.set("instances", {
-    value: instances.value,
+    value: 1,
     hidden: hideAttributes,
-    disabled: dedicatedGatewayOriginallyEnabled,
+    disabled: true,
   });
 
   currentValues.set("connectionString", {
     value: connectionStringValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+    hidden: !newValue || !ComputeOriginallyEnabled,
   });
 
   currentValues.set("metricsString", {
     value: metricsStringValue,
-    hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
+    hidden: !newValue || !ComputeOriginallyEnabled,
   });
 
   return currentValues;
@@ -177,6 +176,14 @@ const getSkus = async (): Promise<ChoiceItem[]> => {
   return skuDropDownItems;
 };
 
+const NumberOfInstancesDropdownInfo: Info = {
+  messageTKey: "ResizingDecisionText",
+  link: {
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-size", // todo
+    textTKey: "ResizingDecisionLink",
+  },
+};
+
 const getInstancesMin = async (): Promise<number> => {
   return 1;
 };
@@ -185,19 +192,11 @@ const getInstancesMax = async (): Promise<number> => {
   return 5;
 };
 
-const NumberOfInstancesDropdownInfo: Info = {
-  messageTKey: "ResizingDecisionText",
-  link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
-    textTKey: "ResizingDecisionLink",
-  },
-};
-
 const ApproximateCostDropDownInfo: Info = {
   messageTKey: "CostText",
   link: {
-    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
-    textTKey: "DedicatedGatewayPricing",
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing", //todo
+    textTKey: "ComputePricing",
   },
 };
 
@@ -229,25 +228,25 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
 @IsDisplayable()
 @RefreshOptions({ retryIntervalInMs: 20000 })
-export default class SqlX extends SelfServeBaseClass {
+export default class GraphAPICompute extends SelfServeBaseClass {
   public onRefresh = async (): Promise<RefreshResult> => {
-    return await refreshDedicatedGatewayProvisioning();
+    return await refreshComputeProvisioning();
   };
 
   public onSave = async (
     currentValues: Map<string, SmartUiInput>,
     baselineValues: Map<string, SmartUiInput>
   ): Promise<OnSaveResult> => {
-    selfServeTrace({ selfServeClassName: SqlX.name });
+    selfServeTrace({ selfServeClassName: GraphAPICompute.name });
 
-    const dedicatedGatewayCurrentlyEnabled = currentValues.get("enableDedicatedGateway")?.value as boolean;
-    const dedicatedGatewayOriginallyEnabled = baselineValues.get("enableDedicatedGateway")?.value as boolean;
+    const ComputeCurrentlyEnabled = currentValues.get("enableCompute")?.value as boolean;
+    const ComputeOriginallyEnabled = baselineValues.get("enableCompute")?.value as boolean;
 
     currentValues.set("warningBanner", undefined);
 
-    if (dedicatedGatewayOriginallyEnabled) {
-      if (!dedicatedGatewayCurrentlyEnabled) {
-        const operationStatusUrl = await deleteDedicatedGatewayResource();
+    if (ComputeOriginallyEnabled) {
+      if (!ComputeCurrentlyEnabled) {
+        const operationStatusUrl = await deleteComputeResource();
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
@@ -268,7 +267,7 @@ export default class SqlX extends SelfServeBaseClass {
       } else {
         const sku = currentValues.get("sku")?.value as string;
         const instances = currentValues.get("instances").value as number;
-        const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+        const operationStatusUrl = await updateComputeResource(sku, instances);
         return {
           operationStatusUrl: operationStatusUrl,
           portalNotification: {
@@ -290,7 +289,7 @@ export default class SqlX extends SelfServeBaseClass {
     } else {
       const sku = currentValues.get("sku")?.value as string;
       const instances = currentValues.get("instances").value as number;
-      const operationStatusUrl = await updateDedicatedGatewayResource(sku, instances);
+      const operationStatusUrl = await updateComputeResource(sku, instances);
       return {
         operationStatusUrl: operationStatusUrl,
         portalNotification: {
@@ -312,11 +311,11 @@ export default class SqlX extends SelfServeBaseClass {
   };
 
   public initialize = async (): Promise<Map<string, SmartUiInput>> => {
-    // Based on the RP call enableDedicatedGateway will be true if it has not yet been enabled and false if it has.
+    // Based on the RP call enableCompute will be true if it has not yet been enabled and false if it has.
     const defaults = new Map<string, SmartUiInput>();
-    defaults.set("enableDedicatedGateway", { value: false });
+    defaults.set("enableCompute", { value: false });
     defaults.set("sku", { value: CosmosD4s, hidden: true });
-    defaults.set("instances", { value: await getInstancesMin(), hidden: true });
+    defaults.set("instances", { value: 1, hidden: true });
     defaults.set("costPerHour", undefined);
     defaults.set("connectionString", undefined);
     defaults.set("metricsString", {
@@ -324,25 +323,37 @@ export default class SqlX extends SelfServeBaseClass {
       hidden: true,
     });
 
-    regions = await getRegions();
+    regions = await getReadRegions();
     priceMap = await getPriceMap(regions);
-
     const response = await getCurrentProvisioningState();
-    if (response.status && response.status !== "Deleting") {
-      defaults.set("enableDedicatedGateway", { value: true });
+    if (response.status && response.status === "Creating") {
+      defaults.set("enableCompute", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
-      defaults.set("instances", { value: response.instances, disabled: false });
+      defaults.set("instances", { value: response.instances, disabled: true });
+      defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
+      defaults.set("connectionString", {
+        value: connectionStringValue,
+        hidden: true,
+      });
+      defaults.set("metricsString", {
+        value: metricsStringValue,
+        hidden: true,
+      });
+    } else if (response.status && response.status !== "Deleting") {
+      defaults.set("enableCompute", { value: true });
+      defaults.set("sku", { value: response.sku, disabled: true });
+      defaults.set("instances", { value: response.instances });
       defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
         value: connectionStringValue,
         hidden: false,
       });
-
       defaults.set("metricsString", {
         value: metricsStringValue,
         hidden: false,
       });
     }
+
     defaults.set("warningBanner", undefined);
     return defaults;
   };
@@ -354,23 +365,23 @@ export default class SqlX extends SelfServeBaseClass {
 
   @Values({
     description: {
-      textTKey: "DedicatedGatewayDescription",
+      textTKey: "GraphAPIDescription",
       type: DescriptionType.Text,
       link: {
-        href: "https://aka.ms/cosmos-db-dedicated-gateway-overview",
-        textTKey: "LearnAboutDedicatedGateway",
+        href: "https://aka.ms/cosmos-db-dedicated-gateway-overview", //todo
+        textTKey: "LearnAboutCompute",
       },
     },
   })
   description: string;
 
-  @OnChange(onEnableDedicatedGatewayChange)
+  @OnChange(onEnableComputeChange)
   @Values({
-    labelTKey: "DedicatedGateway",
+    labelTKey: "Compute",
     trueLabelTKey: "Provisioned",
     falseLabelTKey: "Deprovisioned",
   })
-  enableDedicatedGateway: boolean;
+  enableCompute: boolean;
 
   @OnChange(onSKUChange)
   @Values({
