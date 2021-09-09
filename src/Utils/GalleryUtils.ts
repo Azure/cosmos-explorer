@@ -224,12 +224,12 @@ export function downloadItem(
 
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
-    `Download to ${useNotebook.getState().NotebookFolderName}`,
+    `Download to ${useNotebook.getState().notebookFolderName}`,
     `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
     "Download",
     async () => {
       const clearInProgressMessage = logConsoleProgress(
-        `Downloading ${name} to ${useNotebook.getState().NotebookFolderName}`
+        `Downloading ${name} to ${useNotebook.getState().notebookFolderName}`
       );
       const startKey = traceStart(Action.NotebooksGalleryDownload, {
         notebookId: data.id,

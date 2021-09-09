@@ -1,4 +1,4 @@
-import { Icon, ProgressIndicator, Spinner, SpinnerSize, Stack, TooltipHost } from "@fluentui/react";
+import { Icon, ProgressIndicator, Stack, TooltipHost } from "@fluentui/react";
 import * as React from "react";
 import { ConnectionStatusType } from "../../../Common/Constants";
 import { useNotebook } from "../../Notebook/useNotebook";
@@ -40,14 +40,9 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
 
   const connectionInfo = useNotebook((state) => state.connectionInfo);
   if (!connectionInfo) {
-    return (
-      <Stack className="connectionStatusContainer" horizontal>
-        <span>Connecting</span>
-        <Spinner size={SpinnerSize.medium} />
-      </Stack>
-    );
+    return <></>;
   }
-  if (connectionInfo && connectionInfo.status === ConnectionStatusType.Allocating && isActive === false) {
+  if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connecting && isActive === false) {
     setIsActive(true);
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connected && isActive === true) {
     stopTimer();
@@ -68,7 +63,7 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
         <span className={connectionInfo.status === ConnectionStatusType.Failed ? "connectionStatusFailed" : ""}>
           {connectionInfo.status}
         </span>
-        {connectionInfo.status === ConnectionStatusType.Allocating && isActive && (
+        {connectionInfo.status === ConnectionStatusType.Connecting && isActive && (
           <ProgressIndicator description={minute + ":" + second} />
         )}
       </Stack>
