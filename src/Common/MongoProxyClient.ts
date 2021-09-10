@@ -183,7 +183,7 @@ export function createDocument(
     pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("createDocument");
 
   return window
     .fetch(`${endpoint}/resourcelist?${queryString.stringify(params)}`, {
