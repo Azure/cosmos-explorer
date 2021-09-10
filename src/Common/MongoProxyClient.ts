@@ -79,7 +79,7 @@ export function queryDocuments(
         : "",
   };
 
-  const endpoint = getEndpoint() || "";
+  const endpoint = getFeatureEndpointOrDefault("resourcelist") || "";
 
   const headers = {
     ...defaultHeaders,
@@ -227,7 +227,7 @@ export function updateDocument(
         ? documentId.partitionKeyProperty
         : "",
   };
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("updateDocument");
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -268,7 +268,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         ? documentId.partitionKeyProperty
         : "",
   };
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("deleteDocument");;
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -311,7 +311,7 @@ export function createMongoCollectionWithProxy(
     autoPilotThroughput: params.autoPilotMaxThroughput?.toString(),
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");;
 
   return window
     .fetch(
@@ -335,17 +335,18 @@ export function createMongoCollectionWithProxy(
     });
 }
 
-export function getEndpoint(): string {
-  let url = (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT) + "/api/mongo/explorer";
+function getFeatureEndpointOrDefault(feature: string): string {
+  return (hasFlag(userContext.features.mongoProxyAPIs, feature)) ? getEndpoint(userContext.features.mongoProxyEndpoint) : getEndpoint();
+}
+
+export function getEndpoint(customEndpoint?: string): string {
+  let url = customEndpoint ? customEndpoint : (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT);
+  url += "/api/mongo/explorer";
 
   if (userContext.authType === AuthType.EncryptedToken) {
     url = url.replace("api/mongo", "api/guest/mongo");
   }
   return url;
-}
-
-function getFeatureEndpointOrDefault(feature: string): string {
-  return (hasFlag("mongoProxyFeatures", feature)) ? userContext.features.mongoProxyEndpoint : getEndpoint();
 }
 
 // TODO: This function throws most of the time except on Forbidden which is a bit strange
