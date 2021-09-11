@@ -150,7 +150,7 @@ describe("PricingUtils Tests", () => {
       expect(value).toBe(0.00012);
     });
 
-    it("should return 0.00048 for default cloud, 1RU, 2 region, multimaster enabled", () => {
+    it("should return 0.00032 for default cloud, 1RU, 2 region, multimaster enabled", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
@@ -158,9 +158,9 @@ describe("PricingUtils Tests", () => {
         multimasterEnabled: true,
         isAutoscale: false,
       });
-      expect(value).toBe(0.00048);
+      expect(value).toBe(0.00032);
     });
-    it("should return 0.00048 for default cloud, 1RU, 2 region, multimaster enabled, autoscale", () => {
+    it("should return 0.00032 for default cloud, 1RU, 2 region, multimaster enabled, autoscale", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
@@ -168,7 +168,7 @@ describe("PricingUtils Tests", () => {
         multimasterEnabled: true,
         isAutoscale: true,
       });
-      expect(value).toBe(0.00096);
+      expect(value).toBe(0.00032);
     });
   });
 
@@ -353,7 +353,7 @@ describe("PricingUtils Tests", () => {
         true /* multimaster */
       );
       expect(value).toBe(
-        "Cost (USD): <b>$0.19 hourly / $4.61 daily / $140.16 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
+        "Cost (USD): <b>$0.13 hourly / $3.07 daily / $93.44 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
       );
     });
 
@@ -401,7 +401,7 @@ describe("PricingUtils Tests", () => {
         true /* multimaster */,
         false
       );
-      expect(value).toBe("I acknowledge the estimated $4.61 daily cost for the throughput above.");
+      expect(value).toBe("I acknowledge the estimated $3.07 daily cost for the throughput above.");
     });
 
     it("should return 'I acknowledge the estimated $1.54 daily cost for the throughput above.' for 400RU/s on default cloud, 2 region, without multimaster", () => {
