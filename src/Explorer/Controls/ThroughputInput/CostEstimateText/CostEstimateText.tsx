@@ -42,9 +42,7 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
   const currency: string = getPriceCurrency(serverId);
   const currencySign: string = getCurrencySign(serverId);
   const multiplier = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
-  const pricePerRu = isAutoscale
-    ? getAutoscalePricePerRu(serverId, multiplier) * multiplier
-    : getPricePerRu(serverId) * multiplier;
+  const pricePerRu = isAutoscale ? getAutoscalePricePerRu(serverId, multiplier) : getPricePerRu(serverId, multiplier);
 
   const iconWithEstimatedCostDisclaimer: JSX.Element = <InfoTooltip>PricingUtils.estimatedCostDisclaimer</InfoTooltip>;
 

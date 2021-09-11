@@ -251,70 +251,47 @@ describe("PricingUtils Tests", () => {
   });
 
   describe("getPricePerRu()", () => {
-    it("should return 0.00008 for default clouds", () => {
-      const value = PricingUtils.getPricePerRu("default");
+    it("should return 0.00008 for single master default clouds", () => {
+      const value = PricingUtils.getPricePerRu("default", 1);
       expect(value).toBe(0.00008);
     });
 
-    it("should return 0.00051 for mooncake", () => {
-      const value = PricingUtils.getPricePerRu("mooncake");
+    it("should return 0.00016 for multi master default clouds", () => {
+      const value = PricingUtils.getPricePerRu("default", 2);
+      expect(value).toBe(0.00016);
+    });
+
+    it("should return 0.00051 for single master mooncake", () => {
+      const value = PricingUtils.getPricePerRu("mooncake", 1);
       expect(value).toBe(0.00051);
+    });
+
+    it("should return 0.00102 for multi master mooncake", () => {
+      const value = PricingUtils.getPricePerRu("mooncake", 2);
+      expect(value).toBe(0.00102);
     });
   });
 
   describe("getRegionMultiplier()", () => {
-    describe("without multimaster", () => {
-      it("should return 0 for undefined", () => {
-        const value = PricingUtils.getRegionMultiplier(undefined, false);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for -1", () => {
-        const value = PricingUtils.getRegionMultiplier(-1, false);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for 0", () => {
-        const value = PricingUtils.getRegionMultiplier(0, false);
-        expect(value).toBe(0);
-      });
-
-      it("should return 1 for 1", () => {
-        const value = PricingUtils.getRegionMultiplier(1, false);
-        expect(value).toBe(1);
-      });
-
-      it("should return 2 for 2", () => {
-        const value = PricingUtils.getRegionMultiplier(2, false);
-        expect(value).toBe(2);
-      });
+    it("should return 0 for undefined", () => {
+      const value = PricingUtils.getRegionMultiplier(undefined);
+      expect(value).toBe(0);
     });
-
-    describe("with multimaster", () => {
-      it("should return 0 for undefined", () => {
-        const value = PricingUtils.getRegionMultiplier(undefined, true);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for -1", () => {
-        const value = PricingUtils.getRegionMultiplier(-1, true);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for 0", () => {
-        const value = PricingUtils.getRegionMultiplier(0, true);
-        expect(value).toBe(0);
-      });
-
-      it("should return 1 for 1", () => {
-        const value = PricingUtils.getRegionMultiplier(1, true);
-        expect(value).toBe(1);
-      });
-
-      it("should return 3 for 2", () => {
-        const value = PricingUtils.getRegionMultiplier(2, true);
-        expect(value).toBe(3);
-      });
+    it("should return 0 for -1", () => {
+      const value = PricingUtils.getRegionMultiplier(-1);
+      expect(value).toBe(0);
+    });
+    it("should return 0 for 0", () => {
+      const value = PricingUtils.getRegionMultiplier(0);
+      expect(value).toBe(0);
+    });
+    it("should return 1 for 1", () => {
+      const value = PricingUtils.getRegionMultiplier(1);
+      expect(value).toBe(1);
+    });
+    it("should return 2 for 2", () => {
+      const value = PricingUtils.getRegionMultiplier(2);
+      expect(value).toBe(2);
     });
   });
 
