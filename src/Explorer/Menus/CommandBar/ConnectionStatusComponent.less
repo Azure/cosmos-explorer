@@ -1,0 +1,79 @@
+@import "../../../../less/Common/Constants";
+
+.connectionStatusContainer {
+    cursor: default;
+    align-items: center;
+    margin: 0 9px;
+    border: 1px;
+    min-height: 44px;
+
+    > span {
+        padding-right: 12px;
+        font-size: 13px;
+        font-family: @DataExplorerFont;
+        color: @DefaultFontColor;
+    }
+}
+.connectionStatusFailed{
+    color: #bd1919;
+}
+.ring-container {
+    position: relative;
+}
+
+.ringringGreen {
+    border: 3px solid green;
+    border-radius: 30px;
+    height: 18px;
+    width: 18px;
+    position: absolute;
+    margin: .4285em 0em 0em 0.07477em;
+    animation: pulsate 3s ease-out;
+    animation-iteration-count: infinite; 
+    opacity: 0.0
+}
+.ringringYellow{
+    border: 3px solid #ffbf00;
+    border-radius: 30px;
+    height: 18px;
+    width: 18px;
+    position: absolute;
+    margin: .4285em 0em 0em 0.07477em;
+    animation: pulsate 3s ease-out;
+    animation-iteration-count: infinite; 
+    opacity: 0.0
+}
+.ringringRed{
+    border: 3px solid #bd1919;
+    border-radius: 30px;
+    height: 18px;
+    width: 18px;
+    position: absolute;
+    margin: .4285em 0em 0em 0.07477em;
+    animation: pulsate 3s ease-out;
+    animation-iteration-count: infinite; 
+    opacity: 0.0
+}
+@keyframes pulsate {
+    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+    15% {opacity: 0.8;}
+    25% {opacity: 0.6;}
+    45% {opacity: 0.4;}
+    70% {opacity: 0.3;}
+    100% {-webkit-transform: scale(.7, .7); opacity: 0.1;}
+}
+.locationGreenDot{
+    font-size: 20px;
+    margin-right: 0.07em;
+    color: green;
+}
+.locationYellowDot{
+    font-size: 20px;
+    margin-right: 0.07em;
+    color: #ffbf00;
+}
+.locationRedDot{
+    font-size: 20px;
+    margin-right: 0.07em;
+    color: #bd1919;
+}

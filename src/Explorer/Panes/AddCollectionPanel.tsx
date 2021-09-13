@@ -113,11 +113,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey:
-        (userContext.features.partitionKeyDefault && userContext.apiType === "SQL") ||
-        (userContext.features.partitionKeyDefault && userContext.apiType === "Mongo")
-          ? "/id"
-          : "",
+      partitionKey: this.getPartitionKey(),
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
       useHashV2: false,
@@ -554,6 +550,72 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
+          {this.shouldShowAnalyticalStoreOptions() && (
+            <Stack className="panelGroupSpacing">
+              <Stack horizontal>
+                <Text className="panelTextBold" variant="small">
+                  Analytical store
+                </Text>
+                <TooltipHost
+                  directionalHint={DirectionalHint.bottomLeftEdge}
+                  content={this.getAnalyticalStorageTooltipContent()}
+                >
+                  <Icon iconName="Info" className="panelInfoIcon" />
+                </TooltipHost>
+              </Stack>
+
+              <Stack horizontal verticalAlign="center">
+                <input
+                  className="panelRadioBtn"
+                  checked={this.state.enableAnalyticalStore}
+                  disabled={!this.isSynapseLinkEnabled()}
+                  aria-label="Enable analytical store"
+                  aria-checked={this.state.enableAnalyticalStore}
+                  name="analyticalStore"
+                  type="radio"
+                  role="radio"
+                  id="enableAnalyticalStoreBtn"
+                  tabIndex={0}
+                  onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">On</span>
+
+                <input
+                  className="panelRadioBtn"
+                  checked={!this.state.enableAnalyticalStore}
+                  disabled={!this.isSynapseLinkEnabled()}
+                  aria-label="Disable analytical store"
+                  aria-checked={!this.state.enableAnalyticalStore}
+                  name="analyticalStore"
+                  type="radio"
+                  role="radio"
+                  id="disableAnalyticalStoreBtn"
+                  tabIndex={0}
+                  onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">Off</span>
+              </Stack>
+
+              {!this.isSynapseLinkEnabled() && (
+                <Stack className="panelGroupSpacing">
+                  <Text variant="small">
+                    Azure Synapse Link is required for creating an analytical store{" "}
+                    {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
+                    <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
+                      Learn more
+                    </Link>
+                  </Text>
+                  <DefaultButton
+                    text="Enable"
+                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
+                    style={{ height: 27, width: 80 }}
+                    styles={{ label: { fontSize: 12 } }}
+                  />
+                </Stack>
+              )}
+            </Stack>
+          )}
+
           {userContext.apiType !== "Tables" && (
             <CollapsibleSectionComponent
               title="Advanced"
@@ -607,72 +669,6 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       this.setState({ useHashV2: isChecked })
                     }
                   />
-                )}
-
-                {this.shouldShowAnalyticalStoreOptions() && (
-                  <Stack className="panelGroupSpacing">
-                    <Stack horizontal>
-                      <Text className="panelTextBold" variant="small">
-                        Analytical store
-                      </Text>
-                      <TooltipHost
-                        directionalHint={DirectionalHint.bottomLeftEdge}
-                        content={this.getAnalyticalStorageTooltipContent()}
-                      >
-                        <Icon iconName="Info" className="panelInfoIcon" />
-                      </TooltipHost>
-                    </Stack>
-
-                    <Stack horizontal verticalAlign="center">
-                      <input
-                        className="panelRadioBtn"
-                        checked={this.state.enableAnalyticalStore}
-                        disabled={!this.isSynapseLinkEnabled()}
-                        aria-label="Enable analytical store"
-                        aria-checked={this.state.enableAnalyticalStore}
-                        name="analyticalStore"
-                        type="radio"
-                        role="radio"
-                        id="enableAnalyticalStoreBtn"
-                        tabIndex={0}
-                        onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
-                      />
-                      <span className="panelRadioBtnLabel">On</span>
-
-                      <input
-                        className="panelRadioBtn"
-                        checked={!this.state.enableAnalyticalStore}
-                        disabled={!this.isSynapseLinkEnabled()}
-                        aria-label="Disable analytical store"
-                        aria-checked={!this.state.enableAnalyticalStore}
-                        name="analyticalStore"
-                        type="radio"
-                        role="radio"
-                        id="disableAnalyticalStoreBtn"
-                        tabIndex={0}
-                        onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
-                      />
-                      <span className="panelRadioBtnLabel">Off</span>
-                    </Stack>
-
-                    {!this.isSynapseLinkEnabled() && (
-                      <Stack className="panelGroupSpacing">
-                        <Text variant="small">
-                          Azure Synapse Link is required for creating an analytical store{" "}
-                          {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
-                          <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
-                            Learn more
-                          </Link>
-                        </Text>
-                        <DefaultButton
-                          text="Enable"
-                          onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
-                          style={{ height: 27, width: 80 }}
-                          styles={{ label: { fontSize: 12 } }}
-                        />
-                      </Stack>
-                    )}
-                  </Stack>
                 )}
               </Stack>
             </CollapsibleSectionComponent>
@@ -813,6 +809,19 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return tooltipText;
+  }
+
+  private getPartitionKey(): string {
+    if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
+      return "";
+    }
+    if (userContext.features.partitionKeyDefault) {
+      return userContext.apiType === "SQL" ? "/id" : "_id";
+    }
+    if (userContext.features.partitionKeyDefault2) {
+      return userContext.apiType === "SQL" ? "/pk" : "pk";
+    }
+    return "";
   }
 
   private getPartitionKeySubtext(): string {

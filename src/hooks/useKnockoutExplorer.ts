@@ -98,9 +98,11 @@ async function configureHostedWithAAD(config: AAD): Promise<Explorer> {
     const msalInstance = getMsalInstance();
     const cachedAccount = msalInstance.getAllAccounts()?.[0];
     msalInstance.setActiveAccount(cachedAccount);
+    const cachedTenantId = localStorage.getItem("cachedTenantId");
     const aadTokenResponse = await msalInstance.acquireTokenSilent({
       forceRefresh: true,
       scopes: [hrefEndpoint],
+      authority: `${configContext.AAD_ENDPOINT}${cachedTenantId}`,
     });
     aadToken = aadTokenResponse.accessToken;
   }
@@ -330,6 +332,15 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     }
     if (inputs.flights.indexOf(Flights.PartitionKeyTest) !== -1) {
       userContext.features.partitionKeyDefault = true;
+    }
+    if (inputs.flights.indexOf(Flights.PartitionKeyTest) !== -1) {
+      userContext.features.partitionKeyDefault = true;
+    }
+    if (inputs.flights.indexOf(Flights.PKPartitionKeyTest) !== -1) {
+      userContext.features.partitionKeyDefault2 = true;
+    }
+    if (inputs.flights.indexOf(Flights.Phoenix) !== -1) {
+      userContext.features.phoenix = true;
     }
   }
 }
