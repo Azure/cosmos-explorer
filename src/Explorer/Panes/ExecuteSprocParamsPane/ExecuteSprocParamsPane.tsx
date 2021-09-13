@@ -130,6 +130,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
             onParamValueChange={(_event, newInput?: string) => {
               setPartitionValue(newInput);
             }}
+            autoFocus={true}
             onParamKeyChange={onPartitionKeyChange}
             paramValue={partitionValue}
             selectedKey={selectedKey.key}

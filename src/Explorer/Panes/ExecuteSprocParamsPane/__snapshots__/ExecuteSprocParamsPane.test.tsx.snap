@@ -23,6 +23,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
           className="panelMainContent"
         >
           <InputParameter
+            autoFocus={true}
             dropdownLabel="Key"
             inputLabel="Value"
             inputParameterTitle="Partition key value"
@@ -3717,7 +3718,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   </DropdownBase>
                 </Dropdown>
                 <StyledTextFieldBase
-                  autoFocus={true}
                   id="confirmCollectionId"
                   key=".0:$.1"
                   label="Param"
@@ -3725,7 +3725,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   value=""
                 >
                   <TextFieldBase
-                    autoFocus={true}
                     deferredValidationTime={200}
                     id="confirmCollectionId"
                     label="Param"
@@ -4312,7 +4311,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           <input
                             aria-invalid={false}
                             aria-labelledby="TextFieldLabel7"
-                            autoFocus={true}
                             className="ms-TextField-field field-77"
                             id="confirmCollectionId"
                             onBlur={[Function]}
@@ -4336,6 +4334,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     height={30}
                     id="deleteparam"
                     onClick={[Function]}
+                    role="button"
                     src=""
                     width={20}
                   >
@@ -4345,6 +4344,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       height={30}
                       id="deleteparam"
                       onClick={[Function]}
+                      role="button"
                       src=""
                       styles={[Function]}
                       theme={
@@ -4639,6 +4639,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           onClick={[Function]}
                           onError={[Function]}
                           onLoad={[Function]}
+                          role="button"
                           src=""
                         />
                       </div>
@@ -4654,8 +4655,8 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     height={30}
                     id="addparam"
                     onClick={[Function]}
+                    role="button"
                     src=""
-                    tabIndex={0}
                     width={20}
                   >
                     <ImageBase
@@ -4664,9 +4665,9 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       height={30}
                       id="addparam"
                       onClick={[Function]}
+                      role="button"
                       src=""
                       styles={[Function]}
-                      tabIndex={0}
                       theme={
                         Object {
                           "disableGlobalClassNames": false,
@@ -4959,8 +4960,8 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           onClick={[Function]}
                           onError={[Function]}
                           onLoad={[Function]}
+                          role="button"
                           src=""
-                          tabIndex={0}
                         />
                       </div>
                     </ImageBase>
