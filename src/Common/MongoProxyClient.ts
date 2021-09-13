@@ -6,6 +6,7 @@ import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { hasFlag } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
@@ -78,7 +79,7 @@ export function queryDocuments(
         : "",
   };
 
-  const endpoint = getEndpoint() || "";
+  const endpoint = getFeatureEndpointOrDefault("resourcelist") || "";
 
   const headers = {
     ...defaultHeaders,
@@ -141,7 +142,8 @@ export function readDocument(
         : "",
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("readDocument");
+
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
       method: "GET",
@@ -181,7 +183,7 @@ export function createDocument(
     pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("createDocument");
 
   return window
     .fetch(`${endpoint}/resourcelist?${queryString.stringify(params)}`, {
@@ -225,7 +227,7 @@ export function updateDocument(
         ? documentId.partitionKeyProperty
         : "",
   };
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("updateDocument");
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -266,7 +268,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         ? documentId.partitionKeyProperty
         : "",
   };
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("deleteDocument");;
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -309,7 +311,7 @@ export function createMongoCollectionWithProxy(
     autoPilotThroughput: params.autoPilotMaxThroughput?.toString(),
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");
 
   return window
     .fetch(
@@ -333,8 +335,13 @@ export function createMongoCollectionWithProxy(
     });
 }
 
-export function getEndpoint(): string {
-  let url = (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT) + "/api/mongo/explorer";
+export function getFeatureEndpointOrDefault(feature: string): string {
+  return (hasFlag(userContext.features.mongoProxyAPIs, feature)) ? getEndpoint(userContext.features.mongoProxyEndpoint) : getEndpoint();
+}
+
+export function getEndpoint(customEndpoint?: string): string {
+  let url = customEndpoint ? customEndpoint : (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT);
+  url += "/api/mongo/explorer";
 
   if (userContext.authType === AuthType.EncryptedToken) {
     url = url.replace("api/mongo", "api/guest/mongo");
