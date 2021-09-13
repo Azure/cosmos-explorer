@@ -33,5 +33,5 @@ describe("hasFlag", () => {
     expect(hasFlag(differentFlagValue, desiredFlag)).toBe(false);
     expect(hasFlag(multipleFlagValues, undefined)).toBe(false);
     expect(hasFlag(undefined, desiredFlag)).toBe(false);
-  })
-})
+  });
+});

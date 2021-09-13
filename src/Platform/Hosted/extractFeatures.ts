@@ -92,5 +92,4 @@ export function hasFlag(flags: string, desiredFlag: string): boolean {
 
   const features = flags.split("|");
   return features.find((feature) => feature === desiredFlag) ? true : false;
-
 }
