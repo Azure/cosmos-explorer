@@ -311,7 +311,7 @@ export function createMongoCollectionWithProxy(
     autoPilotThroughput: params.autoPilotMaxThroughput?.toString(),
   };
 
-  const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");;
+  const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");
 
   return window
     .fetch(
@@ -335,7 +335,7 @@ export function createMongoCollectionWithProxy(
     });
 }
 
-function getFeatureEndpointOrDefault(feature: string): string {
+export function getFeatureEndpointOrDefault(feature: string): string {
   return (hasFlag(userContext.features.mongoProxyAPIs, feature)) ? getEndpoint(userContext.features.mongoProxyEndpoint) : getEndpoint();
 }
 

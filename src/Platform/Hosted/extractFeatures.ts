@@ -77,7 +77,12 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   };
 }
 
-export function hasFlag(value: string, flag: string): string {
-  const features = value.split("|");
-  return features.find((feature) => feature == flag);
+export function hasFlag(flags: string, desiredFlag: string): boolean {
+  if (!flags || !desiredFlag) {
+    return false;
+  }
+
+  const features = flags.split("|");
+  return features.find((feature) => feature === desiredFlag) ? true : false;
+
 }
