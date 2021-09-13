@@ -264,17 +264,6 @@ module.exports = function (_env = {}, argv = {}) {
         "Access-Control-Allow-Methods": "*",
       },
       proxy: {
-        "/api/mongo": {
-          target: "https://juno-test2.documents-dev.windows-int.net/api/mongo/test",
-          changeOrigin: true,
-          logLevel: "debug",
-          bypass: (req, res) => {
-            if (req.method === "OPTIONS") {
-              res.statusCode = 200;
-              res.send();
-            }
-          },
-        },
         "/api": {
           target: "https://main.documentdb.ext.azure.com",
           changeOrigin: true,
