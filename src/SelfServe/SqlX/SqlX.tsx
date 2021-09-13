@@ -16,11 +16,13 @@ import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
+  getPriceMap,
+  getRegions,
   refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
-const costPerHourValue: Description = {
+const costPerHourDefaultValue: Description = {
   textTKey: "CostText",
   type: DescriptionType.Text,
   link: {
@@ -53,7 +55,10 @@ const CosmosD16s = "Cosmos.D16s";
 
 const onSKUChange = (newValue: InputType, currentValues: Map<string, SmartUiInput>): Map<string, SmartUiInput> => {
   currentValues.set("sku", { value: newValue });
-  currentValues.set("costPerHour", { value: costPerHourValue });
+  currentValues.set("costPerHour", {
+    value: calculateCost(newValue as string, currentValues.get("instances").value as number),
+  });
+
   return currentValues;
 };
 
@@ -79,6 +84,11 @@ const onNumberOfInstancesChange = (
   } else {
     currentValues.set("warningBanner", undefined);
   }
+
+  currentValues.set("costPerHour", {
+    value: calculateCost(currentValues.get("sku").value as string, newValue as number),
+  });
+
   return currentValues;
 };
 
@@ -111,6 +121,11 @@ const onEnableDedicatedGatewayChange = (
       } as Description,
       hidden: false,
     });
+
+    currentValues.set("costPerHour", {
+      value: calculateCost(baselineValues.get("sku").value as string, baselineValues.get("instances").value as number),
+      hidden: false,
+    });
   } else {
     currentValues.set("warningBanner", {
       value: {
@@ -122,6 +137,8 @@ const onEnableDedicatedGatewayChange = (
       } as Description,
       hidden: false,
     });
+
+    currentValues.set("costPerHour", { value: costPerHourDefaultValue, hidden: true });
   }
   const sku = currentValues.get("sku");
   const instances = currentValues.get("instances");
@@ -137,7 +154,6 @@ const onEnableDedicatedGatewayChange = (
     disabled: dedicatedGatewayOriginallyEnabled,
   });
 
-  currentValues.set("costPerHour", { value: costPerHourValue, hidden: hideAttributes });
   currentValues.set("connectionString", {
     value: connectionStringValue,
     hidden: !newValue || !dedicatedGatewayOriginallyEnabled,
@@ -175,6 +191,40 @@ const NumberOfInstancesDropdownInfo: Info = {
     href: "https://aka.ms/cosmos-db-dedicated-gateway-size",
     textTKey: "ResizingDecisionLink",
   },
+};
+
+const ApproximateCostDropDownInfo: Info = {
+  messageTKey: "CostText",
+  link: {
+    href: "https://aka.ms/cosmos-db-dedicated-gateway-pricing",
+    textTKey: "DedicatedGatewayPricing",
+  },
+};
+
+let priceMap: Map<string, Map<string, number>>;
+let regions: Array<string>;
+
+const calculateCost = (skuName: string, instanceCount: number): Description => {
+  try {
+    let costPerHour = 0;
+    for (const region of regions) {
+      const incrementalCost = priceMap.get(region).get(skuName.replace("Cosmos.", ""));
+      if (incrementalCost === undefined) {
+        throw new Error("Value not found in map.");
+      }
+      costPerHour += incrementalCost;
+    }
+
+    costPerHour *= instanceCount;
+    costPerHour = Math.round(costPerHour * 100) / 100;
+
+    return {
+      textTKey: `${costPerHour} USD`,
+      type: DescriptionType.Text,
+    };
+  } catch (err) {
+    return costPerHourDefaultValue;
+  }
 };
 
 @IsDisplayable()
@@ -274,12 +324,15 @@ export default class SqlX extends SelfServeBaseClass {
       hidden: true,
     });
 
+    regions = await getRegions();
+    priceMap = await getPriceMap(regions);
+
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {
       defaults.set("enableDedicatedGateway", { value: true });
       defaults.set("sku", { value: response.sku, disabled: true });
       defaults.set("instances", { value: response.instances, disabled: false });
-      defaults.set("costPerHour", { value: costPerHourValue });
+      defaults.set("costPerHour", { value: calculateCost(response.sku, response.instances) });
       defaults.set("connectionString", {
         value: connectionStringValue,
         hidden: false,
@@ -338,8 +391,9 @@ export default class SqlX extends SelfServeBaseClass {
   })
   instances: number;
 
+  @PropertyInfo(ApproximateCostDropDownInfo)
   @Values({
-    labelTKey: "Cost",
+    labelTKey: "ApproximateCost",
     isDynamicDescription: true,
   })
   costPerHour: string;

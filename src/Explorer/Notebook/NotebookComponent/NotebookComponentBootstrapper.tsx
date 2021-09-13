@@ -277,6 +277,10 @@ export class NotebookComponentBootstrapper {
     return selectors.notebook.isDirty(content.model as Immutable.RecordOf<DocumentRecordProps>);
   }
 
+  public isNotebookUntrusted(): boolean {
+    return NotebookUtil.isNotebookUntrusted(this.getStore().getState(), this.contentRef);
+  }
+
   /**
    * For display purposes, only return non-killed kernels
    */
