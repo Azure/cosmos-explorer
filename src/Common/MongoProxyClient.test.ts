@@ -3,8 +3,9 @@ import { resetConfigContext, updateConfigContext } from "../ConfigContext";
 import { DatabaseAccount } from "../Contracts/DataModels";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { updateUserContext } from "../UserContext";
-import { deleteDocument, getEndpoint, queryDocuments, readDocument, updateDocument } from "./MongoProxyClient";
+import { deleteDocument, getEndpoint, getFeatureEndpointOrDefault, queryDocuments, readDocument, updateDocument } from "./MongoProxyClient";
 
 const databaseId = "testDB";
 
@@ -244,6 +245,34 @@ describe("MongoProxyClient", () => {
       });
       const endpoint = getEndpoint();
       expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/guest/mongo/explorer");
+    });
+  });
+  describe("getFeatureEndpointOrDefault", () => {
+    beforeEach(() => {
+      resetConfigContext();
+      updateConfigContext({
+        BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
+      });
+      const params = new URLSearchParams({
+        "feature.mongoProxyEndpoint": "https://localhost:12901",
+        "feature.mongoProxyAPIs": "readDocument|createDocument",
+      });
+      const features = extractFeatures(params);
+      updateUserContext({
+        authType: AuthType.AAD,
+        features: features
+      });
+    });
+
+
+    it("returns a local endpoint", () => {
+      const endpoint = getFeatureEndpointOrDefault("readDocument");
+      expect(endpoint).toEqual("https://localhost:12901/api/mongo/explorer");
+    });
+
+    it("returns a production endpoint", () => {
+      const endpoint = getFeatureEndpointOrDefault("deleteDocument");
+      expect(endpoint).toEqual("https://main.documentdb.ext.azure.com/api/mongo/explorer");
     });
   });
 });
