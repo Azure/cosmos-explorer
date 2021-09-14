@@ -327,13 +327,17 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
               key=".0:$.1"
             >
               <Text
-                aria-label="message"
+                aria-label="Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources."
+                aria-live="assertive"
                 className="panelWarningErrorMessage"
+                role="alert"
                 variant="small"
               >
                 <span
-                  aria-label="message"
+                  aria-label="Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources."
+                  aria-live="assertive"
                   className="panelWarningErrorMessage css-56"
+                  role="alert"
                 >
                   Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.
                 </span>

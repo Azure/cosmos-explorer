@@ -29,8 +29,8 @@ export type Features = {
   readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
-  readonly mongoProxyEndpoint: string;
-  readonly mongoProxyAPIs: string;
+  readonly mongoProxyEndpoint: string | undefined;
+  readonly mongoProxyAPIs: string | undefined;
   readonly notebooksTemporarilyDown: boolean;
 };
 
@@ -85,7 +85,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   };
 }
 
-export function hasFlag(flags: string, desiredFlag: string): boolean {
+export function hasFlag(flags: string | undefined, desiredFlag: string | undefined): boolean {
   if (!flags || !desiredFlag) {
     return false;
   }
