@@ -1,4 +1,4 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, Pivot, PivotItem, SelectionMode } from "@fluentui/react";
+import { DetailsList, DetailsListLayoutMode, IColumn, Pivot, PivotItem, SelectionMode, Text } from "@fluentui/react";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
@@ -120,21 +120,22 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   constructor(props: IQueryTabComponentProps) {
     super(props);
     const columns: IColumn[] = [
-      {
-        key: "column1",
-        name: "",
-        minWidth: 16,
-        maxWidth: 16,
-        data: String,
-        fieldName: "toolTip",
-        onRender: this.onRenderColumnItem,
-      },
+      // {
+      //   key: "column1",
+      //   name: "",
+      //   minWidth: 16,
+      //   maxWidth: 16,
+      //   data: String,
+      //   fieldName: "toolTip",
+      //   onRender: this.onRenderColumnItem,
+      // },
       {
         key: "column2",
         name: "METRIC",
         minWidth: 200,
         data: String,
         fieldName: "metric",
+        onRender: this.onRenderColumnItem,
       },
       {
         key: "column3",
@@ -206,7 +207,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onRenderColumnItem(item: IDocument): JSX.Element {
     if (item.toolTip !== "") {
-      return <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>;
+      return (
+        <>
+          <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>
+          <Text style={{ paddingLeft: 10, margin: 0 }}>{`${item.metric}`}</Text>
+        </>
+      );
     } else {
       return undefined;
     }
