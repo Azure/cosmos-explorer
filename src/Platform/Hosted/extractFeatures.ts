@@ -29,8 +29,8 @@ export type Features = {
   readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
-  readonly mongoProxyEndpoint: string;
-  readonly mongoProxyAPIs: string;
+  readonly mongoProxyEndpoint?: string;
+  readonly mongoProxyAPIs?: string;
   readonly notebooksTemporarilyDown: boolean;
 };
 
