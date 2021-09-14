@@ -4,6 +4,7 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
+import { ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
@@ -11,6 +12,7 @@ import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHand
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
 import * as DataModels from "../Contracts/DataModels";
+import { ContainerConnectionInfo } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
@@ -345,23 +347,7 @@ export default class Explorer {
       return;
     }
     this._isInitializingNotebooks = true;
-    if (userContext.features.phoenix) {
-      const provisionData = {
-        cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
-        resourceId: userContext.databaseAccount.id,
-        dbAccountName: userContext.databaseAccount.name,
-        aadToken: userContext.authorizationToken,
-        resourceGroup: userContext.resourceGroup,
-        subscriptionId: userContext.subscriptionId,
-      };
-      const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
-      if (connectionInfo.data && connectionInfo.data.notebookServerUrl) {
-        useNotebook.getState().setNotebookServerInfo({
-          notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
-          authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
-        });
-      }
-    } else {
+    if (userContext.features.phoenix === false) {
       await this.ensureNotebookWorkspaceRunning();
       const connectionInfo = await listConnectionInfo(
         userContext.subscriptionId,
@@ -376,11 +362,58 @@ export default class Explorer {
       });
     }
 
-    useNotebook.getState().initializeNotebooksTree(this.notebookManager);
-
     this.refreshNotebookList();
 
     this._isInitializingNotebooks = false;
+  }
+
+  public async allocateContainer() {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    const isAllocating = useNotebook.getState().isAllocating;
+    if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined && isAllocating === false) {
+      const provisionData = {
+        cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        dbAccountName: userContext.databaseAccount.name,
+        aadToken: userContext.authorizationToken,
+        resourceGroup: userContext.resourceGroup,
+        subscriptionId: userContext.subscriptionId,
+      };
+      const connectionStatus: ContainerConnectionInfo = {
+        status: ConnectionStatusType.Connecting,
+      };
+      useNotebook.getState().setConnectionInfo(connectionStatus);
+      try {
+        useNotebook.getState().setIsAllocating(true);
+        const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
+        if (
+          connectionInfo.status === HttpStatusCodes.OK &&
+          connectionInfo.data &&
+          connectionInfo.data.notebookServerUrl
+        ) {
+          connectionStatus.status = ConnectionStatusType.Connected;
+          useNotebook.getState().setConnectionInfo(connectionStatus);
+          useNotebook.getState().setNotebookServerInfo({
+            notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
+            authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
+          });
+        } else {
+          connectionStatus.status = ConnectionStatusType.Failed;
+          useNotebook.getState().setConnectionInfo(connectionStatus);
+        }
+        useNotebook.getState().setIsAllocating(false);
+      } catch (error) {
+        const connectionStatus: ContainerConnectionInfo = {
+          status: ConnectionStatusType.Failed,
+        };
+        useNotebook.getState().setConnectionInfo(connectionStatus);
+        useNotebook.getState().setIsAllocating(false);
+        console.error(error);
+        throw error;
+      }
+      this.refreshNotebookList();
+
+      this._isInitializingNotebooks = false;
+    }
   }
 
   public resetNotebookWorkspace(): void {
@@ -875,9 +908,26 @@ export default class Explorer {
       handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
     }
+    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+      useDialog.getState().showOkCancelModalDialog(
+        Notebook.newNotebookModalTitle,
+        Notebook.newNotebookModalContent,
+        "Create",
+        async () => {
+          await this.allocateContainer();
+          parent = parent || this.resourceTree.myNotebooksContentRoot;
+          this.createNewNoteBook(parent, isGithubTree);
+        },
+        "Cancel",
+        undefined
+      );
+    } else {
+      parent = parent || this.resourceTree.myNotebooksContentRoot;
+      this.createNewNoteBook(parent, isGithubTree);
+    }
+  }
 
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
-
+  private createNewNoteBook(parent?: NotebookContentItem, isGithubTree?: boolean): void {
     const clearInProgressMessage = logConsoleProgress(`Creating new notebook in ${parent.path}`);
     const startKey: number = TelemetryProcessor.traceStart(Action.CreateNewNotebook, {
       dataExplorerArea: Constants.Areas.Notebook,
@@ -924,7 +974,26 @@ export default class Explorer {
     await this.notebookManager?.notebookContentClient.updateItemChildrenInPlace(item);
   }
 
-  public openNotebookTerminal(kind: ViewModels.TerminalKind): void {
+  public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
+    if (userContext.features.phoenix === true) {
+      await this.allocateContainer();
+      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+      if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
+        this.connectToNotebookTerminal(kind);
+      } else {
+        useDialog
+          .getState()
+          .showOkModalDialog(
+            "Failed to Connect",
+            "Failed to connect temporary environment, this could happen because of network issue please refresh and try again."
+          );
+      }
+    } else {
+      this.connectToNotebookTerminal(kind);
+    }
+  }
+
+  private connectToNotebookTerminal(kind: ViewModels.TerminalKind): void {
     let title: string;
 
     switch (kind) {
@@ -1079,7 +1148,26 @@ export default class Explorer {
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {
-    parent = parent || this.resourceTree.myNotebooksContentRoot;
+    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+      useDialog.getState().showOkCancelModalDialog(
+        Notebook.newNotebookModalTitle,
+        Notebook.newNotebookModalContent,
+        "Create",
+        async () => {
+          await this.allocateContainer();
+          parent = parent || this.resourceTree.myNotebooksContentRoot;
+          this.uploadFilePanel(parent);
+        },
+        "Cancel",
+        undefined
+      );
+    } else {
+      parent = parent || this.resourceTree.myNotebooksContentRoot;
+      this.uploadFilePanel(parent);
+    }
+  }
+
+  private uploadFilePanel(parent?: NotebookContentItem): void {
     useSidePanel
       .getState()
       .openSidePanel(

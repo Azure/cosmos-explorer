@@ -2,10 +2,12 @@ import { cloneDeep } from "lodash";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { ConnectionStatusType } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
+import { ContainerConnectionInfo } from "../../Contracts/DataModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -28,8 +30,9 @@ interface NotebookState {
   myNotebooksContentRoot: NotebookContentItem;
   gitHubNotebooksContentRoot: NotebookContentItem;
   galleryContentRoot: NotebookContentItem;
-  connectionInfo: DataModels.ContainerConnectionInfo;
+  connectionInfo: ContainerConnectionInfo;
   notebookFolderName: string;
+  isAllocating: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -46,7 +49,8 @@ interface NotebookState {
   deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
   initializeNotebooksTree: (notebookManager: NotebookManager) => Promise<void>;
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
-  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => void;
+  setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => void;
+  setIsAllocating: (isAllocating: boolean) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -69,8 +73,11 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   myNotebooksContentRoot: undefined,
   gitHubNotebooksContentRoot: undefined,
   galleryContentRoot: undefined,
-  connectionInfo: undefined,
+  connectionInfo: {
+    status: ConnectionStatusType.Connect,
+  },
   notebookFolderName: undefined,
+  isAllocating: false,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -253,5 +260,6 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       set({ gitHubNotebooksContentRoot });
     }
   },
-  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => set({ connectionInfo }),
+  setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => set({ connectionInfo }),
+  setIsAllocating: (isAllocating: boolean) => set({ isAllocating }),
 }));

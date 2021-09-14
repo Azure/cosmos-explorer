@@ -10,10 +10,12 @@ import {
   SortBy,
 } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
+import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "../UserContext";
 import { logConsoleInfo, logConsoleProgress } from "./NotificationConsoleUtils";
 
 const defaultSelectedAbuseCategory = "Other";
@@ -225,67 +227,88 @@ export function downloadItem(
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
     `Download to ${useNotebook.getState().notebookFolderName}`,
-    `Download ${name} from gallery as a copy to your notebooks to run and/or edit the notebook.`,
+    NotebookUtil.getDownloadModelConent(name),
     "Download",
     async () => {
-      const clearInProgressMessage = logConsoleProgress(
-        `Downloading ${name} to ${useNotebook.getState().notebookFolderName}`
-      );
-      const startKey = traceStart(Action.NotebooksGalleryDownload, {
-        notebookId: data.id,
-        downloadCount: data.downloads,
-        isSample: data.isSample,
-      });
-
-      try {
-        const response = await junoClient.getNotebookContent(data.id);
-        if (!response.data) {
-          throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
-        }
-
-        const notebook = JSON.parse(response.data) as Notebook;
-        removeNotebookViewerLink(notebook, data.newCellId);
-
-        if (!data.isSample) {
-          const metadata = notebook.metadata as { [name: string]: unknown };
-          metadata.untrusted = true;
-        }
-
-        await container.importAndOpenContent(data.name, JSON.stringify(notebook));
-        logConsoleInfo(`Successfully downloaded ${name} to My Notebooks`);
-
-        const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
-        if (increaseDownloadResponse.data) {
-          traceSuccess(
-            Action.NotebooksGalleryDownload,
-            { notebookId: data.id, downloadCount: increaseDownloadResponse.data.downloads, isSample: data.isSample },
-            startKey
-          );
-          onComplete(increaseDownloadResponse.data);
-        }
-      } catch (error) {
-        traceFailure(
-          Action.NotebooksGalleryDownload,
-          {
-            notebookId: data.id,
-            downloadCount: data.downloads,
-            isSample: data.isSample,
-            error: getErrorMessage(error),
-            errorStack: getErrorStack(error),
-          },
-          startKey
-        );
-
-        handleError(error, "GalleryUtils/downloadItem", `Failed to download ${data.name}`);
+      if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+        await container.allocateContainer();
       }
-
-      clearInProgressMessage();
+      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+      if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
+        downloadNotebookItem(name, data, junoClient, container, onComplete);
+      } else {
+        useDialog
+          .getState()
+          .showOkModalDialog(
+            "Failed to Connect",
+            "Failed to connect temporary environment, this could happen because of network issue please refresh and try again."
+          );
+      }
     },
     "Cancel",
     undefined
   );
 }
+export async function downloadNotebookItem(
+  fileName: string,
+  data: IGalleryItem,
+  junoClient: JunoClient,
+  container: Explorer,
+  onComplete: (item: IGalleryItem) => void
+) {
+  const clearInProgressMessage = logConsoleProgress(
+    `Downloading ${fileName} to ${useNotebook.getState().notebookFolderName}`
+  );
+  const startKey = traceStart(Action.NotebooksGalleryDownload, {
+    notebookId: data.id,
+    downloadCount: data.downloads,
+    isSample: data.isSample,
+  });
 
+  try {
+    const response = await junoClient.getNotebookContent(data.id);
+    if (!response.data) {
+      throw new Error(`Received HTTP ${response.status} when fetching ${data.name}`);
+    }
+
+    const notebook = JSON.parse(response.data) as Notebook;
+    removeNotebookViewerLink(notebook, data.newCellId);
+
+    if (!data.isSample) {
+      const metadata = notebook.metadata as { [name: string]: unknown };
+      metadata.untrusted = true;
+    }
+
+    await container.importAndOpenContent(data.name, JSON.stringify(notebook));
+    logConsoleInfo(`Successfully downloaded ${data.name} to ${useNotebook.getState().notebookFolderName}`);
+
+    const increaseDownloadResponse = await junoClient.increaseNotebookDownloadCount(data.id);
+    if (increaseDownloadResponse.data) {
+      traceSuccess(
+        Action.NotebooksGalleryDownload,
+        { notebookId: data.id, downloadCount: increaseDownloadResponse.data.downloads, isSample: data.isSample },
+        startKey
+      );
+      onComplete(increaseDownloadResponse.data);
+    }
+  } catch (error) {
+    traceFailure(
+      Action.NotebooksGalleryDownload,
+      {
+        notebookId: data.id,
+        downloadCount: data.downloads,
+        isSample: data.isSample,
+        error: getErrorMessage(error),
+        errorStack: getErrorStack(error),
+      },
+      startKey
+    );
+
+    handleError(error, "GalleryUtils/downloadItem", `Failed to download ${data.name}`);
+  }
+
+  clearInProgressMessage();
+}
 export const removeNotebookViewerLink = (notebook: Notebook, newCellId: string): void => {
   if (!newCellId) {
     return;

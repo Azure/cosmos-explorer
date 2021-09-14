@@ -1,17 +1,21 @@
 import { Icon, ProgressIndicator, Stack, TooltipHost } from "@fluentui/react";
+import { ActionButton } from "@fluentui/react/lib/Button";
 import * as React from "react";
+import "../../../../less/hostedexplorer.less";
 import { ConnectionStatusType } from "../../../Common/Constants";
+import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import "../CommandBar/ConnectionStatusComponent.less";
-
-export const ConnectionStatus: React.FC = (): JSX.Element => {
+interface Props {
+  container: Explorer;
+}
+export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Element => {
   const [second, setSecond] = React.useState("00");
   const [minute, setMinute] = React.useState("00");
   const [isActive, setIsActive] = React.useState(false);
   const [counter, setCounter] = React.useState(0);
-  const [statusColor, setStatusColor] = React.useState("locationYellowDot");
-  const [statusColorAnimation, setStatusColorAnimation] = React.useState("ringringYellow");
-  const toolTipContent = "Hosted runtime status.";
+  const [statusColor, setStatusColor] = React.useState("status connecting is-animating");
+  const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary run time environment.");
   React.useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
@@ -39,34 +43,62 @@ export const ConnectionStatus: React.FC = (): JSX.Element => {
   };
 
   const connectionInfo = useNotebook((state) => state.connectionInfo);
-  if (!connectionInfo) {
-    return <></>;
+  const memoryUsageInfo = useNotebook((state) => state.memoryUsageInfo);
+
+  const totalGB = memoryUsageInfo ? memoryUsageInfo.totalKB / 1048576 : 0;
+  const usedGB = totalGB > 0 ? totalGB - memoryUsageInfo.freeKB / 1048576 : 0;
+
+  if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connect) {
+    return (
+      <ActionButton className="commandReactBtn" onClick={() => container.allocateContainer()}>
+        <TooltipHost content={toolTipContent}>
+          <Stack className="connectionStatusContainer" horizontal>
+            <Icon iconName="ConnectVirtualMachine" className="connectIcon" />
+            <span>{connectionInfo.status}</span>
+          </Stack>
+        </TooltipHost>
+      </ActionButton>
+    );
   }
+
   if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connecting && isActive === false) {
     setIsActive(true);
+    setStatusColor("status connecting is-animating");
+    setToolTipContent("Connecting to temporary run time environment.");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connected && isActive === true) {
     stopTimer();
-    setStatusColor("locationGreenDot");
-    setStatusColorAnimation("ringringGreen");
+    setStatusColor("status connected is-animating");
+    setToolTipContent("Connected to temporary runtime environment.");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Failed && isActive === true) {
     stopTimer();
-    setStatusColor("locationRedDot");
-    setStatusColorAnimation("ringringRed");
+    setStatusColor("status failed is-animating");
+    setToolTipContent("Click here to Re-Connect to temporary run time environment");
   }
   return (
-    <TooltipHost content={toolTipContent}>
-      <Stack className="connectionStatusContainer" horizontal>
-        <div className="ring-container">
-          <div className={statusColorAnimation}></div>
-          <Icon iconName="LocationDot" className={statusColor} />
-        </div>
-        <span className={connectionInfo.status === ConnectionStatusType.Failed ? "connectionStatusFailed" : ""}>
-          {connectionInfo.status}
-        </span>
-        {connectionInfo.status === ConnectionStatusType.Connecting && isActive && (
-          <ProgressIndicator description={minute + ":" + second} />
-        )}
-      </Stack>
-    </TooltipHost>
+    <ActionButton
+      className={connectionInfo.status === ConnectionStatusType.Failed ? "commandReactBtn" : "connectedReactBtn"}
+      onClick={(e: React.MouseEvent<HTMLSpanElement>) =>
+        connectionInfo.status === ConnectionStatusType.Failed ? container.allocateContainer() : e.preventDefault()
+      }
+    >
+      <TooltipHost content={toolTipContent}>
+        <Stack className="connectionStatusContainer" horizontal>
+          <i className={statusColor}></i>
+          <span className={connectionInfo.status === ConnectionStatusType.Failed ? "connectionStatusFailed" : ""}>
+            {connectionInfo.status}
+          </span>
+          {connectionInfo.status === ConnectionStatusType.Connecting && isActive && (
+            <ProgressIndicator description={minute + ":" + second} />
+          )}
+          {connectionInfo.status === ConnectionStatusType.Connected && !isActive && (
+            <ProgressIndicator
+              className={usedGB / totalGB > 0.8 ? "lowMemory" : ""}
+              description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
+              percentComplete={usedGB / totalGB}
+            />
+          )}
+        </Stack>
+      </TooltipHost>
+    </ActionButton>
   );
 };

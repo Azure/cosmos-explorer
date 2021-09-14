@@ -55,15 +55,15 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, backgroundColor);
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
-  if (
-    userContext.features.notebooksTemporarilyDown === false &&
-    userContext.features.phoenix === true &&
-    useTabs.getState().activeTab?.tabKind === ViewModels.CollectionTabKind.NotebookV2
-  ) {
-    uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus("connectionStatus"));
+  if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+    uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
   }
 
-  if (useTabs.getState().activeTab?.tabKind === ViewModels.CollectionTabKind.NotebookV2) {
+  if (
+    useTabs.getState().activeTab?.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
+    userContext.features.notebooksTemporarilyDown === false &&
+    userContext.features.phoenix === false
+  ) {
     uiFabricControlButtons.unshift(CommandBarUtil.createMemoryTracker("memoryTracker"));
   }
 

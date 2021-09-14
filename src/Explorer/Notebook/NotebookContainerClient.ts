@@ -2,9 +2,11 @@
  * Notebook container related stuff
  */
 import * as Constants from "../../Common/Constants";
+import { ConnectionStatusType } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
+import { ContainerConnectionInfo } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
@@ -75,6 +77,11 @@ export class NotebookContainerClient {
             freeKB: memoryUsageInfo.free,
           };
         }
+      } else {
+        const connectionStatus: ContainerConnectionInfo = {
+          status: ConnectionStatusType.Connect,
+        };
+        useNotebook.getState().setConnectionInfo(connectionStatus);
       }
       return undefined;
     } catch (error) {
@@ -84,6 +91,10 @@ export class NotebookContainerClient {
           "Connection lost with Notebook server. Attempting to reconnect..."
         );
       }
+      const connectionStatus: ContainerConnectionInfo = {
+        status: ConnectionStatusType.Failed,
+      };
+      useNotebook.getState().setConnectionInfo(connectionStatus);
       this.onConnectionLost();
       return undefined;
     }

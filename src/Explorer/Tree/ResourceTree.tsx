@@ -128,7 +128,12 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         notebooksTree.children.push(buildGalleryNotebooksTree());
       }
 
-      if (myNotebooksContentRoot && useNotebook.getState().connectionInfo.status == ConnectionStatusType.Connected) {
+      if (
+        myNotebooksContentRoot &&
+        ((userContext.features.phoenix === true &&
+          useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected) ||
+          userContext.features.phoenix === false)
+      ) {
         notebooksTree.children.push(buildMyNotebooksTree());
       }
       if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
@@ -216,7 +221,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     const connectGitContextMenu: TreeNodeMenuItem[] = [
       {
         label: "Connect to GitHub",
-        onClick: () =>
+        onClick: () => {
+          container.allocateContainer();
           useSidePanel
             .getState()
             .openSidePanel(
@@ -226,7 +232,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
                 gitHubClientProp={container.notebookManager.gitHubClient}
                 junoClientProp={container.notebookManager.junoClient}
               />
-            ),
+            );
+        },
       },
     ];
     gitHubNotebooksTree.contextMenu = isConnected ? manageGitContextMenu : connectGitContextMenu;

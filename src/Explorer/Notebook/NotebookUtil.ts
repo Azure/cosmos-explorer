@@ -3,10 +3,12 @@ import { AppState, selectors } from "@nteract/core";
 import domtoimage from "dom-to-image";
 import Html2Canvas from "html2canvas";
 import path from "path";
+import { userContext } from "../../UserContext";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as StringUtils from "../../Utils/StringUtils";
 import { SnapshotFragment } from "./NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
+import { useNotebook } from "./useNotebook";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";
@@ -327,5 +329,19 @@ export class NotebookUtil {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  }
+  public static getDownloadModelConent(fileName: string): string {
+    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+      return `In order to download and run your notebook, a local temporary environment will be created for your account to view, edit and run the notebooks for a dedicated period of time. If you need the notebook to be stored permanently, please connect to github and then download the notebook to your github repo.`;
+    } else {
+      return `Download ${fileName} from gallery as a copy to your notebooks to run and/or edit the notebook.`;
+    }
+  }
+  public static getNotebookBtnTitle(): string {
+    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+      return `Download to ${useNotebook.getState().notebookFolderName}`;
+    } else {
+      return `Download to my notebooks`;
+    }
   }
 }
