@@ -23,7 +23,6 @@ export interface InputParameterProps {
   inputParameterTitle?: string;
   inputLabel?: string;
   isAddRemoveVisible: boolean;
-  autoFocus?: boolean;
   onDeleteParamKeyPress?: () => void;
   onAddNewParamKeyPress?: () => void;
   onParamValueChange: (event: React.FormEvent<HTMLElement>, newInput?: string) => void;
@@ -39,7 +38,6 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
   isAddRemoveVisible,
   paramValue,
   selectedKey,
-  autoFocus,
   onDeleteParamKeyPress,
   onAddNewParamKeyPress,
   onParamValueChange,
@@ -61,11 +59,11 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
           onChange={onParamKeyChange}
           options={options}
           styles={dropdownStyles}
+          tabIndex={0}
         />
         <TextField
           label={inputLabel && inputLabel}
           id="confirmCollectionId"
-          autoFocus={autoFocus}
           value={paramValue}
           onChange={onParamValueChange}
         />

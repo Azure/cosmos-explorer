@@ -23,7 +23,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
           className="panelMainContent"
         >
           <InputParameter
-            autoFocus={true}
             dropdownLabel="Key"
             inputLabel="Value"
             inputParameterTitle="Partition key value"
@@ -346,6 +345,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       },
                     }
                   }
+                  tabIndex={0}
                 >
                   <DropdownBase
                     label="Key"
@@ -364,6 +364,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     }
                     selectedKey="string"
                     styles={[Function]}
+                    tabIndex={0}
                     theme={
                       Object {
                         "disableGlobalClassNames": false,
@@ -665,6 +666,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       responsiveMode={3}
                       selectedKey="string"
                       styles={[Function]}
+                      tabIndex={0}
                       theme={
                         Object {
                           "disableGlobalClassNames": false,
@@ -1563,14 +1565,12 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   </DropdownBase>
                 </Dropdown>
                 <StyledTextFieldBase
-                  autoFocus={true}
                   id="confirmCollectionId"
                   key=".0:$.1"
                   label="Value"
                   onChange={[Function]}
                 >
                   <TextFieldBase
-                    autoFocus={true}
                     deferredValidationTime={200}
                     id="confirmCollectionId"
                     label="Value"
@@ -2156,7 +2156,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           <input
                             aria-invalid={false}
                             aria-labelledby="TextFieldLabel3"
-                            autoFocus={true}
                             className="ms-TextField-field field-77"
                             id="confirmCollectionId"
                             onBlur={[Function]}
@@ -2501,6 +2500,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       },
                     }
                   }
+                  tabIndex={0}
                 >
                   <DropdownBase
                     label="Key"
@@ -2519,6 +2519,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     }
                     selectedKey="string"
                     styles={[Function]}
+                    tabIndex={0}
                     theme={
                       Object {
                         "disableGlobalClassNames": false,
@@ -2820,6 +2821,7 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       responsiveMode={3}
                       selectedKey="string"
                       styles={[Function]}
+                      tabIndex={0}
                       theme={
                         Object {
                           "disableGlobalClassNames": false,
