@@ -120,15 +120,6 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   constructor(props: IQueryTabComponentProps) {
     super(props);
     const columns: IColumn[] = [
-      // {
-      //   key: "column1",
-      //   name: "",
-      //   minWidth: 16,
-      //   maxWidth: 16,
-      //   data: String,
-      //   fieldName: "toolTip",
-      //   onRender: this.onRenderColumnItem,
-      // },
       {
         key: "column2",
         name: "METRIC",
