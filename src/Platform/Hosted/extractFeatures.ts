@@ -29,6 +29,8 @@ export type Features = {
   readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
+  readonly mongoProxyEndpoint?: string;
+  readonly mongoProxyAPIs?: string;
   readonly notebooksTemporarilyDown: boolean;
 };
 
@@ -63,6 +65,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableKoResourceTree: "true" === get("enablekoresourcetree"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
+    mongoProxyEndpoint: get("mongoproxyendpoint"),
+    mongoProxyAPIs: get("mongoproxyapis"),
     junoEndpoint: get("junoendpoint"),
     livyEndpoint: get("livyendpoint"),
     notebookBasePath: get("notebookbasepath"),
@@ -79,4 +83,13 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
     phoenix: "true" === get("phoenix"),
   };
+}
+
+export function hasFlag(flags: string, desiredFlag: string): boolean {
+  if (!flags || !desiredFlag) {
+    return false;
+  }
+
+  const features = flags.split("|");
+  return features.find((feature) => feature === desiredFlag) ? true : false;
 }
