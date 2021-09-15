@@ -6,6 +6,7 @@ import { userContext } from "../../../../UserContext";
 import {
   calculateEstimateNumber,
   computeRUUsagePriceHourly,
+  estimatedCostDisclaimer,
   getAutoscalePricePerRu,
   getCurrencySign,
   getMultimasterMultiplier,
@@ -44,7 +45,7 @@ export const CostEstimateText: FunctionComponent<CostEstimateTextProps> = ({
   const multiplier = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
   const pricePerRu = isAutoscale ? getAutoscalePricePerRu(serverId, multiplier) : getPricePerRu(serverId, multiplier);
 
-  const iconWithEstimatedCostDisclaimer: JSX.Element = <InfoTooltip>PricingUtils.estimatedCostDisclaimer</InfoTooltip>;
+  const iconWithEstimatedCostDisclaimer: JSX.Element = <InfoTooltip>{estimatedCostDisclaimer}</InfoTooltip>;
 
   if (isAutoscale) {
     return (

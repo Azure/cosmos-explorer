@@ -224,14 +224,14 @@ export const getRuPriceBreakdown = (
     isAutoscale: isAutoscale,
   });
   const multimasterMultiplier = getMultimasterMultiplier(numberOfRegions, isMultimaster);
-  const basePricePerRu: number = isAutoscale
+  const pricePerRu: number = isAutoscale
     ? getAutoscalePricePerRu(serverId, multimasterMultiplier)
     : getPricePerRu(serverId, multimasterMultiplier);
   return {
-    hourlyPrice: hourlyPrice,
+    hourlyPrice,
     dailyPrice: hourlyPrice * 24,
     monthlyPrice: hourlyPrice * hoursInAMonth,
-    pricePerRu: basePricePerRu * getMultimasterMultiplier(numberOfRegions, isMultimaster),
+    pricePerRu,
     currency: getPriceCurrency(serverId),
     currencySign: getCurrencySign(serverId),
   };
