@@ -2,11 +2,11 @@ import * as Constants from "./Constants";
 
 export function computeRUUsagePrice(serverId: string, requestUnits: number): string {
   if (serverId === "mooncake") {
-    const ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerRU;
+    const ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.mooncake.Standard.SingleMasterPricePerRU;
     return calculateEstimateNumber(ruCharge) + " " + Constants.OfferPricing.HourlyPricing.mooncake.Currency;
   }
 
-  const ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRU;
+  const ruCharge = requestUnits * Constants.OfferPricing.HourlyPricing.default.Standard.SingleMasterPricePerRU;
   return calculateEstimateNumber(ruCharge) + " " + Constants.OfferPricing.HourlyPricing.default.Currency;
 }
 

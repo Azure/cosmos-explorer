@@ -1,45 +1,45 @@
-import * as React from "react";
-import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
-import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
-import { Urls, StyleConstants } from "../../../Common/Constants";
 import {
-  getPriceCurrency,
-  getCurrencySign,
-  getAutoscalePricePerRu,
-  getMultimasterMultiplier,
-  computeRUUsagePriceHourly,
-  getPricePerRu,
-  estimatedCostDisclaimer,
-} from "../../../Utils/PricingUtils";
-import {
-  ITextFieldStyles,
+  DetailsList,
+  DetailsListLayoutMode,
+  DetailsRow,
   ICheckboxStyles,
-  IStackProps,
-  IStackTokens,
   IChoiceGroupStyles,
-  Link,
-  Text,
-  IMessageBarStyles,
-  ITextStyles,
-  IDetailsRowStyles,
-  IStackStyles,
+  IColumn,
+  IDetailsColumnStyles,
   IDetailsListStyles,
+  IDetailsRowProps,
+  IDetailsRowStyles,
   IDropdownStyles,
+  IMessageBarStyles,
   ISeparatorStyles,
+  IStackProps,
+  IStackStyles,
+  IStackTokens,
+  ITextFieldStyles,
+  ITextStyles,
+  Link,
   MessageBar,
   MessageBarType,
-  Stack,
+  SelectionMode,
   Spinner,
   SpinnerSize,
-  DetailsList,
-  IColumn,
-  SelectionMode,
-  DetailsListLayoutMode,
-  IDetailsRowProps,
-  DetailsRow,
-  IDetailsColumnStyles,
+  Stack,
+  Text,
 } from "@fluentui/react";
-import { isDirtyTypes, isDirty } from "./SettingsUtils";
+import * as React from "react";
+import { StyleConstants, Urls } from "../../../Common/Constants";
+import { AutopilotDocumentation, hoursInAMonth } from "../../../Shared/Constants";
+import * as AutoPilotUtils from "../../../Utils/AutoPilotUtils";
+import {
+  computeRUUsagePriceHourly,
+  estimatedCostDisclaimer,
+  getAutoscalePricePerRu,
+  getCurrencySign,
+  getMultimasterMultiplier,
+  getPriceCurrency,
+  getPricePerRu,
+} from "../../../Utils/PricingUtils";
+import { isDirty, isDirtyTypes } from "./SettingsUtils";
 
 export interface EstimatedSpendingDisplayProps {
   costType: JSX.Element;
@@ -223,14 +223,15 @@ export const getRuPriceBreakdown = (
     multimasterEnabled: isMultimaster,
     isAutoscale: isAutoscale,
   });
-  const basePricePerRu: number = isAutoscale
-    ? getAutoscalePricePerRu(serverId, getMultimasterMultiplier(numberOfRegions, isMultimaster))
-    : getPricePerRu(serverId);
+  const multimasterMultiplier = getMultimasterMultiplier(numberOfRegions, isMultimaster);
+  const pricePerRu: number = isAutoscale
+    ? getAutoscalePricePerRu(serverId, multimasterMultiplier)
+    : getPricePerRu(serverId, multimasterMultiplier);
   return {
-    hourlyPrice: hourlyPrice,
+    hourlyPrice,
     dailyPrice: hourlyPrice * 24,
     monthlyPrice: hourlyPrice * hoursInAMonth,
-    pricePerRu: basePricePerRu * getMultimasterMultiplier(numberOfRegions, isMultimaster),
+    pricePerRu,
     currency: getPriceCurrency(serverId),
     currencySign: getCurrencySign(serverId),
   };
