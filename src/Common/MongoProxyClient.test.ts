@@ -5,7 +5,14 @@ import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
 import { extractFeatures } from "../Platform/Hosted/extractFeatures";
 import { updateUserContext } from "../UserContext";
-import { deleteDocument, getEndpoint, getFeatureEndpointOrDefault, queryDocuments, readDocument, updateDocument } from "./MongoProxyClient";
+import {
+  deleteDocument,
+  getEndpoint,
+  getFeatureEndpointOrDefault,
+  queryDocuments,
+  readDocument,
+  updateDocument,
+} from "./MongoProxyClient";
 
 const databaseId = "testDB";
 
@@ -260,10 +267,9 @@ describe("MongoProxyClient", () => {
       const features = extractFeatures(params);
       updateUserContext({
         authType: AuthType.AAD,
-        features: features
+        features: features,
       });
     });
-
 
     it("returns a local endpoint", () => {
       const endpoint = getFeatureEndpointOrDefault("readDocument");
