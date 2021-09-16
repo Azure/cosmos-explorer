@@ -654,6 +654,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       >
         <input
           aria-label="Autoscale mode"
+          aria-required={true}
           checked={true}
           className="throughputInputRadioBtn"
           key=".0:$.0"
@@ -670,6 +671,7 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         </span>
         <input
           aria-label="Manual mode"
+          aria-required={true}
           checked={false}
           className="throughputInputRadioBtn"
           key=".0:$.2"
