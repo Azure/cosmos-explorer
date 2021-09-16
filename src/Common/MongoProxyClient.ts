@@ -268,7 +268,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         ? documentId.partitionKeyProperty
         : "",
   };
-  const endpoint = getFeatureEndpointOrDefault("deleteDocument");;
+  const endpoint = getFeatureEndpointOrDefault("deleteDocument");
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -336,11 +336,13 @@ export function createMongoCollectionWithProxy(
 }
 
 export function getFeatureEndpointOrDefault(feature: string): string {
-  return (hasFlag(userContext.features.mongoProxyAPIs, feature)) ? getEndpoint(userContext.features.mongoProxyEndpoint) : getEndpoint();
+  return hasFlag(userContext.features.mongoProxyAPIs, feature)
+    ? getEndpoint(userContext.features.mongoProxyEndpoint)
+    : getEndpoint();
 }
 
 export function getEndpoint(customEndpoint?: string): string {
-  let url = customEndpoint ? customEndpoint : (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT);
+  let url = customEndpoint ? customEndpoint : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
   url += "/api/mongo/explorer";
 
   if (userContext.authType === AuthType.EncryptedToken) {
