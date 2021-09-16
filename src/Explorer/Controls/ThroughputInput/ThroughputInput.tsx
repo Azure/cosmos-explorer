@@ -1,4 +1,15 @@
-import { Checkbox, DirectionalHint, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
+import {
+  Checkbox,
+  ChoiceGroup,
+  DirectionalHint,
+  IChoiceGroupOption,
+  Label,
+  Link,
+  Stack,
+  Text,
+  TextField,
+  TooltipHost,
+} from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
@@ -90,7 +101,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     );
   };
 
-  const handleOnChangeMode = (event: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
+  const handleOnChangeMode = (_: React.ChangeEvent<HTMLInputElement>, mode: string): void => {
     if (mode === "Autoscale") {
       setThroughput(AutoPilotUtils.minAutoPilotThroughput);
       setIsAutoScaleSelected(true);
@@ -103,39 +114,46 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       setIsAutoscale(false);
     }
   };
-
+  const choiceButtonStyles = {
+    flexContainer: [
+      {
+        selectors: {
+          ".ms-ChoiceField-wrapper label": {
+            fontSize: 12,
+            paddingTop: 0,
+          },
+          ".ms-ChoiceField": {
+            marginTop: 0,
+          },
+        },
+      },
+    ],
+  };
+  const throughPutOptions: IChoiceGroupOption[] = [
+    { key: "Autoscale", text: "Autoscale" },
+    { key: "Manual", text: "Manual" },
+  ];
   return (
     <div className="throughputInputContainer throughputInputSpacing">
       <Stack horizontal>
         <span className="mandatoryStar">*&nbsp;</span>
-        <Text aria-label="Throughput header" variant="small" style={{ lineHeight: "20px", fontWeight: 600 }}>
+        <Label id="throughPut" aria-label={getThroughputLabelText()} style={{ lineHeight: "20px", fontWeight: 600 }}>
           {getThroughputLabelText()}
-        </Text>
+        </Label>
         <InfoTooltip>{PricingUtils.getRuToolTipText()}</InfoTooltip>
       </Stack>
 
-      <Stack horizontal verticalAlign="center">
-        <input
-          className="throughputInputRadioBtn"
-          aria-label="Autoscale mode"
-          checked={isAutoscaleSelected}
-          type="radio"
-          role="radio"
-          tabIndex={0}
-          onChange={(e) => handleOnChangeMode(e, "Autoscale")}
+      <Stack verticalAlign="center">
+        <ChoiceGroup
+          ariaLabelledBy="throughPut"
+          styles={choiceButtonStyles}
+          options={throughPutOptions}
+          defaultSelectedKey={throughPutOptions[0].key}
+          onChange={(_: React.ChangeEvent<HTMLInputElement>, options: IChoiceGroupOption) =>
+            handleOnChangeMode(_, options.key.toString())
+          }
+          required
         />
-        <span className="throughputInputRadioBtnLabel">Autoscale</span>
-
-        <input
-          className="throughputInputRadioBtn"
-          aria-label="Manual mode"
-          checked={!isAutoscaleSelected}
-          type="radio"
-          role="radio"
-          tabIndex={0}
-          onChange={(e) => handleOnChangeMode(e, "Manual")}
-        />
-        <span className="throughputInputRadioBtnLabel">Manual</span>
       </Stack>
 
       {isAutoscaleSelected && (
