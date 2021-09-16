@@ -363,6 +363,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             </span>
           </Text>
           <StyledTextFieldBase
+            ariaLabel="Confirm by typing the database id"
             autoFocus={true}
             id="confirmDatabaseId"
             onChange={[Function]}
@@ -375,6 +376,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             }
           >
             <TextFieldBase
+              ariaLabel="Confirm by typing the database id"
               autoFocus={true}
               deferredValidationTime={200}
               id="confirmDatabaseId"
@@ -667,6 +669,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                   >
                     <input
                       aria-invalid={false}
+                      aria-label="Confirm by typing the database id"
                       autoFocus={true}
                       className="ms-TextField-field field-60"
                       id="confirmDatabaseId"
@@ -707,6 +710,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             </span>
           </Text>
           <StyledTextFieldBase
+            ariaLabel="Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?"
             id="deleteDatabaseFeedbackInput"
             multiline={true}
             onChange={[Function]}
@@ -720,6 +724,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
             }
           >
             <TextFieldBase
+              ariaLabel="Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?"
               deferredValidationTime={200}
               id="deleteDatabaseFeedbackInput"
               multiline={true}
@@ -1013,6 +1018,7 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                   >
                     <textarea
                       aria-invalid={false}
+                      aria-label="Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?"
                       className="ms-TextField-field field-71"
                       id="deleteDatabaseFeedbackInput"
                       onBlur={[Function]}
