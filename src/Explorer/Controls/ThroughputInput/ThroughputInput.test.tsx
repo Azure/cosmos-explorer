@@ -21,12 +21,10 @@ describe("ThroughputInput Pane", () => {
   });
 
   it("should switch mode properly", () => {
-    wrapper.find('[aria-label="Manual mode"]').simulate("change");
-    expect(wrapper.find('[aria-label="Throughput header"]').at(0).text()).toBe(
-      "Container throughput (400 - unlimited RU/s)"
-    );
+    wrapper.find(".ms-ChoiceField-input").at(0).simulate("change");
+    expect(wrapper.find("#throughPut").at(0).text()).toBe("Container throughput (autoscale)");
 
-    wrapper.find('[aria-label="Autoscale mode"]').simulate("change");
-    expect(wrapper.find('[aria-label="Throughput header"]').at(0).text()).toBe("Container throughput (autoscale)");
+    wrapper.find(".ms-ChoiceField-input").at(1).simulate("change");
+    expect(wrapper.find("#throughPut").at(0).text()).toBe("Container throughput (400 - unlimited RU/s)");
   });
 });
