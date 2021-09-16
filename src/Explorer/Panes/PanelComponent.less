@@ -3,13 +3,12 @@
 .panelFormWrapper {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
 
   .panelMainContent {
     flex-grow: 1;
     padding: 0 34px;
     margin: 20px 0;
-    overflow: auto;
 
     & > :not(.collapsibleSection) {
       margin-bottom: @DefaultSpace;
