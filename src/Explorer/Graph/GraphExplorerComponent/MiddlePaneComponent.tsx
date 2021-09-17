@@ -1,8 +1,8 @@
 import * as React from "react";
-import { GraphVizComponent, GraphVizComponentProps } from "./GraphVizComponent";
 import CollapseArrowIcon from "../../../../images/Collapse_arrow_14x14.svg";
 import ExpandIcon from "../../../../images/Expand_14x14.svg";
 import LoadingIndicatorIcon from "../../../../images/LoadingIndicator_3Squares.gif";
+import { GraphVizComponent, GraphVizComponentProps } from "./GraphVizComponent";
 
 interface MiddlePaneComponentProps {
   isTabsContentExpanded: boolean;
@@ -17,7 +17,7 @@ export class MiddlePaneComponent extends React.Component<MiddlePaneComponentProp
       <div className="middlePane">
         <div className="graphTitle">
           <span className="paneTitle">Graph</span>
-          <span className="graphExpandCollapseBtn pull-right" onClick={this.props.toggleExpandGraph}>
+          <span className="graphExpandCollapseBtn pull-right" onClick={this.props.toggleExpandGraph} tabIndex={0}>
             <img
               src={this.props.isTabsContentExpanded ? CollapseArrowIcon : ExpandIcon}
               alt={this.props.isTabsContentExpanded ? "collapse graph content" : "expand graph content"}
