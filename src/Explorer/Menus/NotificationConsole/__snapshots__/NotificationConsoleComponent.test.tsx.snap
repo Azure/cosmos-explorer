@@ -340,7 +340,9 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
             date
           </span>
           <span
+            aria-live="assertive"
             className="message"
+            role="alert"
           >
             message
           </span>
