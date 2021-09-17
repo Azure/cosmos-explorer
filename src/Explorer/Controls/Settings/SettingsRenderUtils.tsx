@@ -65,7 +65,7 @@ export interface PriceBreakdown {
   currencySign: string;
 }
 
-export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14 } };
+export const infoAndToolTipTextStyle: ITextStyles = { root: { fontSize: 14, color: "windowtext" } };
 
 export const noLeftPaddingCheckBoxStyle: ICheckboxStyles = {
   label: {
