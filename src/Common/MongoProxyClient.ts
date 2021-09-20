@@ -342,7 +342,7 @@ export function getFeatureEndpointOrDefault(feature: string): string {
 }
 
 export function getEndpoint(customEndpoint?: string): string {
-  let url = customEndpoint ? customEndpoint : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
+  let url = customEndpoint ? customEndpoint : (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT);
   url += "/api/mongo/explorer";
 
   if (userContext.authType === AuthType.EncryptedToken) {

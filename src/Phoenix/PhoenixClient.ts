@@ -23,7 +23,7 @@ export class PhoenixClient {
     provisionData: IProvosionData
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
     try {
-      const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
+      const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/allocate`, {
         method: "POST",
         headers: PhoenixClient.getHeaders(),
         body: JSON.stringify(provisionData),
@@ -54,7 +54,7 @@ export class PhoenixClient {
   }
 
   public getPhoenixContainerPoolingEndPoint(): string {
-    return `${PhoenixClient.getPhoenixEndpoint()}/api/containerpooling`;
+    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer`;
   }
   private static getHeaders(): HeadersInit {
     const authorizationHeader = getAuthorizationHeader();
