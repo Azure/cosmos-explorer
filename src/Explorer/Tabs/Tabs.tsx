@@ -1,5 +1,5 @@
 import ko from "knockout";
-import React, { MutableRefObject, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import loadingIcon from "../../../images/circular_loader_black_16x16.gif";
 import errorIcon from "../../../images/close-black.svg";
 import { useObservable } from "../../hooks/useObservable";
@@ -32,13 +32,7 @@ export const Tabs = (): JSX.Element => {
 
 function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
   const [hovering, setHovering] = useState(false);
-  const focusTab = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
 
-  useEffect(() => {
-    if (active && focusTab.current) {
-      focusTab.current.focus();
-    }
-  });
   return (
     <li
       onMouseOver={() => setHovering(true)}
@@ -52,7 +46,6 @@ function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
       aria-controls={tab.tabId}
       tabIndex={0}
       role="tab"
-      ref={focusTab}
     >
       <span className="tabNavContentContainer">
         <a data-toggle="tab" href={"#" + tab.tabId} tabIndex={-1}>

@@ -153,7 +153,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
               selectedKey={paramKeyValue && paramKeyValue.key}
             />
           ))}
-          <Stack horizontal onClick={addNewParamAtLastIndex} tabIndex={0}>
+          <Stack horizontal onClick={addNewParamAtLastIndex}>
             <Image {...imageProps} src={AddPropertyIcon} alt="Add param" />
             <Text className="addNewParamStyle">Add New Param</Text>
           </Stack>

@@ -123,6 +123,7 @@ exports[`Settings Pane should render Default properly 1`] = `
           onValidate={[Function]}
           role="textbox"
           step={1}
+          tabIndex={0}
           value="6"
         />
       </div>

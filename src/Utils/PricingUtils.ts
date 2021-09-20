@@ -34,18 +34,26 @@ export function getRuToolTipText(): string {
  * Otherwise, return numberOfRegions
  * @param numberOfRegions
  */
-export function getRegionMultiplier(numberOfRegions: number): number {
+export function getRegionMultiplier(numberOfRegions: number, multimasterEnabled: boolean): number {
   const normalizedNumberOfRegions: number = normalizeNumber(numberOfRegions);
 
   if (normalizedNumberOfRegions <= 0) {
     return 0;
   }
 
+  if (numberOfRegions === 1) {
+    return numberOfRegions;
+  }
+
+  if (multimasterEnabled) {
+    return numberOfRegions + 1;
+  }
+
   return numberOfRegions;
 }
 
 export function getMultimasterMultiplier(numberOfRegions: number, multimasterEnabled: boolean): number {
-  const regionMultiplier: number = getRegionMultiplier(numberOfRegions);
+  const regionMultiplier: number = getRegionMultiplier(numberOfRegions, multimasterEnabled);
   const multimasterMultiplier: number = !multimasterEnabled ? 1 : regionMultiplier > 1 ? 2 : 1;
 
   return multimasterMultiplier;
@@ -58,12 +66,10 @@ export function computeRUUsagePriceHourly({
   multimasterEnabled,
   isAutoscale,
 }: ComputeRUUsagePriceHourlyArgs): number {
-  const regionMultiplier: number = getRegionMultiplier(numberOfRegions);
+  const regionMultiplier: number = getRegionMultiplier(numberOfRegions, multimasterEnabled);
   const multimasterMultiplier: number = getMultimasterMultiplier(numberOfRegions, multimasterEnabled);
-  const pricePerRu = isAutoscale
-    ? getAutoscalePricePerRu(serverId, multimasterMultiplier)
-    : getPricePerRu(serverId, multimasterMultiplier);
-  const ruCharge = requestUnits * pricePerRu * regionMultiplier;
+  const pricePerRu = isAutoscale ? getAutoscalePricePerRu(serverId, multimasterMultiplier) : getPricePerRu(serverId);
+  const ruCharge = requestUnits * pricePerRu * multimasterMultiplier * regionMultiplier;
 
   return Number(ruCharge.toFixed(5));
 }
@@ -143,16 +149,12 @@ export function getAutoscalePricePerRu(serverId: string, mmMultiplier: number): 
   }
 }
 
-export function getPricePerRu(serverId: string, mmMultiplier: number): number {
+export function getPricePerRu(serverId: string): number {
   if (serverId === "mooncake") {
-    return mmMultiplier > 1
-      ? Constants.OfferPricing.HourlyPricing.mooncake.Standard.MultiMasterPricePerRU
-      : Constants.OfferPricing.HourlyPricing.mooncake.Standard.SingleMasterPricePerRU;
+    return Constants.OfferPricing.HourlyPricing.mooncake.Standard.PricePerRU;
   }
 
-  return mmMultiplier > 1
-    ? Constants.OfferPricing.HourlyPricing.default.Standard.MultiMasterPricePerRU
-    : Constants.OfferPricing.HourlyPricing.default.Standard.SingleMasterPricePerRU;
+  return Constants.OfferPricing.HourlyPricing.default.Standard.PricePerRU;
 }
 
 export function getAutoPilotV3SpendHtml(maxAutoPilotThroughputSet: number, isDatabaseThroughput: boolean): string {
@@ -186,7 +188,9 @@ export function getEstimatedAutoscaleSpendHtml(
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
   const currencySign: string = getCurrencySign(serverId);
-  const pricePerRu = getAutoscalePricePerRu(serverId, getMultimasterMultiplier(regions, multimaster));
+  const pricePerRu =
+    getAutoscalePricePerRu(serverId, getMultimasterMultiplier(regions, multimaster)) *
+    getMultimasterMultiplier(regions, multimaster);
 
   return (
     `Estimated monthly cost (${currency}): <b>` +
@@ -215,7 +219,7 @@ export function getEstimatedSpendHtml(
   const monthlyPrice: number = hourlyPrice * Constants.hoursInAMonth;
   const currency: string = getPriceCurrency(serverId);
   const currencySign: string = getCurrencySign(serverId);
-  const pricePerRu = getPricePerRu(serverId, getMultimasterMultiplier(regions, multimaster));
+  const pricePerRu = getPricePerRu(serverId) * getMultimasterMultiplier(regions, multimaster);
 
   return (
     `Cost (${currency}): <b>` +

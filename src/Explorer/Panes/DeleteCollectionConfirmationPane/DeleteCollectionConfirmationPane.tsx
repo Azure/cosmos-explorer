@@ -108,8 +108,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     submitButtonText: "OK",
     onSubmit,
   };
-  const confirmContainer = `Confirm by typing the ${collectionName.toLowerCase()} id`;
-  const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${collectionName}?`;
   return (
     <RightPaneForm {...props}>
       <div className="panelFormWrapper">
@@ -125,7 +123,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
               onChange={(event, newInput?: string) => {
                 setInputCollectionName(newInput);
               }}
-              ariaLabel={confirmContainer}
             />
           </div>
           {shouldRecordFeedback() && (
@@ -145,7 +142,6 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
                 onChange={(event, newInput?: string) => {
                   setDeleteCollectionFeedback(newInput);
                 }}
-                ariaLabel={reasonInfo}
               />
             </div>
           )}

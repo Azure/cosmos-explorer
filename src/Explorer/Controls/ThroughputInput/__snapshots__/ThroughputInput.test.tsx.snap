@@ -345,14 +345,12 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                     ariaLabel="Info"
                     className="panelInfoIcon"
                     iconName="Info"
-                    tabIndex={0}
                   >
                     <IconBase
                       ariaLabel="Info"
                       className="panelInfoIcon"
                       iconName="Info"
                       styles={[Function]}
-                      tabIndex={0}
                       theme={
                         Object {
                           "disableGlobalClassNames": false,
@@ -632,7 +630,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         className="panelInfoIcon root-57"
                         data-icon-name="Info"
                         role="img"
-                        tabIndex={0}
                       >
                         
                       </i>
@@ -654,7 +651,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
       >
         <input
           aria-label="Autoscale mode"
-          aria-required={true}
           checked={true}
           className="throughputInputRadioBtn"
           key=".0:$.0"
@@ -671,7 +667,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
         </span>
         <input
           aria-label="Manual mode"
-          aria-required={true}
           checked={false}
           className="throughputInputRadioBtn"
           key=".0:$.2"
@@ -1332,14 +1327,12 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                         ariaLabel="Info"
                         className="panelInfoIcon"
                         iconName="Info"
-                        tabIndex={0}
                       >
                         <IconBase
                           ariaLabel="Info"
                           className="panelInfoIcon"
                           iconName="Info"
                           styles={[Function]}
-                          tabIndex={0}
                           theme={
                             Object {
                               "disableGlobalClassNames": false,
@@ -1619,7 +1612,6 @@ exports[`ThroughputInput Pane should render Default properly 1`] = `
                             className="panelInfoIcon root-57"
                             data-icon-name="Info"
                             role="img"
-                            tabIndex={0}
                           >
                             
                           </i>

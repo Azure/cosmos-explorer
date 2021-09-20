@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MutableRefObject, useEffect, useRef } from "react";
+import React, { FunctionComponent } from "react";
 import arrowLeftImg from "../../images/imgarrowlefticon.svg";
 import refreshImg from "../../images/refresh-cosmos.svg";
 import { AuthType } from "../AuthType";
@@ -6,7 +6,6 @@ import Explorer from "../Explorer/Explorer";
 import { ResourceTokenTree } from "../Explorer/Tree/ResourceTokenTree";
 import { ResourceTree } from "../Explorer/Tree/ResourceTree";
 import { userContext } from "../UserContext";
-import { NormalizedEventKey } from "./Constants";
 
 export interface ResourceTreeContainerProps {
   toggleLeftPaneExpanded: () => void;
@@ -19,22 +18,6 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
   isLeftPaneExpanded,
   container,
 }: ResourceTreeContainerProps): JSX.Element => {
-  const focusButton = useRef<HTMLLIElement>() as MutableRefObject<HTMLLIElement>;
-
-  useEffect(() => {
-    if (isLeftPaneExpanded) {
-      if (focusButton.current) {
-        focusButton.current.focus();
-      }
-    }
-  });
-
-  const onKeyPressToggleLeftPaneExpanded = (event: React.KeyboardEvent) => {
-    if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
-      toggleLeftPaneExpanded();
-      event.stopPropagation();
-    }
-  };
   return (
     <div id="main" className={isLeftPaneExpanded ? "main" : "hiddenMain"}>
       {/* Collections Window - - Start */}
@@ -60,11 +43,9 @@ export const ResourceTreeContainer: FunctionComponent<ResourceTreeContainerProps
                 id="expandToggleLeftPaneButton"
                 role="button"
                 onClick={toggleLeftPaneExpanded}
-                onKeyPress={onKeyPressToggleLeftPaneExpanded}
                 tabIndex={0}
                 aria-label="Collapse Tree"
                 title="Collapse Tree"
-                ref={focusButton}
               >
                 <img className="refreshcol1" src={arrowLeftImg} alt="Hide" />
               </span>

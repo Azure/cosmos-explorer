@@ -118,8 +118,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     message:
       "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
   };
-  const confirmDatabase = "Confirm by typing the database id";
-  const reasonInfo = "Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?";
+
   return (
     <RightPaneForm {...props}>
       {!formError && <PanelInfoErrorComponent {...errorProps} />}
@@ -134,7 +133,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
             onChange={(event, newInput?: string) => {
               setDatabaseInput(newInput);
             }}
-            ariaLabel={confirmDatabase}
           />
         </div>
         {isLastNonEmptyDatabase() && (
@@ -153,7 +151,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
               onChange={(event, newInput?: string) => {
                 setDatabaseFeedbackInput(newInput);
               }}
-              ariaLabel={reasonInfo}
             />
           </div>
         )}

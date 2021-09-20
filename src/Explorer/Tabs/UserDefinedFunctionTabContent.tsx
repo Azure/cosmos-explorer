@@ -291,7 +291,7 @@ export default class UserDefinedFunctionTabContent extends Component<
           language={"javascript"}
           content={udfBody}
           isReadOnly={false}
-          ariaLabel={"User defined function body"}
+          ariaLabel={"Graph JSON"}
           onContentChanged={this.handleUdfBodyChange}
         />
       </div>
