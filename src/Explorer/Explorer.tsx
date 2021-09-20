@@ -165,23 +165,16 @@ export default class Explorer {
 
     useNotebook.subscribe(
       async () => {
-        if (!this.notebookManager) {
-          const NotebookManager = await (
-            await import(/* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager")
-          ).default;
-          this.notebookManager = new NotebookManager();
-          this.notebookManager.initialize({
-            container: this,
-            resourceTree: this.resourceTree,
-            refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
-            refreshNotebookList: () => this.refreshNotebookList(),
-          });
-        }
-
-        this.refreshCommandBarButtons();
-        this.refreshNotebookList();
+        this.initiateNotebooks();
       },
       (state) => state.isNotebookEnabled
+    );
+    useNotebook.subscribe(
+      async () => {
+        this.initiateNotebooks();
+        useNotebook.getState().setIsRefreshed(false);
+      },
+      (state) => state.isRefreshed
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);
@@ -212,6 +205,23 @@ export default class Explorer {
     }
 
     this.refreshExplorer();
+  }
+
+  public async initiateNotebooks(): Promise<void> {
+    if (!this.notebookManager) {
+      const NotebookManager = (await import(/* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager"))
+        .default;
+      this.notebookManager = new NotebookManager();
+      this.notebookManager.initialize({
+        container: this,
+        resourceTree: this.resourceTree,
+        refreshCommandBarButtons: () => this.refreshCommandBarButtons(),
+        refreshNotebookList: () => this.refreshNotebookList(),
+      });
+    }
+
+    this.refreshCommandBarButtons();
+    this.refreshNotebookList();
   }
 
   public openEnableSynapseLinkDialog(): void {
@@ -396,17 +406,16 @@ export default class Explorer {
             notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
             authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
           });
+          useNotebook.getState().setIsAllocating(false);
         } else {
           connectionStatus.status = ConnectionStatusType.Failed;
-          useNotebook.getState().setConnectionInfo(connectionStatus);
+          useNotebook.getState().resetConatinerConnection(connectionStatus);
         }
-        useNotebook.getState().setIsAllocating(false);
       } catch (error) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.Failed,
         };
-        useNotebook.getState().setConnectionInfo(connectionStatus);
-        useNotebook.getState().setIsAllocating(false);
+        useNotebook.getState().resetConatinerConnection(connectionStatus);
         console.error(error);
         throw error;
       }
@@ -686,6 +695,13 @@ export default class Explorer {
   public async openNotebook(notebookContentItem: NotebookContentItem): Promise<boolean> {
     if (!notebookContentItem || !notebookContentItem.path) {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
+    }
+    if (
+      notebookContentItem.type === NotebookContentItemType.Notebook &&
+      userContext.features.notebooksTemporarilyDown === false &&
+      userContext.features.phoenix === true
+    ) {
+      this.allocateContainer();
     }
 
     const notebookTabs = useTabs
@@ -1150,9 +1166,9 @@ export default class Explorer {
   public openUploadFilePanel(parent?: NotebookContentItem): void {
     if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
       useDialog.getState().showOkCancelModalDialog(
-        Notebook.newNotebookModalTitle,
+        Notebook.newNotebookUploadModalTitle,
         Notebook.newNotebookModalContent,
-        "Create",
+        "Upload",
         async () => {
           await this.allocateContainer();
           parent = parent || this.resourceTree.myNotebooksContentRoot;

@@ -167,7 +167,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       myNotebooksContentRoot,
       (item: NotebookContentItem) => {
         container.openNotebook(item).then((hasOpened) => {
-          if (hasOpened) {
+          if (
+            hasOpened &&
+            userContext.features.notebooksTemporarilyDown === false &&
+            userContext.features.phoenix === false
+          ) {
             mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
           }
         });
@@ -186,7 +190,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
         container.openNotebook(item).then((hasOpened) => {
-          if (hasOpened) {
+          if (
+            hasOpened &&
+            userContext.features.notebooksTemporarilyDown === false &&
+            userContext.features.phoenix === false
+          ) {
             mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
           }
         });

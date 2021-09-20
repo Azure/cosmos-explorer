@@ -33,6 +33,7 @@ interface NotebookState {
   connectionInfo: ContainerConnectionInfo;
   notebookFolderName: string;
   isAllocating: boolean;
+  isRefreshed: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -51,6 +52,8 @@ interface NotebookState {
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
   setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => void;
   setIsAllocating: (isAllocating: boolean) => void;
+  resetConatinerConnection: (connectionStatus: ContainerConnectionInfo) => void;
+  setIsRefreshed: (isAllocating: boolean) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -78,6 +81,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   notebookFolderName: undefined,
   isAllocating: false,
+  isRefreshed: false,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -262,4 +266,13 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => set({ connectionInfo }),
   setIsAllocating: (isAllocating: boolean) => set({ isAllocating }),
+  resetConatinerConnection: (connectionStatus: ContainerConnectionInfo): void => {
+    useNotebook.getState().setConnectionInfo(connectionStatus);
+    useNotebook.getState().setNotebookServerInfo({
+      notebookServerEndpoint: undefined,
+      authToken: undefined,
+    });
+    useNotebook.getState().setIsAllocating(false);
+  },
+  setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
 }));

@@ -48,7 +48,10 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   const totalGB = memoryUsageInfo ? memoryUsageInfo.totalKB / 1048576 : 0;
   const usedGB = totalGB > 0 ? totalGB - memoryUsageInfo.freeKB / 1048576 : 0;
 
-  if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connect) {
+  if (
+    connectionInfo &&
+    (connectionInfo.status === ConnectionStatusType.Connect || connectionInfo.status === ConnectionStatusType.ReConnect)
+  ) {
     return (
       <ActionButton className="commandReactBtn" onClick={() => container.allocateContainer()}>
         <TooltipHost content={toolTipContent}>

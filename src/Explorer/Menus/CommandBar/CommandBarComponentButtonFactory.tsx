@@ -597,7 +597,6 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
     iconSrc: GitHubIcon,
     iconAlt: label,
     onCommandClick: () => {
-      container.allocateContainer();
       useSidePanel
         .getState()
         .openSidePanel(

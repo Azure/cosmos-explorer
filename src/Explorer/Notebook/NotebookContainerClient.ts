@@ -77,11 +77,12 @@ export class NotebookContainerClient {
             freeKB: memoryUsageInfo.free,
           };
         }
-      } else {
+      } else if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
         const connectionStatus: ContainerConnectionInfo = {
-          status: ConnectionStatusType.Connect,
+          status: ConnectionStatusType.ReConnect,
         };
-        useNotebook.getState().setConnectionInfo(connectionStatus);
+        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().setIsRefreshed(true);
       }
       return undefined;
     } catch (error) {
@@ -91,10 +92,13 @@ export class NotebookContainerClient {
           "Connection lost with Notebook server. Attempting to reconnect..."
         );
       }
-      const connectionStatus: ContainerConnectionInfo = {
-        status: ConnectionStatusType.Failed,
-      };
-      useNotebook.getState().setConnectionInfo(connectionStatus);
+      if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+        const connectionStatus: ContainerConnectionInfo = {
+          status: ConnectionStatusType.Failed,
+        };
+        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().setIsRefreshed(true);
+      }
       this.onConnectionLost();
       return undefined;
     }

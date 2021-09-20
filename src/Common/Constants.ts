@@ -343,6 +343,7 @@ export enum ConnectionStatusType {
   Connecting = "Connecting",
   Connected = "Connected",
   Failed = "Connection Failed",
+  ReConnect = "Re-Connect",
 }
 
 export const EmulatorMasterKey =
@@ -354,7 +355,7 @@ export const StyleConstants = require("less-vars-loader!../../less/Common/Consta
 
 export class Notebook {
   public static readonly defaultBasePath = "./notebooks";
-  public static readonly heartbeatDelayMs = 10000;
+  public static readonly heartbeatDelayMs = 20000;
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
@@ -363,7 +364,11 @@ export class Notebook {
     "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";
   public static readonly cassandraShellTemporarilyDownMsg =
     "We have identified an issue with the Cassandra Shell and it is unavailable right now. We are actively working on the mitigation.";
+  public static saveNotebookModalTitle = "Save Notebook in temporary environment";
+  public static saveNotebookModalContent =
+    "Notebook Will be saved in temporary environment that lasts for a dedicated period of time. To Store and run notebook for a longer period, please connect to your Github repo and move your notebooks to Github instead.";
   public static newNotebookModalTitle = "Create Notebook in temporary environment";
+  public static newNotebookUploadModalTitle = "Upload Notebook in temporary environment";
   public static newNotebookModalContent =
     "A temporary environment will be created everytime you need to create, view, edit, and run a notebook for a dedicated period of time. To Store and run notebook for a longer period, please connect to your Github repo and move your notebooks to Github instead.";
 }
