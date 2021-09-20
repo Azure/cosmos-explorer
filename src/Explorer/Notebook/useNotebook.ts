@@ -198,11 +198,14 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       path: "Gallery",
       type: NotebookContentItemType.File,
     };
-    const gitHubNotebooksContentRoot = {
-      name: "GitHub repos",
-      path: "PsuedoDir",
-      type: NotebookContentItemType.Directory,
-    };
+    const gitHubNotebooksContentRoot = notebookManager?.gitHubOAuthService?.isLoggedIn()
+      ? {
+          name: "GitHub repos",
+          path: "PsuedoDir",
+          type: NotebookContentItemType.Directory,
+        }
+      : undefined;
+
     set({
       myNotebooksContentRoot,
       galleryContentRoot,
