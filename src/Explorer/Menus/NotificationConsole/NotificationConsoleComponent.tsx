@@ -205,7 +205,9 @@ export class NotificationConsoleComponent extends React.Component<
         {item.type === ConsoleDataType.Error && <img className="errorIcon" src={ErrorRedIcon} alt="error" />}
         {item.type === ConsoleDataType.InProgress && <img className="loaderIcon" src={LoaderIcon} alt="in progress" />}
         <span className="date">{item.date}</span>
-        <span className="message">{item.message}</span>
+        <span className="message" role="alert" aria-live="assertive">
+          {item.message}
+        </span>
       </div>
     ));
   }
