@@ -14,17 +14,24 @@ exports[`Settings Pane should render Default properly 1`] = `
       className="settingsSection"
     >
       <div
-        className="settingsSectionPart pageOptionsPart"
+        className="settingsSectionPart"
       >
-        <div
-          className="settingsSectionLabel"
+        <Stack
+          horizontal={true}
         >
-          Page options
+          <Text
+            className="settingsSectionLabel"
+            id="pageOptions"
+            variant="small"
+          >
+            Page options
+          </Text>
           <InfoTooltip>
             Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
           </InfoTooltip>
-        </div>
+        </Stack>
         <StyledChoiceGroup
+          ariaLabelledBy="pageOptions"
           onChange={[Function]}
           options={
             Array [
@@ -39,6 +46,23 @@ exports[`Settings Pane should render Default properly 1`] = `
             ]
           }
           selectedKey="custom"
+          styles={
+            Object {
+              "flexContainer": Array [
+                Object {
+                  "selectors": Object {
+                    ".ms-ChoiceField": Object {
+                      "marginTop": 0,
+                    },
+                    ".ms-ChoiceField-wrapper label": Object {
+                      "fontSize": 12,
+                      "paddingTop": 0,
+                    },
+                  },
+                },
+              ],
+            }
+          }
         />
       </div>
       <div
