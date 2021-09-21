@@ -129,7 +129,7 @@ export class NotificationConsoleComponent extends React.Component<
             className="expandCollapseButton"
             role="button"
             tabIndex={0}
-            aria-label={"console button" + (this.props.isConsoleExpanded ? " collapsed" : " expanded")}
+            aria-label={"console button" + (this.props.isConsoleExpanded ? " expanded" : " collapsed")}
             aria-expanded={!this.props.isConsoleExpanded}
           >
             <img
