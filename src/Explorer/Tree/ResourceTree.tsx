@@ -226,25 +226,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         },
       },
     ];
-    const connectGitContextMenu: TreeNodeMenuItem[] = [
-      {
-        label: "Connect to GitHub",
-        onClick: () => {
-          container.allocateContainer();
-          useSidePanel
-            .getState()
-            .openSidePanel(
-              "Connect to GitHub",
-              <GitHubReposPanel
-                explorer={container}
-                gitHubClientProp={container.notebookManager.gitHubClient}
-                junoClientProp={container.notebookManager.junoClient}
-              />
-            );
-        },
-      },
-    ];
-    gitHubNotebooksTree.contextMenu = isConnected ? manageGitContextMenu : connectGitContextMenu;
+    gitHubNotebooksTree.contextMenu = manageGitContextMenu;
     gitHubNotebooksTree.isExpanded = true;
     gitHubNotebooksTree.isAlphaSorted = true;
 

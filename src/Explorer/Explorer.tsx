@@ -919,25 +919,27 @@ export default class Explorer {
       throw new Error(error);
     }
     const isPhoenixEnabled = NotebookUtil.isPhoenixEnabled();
-    if (isPhoenixEnabled && !isGithubTree) {
-      useDialog.getState().showOkCancelModalDialog(
-        Notebook.newNotebookModalTitle,
-        Notebook.newNotebookModalContent,
-        "Create",
+    if (isPhoenixEnabled) {
+      if (isGithubTree) {
         async () => {
           await this.allocateContainer();
           parent = parent || this.resourceTree.myNotebooksContentRoot;
           this.createNewNoteBook(parent, isGithubTree);
-        },
-        "Cancel",
-        undefined
-      );
-    } else if (isPhoenixEnabled && isGithubTree) {
-      async () => {
-        await this.allocateContainer();
-        parent = parent || this.resourceTree.myNotebooksContentRoot;
-        this.createNewNoteBook(parent, isGithubTree);
-      };
+        };
+      } else {
+        useDialog.getState().showOkCancelModalDialog(
+          Notebook.newNotebookModalTitle,
+          Notebook.newNotebookModalContent,
+          "Create",
+          async () => {
+            await this.allocateContainer();
+            parent = parent || this.resourceTree.myNotebooksContentRoot;
+            this.createNewNoteBook(parent, isGithubTree);
+          },
+          "Cancel",
+          undefined
+        );
+      }
     } else {
       parent = parent || this.resourceTree.myNotebooksContentRoot;
       this.createNewNoteBook(parent, isGithubTree);

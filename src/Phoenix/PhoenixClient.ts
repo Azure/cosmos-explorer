@@ -43,7 +43,8 @@ export class PhoenixClient {
   }
 
   public static getPhoenixEndpoint(): string {
-    const phoenixEndpoint = userContext.features.phoenixEndpoint ?? configContext.JUNO_ENDPOINT;
+    const phoenixEndpoint =
+      userContext.features.phoenixEndpoint ?? userContext.features.junoEndpoint ?? configContext.JUNO_ENDPOINT;
     if (configContext.allowedJunoOrigins.indexOf(new URL(phoenixEndpoint).origin) === -1) {
       const error = `${phoenixEndpoint} not allowed as juno endpoint`;
       console.error(error);

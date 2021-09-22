@@ -226,7 +226,7 @@ export function downloadItem(
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
     `Download to ${useNotebook.getState().notebookFolderName}`,
-    NotebookUtil.getDownloadModelConent(name),
+    NotebookUtil.getDownloadModalConent(name),
     "Download",
     async () => {
       if (NotebookUtil.isPhoenixEnabled()) {

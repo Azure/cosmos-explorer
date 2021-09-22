@@ -330,7 +330,7 @@ export class NotebookUtil {
     link.click();
     document.body.removeChild(link);
   }
-  public static getDownloadModelConent(fileName: string): string {
+  public static getDownloadModalConent(fileName: string): string {
     if (this.isPhoenixEnabled()) {
       return `In order to download and run your notebook, a local temporary environment will be created for your account to view, edit and run the notebooks for a dedicated period of time. If you need the notebook to be stored permanently, please connect to github and then download the notebook to your github repo.`;
     } else {
