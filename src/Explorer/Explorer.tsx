@@ -165,16 +165,10 @@ export default class Explorer {
 
     useNotebook.subscribe(
       async () => {
-        this.initiateNotebooks();
-      },
-      (state) => state.isNotebookEnabled
-    );
-    useNotebook.subscribe(
-      async () => {
-        this.initiateNotebooks();
+        this.initiateAndRefreshNotebookList();
         useNotebook.getState().setIsRefreshed(false);
       },
-      (state) => state.isRefreshed
+      (state) => state.isNotebookEnabled || state.isRefreshed
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);
@@ -207,7 +201,7 @@ export default class Explorer {
     this.refreshExplorer();
   }
 
-  public async initiateNotebooks(): Promise<void> {
+  public async initiateAndRefreshNotebookList(): Promise<void> {
     if (!this.notebookManager) {
       const NotebookManager = (await import(/* webpackChunkName: "NotebookManager" */ "./Notebook/NotebookManager"))
         .default;
@@ -924,7 +918,8 @@ export default class Explorer {
       handleError(error, "Explorer/onNewNotebookClicked");
       throw new Error(error);
     }
-    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+    const isPhoenixEnabled = NotebookUtil.isPhoenixEnabled();
+    if (isPhoenixEnabled && !isGithubTree) {
       useDialog.getState().showOkCancelModalDialog(
         Notebook.newNotebookModalTitle,
         Notebook.newNotebookModalContent,
@@ -937,6 +932,12 @@ export default class Explorer {
         "Cancel",
         undefined
       );
+    } else if (isPhoenixEnabled && isGithubTree) {
+      async () => {
+        await this.allocateContainer();
+        parent = parent || this.resourceTree.myNotebooksContentRoot;
+        this.createNewNoteBook(parent, isGithubTree);
+      };
     } else {
       parent = parent || this.resourceTree.myNotebooksContentRoot;
       this.createNewNoteBook(parent, isGithubTree);
@@ -1164,7 +1165,7 @@ export default class Explorer {
   }
 
   public openUploadFilePanel(parent?: NotebookContentItem): void {
-    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+    if (NotebookUtil.isPhoenixEnabled()) {
       useDialog.getState().showOkCancelModalDialog(
         Notebook.newNotebookUploadModalTitle,
         Notebook.newNotebookModalContent,

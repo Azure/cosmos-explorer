@@ -356,6 +356,7 @@ export const StyleConstants = require("less-vars-loader!../../less/Common/Consta
 export class Notebook {
   public static readonly defaultBasePath = "./notebooks";
   public static readonly heartbeatDelayMs = 60000;
+  public static readonly initialHeartbeatDelayMs = 5000;
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;

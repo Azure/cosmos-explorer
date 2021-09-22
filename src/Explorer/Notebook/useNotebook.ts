@@ -16,6 +16,7 @@ import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
+import { NotebookUtil } from "./NotebookUtil";
 
 interface NotebookState {
   isNotebookEnabled: boolean;
@@ -186,7 +187,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    const notebookFolderName = userContext.features.phoenix === true ? "Temporary Notebooks" : "My Notebooks";
+    const notebookFolderName = NotebookUtil.isPhoenixEnabled() === true ? "Temporary Notebooks" : "My Notebooks";
     set({ notebookFolderName });
     const myNotebooksContentRoot = {
       name: get().notebookFolderName,

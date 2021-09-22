@@ -10,6 +10,7 @@ import { ContainerConnectionInfo } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
@@ -24,7 +25,7 @@ export class NotebookContainerClient {
       const unsub = useNotebook.subscribe(
         (newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
           if (newServerInfo?.notebookServerEndpoint) {
-            this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
+            this.scheduleHeartbeat(Constants.Notebook.initialHeartbeatDelayMs);
           }
           unsub();
         },
@@ -77,7 +78,7 @@ export class NotebookContainerClient {
             freeKB: memoryUsageInfo.free,
           };
         }
-      } else if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+      } else if (NotebookUtil.isPhoenixEnabled()) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.ReConnect,
         };

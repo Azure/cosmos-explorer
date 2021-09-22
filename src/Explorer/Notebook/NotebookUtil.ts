@@ -331,17 +331,20 @@ export class NotebookUtil {
     document.body.removeChild(link);
   }
   public static getDownloadModelConent(fileName: string): string {
-    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+    if (this.isPhoenixEnabled()) {
       return `In order to download and run your notebook, a local temporary environment will be created for your account to view, edit and run the notebooks for a dedicated period of time. If you need the notebook to be stored permanently, please connect to github and then download the notebook to your github repo.`;
     } else {
       return `Download ${fileName} from gallery as a copy to your notebooks to run and/or edit the notebook.`;
     }
   }
   public static getNotebookBtnTitle(): string {
-    if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+    if (this.isPhoenixEnabled()) {
       return `Download to ${useNotebook.getState().notebookFolderName}`;
     } else {
       return `Download to my notebooks`;
     }
+  }
+  public static isPhoenixEnabled(): boolean {
+    return userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true;
   }
 }

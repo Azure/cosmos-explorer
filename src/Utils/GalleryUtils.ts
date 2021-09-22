@@ -15,7 +15,6 @@ import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import { Action, ActionModifiers } from "../Shared/Telemetry/TelemetryConstants";
 import { trace, traceFailure, traceStart, traceSuccess } from "../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../UserContext";
 import { logConsoleInfo, logConsoleProgress } from "./NotificationConsoleUtils";
 
 const defaultSelectedAbuseCategory = "Other";
@@ -230,7 +229,7 @@ export function downloadItem(
     NotebookUtil.getDownloadModelConent(name),
     "Download",
     async () => {
-      if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+      if (NotebookUtil.isPhoenixEnabled()) {
         await container.allocateContainer();
       }
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;

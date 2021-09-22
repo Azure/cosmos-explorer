@@ -75,7 +75,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Failed && isActive === true) {
     stopTimer();
     setStatusColor("status failed is-animating");
-    setToolTipContent("Click here to Re-Connect to temporary run time environment");
+    setToolTipContent("Click here to Reconnect to temporary run time environment");
   }
   return (
     <ActionButton
