@@ -14,609 +14,607 @@
 @LeftPaneContainerWidth: 172px;
 
 .graphExplorerContainer {
-    margin-left: @SmallSpace;
+  margin-left: @SmallSpace;
+  overflow: hidden;
+  height: 100%;
+  .flex-display();
+  .flex-direction();
+
+  .filterLoadingProgress {
+    margin-top: 20px;
+    text-align: center;
+    width: 100%;
+
+    img {
+      position: absolute;
+      top: 50%;
+      width: @LoaderWidth;
+      height: @LoaderHeight;
+    }
+  }
+
+  .buttonContainer {
+    .disabled {
+      background-color: @BaseLight;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+  }
+
+  .queryContainer {
+    padding: (2 * @MediumSpace) @MediumSpace (2 * @LargeSpace);
+    .flex-display();
+
+    .queryButton {
+      width: auto;
+      vertical-align: middle;
+      margin-left: @LargeSpace;
+      white-space: nowrap;
+    }
+
+    .filterclose {
+      vertical-align: middle;
+    }
+  }
+
+  .loadGraphHelper {
+    margin: auto;
+    text-align: center;
+    height: 50%;
+
+    img {
+      width: @LoadGraphHelperWidth;
+      height: @LoadGraphHelperHeight;
+      margin-left: 32px;
+    }
+
+    p {
+      margin: @DefaultSpace;
+    }
+
+    .loadGraphBtn {
+      margin-top: @LargeSpace;
+    }
+  }
+
+  .graphTabContent {
     overflow: hidden;
-    height:100%;
+  }
+
+  .graphJsonEditor {
+    flex-grow: 1;
+    margin: 20px;
+    border: 1px solid @PaneDivider;
     .flex-display();
     .flex-direction();
 
-    .filterLoadingProgress {
-        margin-top: 20px;
-        text-align: center;
-        width: 100%;
+    .jsonEditor {
+      flex-grow: 1;
+    }
+  }
 
-        img {
+  /* Override bootstrap's nav pills */
+  .nav-pills > li.active > a,
+  .nav-pills > li.active > a:focus,
+  .nav-pills > li.active > a:hover {
+    background-color: @AccentMediumHigh;
+  }
+
+  .nav-pills > li > a {
+    border-radius: 0px;
+  }
+
+  .nav > li > a {
+    padding: 5px 15px;
+  }
+
+  .typeahead__field input {
+    height: 25px !important;
+  }
+
+  .typeahead__cancel-button {
+    top: 5px !important;
+    right: 0.4em !important;
+  }
+
+  .queryMetricsSummary {
+    margin: @LargeSpace @LargeSpace 0px @DefaultSpace;
+    table-layout: fixed;
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    min-height: 100px;
+
+    .queryMetricsSummaryHead {
+      .flex-display();
+    }
+
+    .queryMetricsSummaryHeader.queryMetricsSummaryTuple {
+      font-size: 10px;
+    }
+
+    .queryMetricsSummaryBody {
+      .flex-display();
+      .flex-direction();
+    }
+
+    .queryMetricsSummaryTuple {
+      border-bottom: 1px solid @BaseMedium;
+      height: 32px;
+      font-size: 12px;
+      width: 100%;
+      .flex-display();
+      th,
+      td {
+        padding: @DefaultSpace;
+
+        &:nth-child(1) {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          flex: 0 1 auto;
+        }
+
+        &:nth-child(2) {
+          flex: 1 1 auto;
+        }
+
+        &:nth-child(3) {
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          flex: 0 0 50%;
+        }
+      }
+    }
+  }
+
+  .graphContainer {
+    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    padding-top: (2 * @MediumSpace);
+    .flex-display();
+
+    .leftPane {
+      width: 200px;
+      padding: 0px 0px 0px @DefaultSpace;
+      border-right: 1px solid @PaneDivider;
+      .flex-display();
+      .flex-direction();
+
+      .leftPaneResults {
+        margin: @MediumSpace 0px @DefaultSpace;
+      }
+
+      .leftPaneContent {
+        flex: 1;
+
+        .leftPaneContainer {
+          width: @LeftPaneContainerWidth;
+          padding-right: @SmallSpace;
+
+          table {
+            table-layout: fixed;
+
+            .disabled {
+              pointer-events: none;
+              background-color: @BaseLight;
+              opacity: 0.5;
+            }
+
+            .resultItem {
+              white-space: nowrap;
+              text-overflow: ellipsis;
+              overflow: hidden;
+            }
+          }
+        }
+      }
+    } // Left Pane
+
+    .middlePane {
+      flex-grow: 1;
+      border-right: 1px solid @PaneDivider;
+      position: relative;
+      .flex-display();
+      .flex-direction();
+
+      .graphTitle {
+        margin-top: @DefaultSpace;
+
+        .graphExpandCollapseBtn {
+          padding: 2px 6px 5px 6px;
+          margin-right: @SmallSpace;
+
+          &:hover {
+            .hover();
+          }
+
+          &:active {
+            .active();
+          }
+
+          img {
+            .dataExplorerIcons();
+          }
+        }
+      }
+
+      .maingraphContainer {
+        position: relative;
+        .flex-display();
+        .flex-direction();
+        height: 100%;
+
+        .graphModal {
+          background-color: rgba(255, 255, 255, 0.7);
+          position: absolute;
+          top: 0px;
+          left: 0px;
+          height: 100%;
+          width: 100%;
+
+          img {
             position: absolute;
             top: 50%;
+            left: 50%;
             width: @LoaderWidth;
             height: @LoaderHeight;
+          }
         }
-    }
+      }
+    } // Middle Pane
 
-    .buttonContainer {
-        .disabled {
-            background-color: @BaseLight;
-            pointer-events: none;
-            opacity: 0.5;
-        }
-    }
-
-    .queryContainer {
-        padding: (2 * @MediumSpace) @MediumSpace (2 * @LargeSpace);
+    .rightPane {
+      .collapsiblePanel {
+        right: 0px;
+        float: right;
+        width: @RightPaneWidth;
         .flex-display();
+        .flex-direction();
+        padding-top: 6px;
 
-        .queryButton {
-            width: auto;
-            vertical-align: middle;
-            margin-left: @LargeSpace;
+        .panelContent {
+          height: 100%;
+          /* Override default (auto which grows as big as content) to make it grow to fill parent instead */
+          min-height: 0px;
+          margin-top: 0px;
+
+          .rightPaneHeader {
+            /* TODO: Hack to align the trashbox with the header for now. */
+            margin-top: -28px;
             white-space: nowrap;
-        }
+            margin-bottom: (2 * @LargeSpace);
 
-        .filterclose {
-            vertical-align: middle;
-        }
-    }
+            .rightPaneHeaderTrashIcon {
+              margin-right: (2 * @LargeSpace);
+              padding: 1px 5px 6px 5px;
 
-    .loadGraphHelper {
-        margin: auto;
-        text-align: center;
-        height:50%;
-
-        img {
-            width: @LoadGraphHelperWidth;
-            height: @LoadGraphHelperHeight;
-            margin-left: 32px;
-        }
-
-        p {
-            margin: @DefaultSpace;
-        }
-
-        .loadGraphBtn{
-            margin-top: @LargeSpace;
-        }
-    }
-
-    .graphTabContent {
-        overflow: hidden;
-    }
-
-    .graphJsonEditor {
-        flex-grow: 1;
-        margin: 20px;
-        border: 1px solid @PaneDivider;
-        .flex-display();
-        .flex-direction();
-
-        .jsonEditor {
-            flex-grow: 1;
-        }
-    }
-
-    /* Override bootstrap's nav pills */
-    .nav-pills>li.active>a,
-    .nav-pills>li.active>a:focus,
-    .nav-pills>li.active>a:hover {
-        background-color: @AccentMediumHigh;
-    }
-
-    .nav-pills>li>a {
-        border-radius: 0px;
-    }
-
-    .nav>li>a {
-        padding: 5px 15px;
-    }
-
-    .typeahead__field input {
-        height: 25px !important;
-    }
-
-    .typeahead__cancel-button {
-        top: 5px !important;
-        right: .4em !important;
-    }
-
-
-    .queryMetricsSummary {
-        margin: @LargeSpace @LargeSpace 0px @DefaultSpace;
-        table-layout: fixed;
-        display: block;
-        overflow-y: auto;
-        overflow-x: hidden;
-
-        .queryMetricsSummaryHead {
-            .flex-display();
-        }
-
-        .queryMetricsSummaryHeader.queryMetricsSummaryTuple {
-            font-size: 10px;
-        }
-
-        .queryMetricsSummaryBody {
-            .flex-display();
-            .flex-direction();
-        }
-
-        .queryMetricsSummaryTuple {
-            border-bottom: 1px solid @BaseMedium;
-            height: 32px;
-            font-size: 12px;
-            width: 100%;
-            .flex-display();
-            th, td {
-                padding: @DefaultSpace;
-
-                &:nth-child(1) {
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    flex: 0 1 auto;
-                }
-
-                &:nth-child(2) {
-                    flex: 1 1 auto;
-                }
-
-                &:nth-child(3) {
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    flex: 0 0 50%;
-                }
-            }
-        }
-    }
-
-
-    .graphContainer {
-        overflow: hidden;
-        height: 100%;
-        width: 100%;
-        padding-top: (2 * @MediumSpace);
-        .flex-display();
-
-
-        .leftPane {
-            width: 200px;
-                padding: 0px 0px 0px @DefaultSpace;
-            border-right: 1px solid @PaneDivider;
-            .flex-display();
-            .flex-direction();
-
-            .leftPaneResults {
-                margin: @MediumSpace 0px @DefaultSpace;
+              img {
+                .dataExplorerIcons();
+              }
             }
 
-            .leftPaneContent {
-                flex: 1;
-
-                .leftPaneContainer {
-                    width: @LeftPaneContainerWidth;
-                    padding-right: @SmallSpace;
-
-                    table {
-                        table-layout: fixed;
-
-                                .disabled {
-                                    pointer-events: none;
-                                    background-color: @BaseLight;
-                                    opacity: 0.5;
-                                }
-
-                        .resultItem {
-                            white-space: nowrap;
-                            text-overflow: ellipsis;
-                            overflow: hidden;
-                        }
-                    }
-                }
+            .deleteConfirm {
+              background-color: @BaseLight;
+              padding: @SmallSpace;
             }
-        } // Left Pane
+          }
 
-        .middlePane {
-            flex-grow: 1;
-            border-right: 1px solid @PaneDivider;
-            position: relative;
-            .flex-display();
-            .flex-direction();
+          .rightPaneContent {
+            height: 100%;
 
-            .graphTitle {
-                    margin-top: @DefaultSpace;
+            .rightPaneContainer {
+              width: @RightPaneContainerWidth;
+              padding-left: @SmallSpace;
 
-                .graphExpandCollapseBtn{
-                    padding:2px 6px 5px 6px;
-                        margin-right: @SmallSpace;
+              .sectionHeader {
+                padding: 2px;
+              }
 
-                    &:hover {
-                            .hover();
-                    }
+              .sectionContent {
+                padding: @DefaultSpace @DefaultSpace @LargeSpace (2 * @MediumSpace);
+              }
 
-                    &:active {
-                            .active();
-                    }
+              .sectionTitle {
+                cursor: pointer;
+                margin-left: 6px;
+                font-weight: bold;
+              }
 
-                    img{
-                            .dataExplorerIcons();
-                    }
-                }
-            }
+              .edgesTable {
+                width: 100%;
+                max-width: 100%;
 
-            .maingraphContainer {
-                position: relative;
-                .flex-display();
-                .flex-direction();
-                height: 100%;
+                td {
+                  padding: 5px 2px @SmallSpace 2px;
 
-                .graphModal {
-                    background-color: rgba(255, 255, 255, .7);
-                    position: absolute;
-                    top: 0px;
-                    left: 0px;
-                    height: 100%;
+                  &.valueCol {
                     width: 100%;
+                    padding-right: @SmallSpace;
+                  }
 
-                    img {
-                        position: absolute;
-                        top: 50%;
-                        left: 50%;
-                        width: @LoaderWidth;
-                        height: @LoaderHeight;
-                    }
+                  &.rightPaneAddPropertyBtnPadding {
+                    padding-top: @LargeSpace;
+                  }
+
+                  &.edgeLabel {
+                    padding-right: 41px;
+                  }
                 }
-            }
-        } // Middle Pane
+              }
 
-        .rightPane {
-            .collapsiblePanel {
-                right: 0px;
-                float: right;
-                    width: @RightPaneWidth;
-                .flex-display();
-                .flex-direction();
-                padding-top: 6px;
+              .propertyTable {
+                width: 100%;
+                max-width: 100%;
+                tr {
+                  vertical-align: top;
+                  td {
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    padding: 0px 4px 4px 4px;
+                  }
+                  td.actionCol {
+                    padding-top: 4px;
+                  }
+                }
+              }
 
-                .panelContent {
-                    height: 100%;
-                    /* Override default (auto which grows as big as content) to make it grow to fill parent instead */
-                    min-height: 0px;
-                    margin-top: 0px;
+              .roPropertyTable {
+                table-layout: fixed;
+                tr {
+                  height: 27px;
+                }
+              }
 
+              .actionCol {
+                width: 30px;
+              }
 
-            .rightPaneHeader {
-                /* TODO: Hack to align the trashbox with the header for now. */
-                margin-top: -28px;
+              .labelCol {
+                width: 30%;
+                max-width: 100px;
+
+                input {
+                  width: 100%;
+                  padding-left: @SmallSpace;
+                }
+              }
+
+              .propertyValue {
                 white-space: nowrap;
-                            margin-bottom: (2 * @LargeSpace);
-
-                            .rightPaneHeaderTrashIcon {
-                                margin-right: (2 * @LargeSpace);
-                                padding: 1px 5px 6px 5px;
-
-                                img {
-                                    .dataExplorerIcons();
-                                }
-                            }
-
-                            .deleteConfirm {
-                                background-color: @BaseLight;
-                                padding: @SmallSpace;
-                            }
-                        }
-
-                        .rightPaneContent {
-                            height: 100%;
-
-                            .rightPaneContainer {
-                                width: @RightPaneContainerWidth;
-                                padding-left: @SmallSpace;
-
-                            .sectionHeader {
-                                padding: 2px;
-                            }
-
-                            .sectionContent {
-                                                    padding: @DefaultSpace @DefaultSpace @LargeSpace (2 * @MediumSpace);
-                            }
-
-                            .sectionTitle {
-                                cursor: pointer;
-                                margin-left: 6px;
-                                font-weight: bold;
-                            }
-
-                            .edgesTable {
-                                width: 100%;
-                                max-width: 100%;
-
-                                td {
-                                    padding: 5px 2px @SmallSpace 2px;
-
-                                    &.valueCol {
-                                        width: 100%;
-                                        padding-right: @SmallSpace;
-                                    }
-
-                                    &.rightPaneAddPropertyBtnPadding {
-                                         padding-top: @LargeSpace;
-                                    }
-
-                                    &.edgeLabel {
-                                        padding-right: 41px;
-                                    }
-                                }
-                            }
-
-                            .propertyTable {
-                                width: 100%;
-                                max-width: 100%;
-                                tr {
-                                    vertical-align: top;
-                                    td {
-                                        white-space: nowrap;
-                                        overflow: hidden;
-                                        text-overflow: ellipsis;
-                                        padding: 0px 4px 4px 4px;
-                                    }
-                                    td.actionCol {
-                                        padding-top: 4px;
-                                    }
-                                }
-                            }
-
-                            .roPropertyTable {
-                                table-layout: fixed;
-                                tr {
-                                    height: 27px;
-                                }
-                            }
-
-                            .actionCol {
-                                width: 30px;
-                            }
-
-                            .labelCol {
-                                width: 30%;
-                                max-width: 100px;
-
-                                input {
-                                    width: 100%;
-                                    padding-left: @SmallSpace;
-                                }
-                            }
-
-                            .propertyValue {
-                                white-space: nowrap;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                                .isNull {
-                                    font-style: italic;
-                                }
-                            }
-
-                            .edgeInput {
-                                width: 100%;
-                                padding-left: @SmallSpace;
-                            }
-
-                            .typeSelect {
-                                height: 23px;
-                                width: 70px;
-                            }
-
-                            .propertyTableHeader {
-                                font-weight: bold;
-                                color: @DefaultFontColor ;
-                                border-bottom: 1px solid @BaseMediumHigh;
-                            }
-
-                            /* Override autocomplete stuff */
-                            .typeahead__container {
-                                                    font: @mediumFontSize 'Segoe UI' !important;
-
-                                input {
-                                                        font: @mediumFontSize 'Segoe UI' !important;
-                                                        padding: 0px @SmallSpace !important;
-                                }
-                            }
-
-                            .typeahead__field input {
-                                height: 25px !important;
-                            }
-
-                            .typeahead__cancel-button {
-                                top: 5px !important;
-                                right: .4em !important;
-                            }
-
-                            .rightPaneAddPropertyBtn {
-                                padding: @DefaultSpace;
-                                margin-left: -8px;/* TODO: Hack to align the addproperty button with the section content for now. */
-
-                                img {
-                                    margin: 0px @SmallSpace @SmallSpace 0px;
-                                    .dataExplorerIcons();
-                                    }
-                            }
-                        }
-                    }
+                overflow: hidden;
+                text-overflow: ellipsis;
+                .isNull {
+                  font-style: italic;
                 }
+              }
+
+              .edgeInput {
+                width: 100%;
+                padding-left: @SmallSpace;
+              }
+
+              .typeSelect {
+                height: 23px;
+                width: 70px;
+              }
+
+              .propertyTableHeader {
+                font-weight: bold;
+                color: @DefaultFontColor;
+                border-bottom: 1px solid @BaseMediumHigh;
+              }
+
+              /* Override autocomplete stuff */
+              .typeahead__container {
+                font: @mediumFontSize "Segoe UI" !important;
+
+                input {
+                  font: @mediumFontSize "Segoe UI" !important;
+                  padding: 0px @SmallSpace !important;
+                }
+              }
+
+              .typeahead__field input {
+                height: 25px !important;
+              }
+
+              .typeahead__cancel-button {
+                top: 5px !important;
+                right: 0.4em !important;
+              }
+
+              .rightPaneAddPropertyBtn {
+                padding: @DefaultSpace;
+                margin-left: -8px; /* TODO: Hack to align the addproperty button with the section content for now. */
+
+                img {
+                  margin: 0px @SmallSpace @SmallSpace 0px;
+                  .dataExplorerIcons();
+                }
+              }
             }
-        } // .rightPane
-    }
-
-    .queryMetricsSummaryContainer {
-        .flex-display();
-        .flex-direction();
-        overflow: hidden;
-        width: 100%;
-    }
-
-    .paneTitle {
-        padding-left: @DefaultSpace;
-        color: #000;
-        font-weight: bold;
-        margin-left: @SmallSpace;
-    }
-
-    .filterQueryResultError {
-        padding: 0px 25px;
-        line-height: 25px;
-        margin-bottom: 10px;
-        color: @ErrorColor;
-    }
-
-    .rightPaneEditIcon {
-        padding: 1px 5px 5px 5px;
-
-        img {
-           .dataExplorerIcons();
+          }
         }
+      }
+    } // .rightPane
+  }
+
+  .queryMetricsSummaryContainer {
+    .flex-display();
+    .flex-direction();
+    overflow: hidden;
+    width: 100%;
+    min-height: 200px;
+    overflow: auto;
+  }
+
+  .paneTitle {
+    padding-left: @DefaultSpace;
+    color: #000;
+    font-weight: bold;
+    margin-left: @SmallSpace;
+  }
+
+  .filterQueryResultError {
+    padding: 0px 25px;
+    line-height: 25px;
+    margin-bottom: 10px;
+    color: @ErrorColor;
+  }
+
+  .rightPaneEditIcon {
+    padding: 1px 5px 5px 5px;
+
+    img {
+      .dataExplorerIcons();
     }
+  }
 
-    .rightPaneCheckMark {
-        padding: 1px 1px 5px 5px;
+  .rightPaneCheckMark {
+    padding: 1px 1px 5px 5px;
 
-        img {
-            .dataExplorerIcons();
-        }
+    img {
+      .dataExplorerIcons();
     }
+  }
 
-    .rightPaneDiscardBtn {
-        padding: 1px @SmallSpace 5px 2px;
-        margin-right: @MediumSpace;
+  .rightPaneDiscardBtn {
+    padding: 1px @SmallSpace 5px 2px;
+    margin-right: @MediumSpace;
 
     .discardBtn {
-            margin: 0px 2px 0px @SmallSpace;
-        width: 10px;
-        height: 10px;
+      margin: 0px 2px 0px @SmallSpace;
+      width: 10px;
+      height: 10px;
     }
 
-        img {
-           .dataExplorerIcons();
-        }
+    img {
+      .dataExplorerIcons();
+    }
+  }
+
+  .rightPaneTrashIcon {
+    padding: @SmallSpace;
+
+    img {
+      vertical-align: top;
+      .dataExplorerIcons();
+    }
+  }
+
+  .rightPaneBtns {
+    cursor: pointer;
+
+    &:hover {
+      .hover();
     }
 
-    .rightPaneTrashIcon {
-        padding: @SmallSpace;
+    &:active {
+      .active();
+    }
+  }
 
-        img {
-           vertical-align: top;
-           .dataExplorerIcons();
-        }
+  /* ****************** Graph styles ************ */
+
+  .link.inactive {
+    opacity: 0.1;
+    transition: opacity @TransitionLengthMs;
+  }
+
+  .nodes {
+    circle.main {
+      stroke: @GraphNodeBackgroundColor;
+      stroke-width: 2px;
     }
 
-    .rightPaneBtns {
-       cursor: pointer;
-
-        &:hover {
-           .hover();
-        }
-
-        &:active {
-           .active();
-        }
+    text {
+      pointer-events: none;
+      font: 12px arial;
     }
 
-    /* ****************** Graph styles ************ */
+    .inactive {
+      stroke-opacity: 0.2;
+      fill-opacity: 0.2;
 
-    .link.inactive {
+      transition: stroke-opacity @TransitionLengthMs;
+      transition: fill-opacity @TransitionLengthMs;
+    }
+  }
+
+  .node {
+    .icon-background {
+      display: none;
+      fill: @SelectionHigh;
+    }
+
+    &.root circle.main {
+      stroke: @GraphRootNodeSelected;
+    }
+
+    &.selected {
+      circle.main {
+        stroke: @GraphSelectedNode;
+      }
+
+      .icon-background {
+        display: block;
+      }
+    }
+  }
+
+  #triangleRight svg polygon {
+    fill: inherit;
+  }
+
+  use {
+    &.pageButton {
+      fill: @BaseLow;
+
+      &.active {
+        fill: @AccentMediumHigh;
+      }
+    }
+  }
+
+  #loadMoreIcon svg ellipse {
+    fill: inherit;
+  }
+
+  .loadmore {
+    use.loadMoreIcon {
+      fill: @GraphNodeDefaultColor;
+
+      &.active {
+        fill: @AccentMediumHigh;
+      }
+    }
+  }
+
+  .markerEnd polygon {
+    fill: inherit;
+  }
+
+  .markerEndContainer {
+    use.markerEnd {
+      &.inactive {
         opacity: 0.1;
         transition: opacity @TransitionLengthMs;
+      }
+      &.hidden {
+        opacity: 0;
+      }
     }
+  }
 
-    .nodes {
-        circle.main {
-            stroke: @GraphNodeBackgroundColor;
-            stroke-width: 2px;
-        }
+  /* scroll for leftpane, rightpane and newvertex pane*/
 
-        text {
-            pointer-events: none;
-            font: 12px arial;
-        }
-
-        .inactive {
-            stroke-opacity: 0.2;
-            fill-opacity: 0.2;
-
-            transition: stroke-opacity @TransitionLengthMs;
-            transition: fill-opacity @TransitionLengthMs;
-        }
-    }
-
-    .node {
-        .icon-background {
-            display: none;
-            fill: @SelectionHigh;
-        }
-
-        &.root circle.main {
-            stroke: @GraphRootNodeSelected;
-        }
-
-        &.selected {
-            circle.main {
-                stroke: @GraphSelectedNode;
-            }
-
-            .icon-background {
-                display: block;
-            }
-        }
-    }
-
-    #triangleRight svg polygon {
-        fill: inherit;
-    }
-
-    use {
-        &.pageButton {
-            fill: @BaseLow;
-
-            &.active {
-                fill: @AccentMediumHigh;
-            }
-        }
-    }
-
-    #loadMoreIcon svg ellipse {
-        fill: inherit;
-    }
-
-    .loadmore {
-        use.loadMoreIcon {
-            fill:@GraphNodeDefaultColor;
-
-            &.active {
-                fill: @AccentMediumHigh;
-            }
-        }
-    }
-
-    .markerEnd polygon {
-        fill: inherit;
-    }
-
-    .markerEndContainer {
-        use.markerEnd {
-            &.inactive {
-                opacity: 0.1;
-                transition: opacity @TransitionLengthMs;
-            }
-            &.hidden {
-                opacity: 0;
-            }
-        }
-
-
-    }
-
-    /* scroll for leftpane, rightpane and newvertex pane*/
-
-    .contentScroll {
-        overflow-y: auto;
-        overflow-x: hidden;
-        white-space: nowrap;
-    }
+  .contentScroll {
+    overflow-y: auto;
+    overflow-x: hidden;
+    white-space: nowrap;
+  }
 }
