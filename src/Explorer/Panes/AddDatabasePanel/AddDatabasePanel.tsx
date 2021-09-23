@@ -23,10 +23,12 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 export interface AddDatabasePaneProps {
   explorer: Explorer;
+  buttonElement: HTMLElement;
 }
 
 export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   explorer: container,
+  buttonElement,
 }: AddDatabasePaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   let throughput: number;
@@ -77,6 +79,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
     TelemetryProcessor.trace(Action.CreateDatabase, ActionModifiers.Open, addDatabasePaneOpenMessage);
+    buttonElement.focus();
   }, []);
 
   const onSubmit = () => {
