@@ -87,7 +87,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
   };
 }
 
-export function hasFlag(flags: string, desiredFlag: string): boolean {
+export function hasFlag(flags: string | undefined, desiredFlag: string | undefined): boolean {
   if (!flags || !desiredFlag) {
     return false;
   }

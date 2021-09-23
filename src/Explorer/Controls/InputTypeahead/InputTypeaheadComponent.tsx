@@ -160,18 +160,21 @@ export class InputTypeaheadComponent extends React.Component<
     return (
       <div className="input-typeahead-container">
         <Stack horizontal>
-          <TextField
-            multiline={useTextarea}
-            rows={1}
-            defaultValue={defaultValue}
-            ariaLabel="Input query"
-            placeholder={placeholder}
-            className="input-type-head-text-field"
-            value={defaultValue}
-            onKeyDown={this.onSubmit}
-            onFocus={() => this.setState({ isSuggestionVisible: true })}
-            onChange={(_event, newValue?: string) => this.handleChange(newValue)}
-          />
+          <form aria-labelledby="input" className="input-query-form">
+            <TextField
+              multiline={useTextarea}
+              rows={1}
+              id="input"
+              defaultValue={defaultValue}
+              ariaLabel="Input query"
+              placeholder={placeholder}
+              className="input-type-head-text-field"
+              value={defaultValue}
+              onKeyDown={this.onSubmit}
+              onFocus={() => this.setState({ isSuggestionVisible: true })}
+              onChange={(_event, newValue?: string) => this.handleChange(newValue)}
+            />
+          </form>
           {this.props.showCancelButton && (
             <IconButton
               styles={iconButtonStyles}
