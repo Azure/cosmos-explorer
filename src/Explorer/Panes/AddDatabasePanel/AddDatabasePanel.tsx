@@ -23,7 +23,7 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 export interface AddDatabasePaneProps {
   explorer: Explorer;
-  buttonElement: HTMLElement;
+  buttonElement?: HTMLElement;
 }
 
 export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
