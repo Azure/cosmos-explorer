@@ -139,6 +139,14 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
 };
 
 export const getRegions = async (): Promise<Array<string>> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getRegions",
+    description: "",
+    selfServeClassName: SqlX.name,
+  };
+  const getRegionsTimestamp = selfServeTraceStart(telemetryData);
+
   try {
     const regions = new Array<string>();
 
@@ -156,8 +164,12 @@ export const getRegions = async (): Promise<Array<string>> => {
         regions.push(location.locationName.split(" ").join("").toLowerCase());
       }
     }
+
+    selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
     return regions;
   } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
     return new Array<string>();
   }
 };
@@ -167,6 +179,14 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
 };
 
 export const getPriceMap = async (regions: Array<string>): Promise<Map<string, Map<string, number>>> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getPriceMap",
+    description: "fetch prices API call",
+    selfServeClassName: SqlX.name,
+  };
+  const getPriceMapTimestamp = selfServeTraceStart(telemetryData);
+
   try {
     const priceMap = new Map<string, Map<string, number>>();
 
@@ -192,8 +212,12 @@ export const getPriceMap = async (regions: Array<string>): Promise<Map<string, M
       priceMap.set(region, regionPriceMap);
     }
 
+    selfServeTraceSuccess(telemetryData, getPriceMapTimestamp);
     return priceMap;
   } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getPriceMapTimestamp);
+
     return undefined;
   }
 };
