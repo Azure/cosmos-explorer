@@ -20,6 +20,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
       styles={
         Object {
           "root": Object {
+            "color": "windowtext",
             "fontSize": 14,
           },
         }
@@ -39,6 +40,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
             styles={
               Object {
                 "root": Object {
+                  "color": "windowtext",
                   "fontSize": 14,
                 },
               }
@@ -73,6 +75,7 @@ exports[`ThroughputInputAutoPilotV3Component autopilot input visible 1`] = `
         styles={
           Object {
             "root": Object {
+              "color": "windowtext",
               "fontSize": 14,
             },
           }
@@ -186,6 +189,7 @@ exports[`ThroughputInputAutoPilotV3Component spendAck checkbox visible 1`] = `
             styles={
               Object {
                 "root": Object {
+                  "color": "windowtext",
                   "fontSize": 14,
                 },
               }
@@ -460,6 +464,7 @@ exports[`ThroughputInputAutoPilotV3Component throughput input visible 1`] = `
             styles={
               Object {
                 "root": Object {
+                  "color": "windowtext",
                   "fontSize": 14,
                 },
               }
