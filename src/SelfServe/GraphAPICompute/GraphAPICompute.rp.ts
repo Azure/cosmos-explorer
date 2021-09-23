@@ -151,10 +151,10 @@ export const getReadRegions = async (): Promise<Array<string>> => {
     });
 
     if (response.result.location !== undefined) {
-      readRegions.push(response.result.location.replace(" ", "").toLowerCase());
+      readRegions.push(response.result.location.split(" ").join("").toLowerCase());
     } else {
       for (const location of response.result.locations) {
-        readRegions.push(location.locationName.replace(" ", "").toLowerCase());
+        readRegions.push(location.locationName.split(" ").join("").toLowerCase());
       }
     }
     return readRegions;
