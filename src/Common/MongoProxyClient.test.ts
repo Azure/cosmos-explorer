@@ -11,7 +11,7 @@ import {
   getFeatureEndpointOrDefault,
   queryDocuments,
   readDocument,
-  updateDocument
+  updateDocument,
 } from "./MongoProxyClient";
 
 const databaseId = "testDB";
