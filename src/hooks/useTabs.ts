@@ -70,8 +70,8 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
       const tabToTheRight = updatedTabs[tabIndex];
       const lastOpenTab = updatedTabs[updatedTabs.length - 1];
       const newActiveTab = tabToTheRight ?? lastOpenTab;
+      set({ activeTab: newActiveTab });
       if (newActiveTab) {
-        set({ activeTab: newActiveTab });
         newActiveTab.onActivate();
       }
     }
