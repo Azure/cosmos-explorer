@@ -167,11 +167,11 @@ exports[`SettingsUtils functions render 1`] = `
   >
     The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings and storage of your resource. After autoscale has been enabled, you can change the max RU/s.
      
-    <a
+    <StyledLinkBase
       href="https://aka.ms/cosmos-autoscale-migration"
     >
       Learn more
-    </a>
+    </StyledLinkBase>
   </Text>
   <Text
     styles={
