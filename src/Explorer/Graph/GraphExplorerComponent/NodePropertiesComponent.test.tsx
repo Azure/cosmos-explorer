@@ -1,8 +1,8 @@
-import React from "react";
 import { mount, ReactWrapper } from "enzyme";
 import * as Q from "q";
-import { NodePropertiesComponent, NodePropertiesComponentProps, Mode } from "./NodePropertiesComponent";
-import { GraphHighlightedNodeData, EditedProperties, EditedEdges, PossibleVertex } from "./GraphExplorer";
+import React from "react";
+import { GraphHighlightedNodeData, PossibleVertex } from "./GraphExplorer";
+import { Mode, NodePropertiesComponent, NodePropertiesComponentProps } from "./NodePropertiesComponent";
 
 describe("Property pane", () => {
   const title = "My Title";
@@ -37,17 +37,25 @@ describe("Property pane", () => {
     return {
       expandedTitle: title,
       isCollapsed: false,
-      onCollapsedChanged: (newValue: boolean): void => {},
+      onCollapsedChanged: (): void => {
+        ("");
+      },
       node: highlightedNode,
-      getPkIdFromNodeData: (v: GraphHighlightedNodeData): string => null,
-      collectionPartitionKeyProperty: null,
-      updateVertexProperties: (editedProperties: EditedProperties): Q.Promise<void> => Q.resolve(),
-      selectNode: (id: string): void => {},
-      updatePossibleVertices: (): Q.Promise<PossibleVertex[]> => Q.resolve(null),
-      possibleEdgeLabels: null,
-      editGraphEdges: (editedEdges: EditedEdges): Q.Promise<any> => Q.resolve(),
-      deleteHighlightedNode: (): void => {},
-      onModeChanged: (newMode: Mode): void => {},
+      getPkIdFromNodeData: (): string => undefined,
+      collectionPartitionKeyProperty: undefined,
+      updateVertexProperties: (): Q.Promise<void> => Q.resolve(),
+      selectNode: (): void => {
+        ("");
+      },
+      updatePossibleVertices: (): Q.Promise<PossibleVertex[]> => Q.resolve(undefined),
+      possibleEdgeLabels: undefined,
+      editGraphEdges: (): Q.Promise<unknown> => Q.resolve(),
+      deleteHighlightedNode: (): void => {
+        ("");
+      },
+      onModeChanged: (): void => {
+        ("");
+      },
       viewMode: Mode.READONLY_PROP,
     };
   };

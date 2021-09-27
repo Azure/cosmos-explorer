@@ -330,10 +330,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const partitionKeyProperty = this.props.collectionPartitionKeyProperty;
 
     // aggregate all the properties, remove dropped ones
-    let finalProperties = editedProperties.existingProperties.concat(editedProperties.addedProperties);
+    const finalProperties = editedProperties.existingProperties.concat(editedProperties.addedProperties);
 
     // Compose the query
-    let pkId = editedProperties.pkId;
+    const pkId = editedProperties.pkId;
     let updateQueryFragment = "";
 
     finalProperties.forEach((p) => {
@@ -473,7 +473,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return false;
     }
 
-    let pairs: any[] = data;
+    const pairs: any[] = data;
     for (let i = 0; i < pairs.length; i++) {
       const item = pairs[i];
       if (
@@ -772,8 +772,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           return;
         }
 
-        let edge = edges[0];
-        let graphData = this.originalGraphData;
+        const edge = edges[0];
+        const graphData = this.originalGraphData;
         graphData.addEdge(edge);
 
         // Allow loadNeighbors to load list new edge
@@ -803,7 +803,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public removeEdge(edgeId: string): Q.Promise<any> {
     return this.submitToBackend(`g.E('${GraphUtil.escapeSingleQuotes(edgeId)}').drop()`).then(
       () => {
-        let graphData = this.originalGraphData;
+        const graphData = this.originalGraphData;
         graphData.removeEdge(edgeId, false);
         this.updateGraphData(graphData, this.state.igraphConfig);
       },
@@ -826,9 +826,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return false;
     }
 
-    let vertices: any[] = data;
+    const vertices: any[] = data;
     if (vertices.length > 0) {
-      let v0 = vertices[0];
+      const v0 = vertices[0];
       if (!v0.hasOwnProperty("id") || !v0.hasOwnProperty("type") || v0.type !== "vertex") {
         return false;
       }
@@ -933,7 +933,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           throw { title: err };
         }
 
-        let vertex = vertices[0];
+        const vertex = vertices[0];
         const graphData = this.originalGraphData;
         graphData.addVertex(vertex);
         this.updateGraphData(graphData, this.state.igraphConfig);
@@ -1082,7 +1082,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public static reportToConsole(type: ConsoleDataType.Info, msg: string, ...errorData: any[]): void;
   public static reportToConsole(type: ConsoleDataType.Error, msg: string, ...errorData: any[]): void;
   public static reportToConsole(type: ConsoleDataType, msg: string, ...errorData: any[]): void | (() => void) {
-    let errorDataStr: string = "";
+    let errorDataStr = "";
     if (errorData && errorData.length > 0) {
       console.error(msg, errorData);
       errorDataStr = ": " + JSON.stringify(errorData);
@@ -1224,7 +1224,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     return $.map(
       this.state.rootMap,
       (value: any, index: number): LeftPane.CaptionId => {
-        let result = GraphData.GraphData.getNodePropValue(value, key);
+        const result = GraphData.GraphData.getNodePropValue(value, key);
         return {
           caption: result !== undefined ? result : value.id,
           id: value.id,
@@ -1388,7 +1388,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @return id
    */
   public static getPkIdFromDocumentId(d: DataModels.DocumentId, collectionPartitionKeyProperty: string): string {
-    let { id } = d;
+    const { id } = d;
     if (typeof id !== "string") {
       const error = `Vertex id is not a string: ${JSON.stringify(id)}.`;
       logConsoleError(error);
@@ -1425,7 +1425,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }"] AS p FROM c WHERE NOT IS_DEFINED(c._isEdge)`;
     return this.executeNonPagedDocDbQuery(q).then(
       (documents: DataModels.DocumentId[]) => {
-        let possibleVertices = [] as PossibleVertex[];
+        const possibleVertices = [] as PossibleVertex[];
         $.each(documents, (index: number, item: any) => {
           if (highlightedNodeId && item.id === highlightedNodeId) {
             // Exclude highlighed node in the list
@@ -1463,16 +1463,16 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @return promise when done
    */
   private editGraphEdges(editedEdges: EditedEdges): Q.Promise<any> {
-    let promises = [];
+    const promises = [];
     // Drop edges
     for (let i = 0; i < editedEdges.droppedIds.length; i++) {
-      let id = editedEdges.droppedIds[i];
+      const id = editedEdges.droppedIds[i];
       promises.push(this.removeEdge(id));
     }
 
     // Add edges
     for (let i = 0; i < editedEdges.addedEdges.length; i++) {
-      let e = editedEdges.addedEdges[i];
+      const e = editedEdges.addedEdges[i];
       promises.push(
         this.createNewEdge(e).then(() => {
           // Reload neighbors in case we linked to a vertex that isn't loaded in the graph
@@ -1533,7 +1533,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   private collectNodeProperties(vertices: GraphData.GremlinVertex[]) {
     const props = {} as any; // Hashset
     $.each(vertices, (index: number, item: GraphData.GremlinVertex) => {
-      for (var p in item) {
+      for (const p in item) {
         // DocDB: Exclude type because it's always 'vertex'
         if (p !== "type" && typeof (item as any)[p] === "string") {
           props[p] = true;
@@ -1543,7 +1543,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       if (item.hasOwnProperty("properties")) {
         // TODO This is DocDB-graph specific
         // Assume each property value is [{value:... }]
-        for (var f in item.properties) {
+        for (const f in item.properties) {
           props[f] = true;
         }
       }
@@ -1570,21 +1570,21 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return;
     }
 
-    let data = this.originalGraphData.getVertexById(id);
+    const data = this.originalGraphData.getVertexById(id);
 
     // A bit of translation to make it easier to display
-    let props: { [id: string]: ViewModels.GremlinPropertyValueType[] } = {};
-    for (let p in data.properties) {
+    const props: { [id: string]: ViewModels.GremlinPropertyValueType[] } = {};
+    for (const p in data.properties) {
       props[p] = data.properties[p].map((gremlinProperty) => gremlinProperty.value);
     }
 
     // update neighbors
-    let sources: NeighborVertexBasicInfo[] = [];
-    let targets: NeighborVertexBasicInfo[] = [];
+    const sources: NeighborVertexBasicInfo[] = [];
+    const targets: NeighborVertexBasicInfo[] = [];
     this.props.onResetDefaultGraphConfigValues();
-    let nodeCaption = this.state.igraphConfigUiData.nodeCaptionChoice;
+    const nodeCaption = this.state.igraphConfigUiData.nodeCaptionChoice;
     this.updateSelectedNodeNeighbors(data.id, nodeCaption, sources, targets);
-    let sData: GraphHighlightedNodeData = {
+    const sData: GraphHighlightedNodeData = {
       id: data.id,
       label: data.label,
       properties: props,
@@ -1611,16 +1611,16 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     targets: NeighborVertexBasicInfo[]
   ): void {
     // update neighbors
-    let gd = this.originalGraphData;
-    let v = gd.getVertexById(id);
+    const gd = this.originalGraphData;
+    const v = gd.getVertexById(id);
 
     // Clear the array while keeping the references
     sources.length = 0;
     targets.length = 0;
 
-    let possibleEdgeLabels = {} as any; // Collect all edge labels in a hashset
+    const possibleEdgeLabels = {} as any; // Collect all edge labels in a hashset
 
-    for (let p in v.inE) {
+    for (const p in v.inE) {
       possibleEdgeLabels[p] = true;
       const edges = v.inE[p];
       $.each(edges, (index: number, edge: GraphData.GremlinShortInEdge) => {
@@ -1629,7 +1629,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           // If id not known, it must be an edge node whose neighbor hasn't been loaded into the graph, yet
           return;
         }
-        let caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
+        const caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
         sources.push({
           name: caption,
           id: neighborId,
@@ -1639,7 +1639,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       });
     }
 
-    for (let p in v.outE) {
+    for (const p in v.outE) {
       possibleEdgeLabels[p] = true;
       const edges = v.outE[p];
       $.each(edges, (index: number, edge: GraphData.GremlinShortOutEdge) => {
@@ -1648,7 +1648,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           // If id not known, it must be an edge node whose neighbor hasn't been loaded into the graph, yet
           return;
         }
-        let caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
+        const caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
         targets.push({
           name: caption,
           id: neighborId,
@@ -1681,20 +1681,20 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return;
     }
 
-    let updatedVertex = vertices[0];
+    const updatedVertex = vertices[0];
     if (this.originalGraphData.hasVertexId(updatedVertex.id)) {
-      let currentVertex = this.originalGraphData.getVertexById(updatedVertex.id);
+      const currentVertex = this.originalGraphData.getVertexById(updatedVertex.id);
       // Copy updated properties
       if (currentVertex.hasOwnProperty("properties")) {
         delete currentVertex["properties"];
       }
-      for (var p in updatedVertex) {
+      for (const p in updatedVertex) {
         (currentVertex as any)[p] = updatedVertex[p];
       }
     }
 
     // TODO This kind of assumes saveVertexProperty is done from property panes.
-    let hn = this.state.highlightedNode;
+    const hn = this.state.highlightedNode;
     if (hn && hn.id === updatedVertex.id) {
       this.updatePropertiesPane(hn.id);
     }
@@ -1708,7 +1708,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     igraphConfig?: IGraphConfig
   ) {
     this.originalGraphData = graphData;
-    let gd = JSON.parse(JSON.stringify(this.originalGraphData));
+    const gd = JSON.parse(JSON.stringify(this.originalGraphData));
     if (!this.d3ForceGraph) {
       console.warn("Attempting to update graph, but d3ForceGraph not initialized, yet.");
       return;
