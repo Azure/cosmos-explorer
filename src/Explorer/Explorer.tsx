@@ -371,7 +371,7 @@ export default class Explorer {
     this._isInitializingNotebooks = false;
   }
 
-  public async allocateContainer() {
+  public async allocateContainer(): Promise<void> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     const isAllocating = useNotebook.getState().isAllocating;
     if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined && isAllocating === false) {
@@ -1063,7 +1063,7 @@ export default class Explorer {
     notebookUrl?: string,
     galleryItem?: IGalleryItem,
     isFavorite?: boolean
-  ) {
+  ): Promise<void> {
     const title = "Gallery";
     const GalleryTab = await (await import(/* webpackChunkName: "GalleryTab" */ "./Tabs/GalleryTab")).default;
     const galleryTab = useTabs

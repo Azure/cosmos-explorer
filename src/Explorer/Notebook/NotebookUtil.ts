@@ -8,7 +8,6 @@ import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as StringUtils from "../../Utils/StringUtils";
 import { SnapshotFragment } from "./NotebookComponent/types";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
-import { useNotebook } from "./useNotebook";
 
 // Must match rx-jupyter' FileType
 export type FileType = "directory" | "file" | "notebook";
@@ -337,9 +336,9 @@ export class NotebookUtil {
       return `Download ${fileName} from gallery as a copy to your notebooks to run and/or edit the notebook.`;
     }
   }
-  public static getNotebookBtnTitle(): string {
+  public static getNotebookBtnTitle(fileName: string): string {
     if (this.isPhoenixEnabled()) {
-      return `Download to ${useNotebook.getState().notebookFolderName}`;
+      return `Download to ${fileName}`;
     } else {
       return `Download to my notebooks`;
     }
