@@ -15,7 +15,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   const [isActive, setIsActive] = React.useState(false);
   const [counter, setCounter] = React.useState(0);
   const [statusColor, setStatusColor] = React.useState("");
-  const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary run time workspace.");
+  const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary workspace.");
   React.useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
@@ -67,15 +67,15 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connecting && isActive === false) {
     setIsActive(true);
     setStatusColor("status connecting is-animating");
-    setToolTipContent("Connecting to temporary run time workspace.");
+    setToolTipContent("Connecting to temporary workspace.");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connected && isActive === true) {
     stopTimer();
     setStatusColor("status connected is-animating");
-    setToolTipContent("Connected to temporary run time workspace.");
+    setToolTipContent("Connected to temporary workspace.");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Failed && isActive === true) {
     stopTimer();
     setStatusColor("status failed is-animating");
-    setToolTipContent("Click here to Reconnect to temporary run time workspace.");
+    setToolTipContent("Click here to Reconnect to temporary workspace.");
   }
   return (
     <ActionButton
