@@ -11,8 +11,8 @@ import {
   TooltipHost,
 } from "@fluentui/react";
 import React, { FunctionComponent } from "react";
-// import AddIcon from "../../../../images/Add.svg";
-import CancelIcon from "../../../../images/cancel.svg";
+import AddIcon from "../../../../images/Add-property.svg";
+import CancelIcon from "../../../../images/Entity_cancel.svg";
 import { userContext } from "../../../UserContext";
 import { IOption } from "./QueryTableTabUtils";
 const dropdownStyles: Partial<IDropdownStyles> = { dropdown: { width: 100 } };
@@ -67,13 +67,11 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
   onDeleteCaluseKeyDown,
 }: IQueryTableEntityClauseProps): JSX.Element => {
   const cancelImageProps: IImageProps = {
-    width: 14,
-    height: 25,
+    className: "querybuilder-cancelImg",
   };
 
   const addImageProps: IImageProps = {
-    width: 18,
-    height: 25,
+    className: "querybuilder-addpropertyImg",
   };
 
   const sectionStackTokens: IStackTokens = { childrenGap: 12 };
@@ -93,7 +91,7 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
         <TooltipHost content="Add new clause" id="addNewClause">
           <Image
             {...addImageProps}
-            // src={AddIcon}
+            src={AddIcon}
             alt="Add new clause"
             id="addNewClause"
             onClick={onAddNewClause}
@@ -120,7 +118,6 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedOperation")
           }
           options={operationOptions}
-          // id="operatorOptionId"
           styles={dropdownStyles}
         />
         <Dropdown
@@ -129,7 +126,6 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedField")
           }
           options={fieldOptions}
-          // id="fieldOptionId"
           styles={dropdownStyles}
         />
         <Dropdown
@@ -138,7 +134,6 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedEntityType")
           }
           options={entityTypeOptions}
-          // id="entityOptionId"
           disabled={validateEntityTypeOption()}
           styles={dropdownStyles}
         />
@@ -148,7 +143,6 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
             onDropdownChange(selectedOption, "selectedOperator")
           }
           options={operatorOptions}
-          // id="operatorOptionId"
           styles={dropdownStyles}
         />
         {isTimeStampSelected ? (
@@ -158,12 +152,10 @@ export const QueryTableEntityClause: FunctionComponent<IQueryTableEntityClausePr
               onDropdownChange(selectedOption, "selectedTimestamp")
             }
             options={timestampOptions}
-            // id="operatorOptionId"
             styles={dropdownStyles}
           />
         ) : (
           <TextField
-            // id="entityValueId"
             autoFocus
             placeholder={entityValuePlaceHolder}
             value={entityValue}
