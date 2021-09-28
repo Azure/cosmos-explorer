@@ -6,7 +6,7 @@ import CodeMirrorEditor from "@nteract/stateful-components/lib/inputs/connected-
 import { PassedEditorProps } from "@nteract/stateful-components/lib/inputs/editor";
 import * as React from "react";
 import { DndProvider } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { userContext } from "../../../UserContext";
@@ -14,6 +14,7 @@ import * as cdbActions from "../NotebookComponent/actions";
 import loadTransform from "../NotebookComponent/loadTransform";
 import { CdbAppState, SnapshotFragment, SnapshotRequest } from "../NotebookComponent/types";
 import { NotebookUtil } from "../NotebookUtil";
+import SecurityWarningBar from "../SecurityWarningBar/SecurityWarningBar";
 import { AzureTheme } from "./AzureTheme";
 import "./base.css";
 import CellCreator from "./decorators/CellCreator";
@@ -107,6 +108,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
     return (
       <>
         <div className="NotebookRendererContainer">
+          <SecurityWarningBar contentRef={this.props.contentRef} />
           <div className="NotebookRenderer" ref={this.notebookRendererRef}>
             <DndProvider backend={HTML5Backend}>
               <KeyboardShortcuts contentRef={this.props.contentRef}>

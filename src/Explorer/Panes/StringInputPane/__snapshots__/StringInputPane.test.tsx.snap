@@ -13,6 +13,7 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "isTabsContentExpanded": [Function],
       "onRefreshDatabasesKeyPress": [Function],
       "onRefreshResourcesClick": [Function],
+      "phoenixClient": PhoenixClient {},
       "provideFeedbackEmail": [Function],
       "queriesClient": QueriesClient {
         "container": [Circular],
@@ -21,19 +22,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       "resourceTree": ResourceTreeAdapter {
         "container": [Circular],
         "copyNotebook": [Function],
-        "gitHubOAuthService": GitHubOAuthService {
-          "junoClient": JunoClient {
-            "cachedPinnedRepos": [Function],
-          },
-          "token": [Function],
-        },
-        "junoClient": JunoClient {
-          "cachedPinnedRepos": [Function],
-        },
-        "parameters": [Function],
-      },
-      "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-        "container": [Circular],
         "parameters": [Function],
       },
     }

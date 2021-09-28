@@ -8,6 +8,7 @@ import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../UserContext";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import { getErrorMessage } from "../Tables/Utilities";
 import { NewStoredProcedureTab } from "../Tabs/StoredProcedureTab/StoredProcedureTab";
@@ -138,16 +139,21 @@ export default class StoredProcedure {
     }
   };
   public delete() {
-    if (!window.confirm("Are you sure you want to delete the stored procedure?")) {
-      return;
-    }
-
-    deleteStoredProcedure(this.collection.databaseId, this.collection.id(), this.id()).then(
+    useDialog.getState().showOkCancelModalDialog(
+      "Confirm delete",
+      "Are you sure you want to delete the stored procedure?",
+      "Delete",
       () => {
-        useTabs.getState().closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
-        this.collection.children.remove(this);
+        deleteStoredProcedure(this.collection.databaseId, this.collection.id(), this.id()).then(
+          () => {
+            useTabs.getState().closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
+            this.collection.children.remove(this);
+          },
+          (reason) => {}
+        );
       },
-      (reason) => {}
+      "Cancel",
+      undefined
     );
   }
 

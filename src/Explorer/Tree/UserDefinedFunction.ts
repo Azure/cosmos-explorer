@@ -6,6 +6,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import UserDefinedFunctionTab from "../Tabs/UserDefinedFunctionTab";
 import { useSelectedNode } from "../useSelectedNode";
@@ -95,18 +96,23 @@ export default class UserDefinedFunction {
   }
 
   public delete() {
-    if (!window.confirm("Are you sure you want to delete the user defined function?")) {
-      return;
-    }
-
-    deleteUserDefinedFunction(this.collection.databaseId, this.collection.id(), this.id()).then(
+    useDialog.getState().showOkCancelModalDialog(
+      "Confirm delete",
+      "Are you sure you want to delete the user defined function?",
+      "Delete",
       () => {
-        useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
-        this.collection.children.remove(this);
+        deleteUserDefinedFunction(this.collection.databaseId, this.collection.id(), this.id()).then(
+          () => {
+            useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
+            this.collection.children.remove(this);
+          },
+          () => {
+            /**/
+          }
+        );
       },
-      () => {
-        /**/
-      }
+      "Cancel",
+      undefined
     );
   }
 }

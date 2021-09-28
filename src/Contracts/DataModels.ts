@@ -1,3 +1,5 @@
+import { ConnectionStatusType } from "../Common/Constants";
+
 export interface DatabaseAccount {
   id: string;
   name: string;
@@ -495,4 +497,9 @@ export interface MongoParameters extends RpParameters {
 export interface MemoryUsageInfo {
   freeKB: number;
   totalKB: number;
+}
+
+export interface ContainerConnectionInfo {
+  status: ConnectionStatusType;
+  //need to add ram and rom info
 }

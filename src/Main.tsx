@@ -26,7 +26,7 @@ import "../less/TableStyles/fulldatatables.less";
 import "../less/TableStyles/queryBuilder.less";
 import "../less/tree.less";
 import { CollapsedResourceTree } from "./Common/CollapsedResourceTree";
-import { ResourceTree } from "./Common/ResourceTree";
+import { ResourceTreeContainer } from "./Common/ResourceTreeContainer";
 import "./Explorer/Controls/Accordion/AccordionComponent.less";
 import "./Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.less";
 import { Dialog } from "./Explorer/Controls/Dialog";
@@ -37,6 +37,7 @@ import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
 import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import "./Explorer/Menus/CommandBar/ConnectionStatusComponent.less";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";
@@ -84,7 +85,11 @@ const App: React.FunctionComponent = () => {
           <div id="resourcetree" data-test="resourceTreeId" className="resourceTree">
             <div className="collectionsTreeWithSplitter">
               {/* Collections Tree Expanded - Start */}
-              <ResourceTree toggleLeftPaneExpanded={toggleLeftPaneExpanded} isLeftPaneExpanded={isLeftPaneExpanded} />
+              <ResourceTreeContainer
+                container={explorer}
+                toggleLeftPaneExpanded={toggleLeftPaneExpanded}
+                isLeftPaneExpanded={isLeftPaneExpanded}
+              />
               {/* Collections Tree Expanded - End */}
               {/* Collections Tree Collapsed - Start */}
               <CollapsedResourceTree
