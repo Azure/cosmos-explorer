@@ -11,7 +11,7 @@ import NotebookIcon from "../../../images/notebook/Notebook-resource.svg";
 import PublishIcon from "../../../images/notebook/publish_content.svg";
 import RefreshIcon from "../../../images/refresh-cosmos.svg";
 import CollectionIcon from "../../../images/tree-collection.svg";
-import { Areas, Notebook } from "../../Common/Constants";
+import { Areas, ConnectionStatusType, Notebook } from "../../Common/Constants";
 import { isPublicInternetAccessAllowed } from "../../Common/DatabaseAccountUtility";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -128,17 +128,15 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         notebooksTree.children.push(buildGalleryNotebooksTree());
       }
 
-      if (myNotebooksContentRoot) {
+      if (myNotebooksContentRoot && useNotebook.getState().connectionInfo.status == ConnectionStatusType.Connected) {
         notebooksTree.children.push(buildMyNotebooksTree());
       }
-
       if (container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
         // collapse all other notebook nodes
         notebooksTree.children.forEach((node) => (node.isExpanded = false));
-        notebooksTree.children.push(buildGitHubNotebooksTree());
+        notebooksTree.children.push(buildGitHubNotebooksTree(true));
       }
     }
-
     return notebooksTree;
   };
 
@@ -178,7 +176,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     return myNotebooksTree;
   };
 
-  const buildGitHubNotebooksTree = (): TreeNode => {
+  const buildGitHubNotebooksTree = (isConnected: boolean): TreeNode => {
     const gitHubNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
@@ -190,8 +188,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
       true
     );
-
-    gitHubNotebooksTree.contextMenu = [
+    const manageGitContextMenu: TreeNodeMenuItem[] = [
       {
         label: "Manage GitHub settings",
         onClick: () =>
@@ -216,7 +213,23 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
         },
       },
     ];
-
+    const connectGitContextMenu: TreeNodeMenuItem[] = [
+      {
+        label: "Connect to GitHub",
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel(
+              "Connect to GitHub",
+              <GitHubReposPanel
+                explorer={container}
+                gitHubClientProp={container.notebookManager.gitHubClient}
+                junoClientProp={container.notebookManager.junoClient}
+              />
+            ),
+      },
+    ];
+    gitHubNotebooksTree.contextMenu = isConnected ? manageGitContextMenu : connectGitContextMenu;
     gitHubNotebooksTree.isExpanded = true;
     gitHubNotebooksTree.isAlphaSorted = true;
 

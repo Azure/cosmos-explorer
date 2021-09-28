@@ -36,7 +36,6 @@ import {
 interface AddTableEntityPanelProps {
   tableDataClient: TableDataClient;
   queryTablesTab: NewQueryTablesTab;
-  // queryTablesTab: QueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
   reloadEntities: () => void;

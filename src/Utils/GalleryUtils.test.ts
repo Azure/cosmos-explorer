@@ -2,6 +2,7 @@ import { HttpStatusCodes } from "../Common/Constants";
 import { useDialog } from "../Explorer/Controls/Dialog";
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import Explorer from "../Explorer/Explorer";
+import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { IGalleryItem, JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "./GalleryUtils";
 
@@ -34,7 +35,7 @@ describe("GalleryUtils", () => {
 
     expect(useDialog.getState().visible).toBe(true);
     expect(useDialog.getState().dialogProps).toBeDefined();
-    expect(useDialog.getState().dialogProps.title).toBe("Download to My Notebooks");
+    expect(useDialog.getState().dialogProps.title).toBe(`Download to ${useNotebook.getState().notebookFolderName}`);
   });
 
   it("favoriteItem favorites item", async () => {

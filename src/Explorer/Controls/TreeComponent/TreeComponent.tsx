@@ -243,6 +243,7 @@ export class TreeNodeComponent extends React.Component<TreeNodeComponentProps, T
       <div ref={this.contextMenuRef} onContextMenu={this.onRightClick} onKeyPress={this.onMoreButtonKeyPress}>
         <IconButton
           name="More"
+          title="More"
           className="treeMenuEllipsis"
           ariaLabel={menuItemLabel}
           menuIconProps={{

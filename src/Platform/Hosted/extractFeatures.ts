@@ -11,6 +11,7 @@ export type Features = {
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;
   partitionKeyDefault2: boolean;
+  phoenix: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -28,6 +29,8 @@ export type Features = {
   readonly pr?: string;
   readonly showMinRUSurvey: boolean;
   readonly ttl90Days: boolean;
+  readonly mongoProxyEndpoint?: string;
+  readonly mongoProxyAPIs?: string;
   readonly notebooksTemporarilyDown: boolean;
 };
 
@@ -62,6 +65,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     enableKoResourceTree: "true" === get("enablekoresourcetree"),
     executeSproc: "true" === get("dataexplorerexecutesproc"),
     hostedDataExplorer: "true" === get("hosteddataexplorerenabled"),
+    mongoProxyEndpoint: get("mongoproxyendpoint"),
+    mongoProxyAPIs: get("mongoproxyapis"),
     junoEndpoint: get("junoendpoint"),
     livyEndpoint: get("livyendpoint"),
     notebookBasePath: get("notebookbasepath"),
@@ -76,5 +81,15 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
     notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
+    phoenix: "true" === get("phoenix"),
   };
+}
+
+export function hasFlag(flags: string | undefined, desiredFlag: string | undefined): boolean {
+  if (!flags || !desiredFlag) {
+    return false;
+  }
+
+  const features = flags.split("|");
+  return features.find((feature) => feature === desiredFlag) ? true : false;
 }

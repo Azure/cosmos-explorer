@@ -736,7 +736,7 @@ export class D3ForceGraph implements GraphRenderer {
       .on("dblclick", function (this: Element, _: MouseEvent, d: D3Node) {
         // https://stackoverflow.com/a/41945742 ('this' implicitly has type 'any' because it does not have a type annotation)
         // this is the <g> element
-        self.onNodeClicked(this.parentNode, d);
+        return self.onNodeClicked(this.parentNode, d);
       })
       .on("click", function (this: Element, _: MouseEvent, d: D3Node) {
         // this is the <g> element
