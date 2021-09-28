@@ -132,7 +132,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       type: NotebookContentItemType.File,
     };
     this.myNotebooksContentRoot = {
-      name: useNotebook.getState().NotebookFolderName,
+      name: useNotebook.getState().notebookFolderName,
       path: useNotebook.getState().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };

@@ -198,6 +198,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             <Stack className="panelGroupSpacing">
               <TextField
                 aria-required="true"
+                required={true}
                 autoComplete="off"
                 styles={getTextFieldStyles()}
                 pattern="[^/?#\\]*[^/?# \\]"
@@ -285,6 +286,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               underlined
               styles={getTextFieldStyles({ fontSize: 12, width: 150 })}
               aria-required="true"
+              required={true}
               ariaLabel="addCollection-tableId"
               autoComplete="off"
               pattern="[^/?#\\]*[^/?# \\]"

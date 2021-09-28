@@ -1,6 +1,6 @@
 import { ConnectionStatusType, HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
-import * as DataModels from "../Contracts/DataModels";
+import { ContainerConnectionInfo } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
@@ -25,25 +25,40 @@ export class PhoenixClient {
   public async containerConnectionInfo(
     provisionData: IProvosionData
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
-    const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
-      method: "POST",
-      headers: PhoenixClient.getHeaders(),
-      body: JSON.stringify(provisionData),
-    });
-    let data: IPhoenixConnectionInfoResult;
-    if (response.status === HttpStatusCodes.OK) {
-      data = await response.json();
-    } else {
-      const connectionStatus: DataModels.ContainerConnectionInfo = {
+    try {
+      const connectionStatus: ContainerConnectionInfo = {
+        status: ConnectionStatusType.Connecting,
+      };
+      useNotebook.getState().setConnectionInfo(connectionStatus);
+      const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/provision`, {
+        method: "POST",
+        headers: PhoenixClient.getHeaders(),
+        body: JSON.stringify(provisionData),
+      });
+      let data: IPhoenixConnectionInfoResult;
+      if (response.status === HttpStatusCodes.OK) {
+        data = await response.json();
+        if (data && data.notebookServerUrl) {
+          connectionStatus.status = ConnectionStatusType.Connected;
+          useNotebook.getState().setConnectionInfo(connectionStatus);
+        }
+      } else {
+        connectionStatus.status = ConnectionStatusType.Failed;
+        useNotebook.getState().setConnectionInfo(connectionStatus);
+      }
+
+      return {
+        status: response.status,
+        data,
+      };
+    } catch (error) {
+      const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
+      console.error(error);
+      throw error;
     }
-
-    return {
-      status: response.status,
-      data,
-    };
   }
 
   public static getPhoenixEndpoint(): string {

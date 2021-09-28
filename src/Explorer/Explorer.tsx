@@ -4,7 +4,6 @@ import _ from "underscore";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ConnectionStatusType } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
@@ -347,10 +346,6 @@ export default class Explorer {
     }
     this._isInitializingNotebooks = true;
     if (userContext.features.phoenix) {
-      const connectionStatus: DataModels.ContainerConnectionInfo = {
-        status: ConnectionStatusType.Allocating,
-      };
-      useNotebook.getState().setConnectionInfo(connectionStatus);
       const provisionData = {
         cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
         resourceId: userContext.databaseAccount.id,
@@ -361,9 +356,6 @@ export default class Explorer {
       };
       const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
       if (connectionInfo.data && connectionInfo.data.notebookServerUrl) {
-        connectionStatus.status = ConnectionStatusType.Connected;
-        useNotebook.getState().setConnectionInfo(connectionStatus);
-
         useNotebook.getState().setNotebookServerInfo({
           notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
           authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
