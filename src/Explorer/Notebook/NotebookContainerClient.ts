@@ -25,7 +25,7 @@ export class NotebookContainerClient {
       const unsub = useNotebook.subscribe(
         (newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
           if (newServerInfo?.notebookServerEndpoint) {
-            this.scheduleHeartbeat(Constants.Notebook.initialHeartbeatDelayMs);
+            this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
           }
           unsub();
         },
@@ -45,7 +45,7 @@ export class NotebookContainerClient {
     }, delayMs);
   }
 
-  private async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
+  public async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";
@@ -93,7 +93,7 @@ export class NotebookContainerClient {
           "Connection lost with Notebook server. Attempting to reconnect..."
         );
       }
-      if (userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true) {
+      if (NotebookUtil.isPhoenixEnabled()) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.Failed,
         };

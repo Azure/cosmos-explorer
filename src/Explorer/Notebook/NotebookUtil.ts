@@ -331,7 +331,7 @@ export class NotebookUtil {
   }
   public static getDownloadModalConent(fileName: string): string {
     if (this.isPhoenixEnabled()) {
-      return `In order to download and run your notebook, a local temporary environment will be created for your account to view, edit and run the notebooks for a dedicated period of time. If you need the notebook to be stored permanently, please connect to github and then download the notebook to your github repo.`;
+      return `To download, run, and make changes to this sample notebook, a temporary workspace will be created. When the session expires, any notebooks in the workspace will be removed. To save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your local machine before the session ends.`;
     } else {
       return `Download ${fileName} from gallery as a copy to your notebooks to run and/or edit the notebook.`;
     }

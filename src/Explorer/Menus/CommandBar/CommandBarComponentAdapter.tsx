@@ -61,9 +61,9 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   }
 
   if (
-    useTabs.getState().activeTab?.tabKind === ViewModels.CollectionTabKind.NotebookV2 &&
+    userContext.features.phoenix === false &&
     userContext.features.notebooksTemporarilyDown === false &&
-    userContext.features.phoenix === false
+    useTabs.getState().activeTab?.tabKind === ViewModels.CollectionTabKind.NotebookV2
   ) {
     uiFabricControlButtons.unshift(CommandBarUtil.createMemoryTracker("memoryTracker"));
   }

@@ -130,7 +130,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
       if (
         myNotebooksContentRoot &&
-        ((userContext.features.phoenix === true &&
+        ((NotebookUtil.isPhoenixEnabled() &&
           useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected) ||
           userContext.features.phoenix === false)
       ) {

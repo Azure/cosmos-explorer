@@ -2,7 +2,7 @@ import { Icon, ProgressIndicator, Stack, TooltipHost } from "@fluentui/react";
 import { ActionButton } from "@fluentui/react/lib/Button";
 import * as React from "react";
 import "../../../../less/hostedexplorer.less";
-import { ConnectionStatusType } from "../../../Common/Constants";
+import { ConnectionStatusType, Notebook } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import "../CommandBar/ConnectionStatusComponent.less";
@@ -14,8 +14,8 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   const [minute, setMinute] = React.useState("00");
   const [isActive, setIsActive] = React.useState(false);
   const [counter, setCounter] = React.useState(0);
-  const [statusColor, setStatusColor] = React.useState("status connecting is-animating");
-  const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary run time environment.");
+  const [statusColor, setStatusColor] = React.useState("");
+  const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary run time workspace.");
   React.useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
@@ -45,8 +45,8 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   const connectionInfo = useNotebook((state) => state.connectionInfo);
   const memoryUsageInfo = useNotebook((state) => state.memoryUsageInfo);
 
-  const totalGB = memoryUsageInfo ? memoryUsageInfo.totalKB / 1048576 : 0;
-  const usedGB = totalGB > 0 ? totalGB - memoryUsageInfo.freeKB / 1048576 : 0;
+  const totalGB = memoryUsageInfo ? memoryUsageInfo.totalKB / Notebook.memoryGuageToGB : 0;
+  const usedGB = totalGB > 0 ? totalGB - memoryUsageInfo.freeKB / Notebook.memoryGuageToGB : 0;
 
   if (
     connectionInfo &&
@@ -67,15 +67,15 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connecting && isActive === false) {
     setIsActive(true);
     setStatusColor("status connecting is-animating");
-    setToolTipContent("Connecting to temporary run time environment.");
+    setToolTipContent("Connecting to temporary run time workspace.");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connected && isActive === true) {
     stopTimer();
     setStatusColor("status connected is-animating");
-    setToolTipContent("Connected to temporary runtime environment.");
+    setToolTipContent("Connected to temporary run time workspace.");
   } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Failed && isActive === true) {
     stopTimer();
     setStatusColor("status failed is-animating");
-    setToolTipContent("Click here to Reconnect to temporary run time environment");
+    setToolTipContent("Click here to Reconnect to temporary run time workspace.");
   }
   return (
     <ActionButton

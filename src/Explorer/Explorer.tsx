@@ -374,13 +374,13 @@ export default class Explorer {
   public async allocateContainer(): Promise<void> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     const isAllocating = useNotebook.getState().isAllocating;
-    if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined && isAllocating === false) {
+    if (isAllocating === false && notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined) {
       const provisionData = {
-        cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
-        dbAccountName: userContext.databaseAccount.name,
         aadToken: userContext.authorizationToken,
-        resourceGroup: userContext.resourceGroup,
         subscriptionId: userContext.subscriptionId,
+        resourceGroup: userContext.resourceGroup,
+        dbAccountName: userContext.databaseAccount.name,
+        cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
       };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
@@ -400,17 +400,17 @@ export default class Explorer {
             notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
             authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
           });
+          this.notebookManager?.notebookClient
+            .getMemoryUsage()
+            .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
           useNotebook.getState().setIsAllocating(false);
         } else {
           connectionStatus.status = ConnectionStatusType.Failed;
           useNotebook.getState().resetConatinerConnection(connectionStatus);
         }
       } catch (error) {
-        const connectionStatus: ContainerConnectionInfo = {
-          status: ConnectionStatusType.Failed,
-        };
+        connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetConatinerConnection(connectionStatus);
-        console.error(error);
         throw error;
       }
       this.refreshNotebookList();
@@ -690,11 +690,7 @@ export default class Explorer {
     if (!notebookContentItem || !notebookContentItem.path) {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
-    if (
-      notebookContentItem.type === NotebookContentItemType.Notebook &&
-      userContext.features.notebooksTemporarilyDown === false &&
-      userContext.features.phoenix === true
-    ) {
+    if (notebookContentItem.type === NotebookContentItemType.Notebook && NotebookUtil.isPhoenixEnabled()) {
       this.allocateContainer();
     }
 
@@ -994,7 +990,7 @@ export default class Explorer {
   }
 
   public async openNotebookTerminal(kind: ViewModels.TerminalKind): Promise<void> {
-    if (userContext.features.phoenix === true) {
+    if (NotebookUtil.isPhoenixEnabled()) {
       await this.allocateContainer();
       const notebookServerInfo = useNotebook.getState().notebookServerInfo;
       if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint !== undefined) {
@@ -1004,7 +1000,7 @@ export default class Explorer {
           .getState()
           .showOkModalDialog(
             "Failed to Connect",
-            "Failed to connect temporary environment, this could happen because of network issue please refresh and try again."
+            "Failed to connect temporary workspace, this could happen because of network issue please refresh and try again."
           );
       }
     } else {
