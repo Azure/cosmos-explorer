@@ -1,4 +1,4 @@
-import { DefaultButton, IButtonProps, ITextFieldProps, TextField } from "office-ui-fabric-react";
+import { DefaultButton, IButtonProps, ITextFieldProps, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as Constants from "../../../Common/Constants";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";

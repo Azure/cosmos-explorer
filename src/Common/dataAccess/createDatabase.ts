@@ -2,27 +2,20 @@ import { DatabaseResponse } from "@azure/cosmos";
 import { DatabaseRequest } from "@azure/cosmos/dist-esm/client/Database/DatabaseRequest";
 import { AuthType } from "../../AuthType";
 import * as DataModels from "../../Contracts/DataModels";
+import { useDatabases } from "../../Explorer/useDatabases";
 import { userContext } from "../../UserContext";
-import {
-  createUpdateCassandraKeyspace,
-  getCassandraKeyspace,
-} from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import {
-  createUpdateGremlinDatabase,
-  getGremlinDatabase,
-} from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import {
-  createUpdateMongoDBDatabase,
-  getMongoDBDatabase,
-} from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { createUpdateSqlDatabase, getSqlDatabase } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { getDatabaseName } from "../../Utils/APITypeUtils";
+import { createUpdateCassandraKeyspace } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { createUpdateGremlinDatabase } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { createUpdateMongoDBDatabase } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { createUpdateSqlDatabase } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import {
   CassandraKeyspaceCreateUpdateParameters,
   CreateUpdateOptions,
   GremlinDatabaseCreateUpdateParameters,
   MongoDBDatabaseCreateUpdateParameters,
   SqlDatabaseCreateUpdateParameters,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -48,8 +41,14 @@ export async function createDatabase(params: DataModels.CreateDatabaseParams): P
 }
 
 async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  const defaultExperience = userContext.apiType;
-  switch (defaultExperience) {
+  if (!useDatabases.getState().validateDatabaseId(params.databaseId)) {
+    const databaseName = getDatabaseName().toLocaleLowerCase();
+    throw new Error(`Create ${databaseName} failed: ${databaseName} with id ${params.databaseId} already exists`);
+  }
+
+  const { apiType } = userContext;
+
+  switch (apiType) {
     case "SQL":
       return createSqlDatabase(params);
     case "Mongo":
@@ -59,27 +58,11 @@ async function createDatabaseWithARM(params: DataModels.CreateDatabaseParams): P
     case "Gremlin":
       return createGremlineDatabase(params);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }
 
 async function createSqlDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  try {
-    const getResponse = await getSqlDatabase(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: CreateUpdateOptions = constructRpOptions(params);
   const rpPayload: SqlDatabaseCreateUpdateParameters = {
     properties: {
@@ -100,22 +83,6 @@ async function createSqlDatabase(params: DataModels.CreateDatabaseParams): Promi
 }
 
 async function createMongoDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  try {
-    const getResponse = await getMongoDBDatabase(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: CreateUpdateOptions = constructRpOptions(params);
   const rpPayload: MongoDBDatabaseCreateUpdateParameters = {
     properties: {
@@ -136,22 +103,6 @@ async function createMongoDatabase(params: DataModels.CreateDatabaseParams): Pro
 }
 
 async function createCassandraKeyspace(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  try {
-    const getResponse = await getCassandraKeyspace(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: CreateUpdateOptions = constructRpOptions(params);
   const rpPayload: CassandraKeyspaceCreateUpdateParameters = {
     properties: {
@@ -172,22 +123,6 @@ async function createCassandraKeyspace(params: DataModels.CreateDatabaseParams):
 }
 
 async function createGremlineDatabase(params: DataModels.CreateDatabaseParams): Promise<DataModels.Database> {
-  try {
-    const getResponse = await getGremlinDatabase(
-      userContext.subscriptionId,
-      userContext.resourceGroup,
-      userContext.databaseAccount.name,
-      params.databaseId
-    );
-    if (getResponse?.properties?.resource) {
-      throw new Error(`Create database failed: database with id ${params.databaseId} already exists`);
-    }
-  } catch (error) {
-    if (error.code !== "NotFound") {
-      throw error;
-    }
-  }
-
   const options: CreateUpdateOptions = constructRpOptions(params);
   const rpPayload: GremlinDatabaseCreateUpdateParameters = {
     properties: {

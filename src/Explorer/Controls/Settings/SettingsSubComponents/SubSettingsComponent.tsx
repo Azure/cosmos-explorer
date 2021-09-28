@@ -1,17 +1,7 @@
-import {
-  ChoiceGroup,
-  IChoiceGroupOption,
-  Label,
-  Link,
-  MessageBar,
-  Stack,
-  Text,
-  TextField,
-} from "office-ui-fabric-react";
+import { ChoiceGroup, IChoiceGroupOption, Label, Link, MessageBar, Stack, Text, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as ViewModels from "../../../../Contracts/ViewModels";
 import { userContext } from "../../../../UserContext";
-import Explorer from "../../../Explorer";
 import { Int32 } from "../../../Panes/Tables/Validators/EntityPropertyValidationCommon";
 import {
   changeFeedPolicyToolTip,
@@ -37,8 +27,6 @@ import { ToolTipLabelComponent } from "./ToolTipLabelComponent";
 
 export interface SubSettingsComponentProps {
   collection: ViewModels.Collection;
-  container: Explorer;
-
   timeToLive: TtlType;
   timeToLiveBaseline: TtlType;
 

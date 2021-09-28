@@ -7,6 +7,7 @@ import * as NotificationConsoleUtils from "../../Utils/NotificationConsoleUtils"
 import GraphTab from ".././Tabs/GraphTab";
 import Explorer from "../Explorer";
 import { GremlinClient } from "../Graph/GraphExplorerComponent/GremlinClient";
+import { useDatabases } from "../useDatabases";
 
 interface SampleDataFile extends DataModels.CreateCollectionParams {
   data: any[];
@@ -59,7 +60,7 @@ export class ContainerSampleGenerator {
 
     await createCollection(createRequest);
     await this.container.refreshAllDatabases();
-    const database = this.container.findDatabaseWithId(this.sampleDataFile.databaseId);
+    const database = useDatabases.getState().findDatabaseWithId(this.sampleDataFile.databaseId);
     if (!database) {
       return undefined;
     }
@@ -80,7 +81,7 @@ export class ContainerSampleGenerator {
       if (!queries || queries.length < 1) {
         return;
       }
-      const account = userContext.databaseAccount;
+      const { databaseAccount: account } = userContext;
       const databaseId = collection.databaseId;
       const gremlinClient = new GremlinClient();
       gremlinClient.initialize({

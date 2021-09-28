@@ -1,7 +1,6 @@
 import { stringifyNotebook, toJS } from "@nteract/commutable";
 import * as ko from "knockout";
 import * as Q from "q";
-import * as _ from "underscore";
 import ClearAllOutputsIcon from "../../../images/notebook/Notebook-clear-all-outputs.svg";
 import CopyIcon from "../../../images/notebook/Notebook-copy.svg";
 import CutIcon from "../../../images/notebook/Notebook-cut.svg";
@@ -12,20 +11,21 @@ import RunAllIcon from "../../../images/notebook/Notebook-run-all.svg";
 import RunIcon from "../../../images/notebook/Notebook-run.svg";
 import { default as InterruptKernelIcon, default as KillKernelIcon } from "../../../images/notebook/Notebook-stop.svg";
 import SaveIcon from "../../../images/save-cosmos.svg";
-import { ArmApiVersions } from "../../Common/Constants";
-import { configContext } from "../../ConfigContext";
-import * as DataModels from "../../Contracts/DataModels";
-import { trackEvent } from "../../Shared/appInsights";
+import { useNotebookSnapshotStore } from "../../hooks/useNotebookSnapshotStore";
 import { Action, ActionModifiers, Source } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
 import * as NotebookConfigurationUtils from "../../Utils/NotebookConfigurationUtils";
 import { logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { useDialog } from "../Controls/Dialog";
 import * as CommandBarComponentButtonFactory from "../Menus/CommandBar/CommandBarComponentButtonFactory";
 import { KernelSpecsDisplay } from "../Notebook/NotebookClientV2";
+import * as CdbActions from "../Notebook/NotebookComponent/actions";
 import { NotebookComponentAdapter } from "../Notebook/NotebookComponent/NotebookComponentAdapter";
+import { CdbAppState, SnapshotRequest } from "../Notebook/NotebookComponent/types";
 import { NotebookContentItem } from "../Notebook/NotebookContentItem";
+import { NotebookUtil } from "../Notebook/NotebookUtil";
+import { useNotebook } from "../Notebook/useNotebook";
 import NotebookTabBase, { NotebookTabBaseOptions } from "./NotebookTabBase";
 
 export interface NotebookTabOptions extends NotebookTabBaseOptions {
@@ -35,7 +35,6 @@ export interface NotebookTabOptions extends NotebookTabBaseOptions {
 export default class NotebookTabV2 extends NotebookTabBase {
   public readonly html = '<div data-bind="react:notebookComponentAdapter" style="height: 100%"></div>';
   public notebookPath: ko.Observable<string>;
-  private selectedSparkPool: ko.Observable<string>;
   private notebookComponentAdapter: NotebookComponentAdapter;
 
   constructor(options: NotebookTabOptions) {
@@ -43,23 +42,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
     this.container = options.container;
     this.notebookPath = ko.observable(options.notebookContentItem.path);
-    this.container.notebookServerInfo.subscribe(() => logConsoleInfo("New notebook server info received."));
+    useNotebook.subscribe(
+      () => logConsoleInfo("New notebook server info received."),
+      (state) => state.notebookServerInfo
+    );
     this.notebookComponentAdapter = new NotebookComponentAdapter({
       contentItem: options.notebookContentItem,
-      notebooksBasePath: this.container.getNotebookBasePath(),
+      notebooksBasePath: useNotebook.getState().notebookBasePath,
       notebookClient: NotebookTabBase.clientManager,
       onUpdateKernelInfo: this.onKernelUpdate,
     });
-
-    this.selectedSparkPool = ko.observable<string>(null);
-    this.container &&
-      this.container.arcadiaToken.subscribe(async () => {
-        const currentKernel = this.notebookComponentAdapter.getCurrentKernelName();
-        if (!currentKernel) {
-          return;
-        }
-        await this.configureServiceEndpoints(currentKernel);
-      });
   }
 
   public onCloseTabButtonClick(): Q.Promise<any> {
@@ -69,14 +61,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
     };
 
     if (this.notebookComponentAdapter.isContentDirty()) {
-      this.container.showOkCancelModalDialog(
-        "Close without saving?",
-        `File has unsaved changes, close without saving?`,
-        "Close",
-        cleanup,
-        "Cancel",
-        undefined
-      );
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          "Close without saving?",
+          `File has unsaved changes, close without saving?`,
+          "Close",
+          cleanup,
+          "Cancel",
+          undefined
+        );
       return Q.resolve(null);
     } else {
       cleanup();
@@ -94,11 +88,13 @@ export default class NotebookTabV2 extends NotebookTabBase {
 
   protected getTabsButtons(): CommandButtonComponentProps[] {
     const availableKernels = NotebookTabV2.clientManager.getAvailableKernelSpecs();
+    const isNotebookUntrusted = this.notebookComponentAdapter.isNotebookUntrusted();
+
+    const runBtnTooltip = isNotebookUntrusted ? NotebookUtil.UntrustedNotebookRunHint : undefined;
 
     const saveLabel = "Save";
     const copyToLabel = "Copy to ...";
     const publishLabel = "Publish to gallery";
-    const workspaceLabel = "No Workspace";
     const kernelLabel = "No Kernel";
     const runLabel = "Run";
     const runActiveCellLabel = "Run Active Cell";
@@ -115,8 +111,6 @@ export default class NotebookTabV2 extends NotebookTabBase {
     const copyLabel = "Copy";
     const cutLabel = "Cut";
     const pasteLabel = "Paste";
-    const undoLabel = "Undo";
-    const redoLabel = "Redo";
     const cellCodeType = "code";
     const cellMarkdownType = "markdown";
     const cellRawType = "raw";
@@ -197,9 +191,10 @@ export default class NotebookTabV2 extends NotebookTabBase {
           this.traceTelemetry(Action.ExecuteCell);
         },
         commandButtonLabel: runLabel,
+        tooltipText: runBtnTooltip,
         ariaLabel: runLabel,
         hasPopup: false,
-        disabled: false,
+        disabled: isNotebookUntrusted,
         children: [
           {
             iconSrc: RunIcon,
@@ -358,82 +353,12 @@ export default class NotebookTabV2 extends NotebookTabBase {
       },
       // TODO: Uncomment when undo/redo is reimplemented in nteract
     ];
-
-    if (this.container.hasStorageAnalyticsAfecFeature()) {
-      const arcadiaWorkspaceDropdown: CommandButtonComponentProps = {
-        iconSrc: null,
-        iconAlt: workspaceLabel,
-        ariaLabel: workspaceLabel,
-        onCommandClick: () => {},
-        commandButtonLabel: null,
-        hasPopup: false,
-        disabled: this.container.arcadiaWorkspaces.length < 1,
-        isDropdown: false,
-        isArcadiaPicker: true,
-        arcadiaProps: {
-          selectedSparkPool: this.selectedSparkPool(),
-          workspaces: this.container.arcadiaWorkspaces(),
-          onSparkPoolSelect: this.onSparkPoolSelect,
-          onCreateNewWorkspaceClicked: () => {
-            this.container.createWorkspace();
-          },
-          onCreateNewSparkPoolClicked: (workspaceResourceId: string) => {
-            this.container.createSparkPool(workspaceResourceId);
-          },
-        },
-      };
-      buttons.splice(1, 0, arcadiaWorkspaceDropdown);
-    }
     return buttons;
   }
 
   protected buildCommandBarOptions(): void {
     this.updateNavbarWithTabsButtons();
   }
-
-  private onSparkPoolSelect = (evt: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>, item: any) => {
-    if (!item || !item.text) {
-      this.selectedSparkPool(null);
-      return;
-    }
-
-    trackEvent(
-      { name: "SparkPoolSelected" },
-      {
-        subscriptionId: userContext.subscriptionId,
-        accountName: userContext.databaseAccount?.name,
-        accountId: userContext.databaseAccount?.id,
-      }
-    );
-
-    this.container &&
-      this.container.arcadiaWorkspaces &&
-      this.container.arcadiaWorkspaces() &&
-      this.container.arcadiaWorkspaces().forEach(async (workspace) => {
-        if (workspace && workspace.name && workspace.sparkPools) {
-          const selectedPoolIndex = _.findIndex(workspace.sparkPools, (pool) => pool && pool.name === item.text);
-          if (selectedPoolIndex >= 0) {
-            const selectedPool = workspace.sparkPools[selectedPoolIndex];
-            if (selectedPool && selectedPool.name) {
-              this.container.sparkClusterConnectionInfo({
-                userName: undefined,
-                password: undefined,
-                endpoints: [
-                  {
-                    endpoint: `https://${workspace.name}.${configContext.ARCADIA_LIVY_ENDPOINT_DNS_ZONE}/livyApi/versions/${ArmApiVersions.arcadiaLivy}/sparkPools/${selectedPool.name}/`,
-                    kind: DataModels.SparkClusterEndpointKind.Livy,
-                  },
-                ],
-              });
-              this.selectedSparkPool(item.text);
-              await this.reconfigureServiceEndpoints();
-              this.container.sparkClusterConnectionInfo.valueHasMutated();
-              return;
-            }
-          }
-        }
-      });
-  };
 
   private onKernelUpdate = async () => {
     await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName()).catch((reason) => {
@@ -443,8 +368,8 @@ export default class NotebookTabV2 extends NotebookTabBase {
   };
 
   private async configureServiceEndpoints(kernelName: string) {
-    const notebookConnectionInfo = this.container && this.container.notebookServerInfo();
-    const sparkClusterConnectionInfo = this.container && this.container.sparkClusterConnectionInfo();
+    const notebookConnectionInfo = useNotebook.getState().notebookServerInfo;
+    const sparkClusterConnectionInfo = useNotebook.getState().sparkClusterConnectionInfo;
     await NotebookConfigurationUtils.configureServiceEndpoints(
       this.notebookPath(),
       notebookConnectionInfo,
@@ -458,11 +383,32 @@ export default class NotebookTabV2 extends NotebookTabBase {
       source: Source.CommandBarMenu,
     });
 
+    const notebookReduxStore = NotebookTabV2.clientManager.getStore();
+    const unsubscribe = notebookReduxStore.subscribe(() => {
+      const cdbState = (notebookReduxStore.getState() as CdbAppState).cdb;
+      useNotebookSnapshotStore.setState({
+        snapshot: cdbState.notebookSnapshot?.imageSrc,
+        error: cdbState.notebookSnapshotError,
+      });
+    });
+
     const notebookContent = this.notebookComponentAdapter.getContent();
+    const notebookContentRef = this.notebookComponentAdapter.contentRef;
+    const onPanelClose = (): void => {
+      unsubscribe();
+      useNotebookSnapshotStore.setState({
+        snapshot: undefined,
+        error: undefined,
+      });
+      notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(undefined));
+    };
+
     await this.container.publishNotebook(
       notebookContent.name,
       notebookContent.content,
-      this.notebookComponentAdapter.getNotebookParentElement()
+      notebookContentRef,
+      (request: SnapshotRequest) => notebookReduxStore.dispatch(CdbActions.takeNotebookSnapshot(request)),
+      onPanelClose
     );
   };
 

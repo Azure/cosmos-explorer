@@ -1,24 +1,12 @@
+import * as msal from "@azure/msal-browser";
+import { useBoolean } from "@fluentui/react-hooks";
 import * as React from "react";
-import { useBoolean } from "@uifabric/react-hooks";
-import { UserAgentApplication, Account, Configuration } from "msal";
+import { configContext } from "../ConfigContext";
+import { getMsalInstance } from "../Utils/AuthorizationUtils";
 
-const config: Configuration = {
-  cache: {
-    cacheLocation: "localStorage",
-  },
-  auth: {
-    authority: "https://login.microsoftonline.com/common",
-    clientId: "203f1145-856a-4232-83d4-a43568fba23d",
-  },
-};
+const msalInstance = getMsalInstance();
 
-if (process.env.NODE_ENV === "development") {
-  config.auth.redirectUri = "https://dataexplorer-dev.azurewebsites.net";
-}
-
-const msal = new UserAgentApplication(config);
-
-const cachedAccount = msal.getAllAccounts()?.[0];
+const cachedAccount = msalInstance.getAllAccounts()?.[0];
 const cachedTenantId = localStorage.getItem("cachedTenantId");
 
 interface ReturnType {
@@ -28,7 +16,7 @@ interface ReturnType {
   login: () => void;
   logout: () => void;
   tenantId: string;
-  account: Account;
+  account: msal.AccountInfo;
   switchTenant: (tenantId: string) => void;
 }
 
@@ -36,13 +24,17 @@ export function useAADAuth(): ReturnType {
   const [isLoggedIn, { setTrue: setLoggedIn, setFalse: setLoggedOut }] = useBoolean(
     Boolean(cachedAccount && cachedTenantId) || false
   );
-  const [account, setAccount] = React.useState<Account>(cachedAccount);
+  const [account, setAccount] = React.useState<msal.AccountInfo>(cachedAccount);
   const [tenantId, setTenantId] = React.useState<string>(cachedTenantId);
   const [graphToken, setGraphToken] = React.useState<string>();
   const [armToken, setArmToken] = React.useState<string>();
 
+  msalInstance.setActiveAccount(account);
   const login = React.useCallback(async () => {
-    const response = await msal.loginPopup();
+    const response = await msalInstance.loginPopup({
+      redirectUri: configContext.msalRedirectURI,
+      scopes: [],
+    });
     setLoggedIn();
     setAccount(response.account);
     setTenantId(response.tenantId);
@@ -52,16 +44,19 @@ export function useAADAuth(): ReturnType {
   const logout = React.useCallback(() => {
     setLoggedOut();
     localStorage.removeItem("cachedTenantId");
-    msal.logout();
+    msalInstance.logoutRedirect();
   }, []);
 
   const switchTenant = React.useCallback(
     async (id) => {
-      const response = await msal.loginPopup({
-        authority: `https://login.microsoftonline.com/${id}`,
+      const response = await msalInstance.loginPopup({
+        redirectUri: configContext.msalRedirectURI,
+        authority: `${configContext.AAD_ENDPOINT}${id}`,
+        scopes: [],
       });
       setTenantId(response.tenantId);
       setAccount(response.account);
+      localStorage.setItem("cachedTenantId", response.tenantId);
     },
     [account, tenantId]
   );
@@ -69,17 +64,13 @@ export function useAADAuth(): ReturnType {
   React.useEffect(() => {
     if (account && tenantId) {
       Promise.all([
-        msal.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
-          authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://graph.windows.net//.default"],
+        msalInstance.acquireTokenSilent({
+          authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
+          scopes: [`${configContext.GRAPH_ENDPOINT}/.default`],
         }),
-        msal.acquireTokenSilent({
-          // There is a bug in MSALv1 that requires us to refresh the token. Their internal cache is not respecting authority
-          forceRefresh: true,
-          authority: `https://login.microsoftonline.com/${tenantId}`,
-          scopes: ["https://management.azure.com//.default"],
+        msalInstance.acquireTokenSilent({
+          authority: `${configContext.AAD_ENDPOINT}${tenantId}`,
+          scopes: [`${configContext.ARM_ENDPOINT}/.default`],
         }),
       ]).then(([graphTokenResponse, armTokenResponse]) => {
         setGraphToken(graphTokenResponse.accessToken);

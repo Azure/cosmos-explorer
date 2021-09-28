@@ -1,5 +1,6 @@
-import { Icon, Label, Stack } from "office-ui-fabric-react";
+import { Icon, Label, Stack } from "@fluentui/react";
 import * as React from "react";
+import { NormalizedEventKey } from "../../../Common/Constants";
 import { accordionStackTokens } from "../Settings/SettingsRenderUtils";
 
 export interface CollapsibleSectionProps {
@@ -30,6 +31,13 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
     }
   }
 
+  private onKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === NormalizedEventKey.Space || event.key === NormalizedEventKey.Enter) {
+      this.toggleCollapsed();
+      event.stopPropagation();
+    }
+  };
+
   public render(): JSX.Element {
     return (
       <>
@@ -39,6 +47,11 @@ export class CollapsibleSectionComponent extends React.Component<CollapsibleSect
           verticalAlign="center"
           tokens={accordionStackTokens}
           onClick={this.toggleCollapsed}
+          onKeyPress={this.onKeyPress}
+          tabIndex={0}
+          aria-name="Advanced"
+          role="button"
+          aria-expanded={this.state.isExpanded}
         >
           <Icon iconName={this.state.isExpanded ? "ChevronDown" : "ChevronRight"} />
           <Label>{this.props.title}</Label>

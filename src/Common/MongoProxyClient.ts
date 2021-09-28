@@ -6,6 +6,7 @@ import * as DataModels from "../Contracts/DataModels";
 import { MessageTypes } from "../Contracts/ExplorerContracts";
 import { Collection } from "../Contracts/ViewModels";
 import DocumentId from "../Explorer/Tree/DocumentId";
+import { hasFlag } from "../Platform/Hosted/extractFeatures";
 import { userContext } from "../UserContext";
 import { logConsoleError } from "../Utils/NotificationConsoleUtils";
 import { ApiType, HttpHeaders, HttpStatusCodes } from "./Constants";
@@ -61,7 +62,7 @@ export function queryDocuments(
   query: string,
   continuationToken?: string
 ): Promise<QueryResponse> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
     db: databaseId,
@@ -78,7 +79,7 @@ export function queryDocuments(
         : "",
   };
 
-  const endpoint = getEndpoint() || "";
+  const endpoint = getFeatureEndpointOrDefault("resourcelist") || "";
 
   const headers = {
     ...defaultHeaders,
@@ -111,7 +112,7 @@ export function queryDocuments(
           headers: response.headers,
         };
       }
-      errorHandling(response, "querying documents", params);
+      await errorHandling(response, "querying documents", params);
       return undefined;
     });
 }
@@ -121,7 +122,7 @@ export function readDocument(
   collection: Collection,
   documentId: DocumentId
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 4).join("/");
@@ -141,7 +142,8 @@ export function readDocument(
         : "",
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("readDocument");
+
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
       method: "GET",
@@ -153,11 +155,11 @@ export function readDocument(
         ),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "reading document", params);
+      return await errorHandling(response, "reading document", params);
     });
 }
 
@@ -167,7 +169,7 @@ export function createDocument(
   partitionKeyProperty: string,
   documentContent: unknown
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const params = {
     db: databaseId,
@@ -181,7 +183,7 @@ export function createDocument(
     pk: collection && collection.partitionKey && !collection.partitionKey.systemKey ? partitionKeyProperty : "",
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("createDocument");
 
   return window
     .fetch(`${endpoint}/resourcelist?${queryString.stringify(params)}`, {
@@ -192,11 +194,11 @@ export function createDocument(
         ...authHeaders(),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "creating document", params);
+      return await errorHandling(response, "creating document", params);
     });
 }
 
@@ -206,7 +208,7 @@ export function updateDocument(
   documentId: DocumentId,
   documentContent: string
 ): Promise<DataModels.DocumentId> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 5).join("/");
@@ -225,7 +227,7 @@ export function updateDocument(
         ? documentId.partitionKeyProperty
         : "",
   };
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("updateDocument");
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -238,16 +240,16 @@ export function updateDocument(
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "updating document", params);
+      return await errorHandling(response, "updating document", params);
     });
 }
 
 export function deleteDocument(databaseId: string, collection: Collection, documentId: DocumentId): Promise<void> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const resourceEndpoint = databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint;
   const idComponents = documentId.self.split("/");
   const path = idComponents.slice(0, 5).join("/");
@@ -266,7 +268,7 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         ? documentId.partitionKeyProperty
         : "",
   };
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("deleteDocument");
 
   return window
     .fetch(`${endpoint}?${queryString.stringify(params)}`, {
@@ -278,18 +280,18 @@ export function deleteDocument(databaseId: string, collection: Collection, docum
         [CosmosSDKConstants.HttpHeaders.PartitionKey]: JSON.stringify(documentId.partitionKeyHeader()),
       },
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return undefined;
       }
-      return errorHandling(response, "deleting document", params);
+      return await errorHandling(response, "deleting document", params);
     });
 }
 
 export function createMongoCollectionWithProxy(
   params: DataModels.CreateCollectionParams
 ): Promise<DataModels.Collection> {
-  const databaseAccount = userContext.databaseAccount;
+  const { databaseAccount } = userContext;
   const shardKey: string = params.partitionKey?.paths[0];
   const mongoParams: DataModels.MongoParameters = {
     resourceUrl: databaseAccount.properties.mongoEndpoint || databaseAccount.properties.documentEndpoint,
@@ -309,7 +311,7 @@ export function createMongoCollectionWithProxy(
     autoPilotThroughput: params.autoPilotMaxThroughput?.toString(),
   };
 
-  const endpoint = getEndpoint();
+  const endpoint = getFeatureEndpointOrDefault("createCollectionWithProxy");
 
   return window
     .fetch(
@@ -325,16 +327,23 @@ export function createMongoCollectionWithProxy(
         },
       }
     )
-    .then((response) => {
+    .then(async (response) => {
       if (response.ok) {
         return response.json();
       }
-      return errorHandling(response, "creating collection", mongoParams);
+      return await errorHandling(response, "creating collection", mongoParams);
     });
 }
 
-export function getEndpoint(): string {
-  let url = (configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT) + "/api/mongo/explorer";
+export function getFeatureEndpointOrDefault(feature: string): string {
+  return hasFlag(userContext.features.mongoProxyAPIs, feature)
+    ? getEndpoint(userContext.features.mongoProxyEndpoint)
+    : getEndpoint();
+}
+
+export function getEndpoint(customEndpoint?: string): string {
+  let url = customEndpoint ? customEndpoint : configContext.MONGO_BACKEND_ENDPOINT || configContext.BACKEND_ENDPOINT;
+  url += "/api/mongo/explorer";
 
   if (userContext.authType === AuthType.EncryptedToken) {
     url = url.replace("api/mongo", "api/guest/mongo");

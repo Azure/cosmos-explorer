@@ -1,13 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`IndexingPolicyRefreshComponent renders 1`] = `
-<StyledMessageBarBase
+<StyledMessageBar
   messageBarType={5}
 >
   <Text
     styles={
       Object {
         "root": Object {
+          "color": "windowtext",
           "fontSize": 14,
         },
       }
@@ -20,5 +21,5 @@ exports[`IndexingPolicyRefreshComponent renders 1`] = `
       Refresh to check the progress.
     </StyledLinkBase>
   </Text>
-</StyledMessageBarBase>
+</StyledMessageBar>
 `;

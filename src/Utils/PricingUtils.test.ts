@@ -18,7 +18,7 @@ describe("PricingUtils Tests", () => {
     });
 
     it("should return false if passed number is not number", () => {
-      const value = PricingUtils.isLargerThanDefaultMinRU(null);
+      const value = PricingUtils.isLargerThanDefaultMinRU(undefined);
       expect(value).toBe(false);
     });
   });
@@ -28,7 +28,7 @@ describe("PricingUtils Tests", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
-        numberOfRegions: null,
+        numberOfRegions: undefined,
         multimasterEnabled: false,
         isAutoscale: false,
       });
@@ -38,7 +38,7 @@ describe("PricingUtils Tests", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
-        numberOfRegions: null,
+        numberOfRegions: undefined,
         multimasterEnabled: false,
         isAutoscale: true,
       });
@@ -150,7 +150,7 @@ describe("PricingUtils Tests", () => {
       expect(value).toBe(0.00012);
     });
 
-    it("should return 0.00048 for default cloud, 1RU, 2 region, multimaster enabled", () => {
+    it("should return 0.00032 for default cloud, 1RU, 2 region, multimaster enabled", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
@@ -158,9 +158,9 @@ describe("PricingUtils Tests", () => {
         multimasterEnabled: true,
         isAutoscale: false,
       });
-      expect(value).toBe(0.00048);
+      expect(value).toBe(0.00032);
     });
-    it("should return 0.00048 for default cloud, 1RU, 2 region, multimaster enabled, autoscale", () => {
+    it("should return 0.00032 for default cloud, 1RU, 2 region, multimaster enabled, autoscale", () => {
       const value = PricingUtils.computeRUUsagePriceHourly({
         serverId: "default",
         requestUnits: 1,
@@ -168,7 +168,7 @@ describe("PricingUtils Tests", () => {
         multimasterEnabled: true,
         isAutoscale: true,
       });
-      expect(value).toBe(0.00096);
+      expect(value).toBe(0.00032);
     });
   });
 
@@ -251,80 +251,47 @@ describe("PricingUtils Tests", () => {
   });
 
   describe("getPricePerRu()", () => {
-    it("should return 0.00008 for default clouds", () => {
-      const value = PricingUtils.getPricePerRu("default");
+    it("should return 0.00008 for single master default clouds", () => {
+      const value = PricingUtils.getPricePerRu("default", 1);
       expect(value).toBe(0.00008);
     });
 
-    it("should return 0.00051 for mooncake", () => {
-      const value = PricingUtils.getPricePerRu("mooncake");
+    it("should return 0.00016 for multi master default clouds", () => {
+      const value = PricingUtils.getPricePerRu("default", 2);
+      expect(value).toBe(0.00016);
+    });
+
+    it("should return 0.00051 for single master mooncake", () => {
+      const value = PricingUtils.getPricePerRu("mooncake", 1);
       expect(value).toBe(0.00051);
+    });
+
+    it("should return 0.00102 for multi master mooncake", () => {
+      const value = PricingUtils.getPricePerRu("mooncake", 2);
+      expect(value).toBe(0.00102);
     });
   });
 
   describe("getRegionMultiplier()", () => {
-    describe("without multimaster", () => {
-      it("should return 0 for null", () => {
-        const value = PricingUtils.getRegionMultiplier(null, false);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for undefined", () => {
-        const value = PricingUtils.getRegionMultiplier(undefined, false);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for -1", () => {
-        const value = PricingUtils.getRegionMultiplier(-1, false);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for 0", () => {
-        const value = PricingUtils.getRegionMultiplier(0, false);
-        expect(value).toBe(0);
-      });
-
-      it("should return 1 for 1", () => {
-        const value = PricingUtils.getRegionMultiplier(1, false);
-        expect(value).toBe(1);
-      });
-
-      it("should return 2 for 2", () => {
-        const value = PricingUtils.getRegionMultiplier(2, false);
-        expect(value).toBe(2);
-      });
+    it("should return 0 for undefined", () => {
+      const value = PricingUtils.getRegionMultiplier(undefined);
+      expect(value).toBe(0);
     });
-
-    describe("with multimaster", () => {
-      it("should return 0 for null", () => {
-        const value = PricingUtils.getRegionMultiplier(null, true);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for undefined", () => {
-        const value = PricingUtils.getRegionMultiplier(undefined, true);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for -1", () => {
-        const value = PricingUtils.getRegionMultiplier(-1, true);
-        expect(value).toBe(0);
-      });
-
-      it("should return 0 for 0", () => {
-        const value = PricingUtils.getRegionMultiplier(0, true);
-        expect(value).toBe(0);
-      });
-
-      it("should return 1 for 1", () => {
-        const value = PricingUtils.getRegionMultiplier(1, true);
-        expect(value).toBe(1);
-      });
-
-      it("should return 3 for 2", () => {
-        const value = PricingUtils.getRegionMultiplier(2, true);
-        expect(value).toBe(3);
-      });
+    it("should return 0 for -1", () => {
+      const value = PricingUtils.getRegionMultiplier(-1);
+      expect(value).toBe(0);
+    });
+    it("should return 0 for 0", () => {
+      const value = PricingUtils.getRegionMultiplier(0);
+      expect(value).toBe(0);
+    });
+    it("should return 1 for 1", () => {
+      const value = PricingUtils.getRegionMultiplier(1);
+      expect(value).toBe(1);
+    });
+    it("should return 2 for 2", () => {
+      const value = PricingUtils.getRegionMultiplier(2);
+      expect(value).toBe(2);
     });
   });
 
@@ -386,7 +353,7 @@ describe("PricingUtils Tests", () => {
         true /* multimaster */
       );
       expect(value).toBe(
-        "Cost (USD): <b>$0.19 hourly / $4.61 daily / $140.16 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
+        "Cost (USD): <b>$0.13 hourly / $3.07 daily / $93.44 monthly </b> (2 regions, 400RU/s, $0.00016/RU)<p style='padding: 10px 0px 0px 0px;'><em>*This cost is an estimate and may vary based on the regions where your account is deployed and potential discounts applied to your account</em></p>"
       );
     });
 
@@ -434,7 +401,7 @@ describe("PricingUtils Tests", () => {
         true /* multimaster */,
         false
       );
-      expect(value).toBe("I acknowledge the estimated $4.61 daily cost for the throughput above.");
+      expect(value).toBe("I acknowledge the estimated $3.07 daily cost for the throughput above.");
     });
 
     it("should return 'I acknowledge the estimated $1.54 daily cost for the throughput above.' for 400RU/s on default cloud, 2 region, without multimaster", () => {
@@ -450,11 +417,6 @@ describe("PricingUtils Tests", () => {
   });
 
   describe("normalizeNumberOfRegions()", () => {
-    it("should return 0 for null", () => {
-      const value = PricingUtils.normalizeNumber(null);
-      expect(value).toBe(0);
-    });
-
     it("should return 0 for undefined", () => {
       const value = PricingUtils.normalizeNumber(undefined);
       expect(value).toBe(0);

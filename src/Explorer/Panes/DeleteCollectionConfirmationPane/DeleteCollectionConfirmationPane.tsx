@@ -1,42 +1,42 @@
-import { Text, TextField } from "office-ui-fabric-react";
+import { Text, TextField } from "@fluentui/react";
 import React, { FunctionComponent, useState } from "react";
 import { Areas } from "../../../Common/Constants";
 import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
 import DeleteFeedback from "../../../Common/DeleteFeedback";
 import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
 import { Collection } from "../../../Contracts/ViewModels";
+import { useSidePanel } from "../../../hooks/useSidePanel";
+import { useTabs } from "../../../hooks/useTabs";
 import { DefaultExperienceUtility } from "../../../Shared/DefaultExperienceUtility";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
 import { getCollectionName } from "../../../Utils/APITypeUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
-import Explorer from "../../Explorer";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { useDatabases } from "../../useDatabases";
+import { useSelectedNode } from "../../useSelectedNode";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
+
 export interface DeleteCollectionConfirmationPaneProps {
-  explorer: Explorer;
-  closePanel: () => void;
+  refreshDatabases: () => Promise<void>;
 }
 
 export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectionConfirmationPaneProps> = ({
-  explorer,
-  closePanel,
+  refreshDatabases,
 }: DeleteCollectionConfirmationPaneProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [deleteCollectionFeedback, setDeleteCollectionFeedback] = useState<string>("");
   const [inputCollectionName, setInputCollectionName] = useState<string>("");
   const [formError, setFormError] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState(false);
 
-  const shouldRecordFeedback = (): boolean => {
-    return explorer.isLastCollection() && !explorer.isSelectedDatabaseShared();
-  };
+  const shouldRecordFeedback = (): boolean =>
+    useDatabases.getState().isLastCollection() && !useDatabases.getState().findSelectedDatabase()?.isDatabaseShared();
+
   const collectionName = getCollectionName().toLocaleLowerCase();
   const paneTitle = "Delete " + collectionName;
-  const submit = async (): Promise<void> => {
-    const collection = explorer.findSelectedCollection();
+  const onSubmit = async (): Promise<void> => {
+    const collection = useSelectedNode.getState().findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
       const errorMessage = "Input " + collectionName + " name does not match the selected " + collectionName;
       setFormError(errorMessage);
@@ -61,11 +61,13 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       await deleteCollection(collection.databaseId, collection.id());
 
       setIsExecuting(false);
-      explorer.selectedNode(collection.database);
-      explorer.tabsManager?.closeTabsByComparator(
-        (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
-      );
-      explorer.refreshAllDatabases();
+      useSelectedNode.getState().setSelectedNode(collection.database);
+      useTabs
+        .getState()
+        .closeTabsByComparator(
+          (tab) => tab.node?.id() === collection.id() && (tab.node as Collection).databaseId === collection.databaseId
+        );
+      refreshDatabases();
 
       TelemetryProcessor.traceSuccess(Action.DeleteCollection, paneInfo, startKey);
 
@@ -82,7 +84,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
         });
       }
 
-      closePanel();
+      closeSidePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
 
@@ -100,19 +102,16 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
       );
     }
   };
-  const genericPaneProps: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     formError: formError,
-    formErrorDetail: formError,
-    id: "deleteCollectionpane",
     isExecuting,
-    title: paneTitle,
     submitButtonText: "OK",
-    onClose: closePanel,
-    onSubmit: submit,
-    expandConsole: () => explorer.expandConsole(),
+    onSubmit,
   };
+  const confirmContainer = `Confirm by typing the ${collectionName.toLowerCase()} id`;
+  const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${collectionName}?`;
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <div className="confirmDeleteInput">
@@ -126,6 +125,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
               onChange={(event, newInput?: string) => {
                 setInputCollectionName(newInput);
               }}
+              ariaLabel={confirmContainer}
             />
           </div>
           {shouldRecordFeedback() && (
@@ -145,11 +145,12 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
                 onChange={(event, newInput?: string) => {
                   setDeleteCollectionFeedback(newInput);
                 }}
+                ariaLabel={reasonInfo}
               />
             </div>
           )}
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

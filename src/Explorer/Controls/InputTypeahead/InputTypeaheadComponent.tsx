@@ -6,13 +6,13 @@
  *   typeaheadOverrideOptions: { dynamic:false }
  *
  */
+import { getTheme, IconButton, IIconProps, List, Stack, TextField } from "@fluentui/react";
 import * as React from "react";
 import "./InputTypeahead.less";
-import { KeyCodes } from "../../../Common/Constants";
 
 export interface Item {
   caption: string;
-  value: any;
+  value: string;
 }
 
 /**
@@ -74,170 +74,128 @@ export interface InputTypeaheadComponentProps {
   useTextarea?: boolean;
 }
 
-interface OnClickItem {
-  matchedKey: string;
-  value: any;
-  caption: string;
-  group: string;
+interface InputTypeaheadComponentState {
+  isSuggestionVisible: boolean;
+  selectedChoice: Item;
+  filteredChoices: Item[];
 }
-
-interface Cache {
-  inputValue: string;
-  selection: Item;
-}
-
-interface InputTypeaheadComponentState {}
 
 export class InputTypeaheadComponent extends React.Component<
   InputTypeaheadComponentProps,
   InputTypeaheadComponentState
 > {
-  private inputElt: HTMLElement;
-  private containerElt: HTMLElement;
-
-  private cache: Cache;
-  private inputValue: string;
-  private selection: Item;
-
-  public constructor(props: InputTypeaheadComponentProps) {
+  constructor(props: InputTypeaheadComponentProps) {
     super(props);
-    this.cache = {
-      inputValue: null,
-      selection: null,
+    this.state = {
+      isSuggestionVisible: false,
+      filteredChoices: [],
+      selectedChoice: {
+        caption: "",
+        value: "",
+      },
     };
   }
 
-  /**
-   * Props have changed
-   * @param prevProps
-   * @param prevState
-   * @param snapshot
-   */
-  public componentDidUpdate(
-    prevProps: InputTypeaheadComponentProps,
-    prevState: InputTypeaheadComponentState,
-    snapshot: any
-  ): void {
-    if (prevProps.defaultValue !== this.props.defaultValue) {
-      $(this.inputElt).val(this.props.defaultValue);
-      this.initializeTypeahead();
-    }
-  }
-
-  /**
-   * Executed once react is done building the DOM for this component
-   */
-  public componentDidMount(): void {
-    this.initializeTypeahead();
-  }
-
-  public render(): JSX.Element {
+  private onRenderCell = (item: Item): JSX.Element => {
     return (
-      <span className="input-typeahead-container">
-        <div
-          className="input-typehead"
-          onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onKeyDown(event)}
-        >
-          <div className="typeahead__container" ref={(input) => (this.containerElt = input)}>
-            <div className="typeahead__field">
-              <span className="typeahead__query">
-                {this.props.useTextarea ? (
-                  <textarea
-                    rows={1}
-                    name="q"
-                    autoComplete="off"
-                    aria-label="Input query"
-                    ref={(input) => (this.inputElt = input)}
-                    defaultValue={this.props.defaultValue}
-                  />
-                ) : (
-                  <input
-                    name="q"
-                    type="search"
-                    autoComplete="off"
-                    aria-label="Input query"
-                    ref={(input) => (this.inputElt = input)}
-                    defaultValue={this.props.defaultValue}
-                  />
-                )}
-              </span>
-              {this.props.showSearchButton && (
-                <span className="typeahead__button">
-                  <button type="submit">
-                    <span className="typeahead__search-icon" />
-                  </button>
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-      </span>
+      <div className="input-typeahead-chocies-container" onClick={() => this.onChoiceClick(item)}>
+        <p className="choice-caption">{item.caption}</p>
+        <span>{item.value}</span>
+      </div>
     );
-  }
+  };
 
-  private onKeyDown(event: React.KeyboardEvent<HTMLElement>) {
-    if (event.keyCode === KeyCodes.Enter) {
+  private onChoiceClick = (item: Item): void => {
+    this.props.onNewValue(item.caption);
+    this.setState({ isSuggestionVisible: false, selectedChoice: item });
+  };
+
+  private handleChange = (value: string): void => {
+    if (!value) {
+      this.setState({ isSuggestionVisible: true });
+    }
+    this.props.onNewValue(value);
+    const filteredChoices = this.filterChoiceByValue(this.props.choices, value);
+    this.setState({ filteredChoices });
+  };
+
+  private onSubmit = (event: React.KeyboardEvent<HTMLElement>): void => {
+    if (event.key === "Enter") {
       if (this.props.submitFct) {
         event.preventDefault();
         event.stopPropagation();
-        this.props.submitFct(this.cache.inputValue, this.cache.selection);
-        $(this.containerElt).children(".typeahead__result").hide();
+        this.props.submitFct(this.props.defaultValue, this.state.selectedChoice);
+        this.setState({ isSuggestionVisible: false });
       }
     }
-  }
+  };
 
-  /**
-   * Must execute once ko is rendered, so that it can find the input element by id
-   */
-  private initializeTypeahead(): void {
-    const props = this.props;
-    let cache = this.cache;
-    let options: any = {
-      input: this.inputElt,
-      order: "asc",
-      minLength: 0,
-      searchOnFocus: true,
-      source: {
-        display: "caption",
-        data: () => {
-          return props.choices;
-        },
-      },
-      callback: {
-        onClick: (node: any, a: any, item: OnClickItem, event: any) => {
-          cache.selection = item;
+  private filterChoiceByValue = (choices: Item[], searchKeyword: string): Item[] => {
+    return choices.filter((choice) =>
+      // @ts-ignore
+      Object.keys(choice).some((key) => choice[key].toLowerCase().includes(searchKeyword.toLowerCase()))
+    );
+  };
 
-          if (props.onSelected) {
-            props.onSelected(item);
-          }
-        },
-        onResult(node: any, query: any, result: any, resultCount: any, resultCountPerGroup: any) {
-          cache.inputValue = query;
-          if (props.onNewValue) {
-            props.onNewValue(query);
-          }
-        },
+  public render(): JSX.Element {
+    const { defaultValue, useTextarea, placeholder, onNewValue } = this.props;
+    const { isSuggestionVisible, selectedChoice, filteredChoices } = this.state;
+    const theme = getTheme();
+
+    const iconButtonStyles = {
+      root: {
+        color: theme.palette.neutralPrimary,
+        marginLeft: "10px !important",
+        marginTop: "0px",
+        marginRight: "2px",
+        width: "42px",
       },
-      template: (query: string, item: any) => {
-        // Don't display id if caption *IS* the id
-        return item.caption === item.value
-          ? "<span>{{caption}}</span>"
-          : "<span><div>{{caption}}</div><div><small>{{value}}</small></div></span>";
+      rootHovered: {
+        color: theme.palette.neutralDark,
       },
-      dynamic: true,
     };
+    const cancelIcon: IIconProps = { iconName: "cancel" };
+    const searchIcon: IIconProps = { iconName: "Search" };
 
-    // Override options
-    if (props.typeaheadOverrideOptions) {
-      for (const p in props.typeaheadOverrideOptions) {
-        options[p] = props.typeaheadOverrideOptions[p];
-      }
-    }
-
-    if (props.hasOwnProperty("showCancelButton")) {
-      options.cancelButton = props.showCancelButton;
-    }
-
-    $(this.inputElt).typeahead(options);
+    return (
+      <div className="input-typeahead-container">
+        <Stack horizontal>
+          <form aria-labelledby="input" className="input-query-form">
+            <TextField
+              multiline={useTextarea}
+              rows={1}
+              id="input"
+              defaultValue={defaultValue}
+              ariaLabel="Input query"
+              placeholder={placeholder}
+              className="input-type-head-text-field"
+              value={defaultValue}
+              onKeyDown={this.onSubmit}
+              onFocus={() => this.setState({ isSuggestionVisible: true })}
+              onChange={(_event, newValue?: string) => this.handleChange(newValue)}
+            />
+          </form>
+          {this.props.showCancelButton && (
+            <IconButton
+              styles={iconButtonStyles}
+              iconProps={cancelIcon}
+              ariaLabel="cancel Button"
+              onClick={() => onNewValue("")}
+            />
+          )}
+          {this.props.showSearchButton && (
+            <IconButton
+              styles={iconButtonStyles}
+              iconProps={searchIcon}
+              ariaLabel="Search Button"
+              onClick={() => this.props.submitFct(defaultValue, selectedChoice)}
+            />
+          )}
+        </Stack>
+        {filteredChoices.length && isSuggestionVisible ? (
+          <List items={filteredChoices} onRenderCell={this.onRenderCell} />
+        ) : undefined}
+      </div>
+    );
   }
 }

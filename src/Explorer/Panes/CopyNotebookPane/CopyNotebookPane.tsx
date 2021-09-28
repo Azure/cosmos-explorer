@@ -1,18 +1,18 @@
-import { IDropdownOption } from "office-ui-fabric-react";
+import { IDropdownOption } from "@fluentui/react";
 import React, { FormEvent, FunctionComponent, useEffect, useState } from "react";
 import { HttpStatusCodes } from "../../../Common/Constants";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { IPinnedRepo, JunoClient } from "../../../Juno/JunoClient";
+import { userContext } from "../../../UserContext";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
 import { NotebookContentItem, NotebookContentItemType } from "../../Notebook/NotebookContentItem";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { CopyNotebookPaneComponent, CopyNotebookPaneProps } from "./CopyNotebookPaneComponent";
 
 interface Location {
@@ -29,7 +29,6 @@ export interface CopyNotebookPanelProps {
   container: Explorer;
   junoClient: JunoClient;
   gitHubOAuthService: GitHubOAuthService;
-  closePanel: () => void;
 }
 
 export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
@@ -38,11 +37,10 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
   container,
   junoClient,
   gitHubOAuthService,
-  closePanel,
 }: CopyNotebookPanelProps) => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formError, setFormError] = useState<string>("");
-  const [formErrorDetail, setFormErrorDetail] = useState<string>("");
   const [pinnedRepos, setPinnedRepos] = useState<IPinnedRepo[]>();
   const [selectedLocation, setSelectedLocation] = useState<Location>();
 
@@ -78,6 +76,8 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
           selectedLocation.owner,
           selectedLocation.repo
         )} - ${selectedLocation.branch}`;
+      } else if (selectedLocation.type === "MyNotebooks" && userContext.features.phoenix) {
+        destination = "My Notebooks Scratch";
       }
 
       clearMessage = NotificationConsoleUtils.logConsoleProgress(`Copying ${name} to ${destination}`);
@@ -88,11 +88,10 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
       }
 
       NotificationConsoleUtils.logConsoleInfo(`Successfully copied ${name} to ${destination}`);
-      closePanel();
+      closeSidePanel();
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       setFormError(`Failed to copy ${name} to ${destination}`);
-      setFormErrorDetail(`${errorMessage}`);
       handleError(errorMessage, "CopyNotebookPaneAdapter/submit", formError);
     } finally {
       clearMessage && clearMessage();
@@ -102,44 +101,42 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
 
   const copyNotebook = async (location: Location): Promise<NotebookContentItem> => {
     let parent: NotebookContentItem;
+    let isGithubTree: boolean;
     switch (location.type) {
       case "MyNotebooks":
         parent = {
           name: ResourceTreeAdapter.MyNotebooksTitle,
-          path: container.getNotebookBasePath(),
+          path: useNotebook.getState().notebookBasePath,
           type: NotebookContentItemType.Directory,
         };
+        isGithubTree = false;
         break;
 
       case "GitHub":
         parent = {
-          name: ResourceTreeAdapter.GitHubReposTitle,
+          name: selectedLocation.branch,
           path: GitHubUtils.toContentUri(selectedLocation.owner, selectedLocation.repo, selectedLocation.branch, ""),
           type: NotebookContentItemType.Directory,
         };
+        isGithubTree = true;
         break;
 
       default:
         throw new Error(`Unsupported location type ${location.type}`);
     }
 
-    return container.uploadFile(name, content, parent);
+    return container.uploadFile(name, content, parent, isGithubTree);
   };
 
   const onDropDownChange = (_: FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
     setSelectedLocation(option?.data);
   };
 
-  const genericPaneProps: GenericRightPaneProps = {
+  const props: RightPaneFormProps = {
     formError,
-    formErrorDetail,
-    id: "copynotebookpane",
     isExecuting: isExecuting,
-    title: "Copy notebook",
     submitButtonText: "OK",
-    onClose: closePanel,
     onSubmit: () => submit(),
-    expandConsole: () => container.expandConsole(),
   };
 
   const copyNotebookPaneProps: CopyNotebookPaneProps = {
@@ -149,8 +146,8 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
   };
 
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <CopyNotebookPaneComponent {...copyNotebookPaneProps} />
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

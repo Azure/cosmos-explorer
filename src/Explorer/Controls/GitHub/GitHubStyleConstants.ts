@@ -4,7 +4,7 @@ import {
   IDropdownStyleProps,
   IDropdownStyles,
   IStyleFunctionOrObject,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 
 export const ButtonsFooterStyle: React.CSSProperties = {
   paddingTop: 14,

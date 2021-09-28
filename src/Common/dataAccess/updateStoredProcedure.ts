@@ -4,11 +4,11 @@ import { userContext } from "../../UserContext";
 import {
   createUpdateSqlStoredProcedure,
   getSqlStoredProcedure,
-} from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+} from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import {
   SqlStoredProcedureCreateUpdateParameters,
   SqlStoredProcedureResource,
-} from "../../Utils/arm/generatedClients/2020-04-01/types";
+} from "../../Utils/arm/generatedClients/cosmos/types";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -20,11 +20,13 @@ export async function updateStoredProcedure(
 ): Promise<StoredProcedureDefinition & Resource> {
   const clearMessage = logConsoleProgress(`Updating stored procedure ${storedProcedure.id}`);
   try {
-    if (userContext.authType === AuthType.AAD && !userContext.useSDKOperations && userContext.apiType === "SQL") {
+    const { authType, useSDKOperations, apiType, subscriptionId, resourceGroup, databaseAccount } = userContext;
+
+    if (authType === AuthType.AAD && !useSDKOperations && apiType === "SQL") {
       const getResponse = await getSqlStoredProcedure(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
+        subscriptionId,
+        resourceGroup,
+        databaseAccount.name,
         databaseId,
         collectionId,
         storedProcedure.id
@@ -38,9 +40,9 @@ export async function updateStoredProcedure(
           },
         };
         const rpResponse = await createUpdateSqlStoredProcedure(
-          userContext.subscriptionId,
-          userContext.resourceGroup,
-          userContext.databaseAccount.name,
+          subscriptionId,
+          resourceGroup,
+          databaseAccount.name,
           databaseId,
           collectionId,
           storedProcedure.id,

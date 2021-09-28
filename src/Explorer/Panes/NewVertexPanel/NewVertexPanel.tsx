@@ -1,34 +1,24 @@
-import { useBoolean } from "@uifabric/react-hooks";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import * as ViewModels from "../../../Contracts/ViewModels";
-import Explorer from "../../Explorer";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { NewVertexComponent } from "../../Graph/NewVertexComponent/NewVertexComponent";
-import { PanelFooterComponent } from "../PanelFooterComponent";
-import { PanelInfoErrorComponent } from "../PanelInfoErrorComponent";
-import { PanelLoadingScreen } from "../PanelLoadingScreen";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 export interface INewVertexPanelProps {
-  explorer: Explorer;
   partitionKeyPropertyProp: string;
   onSubmit: (result: ViewModels.NewVertexData, onError: (errorMsg: string) => void, onSuccess: () => void) => void;
-  openNotificationConsole: () => void;
 }
 
 export const NewVertexPanel: FunctionComponent<INewVertexPanelProps> = ({
-  explorer,
   partitionKeyPropertyProp,
   onSubmit,
-  openNotificationConsole,
 }: INewVertexPanelProps): JSX.Element => {
   let newVertexDataValue: ViewModels.NewVertexData;
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [showErrorDetails, setShowErrorDetails] = useState<boolean>(false);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
-  const buttonLabel = "OK";
 
-  const submit = (event: React.MouseEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const submit = () => {
     setErrorMessage(undefined);
-    setShowErrorDetails(false);
     if (onSubmit !== undefined) {
       setLoadingTrue();
       onSubmit(newVertexDataValue, onError, onSuccess);
@@ -37,29 +27,26 @@ export const NewVertexPanel: FunctionComponent<INewVertexPanelProps> = ({
 
   const onError = (errorMsg: string) => {
     setErrorMessage(errorMsg);
-    setShowErrorDetails(true);
     setLoadingFalse();
   };
-
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const onSuccess = () => {
     setLoadingFalse();
-    explorer.closeSidePanel();
+    closeSidePanel();
   };
 
   const onChange = (newVertexData: ViewModels.NewVertexData) => {
     newVertexDataValue = newVertexData;
   };
+  const props: RightPaneFormProps = {
+    formError: errorMessage,
+    isExecuting: isLoading,
+    submitButtonText: "OK",
+    onSubmit: () => submit(),
+  };
 
   return (
-    <form className="panelFormWrapper" onSubmit={(event: React.MouseEvent<HTMLFormElement>) => submit(event)}>
-      {errorMessage && (
-        <PanelInfoErrorComponent
-          message={errorMessage}
-          messageType="error"
-          showErrorDetails={showErrorDetails}
-          openNotificationConsole={openNotificationConsole}
-        />
-      )}
+    <RightPaneForm {...props}>
       <div className="panelMainContent">
         <NewVertexComponent
           newVertexDataProp={newVertexDataValue}
@@ -67,8 +54,6 @@ export const NewVertexPanel: FunctionComponent<INewVertexPanelProps> = ({
           onChangeProp={onChange}
         />
       </div>
-      <PanelFooterComponent buttonLabel={buttonLabel} />
-      {isLoading && <PanelLoadingScreen />}
-    </form>
+    </RightPaneForm>
   );
 };

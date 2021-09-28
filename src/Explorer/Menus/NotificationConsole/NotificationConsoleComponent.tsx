@@ -2,11 +2,11 @@
  * React component for control bar
  */
 
-import { Dropdown, IDropdownOption } from "office-ui-fabric-react";
+import { Dropdown, IDropdownOption } from "@fluentui/react";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
-import ClearIcon from "../../../../images/Clear.svg";
+import ClearIcon from "../../../../images/Clear-1.svg";
 import ErrorBlackIcon from "../../../../images/error_black.svg";
 import ErrorRedIcon from "../../../../images/error_red.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
@@ -15,26 +15,9 @@ import LoadingIcon from "../../../../images/loading.svg";
 import ChevronDownIcon from "../../../../images/QueryBuilder/CollapseChevronDown_16x.png";
 import ChevronUpIcon from "../../../../images/QueryBuilder/CollapseChevronUp_16x.png";
 import { ClientDefaults, KeyCodes } from "../../../Common/Constants";
+import { useNotificationConsole } from "../../../hooks/useNotificationConsole";
 import { userContext } from "../../../UserContext";
-
-/**
- * Log levels
- */
-export enum ConsoleDataType {
-  Info = 0,
-  Error = 1,
-  InProgress = 2,
-}
-
-/**
- * Interface for the data/content that will be recorded
- */
-export interface ConsoleData {
-  type: ConsoleDataType;
-  date: string;
-  message: string;
-  id?: string;
-}
+import { ConsoleData, ConsoleDataType } from "./ConsoleData";
 
 export interface NotificationConsoleComponentProps {
   isConsoleExpanded: boolean;
@@ -146,7 +129,7 @@ export class NotificationConsoleComponent extends React.Component<
             className="expandCollapseButton"
             role="button"
             tabIndex={0}
-            aria-label={"console button" + (this.props.isConsoleExpanded ? " collapsed" : " expanded")}
+            aria-label={"console button" + (this.props.isConsoleExpanded ? " expanded" : " collapsed")}
             aria-expanded={!this.props.isConsoleExpanded}
           >
             <img
@@ -222,7 +205,9 @@ export class NotificationConsoleComponent extends React.Component<
         {item.type === ConsoleDataType.Error && <img className="errorIcon" src={ErrorRedIcon} alt="error" />}
         {item.type === ConsoleDataType.InProgress && <img className="loaderIcon" src={LoaderIcon} alt="in progress" />}
         <span className="date">{item.date}</span>
-        <span className="message">{item.message}</span>
+        <span className="message" role="alert" aria-live="assertive">
+          {item.message}
+        </span>
       </div>
     ));
   }
@@ -319,5 +304,24 @@ const PrPreview = (props: { pr: string }) => {
         {ref}
       </a>
     </>
+  );
+};
+
+export const NotificationConsole: React.FC = () => {
+  const setIsExpanded = useNotificationConsole((state) => state.setIsExpanded);
+  const isExpanded = useNotificationConsole((state) => state.isExpanded);
+  const consoleData = useNotificationConsole((state) => state.consoleData);
+  const inProgressConsoleDataIdToBeDeleted = useNotificationConsole(
+    (state) => state.inProgressConsoleDataIdToBeDeleted
+  );
+  // TODO Refactor NotificationConsoleComponent into a functional component and remove this wrapper
+  // This component only exists so we can use hooks and pass them down to a non-functional component
+  return (
+    <NotificationConsoleComponent
+      consoleData={consoleData}
+      inProgressConsoleDataIdToBeDeleted={inProgressConsoleDataIdToBeDeleted}
+      isConsoleExpanded={isExpanded}
+      setIsConsoleExpanded={setIsExpanded}
+    />
   );
 };

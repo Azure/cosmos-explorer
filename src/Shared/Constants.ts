@@ -125,7 +125,8 @@ export class OfferPricing {
       S3Price: 0.1344,
       Standard: {
         StartingPrice: 24 / hoursInAMonth, // per hour
-        PricePerRU: 0.00008,
+        SingleMasterPricePerRU: 0.00008,
+        MultiMasterPricePerRU: 0.00016,
         PricePerGB: 0.25 / hoursInAMonth,
       },
     },
@@ -137,7 +138,8 @@ export class OfferPricing {
       S3Price: 0.6,
       Standard: {
         StartingPrice: OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice / hoursInAMonth, // per hour
-        PricePerRU: 0.00051,
+        SingleMasterPricePerRU: 0.00051,
+        MultiMasterPricePerRU: 0.00102,
         PricePerGB: OfferPricing.MonthlyPricing.mooncake.Standard.PricePerGB / hoursInAMonth,
       },
     },
@@ -187,42 +189,6 @@ export const CollectionCreationDefaults = {
   },
 } as const;
 
-export class IndexingPolicies {
-  public static SharedDatabaseDefault = {
-    indexingMode: "consistent",
-    automatic: true,
-    includedPaths: <any>[],
-    excludedPaths: [
-      {
-        path: "/*",
-      },
-    ],
-  };
-
-  public static AllPropertiesIndexed = {
-    indexingMode: "consistent",
-    automatic: true,
-    includedPaths: [
-      {
-        path: "/*",
-        indexes: [
-          {
-            kind: "Range",
-            dataType: "Number",
-            precision: -1,
-          },
-          {
-            kind: "Range",
-            dataType: "String",
-            precision: -1,
-          },
-        ],
-      },
-    ],
-    excludedPaths: <any>[],
-  };
-}
-
 export class SubscriptionUtilMappings {
   public static FreeTierSubscriptionIds: string[] = [
     "b8f2ff04-0a81-4cf9-95ef-5828d16981d2",
@@ -236,4 +202,9 @@ export class SubscriptionUtilMappings {
 
 export class AutopilotDocumentation {
   public static Url: string = "https://aka.ms/cosmos-autoscale-info";
+}
+
+export class FreeTierLimits {
+  public static RU: number = 1000;
+  public static Storage: number = 25;
 }

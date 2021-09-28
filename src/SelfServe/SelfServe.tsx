@@ -1,5 +1,4 @@
-import { Spinner, SpinnerSize } from "office-ui-fabric-react";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
+import { initializeIcons, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
 import ReactDOM from "react-dom";
 import { withTranslation } from "react-i18next";
@@ -51,6 +50,14 @@ const getDescriptor = async (selfServeType: SelfServeType): Promise<SelfServeDes
       await loadTranslations(sqlX.constructor.name);
       return sqlX.toSelfServeDescriptor();
     }
+    case SelfServeType.graphapicompute: {
+      const GraphAPICompute = await import(
+        /* webpackChunkName: "GraphAPICompute" */ "./GraphAPICompute/GraphAPICompute"
+      );
+      const graphAPICompute = new GraphAPICompute.default();
+      await loadTranslations(graphAPICompute.constructor.name);
+      return graphAPICompute.toSelfServeDescriptor();
+    }
     default:
       return undefined;
   }
@@ -87,7 +94,7 @@ const handleMessage = async (event: MessageEvent): Promise<void> => {
   }
 
   const urlSearchParams = new URLSearchParams(window.location.search);
-  const selfServeTypeText = inputs.selfServeType || urlSearchParams.get("selfServeType");
+  const selfServeTypeText = urlSearchParams.get("selfServeType") || inputs.selfServeType;
   const selfServeType = SelfServeType[selfServeTypeText?.toLowerCase() as keyof typeof SelfServeType];
   if (
     !inputs.subscriptionId ||

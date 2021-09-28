@@ -44,7 +44,7 @@ export class ArmResourceTypes {
 }
 
 export class BackendDefaults {
-  public static partitionKeyKind: string = "Hash";
+  public static partitionKeyKind = "Hash";
   public static singlePartitionStorageInGb: string = "10";
   public static multiPartitionStorageInGb: string = "100";
   public static maxChangeFeedRetentionDuration: number = 10;
@@ -65,26 +65,16 @@ export class ClientDefaults {
   public static readonly arcadiaTokenRefreshIntervalPaddingMs: number = 2000;
 }
 
-export class AccountKind {
-  public static DocumentDB: string = "DocumentDB";
-  public static MongoDB: string = "MongoDB";
-  public static Parse: string = "Parse";
-  public static GlobalDocumentDB: string = "GlobalDocumentDB";
-  public static Default: string = AccountKind.DocumentDB;
+export enum AccountKind {
+  DocumentDB = "DocumentDB",
+  MongoDB = "MongoDB",
+  Parse = "Parse",
+  GlobalDocumentDB = "GlobalDocumentDB",
+  Default = "DocumentDB",
 }
 
 export class CorrelationBackend {
   public static Url: string = "https://aka.ms/cosmosdbanalytics";
-}
-
-export class DefaultAccountExperience {
-  public static DocumentDB: string = "DocumentDB";
-  public static Graph: string = "Graph";
-  public static MongoDB: string = "MongoDB";
-  public static ApiForMongoDB: string = "Azure Cosmos DB for MongoDB API";
-  public static Table: string = "Table";
-  public static Cassandra: string = "Cassandra";
-  public static Default: string = DefaultAccountExperience.DocumentDB;
 }
 
 export class CapabilityNames {
@@ -104,6 +94,9 @@ export class Flights {
   public static readonly MongoIndexEditor = "mongoindexeditor";
   public static readonly MongoIndexing = "mongoindexing";
   public static readonly AutoscaleTest = "autoscaletest";
+  public static readonly PartitionKeyTest = "partitionkeytest";
+  public static readonly PKPartitionKeyTest = "pkpartitionkeytest";
+  public static readonly Phoenix = "phoenix";
 }
 
 export class AfecFeatures {
@@ -165,16 +158,6 @@ export class DocumentsGridMetrics {
 
   public static DocumentEditorMinWidthRatio: number = 0.2;
   public static DocumentEditorMaxWidthRatio: number = 0.4;
-}
-
-export class ExplorerMetrics {
-  public static SplitterMinWidth: number = 240;
-  public static SplitterMaxWidth: number = 400;
-  public static CollapsedResourceTreeWidth: number = 36;
-}
-
-export class SplitterMetrics {
-  public static CollapsedPositionLeft: number = ExplorerMetrics.CollapsedResourceTreeWidth;
 }
 
 export class Areas {
@@ -355,6 +338,12 @@ export enum ConflictOperationType {
   Delete = "delete",
 }
 
+export enum ConnectionStatusType {
+  Connecting = "Connecting",
+  Connected = "Connected",
+  Failed = "Connection Failed",
+}
+
 export const EmulatorMasterKey =
   //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Well known public masterKey for emulator")]
   "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
@@ -368,6 +357,11 @@ export class Notebook {
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
+  public static readonly temporarilyDownMsg = "Notebooks is currently not available. We are working on it.";
+  public static readonly mongoShellTemporarilyDownMsg =
+    "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";
+  public static readonly cassandraShellTemporarilyDownMsg =
+    "We have identified an issue with the Cassandra Shell and it is unavailable right now. We are actively working on the mitigation.";
 }
 
 export class SparkLibrary {

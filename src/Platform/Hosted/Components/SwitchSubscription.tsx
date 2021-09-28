@@ -1,4 +1,4 @@
-import { Dropdown } from "office-ui-fabric-react/lib/Dropdown";
+import { Dropdown } from "@fluentui/react";
 import * as React from "react";
 import { FunctionComponent } from "react";
 import { Subscription } from "../../../Contracts/DataModels";
@@ -26,7 +26,7 @@ export const SwitchSubscription: FunctionComponent<Props> = ({
         };
       })}
       onChange={(_, option) => {
-        setSelectedSubscriptionId(String(option.key));
+        setSelectedSubscriptionId(String(option?.key));
       }}
       defaultSelectedKey={selectedSubscription?.subscriptionId}
       placeholder={subscriptions && subscriptions.length === 0 ? "No Subscriptions Found" : "Select a Subscription"}

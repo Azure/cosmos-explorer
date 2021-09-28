@@ -1,18 +1,15 @@
-import { useBoolean } from "@uifabric/react-hooks";
-import { IDropdownOption, IImageProps, Image, Stack, Text } from "office-ui-fabric-react";
+import { IDropdownOption, IImageProps, Image, Stack, Text } from "@fluentui/react";
+import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useState } from "react";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
+import { useSidePanel } from "../../../hooks/useSidePanel";
+import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
 import StoredProcedure from "../../Tree/StoredProcedure";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import { InputParameter } from "./InputParameter";
 
 interface ExecuteSprocParamsPaneProps {
-  expandConsole: () => void;
   storedProcedure: StoredProcedure;
-  closePanel: () => void;
 }
 
 const imageProps: IImageProps = {
@@ -26,31 +23,17 @@ interface UnwrappedExecuteSprocParam {
 }
 
 export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPaneProps> = ({
-  expandConsole,
   storedProcedure,
-  closePanel,
 }: ExecuteSprocParamsPaneProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isLoading, { setTrue: setLoadingTrue, setFalse: setLoadingFalse }] = useBoolean(false);
   const [paramKeyValues, setParamKeyValues] = useState<UnwrappedExecuteSprocParam[]>([{ key: "string", text: "" }]);
   const [partitionValue, setPartitionValue] = useState<string>(); // Defaulting to undefined here is important. It is not the same partition key as ""
   const [selectedKey, setSelectedKey] = React.useState<IDropdownOption>({ key: "string", text: "" });
   const [formError, setFormError] = useState<string>("");
-  const [formErrorsDetails, setFormErrorsDetails] = useState<string>("");
 
   const onPartitionKeyChange = (event: React.FormEvent<HTMLDivElement>, item: IDropdownOption): void => {
     setSelectedKey(item);
-  };
-
-  const genericPaneProps: GenericRightPaneProps = {
-    expandConsole,
-    formError: formError,
-    formErrorDetail: formErrorsDetails,
-    id: "executesprocparamspane",
-    isExecuting: isLoading,
-    title: "Input parameters",
-    submitButtonText: "Execute",
-    onClose: () => closePanel(),
-    onSubmit: () => submit(),
   };
 
   const validateUnwrappedParams = (): boolean => {
@@ -66,7 +49,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
 
   const setInvalidParamError = (invalidParam: string): void => {
     setFormError(`Invalid param specified: ${invalidParam}`);
-    setFormErrorsDetails(`Invalid param specified: ${invalidParam} is not a valid literal value`);
+    logConsoleError(`Invalid param specified: ${invalidParam} is not a valid literal value`);
   };
 
   const submit = (): void => {
@@ -91,7 +74,7 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
       });
     storedProcedure.execute(sprocParams, partitionKey === "custom" ? JSON.parse(partitionValue) : partitionValue);
     setLoadingFalse();
-    closePanel();
+    closeSidePanel();
   };
 
   const deleteParamAtIndex = (indexToRemove: number): void => {
@@ -128,8 +111,15 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
     setParamKeyValues(cloneParamKeyValue);
   };
 
+  const props: RightPaneFormProps = {
+    formError: formError,
+    isExecuting: isLoading,
+    submitButtonText: "Execute",
+    onSubmit: () => submit(),
+  };
+
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...props}>
       <div className="panelFormWrapper">
         <div className="panelMainContent">
           <InputParameter
@@ -163,12 +153,12 @@ export const ExecuteSprocParamsPane: FunctionComponent<ExecuteSprocParamsPanePro
               selectedKey={paramKeyValue && paramKeyValue.key}
             />
           ))}
-          <Stack horizontal onClick={addNewParamAtLastIndex}>
+          <Stack horizontal onClick={addNewParamAtLastIndex} tabIndex={0}>
             <Image {...imageProps} src={AddPropertyIcon} alt="Add param" />
             <Text className="addNewParamStyle">Add New Param</Text>
           </Stack>
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

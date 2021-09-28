@@ -1,12 +1,13 @@
-import { IPanelProps, IRenderFunction, Panel, PanelType } from "office-ui-fabric-react";
+import { IPanelProps, IRenderFunction, Panel, PanelType } from "@fluentui/react";
 import * as React from "react";
+import { useNotificationConsole } from "../../hooks/useNotificationConsole";
+import { useSidePanel } from "../../hooks/useSidePanel";
 
 export interface PanelContainerProps {
-  headerText: string;
-  panelContent: JSX.Element;
+  headerText?: string;
+  panelContent?: JSX.Element;
   isConsoleExpanded: boolean;
   isOpen: boolean;
-  closePanel: () => void;
   panelWidth?: string;
   onRenderNavigationContent?: IRenderFunction<IPanelProps>;
 }
@@ -65,11 +66,11 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     );
   }
 
-  private onDissmiss = (ev?: React.SyntheticEvent<HTMLElement>): void => {
-    if ((ev.target as HTMLElement).id === "notificationConsoleHeader") {
+  private onDissmiss = (ev?: KeyboardEvent | React.SyntheticEvent<HTMLElement>): void => {
+    if (ev && (ev.target as HTMLElement).id === "notificationConsoleHeader") {
       ev.preventDefault();
     } else {
-      this.props.closePanel();
+      useSidePanel.getState().closeSidePanel();
     }
   };
 
@@ -81,3 +82,26 @@ export class PanelContainerComponent extends React.Component<PanelContainerProps
     return panelHeight + "px";
   };
 }
+
+export const SidePanel: React.FC = () => {
+  const isConsoleExpanded = useNotificationConsole((state) => state.isExpanded);
+  const { isOpen, panelContent, panelWidth, headerText } = useSidePanel((state) => {
+    return {
+      isOpen: state.isOpen,
+      panelContent: state.panelContent,
+      headerText: state.headerText,
+      panelWidth: state.panelWidth,
+    };
+  });
+  // TODO Refactor PanelContainerComponent into a functional component and remove this wrapper
+  // This component only exists so we can use hooks and pass them down to a non-functional component
+  return (
+    <PanelContainerComponent
+      isOpen={isOpen}
+      panelContent={panelContent}
+      headerText={headerText}
+      isConsoleExpanded={isConsoleExpanded}
+      panelWidth={panelWidth}
+    />
+  );
+};

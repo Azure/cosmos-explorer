@@ -1,7 +1,9 @@
 import * as ViewModels from "../../Contracts/ViewModels";
 import { userContext } from "../../UserContext";
 import { logConsoleError, logConsoleInfo } from "../../Utils/NotificationConsoleUtils";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
+import { useDatabases } from "../useDatabases";
 import { ContainerSampleGenerator } from "./ContainerSampleGenerator";
 
 export class DataSamplesUtil {
@@ -17,9 +19,9 @@ export class DataSamplesUtil {
 
     const databaseName = generator.getDatabaseId();
     const containerName = generator.getCollectionId();
-    if (this.hasContainer(databaseName, containerName, this.container.databases())) {
+    if (this.hasContainer(databaseName, containerName, useDatabases.getState().databases)) {
       const msg = `The container ${containerName} in database ${databaseName} already exists. Please delete it and retry.`;
-      this.container.showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
+      useDialog.getState().showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
       logConsoleError(msg);
       return;
     }
@@ -28,7 +30,7 @@ export class DataSamplesUtil {
       .createSampleContainerAsync()
       .catch((error) => logConsoleError(`Error creating sample container: ${error}`));
     const msg = `The sample ${containerName} in database ${databaseName} has been successfully created.`;
-    this.container.showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
+    useDialog.getState().showOkModalDialog(DataSamplesUtil.DialogTitle, msg);
     logConsoleInfo(msg);
   }
 

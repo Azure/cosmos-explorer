@@ -38,8 +38,6 @@ describe("SettingsComponent", () => {
       title: "Scale & Settings",
       tabPath: "",
       node: undefined,
-      hashLocation: "settings",
-      onUpdateTabsButtons: undefined,
     }),
   };
 
@@ -128,7 +126,6 @@ describe("SettingsComponent", () => {
       isDatabaseExpanded: undefined,
       isDatabaseShared: ko.computed(() => true),
       selectedSubnodeKind: undefined,
-      selectDatabase: undefined,
       expandDatabase: undefined,
       collapseDatabase: undefined,
       loadCollections: undefined,
@@ -154,19 +151,20 @@ describe("SettingsComponent", () => {
     expect(settingsComponentInstance.hasConflictResolution()).toEqual(undefined);
 
     const newContainer = new Explorer();
-    newContainer.databaseAccount = ko.observable({
-      id: undefined,
-      name: undefined,
-      location: undefined,
-      type: undefined,
-      kind: undefined,
-      tags: undefined,
-      properties: {
-        documentEndpoint: undefined,
-        tableEndpoint: undefined,
-        gremlinEndpoint: undefined,
-        cassandraEndpoint: undefined,
-        enableMultipleWriteLocations: true,
+    updateUserContext({
+      databaseAccount: {
+        id: undefined,
+        name: undefined,
+        location: undefined,
+        type: undefined,
+        kind: undefined,
+        properties: {
+          documentEndpoint: undefined,
+          tableEndpoint: undefined,
+          gremlinEndpoint: undefined,
+          cassandraEndpoint: undefined,
+          enableMultipleWriteLocations: true,
+        },
       },
     });
     const newCollection = { ...collection };

@@ -10,7 +10,7 @@ import {
   Stack,
   Text,
   TextField,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React from "react";
 import * as DataModels from "../../../../../Contracts/DataModels";
 import { SubscriptionType } from "../../../../../Contracts/SubscriptionType";
@@ -155,7 +155,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     this.state = {
       spendAckChecked: this.props.spendAckChecked,
       exceedFreeTierThroughput:
-        this.props.isFreeTierAccount && !this.props.isAutoPilotSelected && this.props.throughput > 400,
+        this.props.isFreeTierAccount &&
+        !this.props.isAutoPilotSelected &&
+        this.props.throughput > SharedConstants.FreeTierLimits.RU,
     };
 
     this.step = this.props.step ?? ThroughputInputAutoPilotV3Component.defaultStep;
@@ -441,7 +443,9 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
     if (this.overrideWithAutoPilotSettings()) {
       this.props.onMaxAutoPilotThroughputChange(newThroughput);
     } else {
-      this.setState({ exceedFreeTierThroughput: this.props.isFreeTierAccount && newThroughput > 400 });
+      this.setState({
+        exceedFreeTierThroughput: this.props.isFreeTierAccount && newThroughput > SharedConstants.FreeTierLimits.RU,
+      });
       this.props.onThroughputChange(newThroughput);
     }
   };
@@ -581,9 +585,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
           messageBarIconProps={{ iconName: "WarningSolid", className: "messageBarWarningIcon" }}
           styles={messageBarStyles}
         >
-          {
-            "Billing will apply if you provision more than 400 RU/s of manual throughput, or if the resource scales beyond 400 RU/s with autoscale."
-          }
+          {`Billing will apply if you provision more than ${SharedConstants.FreeTierLimits.RU} RU/s of manual throughput, or if the resource scales beyond ${SharedConstants.FreeTierLimits.RU} RU/s with autoscale.`}
         </MessageBar>
       )}
       {this.props.getThroughputWarningMessage() && (

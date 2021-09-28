@@ -1,12 +1,11 @@
-import React from "react";
 import { shallow } from "enzyme";
-import { GraphHighlightedNodeData, EditedProperties } from "./GraphExplorer";
-
+import React from "react";
 import { EditorNodePropertiesComponent, EditorNodePropertiesComponentProps } from "./EditorNodePropertiesComponent";
 
 describe("<EditorNodePropertiesComponent />", () => {
   // Tests that: single value prop is rendered with a textbox and a delete button
   // multi-value prop only a delete button (cannot be edited)
+  const onUpdateProperties = jest.fn();
   it("renders component", () => {
     const props: EditorNodePropertiesComponentProps = {
       editedProperties: {
@@ -24,7 +23,6 @@ describe("<EditorNodePropertiesComponent />", () => {
               { value: true, type: "boolean" },
               { value: false, type: "boolean" },
               { value: undefined, type: "null" },
-              { value: null, type: "null" },
             ],
           },
         ],
@@ -41,14 +39,13 @@ describe("<EditorNodePropertiesComponent />", () => {
               { value: true, type: "boolean" },
               { value: false, type: "boolean" },
               { value: undefined, type: "null" },
-              { value: null, type: "null" },
             ],
           },
         ],
         addedProperties: [],
         droppedKeys: [],
       },
-      onUpdateProperties: (editedProperties: EditedProperties): void => {},
+      onUpdateProperties,
     };
     const wrapper = shallow(<EditorNodePropertiesComponent {...props} />);
     expect(wrapper).toMatchSnapshot();
@@ -81,7 +78,7 @@ describe("<EditorNodePropertiesComponent />", () => {
         addedProperties: [],
         droppedKeys: [],
       },
-      onUpdateProperties: (editedProperties: EditedProperties): void => {},
+      onUpdateProperties,
     };
     const wrapper = shallow(<EditorNodePropertiesComponent {...props} />);
     expect(wrapper).toMatchSnapshot();

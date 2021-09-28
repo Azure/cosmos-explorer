@@ -1,6 +1,6 @@
-import { Queries } from "../Constants";
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import { LocalStorageUtility, StorageKey } from "../../Shared/StorageUtility";
+import { Queries } from "../Constants";
 import { client } from "../CosmosClient";
 
 export const queryDocuments = (

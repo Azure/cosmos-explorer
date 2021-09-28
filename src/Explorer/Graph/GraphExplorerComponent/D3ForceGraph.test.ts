@@ -68,7 +68,7 @@ describe("D3ForceGraph", () => {
 
     beforeEach(() => {
       forceGraph = new D3ForceGraph({
-        graphConfig: GraphTab.createGraphConfig(),
+        igraphConfig: GraphTab.createIGraphConfig(),
         onHighlightedNode: sinon.spy(),
         onLoadMoreData: (action: LoadMoreDataAction): void => {},
 

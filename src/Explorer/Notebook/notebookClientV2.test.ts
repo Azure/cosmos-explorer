@@ -1,8 +1,8 @@
 jest.mock("./NotebookComponent/store");
 jest.mock("@nteract/core");
+import { defineConfigOption } from "@nteract/mythic-configuration";
 import { NotebookClientV2 } from "./NotebookClientV2";
 import configureStore from "./NotebookComponent/store";
-import { defineConfigOption } from "@nteract/mythic-configuration";
 
 describe("auto start kernel", () => {
   it("configure autoStartKernelOnNotebookOpen properly depending whether notebook is/is not read-only", async () => {
@@ -22,6 +22,12 @@ describe("auto start kernel", () => {
       label: "autoSaveInterval",
       key: "autoSaveInterval",
       defaultValue: 1234,
+    });
+
+    defineConfigOption({
+      label: "Line numbers",
+      key: "codeMirror.lineNumbers",
+      defaultValue: true,
     });
 
     [true, false].forEach((isReadOnly) => {

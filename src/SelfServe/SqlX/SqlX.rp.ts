@@ -1,10 +1,17 @@
-import { RefreshResult } from "../SelfServeTypes";
+import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
 import { armRequestWithoutPolling } from "../../Utils/arm/request";
-import { configContext } from "../../ConfigContext";
-import { SqlxServiceResource, UpdateDedicatedGatewayRequestParameters } from "./SqlxTypes";
+import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
+import { RefreshResult } from "../SelfServeTypes";
+import SqlX from "./SqlX";
+import {
+  FetchPricesResponse,
+  RegionsResponse,
+  SqlxServiceResource,
+  UpdateDedicatedGatewayRequestParameters,
+} from "./SqlxTypes";
 
-const apiVersion = "2020-06-01-preview";
+const apiVersion = "2021-04-01-preview";
 
 export enum ResourceStatus {
   Running = "Running",
@@ -21,7 +28,7 @@ export interface DedicatedGatewayResponse {
 }
 
 export const getPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
-  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/sqlx`;
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}/services/SqlDedicatedGateway`;
 };
 
 export const updateDedicatedGatewayResource = async (sku: string, instances: number): Promise<string> => {
@@ -30,39 +37,69 @@ export const updateDedicatedGatewayResource = async (sku: string, instances: num
     properties: {
       instanceSize: sku,
       instanceCount: instances,
-      serviceType: "Sqlx",
+      serviceType: "SqlDedicatedGateway",
     },
   };
-  const armRequestResult = await armRequestWithoutPolling({
-    host: configContext.ARM_ENDPOINT,
-    path,
-    method: "PUT",
-    apiVersion,
-    body,
-  });
-  return armRequestResult.operationStatusUrl;
+  const telemetryData = { ...body, httpMethod: "PUT", selfServeClassName: SqlX.name };
+  const updateTimeStamp = selfServeTraceStart(telemetryData);
+  let armRequestResult;
+  try {
+    armRequestResult = await armRequestWithoutPolling({
+      host: configContext.ARM_ENDPOINT,
+      path,
+      method: "PUT",
+      apiVersion,
+      body,
+    });
+    selfServeTraceSuccess(telemetryData, updateTimeStamp);
+  } catch (e) {
+    const failureTelemetry = { ...body, e, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, updateTimeStamp);
+    throw e;
+  }
+  return armRequestResult?.operationStatusUrl;
 };
 
 export const deleteDedicatedGatewayResource = async (): Promise<string> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const armRequestResult = await armRequestWithoutPolling({
-    host: configContext.ARM_ENDPOINT,
-    path,
-    method: "DELETE",
-    apiVersion,
-  });
-  return armRequestResult.operationStatusUrl;
+  const telemetryData = { httpMethod: "DELETE", selfServeClassName: SqlX.name };
+  const deleteTimeStamp = selfServeTraceStart(telemetryData);
+  let armRequestResult;
+  try {
+    armRequestResult = await armRequestWithoutPolling({
+      host: configContext.ARM_ENDPOINT,
+      path,
+      method: "DELETE",
+      apiVersion,
+    });
+    selfServeTraceSuccess(telemetryData, deleteTimeStamp);
+  } catch (e) {
+    const failureTelemetry = { e, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, deleteTimeStamp);
+    throw e;
+  }
+  return armRequestResult?.operationStatusUrl;
 };
 
 export const getDedicatedGatewayResource = async (): Promise<SqlxServiceResource> => {
   const path = getPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name);
-  const armRequestResult = await armRequestWithoutPolling<SqlxServiceResource>({
-    host: configContext.ARM_ENDPOINT,
-    path,
-    method: "GET",
-    apiVersion,
-  });
-  return armRequestResult.result;
+  const telemetryData = { httpMethod: "GET", selfServeClassName: SqlX.name };
+  const getResourceTimeStamp = selfServeTraceStart(telemetryData);
+  let armRequestResult;
+  try {
+    armRequestResult = await armRequestWithoutPolling<SqlxServiceResource>({
+      host: configContext.ARM_ENDPOINT,
+      path,
+      method: "GET",
+      apiVersion,
+    });
+    selfServeTraceSuccess(telemetryData, getResourceTimeStamp);
+  } catch (e) {
+    const failureTelemetry = { e, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getResourceTimeStamp);
+    throw e;
+  }
+  return armRequestResult?.result;
 };
 
 export const getCurrentProvisioningState = async (): Promise<DedicatedGatewayResponse> => {
@@ -94,5 +131,93 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
   } catch {
     //TODO differentiate between different failures
     return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
+  }
+};
+
+const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
+};
+
+export const getRegions = async (): Promise<Array<string>> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getRegions",
+    description: "",
+    selfServeClassName: SqlX.name,
+  };
+  const getRegionsTimestamp = selfServeTraceStart(telemetryData);
+
+  try {
+    const regions = new Array<string>();
+
+    const response = await armRequestWithoutPolling<RegionsResponse>({
+      host: configContext.ARM_ENDPOINT,
+      path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
+      method: "GET",
+      apiVersion: "2021-04-01-preview",
+    });
+
+    if (response.result.location !== undefined) {
+      regions.push(response.result.location.split(" ").join("").toLowerCase());
+    } else {
+      for (const location of response.result.locations) {
+        regions.push(location.locationName.split(" ").join("").toLowerCase());
+      }
+    }
+
+    selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
+    return regions;
+  } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
+    return new Array<string>();
+  }
+};
+
+const getFetchPricesPathForRegion = (subscriptionId: string): string => {
+  return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
+};
+
+export const getPriceMap = async (regions: Array<string>): Promise<Map<string, Map<string, number>>> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getPriceMap",
+    description: "fetch prices API call",
+    selfServeClassName: SqlX.name,
+  };
+  const getPriceMapTimestamp = selfServeTraceStart(telemetryData);
+
+  try {
+    const priceMap = new Map<string, Map<string, number>>();
+
+    for (const region of regions) {
+      const regionPriceMap = new Map<string, number>();
+
+      const response = await armRequestWithoutPolling<FetchPricesResponse>({
+        host: configContext.ARM_ENDPOINT,
+        path: getFetchPricesPathForRegion(userContext.subscriptionId),
+        method: "POST",
+        apiVersion: "2020-01-01-preview",
+        queryParams: {
+          filter:
+            "armRegionName eq '" +
+            region +
+            "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
+        },
+      });
+
+      for (const item of response.result.Items) {
+        regionPriceMap.set(item.skuName, item.retailPrice);
+      }
+      priceMap.set(region, regionPriceMap);
+    }
+
+    selfServeTraceSuccess(telemetryData, getPriceMapTimestamp);
+    return priceMap;
+  } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getPriceMapTimestamp);
+
+    return undefined;
   }
 };

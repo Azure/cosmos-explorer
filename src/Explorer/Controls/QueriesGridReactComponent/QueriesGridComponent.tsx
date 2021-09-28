@@ -1,22 +1,24 @@
-import { IButtonProps, IconButton } from "office-ui-fabric-react/lib/Button";
-import { ContextualMenu, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
 import {
+  ContextualMenu,
   DetailsList,
   DetailsListLayoutMode,
   DetailsRow,
+  FocusZone,
+  IButtonProps,
   IColumn,
+  IconButton,
+  IContextualMenuProps,
   IDetailsListProps,
   IDetailsRowProps,
-} from "office-ui-fabric-react/lib/DetailsList";
-import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
-import { ITextField, ITextFieldProps, TextField } from "office-ui-fabric-react/lib/TextField";
-import {
   IObjectWithKey,
   ISelectionZoneProps,
+  ITextField,
+  ITextFieldProps,
   Selection,
   SelectionMode,
   SelectionZone,
-} from "office-ui-fabric-react/lib/utilities/selection/index";
+  TextField,
+} from "@fluentui/react";
 import * as React from "react";
 import * as _ from "underscore";
 import SaveQueryBannerIcon from "../../../../images/save_query_banner.png";
@@ -27,8 +29,9 @@ import { QueriesClient } from "../../../Common/QueriesClient";
 import * as DataModels from "../../../Contracts/DataModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import { useDialog } from "../Dialog";
 
-const title: string = "Open Saved Queries";
+const title = "Open Saved Queries";
 
 export interface QueriesGridComponentProps {
   queriesClient: QueriesClient;
@@ -194,9 +197,9 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
       {
         key: "Action",
         name: "Action",
-        fieldName: null,
+        fieldName: undefined,
         minWidth: 70,
-        onRender: (query: Query, index: number, column: IColumn) => {
+        onRender: (query: Query) => {
           const buttonProps: IButtonProps = {
             iconProps: {
               iconName: "More",
@@ -212,47 +215,50 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
                 {
                   key: "Open",
                   text: "Open query",
-                  onClick: (event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>, menuItem: any) => {
+                  onClick: () => {
                     this.props.onQuerySelect(query);
                   },
                 },
                 {
                   key: "Delete",
                   text: "Delete query",
-                  onClick: async (
-                    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>,
-                    menuItem: any
-                  ) => {
-                    if (window.confirm("Are you sure you want to delete this query?")) {
-                      const container = window.dataExplorer;
-                      const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
-                        dataExplorerArea: Constants.Areas.ContextualPane,
-                        paneTitle: title,
-                      });
-                      try {
-                        await this.props.queriesClient.deleteQuery(query);
-                        TelemetryProcessor.traceSuccess(
-                          Action.DeleteSavedQuery,
-                          {
-                            dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: title,
-                          },
-                          startKey
-                        );
-                      } catch (error) {
-                        TelemetryProcessor.traceFailure(
-                          Action.DeleteSavedQuery,
-                          {
-                            dataExplorerArea: Constants.Areas.ContextualPane,
-                            paneTitle: title,
-                            error: getErrorMessage(error),
-                            errorStack: getErrorStack(error),
-                          },
-                          startKey
-                        );
-                      }
-                      await this.fetchSavedQueries(); // get latest state
-                    }
+                  onClick: async () => {
+                    useDialog.getState().showOkCancelModalDialog(
+                      "Confirm delete",
+                      "Are you sure you want to delete this query?",
+                      "Delete",
+                      async () => {
+                        const startKey: number = TelemetryProcessor.traceStart(Action.DeleteSavedQuery, {
+                          dataExplorerArea: Constants.Areas.ContextualPane,
+                          paneTitle: title,
+                        });
+                        try {
+                          await this.props.queriesClient.deleteQuery(query);
+                          TelemetryProcessor.traceSuccess(
+                            Action.DeleteSavedQuery,
+                            {
+                              dataExplorerArea: Constants.Areas.ContextualPane,
+                              paneTitle: title,
+                            },
+                            startKey
+                          );
+                        } catch (error) {
+                          TelemetryProcessor.traceFailure(
+                            Action.DeleteSavedQuery,
+                            {
+                              dataExplorerArea: Constants.Areas.ContextualPane,
+                              paneTitle: title,
+                              error: getErrorMessage(error),
+                              errorStack: getErrorStack(error),
+                            },
+                            startKey
+                          );
+                        }
+                        await this.fetchSavedQueries(); // get latest state
+                      },
+                      "Cancel",
+                      undefined
+                    );
                   },
                 },
               ],

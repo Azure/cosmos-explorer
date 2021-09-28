@@ -8,7 +8,7 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
     }
   }
 >
-  <StyledMessageBarBase
+  <StyledMessageBar
     messageBarType={5}
   >
     <Text
@@ -16,6 +16,7 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
       styles={
         Object {
           "root": Object {
+            "color": "windowtext",
             "fontSize": 14,
           },
         }
@@ -26,7 +27,7 @@ exports[`ScaleComponent renders with correct initial notification 1`] = `
       Database: test, Container: test 
       , Current autoscale throughput: 100 - 1000 RU/s, Target autoscale throughput: 600 - 6000 RU/s
     </Text>
-  </StyledMessageBarBase>
+  </StyledMessageBar>
   <Stack
     tokens={
       Object {

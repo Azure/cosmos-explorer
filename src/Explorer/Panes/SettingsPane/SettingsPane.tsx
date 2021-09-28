@@ -1,27 +1,17 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "office-ui-fabric-react";
+import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
-import { Tooltip } from "../../../Common/Tooltip/Tooltip";
+import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
 import { configContext } from "../../../ConfigContext";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
 import * as StringUtility from "../../../Shared/StringUtility";
 import { userContext } from "../../../UserContext";
 import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
-import {
-  GenericRightPaneComponent,
-  GenericRightPaneProps,
-} from "../GenericRightPaneComponent/GenericRightPaneComponent";
+import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
-export interface SettingsPaneProps {
-  expandConsole: () => void;
-  closePanel: () => void;
-}
-
-export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
-  expandConsole,
-  closePanel,
-}: SettingsPaneProps) => {
-  const [formErrors, setFormErrors] = useState<string>("");
+export const SettingsPane: FunctionComponent = () => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [pageOption, setPageOption] = useState<string>(
     LocalStorageUtility.getEntryNumber(StorageKey.ActualItemPerPage) === Constants.Queries.unlimitedItemsPerPage
@@ -53,7 +43,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
   const shouldShowParallelismOption = userContext.apiType !== "Gremlin";
 
   const handlerOnSubmit = (e: MouseEvent<HTMLButtonElement>) => {
-    setFormErrors("");
     setIsExecuting(true);
 
     LocalStorageUtility.setEntryNumber(
@@ -93,7 +82,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     logConsoleInfo(
       `Updated query setting to ${LocalStorageUtility.getEntryString(StorageKey.SetPartitionKeyUndefined)}`
     );
-    closePanel();
+    closeSidePanel();
     e.preventDefault();
   };
 
@@ -105,15 +94,10 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     setGraphAutoVizDisabled(option.key);
   };
 
-  const genericPaneProps: GenericRightPaneProps = {
-    expandConsole,
-    formError: formErrors,
-    formErrorDetail: "",
-    id: "settingspane",
+  const genericPaneProps: RightPaneFormProps = {
+    formError: "",
     isExecuting,
-    title: "Setting",
     submitButtonText: "Apply",
-    onClose: () => closePanel(),
     onSubmit: () => handlerOnSubmit(undefined),
   };
   const pageOptionList: IChoiceGroupOption[] = [
@@ -130,17 +114,17 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
     setPageOption(option.key);
   };
   return (
-    <GenericRightPaneComponent {...genericPaneProps}>
+    <RightPaneForm {...genericPaneProps}>
       <div className="paneMainContent">
         {shouldShowQueryPageOptions && (
           <div className="settingsSection">
             <div className="settingsSectionPart pageOptionsPart">
               <div className="settingsSectionLabel">
                 Page options
-                <Tooltip>
+                <InfoTooltip>
                   Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many
                   query results per page.
-                </Tooltip>
+                </InfoTooltip>
               </div>
               <ChoiceGroup selectedKey={pageOption} options={pageOptionList} onChange={handleOnPageOptionChange} />
             </div>
@@ -149,7 +133,7 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                 <div className="tabcontent">
                   <div className="settingsSectionLabel">
                     Query results per page
-                    <Tooltip>Enter the number of query results that should be shown per page.</Tooltip>
+                    <InfoTooltip>Enter the number of query results that should be shown per page.</InfoTooltip>
                   </div>
 
                   <SpinButton
@@ -176,10 +160,10 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
             <div className="settingsSectionPart">
               <div className="settingsSectionLabel">
                 Enable cross-partition query
-                <Tooltip>
+                <InfoTooltip>
                   Send more than one request while executing a query. More than one request is necessary if the query is
                   not scoped to single partition key value.
-                </Tooltip>
+                </InfoTooltip>
               </div>
 
               <Checkbox
@@ -187,7 +171,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                   label: { padding: 0 },
                 }}
                 className="padding"
-                tabIndex={0}
                 ariaLabel="Enable cross partition query"
                 checked={crossPartitionQueryEnabled}
                 onChange={() => setCrossPartitionQueryEnabled(!crossPartitionQueryEnabled)}
@@ -200,11 +183,11 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
             <div className="settingsSectionPart">
               <div className="settingsSectionLabel">
                 Max degree of parallelism
-                <Tooltip>
+                <InfoTooltip>
                   Gets or sets the number of concurrent operations run client side during parallel query execution. A
                   positive property value limits the number of concurrent operations to the set value. If it is set to
                   less than 0, the system automatically decides the number of concurrent operations to run.
-                </Tooltip>
+                </InfoTooltip>
               </div>
 
               <SpinButton
@@ -212,7 +195,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
                 step={1}
                 className="textfontclr"
                 role="textbox"
-                tabIndex={0}
                 id="max-degree"
                 value={"" + maxDegreeOfParallelism}
                 onIncrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) + 1 || maxDegreeOfParallelism)}
@@ -228,10 +210,10 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
             <div className="settingsSectionPart">
               <div className="settingsSectionLabel">
                 Display Gremlin query results as:&nbsp;
-                <Tooltip>
+                <InfoTooltip>
                   Select Graph to automatically visualize the query results as a Graph or JSON to display the results as
                   JSON.
-                </Tooltip>
+                </InfoTooltip>
               </div>
 
               <ChoiceGroup
@@ -250,6 +232,6 @@ export const SettingsPane: FunctionComponent<SettingsPaneProps> = ({
           </div>
         </div>
       </div>
-    </GenericRightPaneComponent>
+    </RightPaneForm>
   );
 };

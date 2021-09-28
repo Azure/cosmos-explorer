@@ -1,7 +1,7 @@
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { listSqlStoredProcedures } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
+import { listSqlStoredProcedures } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";

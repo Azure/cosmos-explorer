@@ -81,34 +81,3 @@ export const queryPagesUntilContentPresent = async (
 
   return await doRequest(firstItemIndex);
 };
-
-export const queryAllPages = async (
-  queryItems: (itemIndex: number) => Promise<ViewModels.QueryResults>
-): Promise<ViewModels.QueryResults> => {
-  const queryResults: ViewModels.QueryResults = {
-    documents: [],
-    activityId: undefined,
-    hasMoreResults: false,
-    itemCount: 0,
-    firstItemIndex: 0,
-    lastItemIndex: 0,
-    requestCharge: 0,
-    roundTrips: 0,
-  };
-  const doRequest = async (itemIndex: number): Promise<ViewModels.QueryResults> => {
-    const results = await queryItems(itemIndex);
-    const { requestCharge, hasMoreResults, itemCount, lastItemIndex, documents } = results;
-    queryResults.roundTrips = queryResults.roundTrips + 1;
-    queryResults.requestCharge = Number(queryResults.requestCharge) + Number(requestCharge);
-    queryResults.hasMoreResults = hasMoreResults;
-    queryResults.itemCount = queryResults.itemCount + itemCount;
-    queryResults.lastItemIndex = lastItemIndex;
-    queryResults.documents = queryResults.documents.concat(documents);
-    if (queryResults.hasMoreResults) {
-      return doRequest(queryResults.lastItemIndex + 1);
-    }
-    return queryResults;
-  };
-
-  return doRequest(0);
-};

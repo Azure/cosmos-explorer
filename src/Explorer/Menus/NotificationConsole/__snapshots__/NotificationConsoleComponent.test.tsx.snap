@@ -70,7 +70,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
     </div>
     <div
       aria-expanded={true}
-      aria-label="console button expanded"
+      aria-label="console button collapsed"
       className="expandCollapseButton"
       role="button"
       tabIndex={0}
@@ -111,7 +111,7 @@ exports[`NotificationConsoleComponent renders the console 1`] = `
       <div
         className="notificationConsoleControls"
       >
-        <StyledWithResponsiveMode
+        <Dropdown
           aria-label="All"
           aria-labelledby="consoleFilterLabel"
           label="Filter:"
@@ -236,7 +236,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
     </div>
     <div
       aria-expanded={true}
-      aria-label="console button expanded"
+      aria-label="console button collapsed"
       className="expandCollapseButton"
       role="button"
       tabIndex={0}
@@ -277,7 +277,7 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
       <div
         className="notificationConsoleControls"
       >
-        <StyledWithResponsiveMode
+        <Dropdown
           aria-label="All"
           aria-labelledby="consoleFilterLabel"
           label="Filter:"
@@ -340,7 +340,9 @@ exports[`NotificationConsoleComponent renders the console 2`] = `
             date
           </span>
           <span
+            aria-live="assertive"
             className="message"
+            role="alert"
           >
             message
           </span>

@@ -1,12 +1,12 @@
+import { IconButton, Spinner, SpinnerSize } from "@fluentui/react";
 import * as React from "react";
-import { IconButton } from "office-ui-fabric-react/lib/Button";
-import { Spinner, SpinnerSize } from "office-ui-fabric-react/lib/Spinner";
-import "./Prompt.less";
+import { NotebookUtil } from "../NotebookUtil";
 import { PassedPromptProps } from "./Prompt";
+import "./Prompt.less";
 
 export const promptContent = (props: PassedPromptProps): JSX.Element => {
   if (props.status === "busy") {
-    const stopButtonText: string = "Stop cell execution";
+    const stopButtonText = "Stop cell execution";
     return (
       <div
         style={{ position: "sticky", width: "100%", maxHeight: "100%", left: 0, top: 0, zIndex: 300 }}
@@ -24,15 +24,18 @@ export const promptContent = (props: PassedPromptProps): JSX.Element => {
       </div>
     );
   } else if (props.isHovered) {
-    const playButtonText: string = "Run cell";
+    const playButtonText = props.isRunDisabled ? NotebookUtil.UntrustedNotebookRunHint : "Run cell";
     return (
-      <IconButton
-        className="runCellButton"
-        iconProps={{ iconName: "MSNVideosSolid" }}
-        title={playButtonText}
-        ariaLabel={playButtonText}
-        onClick={props.runCell}
-      />
+      <div className={props.isRunDisabled ? "disabledRunCellButton" : ""}>
+        <IconButton
+          className="runCellButton"
+          iconProps={{ iconName: "MSNVideosSolid" }}
+          title={playButtonText}
+          ariaLabel={playButtonText}
+          disabled={props.isRunDisabled}
+          onClick={props.runCell}
+        />
+      </div>
     );
   } else {
     return <div style={{ paddingTop: 7 }}>{promptText(props)}</div>;

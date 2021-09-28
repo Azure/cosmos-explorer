@@ -8,10 +8,11 @@ import {
   SelectableOptionMenuItemType,
   Stack,
   Text,
-} from "office-ui-fabric-react";
+} from "@fluentui/react";
 import React, { FormEvent, FunctionComponent } from "react";
 import { IPinnedRepo } from "../../../Juno/JunoClient";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { ResourceTreeAdapter } from "../../Tree/ResourceTreeAdapter";
 
 interface Location {
@@ -46,11 +47,10 @@ export const CopyNotebookPaneComponent: FunctionComponent<CopyNotebookPaneProps>
 
   const getDropDownOptions = (): IDropdownOption[] => {
     const options: IDropdownOption[] = [];
-
     options.push({
       key: "MyNotebooks-Item",
-      text: ResourceTreeAdapter.MyNotebooksTitle,
-      title: ResourceTreeAdapter.MyNotebooksTitle,
+      text: useNotebook.getState().notebookFolderName,
+      title: useNotebook.getState().notebookFolderName,
       data: {
         type: "MyNotebooks",
       } as Location,

@@ -25,9 +25,11 @@ import { userContext } from "../../UserContext";
 import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
 import * as QueryUtils from "../../Utils/QueryUtils";
 import { CommandButtonComponentProps } from "../Controls/CommandButton/CommandButtonComponent";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import { AccessibleVerticalList } from "../Tree/AccessibleVerticalList";
 import DocumentId from "../Tree/DocumentId";
+import { useSelectedNode } from "../useSelectedNode";
 import template from "./DocumentsTab.html";
 import TabsBase from "./TabsBase";
 
@@ -377,7 +379,7 @@ export default class DocumentsTab extends TabsBase {
       this.isFilterExpanded(false);
       document.getElementById("errorStatusIcon")?.focus();
     } catch (error) {
-      window.alert(getErrorMessage(error));
+      useDialog.getState().showOkModalDialog("Refresh documents grid failed", getErrorMessage(error));
     }
   }
 
@@ -400,18 +402,29 @@ export default class DocumentsTab extends TabsBase {
     return Q();
   }
 
-  public onNewDocumentClick = (): Q.Promise<any> => {
-    if (this.isEditorDirty() && !this._isIgnoreDirtyEditor()) {
-      return Q();
+  public onNewDocumentClick = (): void => {
+    if (this.isEditorDirty()) {
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          "Unsaved changes",
+          "Changes will be lost. Do you want to continue?",
+          "OK",
+          () => this.initializeNewDocument(),
+          "Cancel",
+          undefined
+        );
+    } else {
+      this.initializeNewDocument();
     }
-    this.selectedDocumentId(null);
+  };
 
+  private initializeNewDocument = (): void => {
+    this.selectedDocumentId(null);
     const defaultDocument: string = this.renderObjectForEditor({ id: "replace_with_new_document_id" }, null, 4);
     this.initialDocumentContent(defaultDocument);
     this.selectedDocumentContent.setBaseline(defaultDocument);
     this.editorState(ViewModels.DocumentExplorerState.newDocumentValid);
-
-    return Q();
   };
 
   public onSaveNewDocumentClick = (): Promise<any> => {
@@ -452,7 +465,7 @@ export default class DocumentsTab extends TabsBase {
         (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
-          window.alert(errorMessage);
+          useDialog.getState().showOkModalDialog("Create document failed", errorMessage);
           TelemetryProcessor.traceFailure(
             Action.CreateDocument,
             {
@@ -515,7 +528,7 @@ export default class DocumentsTab extends TabsBase {
         (error) => {
           this.isExecutionError(true);
           const errorMessage = getErrorMessage(error);
-          window.alert(errorMessage);
+          useDialog.getState().showOkModalDialog("Update document failed", errorMessage);
           TelemetryProcessor.traceFailure(
             Action.UpdateDocument,
             {
@@ -545,9 +558,16 @@ export default class DocumentsTab extends TabsBase {
       ? "Are you sure you want to delete the selected item ?"
       : "Are you sure you want to delete the selected document ?";
 
-    if (window.confirm(msg)) {
-      await this._deleteDocument(selectedDocumentId);
-    }
+    useDialog
+      .getState()
+      .showOkCancelModalDialog(
+        "Confirm delete",
+        msg,
+        "Delete",
+        async () => await this._deleteDocument(selectedDocumentId),
+        "Cancel",
+        undefined
+      );
   };
 
   public onValidDocumentEdit(): Q.Promise<any> {
@@ -615,11 +635,6 @@ export default class DocumentsTab extends TabsBase {
       }
     }
   }
-
-  private _isIgnoreDirtyEditor = (): boolean => {
-    var msg: string = "Changes will be lost. Do you want to continue?";
-    return window.confirm(msg);
-  };
 
   protected __deleteDocument(documentId: DocumentId): Promise<void> {
     return deleteDocument(this.collection, documentId);
@@ -911,13 +926,13 @@ export default class DocumentsTab extends TabsBase {
       iconSrc: UploadIcon,
       iconAlt: label,
       onCommandClick: () => {
-        const selectedCollection: ViewModels.Collection = container.findSelectedCollection();
+        const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         selectedCollection && container.openUploadItemsPanePane();
       },
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      disabled: container.isDatabaseNodeOrNoneSelected(),
+      disabled: useSelectedNode.getState().isDatabaseNodeOrNoneSelected(),
     };
   }
 }

@@ -1,10 +1,8 @@
+import { initializeIcons, Link, Text } from "@fluentui/react";
 import "bootstrap/dist/css/bootstrap.css";
-import "./GalleryViewer.less";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { Text, Link } from "office-ui-fabric-react";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { configContext, initializeConfiguration } from "../ConfigContext";
+import { initializeConfiguration } from "../ConfigContext";
 import { GalleryHeaderComponent } from "../Explorer/Controls/Header/GalleryHeaderComponent";
 import {
   GalleryAndNotebookViewerComponent,
@@ -13,6 +11,7 @@ import {
 import { GalleryTab, SortBy } from "../Explorer/Controls/NotebookGallery/GalleryViewerComponent";
 import { JunoClient } from "../Juno/JunoClient";
 import * as GalleryUtils from "../Utils/GalleryUtils";
+import "./GalleryViewer.less";
 
 const enableNotebooksUrl = "https://aka.ms/cosmos-enable-notebooks";
 const createAccountUrl = "https://aka.ms/cosmos-create-account-portal";
@@ -43,10 +42,10 @@ const onInit = async () => {
             practices, and how to get started with Azure Cosmos DB.
           </Text>
           <Text styles={{ root: { marginTop: 10 } }} block>
-            If you'd like to run or edit the notebook in your own Azure Cosmos DB account,{" "}
+            If {`you'd`} like to run or edit the notebook in your own Azure Cosmos DB account,{" "}
             <Link href={dataExplorerUrl}>sign in</Link> and select an account with{" "}
             <Link href={enableNotebooksUrl}>notebooks enabled</Link>. From there, you can download the sample to your
-            account. If you don't have an account yet, you can{" "}
+            account. If you {`don't`} have an account yet, you can{" "}
             <Link href={createAccountUrl}>create one from the Azure portal</Link>.
           </Text>
         </div>

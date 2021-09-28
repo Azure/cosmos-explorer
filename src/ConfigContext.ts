@@ -27,6 +27,7 @@ export interface ConfigContext {
   hostedExplorerURL: string;
   armAPIVersion?: string;
   allowedJunoOrigins: string[];
+  msalRedirectURI?: string;
 }
 
 // Default configuration
@@ -116,6 +117,14 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
     if (params.has("armAPIVersion")) {
       const armAPIVersion = params.get("armAPIVersion") || "";
       updateConfigContext({ armAPIVersion });
+    }
+    if (params.has("armEndpoint")) {
+      const ARM_ENDPOINT = params.get("armEndpoint") || "";
+      updateConfigContext({ ARM_ENDPOINT });
+    }
+    if (params.has("aadEndpoint")) {
+      const AAD_ENDPOINT = params.get("aadEndpoint") || "";
+      updateConfigContext({ AAD_ENDPOINT });
     }
     if (params.has("platform")) {
       const platform = params.get("platform");

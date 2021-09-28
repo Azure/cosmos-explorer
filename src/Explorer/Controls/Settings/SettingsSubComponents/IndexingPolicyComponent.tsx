@@ -1,7 +1,8 @@
-import { MessageBar, MessageBarType, Stack } from "office-ui-fabric-react";
+import { MessageBar, MessageBarType, Stack } from "@fluentui/react";
+import * as monaco from "monaco-editor";
 import * as React from "react";
 import * as DataModels from "../../../../Contracts/DataModels";
-import { loadMonaco, monaco } from "../../../LazyMonaco";
+import { loadMonaco } from "../../../LazyMonaco";
 import { indexingPolicynUnsavedWarningMessage, titleAndInputStackProps } from "../SettingsRenderUtils";
 import { isDirty, isIndexTransforming } from "../SettingsUtils";
 import { IndexingPolicyRefreshComponent } from "./IndexingPolicyRefresh/IndexingPolicyRefreshComponent";

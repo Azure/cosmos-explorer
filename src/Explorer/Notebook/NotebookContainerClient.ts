@@ -5,26 +5,29 @@ import * as Constants from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
+import { userContext } from "../../UserContext";
+import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
   private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
 
-  constructor(
-    private notebookServerInfo: ko.Observable<DataModels.NotebookWorkspaceConnectionInfo>,
-    private onConnectionLost: () => void,
-    private onMemoryUsageInfoUpdate: (update: DataModels.MemoryUsageInfo) => void
-  ) {
-    if (notebookServerInfo() && notebookServerInfo().notebookServerEndpoint) {
+  constructor(private onConnectionLost: () => void) {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    if (notebookServerInfo?.notebookServerEndpoint) {
       this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
     } else {
-      const subscription = notebookServerInfo.subscribe((newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
-        if (newServerInfo && newServerInfo.notebookServerEndpoint) {
-          this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-        }
-        subscription.dispose();
-      });
+      const unsub = useNotebook.subscribe(
+        (newServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => {
+          if (newServerInfo?.notebookServerEndpoint) {
+            this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
+          }
+          unsub();
+        },
+        (state) => state.notebookServerInfo
+      );
     }
   }
 
@@ -34,13 +37,14 @@ export class NotebookContainerClient {
   private scheduleHeartbeat(delayMs: number): void {
     setTimeout(() => {
       this.getMemoryUsage()
-        .then((memoryUsageInfo) => this.onMemoryUsageInfoUpdate(memoryUsageInfo))
+        .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo))
         .finally(() => this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs));
     }, delayMs);
   }
 
   private async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
-    if (!this.notebookServerInfo() || !this.notebookServerInfo().notebookServerEndpoint) {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";
       Logger.logError(error, "NotebookContainerClient/getMemoryUsage");
       return Promise.reject(error);
@@ -52,7 +56,7 @@ export class NotebookContainerClient {
 
     const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
     try {
-      const response = await fetch(`${notebookServerEndpoint}/api/metrics/memory`, {
+      const response = await fetch(`${notebookServerEndpoint}api/metrics/memory`, {
         method: "GET",
         headers: {
           Authorization: authToken,
@@ -96,7 +100,8 @@ export class NotebookContainerClient {
   }
 
   private async _resetWorkspace(): Promise<void> {
-    if (!this.notebookServerInfo() || !this.notebookServerInfo().notebookServerEndpoint) {
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";
       Logger.logError(error, "NotebookContainerClient/resetWorkspace");
       return Promise.reject(error);
@@ -115,29 +120,28 @@ export class NotebookContainerClient {
   }
 
   private getNotebookServerConfig(): { notebookServerEndpoint: string; authToken: string } {
-    let authToken: string,
-      notebookServerEndpoint = this.notebookServerInfo().notebookServerEndpoint,
-      token = this.notebookServerInfo().authToken;
-    if (token) {
-      authToken = `Token ${token}`;
-    }
+    const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+    const authToken: string = notebookServerInfo.authToken ? `Token ${notebookServerInfo.authToken}` : undefined;
 
     return {
-      notebookServerEndpoint,
+      notebookServerEndpoint: notebookServerInfo.notebookServerEndpoint,
       authToken,
     };
   }
 
   private async recreateNotebookWorkspaceAsync(): Promise<void> {
-    const explorer = window.dataExplorer;
-    if (!explorer || !explorer.databaseAccount() || !explorer.databaseAccount().id) {
+    const { databaseAccount } = userContext;
+    if (!databaseAccount?.id) {
       throw new Error("DataExplorer not initialized");
     }
-
-    const notebookWorkspaceManager = explorer.notebookWorkspaceManager;
     try {
-      await notebookWorkspaceManager.deleteNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
-      await notebookWorkspaceManager.createNotebookWorkspaceAsync(explorer.databaseAccount().id, "default");
+      await destroy(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
+      await createOrUpdate(
+        userContext.subscriptionId,
+        userContext.resourceGroup,
+        userContext.databaseAccount.name,
+        "default"
+      );
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);

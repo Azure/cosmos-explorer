@@ -6,6 +6,7 @@ Instead, generate ARM clients that consume this function with stricter typing.
 */
 
 import promiseRetry, { AbortError } from "p-retry";
+import { HttpHeaders } from "../../Common/Constants";
 import { configContext } from "../../ConfigContext";
 import { userContext } from "../../UserContext";
 
@@ -45,6 +46,7 @@ interface Options {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD";
   body?: unknown;
   queryParams?: ARMQueryParams;
+  contentType?: string;
 }
 
 export async function armRequestWithoutPolling<T>({
@@ -54,6 +56,7 @@ export async function armRequestWithoutPolling<T>({
   method,
   body: requestBody,
   queryParams,
+  contentType,
 }: Options): Promise<{ result: T; operationStatusUrl: string }> {
   const url = new URL(path, host);
   url.searchParams.append("api-version", configContext.armAPIVersion || apiVersion);
@@ -70,6 +73,7 @@ export async function armRequestWithoutPolling<T>({
     method,
     headers: {
       Authorization: userContext.authorizationToken,
+      [HttpHeaders.contentType]: contentType || "application/json",
     },
     body: requestBody ? JSON.stringify(requestBody) : undefined,
   });
@@ -104,6 +108,7 @@ export async function armRequest<T>({
   method,
   body: requestBody,
   queryParams,
+  contentType,
 }: Options): Promise<T> {
   const armRequestResult = await armRequestWithoutPolling<T>({
     host,
@@ -112,6 +117,7 @@ export async function armRequest<T>({
     method,
     body: requestBody,
     queryParams,
+    contentType,
   });
   const operationStatusUrl = armRequestResult.operationStatusUrl;
   if (operationStatusUrl) {
@@ -144,13 +150,13 @@ async function getOperationStatus(operationStatusUrl: string) {
 
   const body = await response.json();
   const status = body.status;
-  if (!status && response.status === 200) {
-    return body;
-  }
   if (status === "Canceled" || status === "Failed") {
     const errorMessage = body.error ? JSON.stringify(body.error) : "Operation could not be completed";
     const error = new Error(errorMessage);
     throw new AbortError(error);
+  }
+  if (response.status === 200) {
+    return body;
   }
   throw new Error(`Operation Response: ${JSON.stringify(body)}. Retrying.`);
 }

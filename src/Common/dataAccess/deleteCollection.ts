@@ -1,10 +1,10 @@
 import { AuthType } from "../../AuthType";
 import { userContext } from "../../UserContext";
-import { deleteCassandraTable } from "../../Utils/arm/generatedClients/2020-04-01/cassandraResources";
-import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/2020-04-01/gremlinResources";
-import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/2020-04-01/mongoDBResources";
-import { deleteSqlContainer } from "../../Utils/arm/generatedClients/2020-04-01/sqlResources";
-import { deleteTable } from "../../Utils/arm/generatedClients/2020-04-01/tableResources";
+import { deleteCassandraTable } from "../../Utils/arm/generatedClients/cosmos/cassandraResources";
+import { deleteGremlinGraph } from "../../Utils/arm/generatedClients/cosmos/gremlinResources";
+import { deleteMongoDBCollection } from "../../Utils/arm/generatedClients/cosmos/mongoDBResources";
+import { deleteSqlContainer } from "../../Utils/arm/generatedClients/cosmos/sqlResources";
+import { deleteTable } from "../../Utils/arm/generatedClients/cosmos/tableResources";
 import { logConsoleInfo, logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { client } from "../CosmosClient";
 import { handleError } from "../ErrorHandlingUtils";
@@ -27,12 +27,10 @@ export async function deleteCollection(databaseId: string, collectionId: string)
 }
 
 function deleteCollectionWithARM(databaseId: string, collectionId: string): Promise<void> {
-  const subscriptionId = userContext.subscriptionId;
-  const resourceGroup = userContext.resourceGroup;
-  const accountName = userContext.databaseAccount.name;
-  const defaultExperience = userContext.apiType;
+  const { subscriptionId, resourceGroup, apiType, databaseAccount } = userContext;
+  const accountName = databaseAccount.name;
 
-  switch (defaultExperience) {
+  switch (apiType) {
     case "SQL":
       return deleteSqlContainer(subscriptionId, resourceGroup, accountName, databaseId, collectionId);
     case "Mongo":
@@ -44,6 +42,6 @@ function deleteCollectionWithARM(databaseId: string, collectionId: string): Prom
     case "Tables":
       return deleteTable(subscriptionId, resourceGroup, accountName, collectionId);
     default:
-      throw new Error(`Unsupported default experience type: ${defaultExperience}`);
+      throw new Error(`Unsupported default experience type: ${apiType}`);
   }
 }

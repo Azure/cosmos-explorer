@@ -1,18 +1,11 @@
-import {
-  FocusZone,
-  DefaultButton,
-  DirectionalHint,
-  Persona,
-  PersonaInitialsColor,
-  PersonaSize,
-} from "office-ui-fabric-react";
+import { AccountInfo } from "@azure/msal-browser";
+import { DefaultButton, DirectionalHint, FocusZone, Persona, PersonaInitialsColor, PersonaSize } from "@fluentui/react";
 import * as React from "react";
-import { Account } from "msal";
 import { useGraphPhoto } from "../../../hooks/useGraphPhoto";
 
 interface Props {
   graphToken: string;
-  account: Account;
+  account: AccountInfo;
   openPanel: () => void;
   logout: () => void;
 }
@@ -55,7 +48,7 @@ export const MeControl: React.FunctionComponent<Props> = ({ openPanel, logout, a
         <Persona
           imageUrl={photo}
           text={account?.name}
-          secondaryText={account?.userName}
+          secondaryText={account?.username}
           showSecondaryText={true}
           showInitialsUntilImageLoads={true}
           initialsColor={PersonaInitialsColor.teal}
