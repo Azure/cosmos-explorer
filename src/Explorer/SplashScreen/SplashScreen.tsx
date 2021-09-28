@@ -83,7 +83,11 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
   public render(): JSX.Element {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
-    const recentItems = this.createRecentItems();
+    let recentItems = this.createRecentItems();
+    if (userContext.features.notebooksTemporarilyDown) {
+      recentItems = recentItems.filter((item) => item.description !== "Notebook");
+    }
+
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
 
@@ -219,7 +223,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (useNotebook.getState().isNotebookEnabled) {
+    if (useNotebook.getState().isNotebookEnabled && !userContext.features.notebooksTemporarilyDown) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",
@@ -303,14 +307,21 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: AddDatabaseIcon,
         title: "New " + getDatabaseName(),
         description: undefined,
-        onClick: () =>
-          useSidePanel
-            .getState()
-            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
+        onClick: () => this.openAddDatabasePanel(),
       });
     }
 
     return items;
+  }
+
+  private openAddDatabasePanel() {
+    const newDatabaseButton = document.activeElement as HTMLElement;
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "New " + getDatabaseName(),
+        <AddDatabasePanel explorer={this.container} buttonElement={newDatabaseButton} />
+      );
   }
 
   private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {

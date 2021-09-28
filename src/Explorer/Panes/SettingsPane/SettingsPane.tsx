@@ -195,7 +195,6 @@ export const SettingsPane: FunctionComponent = () => {
                 step={1}
                 className="textfontclr"
                 role="textbox"
-                tabIndex={0}
                 id="max-degree"
                 value={"" + maxDegreeOfParallelism}
                 onIncrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) + 1 || maxDegreeOfParallelism)}

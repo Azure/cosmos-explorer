@@ -47,7 +47,9 @@
                     <img class="and-or-svg" src="/And-Or.svg" alt="Group selected clauses" />
                   </button>
                 </th>
-                <th class="clause-table-cell header-background"><!-- Grouping indicator --></th>
+                <th class="clause-table-cell header-background">
+                  <!-- Grouping indicator -->
+                </th>
                 <th class="clause-table-cell header-background and-or-header">
                   <span data-bind="text: andLabel"></span>
                 </th>
@@ -136,7 +138,7 @@
             class="select-options-link"
             data-bind="click: selectQueryOptions, event: { keydown: onselectQueryOptionsKeyDown }"
             tabindex="0"
-            role="link"
+            role="button"
           >
             <span>Choose Columns... </span>
           </a>

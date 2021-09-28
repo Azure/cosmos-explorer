@@ -28,6 +28,8 @@ interface NotebookState {
   myNotebooksContentRoot: NotebookContentItem;
   gitHubNotebooksContentRoot: NotebookContentItem;
   galleryContentRoot: NotebookContentItem;
+  connectionInfo: DataModels.ContainerConnectionInfo;
+  notebookFolderName: string;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -36,12 +38,15 @@ interface NotebookState {
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => void;
   setIsShellEnabled: (isShellEnabled: boolean) => void;
   setNotebookBasePath: (notebookBasePath: string) => void;
+  setNotebookFolderName: (notebookFolderName: string) => void;
   refreshNotebooksEnabledStateForAccount: () => Promise<void>;
   findItem: (root: NotebookContentItem, item: NotebookContentItem) => NotebookContentItem;
-  updateNotebookItem: (item: NotebookContentItem) => void;
-  deleteNotebookItem: (item: NotebookContentItem) => void;
+  insertNotebookItem: (parent: NotebookContentItem, item: NotebookContentItem, isGithubTree?: boolean) => void;
+  updateNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
+  deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
   initializeNotebooksTree: (notebookManager: NotebookManager) => Promise<void>;
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
+  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -64,6 +69,8 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   myNotebooksContentRoot: undefined,
   gitHubNotebooksContentRoot: undefined,
   galleryContentRoot: undefined,
+  connectionInfo: undefined,
+  notebookFolderName: undefined,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -74,6 +81,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => set({ memoryUsageInfo }),
   setIsShellEnabled: (isShellEnabled: boolean) => set({ isShellEnabled }),
   setNotebookBasePath: (notebookBasePath: string) => set({ notebookBasePath }),
+  setNotebookFolderName: (notebookFolderName: string) => set({ notebookFolderName }),
   refreshNotebooksEnabledStateForAccount: async (): Promise<void> => {
     const { databaseAccount, authType } = userContext;
     if (
@@ -141,23 +149,36 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
 
     return undefined;
   },
-  updateNotebookItem: (item: NotebookContentItem): void => {
-    const root = cloneDeep(get().myNotebooksContentRoot);
+  insertNotebookItem: (parent: NotebookContentItem, item: NotebookContentItem, isGithubTree?: boolean): void => {
+    const root = isGithubTree ? cloneDeep(get().gitHubNotebooksContentRoot) : cloneDeep(get().myNotebooksContentRoot);
+    const parentItem = get().findItem(root, parent);
+    item.parent = parentItem;
+    if (parentItem.children) {
+      parentItem.children.push(item);
+    } else {
+      parentItem.children = [item];
+    }
+    isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
+  },
+  updateNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean): void => {
+    const root = isGithubTree ? cloneDeep(get().gitHubNotebooksContentRoot) : cloneDeep(get().myNotebooksContentRoot);
     const parentItem = get().findItem(root, item.parent);
     parentItem.children = parentItem.children.filter((child) => child.path !== item.path);
     parentItem.children.push(item);
     item.parent = parentItem;
-    set({ myNotebooksContentRoot: root });
+    isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
-  deleteNotebookItem: (item: NotebookContentItem): void => {
-    const root = cloneDeep(get().myNotebooksContentRoot);
+  deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean): void => {
+    const root = isGithubTree ? cloneDeep(get().gitHubNotebooksContentRoot) : cloneDeep(get().myNotebooksContentRoot);
     const parentItem = get().findItem(root, item.parent);
     parentItem.children = parentItem.children.filter((child) => child.path !== item.path);
-    set({ myNotebooksContentRoot: root });
+    isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
+    const notebookFolderName = userContext.features.phoenix === true ? "Temporary Notebooks" : "My Notebooks";
+    set({ notebookFolderName });
     const myNotebooksContentRoot = {
-      name: "My Notebooks",
+      name: get().notebookFolderName,
       path: get().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };
@@ -173,6 +194,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           type: NotebookContentItemType.Directory,
         }
       : undefined;
+
     set({
       myNotebooksContentRoot,
       galleryContentRoot,
@@ -216,6 +238,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           path: "PsuedoDir",
           type: NotebookContentItemType.Directory,
           children: [],
+          parent: gitHubNotebooksContentRoot,
         };
 
         pinnedRepo.branches.forEach((branch) => {
@@ -223,6 +246,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
             name: branch.name,
             path: GitHubUtils.toContentUri(pinnedRepo.owner, pinnedRepo.name, branch.name, ""),
             type: NotebookContentItemType.Directory,
+            parent: repoTreeItem,
           });
         });
 
@@ -232,4 +256,5 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       set({ gitHubNotebooksContentRoot });
     }
   },
+  setConnectionInfo: (connectionInfo: DataModels.ContainerConnectionInfo) => set({ connectionInfo }),
 }));

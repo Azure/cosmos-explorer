@@ -9,12 +9,13 @@ const HTMLInlineCSSWebpackPlugin = require("html-inline-css-webpack-plugin").def
 const { EnvironmentPlugin } = require("webpack");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const CleanWebpackPlugin = require("clean-webpack-plugin");
+const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const CaseSensitivePathsPlugin = require("case-sensitive-paths-webpack-plugin");
 const CreateFileWebpack = require("create-file-webpack");
 const childProcess = require("child_process");
 const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require("webpack");
 const isCI = require("is-ci");
 
 const gitSha = childProcess.execSync("git rev-parse HEAD").toString("utf8");
@@ -102,14 +103,18 @@ module.exports = function (_env = {}, argv = {}) {
     envVars.NODE_ENV = "development";
     envVars.AZURE_CLIENT_ID = AZURE_CLIENT_ID;
     envVars.AZURE_TENANT_ID = AZURE_TENANT_ID;
-    envVars.AZURE_CLIENT_SECRET = AZURE_CLIENT_SECRET;
+    envVars.AZURE_CLIENT_SECRET = AZURE_CLIENT_SECRET || null;
     envVars.SUBSCRIPTION_ID = SUBSCRIPTION_ID;
     envVars.RESOURCE_GROUP = RESOURCE_GROUP;
     typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
   }
 
   const plugins = [
-    new CleanWebpackPlugin(["dist"]),
+    new CleanWebpackPlugin(),
+    new webpack.ProvidePlugin({
+      process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
+    }),
     new CreateFileWebpack({
       path: "./dist",
       fileName: "version.txt",
@@ -210,23 +215,26 @@ module.exports = function (_env = {}, argv = {}) {
       selfServe: "./src/SelfServe/SelfServe.tsx",
       connectToGitHub: "./src/GitHub/GitHubConnector.ts",
     },
-    node: {
-      util: true,
-      tls: "empty",
-      net: "empty",
-      fs: "empty",
-    },
     output: {
       chunkFilename: "[name].[chunkhash:6].js",
       filename: "[name].[chunkhash:6].js",
       path: path.resolve(__dirname, "dist"),
+      publicPath: "",
     },
-    devtool: mode === "development" ? "cheap-eval-source-map" : "source-map",
+    devtool: mode === "development" ? "eval-source-map" : "source-map",
     plugins,
     module: {
       rules,
     },
     resolve: {
+      alias: {
+        process: "process/browser",
+      },
+
+      fallback: {
+        crypto: false,
+        fs: false,
+      },
       extensions: [".tsx", ".ts", ".js"],
     },
     optimization: {
@@ -244,7 +252,7 @@ module.exports = function (_env = {}, argv = {}) {
         }),
       ],
     },
-    watch: isCI || mode === "production" ? false : true,
+    watch: false,
     // Hack since it is hard to disable watch entirely with webpack dev server https://github.com/webpack/webpack-dev-server/issues/1251#issuecomment-654240734
     watchOptions: isCI ? { poll: 24 * 60 * 60 * 1000 } : {},
     devServer: {

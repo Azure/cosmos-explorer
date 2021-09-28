@@ -36,7 +36,10 @@ export class NotebookContentClient {
    *
    * @param parent parent folder
    */
-  public createNewNotebookFile(parent: NotebookContentItem): Promise<NotebookContentItem> {
+  public async createNewNotebookFile(
+    parent: NotebookContentItem,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
@@ -57,6 +60,8 @@ export class NotebookContentClient {
         const notebookFile = xhr.response;
 
         const item = NotebookUtil.createNotebookContentItem(notebookFile.name, notebookFile.path, notebookFile.type);
+        useNotebook.getState().insertNotebookItem(parent, cloneDeep(item), isGithubTree);
+        // TODO: delete when ResourceTreeAdapter is removed
         if (parent.children) {
           item.parent = parent;
           parent.children.push(item);
@@ -66,9 +71,9 @@ export class NotebookContentClient {
       });
   }
 
-  public async deleteContentItem(item: NotebookContentItem): Promise<void> {
+  public async deleteContentItem(item: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
     const path = await this.deleteNotebookFile(item.path);
-    useNotebook.getState().deleteNotebookItem(item);
+    useNotebook.getState().deleteNotebookItem(item, isGithubTree);
 
     // TODO: Delete once old resource tree is removed
     if (!path || path !== item.path) {
@@ -91,12 +96,12 @@ export class NotebookContentClient {
   public async uploadFileAsync(
     name: string,
     content: string,
-    parent: NotebookContentItem
+    parent: NotebookContentItem,
+    isGithubTree?: boolean
   ): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
-
     const filepath = NotebookUtil.getFilePath(parent.path, name);
     if (await this.checkIfFilepathExists(filepath)) {
       throw new Error(`File already exists: ${filepath}`);
@@ -115,6 +120,8 @@ export class NotebookContentClient {
       .then((xhr: AjaxResponse) => {
         const notebookFile = xhr.response;
         const item = NotebookUtil.createNotebookContentItem(notebookFile.name, notebookFile.path, notebookFile.type);
+        useNotebook.getState().insertNotebookItem(parent, cloneDeep(item), isGithubTree);
+        // TODO: delete when ResourceTreeAdapter is removed
         if (parent.children) {
           item.parent = parent;
           parent.children.push(item);
@@ -137,7 +144,11 @@ export class NotebookContentClient {
    * @param sourcePath
    * @param targetName is not prefixed with path
    */
-  public renameNotebook(item: NotebookContentItem, targetName: string): Promise<NotebookContentItem> {
+  public renameNotebook(
+    item: NotebookContentItem,
+    targetName: string,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     const sourcePath = item.path;
     // Match extension
     if (sourcePath.indexOf(".") !== -1) {
@@ -163,6 +174,9 @@ export class NotebookContentClient {
         item.name = notebookFile.name;
         item.path = notebookFile.path;
         item.timestamp = NotebookUtil.getCurrentTimestamp();
+
+        useNotebook.getState().updateNotebookItem(item, isGithubTree);
+
         return item;
       });
   }
@@ -172,7 +186,11 @@ export class NotebookContentClient {
    * @param parent
    * @param newDirectoryName basename of the new directory
    */
-  public async createDirectory(parent: NotebookContentItem, newDirectoryName: string): Promise<NotebookContentItem> {
+  public async createDirectory(
+    parent: NotebookContentItem,
+    newDirectoryName: string,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     if (parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent is not a directory: ${parent.path}`);
     }
@@ -199,8 +217,11 @@ export class NotebookContentClient {
 
         const dir = xhr.response;
         const item = NotebookUtil.createNotebookContentItem(dir.name, dir.path, dir.type);
+        useNotebook.getState().insertNotebookItem(parent, cloneDeep(item), isGithubTree);
+        // TODO: delete when ResourceTreeAdapter is removed
         item.parent = parent;
         parent.children?.push(item);
+
         return item;
       });
   }

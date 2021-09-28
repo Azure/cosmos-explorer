@@ -61,7 +61,6 @@ export interface IPublishNotebookRequest {
   name: string;
   description: string;
   tags: string[];
-  author: string;
   thumbnailUrl: string;
   content: any;
   addLinkToNotebookViewer: boolean;
@@ -359,7 +358,6 @@ export class JunoClient {
     name: string,
     description: string,
     tags: string[],
-    author: string,
     thumbnailUrl: string,
     content: string
   ): Promise<IJunoResponse<IGalleryItem>> {
@@ -370,7 +368,6 @@ export class JunoClient {
         name,
         description,
         tags,
-        author,
         thumbnailUrl,
         content: JSON.parse(content),
         addLinkToNotebookViewer: true,

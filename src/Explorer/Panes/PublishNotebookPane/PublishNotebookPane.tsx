@@ -105,7 +105,6 @@ export const PublishNotebookPane: FunctionComponent<PublishNotebookPaneAProps> =
         notebookName,
         notebookDescription,
         notebookTags?.split(","),
-        author,
         imageSrc,
         content
       );
