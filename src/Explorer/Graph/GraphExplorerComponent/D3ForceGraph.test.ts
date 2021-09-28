@@ -152,7 +152,8 @@ describe("D3ForceGraph", () => {
           expect(onHighlightedNode.id).toEqual(v1Id);
         }
       };
-      forceGraph.updateGraph(newGraph);
+
+      forceGraph.updateGraph(newGraph, forceGraph.igraphConfig);
     });
   });
 });
