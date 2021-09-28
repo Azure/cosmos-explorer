@@ -8,6 +8,8 @@ import { RightPaneForm, RightPaneFormProps } from "../../RightPaneForm/RightPane
 
 interface TableQuerySelectPanelProps {
   queryViewModel: QueryViewModel;
+  headers: string[];
+  getSelectMessage: (selectMessage: string) => void;
 }
 
 interface ISelectColumn {
@@ -18,6 +20,8 @@ interface ISelectColumn {
 
 export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps> = ({
   queryViewModel,
+  headers,
+  getSelectMessage,
 }: TableQuerySelectPanelProps): JSX.Element => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
 
@@ -29,6 +33,7 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   const onSubmit = (): void => {
     queryViewModel.selectText(getParameters());
     queryViewModel.getSelectMessage();
+    getSelectMessage(queryViewModel.selectMessage());
     closeSidePanel();
   };
 
@@ -52,7 +57,8 @@ export const TableQuerySelectPanel: FunctionComponent<TableQuerySelectPanelProps
   };
 
   useEffect(() => {
-    queryViewModel && setTableColumns(queryViewModel.columnOptions());
+    // queryViewModel && setTableColumns(queryViewModel.columnOptions());
+    headers && setTableColumns(headers);
   }, []);
 
   const setTableColumns = (columnNames: string[]): void => {

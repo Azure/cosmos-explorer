@@ -1,7 +1,5 @@
 import * as ko from "knockout";
 import * as ReactBindingHandler from "./ReactBindingHandler";
-import "../Explorer/Tables/DataTable/DataTableBindingManager";
-
 export class BindingHandlersRegisterer {
   public static registerBindingHandlers() {
     ko.bindingHandlers.setTemplateReady = {

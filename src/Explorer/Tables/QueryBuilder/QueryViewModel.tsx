@@ -5,7 +5,8 @@ import { KeyCodes } from "../../../Common/Constants";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import { TableQuerySelectPanel } from "../../Panes/Tables/TableQuerySelectPanel/TableQuerySelectPanel";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
+import { IQueryTableRowsType } from "../../Tabs/QueryTablesTab/QueryTableTabUtils";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as DataTableUtilities from "../DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../DataTable/TableEntityListViewModel";
@@ -39,14 +40,14 @@ export default class QueryViewModel {
 
   public columnOptions: ko.ObservableArray<string>;
 
-  public queryTablesTab: QueryTablesTab;
+  public queryTablesTab: NewQueryTablesTab;
   public id: string;
   private _tableEntityListViewModel: TableEntityListViewModel;
 
-  constructor(queryTablesTab: QueryTablesTab) {
+  constructor(queryTablesTab: NewQueryTablesTab) {
     this.queryTablesTab = queryTablesTab;
     this.id = `queryViewModel${this.queryTablesTab.tabId}`;
-    this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel();
+    this._tableEntityListViewModel = queryTablesTab.tableEntityListViewModel;
 
     this.queryTextIsReadOnly = ko.computed<boolean>(() => {
       return userContext.apiType !== "Cassandra";
@@ -103,7 +104,7 @@ export default class QueryViewModel {
     DataTableUtilities.forceRecalculateTableSize();
   };
 
-  public toggleAdvancedOptions = () => {
+  public toggleAdvancedOptions = (): void => {
     this.isExpanded(!this.isExpanded());
     if (this.isExpanded()) {
       this.focusTopResult(true);
@@ -126,23 +127,19 @@ export default class QueryViewModel {
     return this.selectText();
   };
 
-  private setFilter = (): string => {
+  private setFilter = (queryTableRows?: IQueryTableRowsType[]): string => {
     const queryString = this.isEditorActive()
       ? this.queryText()
       : userContext.apiType === "Cassandra"
-      ? this.queryBuilderViewModel().getCqlFilterFromClauses()
-      : this.queryBuilderViewModel().getODataFilterFromClauses();
+      ? this.queryBuilderViewModel().getCqlFilterFromClauses(queryTableRows)
+      : this.queryBuilderViewModel().getODataFilterFromClauses(queryTableRows);
     const filter = queryString;
     this.queryText(filter);
     return this.queryText();
   };
 
-  private setSqlFilter = (): string => {
-    return this.queryBuilderViewModel().getSqlFilterFromClauses();
-  };
-
-  private setCqlFilter = (): string => {
-    return this.queryBuilderViewModel().getCqlFilterFromClauses();
+  private setSqlFilter = (queryTableRows: IQueryTableRowsType[]): string => {
+    return this.queryBuilderViewModel().getSqlFilterFromClauses(queryTableRows);
   };
 
   public isHelperEnabled = ko
@@ -158,8 +155,9 @@ export default class QueryViewModel {
       notify: "always",
     });
 
-  public runQuery = (): DataTables.DataTable => {
-    let filter = this.setFilter();
+  public runQuery = (queryTableRows: IQueryTableRowsType[]): string => {
+    let filter = this.setFilter(queryTableRows);
+
     if (filter && userContext.apiType !== "Cassandra") {
       filter = filter.replace(/"/g, "'");
     }
@@ -170,13 +168,15 @@ export default class QueryViewModel {
     this._tableEntityListViewModel.tableQuery.top = top;
     this._tableEntityListViewModel.tableQuery.select = select;
     this._tableEntityListViewModel.oDataQuery(filter);
-    this._tableEntityListViewModel.sqlQuery(this.setSqlFilter());
+    this._tableEntityListViewModel.sqlQuery(this.setSqlFilter(queryTableRows));
     this._tableEntityListViewModel.cqlQuery(filter);
 
-    return this._tableEntityListViewModel.reloadTable(/*useSetting*/ false, /*resetHeaders*/ false);
+    return userContext.apiType !== "Cassandra"
+      ? this._tableEntityListViewModel.sqlQuery()
+      : this._tableEntityListViewModel.cqlQuery();
   };
 
-  public clearQuery = (): DataTables.DataTable => {
+  public clearQuery = (): void => {
     this.queryText();
     this.topValue();
     this.selectText();
@@ -194,16 +194,26 @@ export default class QueryViewModel {
         this.queryTablesTab.collection.id()
       )}`
     );
-    return this._tableEntityListViewModel.reloadTable(false);
   };
 
-  public selectQueryOptions() {
-    useSidePanel.getState().openSidePanel("Select Column", <TableQuerySelectPanel queryViewModel={this} />);
+  public selectQueryOptions(headers: string[], getSelectMessage: (selectMessage: string) => void): void {
+    this.columnOptions(headers);
+    useSidePanel
+      .getState()
+      .openSidePanel(
+        "Select Column",
+        <TableQuerySelectPanel queryViewModel={this} headers={headers} getSelectMessage={getSelectMessage} />
+      );
   }
 
-  public onselectQueryOptionsKeyDown = (source: string, event: KeyboardEvent): boolean => {
+  public onselectQueryOptionsKeyDown = (
+    source: string,
+    event: KeyboardEvent,
+    headers: string[],
+    getSelectMessage: (selectMessage: string) => void
+  ): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
-      this.selectQueryOptions();
+      this.selectQueryOptions(headers, getSelectMessage);
       event.stopPropagation();
       return false;
     }

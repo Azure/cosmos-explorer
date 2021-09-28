@@ -6,14 +6,14 @@ import AddPropertyIcon from "../../../../images/Add-property.svg";
 import RevertBackIcon from "../../../../images/RevertBack.svg";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 import { TableEntity } from "../../../Common/TableEntity";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import * as TableConstants from "../../Tables/Constants";
-import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, TableDataClient } from "../../Tables/TableDataClient";
 import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import {
   attributeNameLabel,
@@ -34,9 +34,11 @@ import {
 
 interface EditTableEntityPanelProps {
   tableDataClient: TableDataClient;
-  queryTablesTab: QueryTablesTab;
+  queryTablesTab: NewQueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
+  selectedEntity: Entities.ITableEntity[];
+  reloadEntities: () => void;
 }
 
 interface EntityRowType {
@@ -57,7 +59,10 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
   queryTablesTab,
   tableEntityListViewModel,
   cassandraApiClient,
+  selectedEntity,
+  reloadEntities,
 }: EditTableEntityPanelProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
@@ -75,8 +80,8 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let originalDocument: { [key: string]: any } = {};
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const entityAttribute: any = tableEntityListViewModel.selected();
-    const entityFormattedAttribute = constructDisplayedAttributes(entityAttribute[0]);
+    const entityAttribute: any = selectedEntity;
+    const entityFormattedAttribute = constructDisplayedAttributes(entityAttribute && entityAttribute[0]);
     setEntities(entityFormattedAttribute);
 
     if (userContext.apiType === "Tables") {
@@ -86,6 +91,7 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
       originalDocument = entityAttribute;
     }
     setOriginalDocument(originalDocument);
+    //eslint-disable-next-line
   }, []);
 
   const constructDisplayedAttributes = (entity: Entities.ITableEntity): EntityRowType[] => {
@@ -216,9 +222,8 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
         entity
       );
       await tableEntityListViewModel.updateCachedEntity(newEntity);
-      if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
-        tableEntityListViewModel.redrawTableThrottled();
-      }
+      reloadEntities();
+      closeSidePanel();
       tableEntityListViewModel.selected.removeAll();
       tableEntityListViewModel.selected.push(newEntity);
     } catch (error) {
@@ -228,34 +233,6 @@ export const EditTableEntityPanel: FunctionComponent<EditTableEntityPanelProps> 
     } finally {
       setIsExecuting(false);
     }
-  };
-
-  const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
-    let newHeaders: string[] = [];
-    const keys = Object.keys(newEntity);
-    keys &&
-      keys.forEach((key: string) => {
-        if (
-          !_.contains(viewModel.headers, key) &&
-          key !== TableEntityProcessor.keyProperties.attachments &&
-          key !== TableEntityProcessor.keyProperties.etag &&
-          key !== TableEntityProcessor.keyProperties.resourceId &&
-          key !== TableEntityProcessor.keyProperties.self &&
-          (!(userContext.apiType === "Cassandra") || key !== TableConstants.EntityKeyNames.RowKey)
-        ) {
-          newHeaders.push(key);
-        }
-      });
-
-    let newHeadersInserted = false;
-    if (newHeaders.length) {
-      if (!DataTableUtilities.checkForDefaultHeader(viewModel.headers)) {
-        newHeaders = viewModel.headers.concat(newHeaders);
-      }
-      viewModel.updateHeaders(newHeaders, /* notifyColumnChanges */ true, /* enablePrompt */ false);
-      newHeadersInserted = true;
-    }
-    return newHeadersInserted;
   };
 
   // Add new entity row

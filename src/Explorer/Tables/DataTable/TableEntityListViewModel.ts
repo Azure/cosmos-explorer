@@ -6,7 +6,7 @@ import * as ViewModels from "../../../Contracts/ViewModels";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../../../UserContext";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 import * as Constants from "../Constants";
 import { getQuotedCqlIdentifier } from "../CqlUtilities";
 import * as Entities from "../Entities";
@@ -101,7 +101,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   public useSetting: boolean = true;
 
   //public tableExplorerContext: TableExplorerContext;
-  public notifyColumnChanges: (enablePrompt: boolean, queryTablesTab: QueryTablesTab) => void;
+  public notifyColumnChanges: (enablePrompt: boolean, queryTablesTab: NewQueryTablesTab) => void;
+
   public tablePageStartIndex: number;
   public tableQuery: Entities.ITableQuery = {};
   public cqlQuery: ko.Observable<string>;
@@ -112,7 +113,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   public queryErrorMessage: ko.Observable<string>;
   public id: string;
 
-  constructor(tableCommands: TableCommands, queryTablesTab: QueryTablesTab) {
+  constructor(tableCommands: TableCommands, queryTablesTab: NewQueryTablesTab) {
     super();
     this.cache = new TableEntityCache();
     this.queryErrorMessage = ko.observable<string>();
@@ -131,24 +132,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     return [{ key: Constants.EntityKeyNames.RowKey, value: rowKey }];
   }
 
-  public reloadTable(useSetting: boolean = true, resetHeaders: boolean = true): DataTables.DataTable {
-    this.clearCache();
-    this.clearSelection();
-    this.isCancelled = false;
-
-    this.useSetting = useSetting;
-    if (resetHeaders) {
-      this.updateHeaders([Constants.defaultHeader]);
-    }
-    return this.table.ajax.reload();
-  }
-
   public updateHeaders(newHeaders: string[], notifyColumnChanges: boolean = false, enablePrompt: boolean = true): void {
     this.headers = newHeaders;
-    if (notifyColumnChanges) {
-      this.clearSelection();
-      this.notifyColumnChanges(enablePrompt, this.queryTablesTab);
-    }
   }
 
   /**
@@ -158,40 +143,21 @@ export default class TableEntityListViewModel extends DataTableViewModel {
    * fnCallback - is the render callback with data to render.
    * oSetting: current settings used for table initialization.
    */
-  public renderNextPageAndupdateCache(sSource: any, aoData: any, fnCallback: any, oSettings: any) {
+
+  public async renderNextPageAndupdateCache(): Promise<Entities.ITableEntity[]> {
     var tablePageSize: number;
-    var draw: number;
     var prefetchNeeded = true;
-    var columnSortOrder: any;
     // Threshold(pages) for triggering cache prefetch.
     // If number remaining pages in cache falls below prefetchThreshold prefetch will be triggered.
     var prefetchThreshold = 10;
     var tableQuery = this.tableQuery;
-
-    for (var index in aoData) {
-      var data = aoData[index];
-      if (data.name === "length") {
-        tablePageSize = data.value;
-      }
-      if (data.name === "start") {
-        this.tablePageStartIndex = data.value;
-      }
-      if (data.name === "draw") {
-        draw = data.value;
-      }
-      if (data.name === "order") {
-        columnSortOrder = data.value;
-      }
-    }
     // Try cache if valid.
     if (this.isCacheValid(tableQuery)) {
       // Check if prefetch needed.
       if (this.tablePageStartIndex + tablePageSize <= this.cache.length || this.allDownloaded) {
         prefetchNeeded = false;
-        if (columnSortOrder && (!this.cache.sortOrder || !_.isEqual(this.cache.sortOrder, columnSortOrder))) {
-          this.sortColumns(columnSortOrder, oSettings);
-        }
-        this.renderPage(fnCallback, draw, this.tablePageStartIndex, tablePageSize, oSettings);
+        this.tablePageStartIndex = 0;
+        this.renderPage(this.tablePageStartIndex, this.cache.length);
         if (
           !this.allDownloaded &&
           this.tablePageStartIndex > 0 && // This is a case now that we can hit this as we re-construct table when we update column
@@ -208,41 +174,21 @@ export default class TableEntityListViewModel extends DataTableViewModel {
 
     if (prefetchNeeded) {
       var downloadSize = tableQuery.top || this.downloadSize;
-      this.prefetchAndRender(
-        tableQuery,
-        this.tablePageStartIndex,
-        tablePageSize,
-        downloadSize,
-        draw,
-        fnCallback,
-        oSettings,
-        columnSortOrder
-      );
+      return await this.prefetchAndRender(tableQuery, 0, tablePageSize, downloadSize);
+    } else {
+      return this.cache.data;
     }
   }
 
   public addEntityToCache(entity: Entities.ITableEntity): Q.Promise<any> {
     // Delay the add operation if we are fetching data from server, so as to avoid race condition.
     if (this.cache.serverCallInProgress) {
-      return Utilities.delay(this.pollingInterval).then(() => {
-        return this.updateCachedEntity(entity);
+      Utilities.delay(this.pollingInterval).then(() => {
+        this.updateCachedEntity(entity);
       });
     }
 
-    // Find the first item which is greater than the added entity.
-    var oSettings: any = (<any>this.table).context[0];
-    var index: number = _.findIndex(this.cache.data, (data: any) => {
-      return this.dataComparer(data, entity, this.cache.sortOrder, oSettings) > 0;
-    });
-
-    // If no such item, then insert at last.
-    var insertIndex: number = Utilities.ensureBetweenBounds(
-      index < 0 ? this.cache.length : index,
-      0,
-      this.cache.length
-    );
-
-    this.cache.data.splice(insertIndex, 0, entity);
+    this.cache.data.splice(this.cache.length, 0, entity);
 
     // Finally, select newly added entity
     this.clearSelection();
@@ -254,8 +200,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
   public updateCachedEntity(entity: Entities.ITableEntity): Q.Promise<any> {
     // Delay the add operation if we are fetching data from server, so as to avoid race condition.
     if (this.cache.serverCallInProgress) {
-      return Utilities.delay(this.pollingInterval).then(() => {
-        return this.updateCachedEntity(entity);
+      Utilities.delay(this.pollingInterval).then(() => {
+        this.updateCachedEntity(entity);
       });
     }
     var oldEntityIndex: number = _.findIndex(
@@ -275,8 +221,8 @@ export default class TableEntityListViewModel extends DataTableViewModel {
 
     // Delay the remove operation if we are fetching data from server, so as to avoid race condition.
     if (this.cache.serverCallInProgress) {
-      return Utilities.delay(this.pollingInterval).then(() => {
-        return this.removeEntitiesFromCache(entities);
+      Utilities.delay(this.pollingInterval).then(() => {
+        this.removeEntitiesFromCache(entities);
       });
     }
 
@@ -291,14 +237,6 @@ export default class TableEntityListViewModel extends DataTableViewModel {
         }
       });
     this.clearSelection();
-
-    // Show last available page if there is not enough data
-    var pageInfo = this.table.page.info();
-    if (this.cache.length <= pageInfo.start) {
-      var availablePages = Math.ceil(this.cache.length / pageInfo.length);
-      var pageToShow = availablePages > 0 ? availablePages - 1 : 0;
-      this.table.page(pageToShow);
-    }
 
     return Q.resolve(null);
   }
@@ -392,86 +330,75 @@ export default class TableEntityListViewModel extends DataTableViewModel {
     });
   }
 
-  private prefetchAndRender(
+  private async prefetchAndRender(
     tableQuery: Entities.ITableQuery,
     tablePageStartIndex: number,
     tablePageSize: number,
-    downloadSize: number,
-    draw: number,
-    renderCallBack: Function,
-    oSettings: any,
-    columnSortOrder: any
-  ): void {
+    downloadSize: number
+  ): Promise<Entities.ITableEntity[]> {
     this.queryErrorMessage(null);
     if (this.cache.serverCallInProgress) {
-      return;
+      return undefined;
     }
-    this.prefetchData(tableQuery, downloadSize, /* currentRetry */ 0)
-      .then((result: IListTableEntitiesSegmentedResult) => {
-        if (!result) {
-          return;
+    try {
+      const result = await this.prefetchData(tableQuery, downloadSize, /* currentRetry */ 0);
+      if (!result) {
+        return undefined;
+      }
+      // Cache is assigned using prefetchData
+      var entities = this.cache.data;
+      if (userContext.apiType === "Cassandra" && DataTableUtilities.checkForDefaultHeader(this.headers)) {
+        (<CassandraAPIDataClient>this.queryTablesTab.container.tableDataClient)
+          .getTableSchema(this.queryTablesTab.collection)
+          .then((headers: CassandraTableKey[]) => {
+            this.updateHeaders(
+              headers.map((header) => header.property),
+              true
+            );
+          });
+      } else {
+        var selectedHeadersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
+          entities,
+          userContext.apiType === "Cassandra"
+        );
+        var newHeaders: string[] = _.difference(selectedHeadersUnion, this.headers);
+        if (newHeaders.length > 0) {
+          // Any new columns found will be added into headers array, which will trigger a re-render of the DataTable.
+          // So there is no need to call it here.
+          this.updateHeaders(newHeaders, /* notifyColumnChanges */ true);
         }
+      }
+      this.renderPage(tablePageStartIndex, entities.length);
 
-        var entities = this.cache.data;
-        if (userContext.apiType === "Cassandra" && DataTableUtilities.checkForDefaultHeader(this.headers)) {
-          (<CassandraAPIDataClient>this.queryTablesTab.container.tableDataClient)
-            .getTableSchema(this.queryTablesTab.collection)
-            .then((headers: CassandraTableKey[]) => {
-              this.updateHeaders(
-                headers.map((header) => header.property),
-                true
-              );
-            });
-        } else {
-          var selectedHeadersUnion: string[] = DataTableUtilities.getPropertyIntersectionFromTableEntities(
-            entities,
-            userContext.apiType === "Cassandra"
-          );
-          var newHeaders: string[] = _.difference(selectedHeadersUnion, this.headers);
-          if (newHeaders.length > 0) {
-            // Any new columns found will be added into headers array, which will trigger a re-render of the DataTable.
-            // So there is no need to call it here.
-            this.updateHeaders(newHeaders, /* notifyColumnChanges */ true);
-          } else {
-            if (columnSortOrder) {
-              this.sortColumns(columnSortOrder, oSettings);
-            }
-            this.renderPage(renderCallBack, draw, tablePageStartIndex, tablePageSize, oSettings);
-          }
-        }
-
-        if (result.ExceedMaximumRetries) {
-          var message: string = "We are having trouble getting your data. Please try again."; // localize
-        }
-      })
-      .catch((error: any) => {
-        const parsedErrors = parseError(error);
-        var errors = parsedErrors.map((error) => {
-          return <ViewModels.QueryError>{
-            message: error.message,
-            start: error.location ? error.location.start : undefined,
-            end: error.location ? error.location.end : undefined,
-            code: error.code,
-            severity: error.severity,
-          };
-        });
-        this.queryErrorMessage(errors[0].message);
-        if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
-          TelemetryProcessor.traceFailure(
-            Action.Tab,
-            {
-              databaseName: this.queryTablesTab.collection.databaseId,
-              collectionName: this.queryTablesTab.collection.id(),
-              dataExplorerArea: Areas.Tab,
-              tabTitle: this.queryTablesTab.tabTitle(),
-              error: error,
-            },
-            this.queryTablesTab.onLoadStartKey
-          );
-          this.queryTablesTab.onLoadStartKey = null;
-        }
-        DataTableUtilities.turnOffProgressIndicator();
+      return result;
+    } catch (error) {
+      const parsedErrors = parseError(error);
+      var errors = parsedErrors.map((error) => {
+        return <ViewModels.QueryError>{
+          message: error.message,
+          start: error.location ? error.location.start : undefined,
+          end: error.location ? error.location.end : undefined,
+          code: error.code,
+          severity: error.severity,
+        };
       });
+      this.queryErrorMessage(errors[0].message);
+      if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
+        TelemetryProcessor.traceFailure(
+          Action.Tab,
+          {
+            databaseName: this.queryTablesTab.collection.databaseId,
+            collectionName: this.queryTablesTab.collection.id(),
+            dataExplorerArea: Areas.Tab,
+            tabTitle: this.queryTablesTab.tabTitle(),
+            error: error,
+          },
+          this.queryTablesTab.onLoadStartKey
+        );
+        this.queryTablesTab.onLoadStartKey = null;
+      }
+    }
+    return undefined;
   }
 
   /**
@@ -485,51 +412,52 @@ export default class TableEntityListViewModel extends DataTableViewModel {
    * Note that this also means that we can get less entities than the requested download size in a successful call.
    * See Microsoft Azure API Documentation at: https://msdn.microsoft.com/en-us/library/azure/dd135718.aspx
    */
-  private prefetchData(
+
+  private async prefetchData(
     tableQuery: Entities.ITableQuery,
     downloadSize: number,
     currentRetry: number = 0
-  ): Q.Promise<any> {
+  ): Promise<any> {
+    var entities: any;
     if (!this.cache.serverCallInProgress) {
       this.cache.serverCallInProgress = true;
       this.allDownloaded = false;
       this.lastPrefetchTime = new Date().getTime();
       var time = this.lastPrefetchTime;
 
-      var promise: Q.Promise<IListTableEntitiesSegmentedResult>;
-      if (this._documentIterator && this.continuationToken) {
-        // TODO handle Cassandra case
-
-        promise = Q(this._documentIterator.fetchNext().then((response) => response.resources)).then(
-          (documents: any[]) => {
-            let entities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(documents);
-            let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
-              Results: entities,
-              ContinuationToken: this._documentIterator.hasMoreResults(),
-            };
-            return Q.resolve(finalEntities);
-          }
-        );
-      } else if (this.continuationToken && userContext.apiType === "Cassandra") {
-        promise = Q(
-          this.queryTablesTab.container.tableDataClient.queryDocuments(
+      try {
+        if (this._documentIterator && this.continuationToken) {
+          // TODO handle Cassandra case
+          const fetchNext = await this._documentIterator.fetchNext();
+          let fetchNextEntities: Entities.ITableEntity[] = TableEntityProcessor.convertDocumentsToEntities(
+            fetchNext.resources
+          );
+          let finalEntities: IListTableEntitiesSegmentedResult = <IListTableEntitiesSegmentedResult>{
+            Results: fetchNextEntities,
+            ContinuationToken: this._documentIterator.hasMoreResults(),
+          };
+          entities = finalEntities;
+        } else if (this.continuationToken && userContext.apiType === "Cassandra") {
+          entities = await this.queryTablesTab.container.tableDataClient.queryDocuments(
             this.queryTablesTab.collection,
             this.cqlQuery(),
             true,
             this.continuationToken
-          )
-        );
-      } else {
-        let query = this.sqlQuery();
-        if (userContext.apiType === "Cassandra") {
-          query = this.cqlQuery();
+          );
+        } else {
+          let query = this.sqlQuery();
+          if (userContext.apiType === "Cassandra") {
+            query = this.cqlQuery();
+          }
+          entities = await this.queryTablesTab.container.tableDataClient.queryDocuments(
+            this.queryTablesTab.collection,
+            query,
+            true
+          );
         }
-        promise = Q(
-          this.queryTablesTab.container.tableDataClient.queryDocuments(this.queryTablesTab.collection, query, true)
-        );
-      }
-      return promise
-        .then((result: IListTableEntitiesSegmentedResult) => {
+
+        const result = entities;
+        if (result) {
           if (!this._documentIterator) {
             this._documentIterator = result.iterator;
           }
@@ -539,14 +467,14 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           // And as another service call is during process, we don't set serverCallInProgress to false here.
           // Thus, end the prefetch.
           if (this.lastPrefetchTime !== time) {
-            return Q.resolve(null);
+            return Promise.resolve(undefined);
           }
 
           var entities = result.Results;
           actualDownloadSize = entities.length;
 
           // Queries can fetch no results and still return a continuation header. See prefetchAndRender() method.
-          this.continuationToken = this.isCancelled ? null : result.ContinuationToken;
+          this.continuationToken = this.isCancelled ? undefined : result.ContinuationToken;
 
           if (!this.continuationToken) {
             this.allDownloaded = true;
@@ -568,30 +496,20 @@ export default class TableEntityListViewModel extends DataTableViewModel {
             this.allDownloaded = true;
           }
 
-          // There are three possible results for a prefetch:
-          // 1. Continuation token is null or fetched items' size reaches predefined.
-          // 2. Continuation token is not null and fetched items' size hasn't reach predefined.
-          //  2.1 Retry times has reached predefined maximum.
-          //  2.2 Retry times hasn't reached predefined maximum.
-          // Correspondingly,
-          // For #1, end prefetch.
-          // For #2.1, set prefetch exceeds maximum retry number and end prefetch.
-          // For #2.2, go to next round prefetch.
           if (this.allDownloaded || nextDownloadSize === 0) {
-            return Q.resolve(result);
+            return Promise.resolve(this.cache.data);
           }
 
           if (currentRetry >= TableEntityListViewModel._maximumNumberOfPrefetchRetries) {
             result.ExceedMaximumRetries = true;
-            return Q.resolve(result);
+            return Promise.resolve(this.cache.data);
           }
           return this.prefetchData(tableQuery, nextDownloadSize, currentRetry + 1);
-        })
-        .catch((error: Error) => {
-          this.cache.serverCallInProgress = false;
-          return Q.reject(error);
-        });
+        }
+      } catch (error) {
+        this.cache.serverCallInProgress = false;
+        return Promise.reject(error);
+      }
     }
-    return null;
   }
 }

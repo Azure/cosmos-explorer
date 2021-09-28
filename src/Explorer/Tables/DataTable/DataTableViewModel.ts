@@ -1,14 +1,12 @@
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as _ from "underscore";
-
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import CacheBase from "./CacheBase";
 import * as CommonConstants from "../../../Common/Constants";
-import * as Constants from "../Constants";
-import * as Entities from "../Entities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
+import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
+import * as Entities from "../Entities";
+import CacheBase from "./CacheBase";
 
 // This is the format of the data we will have to pass to Datatable render callback,
 // and property names are defined by Datatable as well.
@@ -47,19 +45,11 @@ abstract class DataTableViewModel {
   private pendingRedraw = false;
   private lastRedrawTime = new Date().getTime();
 
-  private dataTableOperationManager: IDataTableOperation;
-
-  public queryTablesTab: QueryTablesTab;
+  public queryTablesTab: NewQueryTablesTab;
 
   constructor() {
     this.items([]);
     this.selected([]);
-    // Late bound
-    this.dataTableOperationManager = null;
-  }
-
-  public bind(dataTableOperationManager: IDataTableOperation): void {
-    this.dataTableOperationManager = dataTableOperationManager;
   }
 
   public clearLastSelected(): void {
@@ -99,10 +89,6 @@ abstract class DataTableViewModel {
         setTimeout(() => redraw(), timeUntilNextRedraw);
       }
     }
-  }
-
-  public focusDataTable(): void {
-    this.dataTableOperationManager.focusTable();
   }
 
   public getItemFromSelectedItems(itemKeys: Entities.IProperty[]): Entities.ITableEntity {
@@ -170,35 +156,12 @@ abstract class DataTableViewModel {
     this.cache.sortOrder = sortOrder;
   }
 
-  protected renderPage(
-    renderCallBack: any,
-    draw: number,
-    startIndex: number,
-    pageSize: number,
-    oSettings: any,
-    postRenderTasks: (startIndex: number, pageSize: number) => Promise<void> = null
-  ) {
-    this.updatePaginationControls(oSettings);
-
-    // pageSize < 0 means to show all data
+  protected renderPage(startIndex: number, pageSize: number) {
     var endIndex = pageSize < 0 ? this.cache.length : startIndex + pageSize;
     var renderData = this.cache.data.slice(startIndex, endIndex);
 
     this.items(renderData);
 
-    var render: IDataTableRenderData = {
-      draw: draw,
-      aaData: renderData,
-      recordsTotal: this.cache.length,
-      recordsFiltered: this.cache.length,
-    };
-
-    if (!!postRenderTasks) {
-      postRenderTasks(startIndex, pageSize).then(() => {
-        this.table.rows().invalidate();
-      });
-    }
-    renderCallBack(render);
     if (this.queryTablesTab.onLoadStartKey != null && this.queryTablesTab.onLoadStartKey != undefined) {
       TelemetryProcessor.traceSuccess(
         Action.Tab,
@@ -217,16 +180,6 @@ abstract class DataTableViewModel {
   protected matchesKeys(item: Entities.ITableEntity, itemKeys: Entities.IProperty[]): boolean {
     return itemKeys.every((property: Entities.IProperty) => {
       var itemValue = item[property.key];
-
-      // if (itemValue && property.subkey) {
-      //     itemValue = itemValue._[property.subkey];
-      //     if (!itemValue) {
-      //         itemValue = "";
-      //     }
-      // } else if (property.subkey) {
-      //     itemValue = "";
-      // }
-
       return this.stringCompare(itemValue._, property.value);
     });
   }
@@ -237,27 +190,6 @@ abstract class DataTableViewModel {
    */
   protected stringCompare(s1: string, s2: string): boolean {
     return s1 === s2;
-  }
-
-  private updatePaginationControls(oSettings: any) {
-    var pageInfo = this.table.page.info();
-    var pageSize = pageInfo.length;
-    var paginateElement = $(oSettings.nTableWrapper).find(Constants.htmlSelectors.paginateSelector);
-
-    if (this.allDownloaded) {
-      if (this.cache.length <= pageSize) {
-        // Hide pagination controls if everything fits in one page!.
-        paginateElement.hide();
-      } else {
-        // Enable pagination controls.
-        paginateElement.show();
-        oSettings.oLanguage.oPaginate.sLast = DataTableViewModel.lastPageLabel;
-      }
-    } else {
-      // Enable pagination controls and show load more button.
-      paginateElement.show();
-      oSettings.oLanguage.oPaginate.sLast = DataTableViewModel.loadMoreLabel;
-    }
   }
 }
 

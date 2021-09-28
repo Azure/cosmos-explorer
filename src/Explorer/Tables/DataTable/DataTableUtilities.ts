@@ -123,10 +123,3 @@ export function checkForDefaultHeader(headers: string[]): boolean {
 export function forceRecalculateTableSize(): void {
   $("body").trigger("resize");
 }
-
-/**
- * Turns off the spinning progress indicator on the data table.
- */
-export function turnOffProgressIndicator(): void {
-  $("div.dataTables_processing").hide();
-}

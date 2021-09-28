@@ -2,8 +2,12 @@
 
 exports[`Table query select Panel should render Default properly 1`] = `
 <TableQuerySelectPanel
-  closePanel={[Function]}
-  explorer={Object {}}
+  getSelectMessage={[Function]}
+  headers={
+    Array [
+      "",
+    ]
+  }
   queryViewModel={
     Object {
       "columnOptions": [Function],

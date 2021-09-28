@@ -1,20 +1,19 @@
 import { IDropdownOption, Image, Label, Stack, Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
 import React, { FunctionComponent, useEffect, useState } from "react";
-import * as _ from "underscore";
 import AddPropertyIcon from "../../../../images/Add-property.svg";
 import RevertBackIcon from "../../../../images/RevertBack.svg";
 import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils";
 import { TableEntity } from "../../../Common/TableEntity";
+import { useSidePanel } from "../../../hooks/useSidePanel";
 import { userContext } from "../../../UserContext";
 import * as TableConstants from "../../Tables/Constants";
 import * as DataTableUtilities from "../../Tables/DataTable/DataTableUtilities";
 import TableEntityListViewModel from "../../Tables/DataTable/TableEntityListViewModel";
 import * as Entities from "../../Tables/Entities";
 import { CassandraAPIDataClient, CassandraTableKey, TableDataClient } from "../../Tables/TableDataClient";
-import * as TableEntityProcessor from "../../Tables/TableEntityProcessor";
 import * as Utilities from "../../Tables/Utilities";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
+import NewQueryTablesTab from "../../Tabs/QueryTablesTab/QueryTablesTab";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 import {
   attributeNameLabel,
@@ -36,9 +35,11 @@ import {
 
 interface AddTableEntityPanelProps {
   tableDataClient: TableDataClient;
-  queryTablesTab: QueryTablesTab;
+  queryTablesTab: NewQueryTablesTab;
   tableEntityListViewModel: TableEntityListViewModel;
   cassandraApiClient: CassandraAPIDataClient;
+  reloadEntities: () => void;
+  headerItems: string[];
 }
 
 interface EntityRowType {
@@ -58,7 +59,10 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   queryTablesTab,
   tableEntityListViewModel,
   cassandraApiClient,
+  reloadEntities,
+  headerItems,
 }: AddTableEntityPanelProps): JSX.Element => {
+  const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [entities, setEntities] = useState<EntityRowType[]>([]);
   const [selectedRow, setSelectedRow] = useState<number>(0);
   const [entityAttributeValue, setEntityAttributeValue] = useState<string>("");
@@ -76,7 +80,7 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
   }, []);
 
   const getDefaultEntitiesAttribute = async (): Promise<void> => {
-    let headers = tableEntityListViewModel.headers;
+    let headers = tableEntityListViewModel.headers?.length > 1 ? tableEntityListViewModel.headers : headerItems;
     if (DataTableUtilities.checkForDefaultHeader(headers)) {
       headers = [];
       if (userContext.apiType === "Tables") {
@@ -116,45 +120,17 @@ export const AddTableEntityPanel: FunctionComponent<AddTableEntityPanelProps> = 
     const newEntity: Entities.ITableEntity = await tableDataClient.createDocument(queryTablesTab.collection, entity);
     try {
       await tableEntityListViewModel.addEntityToCache(newEntity);
-      if (!tryInsertNewHeaders(tableEntityListViewModel, newEntity)) {
-        tableEntityListViewModel.redrawTableThrottled();
-      }
+      reloadEntities();
+      setFormError("");
     } catch (error) {
       const errorMessage = getErrorMessage(error);
       setFormError(errorMessage);
       handleError(errorMessage, "AddTableRow");
       throw error;
     } finally {
+      closeSidePanel();
       setIsExecuting(false);
     }
-  };
-
-  const tryInsertNewHeaders = (viewModel: TableEntityListViewModel, newEntity: Entities.ITableEntity): boolean => {
-    let newHeaders: string[] = [];
-    const keys = Object.keys(newEntity);
-    keys &&
-      keys.forEach((key: string) => {
-        if (
-          !_.contains(viewModel.headers, key) &&
-          key !== TableEntityProcessor.keyProperties.attachments &&
-          key !== TableEntityProcessor.keyProperties.etag &&
-          key !== TableEntityProcessor.keyProperties.resourceId &&
-          key !== TableEntityProcessor.keyProperties.self &&
-          (!(userContext.apiType === "Cassandra") || key !== TableConstants.EntityKeyNames.RowKey)
-        ) {
-          newHeaders.push(key);
-        }
-      });
-
-    let newHeadersInserted = false;
-    if (newHeaders.length) {
-      if (!DataTableUtilities.checkForDefaultHeader(viewModel.headers)) {
-        newHeaders = viewModel.headers.concat(newHeaders);
-      }
-      viewModel.updateHeaders(newHeaders, /* notifyColumnChanges */ true, /* enablePrompt */ false);
-      newHeadersInserted = true;
-    }
-    return newHeadersInserted;
   };
 
   /* Add new entity row */
