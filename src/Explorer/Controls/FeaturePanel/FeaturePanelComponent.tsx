@@ -101,55 +101,95 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
 
   const buildUrl = (): string => {
     const fragments = (platform.key === "" ? [] : [`platform=${platform.key}`])
-      .concat(booleanFeatures.map((f) => (f.reactState[0] ? `${f.key}=${f.value}` : "")))
-      .concat(stringFeatures.map((f) => (f.reactState[0] ? `${f.key}=${encodeURIComponent(f.reactState[0])}` : "")))
+      .concat(
+        booleanFeatures.map((f) => (f.reactState !== undefined ? (f.reactState[0] ? `${f.key}=${f.value}` : "") : ""))
+      )
+      .concat(
+        stringFeatures.map((f) =>
+          f.reactState !== undefined ? (f.reactState[0] ? `${f.key}=${encodeURIComponent(f.reactState[0])}` : "") : ""
+        )
+      )
       .filter((v) => v && v.length > 0);
 
     const paramString = fragments.length < 1 ? "" : `?${fragments.join("&")}`;
     return `${baseUrl.key}${paramString}`;
   };
 
-  const onChangeBaseUrl = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
-    setBaseUrl(option);
+  const onChangeBaseUrl = (_: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
+    if (option !== undefined) {
+      setBaseUrl(option);
+    }
   };
 
-  const onChangePlatform = (event: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
-    setPlatform(option);
+  const onChangePlatform = (_: React.FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {
+    if (option !== undefined) {
+      setPlatform(option);
+    }
   };
 
   booleanFeatures.forEach(
     (f) =>
-      (f.onChange = (ev?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
-        f.reactState[1](checked);
+      (f.onChange = (_?: React.FormEvent<HTMLElement | HTMLInputElement>, checked?: boolean): void => {
+        if (f.reactState && checked !== undefined) {
+          f.reactState[1](checked);
+        }
       })
   );
 
   stringFeatures.forEach(
     (f) =>
-      (f.onChange = (event: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
-        f.reactState[1](newValue);
+      (f.onChange = (_: React.FormEvent<HTMLInputElement | HTMLTextAreaElement>, newValue?: string): void => {
+        if (newValue !== undefined) {
+          f.reactState !== undefined ? f.reactState[1](newValue) : "";
+        }
       })
   );
 
   const onNotebookShortcut = (): void => {
-    booleanFeatures.find((f) => f.key === "feature.enablenotebooks").reactState[1](true);
-    stringFeatures
-      .find((f) => f.key === "feature.notebookserverurl")
-      .reactState[1]("https://localhost:10001/12345/notebook/");
-    stringFeatures.find((f) => f.key === "feature.notebookservertoken").reactState[1]("token");
-    stringFeatures.find((f) => f.key === "feature.notebookbasepath").reactState[1]("./notebooks");
-    setPlatform(platformOptions.find((o) => o.key === "Hosted"));
+    const booleanFeature = booleanFeatures.find((f) => f.key === "feature.enablenotebooks");
+    if (booleanFeature !== undefined && booleanFeature.reactState !== undefined) {
+      booleanFeature.reactState[1](true);
+    }
+    const stringFeature = stringFeatures.find((f) => f.key === "feature.notebookserverurl");
+    if (stringFeature !== undefined && stringFeature.reactState !== undefined) {
+      stringFeature.reactState[1]("https://localhost:10001/12345/notebook/");
+    }
+    const stringFeature1 = stringFeatures.find((f) => f.key === "feature.notebookservertoken");
+    if (stringFeature1 !== undefined && stringFeature1.reactState !== undefined) {
+      stringFeature1.reactState[1]("token");
+    }
+    const stringFeature2 = stringFeatures.find((f) => f.key === "feature.notebookbasepath");
+    if (stringFeature2 !== undefined && stringFeature2.reactState !== undefined) {
+      stringFeature2.reactState[1]("./notebooks");
+    }
+    const platformOption = platformOptions.find((o) => o.key === "Hosted");
+    if (platformOption !== undefined) {
+      setPlatform(platformOption);
+    }
   };
 
   const onPortalLocalDEShortcut = (): void => {
-    setBaseUrl(baseUrlOptions.find((o) => o.key === "https://portal.azure.com"));
-    setPlatform(platformOptions.find((o) => o.key === "Portal"));
-    stringFeatures.find((f) => f.key === "dataExplorerSource").reactState[1]("https://localhost:1234/explorer.html");
+    const baseUrlOption = baseUrlOptions.find((o) => o.key === "https://portal.azure.com");
+    if (baseUrlOption !== undefined) {
+      setBaseUrl(baseUrlOption);
+    }
+    const platformOption = platformOptions.find((o) => o.key === "Portal");
+    if (platformOption) {
+      setPlatform(platformOption);
+    }
+    const stringFeature = stringFeatures.find((f) => f.key === "dataExplorerSource");
+    if (stringFeature !== undefined && stringFeature.reactState !== undefined) {
+      stringFeature.reactState[1]("https://localhost:1234/explorer.html");
+    }
   };
 
   const onReset = (): void => {
-    booleanFeatures.forEach((f) => f.reactState[1](false));
-    stringFeatures.forEach((f) => f.reactState[1](""));
+    booleanFeatures.forEach((f) => {
+      if (f.reactState !== undefined) {
+        f.reactState[1](false);
+      }
+    });
+    stringFeatures.forEach((f) => (f.reactState !== undefined ? f.reactState[1]("") : ""));
   };
 
   const stackTokens = { childrenGap: 10 };
@@ -204,7 +244,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
               <Checkbox
                 key={f.key}
                 label={f.label}
-                checked={f.reactState[0]}
+                checked={f.reactState !== undefined ? f.reactState[0] : false}
                 onChange={f.onChange}
                 disabled={f.disabled && f.disabled()}
               />
@@ -215,7 +255,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
               <Checkbox
                 key={f.key}
                 label={f.label}
-                checked={f.reactState[0]}
+                checked={f.reactState !== undefined ? f.reactState[0] : false}
                 onChange={f.onChange}
                 disabled={f.disabled && f.disabled()}
               />
@@ -227,7 +267,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
             {leftStringFeatures.map((f) => (
               <TextField
                 key={f.key}
-                value={f.reactState[0]}
+                value={f.reactState !== undefined ? f.reactState[0] : ""}
                 label={f.label}
                 onChange={f.onChange}
                 styles={textFieldStyles}
@@ -240,7 +280,7 @@ export const FeaturePanelComponent: React.FunctionComponent = () => {
             {rightStringFeatures.map((f) => (
               <TextField
                 key={f.key}
-                value={f.reactState[0]}
+                value={f.reactState !== undefined ? f.reactState[0] : ""}
                 label={f.label}
                 onChange={f.onChange}
                 styles={textFieldStyles}
