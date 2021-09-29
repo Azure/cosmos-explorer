@@ -226,7 +226,7 @@ export function downloadItem(
   const name = data.name;
   useDialog.getState().showOkCancelModalDialog(
     `Download to ${useNotebook.getState().notebookFolderName}`,
-    NotebookUtil.getDownloadModalConent(name),
+    undefined,
     "Download",
     async () => {
       if (NotebookUtil.isPhoenixEnabled()) {
@@ -240,12 +240,13 @@ export function downloadItem(
           .getState()
           .showOkModalDialog(
             "Failed to Connect",
-            "Failed to connect temporary workspace, this could happen because of network issue please refresh and try again."
+            "Failed to connect to temporary workspace. Please refresh the page and try again."
           );
       }
     },
     "Cancel",
-    undefined
+    undefined,
+    container.getDownloadModalConent(name)
   );
 }
 export async function downloadNotebookItem(

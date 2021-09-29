@@ -1,3 +1,4 @@
+import { Link } from "@fluentui/react/lib/Link";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
@@ -29,7 +30,7 @@ import {
   get as getWorkspace,
   listByDatabaseAccount,
   listConnectionInfo,
-  start,
+  start
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -925,7 +926,7 @@ export default class Explorer {
       } else {
         useDialog.getState().showOkCancelModalDialog(
           Notebook.newNotebookModalTitle,
-          Notebook.newNotebookModalContent,
+          undefined,
           "Create",
           async () => {
             await this.allocateContainer();
@@ -933,13 +934,29 @@ export default class Explorer {
             this.createNewNoteBook(parent, isGithubTree);
           },
           "Cancel",
-          undefined
+          undefined,
+          this.getNewNoteWarningText()
         );
       }
     } else {
       parent = parent || this.resourceTree.myNotebooksContentRoot;
       this.createNewNoteBook(parent, isGithubTree);
     }
+  }
+
+  private getNewNoteWarningText(): JSX.Element {
+    return (
+      <>
+        <p>{Notebook.newNotebookModalContent1}</p>
+        <br />
+        <p>
+          {Notebook.newNotebookModalContent2}
+          <Link href={Notebook.cosmosNotebookHomePageUrl} target="_blank">
+            {Notebook.learnMore}
+          </Link>
+        </p>
+      </>
+    );
   }
 
   private createNewNoteBook(parent?: NotebookContentItem, isGithubTree?: boolean): void {
@@ -1166,7 +1183,7 @@ export default class Explorer {
     if (NotebookUtil.isPhoenixEnabled()) {
       useDialog.getState().showOkCancelModalDialog(
         Notebook.newNotebookUploadModalTitle,
-        Notebook.newNotebookModalContent,
+        undefined,
         "Upload",
         async () => {
           await this.allocateContainer();
@@ -1174,7 +1191,8 @@ export default class Explorer {
           this.uploadFilePanel(parent);
         },
         "Cancel",
-        undefined
+        undefined,
+        this.getNewNoteWarningText()
       );
     } else {
       parent = parent || this.resourceTree.myNotebooksContentRoot;
@@ -1189,6 +1207,24 @@ export default class Explorer {
         "Upload file to notebook server",
         <UploadFilePane uploadFile={(name: string, content: string) => this.uploadFile(name, content, parent)} />
       );
+  }
+
+  public getDownloadModalConent(fileName: string): JSX.Element {
+    if (NotebookUtil.isPhoenixEnabled()) {
+      return (
+        <>
+          <p>{Notebook.galleryNotebookDownloadContent1}</p>
+          <br />
+          <p>
+            {Notebook.galleryNotebookDownloadContent2}
+            <Link href={Notebook.cosmosNotebookGitDocumentationUrl} target="_blank">
+              {Notebook.learnMore}
+            </Link>
+          </p>
+        </>
+      );
+    }
+    return <p> Download {fileName} from gallery as a copy to your notebooks to run and/or edit the notebook. </p>;
   }
 
   public async refreshExplorer(): Promise<void> {

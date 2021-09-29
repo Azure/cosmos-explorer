@@ -329,13 +329,7 @@ export class NotebookUtil {
     link.click();
     document.body.removeChild(link);
   }
-  public static getDownloadModalConent(fileName: string): string {
-    if (this.isPhoenixEnabled()) {
-      return `To download, run, and make changes to this sample notebook, a temporary workspace will be created. When the session expires, any notebooks in the workspace will be removed. To save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your local machine before the session ends.`;
-    } else {
-      return `Download ${fileName} from gallery as a copy to your notebooks to run and/or edit the notebook.`;
-    }
-  }
+
   public static getNotebookBtnTitle(fileName: string): string {
     if (this.isPhoenixEnabled()) {
       return `Download to ${fileName}`;
@@ -343,6 +337,7 @@ export class NotebookUtil {
       return `Download to my notebooks`;
     }
   }
+
   public static isPhoenixEnabled(): boolean {
     return userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true;
   }
