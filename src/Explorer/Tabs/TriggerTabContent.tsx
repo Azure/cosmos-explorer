@@ -295,8 +295,6 @@ export class TriggerTabContent extends Component<TriggerTab, ITriggerTabContentS
           className="trigger-field"
           label="Trigger Id"
           id="entityTimeId"
-          autoFocus
-          required
           type="text"
           pattern="[^/?#\\]*[^/?# \\]"
           placeholder="Enter the new trigger id"

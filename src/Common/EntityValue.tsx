@@ -40,7 +40,6 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
         <TextField
           label={entityValueLabel && entityValueLabel}
           id="entityTimeId"
-          autoFocus
           type="time"
           value={entityTimeValue}
           onChange={onEntityTimeValueChange}
@@ -55,7 +54,6 @@ export const EntityValue: FunctionComponent<TableEntityProps> = ({
       label={entityValueLabel && entityValueLabel}
       className="addEntityTextField"
       id="entityValueId"
-      autoFocus
       disabled={isEntityValueDisable}
       type={entityValueType}
       placeholder={entityValuePlaceholder}

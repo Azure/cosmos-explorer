@@ -55,7 +55,13 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
   public render(): JSX.Element {
     return (
       <div className="accordionItemContainer">
-        <div className="accordionItemHeader" onClick={this.onHeaderClick} onKeyPress={this.onHeaderKeyPress}>
+        <div
+          className="accordionItemHeader"
+          onClick={this.onHeaderClick}
+          onKeyPress={this.onHeaderKeyPress}
+          role="button"
+          tabIndex={0}
+        >
           {this.renderCollapseExpandIcon()}
           {this.props.title}
         </div>
@@ -74,8 +80,6 @@ export class AccordionItemComponent extends React.Component<AccordionItemCompone
         className="expandCollapseIcon"
         src={this.state.isExpanded ? TriangleDownIcon : TriangleRightIcon}
         alt="Hide"
-        tabIndex={0}
-        role="button"
       />
     );
   }

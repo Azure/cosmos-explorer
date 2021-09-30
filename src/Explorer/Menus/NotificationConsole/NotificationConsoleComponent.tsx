@@ -103,6 +103,7 @@ export class NotificationConsoleComponent extends React.Component<
           onClick={() => this.expandCollapseConsole()}
           onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => this.onExpandCollapseKeyPress(event)}
           tabIndex={0}
+          role="button"
         >
           <div className="statusBar">
             <span className="dataTypeIcons">
@@ -162,7 +163,7 @@ export class NotificationConsoleComponent extends React.Component<
                 onKeyDown={(event: React.KeyboardEvent<HTMLSpanElement>) => this.onClearNotificationsKeyPress(event)}
                 tabIndex={0}
               >
-                <img src={ClearIcon} alt="clear notifications image" />
+                <img src={ClearIcon} alt="clear notifications icon" />
                 Clear Notifications
               </span>
             </div>

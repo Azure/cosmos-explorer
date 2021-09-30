@@ -92,7 +92,6 @@ export const LoadQueryPane: FunctionComponent = (): JSX.Element => {
               id="confirmCollectionId"
               label="Select a query document"
               value={selectedFileName}
-              autoFocus
               readOnly
               styles={{ fieldGroup: { width: 300 } }}
             />

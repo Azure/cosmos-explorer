@@ -77,16 +77,16 @@ export const ConnectExplorer: React.FunctionComponent<Props> = ({
               <p className="connectExplorerContent">
                 <input className="filterbtnstyle" type="submit" value="Connect" />
               </p>
-              <p className="switchConnectTypeText" onClick={login}>
+              <div className="switchConnectTypeText" onClick={login} onKeyDown={login} role="button" tabIndex={0}>
                 Sign In with Azure Account
-              </p>
+              </div>
             </form>
           ) : (
             <div id="connectWithAad">
               <input className="filterbtnstyle" type="button" value="Sign In" onClick={login} />
-              <p className="switchConnectTypeText" onClick={showForm}>
+              <div className="switchConnectTypeText" onClick={showForm} onKeyDown={showForm} role="button" tabIndex={0}>
                 Connect to your account with connection string
-              </p>
+              </div>
             </div>
           )}
         </div>

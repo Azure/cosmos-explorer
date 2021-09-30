@@ -129,7 +129,6 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
           <Text variant="small">Confirm by typing the database id</Text>
           <TextField
             id="confirmDatabaseId"
-            autoFocus
             styles={{ fieldGroup: { width: 300 } }}
             onChange={(event, newInput?: string) => {
               setDatabaseInput(newInput);

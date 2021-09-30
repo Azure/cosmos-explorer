@@ -150,7 +150,7 @@ export class QueriesGridComponent extends React.Component<QueriesGridComponentPr
           To write a new query, open a new query tab and enter the desired query. Once ready to save, click on Save
           Query and follow the prompt in order to save the query.
         </div>
-        <img {...bannerProps} />
+        <img {...bannerProps} alt="Save query helper banner" />
       </div>
     );
   }

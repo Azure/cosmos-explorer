@@ -169,7 +169,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               aria-label="Create new keyspace"
               checked={keyspaceCreateNew}
               type="radio"
-              role="radio"
               tabIndex={0}
               onChange={() => {
                 setKeyspaceCreateNew(true);
@@ -184,7 +183,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               aria-label="Use existing keyspace"
               checked={!keyspaceCreateNew}
               type="radio"
-              role="radio"
               tabIndex={0}
               onChange={() => {
                 setKeyspaceCreateNew(false);
@@ -208,7 +206,6 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
                 value={newKeyspaceId}
                 onChange={(e, newValue) => setNewKeyspaceId(newValue)}
                 ariaLabel="Keyspace id"
-                autoFocus
               />
 
               {!isServerlessAccount() && (

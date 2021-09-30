@@ -210,7 +210,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             placeholder={databaseIdPlaceHolder}
             value={databaseId}
             onChange={handleonChangeDBId}
-            autoFocus
             styles={getTextFieldStyles()}
           />
 

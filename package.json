@@ -61,6 +61,7 @@
     "dom-to-image": "2.6.0",
     "dotenv": "8.2.0",
     "eslint-plugin-jest": "23.13.2",
+    "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-react": "7.20.0",
     "hasher": "1.2.0",
     "html2canvas": "1.0.0-rc.5",

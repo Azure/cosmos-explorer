@@ -3,8 +3,8 @@ module.exports = {
     browser: true,
     es6: true,
   },
-  plugins: ["@typescript-eslint", "no-null", "prefer-arrow", "react-hooks"],
-  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  plugins: ["@typescript-eslint", "no-null", "prefer-arrow", "react-hooks", "jsx-a11y"],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:jsx-a11y/recommended"],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",
@@ -34,6 +34,7 @@ module.exports = {
     },
   ],
   rules: {
+    "jsx-a11y/anchor-is-valid": 1,
     "no-console": ["error", { allow: ["error", "warn", "dir"] }],
     curly: "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error",
