@@ -5,3 +5,4 @@ export const MongoIndexing = "mongoindexing";
 export const AutoscaleTest = "autoscaletest";
 export const PartitionKeyTest = "partitionkeytest";
 export const PKPartitionKeyTest = "pkpartitionkeytest";
+export const Phoenix = "phoenix";

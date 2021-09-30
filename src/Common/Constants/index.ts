@@ -71,6 +71,12 @@ export {
   ServerIds,
 };
 
+export enum ConnectionStatusType {
+  Connecting = "Connecting",
+  Connected = "Connected",
+  Failed = "Connection Failed",
+}
+
 export enum ConflictOperationType {
   Replace = "replace",
   Create = "create",

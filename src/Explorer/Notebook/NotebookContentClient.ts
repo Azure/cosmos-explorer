@@ -36,7 +36,10 @@ export class NotebookContentClient {
    *
    * @param parent parent folder
    */
-  public createNewNotebookFile(parent: NotebookContentItem, isGithubTree?: boolean): Promise<NotebookContentItem> {
+  public async createNewNotebookFile(
+    parent: NotebookContentItem,
+    isGithubTree?: boolean
+  ): Promise<NotebookContentItem> {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
@@ -99,7 +102,6 @@ export class NotebookContentClient {
     if (!parent || parent.type !== NotebookContentItemType.Directory) {
       throw new Error(`Parent must be a directory: ${parent}`);
     }
-
     const filepath = NotebookUtil.getFilePath(parent.path, name);
     if (await this.checkIfFilepathExists(filepath)) {
       throw new Error(`File already exists: ${filepath}`);
