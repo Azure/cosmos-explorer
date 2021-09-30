@@ -45,7 +45,6 @@ import UserDefinedFunction from "./UserDefinedFunction";
 
 export class ResourceTreeAdapter implements ReactAdapter {
   public static readonly MyNotebooksTitle = "My Notebooks";
-  public static readonly MyNotebooksScratchTitle = "My Notebooks Scratch";
   public static readonly GitHubReposTitle = "GitHub repos";
 
   private static readonly DataTitle = "DATA";
