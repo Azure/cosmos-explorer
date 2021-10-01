@@ -4,6 +4,8 @@ import * as React from "react";
 import { useFullScreenURLs } from "../hooks/useFullScreenURLs";
 
 export const OpenFullScreen: React.FunctionComponent = () => {
+  const [isReadUrlCopy, setIsReadUrlCopy] = React.useState<Boolean>(false);
+  const [isReadWriteUrlCopy, setIsReadWriteUrlCopy] = React.useState<Boolean>(false);
   const result = useFullScreenURLs();
   if (!result) {
     return <Spinner label="Generating URLs..." ariaLive="assertive" labelPosition="right" />;
@@ -25,8 +27,9 @@ export const OpenFullScreen: React.FunctionComponent = () => {
           <DefaultButton
             onClick={() => {
               copyToClipboard(readWriteUrl);
+              setIsReadWriteUrlCopy(true);
             }}
-            text="Copy"
+            text={isReadWriteUrlCopy ? "Copied" : "Copy"}
             iconProps={{ iconName: "Copy" }}
           />
           <PrimaryButton
@@ -41,9 +44,10 @@ export const OpenFullScreen: React.FunctionComponent = () => {
         <Stack horizontal tokens={{ childrenGap: 10 }}>
           <DefaultButton
             onClick={() => {
+              setIsReadUrlCopy(true);
               copyToClipboard(readUrl);
             }}
-            text="Copy"
+            text={isReadUrlCopy ? "Copied" : "Copy"}
             iconProps={{ iconName: "Copy" }}
           />
           <PrimaryButton
