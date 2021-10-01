@@ -72,9 +72,11 @@ export {
 };
 
 export enum ConnectionStatusType {
+  Connect = "Connect",
   Connecting = "Connecting",
   Connected = "Connected",
   Failed = "Connection Failed",
+  ReConnect = "Reconnect",
 }
 
 export enum ConflictOperationType {

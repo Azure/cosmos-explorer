@@ -17,6 +17,8 @@ import Explorer from "../../Explorer";
 import { NotebookClientV2 } from "../../Notebook/NotebookClientV2";
 import { NotebookComponentBootstrapper } from "../../Notebook/NotebookComponent/NotebookComponentBootstrapper";
 import NotebookReadOnlyRenderer from "../../Notebook/NotebookRenderer/NotebookReadOnlyRenderer";
+import { NotebookUtil } from "../../Notebook/NotebookUtil";
+import { useNotebook } from "../../Notebook/useNotebook";
 import { Dialog, TextFieldProps, useDialog } from "../Dialog";
 import { NotebookMetadataComponent } from "./NotebookMetadataComponent";
 import "./NotebookViewerComponent.less";
@@ -146,7 +148,9 @@ export class NotebookViewerComponent
             <NotebookMetadataComponent
               data={this.state.galleryItem}
               isFavorite={this.state.isFavorite}
-              downloadButtonText={this.props.container && "Download to my notebooks"}
+              downloadButtonText={
+                this.props.container && NotebookUtil.getNotebookBtnTitle(useNotebook.getState().notebookFolderName)
+              }
               onTagClick={this.props.onTagClick}
               onFavoriteClick={this.favoriteItem}
               onUnfavoriteClick={this.unfavoriteItem}

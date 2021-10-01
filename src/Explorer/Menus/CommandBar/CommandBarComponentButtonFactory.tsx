@@ -596,7 +596,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () =>
+    onCommandClick: () => {
       useSidePanel
         .getState()
         .openSidePanel(
@@ -606,7 +606,8 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
             gitHubClientProp={container.notebookManager.gitHubClient}
             junoClientProp={junoClient}
           />
-        ),
+        );
+    },
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

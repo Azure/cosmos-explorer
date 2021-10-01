@@ -2,12 +2,15 @@
  * Notebook container related stuff
  */
 import * as Constants from "../../Common/Constants";
+import { ConnectionStatusType } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
+import { ContainerConnectionInfo } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
+import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
@@ -42,7 +45,7 @@ export class NotebookContainerClient {
     }, delayMs);
   }
 
-  private async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
+  public async getMemoryUsage(): Promise<DataModels.MemoryUsageInfo> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";
@@ -75,6 +78,12 @@ export class NotebookContainerClient {
             freeKB: memoryUsageInfo.free,
           };
         }
+      } else if (NotebookUtil.isPhoenixEnabled()) {
+        const connectionStatus: ContainerConnectionInfo = {
+          status: ConnectionStatusType.ReConnect,
+        };
+        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().setIsRefreshed(true);
       }
       return undefined;
     } catch (error) {
@@ -83,6 +92,13 @@ export class NotebookContainerClient {
         this.clearReconnectionAttemptMessage = logConsoleProgress(
           "Connection lost with Notebook server. Attempting to reconnect..."
         );
+      }
+      if (NotebookUtil.isPhoenixEnabled()) {
+        const connectionStatus: ContainerConnectionInfo = {
+          status: ConnectionStatusType.Failed,
+        };
+        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().setIsRefreshed(true);
       }
       this.onConnectionLost();
       return undefined;
