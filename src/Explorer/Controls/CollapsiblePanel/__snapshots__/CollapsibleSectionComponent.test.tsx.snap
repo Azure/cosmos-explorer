@@ -4,7 +4,7 @@ exports[`CollapsibleSectionComponent renders 1`] = `
 <Fragment>
   <Stack
     aria-expanded={true}
-    aria-name="Advanced"
+    aria-label="Advanced"
     className="collapsibleSection"
     horizontal={true}
     onClick={[Function]}

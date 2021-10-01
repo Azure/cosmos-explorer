@@ -34,7 +34,6 @@ module.exports = {
     },
   ],
   rules: {
-    "jsx-a11y/anchor-is-valid": 1,
     "no-console": ["error", { allow: ["error", "warn", "dir"] }],
     curly: "error",
     "@typescript-eslint/switch-exhaustiveness-check": "error",

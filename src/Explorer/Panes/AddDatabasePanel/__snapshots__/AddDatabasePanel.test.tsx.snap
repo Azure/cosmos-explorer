@@ -33,7 +33,6 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
         aria-label="Database id"
         aria-required="true"
         autoComplete="off"
-        autoFocus={true}
         id="database-id"
         onChange={[Function]}
         pattern="[^/?#\\\\\\\\]*[^/?# \\\\\\\\]"

@@ -128,18 +128,18 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               <div className="title">Common Tasks</div>
               <ul>
                 {commonTaskItems.map((item) => (
-                  <li
-                    className="focusable"
-                    key={`${item.title}${item.description}`}
-                    onClick={item.onClick}
-                    onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-                    tabIndex={0}
-                    role="button"
-                  >
-                    <img src={item.iconSrc} alt="" />
-                    <span className="oneLineContent" title={item.info}>
-                      {item.title}
-                    </span>
+                  <li className="focusable" key={`${item.title}${item.description}`}>
+                    <div
+                      onClick={item.onClick}
+                      onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+                      tabIndex={0}
+                      role="button"
+                    >
+                      <img src={item.iconSrc} alt="" />
+                      <span className="oneLineContent" title={item.info}>
+                        {item.title}
+                      </span>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -165,22 +165,23 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
               <div className="title">Tips</div>
               <ul>
                 {tipsItems.map((item) => (
-                  <li
-                    className="tipContainer focusable"
-                    key={`${item.title}${item.description}`}
-                    onClick={item.onClick}
-                    onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
-                    tabIndex={0}
-                    role="link"
-                  >
-                    <div className="title" title={item.info}>
-                      {item.title}
+                  <li className="tipContainer focusable" key={`${item.title}${item.description}`}>
+                    <div
+                      onClick={item.onClick}
+                      onKeyPress={(event: React.KeyboardEvent) => this.onSplashScreenItemKeyPress(event, item.onClick)}
+                      tabIndex={0}
+                      role="button"
+                      className="tipsWrapper"
+                    >
+                      <div className="title" title={item.info}>
+                        {item.title}
+                      </div>
+                      <div className="description">{item.description}</div>
                     </div>
-                    <div className="description">{item.description}</div>
                   </li>
                 ))}
                 <li>
-                  <a role="link" href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
+                  <a href={SplashScreen.seeMoreItemUrl} rel="noreferrer" target="_blank" tabIndex={0}>
                     {SplashScreen.seeMoreItemTitle}
                   </a>
                 </li>
