@@ -4,8 +4,8 @@ import * as React from "react";
 import { useFullScreenURLs } from "../hooks/useFullScreenURLs";
 
 export const OpenFullScreen: React.FunctionComponent = () => {
-  const [isReadUrlCopy, setIsReadUrlCopy] = React.useState<Boolean>(false);
-  const [isReadWriteUrlCopy, setIsReadWriteUrlCopy] = React.useState<Boolean>(false);
+  const [isReadUrlCopy, setIsReadUrlCopy] = React.useState<boolean>(false);
+  const [isReadWriteUrlCopy, setIsReadWriteUrlCopy] = React.useState<boolean>(false);
   const result = useFullScreenURLs();
   if (!result) {
     return <Spinner label="Generating URLs..." ariaLive="assertive" labelPosition="right" />;
