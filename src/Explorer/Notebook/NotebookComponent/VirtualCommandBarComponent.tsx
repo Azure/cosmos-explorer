@@ -43,7 +43,9 @@ const makeMapStateToProps = (
   const { contentRef } = initialProps;
   const mapStateToProps = (state: AppState) => {
     const content = selectors.content(state, { contentRef });
-    let kernelStatus, kernelSpecName, currentCellType;
+    let kernelStatus,
+      kernelSpecName,
+      currentCellType = "";
 
     if (!content || content.type !== "notebook") {
       return {

@@ -5,6 +5,7 @@ import template from "./editor-component.html";
 /**
  * Helper class for ko component registration
  */
+//eslint-disable-next-line
 export class EditorComponent {
   constructor() {
     return {
@@ -38,7 +39,7 @@ class EditorViewModel extends JsonEditorViewModel {
      * setTimeout is needed as creating the edtior manipulates the dom directly and expects
      * Knockout to have completed all of the initial bindings for the component
      */
-    this.params.content() != null &&
+    this.params.content() !== undefined &&
       setTimeout(() => {
         this.createEditor(this.params.content(), this.configureEditor.bind(this));
       });

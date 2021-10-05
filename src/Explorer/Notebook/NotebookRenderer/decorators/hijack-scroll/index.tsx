@@ -1,5 +1,5 @@
-/* eslint jsx-a11y/no-static-element-interactions: 0 */
-/* eslint jsx-a11y/click-events-have-key-events: 0 */
+// /* eslint jsx-a11y/no-static-element-interactions: 0 */
+// /* eslint jsx-a11y/click-events-have-key-events: 0 */
 
 import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import React from "react";
@@ -23,7 +23,7 @@ interface DispatchProps {
 type Props = ComponentProps & DispatchProps & StateProps;
 
 export class HijackScroll extends React.Component<Props> {
-  el: HTMLDivElement | null = null;
+  el: HTMLDivElement | null = undefined;
 
   scrollIntoViewIfNeeded(prevFocused?: boolean): void {
     // Check if the element is being hovered over.
@@ -38,6 +38,7 @@ export class HijackScroll extends React.Component<Props> {
     ) {
       if (this.el && "scrollIntoViewIfNeeded" in this.el) {
         // This is only valid in Chrome, WebKit
+        //eslint-disable-next-line
         (this.el as any).scrollIntoViewIfNeeded();
       } else if (this.el) {
         // Make a best guess effort for older platforms
@@ -46,7 +47,7 @@ export class HijackScroll extends React.Component<Props> {
     }
   }
 
-  componentDidUpdate(prevProps: Props) {
+  componentDidUpdate(prevProps: Props): void {
     this.scrollIntoViewIfNeeded(prevProps.focused);
   }
 
@@ -54,7 +55,7 @@ export class HijackScroll extends React.Component<Props> {
     this.scrollIntoViewIfNeeded();
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <div
         onClick={this.props.selectCell}
