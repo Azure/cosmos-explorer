@@ -30,7 +30,7 @@ describe("GalleryUtils", () => {
   });
 
   it("downloadItem shows dialog in data explorer", () => {
-    const container = {} as Explorer;
+    const container = new Explorer();
     GalleryUtils.downloadItem(container, undefined, galleryItem, undefined);
 
     expect(useDialog.getState().visible).toBe(true);
