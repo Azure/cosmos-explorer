@@ -27,6 +27,7 @@ import { isServerlessAccount } from "../../Utils/CapabilityUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as ResourceTreeContextMenuButtonFactory from "../ContextMenuButtonFactory";
 import { AccordionComponent, AccordionItemComponent } from "../Controls/Accordion/AccordionComponent";
+import { useDialog } from "../Controls/Dialog";
 import { TreeComponent, TreeNode, TreeNodeMenuItem } from "../Controls/TreeComponent/TreeComponent";
 import Explorer from "../Explorer";
 import { useCommandBar } from "../Menus/CommandBar/CommandBarComponentAdapter";
@@ -129,9 +130,8 @@ export class ResourceTreeAdapter implements ReactAdapter {
       path: "Gallery",
       type: NotebookContentItemType.File,
     };
-
     this.myNotebooksContentRoot = {
-      name: ResourceTreeAdapter.MyNotebooksTitle,
+      name: useNotebook.getState().notebookFolderName,
       path: useNotebook.getState().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };
@@ -145,16 +145,11 @@ export class ResourceTreeAdapter implements ReactAdapter {
         })
       );
     }
-
-    if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
-      this.gitHubNotebooksContentRoot = {
-        name: ResourceTreeAdapter.GitHubReposTitle,
-        path: ResourceTreeAdapter.PseudoDirPath,
-        type: NotebookContentItemType.Directory,
-      };
-    } else {
-      this.gitHubNotebooksContentRoot = undefined;
-    }
+    this.gitHubNotebooksContentRoot = {
+      name: ResourceTreeAdapter.GitHubReposTitle,
+      path: ResourceTreeAdapter.PseudoDirPath,
+      type: NotebookContentItemType.Directory,
+    };
 
     return Promise.all(refreshTasks);
   }
@@ -634,6 +629,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
               <GitHubReposPanel
                 explorer={this.container}
                 gitHubClientProp={this.container.notebookManager.gitHubClient}
+                junoClientProp={this.container.notebookManager.junoClient}
               />
             ),
       },
@@ -711,14 +707,16 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "Delete",
         iconSrc: DeleteIcon,
         onClick: () => {
-          this.container.showOkCancelModalDialog(
-            "Confirm delete",
-            `Are you sure you want to delete "${item.name}"`,
-            "Delete",
-            () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-            "Cancel",
-            undefined
-          );
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}"`,
+              "Delete",
+              () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+              "Cancel",
+              undefined
+            );
         },
       },
       {
@@ -776,14 +774,16 @@ export class ResourceTreeAdapter implements ReactAdapter {
         label: "Delete",
         iconSrc: DeleteIcon,
         onClick: () => {
-          this.container.showOkCancelModalDialog(
-            "Confirm delete",
-            `Are you sure you want to delete "${item.name}?"`,
-            "Delete",
-            () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
-            "Cancel",
-            undefined
-          );
+          useDialog
+            .getState()
+            .showOkCancelModalDialog(
+              "Confirm delete",
+              `Are you sure you want to delete "${item.name}?"`,
+              "Delete",
+              () => this.container.deleteNotebookFile(item).then(() => this.triggerRender()),
+              "Cancel",
+              undefined
+            );
         },
       },
       {

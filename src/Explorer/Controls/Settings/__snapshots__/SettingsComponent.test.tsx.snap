@@ -34,6 +34,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
+                "phoenixClient": PhoenixClient {},
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -42,10 +43,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
-                  "parameters": [Function],
-                },
-                "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-                  "container": [Circular],
                   "parameters": [Function],
                 },
               },
@@ -105,6 +102,7 @@ exports[`SettingsComponent renders 1`] = `
                 "isTabsContentExpanded": [Function],
                 "onRefreshDatabasesKeyPress": [Function],
                 "onRefreshResourcesClick": [Function],
+                "phoenixClient": PhoenixClient {},
                 "provideFeedbackEmail": [Function],
                 "queriesClient": QueriesClient {
                   "container": [Circular],
@@ -113,10 +111,6 @@ exports[`SettingsComponent renders 1`] = `
                 "resourceTree": ResourceTreeAdapter {
                   "container": [Circular],
                   "copyNotebook": [Function],
-                  "parameters": [Function],
-                },
-                "resourceTreeForResourceToken": ResourceTreeAdapterForResourceToken {
-                  "container": [Circular],
                   "parameters": [Function],
                 },
               },

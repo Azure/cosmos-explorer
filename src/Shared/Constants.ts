@@ -125,7 +125,8 @@ export class OfferPricing {
       S3Price: 0.1344,
       Standard: {
         StartingPrice: 24 / hoursInAMonth, // per hour
-        PricePerRU: 0.00008,
+        SingleMasterPricePerRU: 0.00008,
+        MultiMasterPricePerRU: 0.00016,
         PricePerGB: 0.25 / hoursInAMonth,
       },
     },
@@ -137,7 +138,8 @@ export class OfferPricing {
       S3Price: 0.6,
       Standard: {
         StartingPrice: OfferPricing.MonthlyPricing.mooncake.Standard.StartingPrice / hoursInAMonth, // per hour
-        PricePerRU: 0.00051,
+        SingleMasterPricePerRU: 0.00051,
+        MultiMasterPricePerRU: 0.00102,
         PricePerGB: OfferPricing.MonthlyPricing.mooncake.Standard.PricePerGB / hoursInAMonth,
       },
     },

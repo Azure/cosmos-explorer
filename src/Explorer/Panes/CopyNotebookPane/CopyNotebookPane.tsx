@@ -5,6 +5,7 @@ import { getErrorMessage, handleError } from "../../../Common/ErrorHandlingUtils
 import { GitHubOAuthService } from "../../../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../../../hooks/useSidePanel";
 import { IPinnedRepo, JunoClient } from "../../../Juno/JunoClient";
+import { userContext } from "../../../UserContext";
 import * as GitHubUtils from "../../../Utils/GitHubUtils";
 import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
 import Explorer from "../../Explorer";
@@ -75,6 +76,8 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
           selectedLocation.owner,
           selectedLocation.repo
         )} - ${selectedLocation.branch}`;
+      } else if (selectedLocation.type === "MyNotebooks" && userContext.features.phoenix) {
+        destination = useNotebook.getState().notebookFolderName;
       }
 
       clearMessage = NotificationConsoleUtils.logConsoleProgress(`Copying ${name} to ${destination}`);
@@ -98,6 +101,7 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
 
   const copyNotebook = async (location: Location): Promise<NotebookContentItem> => {
     let parent: NotebookContentItem;
+    let isGithubTree: boolean;
     switch (location.type) {
       case "MyNotebooks":
         parent = {
@@ -105,21 +109,23 @@ export const CopyNotebookPane: FunctionComponent<CopyNotebookPanelProps> = ({
           path: useNotebook.getState().notebookBasePath,
           type: NotebookContentItemType.Directory,
         };
+        isGithubTree = false;
         break;
 
       case "GitHub":
         parent = {
-          name: ResourceTreeAdapter.GitHubReposTitle,
+          name: selectedLocation.branch,
           path: GitHubUtils.toContentUri(selectedLocation.owner, selectedLocation.repo, selectedLocation.branch, ""),
           type: NotebookContentItemType.Directory,
         };
+        isGithubTree = true;
         break;
 
       default:
         throw new Error(`Unsupported location type ${location.type}`);
     }
 
-    return container.uploadFile(name, content, parent);
+    return container.uploadFile(name, content, parent, isGithubTree);
   };
 
   const onDropDownChange = (_: FormEvent<HTMLDivElement>, option?: IDropdownOption): void => {

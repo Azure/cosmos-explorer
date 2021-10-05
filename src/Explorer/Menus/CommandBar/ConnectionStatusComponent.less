@@ -1,0 +1,184 @@
+@import "../../../../less/Common/Constants";
+
+.connectionStatusContainer {
+    cursor: default;
+    align-items: center;
+    border: 1px;
+    min-height: 44px;
+
+    > span {
+        padding-right: 12px;
+        font-size: 12px;
+        font-family: @DataExplorerFont;
+        color: @DefaultFontColor;
+    }
+    &:focus{
+        outline: 0px;
+    }
+}
+.commandReactBtn {
+    &:hover {
+        background-color: rgb(238, 247, 255);
+        color: rgb(32, 31, 30);
+        cursor: pointer;
+    }
+    &:focus{
+        outline: 1px dashed #605e5c;
+    }
+}
+.connectedReactBtn {
+    &:hover {
+        background-color: rgb(238, 247, 255);
+        color: rgb(32, 31, 30);
+        cursor: pointer;
+    }
+    &:focus{
+        outline: 0px;
+    }
+}
+.connectIcon{
+        margin: 0px 4px;
+        height: 18px;
+        width: 18px;
+        color: rgb(0, 120, 212);
+} 
+  .status {
+    position: relative;
+    display: block;
+    margin-right: 8px;
+    width: 1em;
+    height: 1em;
+    font-size: 9px!important;
+    padding: 0px!important;
+    border-radius: 0.5em;
+  }
+  
+  .status::before,
+  .status::after {
+    position: absolute;
+    content: "";
+  }
+  
+  .status::before {
+    top: 0;
+    left: 0;
+    width: 1em;
+    height: 1em;
+    background-color: rgba(#fff, 0.1);
+    border-radius: 100%;
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(0);
+  }
+  
+  .connected{
+    background-color: green;
+    box-shadow:
+      0 0 0 0em rgba(green, 0),
+      0em 0.05em 0.1em rgba(#000000, 0.2);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  .connecting{
+    background-color:#ffbf00;
+    box-shadow:
+      0 0 0 0em rgba(#ffbf00, 0),
+      0em 0.05em 0.1em rgba(#000000, 0.2);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  .failed{
+    background-color:#bd1919;
+    box-shadow:
+      0 0 0 0em rgba(#bd1919, 0),
+      0em 0.05em 0.1em rgba(#000000, 0.2);
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  
+  .status.connecting.is-animating {
+    animation: status-outer-connecting 3000ms infinite;
+  }
+  .status.failed.is-animating {
+    animation: status-outer-failed 3000ms infinite;
+  }
+  .status.connected.is-animating {
+    animation: status-outer-connected 3000ms infinite;
+  }
+  @keyframes status-outer-connected {
+    
+   0% {
+      transform: translate3d(0, 0, 0) scale(1);
+      box-shadow: 0 0 0 0em #008000, 0em 0.05em 0.1em rgba(0, 0, 0, 0.2);
+    }
+    20% {
+      transform: translate3d(0, 0, 0) scale(1);
+      box-shadow: 0 0 0 0em rgba(0, 128, 0, 0.6), 0em 0.05em 0.1em rgba(0, 0, 0, 0.5);
+    }
+    40% {
+      transform: translate3d(0, 0, 0) scale(1);
+      box-shadow: 0 0 0 0em rgba(0, 128, 0, 0.5), 0em 0.05em 0.1em rgba(0, 0, 0, 0.4);
+    }
+    60% {
+      transform: translate3d(0, 0, 0) scale(1);
+      box-shadow: 0 0 0 0em rgba(0, 128, 0, 0.3), 0em 0.05em 0.1em rgba(0, 0, 0, 0.3);
+    }
+    80% {
+      transform: translate3d(0, 0, 0) scale(1);
+      box-shadow: 0 0 0 0.5em rgba(0, 128, 0, 0.1), 0em 0.05em 0.1em rgba(0, 0, 0, 0.1);
+    }
+    85% {
+      transform: translate3d(0, 0, 0) scale(1);
+      box-shadow: 0 0 0 0em rgba(0, 128, 0, 0), 0em 0.05em 0.1em rgba(0, 0, 0, 0);
+    }
+  }
+  @keyframes status-outer-failed {
+    
+    0% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em #bd1919, 0em 0.05em 0.1em rgba(0, 0, 0, 0.2);
+     }
+     20% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em #c52d2d, 0em 0.05em 0.1em rgba(0, 0, 0, 0.5);
+     }
+     40% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em #b47b7b, 0em 0.05em 0.1em rgba(0, 0, 0, 0.4);
+     }
+     60% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em rgba(0, 128, 0, 0.3), 0em 0.05em 0.1em rgba(0, 0, 0, 0.3);
+     }
+     80% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0.5em rgba(0, 128, 0, 0.1), 0em 0.05em 0.1em rgba(0, 0, 0, 0.1);
+     }
+     85% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em rgba(0, 128, 0, 0), 0em 0.05em 0.1em rgba(0, 0, 0, 0);
+     }
+   }
+   @keyframes status-outer-connecting {
+    
+    0% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em #ffbf00, 0em 0.05em 0.1em rgba(0, 0, 0, 0.2);
+     }
+     20% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em #f0dfad, 0em 0.05em 0.1em rgba(0, 0, 0, 0.5);
+     }
+     40% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em rgba(198, 243, 198, 0.5), 0em 0.05em 0.1em rgba(0, 0, 0, 0.4);
+     }
+     60% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em rgba(213, 241, 213, 0.3), 0em 0.05em 0.1em rgba(0, 0, 0, 0.3);
+     }
+     80% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0.5em rgba(0, 128, 0, 0.1), 0em 0.05em 0.1em rgba(0, 0, 0, 0.1);
+     }
+     85% {
+       transform: translate3d(0, 0, 0) scale(1);
+       box-shadow: 0 0 0 0em rgba(0, 128, 0, 0), 0em 0.05em 0.1em rgba(0, 0, 0, 0);
+     }
+   }

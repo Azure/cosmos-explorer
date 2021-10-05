@@ -56,6 +56,7 @@ export function useAADAuth(): ReturnType {
       });
       setTenantId(response.tenantId);
       setAccount(response.account);
+      localStorage.setItem("cachedTenantId", response.tenantId);
     },
     [account, tenantId]
   );

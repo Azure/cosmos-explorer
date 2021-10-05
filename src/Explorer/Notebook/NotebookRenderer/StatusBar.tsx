@@ -79,7 +79,7 @@ interface InitialProps {
   contentRef: ContentRef;
 }
 
-const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
+const makeMapStateToProps = (_initialState: AppState, initialProps: InitialProps): ((state: AppState) => Props) => {
   const { contentRef } = initialProps;
 
   const mapStateToProps = (state: AppState) => {
@@ -101,14 +101,14 @@ const makeMapStateToProps = (initialState: AppState, initialProps: InitialProps)
 
     const lastSaved = content && content.lastSaved ? content.lastSaved : undefined;
 
-    const kernelStatus = kernel !== undefined && kernel.status !== undefined ? kernel.status : NOT_CONNECTED;
+    const kernelStatus = kernel?.status || NOT_CONNECTED;
 
     // TODO: We need kernels associated to the kernelspec they came from
     //       so we can pluck off the display_name and provide it here
     let kernelSpecDisplayName = " ";
     if (kernelStatus === NOT_CONNECTED) {
       kernelSpecDisplayName = "no kernel";
-    } else if (kernel !== undefined && kernel.kernelSpecName !== undefined) {
+    } else if (kernel?.kernelSpecName) {
       kernelSpecDisplayName = kernel.kernelSpecName;
     } else if (content && content.type === "notebook") {
       kernelSpecDisplayName = selectors.notebook.displayName(content.model) || " ";

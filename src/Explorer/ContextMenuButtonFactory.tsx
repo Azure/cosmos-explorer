@@ -83,6 +83,7 @@ export const createCollectionContextMenuButton = (
 
     items.push({
       iconSrc: HostedTerminalIcon,
+      isDisabled: useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
@@ -109,7 +110,7 @@ export const createCollectionContextMenuButton = (
       iconSrc: AddUdfIcon,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
-        selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection, undefined);
+        selectedCollection && selectedCollection.onNewUserDefinedFunctionClick(selectedCollection);
       },
       label: "New UDF",
     });

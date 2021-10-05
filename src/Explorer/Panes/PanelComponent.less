@@ -3,13 +3,13 @@
 .panelFormWrapper {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
 
   .panelMainContent {
     flex-grow: 1;
     padding: 0 34px;
     margin: 20px 0;
-    overflow: auto;
+    overflow-x: hidden;
 
     & > :not(.collapsibleSection) {
       margin-bottom: @DefaultSpace;
@@ -149,9 +149,6 @@
 }
 .backImageIcon {
   margin-top: 8px;
-}
-.entityValueTextField {
-  margin: 24px;
 }
 .addEntityDatePicker {
   max-width: 145px;

@@ -1,12 +1,14 @@
 import { AppState, ContentRef, selectors } from "@nteract/core";
 import * as React from "react";
 import { connect } from "react-redux";
+import { NotebookUtil } from "../NotebookUtil";
 import * as NteractUtil from "../NTeractUtil";
 
 interface VirtualCommandBarComponentProps {
   kernelSpecName: string;
   kernelStatus: string;
   currentCellType: string;
+  isNotebookUntrusted: boolean;
   onRender: () => void;
 }
 
@@ -20,7 +22,8 @@ class VirtualCommandBarComponent extends React.Component<VirtualCommandBarCompon
     return (
       this.props.kernelStatus !== nextProps.kernelStatus ||
       this.props.kernelSpecName !== nextProps.kernelSpecName ||
-      this.props.currentCellType !== nextProps.currentCellType
+      this.props.currentCellType !== nextProps.currentCellType ||
+      this.props.isNotebookUntrusted !== nextProps.isNotebookUntrusted
     );
   }
 
@@ -52,6 +55,7 @@ const makeMapStateToProps = (
         kernelStatus,
         kernelSpecName,
         currentCellType,
+        isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, contentRef),
       } as VirtualCommandBarComponentProps;
     }
 
@@ -71,6 +75,7 @@ const makeMapStateToProps = (
       kernelStatus,
       kernelSpecName,
       currentCellType,
+      isNotebookUntrusted: NotebookUtil.isNotebookUntrusted(state, contentRef),
       onRender: initialProps.onRender,
     };
   };
