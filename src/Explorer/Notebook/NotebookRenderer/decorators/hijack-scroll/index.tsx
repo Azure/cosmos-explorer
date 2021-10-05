@@ -23,7 +23,7 @@ interface DispatchProps {
 type Props = ComponentProps & DispatchProps & StateProps;
 
 export class HijackScroll extends React.Component<Props> {
-  el: HTMLDivElement | null = undefined;
+  el: HTMLDivElement | null | undefined = undefined;
 
   scrollIntoViewIfNeeded(prevFocused?: boolean): void {
     // Check if the element is being hovered over.
