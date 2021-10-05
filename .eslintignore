@@ -152,7 +152,7 @@ src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
-src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
+# src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
 src/Explorer/Notebook/NotebookComponent/VirtualCommandBarComponent.tsx
 src/Explorer/Notebook/NotebookComponent/contents/index.tsx
