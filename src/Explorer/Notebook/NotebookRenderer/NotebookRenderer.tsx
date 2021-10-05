@@ -31,12 +31,13 @@ import StatusBar from "./StatusBar";
 import CellToolbar from "./Toolbar";
 
 export interface NotebookRendererBaseProps {
-  contentRef: any;
+  contentRef: ContentRef;
 }
 
 interface NotebookRendererDispatchProps {
   storeNotebookSnapshot: (imageSrc: string, requestId: string) => void;
   notebookSnapshotError: (error: string) => void;
+  addTransform: (transform: React.ComponentType & { MIMETYPE: string }) => void;
 }
 
 interface StateProps {
@@ -73,7 +74,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
 
   componentDidMount() {
     if (!userContext.features.sandboxNotebookOutputs) {
-      loadTransform(this.props as any);
+      loadTransform(this.props as NotebookRendererProps);
     }
   }
 
@@ -138,7 +139,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                           }}
                         </CodeCell>
                       ),
-                    markdown: ({ id, contentRef }: { id: any; contentRef: ContentRef }) =>
+                    markdown: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) =>
                       decorate(
                         id,
                         contentRef,
@@ -155,7 +156,7 @@ class BaseNotebookRenderer extends React.Component<NotebookRendererProps> {
                         </MarkdownCell>
                       ),
 
-                    raw: ({ id, contentRef }: { id: any; contentRef: ContentRef }) =>
+                    raw: ({ id, contentRef }: { id: CellId; contentRef: ContentRef }) =>
                       decorate(
                         id,
                         contentRef,
@@ -202,7 +203,8 @@ export const makeMapStateToProps = (
   return mapStateToProps;
 };
 
-const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererBaseProps) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const makeMapDispatchToProps = (_initialDispatch: Dispatch, _initialProps: NotebookRendererBaseProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
       addTransform: (transform: React.ComponentType & { MIMETYPE: string }) =>

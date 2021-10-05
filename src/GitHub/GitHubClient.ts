@@ -1,9 +1,9 @@
 import { Octokit } from "@octokit/rest";
 import { HttpStatusCodes } from "../Common/Constants";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import * as UrlUtility from "../Common/UrlUtility";
 import { NotebookUtil } from "../Explorer/Notebook/NotebookUtil";
-import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 
 export interface IGitHubPageInfo {
   endCursor: string;
@@ -225,7 +225,7 @@ export class GitHubClient {
   private static readonly SelfErrorCode = 599;
   private ocktokit: Octokit;
 
-  constructor(private errorCallback: (error: any) => void) {
+  constructor(private errorCallback: (error: Error) => void) {
     this.initOctokit();
   }
 
@@ -501,10 +501,11 @@ export class GitHubClient {
     this.ocktokit = new Octokit({
       auth: token,
       log: {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         debug: () => {},
-        info: (message?: any) => GitHubClient.log(Logger.logInfo, message),
-        warn: (message?: any) => GitHubClient.log(Logger.logWarning, message),
-        error: (error?: any) => Logger.logError(getErrorMessage(error), "GitHubClient.Octokit"),
+        info: (message?: string) => GitHubClient.log(Logger.logInfo, message),
+        warn: (message?: string) => GitHubClient.log(Logger.logWarning, message),
+        error: (error?: Error) => Logger.logError(getErrorMessage(error), "GitHubClient.Octokit"),
       },
     });
 
@@ -514,7 +515,7 @@ export class GitHubClient {
     });
   }
 
-  private static log(logger: (message: string, area: string) => void, message?: any) {
+  private static log(logger: (message: string, area: string) => void, message?: string) {
     if (message) {
       message = typeof message === "string" ? message : JSON.stringify(message);
       logger(message, "GitHubClient.Octokit");
