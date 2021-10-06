@@ -14,6 +14,7 @@ import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
 
