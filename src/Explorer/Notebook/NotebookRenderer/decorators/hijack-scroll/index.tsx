@@ -35,8 +35,7 @@ export class HijackScroll extends React.Component<Props> {
     ) {
       if (this.el && "scrollIntoViewIfNeeded" in this.el) {
         // This is only valid in Chrome, WebKit
-        //eslint-disable-next-line
-        (this.el as any).scrollIntoViewIfNeeded();
+        ((this.el as unknown) as HijackScroll).scrollIntoViewIfNeeded();
       } else if (this.el) {
         // Make a best guess effort for older platforms
         this.el.scrollIntoView();

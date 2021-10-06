@@ -16,7 +16,7 @@ export interface NotebookComponentAdapterOptions {
 
 export class NotebookComponentAdapter extends NotebookComponentBootstrapper implements ReactAdapter {
   private onUpdateKernelInfo: () => void;
-  public parameters: undefined;
+  public parameters: unknown;
 
   constructor(options: NotebookComponentAdapterOptions) {
     super({
