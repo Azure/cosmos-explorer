@@ -307,11 +307,18 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
 
 function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   const label = "New " + getDatabaseName();
+  const newDatabaseButton = document.activeElement as HTMLElement;
+
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
     onCommandClick: () =>
-      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          "New " + getDatabaseName(),
+          <AddDatabasePanel explorer={container} buttonElement={newDatabaseButton} />
+        ),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
