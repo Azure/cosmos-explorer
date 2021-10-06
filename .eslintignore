@@ -18,9 +18,7 @@ src/Common/MessageHandler.test.ts
 src/Common/MessageHandler.ts
 src/Common/MongoProxyClient.test.ts
 src/Common/MongoUtility.ts
-src/Common/NotificationsClientBase.ts
 src/Common/QueriesClient.ts
-src/Common/Splitter.ts
 src/Controls/Heatmap/Heatmap.test.ts
 src/Controls/Heatmap/Heatmap.ts
 src/Definitions/datatables.d.ts
@@ -37,8 +35,7 @@ src/Definitions/svg.d.ts
 src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
 src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
-
-src/Explorer/Controls/Editor/EditorComponent.ts
+src/Explorer/Controls/DynamicList/DynamicList.test.ts
 src/Explorer/Controls/JsonEditor/JsonEditorComponent.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.ts
@@ -152,14 +149,11 @@ src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
-src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
-src/Explorer/Notebook/NotebookComponent/VirtualCommandBarComponent.tsx
 src/Explorer/Notebook/NotebookComponent/contents/index.tsx
 src/Explorer/Notebook/NotebookRenderer/NotebookReadOnlyRenderer.tsx
 src/Explorer/Notebook/NotebookRenderer/NotebookRenderer.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/draggable/index.tsx
-src/Explorer/Notebook/NotebookRenderer/decorators/hijack-scroll/index.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/kbd-shortcuts/index.tsx
 src/Explorer/Notebook/temp/inputs/connected-editors/codemirror.tsx
 src/Explorer/Tree/ResourceTreeAdapter.tsx
