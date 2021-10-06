@@ -96,7 +96,6 @@ export const TableEntity: FunctionComponent<TableEntityProps> = ({
         <TextField
           label={entityPropertyLabel && entityPropertyLabel}
           id="entityPropertyId"
-          autoFocus
           disabled={isPropertyTypeDisable}
           placeholder={entityPropertyPlaceHolder}
           value={entityProperty}

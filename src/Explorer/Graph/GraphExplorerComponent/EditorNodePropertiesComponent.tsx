@@ -123,7 +123,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
           <select
             className="typeSelect"
             value={singleValue.type}
-            onChange={(e) => {
+            onBlur={(e) => {
               singleValue.type = e.target.value as ViewModels.InputPropertyValueTypeString;
               if (singleValue.type === "null") {
                 singleValue.value = undefined;
@@ -217,7 +217,7 @@ export class EditorNodePropertiesComponent extends React.Component<EditorNodePro
                 <select
                   className="typeSelect"
                   value={firstValue.type}
-                  onChange={(e) => {
+                  onBlur={(e) => {
                     firstValue.type = e.target.value as ViewModels.InputPropertyValueTypeString;
                     this.props.onUpdateProperties(this.props.editedProperties);
                   }}

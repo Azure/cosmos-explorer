@@ -214,8 +214,14 @@ export class EditorNeighborsComponent extends React.Component<EditorNeighborsCom
               />
             </td>
             <td className="actionCol">
-              <span className="rightPaneTrashIcon rightPaneBtns">
-                <img src={DeleteIcon} alt="Delete" onClick={() => this.removeAddedEdgeToNeighbor(index)} />
+              <span
+                className="rightPaneTrashIcon rightPaneBtns"
+                role="button"
+                onKeyPress={() => this.removeAddedEdgeToNeighbor(index)}
+                onClick={() => this.removeAddedEdgeToNeighbor(index)}
+                tabIndex={0}
+              >
+                <img src={DeleteIcon} alt="Delete" />
               </span>
             </td>
           </tr>

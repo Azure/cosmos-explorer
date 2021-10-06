@@ -276,7 +276,6 @@ export default class UserDefinedFunctionTabContent extends Component<
           className="trigger-field"
           label="User Defined Function Id"
           id="entityTimeId"
-          autoFocus
           required
           readOnly={!isUdfIdEditable}
           type="text"

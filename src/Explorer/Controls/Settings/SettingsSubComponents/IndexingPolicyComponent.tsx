@@ -122,7 +122,7 @@ export class IndexingPolicyComponent extends React.Component<
         {isDirty(this.props.indexingPolicyContent, this.props.indexingPolicyContentBaseline) && (
           <MessageBar messageBarType={MessageBarType.warning}>{indexingPolicynUnsavedWarningMessage}</MessageBar>
         )}
-        <div className="settingsV2IndexingPolicyEditor" tabIndex={0} ref={this.indexingPolicyDiv}></div>
+        <div className="settingsV2IndexingPolicyEditor" ref={this.indexingPolicyDiv}></div>
       </Stack>
     );
   }

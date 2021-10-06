@@ -118,10 +118,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         <input
           className="throughputInputRadioBtn"
           aria-label="Autoscale mode"
-          aria-required={true}
           checked={isAutoscaleSelected}
           type="radio"
-          role="radio"
           tabIndex={0}
           onChange={(e) => handleOnChangeMode(e, "Autoscale")}
         />
@@ -132,8 +130,6 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
           aria-label="Manual mode"
           checked={!isAutoscaleSelected}
           type="radio"
-          aria-required={true}
-          role="radio"
           tabIndex={0}
           onChange={(e) => handleOnChangeMode(e, "Manual")}
         />

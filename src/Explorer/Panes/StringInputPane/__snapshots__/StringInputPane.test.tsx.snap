@@ -56,7 +56,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
       >
         <StyledTextFieldBase
           aria-label="Enter new directory name"
-          autoFocus={true}
           label="Enter new directory name"
           name="collectionIdConfirmation"
           onChange={[Function]}
@@ -65,7 +64,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
         >
           <TextFieldBase
             aria-label="Enter new directory name"
-            autoFocus={true}
             deferredValidationTime={200}
             label="Enter new directory name"
             name="collectionIdConfirmation"
@@ -655,7 +653,6 @@ exports[`StringInput Pane should render Create new directory properly 1`] = `
                   <input
                     aria-invalid={false}
                     aria-labelledby="TextFieldLabel2"
-                    autoFocus={true}
                     className="ms-TextField-field field-56"
                     id="TextField0"
                     name="collectionIdConfirmation"

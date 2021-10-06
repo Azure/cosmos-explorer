@@ -188,12 +188,13 @@ export class CommandButtonComponent extends React.Component<CommandButtonCompone
         ref={(ref: HTMLElement) => {
           this.expandButtonElt = ref;
         }}
+        role="button"
         onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => this.onLauncherKeyDown(e)}
       >
         <div className="commandDropdownLauncher">
           <span className="partialSplitter" />
           <span className="expandDropdown">
-            <img src={CollapseChevronDownIcon} />
+            <img src={CollapseChevronDownIcon} alt="Collapse down icon" />
           </span>
         </div>
         <div

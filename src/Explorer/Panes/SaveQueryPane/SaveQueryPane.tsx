@@ -146,7 +146,6 @@ export const SaveQueryPane: FunctionComponent<SaveQueryPaneProps> = ({ explorer 
             <TextField
               id="saveQueryInput"
               label="Name"
-              autoFocus
               styles={{ fieldGroup: { width: 300 } }}
               onChange={(event, newInput?: string) => {
                 setQueryName(newInput);

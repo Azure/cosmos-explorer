@@ -93,7 +93,7 @@ exports[`<EditorNodePropertiesComponent /> renders component 1`] = `
       <td>
         <select
           className="typeSelect"
-          onChange={[Function]}
+          onBlur={[Function]}
           required={true}
           value="string"
         >
@@ -282,7 +282,7 @@ exports[`<EditorNodePropertiesComponent /> renders proper unicode 1`] = `
       <td>
         <select
           className="typeSelect"
-          onChange={[Function]}
+          onBlur={[Function]}
           required={true}
           value="string"
         >
@@ -344,7 +344,7 @@ exports[`<EditorNodePropertiesComponent /> renders proper unicode 1`] = `
       <td>
         <select
           className="typeSelect"
-          onChange={[Function]}
+          onBlur={[Function]}
           required={true}
           value="string"
         >

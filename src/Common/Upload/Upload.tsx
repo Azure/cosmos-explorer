@@ -66,9 +66,15 @@ export const Upload: FunctionComponent<UploadProps> = ({
           onChange={onUpload}
           role="button"
         />
-        <a href="#" id="fileImportLinkNotebook" onClick={onImportLinkClick} onKeyPress={onImportLinkKeyPress}>
+        <span
+          id="fileImportLinkNotebook"
+          role="button"
+          tabIndex={0}
+          onClick={onImportLinkClick}
+          onKeyPress={onImportLinkKeyPress}
+        >
           <Image className="fileImportImg" src={FolderIcon} alt={title} title={title} />
-        </a>
+        </span>
       </Stack>
     </div>
   );

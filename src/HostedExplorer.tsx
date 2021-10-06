@@ -89,6 +89,8 @@ const App: React.FunctionComponent = () => {
               onClick={() => window.open("https://portal.azure.com", "_blank")}
               tabIndex={0}
               title="Go to Azure Portal"
+              role="button"
+              onKeyDown={() => window.open("https://portal.azure.com", "_blank")}
             >
               Microsoft Azure
             </span>

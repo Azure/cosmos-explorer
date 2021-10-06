@@ -3,8 +3,8 @@ module.exports = {
     browser: true,
     es6: true,
   },
-  plugins: ["@typescript-eslint", "no-null", "prefer-arrow", "react-hooks"],
-  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+  plugins: ["@typescript-eslint", "no-null", "prefer-arrow", "react-hooks", "jsx-a11y"],
+  extends: ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:jsx-a11y/recommended"],
   globals: {
     Atomics: "readonly",
     SharedArrayBuffer: "readonly",

@@ -579,13 +579,16 @@ export default class StoredProcedureTabComponent extends React.Component<
               <div className="errorContent">
                 <span className="errorMessage">{this.state.error}</span>
                 <span className="errorDetailsLink">
-                  <a
+                  <span
+                    role="button"
+                    tabIndex={0}
+                    className="moreOption"
                     aria-label="Error details link"
                     onClick={() => this.onErrorDetailsClick()}
                     onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) => this.onErrorDetailsKeyPress(event)}
                   >
                     More details
-                  </a>
+                  </span>
                 </span>
               </div>
             </div>

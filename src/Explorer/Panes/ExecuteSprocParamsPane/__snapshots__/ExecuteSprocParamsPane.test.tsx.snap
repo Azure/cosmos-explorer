@@ -4328,6 +4328,9 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   </TextFieldBase>
                 </StyledTextFieldBase>
                 <div
+                  onClick={[Function]}
+                  onKeyPress={[Function]}
+                  role="button"
                   tabIndex={0}
                 >
                   <StyledImageBase
@@ -4335,8 +4338,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     className="addRemoveIconLabel"
                     height={30}
                     id="deleteparam"
-                    onClick={[Function]}
-                    role="button"
                     src=""
                     width={20}
                   >
@@ -4345,8 +4346,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       className="addRemoveIconLabel"
                       height={30}
                       id="deleteparam"
-                      onClick={[Function]}
-                      role="button"
                       src=""
                       styles={[Function]}
                       theme={
@@ -4638,10 +4637,8 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
                           id="deleteparam"
                           key="fabricImage"
-                          onClick={[Function]}
                           onError={[Function]}
                           onLoad={[Function]}
-                          role="button"
                           src=""
                         />
                       </div>
@@ -4649,6 +4646,9 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                   </StyledImageBase>
                 </div>
                 <div
+                  onClick={[Function]}
+                  onKeyPress={[Function]}
+                  role="button"
                   tabIndex={0}
                 >
                   <StyledImageBase
@@ -4656,8 +4656,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                     className="addRemoveIconLabel"
                     height={30}
                     id="addparam"
-                    onClick={[Function]}
-                    role="button"
                     src=""
                     width={20}
                   >
@@ -4666,8 +4664,6 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                       className="addRemoveIconLabel"
                       height={30}
                       id="addparam"
-                      onClick={[Function]}
-                      role="button"
                       src=""
                       styles={[Function]}
                       theme={
@@ -4959,10 +4955,8 @@ exports[`Excute Sproc Param Pane should render Default properly 1`] = `
                           className="ms-Image-image ms-Image-image--portrait is-notLoaded is-fadeIn image-87"
                           id="addparam"
                           key="fabricImage"
-                          onClick={[Function]}
                           onError={[Function]}
                           onLoad={[Function]}
-                          role="button"
                           src=""
                         />
                       </div>

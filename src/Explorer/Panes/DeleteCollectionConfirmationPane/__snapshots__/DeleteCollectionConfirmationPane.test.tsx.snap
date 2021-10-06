@@ -41,7 +41,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             </Text>
             <StyledTextFieldBase
               ariaLabel="Confirm by typing the container id"
-              autoFocus={true}
               id="confirmCollectionId"
               onChange={[Function]}
               styles={
@@ -55,7 +54,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             >
               <TextFieldBase
                 ariaLabel="Confirm by typing the container id"
-                autoFocus={true}
                 deferredValidationTime={200}
                 id="confirmCollectionId"
                 onChange={[Function]}
@@ -349,7 +347,6 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                       <input
                         aria-invalid={false}
                         aria-label="Confirm by typing the container id"
-                        autoFocus={true}
                         className="ms-TextField-field field-57"
                         id="confirmCollectionId"
                         onBlur={[Function]}

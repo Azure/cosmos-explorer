@@ -966,10 +966,15 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                                 <>
                                   <span className="queryResultDivider">|</span>
                                   <span className="queryResultNextEnable">
-                                    <a onClick={this.onFetchNextPageClick.bind(this)}>
-                                      <span>Load more</span>
+                                    <div
+                                      onClick={this.onFetchNextPageClick.bind(this)}
+                                      role="button"
+                                      tabIndex={0}
+                                      onKeyPress={this.onFetchNextPageClick.bind(this)}
+                                    >
+                                      <span className="moreOption">Load more</span>
                                       <img className="queryResultnextImg" src={QueryEditorNext} alt="Fetch next page" />
-                                    </a>
+                                    </div>
                                   </span>
                                 </>
                               )}
@@ -1015,7 +1020,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                                 </div>
                                 {this.state.isQueryMetricsEnabled && (
                                   <div className="downloadMetricsLinkContainer">
-                                    <a
+                                    <span
                                       id="downloadMetricsLink"
                                       role="button"
                                       tabIndex={0}
@@ -1030,7 +1035,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                                         alt="download query metrics csv"
                                       />
                                       <span>Per-partition query metrics (CSV)</span>
-                                    </a>
+                                    </span>
                                   </div>
                                 )}
                               </div>
@@ -1044,7 +1049,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                           <div className="errorContent">
                             <span className="errorMessage">{this.state.error}</span>
                             <span className="errorDetailsLink">
-                              <a
+                              <span
                                 onClick={() => this.onErrorDetailsClick()}
                                 onKeyPress={(event: React.KeyboardEvent<HTMLAnchorElement>) =>
                                   this.onErrorDetailsKeyPress(event)
@@ -1052,9 +1057,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                                 id="error-display"
                                 tabIndex={0}
                                 aria-label="Error details link"
+                                role="button"
+                                className="moreOption"
                               >
                                 More details
-                              </a>
+                              </span>
                             </span>
                           </div>
                         </div>

@@ -33,13 +33,23 @@ const Index = (): JSX.Element => {
         <div
           id="Quickstart"
           onClick={quickstart_click}
+          onKeyPress={quickstart_click}
+          role="button"
+          tabIndex={0}
           className={navigationSelection === "quickstart" ? "topSelected" : ""}
         >
           <img id="imgiconwidth1" src={Quickstart} alt="Open Quick Start" />
           <span className="menuQuickStart">Quickstart</span>
         </div>
 
-        <div id="Explorer" onClick={explorer_click} className={navigationSelection === "explorer" ? "topSelected" : ""}>
+        <div
+          id="Explorer"
+          onClick={explorer_click}
+          className={navigationSelection === "explorer" ? "topSelected" : ""}
+          role="button"
+          tabIndex={0}
+          onKeyPress={explorer_click}
+        >
           <img id="imgiconwidth1" src={Explorer} alt="Open Data Explorer" />
           <span className="menuExplorer">Explorer</span>
         </div>
@@ -53,11 +63,11 @@ const Index = (): JSX.Element => {
       </nav>
 
       {navigationSelection === "quickstart" && (
-        <iframe name="quickstart" className="iframe" src="quickstart.html"></iframe>
+        <iframe name="quickstart" className="iframe" src="quickstart.html" title="Quick Start"></iframe>
       )}
 
       {navigationSelection === "explorer" && (
-        <iframe name="explorer" className="iframe" src="explorer.html?platform=Emulator"></iframe>
+        <iframe name="explorer" className="iframe" src="explorer.html?platform=Emulator" title="Explorer"></iframe>
       )}
     </React.Fragment>
   );

@@ -368,7 +368,6 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
           </Text>
           <StyledTextFieldBase
             ariaLabel="Confirm by typing the database id"
-            autoFocus={true}
             id="confirmDatabaseId"
             onChange={[Function]}
             styles={
@@ -381,7 +380,6 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
           >
             <TextFieldBase
               ariaLabel="Confirm by typing the database id"
-              autoFocus={true}
               deferredValidationTime={200}
               id="confirmDatabaseId"
               onChange={[Function]}
@@ -674,7 +672,6 @@ exports[`Delete Database Confirmation Pane Should call delete database 1`] = `
                     <input
                       aria-invalid={false}
                       aria-label="Confirm by typing the database id"
-                      autoFocus={true}
                       className="ms-TextField-field field-60"
                       id="confirmDatabaseId"
                       onBlur={[Function]}

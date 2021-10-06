@@ -53,6 +53,7 @@ function TabNav({ tab, active }: { tab: Tab; active: boolean }) {
       tabIndex={0}
       role="tab"
       ref={focusTab}
+      onFocus={() => setHovering(true)}
     >
       <span className="tabNavContentContainer">
         <a data-toggle="tab" href={"#" + tab.tabId} tabIndex={-1}>

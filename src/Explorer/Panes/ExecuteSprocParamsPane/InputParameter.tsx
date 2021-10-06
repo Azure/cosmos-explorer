@@ -69,25 +69,11 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
         />
         {isAddRemoveVisible && (
           <>
-            <div tabIndex={0}>
-              <Image
-                {...imageProps}
-                src={EntityCancelIcon}
-                alt="Delete param"
-                id="deleteparam"
-                role="button"
-                onClick={onDeleteParamKeyPress}
-              />
+            <div tabIndex={0} onClick={onDeleteParamKeyPress} role="button" onKeyPress={onDeleteParamKeyPress}>
+              <Image {...imageProps} src={EntityCancelIcon} alt="Delete param" id="deleteparam" />
             </div>
-            <div tabIndex={0}>
-              <Image
-                {...imageProps}
-                src={AddPropertyIcon}
-                alt="Add param"
-                id="addparam"
-                role="button"
-                onClick={onAddNewParamKeyPress}
-              />
+            <div tabIndex={0} onClick={onAddNewParamKeyPress} role="button" onKeyPress={onAddNewParamKeyPress}>
+              <Image {...imageProps} src={AddPropertyIcon} alt="Add param" id="addparam" />
             </div>
           </>
         )}
