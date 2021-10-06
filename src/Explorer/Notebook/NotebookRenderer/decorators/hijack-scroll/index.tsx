@@ -1,6 +1,3 @@
-/* eslint jsx-a11y/no-static-element-interactions: 0 */
-/* eslint jsx-a11y/click-events-have-key-events: 0 */
-
 import { actions, AppState, ContentRef, selectors } from "@nteract/core";
 import React from "react";
 import { connect } from "react-redux";
@@ -23,7 +20,7 @@ interface DispatchProps {
 type Props = ComponentProps & DispatchProps & StateProps;
 
 export class HijackScroll extends React.Component<Props> {
-  el: HTMLDivElement | null = null;
+  el: HTMLDivElement | null | undefined = undefined;
 
   scrollIntoViewIfNeeded(prevFocused?: boolean): void {
     // Check if the element is being hovered over.
@@ -38,7 +35,7 @@ export class HijackScroll extends React.Component<Props> {
     ) {
       if (this.el && "scrollIntoViewIfNeeded" in this.el) {
         // This is only valid in Chrome, WebKit
-        (this.el as any).scrollIntoViewIfNeeded();
+        ((this.el as unknown) as HijackScroll).scrollIntoViewIfNeeded();
       } else if (this.el) {
         // Make a best guess effort for older platforms
         this.el.scrollIntoView();
