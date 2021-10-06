@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Wrapper around GremlinSimpleClient using Q promises and tailored to cosmosdb authentication
  */
@@ -55,7 +56,7 @@ export class GremlinClient {
           this.flushResult(result.requestId);
         }
       },
-      failureCallback: (result: Result, error: any) => {
+      failureCallback: (result: Result, error: string) => {
         const errorMessage = getErrorMessage(error);
         const requestId = result.requestId;
 
@@ -68,7 +69,7 @@ export class GremlinClient {
           // Fail all pending requests if no request id (fatal)
           if (!requestId) {
             for (const reqId of this.pendingResults.keys()) {
-              this.abortPendingRequest(reqId, errorMessage, null);
+              this.abortPendingRequest(reqId, errorMessage, undefined);
             }
           }
         } else {
@@ -89,7 +90,7 @@ export class GremlinClient {
       },
       deferred: deferred,
       timeoutId: window.setTimeout(
-        () => this.abortPendingRequest(requestId, GremlinClient.TIMEOUT_ERROR_MSG, null),
+        () => this.abortPendingRequest(requestId, GremlinClient.TIMEOUT_ERROR_MSG, undefined),
         GremlinClient.PENDING_REQUEST_TIMEOUT_MS
       ),
     });
@@ -101,7 +102,7 @@ export class GremlinClient {
       return;
     }
     this.client.close();
-    this.client = null;
+    this.client = undefined;
   }
 
   /**
@@ -110,7 +111,8 @@ export class GremlinClient {
    * @return request charge or empty string
    */
   public static getRequestChargeString(requestCharge: string | number): string {
-    return requestCharge == undefined || requestCharge == null ? "" : `(${requestCharge} RUs)`;
+    // eslint-disable-next-line no-null/no-null
+    return requestCharge === undefined || requestCharge === null ? "" : `(${requestCharge} RUs)`;
   }
 
   /**
