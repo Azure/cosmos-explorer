@@ -1,8 +1,9 @@
-import { Icon, ProgressIndicator, Stack, TooltipHost } from "@fluentui/react";
-import { ActionButton } from "@fluentui/react/lib/Button";
+import { FocusTrapCallout, FocusZone, FocusZoneTabbableElements, FontWeights, Icon, mergeStyleSets, ProgressIndicator, Stack, Text, TooltipHost } from "@fluentui/react";
+import { useId } from '@fluentui/react-hooks';
+import { ActionButton, DefaultButton } from "@fluentui/react/lib/Button";
 import * as React from "react";
 import "../../../../less/hostedexplorer.less";
-import { ConnectionStatusType, Notebook } from "../../../Common/Constants";
+import { ConatinerStatusType, ConnectionStatusType, Notebook } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import "../CommandBar/ConnectionStatusComponent.less";
@@ -16,6 +17,26 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   const [counter, setCounter] = React.useState(0);
   const [statusColor, setStatusColor] = React.useState("");
   const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary workspace.");
+  const [isBarDismissed, setIsBarDismissed] = React.useState<boolean>(false);
+  const buttonId = useId('callout-button');
+  const containerInfo = useNotebook((state) => state.conatinerStatus);
+
+  const styles = mergeStyleSets({
+    callout: {
+      width: 320,
+      padding: '20px 24px',
+    },
+    title: {
+      marginBottom: 12,
+      fontWeight: FontWeights.semilight,
+    },
+    buttons: {
+      display: 'flex',
+      justifyContent: 'flex-end',
+      marginTop: 20,
+    },
+  });
+
   React.useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
@@ -78,30 +99,55 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     setToolTipContent("Click here to Reconnect to temporary workspace.");
   }
   return (
-    <ActionButton
-      className={connectionInfo.status === ConnectionStatusType.Failed ? "commandReactBtn" : "connectedReactBtn"}
-      onClick={(e: React.MouseEvent<HTMLSpanElement>) =>
-        connectionInfo.status === ConnectionStatusType.Failed ? container.allocateContainer() : e.preventDefault()
-      }
-    >
-      <TooltipHost content={toolTipContent}>
-        <Stack className="connectionStatusContainer" horizontal>
-          <i className={statusColor}></i>
-          <span className={connectionInfo.status === ConnectionStatusType.Failed ? "connectionStatusFailed" : ""}>
-            {connectionInfo.status}
-          </span>
-          {connectionInfo.status === ConnectionStatusType.Connecting && isActive && (
-            <ProgressIndicator description={minute + ":" + second} />
-          )}
-          {connectionInfo.status === ConnectionStatusType.Connected && !isActive && (
-            <ProgressIndicator
-              className={usedGB / totalGB > 0.8 ? "lowMemory" : ""}
-              description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
-              percentComplete={usedGB / totalGB}
-            />
-          )}
-        </Stack>
+    <>
+      <TooltipHost content={(containerInfo.status && containerInfo.status === ConatinerStatusType.Active && Math.round(containerInfo.durationLeftInMinutes) <= 10) ?
+        `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(containerInfo.durationLeftInMinutes)} minutes.` : toolTipContent}>
+        <ActionButton id={buttonId}
+          className={connectionInfo.status === ConnectionStatusType.Failed ? "commandReactBtn" : "connectedReactBtn"}
+          onClick={(e: React.MouseEvent<HTMLSpanElement>) =>
+            connectionInfo.status === ConnectionStatusType.Failed ? container.allocateContainer() : e.preventDefault()
+          }
+        >
+          <Stack className="connectionStatusContainer" horizontal>
+            <i className={statusColor}></i>
+            <span className={connectionInfo.status === ConnectionStatusType.Failed ? "connectionStatusFailed" : ""}>
+              {connectionInfo.status}
+            </span>
+            {connectionInfo.status === ConnectionStatusType.Connecting && isActive && (
+              <ProgressIndicator description={minute + ":" + second} />
+            )}
+            {connectionInfo.status === ConnectionStatusType.Connected && !isActive && (
+              <ProgressIndicator
+                className={usedGB / totalGB > 0.8 ? "lowMemory" : ""}
+                description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
+                percentComplete={usedGB / totalGB}
+              />
+            )}
+          </Stack>
+          {(!isBarDismissed && containerInfo.status && containerInfo.status === ConatinerStatusType.Active && Math.round(containerInfo.durationLeftInMinutes) <= 10) ? (
+            <FocusTrapCallout
+              role="alertdialog"
+              className={styles.callout}
+              gapSpace={0}
+              target={`#${buttonId}`}
+              onDismiss={() => setIsBarDismissed(true)}
+              setInitialFocus
+            >
+              <Text block variant="xLarge" className={styles.title}>
+                Remaining Time
+              </Text>
+              <Text block variant="small">
+                This temporary workspace will get disconnected in {Math.round(containerInfo.durationLeftInMinutes)} minutes. To save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your local machine before the session ends.
+              </Text>
+              <FocusZone handleTabKey={FocusZoneTabbableElements.all} isCircularNavigation>
+                <Stack className={styles.buttons} gap={8} horizontal>
+                  <DefaultButton onClick={() => setIsBarDismissed(true)}>Dimiss</DefaultButton>
+                </Stack>
+              </FocusZone>
+            </FocusTrapCallout>
+          ) : null}
+        </ActionButton>
       </TooltipHost>
-    </ActionButton>
+    </>
   );
 };

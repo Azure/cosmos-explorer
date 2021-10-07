@@ -13,7 +13,6 @@ import {
   Link,
   PrimaryButton,
   ProgressIndicator,
-  Text,
   TextField,
 } from "@fluentui/react";
 import React, { FC } from "react";
@@ -197,7 +196,7 @@ export const Dialog: FC = () => {
           {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
         </Link>
       )}
-      {contentHtml && <Text>{contentHtml}</Text>}
+      {contentHtml}
       {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
       <DialogFooter>
         <PrimaryButton {...primaryButtonProps} />

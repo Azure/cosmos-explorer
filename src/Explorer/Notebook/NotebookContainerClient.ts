@@ -59,31 +59,27 @@ export class NotebookContainerClient {
 
     const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
     try {
-      const response = await fetch(`${notebookServerEndpoint}api/metrics/memory`, {
-        method: "GET",
-        headers: {
-          Authorization: authToken,
-          "content-type": "application/json",
-        },
-      });
-      if (response.ok) {
-        if (this.clearReconnectionAttemptMessage) {
-          this.clearReconnectionAttemptMessage();
-          this.clearReconnectionAttemptMessage = undefined;
+      if (this.checkStatus()) {
+        const response = await fetch(`${notebookServerEndpoint}api/metrics/memory`, {
+          method: "GET",
+          headers: {
+            Authorization: authToken,
+            "content-type": "application/json",
+          },
+        });
+        if (response.ok) {
+          if (this.clearReconnectionAttemptMessage) {
+            this.clearReconnectionAttemptMessage();
+            this.clearReconnectionAttemptMessage = undefined;
+          }
+          const memoryUsageInfo = await response.json();
+          if (memoryUsageInfo) {
+            return {
+              totalKB: memoryUsageInfo.total,
+              freeKB: memoryUsageInfo.free,
+            };
+          }
         }
-        const memoryUsageInfo = await response.json();
-        if (memoryUsageInfo) {
-          return {
-            totalKB: memoryUsageInfo.total,
-            freeKB: memoryUsageInfo.free,
-          };
-        }
-      } else if (NotebookUtil.isPhoenixEnabled()) {
-        const connectionStatus: ContainerConnectionInfo = {
-          status: ConnectionStatusType.ReConnect,
-        };
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
-        useNotebook.getState().setIsRefreshed(true);
       }
       return undefined;
     } catch (error) {
@@ -98,13 +94,29 @@ export class NotebookContainerClient {
           status: ConnectionStatusType.Failed,
         };
         useNotebook.getState().resetConatinerConnection(connectionStatus);
-        useNotebook.getState().setIsRefreshed(true);
+        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
       this.onConnectionLost();
       return undefined;
     }
   }
 
+  private checkStatus(): boolean {
+    if (NotebookUtil.isPhoenixEnabled()) {
+      if (
+        useNotebook.getState().conatinerStatus.status &&
+        useNotebook.getState().conatinerStatus.status === Constants.ConatinerStatusType.InActive
+      ) {
+        const connectionStatus: ContainerConnectionInfo = {
+          status: ConnectionStatusType.ReConnect,
+        };
+        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+        return false;
+      }
+    }
+    return true;
+  }
   public async resetWorkspace(): Promise<void> {
     this.isResettingWorkspace = true;
     try {
