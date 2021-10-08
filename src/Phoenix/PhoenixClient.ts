@@ -102,8 +102,7 @@ export class PhoenixClient {
         notebookServerInfo: undefined,
         status: ConatinerStatusType.InActive,
       };
-    }
-    catch (error) {
+    } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
         durationLeftInMinutes: undefined,

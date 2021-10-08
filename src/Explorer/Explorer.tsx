@@ -700,7 +700,7 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
     if (notebookContentItem.type === NotebookContentItemType.Notebook && NotebookUtil.isPhoenixEnabled()) {
-      this.allocateContainer();
+      await this.allocateContainer();
     }
 
     const notebookTabs = useTabs
@@ -1024,8 +1024,8 @@ export default class Explorer {
         useDialog
           .getState()
           .showOkModalDialog(
-            "Failed to Connect",
-            "Failed to connect temporary workspace, this could happen because of network issue please refresh and try again."
+            "Failed to connect",
+            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again."
           );
       }
     } else {

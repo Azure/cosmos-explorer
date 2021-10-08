@@ -1,5 +1,16 @@
-import { FocusTrapCallout, FocusZone, FocusZoneTabbableElements, FontWeights, Icon, mergeStyleSets, ProgressIndicator, Stack, Text, TooltipHost } from "@fluentui/react";
-import { useId } from '@fluentui/react-hooks';
+import {
+  FocusTrapCallout,
+  FocusZone,
+  FocusZoneTabbableElements,
+  FontWeights,
+  Icon,
+  mergeStyleSets,
+  ProgressIndicator,
+  Stack,
+  Text,
+  TooltipHost,
+} from "@fluentui/react";
+import { useId } from "@fluentui/react-hooks";
 import { ActionButton, DefaultButton } from "@fluentui/react/lib/Button";
 import * as React from "react";
 import "../../../../less/hostedexplorer.less";
@@ -18,21 +29,21 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   const [statusColor, setStatusColor] = React.useState("");
   const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary workspace.");
   const [isBarDismissed, setIsBarDismissed] = React.useState<boolean>(false);
-  const buttonId = useId('callout-button');
+  const buttonId = useId("callout-button");
   const containerInfo = useNotebook((state) => state.conatinerStatus);
 
   const styles = mergeStyleSets({
     callout: {
       width: 320,
-      padding: '20px 24px',
+      padding: "20px 24px",
     },
     title: {
       marginBottom: 12,
       fontWeight: FontWeights.semilight,
     },
     buttons: {
-      display: 'flex',
-      justifyContent: 'flex-end',
+      display: "flex",
+      justifyContent: "flex-end",
       marginTop: 20,
     },
   });
@@ -100,9 +111,19 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   }
   return (
     <>
-      <TooltipHost content={(containerInfo.status && containerInfo.status === ConatinerStatusType.Active && Math.round(containerInfo.durationLeftInMinutes) <= 10) ?
-        `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(containerInfo.durationLeftInMinutes)} minutes.` : toolTipContent}>
-        <ActionButton id={buttonId}
+      <TooltipHost
+        content={
+          containerInfo.status &&
+          containerInfo.status === ConatinerStatusType.Active &&
+          Math.round(containerInfo.durationLeftInMinutes) <= 10
+            ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
+                containerInfo.durationLeftInMinutes
+              )} minutes.`
+            : toolTipContent
+        }
+      >
+        <ActionButton
+          id={buttonId}
           className={connectionInfo.status === ConnectionStatusType.Failed ? "commandReactBtn" : "connectedReactBtn"}
           onClick={(e: React.MouseEvent<HTMLSpanElement>) =>
             connectionInfo.status === ConnectionStatusType.Failed ? container.allocateContainer() : e.preventDefault()
@@ -124,7 +145,10 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
               />
             )}
           </Stack>
-          {(!isBarDismissed && containerInfo.status && containerInfo.status === ConatinerStatusType.Active && Math.round(containerInfo.durationLeftInMinutes) <= 10) ? (
+          {!isBarDismissed &&
+          containerInfo.status &&
+          containerInfo.status === ConatinerStatusType.Active &&
+          Math.round(containerInfo.durationLeftInMinutes) <= 10 ? (
             <FocusTrapCallout
               role="alertdialog"
               className={styles.callout}
@@ -137,7 +161,9 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
                 Remaining Time
               </Text>
               <Text block variant="small">
-                This temporary workspace will get disconnected in {Math.round(containerInfo.durationLeftInMinutes)} minutes. To save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your local machine before the session ends.
+                This temporary workspace will get disconnected in {Math.round(containerInfo.durationLeftInMinutes)}{" "}
+                minutes. To save your work permanently, save your notebooks to a GitHub repository or download the
+                notebooks to your local machine before the session ends.
               </Text>
               <FocusZone handleTabKey={FocusZoneTabbableElements.all} isCircularNavigation>
                 <Stack className={styles.buttons} gap={8} horizontal>
@@ -145,7 +171,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
                 </Stack>
               </FocusZone>
             </FocusTrapCallout>
-          ) : null}
+          ) : undefined}
         </ActionButton>
       </TooltipHost>
     </>
