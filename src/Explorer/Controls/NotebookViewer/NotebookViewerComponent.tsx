@@ -53,7 +53,7 @@ export class NotebookViewerComponent
     super(props);
 
     this.clientManager = new NotebookClientV2({
-      connectionInfo: { authToken: undefined, notebookServerEndpoint: undefined },
+      connectionInfo: { authToken: undefined, notebookServerEndpoint: undefined, forwardingId: undefined },
       databaseAccountName: undefined,
       defaultExperience: "NotebookViewer",
       isReadOnly: true,

@@ -100,6 +100,7 @@ export default class TerminalTab extends TabsBase {
     return {
       authToken: info.authToken,
       notebookServerEndpoint: `${info.notebookServerEndpoint.replace(/\/+$/, "")}/${endpointSuffix}`,
+      forwardingId: info.forwardingId,
     };
   }
 }
