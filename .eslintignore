@@ -148,10 +148,10 @@ src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.t
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
-src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
+; src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
 src/Explorer/Notebook/NotebookComponent/VirtualCommandBarComponent.tsx
 src/Explorer/Notebook/NotebookComponent/contents/index.tsx
-src/Explorer/Notebook/NotebookRenderer/NotebookReadOnlyRenderer.tsx
+; src/Explorer/Notebook/NotebookRenderer/NotebookReadOnlyRenderer.tsx
 src/Explorer/Notebook/NotebookRenderer/NotebookRenderer.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/draggable/index.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/hijack-scroll/index.tsx
