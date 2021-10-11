@@ -999,7 +999,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     const collectionId: string = this.state.collectionId.trim();
     let databaseId = this.state.createNewDatabase ? this.state.newDatabaseId.trim() : this.state.selectedDatabaseId;
-    let partitionKeyString = this.state.partitionKey.trim();
+    let partitionKeyString = this.state.isSharded ? this.state.partitionKey.trim() : undefined;
 
     if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
