@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FeedOptions, ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 import * as Q from "q";
 import * as React from "react";
@@ -294,8 +296,6 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       this.setGremlinParams();
     }
 
-    const selectedNode = this.state.highlightedNode;
-
     props.onGraphAccessorCreated({
       applyFilter: this.submitQuery.bind(this),
       addVertex: this.addVertex.bind(this),
@@ -303,7 +303,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     });
   } // constructor
 
-  public shareIGraphConfig(igraphConfig: IGraphConfig) {
+  public shareIGraphConfig(igraphConfig: IGraphConfig): void {
     this.setState({
       igraphConfig: { ...igraphConfig },
     });
@@ -330,10 +330,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const partitionKeyProperty = this.props.collectionPartitionKeyProperty;
 
     // aggregate all the properties, remove dropped ones
-    let finalProperties = editedProperties.existingProperties.concat(editedProperties.addedProperties);
+    const finalProperties = editedProperties.existingProperties.concat(editedProperties.addedProperties);
 
     // Compose the query
-    let pkId = editedProperties.pkId;
+    const pkId = editedProperties.pkId;
     let updateQueryFragment = "";
 
     finalProperties.forEach((p) => {
@@ -422,7 +422,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * Called from ko binding
    * @param id
    */
-  public selectNode(id: string) {
+  public selectNode(id: string): void {
     if (!this.d3ForceGraph) {
       console.warn("Attempting to select node, but d3ForceGraph not initialized, yet.");
       return;
@@ -431,7 +431,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     this.d3ForceGraph.selectNode(id);
   }
 
-  public deleteHighlightedNode() {
+  public deleteHighlightedNode(): void {
     if (!this.state.highlightedNode) {
       GraphExplorer.reportToConsole(ConsoleDataType.Error, "No highlighted node to remove.");
       return;
@@ -467,23 +467,23 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * Is of type: {e: GremlinEdge, v: GremlinVertex}[]
    * @param data
    */
-  public static isEdgeVertexPairArray(data: any) {
+  public static isEdgeVertexPairArray(data: any): boolean {
     if (!(data instanceof Array)) {
       GraphExplorer.reportToConsole(ConsoleDataType.Info, "Query result not an array", data);
       return false;
     }
 
-    let pairs: any[] = data;
+    const pairs: any[] = data;
     for (let i = 0; i < pairs.length; i++) {
       const item = pairs[i];
       if (
-        !item.hasOwnProperty("e") ||
-        !item.hasOwnProperty("v") ||
-        !item["e"].hasOwnProperty("id") ||
-        !item["e"].hasOwnProperty("type") ||
+        !Object.prototype.hasOwnProperty.call(item, "e") ||
+        !Object.prototype.hasOwnProperty.call(item, "v") ||
+        !Object.prototype.hasOwnProperty.call(item["e"], "id") ||
+        !Object.prototype.hasOwnProperty.call(item["e"], "type") ||
         item["e"].type !== "edge" ||
-        !item["v"].hasOwnProperty("id") ||
-        !item["v"].hasOwnProperty("type") ||
+        !Object.prototype.hasOwnProperty.call(item["v"], "id") ||
+        !Object.prototype.hasOwnProperty.call(item["e"], "type") ||
         item["v"].type !== "vertex"
       ) {
         return false;
@@ -514,7 +514,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     // Try hitting cache first
     const cache = outE ? this.outECache : this.inECache;
     const pairs = cache.retrieve(vertex.id, startIndex, pageSize);
-    if (pairs != null && pairs.length === pageSize) {
+    if (pairs !== null && pairs.length === pageSize) {
       const msg = `Retrieved ${pairs.length} ${outE ? "outE" : "inE"} edges from cache for vertex id: ${vertex.id}`;
       GraphExplorer.reportToConsole(ConsoleDataType.Info, msg);
       return Q.resolve(pairs);
@@ -588,7 +588,6 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       vertex._outEAllLoaded &&
       vertex._inEAllLoaded
     ) {
-      console.info("No more edges to load for vertex " + vertex.id);
       updateGraphData();
       return Q.resolve(graphData);
     }
@@ -668,7 +667,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       }
     );
 
-    return promise.then((nbPairsFetched: number) => {
+    return promise.then(() => {
       if (offsetIndex >= GraphExplorer.LOAD_PAGE_SIZE || !vertex._outEAllLoaded || !vertex._inEAllLoaded) {
         vertex._pagination = {
           total:
@@ -754,7 +753,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * Create a new edge in docdb and update graph
    * @param e
    */
-  public createNewEdge(e: GraphNewEdgeData): Q.Promise<any> {
+  public createNewEdge(e: GraphNewEdgeData): Q.Promise<unknown> {
     const q = `g.V('${GraphUtil.escapeSingleQuotes(e.inputOutV)}').addE('${GraphUtil.escapeSingleQuotes(
       e.label
     )}').To(g.V('${GraphUtil.escapeSingleQuotes(e.inputInV)}'))`;
@@ -772,8 +771,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           return;
         }
 
-        let edge = edges[0];
-        let graphData = this.originalGraphData;
+        const edge = edges[0];
+        const graphData = this.originalGraphData;
         graphData.addEdge(edge);
 
         // Allow loadNeighbors to load list new edge
@@ -800,10 +799,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * Manually update in-memory graph.
    * @param edgeId
    */
-  public removeEdge(edgeId: string): Q.Promise<any> {
+  public removeEdge(edgeId: string): Q.Promise<unknown> {
     return this.submitToBackend(`g.E('${GraphUtil.escapeSingleQuotes(edgeId)}').drop()`).then(
       () => {
-        let graphData = this.originalGraphData;
+        const graphData = this.originalGraphData;
         graphData.removeEdge(edgeId, false);
         this.updateGraphData(graphData, this.state.igraphConfig);
       },
@@ -826,10 +825,14 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return false;
     }
 
-    let vertices: any[] = data;
+    const vertices: any[] = data;
     if (vertices.length > 0) {
-      let v0 = vertices[0];
-      if (!v0.hasOwnProperty("id") || !v0.hasOwnProperty("type") || v0.type !== "vertex") {
+      const v0 = vertices[0];
+      if (
+        !Object.prototype.hasOwnProperty.call(v0, "id") ||
+        !Object.prototype.hasOwnProperty.call(v0, "type") ||
+        v0.type !== "vertex"
+      ) {
         return false;
       }
     }
@@ -837,7 +840,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   }
 
   public processGremlinQueryResults(result: GremlinClient.GremlinRequestResult): void {
-    const data = result.data as any;
+    const data = result.data as GraphData.GremlinVertex[];
     this.setFilterQueryStatus(FilterQueryStatus.GraphEmptyResult);
 
     if (data === null) {
@@ -927,13 +930,13 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           throw { title: err };
         }
 
-        if (vertices == null || vertices.length < 1) {
+        if (vertices === null || vertices.length < 1) {
           const err = "Failed to create vertex (no vertex in response)";
           GraphExplorer.reportToConsole(ConsoleDataType.Error, err, vertices);
           throw { title: err };
         }
 
-        let vertex = vertices[0];
+        const vertex = vertices[0];
         const graphData = this.originalGraphData;
         graphData.addVertex(vertex);
         this.updateGraphData(graphData, this.state.igraphConfig);
@@ -1022,7 +1025,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     this.gremlinClient.destroy();
   }
   public componentDidMount(): void {
-    if (this.props.onLoadStartKey != null && this.props.onLoadStartKey != undefined) {
+    if (this.props.onLoadStartKey !== null && this.props.onLoadStartKey !== undefined) {
       TelemetryProcessor.traceSuccess(
         Action.Tab,
         {
@@ -1082,7 +1085,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   public static reportToConsole(type: ConsoleDataType.Info, msg: string, ...errorData: any[]): void;
   public static reportToConsole(type: ConsoleDataType.Error, msg: string, ...errorData: any[]): void;
   public static reportToConsole(type: ConsoleDataType, msg: string, ...errorData: any[]): void | (() => void) {
-    let errorDataStr: string = "";
+    let errorDataStr = "";
     if (errorData && errorData.length > 0) {
       console.error(msg, errorData);
       errorDataStr = ": " + JSON.stringify(errorData);
@@ -1161,12 +1164,15 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       )}"`
     ).then(
       (documents: DataModels.DocumentId[]) => {
-        $.each(documents, (index: number, doc: any) => {
-          newIconsMap[doc["_graph_icon_property_value"]] = {
-            data: doc["icon"],
-            format: doc["format"],
-          };
-        });
+        $.each(
+          documents,
+          (index: number, doc: { _graph_icon_property_value: string; icon: string; format: string }) => {
+            newIconsMap[doc["_graph_icon_property_value"]] = {
+              data: doc["icon"],
+              format: doc["format"],
+            };
+          }
+        );
 
         // Update graph configuration
         this.setState({
@@ -1223,8 +1229,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     const key = this.state.igraphConfig.nodeCaption;
     return $.map(
       this.state.rootMap,
-      (value: any, index: number): LeftPane.CaptionId => {
-        let result = GraphData.GraphData.getNodePropValue(value, key);
+      (value: any): LeftPane.CaptionId => {
+        const result = GraphData.GraphData.getNodePropValue(value, key);
         return {
           caption: result !== undefined ? result : value.id,
           id: value.id,
@@ -1237,7 +1243,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * Selecting a root node means
    * @param node
    */
-  private selectRootNode(id: string): Q.Promise<any> {
+  private selectRootNode(id: string): Q.Promise<unknown> {
     if (!this.d3ForceGraph) {
       console.warn("Attempting to reset zoom, but d3ForceGraph not initialized, yet.");
     } else {
@@ -1282,7 +1288,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
         this.collectNodeProperties(this.originalGraphData.vertices);
         this.updatePropertiesPane(id);
       },
-      (reason: any) => {
+      (reason: string) => {
         GraphExplorer.reportToConsole(ConsoleDataType.Error, `Failed to select root node. Reason:${reason}`);
       }
     );
@@ -1349,10 +1355,10 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   private getPkIdFromVertex(v: GraphData.GremlinVertex): string {
     if (
       this.props.collectionPartitionKeyProperty &&
-      v.hasOwnProperty("properties") &&
-      v.properties.hasOwnProperty(this.props.collectionPartitionKeyProperty) &&
+      Object.prototype.hasOwnProperty.call(v, "properties") &&
+      Object.prototype.hasOwnProperty.call(v.properties, this.props.collectionPartitionKeyProperty) &&
       v.properties[this.props.collectionPartitionKeyProperty].length > 0 &&
-      v.properties[this.props.collectionPartitionKeyProperty][0].hasOwnProperty("value")
+      Object.prototype.hasOwnProperty.call(v.properties[this.props.collectionPartitionKeyProperty][0], "value")
     ) {
       const pk = v.properties[this.props.collectionPartitionKeyProperty][0].value;
       return GraphExplorer.generatePkIdPair(pk, v.id);
@@ -1370,8 +1376,8 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   private getPkIdFromNodeData(v: GraphHighlightedNodeData): string {
     if (
       this.props.collectionPartitionKeyProperty &&
-      v.hasOwnProperty("properties") &&
-      v.properties.hasOwnProperty(this.props.collectionPartitionKeyProperty)
+      Object.prototype.hasOwnProperty.call(v, "properties") &&
+      Object.prototype.hasOwnProperty.call(v.properties, this.props.collectionPartitionKeyProperty)
     ) {
       const pk = v.properties[this.props.collectionPartitionKeyProperty];
       return GraphExplorer.generatePkIdPair(pk[0] as PartitionKeyValueType, v.id);
@@ -1388,14 +1394,14 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @return id
    */
   public static getPkIdFromDocumentId(d: DataModels.DocumentId, collectionPartitionKeyProperty: string): string {
-    let { id } = d;
+    const { id } = d;
     if (typeof id !== "string") {
       const error = `Vertex id is not a string: ${JSON.stringify(id)}.`;
       logConsoleError(error);
       throw new Error(error);
     }
 
-    if (collectionPartitionKeyProperty && d.hasOwnProperty(collectionPartitionKeyProperty)) {
+    if (collectionPartitionKeyProperty && Object.prototype.hasOwnProperty.call(d, collectionPartitionKeyProperty)) {
       let pk = (d as any)[collectionPartitionKeyProperty];
       if (typeof pk !== "string" && typeof pk !== "number" && typeof pk !== "boolean") {
         if (Array.isArray(pk) && pk.length > 0) {
@@ -1425,7 +1431,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     }"] AS p FROM c WHERE NOT IS_DEFINED(c._isEdge)`;
     return this.executeNonPagedDocDbQuery(q).then(
       (documents: DataModels.DocumentId[]) => {
-        let possibleVertices = [] as PossibleVertex[];
+        const possibleVertices = [] as PossibleVertex[];
         $.each(documents, (index: number, item: any) => {
           if (highlightedNodeId && item.id === highlightedNodeId) {
             // Exclude highlighed node in the list
@@ -1439,7 +1445,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
               caption: item.p,
             });
           } else {
-            if (item.hasOwnProperty("p")) {
+            if (Object.prototype.hasOwnProperty.call(item, "p")) {
               possibleVertices.push({
                 value: item.id,
                 caption: item.p[0]["_value"],
@@ -1462,17 +1468,17 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
    * @param addedEdges
    * @return promise when done
    */
-  private editGraphEdges(editedEdges: EditedEdges): Q.Promise<any> {
-    let promises = [];
+  private editGraphEdges(editedEdges: EditedEdges): Q.Promise<unknown> {
+    const promises = [];
     // Drop edges
     for (let i = 0; i < editedEdges.droppedIds.length; i++) {
-      let id = editedEdges.droppedIds[i];
+      const id = editedEdges.droppedIds[i];
       promises.push(this.removeEdge(id));
     }
 
     // Add edges
     for (let i = 0; i < editedEdges.addedEdges.length; i++) {
-      let e = editedEdges.addedEdges[i];
+      const e = editedEdges.addedEdges[i];
       promises.push(
         this.createNewEdge(e).then(() => {
           // Reload neighbors in case we linked to a vertex that isn't loaded in the graph
@@ -1525,7 +1531,9 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   /**
    * For unit testing purposes
    */
-  public onGraphUpdated(timestamp: number): void {}
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onGraphUpdated(_timestamp: number): void {}
 
   /**
    * Get node properties for styling purposes. Result is the union of all properties of all nodes.
@@ -1533,17 +1541,17 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
   private collectNodeProperties(vertices: GraphData.GremlinVertex[]) {
     const props = {} as any; // Hashset
     $.each(vertices, (index: number, item: GraphData.GremlinVertex) => {
-      for (var p in item) {
+      for (const p in item) {
         // DocDB: Exclude type because it's always 'vertex'
         if (p !== "type" && typeof (item as any)[p] === "string") {
           props[p] = true;
         }
       }
       // Inspect properties
-      if (item.hasOwnProperty("properties")) {
+      if (Object.prototype.hasOwnProperty.call(item, "properties")) {
         // TODO This is DocDB-graph specific
         // Assume each property value is [{value:... }]
-        for (var f in item.properties) {
+        for (const f in item.properties) {
           props[f] = true;
         }
       }
@@ -1570,21 +1578,21 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return;
     }
 
-    let data = this.originalGraphData.getVertexById(id);
+    const data = this.originalGraphData.getVertexById(id);
 
     // A bit of translation to make it easier to display
-    let props: { [id: string]: ViewModels.GremlinPropertyValueType[] } = {};
-    for (let p in data.properties) {
+    const props: { [id: string]: ViewModels.GremlinPropertyValueType[] } = {};
+    for (const p in data.properties) {
       props[p] = data.properties[p].map((gremlinProperty) => gremlinProperty.value);
     }
 
     // update neighbors
-    let sources: NeighborVertexBasicInfo[] = [];
-    let targets: NeighborVertexBasicInfo[] = [];
+    const sources: NeighborVertexBasicInfo[] = [];
+    const targets: NeighborVertexBasicInfo[] = [];
     this.props.onResetDefaultGraphConfigValues();
-    let nodeCaption = this.state.igraphConfigUiData.nodeCaptionChoice;
+    const nodeCaption = this.state.igraphConfigUiData.nodeCaptionChoice;
     this.updateSelectedNodeNeighbors(data.id, nodeCaption, sources, targets);
-    let sData: GraphHighlightedNodeData = {
+    const sData: GraphHighlightedNodeData = {
       id: data.id,
       label: data.label,
       properties: props,
@@ -1611,16 +1619,16 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     targets: NeighborVertexBasicInfo[]
   ): void {
     // update neighbors
-    let gd = this.originalGraphData;
-    let v = gd.getVertexById(id);
+    const gd = this.originalGraphData;
+    const v = gd.getVertexById(id);
 
     // Clear the array while keeping the references
     sources.length = 0;
     targets.length = 0;
 
-    let possibleEdgeLabels = {} as any; // Collect all edge labels in a hashset
+    const possibleEdgeLabels = {} as any; // Collect all edge labels in a hashset
 
-    for (let p in v.inE) {
+    for (const p in v.inE) {
       possibleEdgeLabels[p] = true;
       const edges = v.inE[p];
       $.each(edges, (index: number, edge: GraphData.GremlinShortInEdge) => {
@@ -1629,7 +1637,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           // If id not known, it must be an edge node whose neighbor hasn't been loaded into the graph, yet
           return;
         }
-        let caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
+        const caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
         sources.push({
           name: caption,
           id: neighborId,
@@ -1639,7 +1647,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       });
     }
 
-    for (let p in v.outE) {
+    for (const p in v.outE) {
       possibleEdgeLabels[p] = true;
       const edges = v.outE[p];
       $.each(edges, (index: number, edge: GraphData.GremlinShortOutEdge) => {
@@ -1648,7 +1656,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
           // If id not known, it must be an edge node whose neighbor hasn't been loaded into the graph, yet
           return;
         }
-        let caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
+        const caption = GraphData.GraphData.getNodePropValue(gd.getVertexById(neighborId), nodeCaption) as string;
         targets.push({
           name: caption,
           id: neighborId,
@@ -1660,7 +1668,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
     this.setState({
       possibleEdgeLabels: Object.keys(possibleEdgeLabels).map(
-        (value: string, index: number, array: string[]): InputTypeaheadComponent.Item => {
+        (value: string): InputTypeaheadComponent.Item => {
           return { caption: value, value: value };
         }
       ),
@@ -1681,20 +1689,20 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
       return;
     }
 
-    let updatedVertex = vertices[0];
+    const updatedVertex = vertices[0];
     if (this.originalGraphData.hasVertexId(updatedVertex.id)) {
-      let currentVertex = this.originalGraphData.getVertexById(updatedVertex.id);
+      const currentVertex = this.originalGraphData.getVertexById(updatedVertex.id);
       // Copy updated properties
-      if (currentVertex.hasOwnProperty("properties")) {
+      if (Object.prototype.hasOwnProperty.call(currentVertex, "properties")) {
         delete currentVertex["properties"];
       }
-      for (var p in updatedVertex) {
+      for (const p in updatedVertex) {
         (currentVertex as any)[p] = updatedVertex[p];
       }
     }
 
     // TODO This kind of assumes saveVertexProperty is done from property panes.
-    let hn = this.state.highlightedNode;
+    const hn = this.state.highlightedNode;
     if (hn && hn.id === updatedVertex.id) {
       this.updatePropertiesPane(hn.id);
     }
@@ -1708,7 +1716,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
     igraphConfig?: IGraphConfig
   ) {
     this.originalGraphData = graphData;
-    let gd = JSON.parse(JSON.stringify(this.originalGraphData));
+    const gd = JSON.parse(JSON.stringify(this.originalGraphData));
     if (!this.d3ForceGraph) {
       console.warn("Attempting to update graph, but d3ForceGraph not initialized, yet.");
       return;
@@ -1873,7 +1881,7 @@ export class GraphExplorer extends React.Component<GraphExplorerProps, GraphExpl
 
     promise
       .then((result: GremlinClient.GremlinRequestResult) => this.processGremlinQueryResults(result))
-      .catch((error: any) => {
+      .catch((error: Error) => {
         const errorMsg = `Failed to process query result: ${getErrorMessage(error)}`;
         GraphExplorer.reportToConsole(ConsoleDataType.Error, errorMsg);
         this.setState({
