@@ -1,5 +1,10 @@
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
-import { selfServeTrace } from "../SelfServeTelemetryProcessor";
+import {
+  selfServeTrace,
+  selfServeTraceFailure,
+  selfServeTraceStart,
+  selfServeTraceSuccess,
+} from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
@@ -17,7 +22,7 @@ import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
   getPriceMap,
-  getReadRegions,
+  getRegions,
   refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource,
 } from "./SqlX.rp";
@@ -205,6 +210,14 @@ let priceMap: Map<string, Map<string, number>>;
 let regions: Array<string>;
 
 const calculateCost = (skuName: string, instanceCount: number): Description => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "calculateCost",
+    description: "performs final calculation",
+    selfServeClassName: SqlX.name,
+  };
+  const calculateCostTimestamp = selfServeTraceStart(telemetryData);
+
   try {
     let costPerHour = 0;
     for (const region of regions) {
@@ -215,14 +228,22 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
       costPerHour += incrementalCost;
     }
 
+    if (costPerHour === 0) {
+      throw new Error("Cost per hour = 0");
+    }
+
     costPerHour *= instanceCount;
     costPerHour = Math.round(costPerHour * 100) / 100;
 
+    selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
     return {
       textTKey: `${costPerHour} USD`,
       type: DescriptionType.Text,
     };
   } catch (err) {
+    const failureTelemetry = { err, regions, priceMap, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, calculateCostTimestamp);
+
     return costPerHourDefaultValue;
   }
 };
@@ -324,7 +345,7 @@ export default class SqlX extends SelfServeBaseClass {
       hidden: true,
     });
 
-    regions = await getReadRegions();
+    regions = await getRegions();
     priceMap = await getPriceMap(regions);
 
     const response = await getCurrentProvisioningState();

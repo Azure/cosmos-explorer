@@ -138,9 +138,17 @@ const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: str
   return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
 };
 
-export const getReadRegions = async (): Promise<Array<string>> => {
+export const getRegions = async (): Promise<Array<string>> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getRegions",
+    description: "",
+    selfServeClassName: SqlX.name,
+  };
+  const getRegionsTimestamp = selfServeTraceStart(telemetryData);
+
   try {
-    const readRegions = new Array<string>();
+    const regions = new Array<string>();
 
     const response = await armRequestWithoutPolling<RegionsResponse>({
       host: configContext.ARM_ENDPOINT,
@@ -150,14 +158,18 @@ export const getReadRegions = async (): Promise<Array<string>> => {
     });
 
     if (response.result.location !== undefined) {
-      readRegions.push(response.result.location.replace(" ", "").toLowerCase());
+      regions.push(response.result.location.split(" ").join("").toLowerCase());
     } else {
       for (const location of response.result.locations) {
-        readRegions.push(location.locationName.replace(" ", "").toLowerCase());
+        regions.push(location.locationName.split(" ").join("").toLowerCase());
       }
     }
-    return readRegions;
+
+    selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
+    return regions;
   } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
     return new Array<string>();
   }
 };
@@ -167,6 +179,14 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
 };
 
 export const getPriceMap = async (regions: Array<string>): Promise<Map<string, Map<string, number>>> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getPriceMap",
+    description: "fetch prices API call",
+    selfServeClassName: SqlX.name,
+  };
+  const getPriceMapTimestamp = selfServeTraceStart(telemetryData);
+
   try {
     const priceMap = new Map<string, Map<string, number>>();
 
@@ -192,8 +212,12 @@ export const getPriceMap = async (regions: Array<string>): Promise<Map<string, M
       priceMap.set(region, regionPriceMap);
     }
 
+    selfServeTraceSuccess(telemetryData, getPriceMapTimestamp);
     return priceMap;
   } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getPriceMapTimestamp);
+
     return undefined;
   }
 };

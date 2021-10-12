@@ -1,18 +1,18 @@
 import { Text, TextField } from "@fluentui/react";
 import { useBoolean } from "@fluentui/react-hooks";
+import { Areas } from "Common/Constants";
+import { deleteDatabase } from "Common/dataAccess/deleteDatabase";
+import DeleteFeedback from "Common/DeleteFeedback";
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { Collection, Database } from "Contracts/ViewModels";
+import { useSidePanel } from "hooks/useSidePanel";
+import { useTabs } from "hooks/useTabs";
 import React, { FunctionComponent, useState } from "react";
-import { Areas } from "../../Common/Constants";
-import { deleteDatabase } from "../../Common/dataAccess/deleteDatabase";
-import DeleteFeedback from "../../Common/DeleteFeedback";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { Collection, Database } from "../../Contracts/ViewModels";
-import { useSidePanel } from "../../hooks/useSidePanel";
-import { useTabs } from "../../hooks/useTabs";
-import * as DefaultExperienceUtility from "../../Shared/DefaultExperienceUtility";
-import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
-import { logConsoleError } from "../../Utils/NotificationConsoleUtils";
+import * as DefaultExperienceUtility from "Shared/DefaultExperienceUtility";
+import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "UserContext";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { useDatabases } from "../useDatabases";
 import { useSelectedNode } from "../useSelectedNode";
 import { PanelInfoErrorComponent, PanelInfoErrorProps } from "./PanelInfoErrorComponent";
@@ -118,7 +118,8 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
     message:
       "Warning! The action you are about to take cannot be undone. Continuing will permanently delete this resource and all of its children resources.",
   };
-
+  const confirmDatabase = "Confirm by typing the database id";
+  const reasonInfo = "Help us improve Azure Cosmos DB! What is the reason why you are deleting this database?";
   return (
     <RightPaneForm {...props}>
       {!formError && <PanelInfoErrorComponent {...errorProps} />}
@@ -133,6 +134,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
             onChange={(event, newInput?: string) => {
               setDatabaseInput(newInput);
             }}
+            ariaLabel={confirmDatabase}
           />
         </div>
         {isLastNonEmptyDatabase() && (
@@ -151,6 +153,7 @@ export const DeleteDatabaseConfirmationPanel: FunctionComponent<DeleteDatabaseCo
               onChange={(event, newInput?: string) => {
                 setDatabaseFeedbackInput(newInput);
               }}
+              ariaLabel={reasonInfo}
             />
           </div>
         )}

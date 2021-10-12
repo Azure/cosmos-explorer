@@ -1,4 +1,4 @@
-import { QueryIterator, ItemDefinition, Resource } from "@azure/cosmos";
+import { ItemDefinition, QueryIterator, Resource } from "@azure/cosmos";
 
 export interface ITableEntity {
   [property: string]: ITableEntityAttribute;
@@ -17,6 +17,7 @@ export interface ITableEntityAttribute {
 
 export interface IListTableEntitiesResult {
   Results: ITableEntity[];
+  //eslint-disable-next-line
   ContinuationToken: any;
   iterator?: QueryIterator<ItemDefinition & Resource>;
 }

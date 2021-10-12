@@ -21,16 +21,8 @@ src/Common/MongoUtility.ts
 src/Common/NotificationsClientBase.ts
 src/Common/QueriesClient.ts
 src/Common/Splitter.ts
-src/Config.ts
-src/Contracts/ActionContracts.ts
-src/Contracts/DataModels.ts
-src/Contracts/Diagnostics.ts
-src/Contracts/ExplorerContracts.ts
-src/Contracts/Versions.ts
-src/Contracts/ViewModels.ts
 src/Controls/Heatmap/Heatmap.test.ts
 src/Controls/Heatmap/Heatmap.ts
-src/Controls/Heatmap/HeatmapDatatypes.ts
 src/Definitions/datatables.d.ts
 src/Definitions/gif.d.ts
 src/Definitions/globals.d.ts
@@ -44,29 +36,10 @@ src/Definitions/png.d.ts
 src/Definitions/svg.d.ts
 src/Explorer/ComponentRegisterer.test.ts
 src/Explorer/ComponentRegisterer.ts
-src/Explorer/Controls/CollapsiblePanel/CollapsiblePanelComponent.ts
 src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
-src/Explorer/Controls/DynamicList/DynamicList.test.ts
-src/Explorer/Controls/DynamicList/DynamicListComponent.ts
+
 src/Explorer/Controls/Editor/EditorComponent.ts
-src/Explorer/Controls/ErrorDisplayComponent/ErrorDisplayComponent.ts
-src/Explorer/Controls/InputTypeahead/InputTypeahead.ts
 src/Explorer/Controls/JsonEditor/JsonEditorComponent.ts
-src/Explorer/Controls/Notebook/NotebookAppMessageHandler.ts
-src/Explorer/Controls/ThroughputInput/ThroughputInputComponent.ts
-src/Explorer/Controls/ThroughputInput/ThroughputInputComponentAutoPilotV3.ts
-src/Explorer/Controls/Toolbar/IToolbarAction.ts
-src/Explorer/Controls/Toolbar/IToolbarDisplayable.ts
-src/Explorer/Controls/Toolbar/IToolbarDropDown.ts
-src/Explorer/Controls/Toolbar/IToolbarItem.ts
-src/Explorer/Controls/Toolbar/IToolbarSeperator.ts
-src/Explorer/Controls/Toolbar/IToolbarToggle.ts
-src/Explorer/Controls/Toolbar/KeyCodes.ts
-src/Explorer/Controls/Toolbar/Toolbar.ts
-src/Explorer/Controls/Toolbar/ToolbarAction.ts
-src/Explorer/Controls/Toolbar/ToolbarDropDown.ts
-src/Explorer/Controls/Toolbar/ToolbarToggle.ts
-src/Explorer/Controls/Toolbar/Utilities.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
 src/Explorer/DataSamples/ContainerSampleGenerator.ts
 src/Explorer/DataSamples/DataSamplesUtil.test.ts
@@ -108,17 +81,13 @@ src/Explorer/Tables/DataTable/DataTableBindingManager.ts
 src/Explorer/Tables/DataTable/DataTableBuilder.ts
 src/Explorer/Tables/DataTable/DataTableContextMenu.ts
 src/Explorer/Tables/DataTable/DataTableOperationManager.ts
-src/Explorer/Tables/DataTable/DataTableOperations.ts
+# src/Explorer/Tables/DataTable/DataTableOperations.ts
 src/Explorer/Tables/DataTable/DataTableViewModel.ts
-src/Explorer/Tables/DataTable/TableCommands.ts
-src/Explorer/Tables/DataTable/TableEntityCache.ts
+# src/Explorer/Tables/DataTable/TableCommands.ts
+# src/Explorer/Tables/DataTable/TableEntityCache.ts
 src/Explorer/Tables/DataTable/TableEntityListViewModel.ts
-src/Explorer/Tables/Entities.ts
-src/Explorer/Tables/QueryBuilder/ClauseGroup.ts
-src/Explorer/Tables/QueryBuilder/ClauseGroupViewModel.ts
+# src/Explorer/Tables/Entities.ts
 src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
-src/Explorer/Tables/QueryBuilder/QueryBuilderViewModel.ts
-src/Explorer/Tables/QueryBuilder/QueryClauseViewModel.ts
 src/Explorer/Tables/TableDataClient.ts
 src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
@@ -141,15 +110,10 @@ src/Explorer/Tree/ObjectId.ts
 src/Explorer/Tree/ResourceTokenCollection.ts
 src/Explorer/Tree/StoredProcedure.ts
 src/Explorer/Tree/TreeComponents.ts
-src/Explorer/Tree/Trigger.ts
 src/Explorer/WaitsForTemplateViewModel.ts
 src/GitHub/GitHubClient.test.ts
 src/GitHub/GitHubClient.ts
-src/GitHub/GitHubConnector.ts
-src/GitHub/GitHubOAuthService.ts
 src/Index.ts
-src/Juno/JunoClient.test.ts
-src/Juno/JunoClient.ts
 src/Platform/Hosted/Authorization.ts
 src/ReactDevTools.ts
 src/Shared/Constants.ts
@@ -167,7 +131,7 @@ src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
 src/Explorer/Controls/TreeComponent/TreeComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
-src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.tsx
+; src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphVizComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/LeftPaneComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/MiddlePaneComponent.tsx
@@ -177,10 +141,10 @@ src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.test.t
 src/Explorer/Graph/GraphExplorerComponent/ReadOnlyNodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx
-src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
+; src/Explorer/Notebook/NotebookComponent/NotebookComponentBootstrapper.tsx
 src/Explorer/Notebook/NotebookComponent/VirtualCommandBarComponent.tsx
 src/Explorer/Notebook/NotebookComponent/contents/index.tsx
-src/Explorer/Notebook/NotebookRenderer/NotebookReadOnlyRenderer.tsx
+; src/Explorer/Notebook/NotebookRenderer/NotebookReadOnlyRenderer.tsx
 src/Explorer/Notebook/NotebookRenderer/NotebookRenderer.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/draggable/index.tsx
 src/Explorer/Notebook/NotebookRenderer/decorators/hijack-scroll/index.tsx

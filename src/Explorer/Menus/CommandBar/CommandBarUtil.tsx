@@ -13,6 +13,8 @@ import { StyleConstants } from "../../../Common/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../../Explorer";
+import { ConnectionStatus } from "./ConnectionStatusComponent";
 import { MemoryTracker } from "./MemoryTrackerComponent";
 
 /**
@@ -199,5 +201,12 @@ export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   return {
     key,
     onRender: () => <MemoryTracker />,
+  };
+};
+
+export const createConnectionStatus = (container: Explorer, key: string): ICommandBarItemProps => {
+  return {
+    key,
+    onRender: () => <ConnectionStatus container={container} />,
   };
 };
