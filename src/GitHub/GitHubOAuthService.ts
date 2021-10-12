@@ -64,7 +64,7 @@ export class GitHubOAuthService {
     return params.state;
   }
 
-  public async finishOAuth(params: IGitHubConnectorParams) {
+  public async finishOAuth(params: IGitHubConnectorParams): Promise<void> {
     try {
       this.validateState(params.state);
       const response = await this.junoClient.getGitHubToken(params.code);
@@ -113,7 +113,7 @@ export class GitHubOAuthService {
     return this.state;
   }
 
-  public resetToken() {
+  public resetToken(): void {
     this.token(undefined);
   }
 

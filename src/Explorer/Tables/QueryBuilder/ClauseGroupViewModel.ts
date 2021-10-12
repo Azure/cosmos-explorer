@@ -1,7 +1,7 @@
 import * as ko from "knockout";
+import * as Constants from "../Constants";
 import ClauseGroup from "./ClauseGroup";
 import QueryBuilderViewModel from "./QueryBuilderViewModel";
-import * as Constants from "../Constants";
 
 /**
  * View model for showing group indicators on UI, contains information such as group color and border styles.
@@ -38,7 +38,7 @@ export default class ClauseGroupViewModel {
   };
 
   private getGroupBackgroundColor(group: ClauseGroup): string {
-    var colorCount = Constants.clauseGroupColors.length;
+    const colorCount = Constants.clauseGroupColors.length;
 
     if (group.isRootGroup) {
       return Constants.transparentColor;
