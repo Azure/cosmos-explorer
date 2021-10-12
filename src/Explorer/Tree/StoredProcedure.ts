@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import { Resource, StoredProcedureDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as Constants from "../../Common/Constants";
@@ -15,7 +16,7 @@ import { NewStoredProcedureTab } from "../Tabs/StoredProcedureTab/StoredProcedur
 import TabsBase from "../Tabs/TabsBase";
 import { useSelectedNode } from "../useSelectedNode";
 
-const sampleStoredProcedureBody: string = `// SAMPLE STORED PROCEDURE
+const sampleStoredProcedureBody = `// SAMPLE STORED PROCEDURE
 function sample(prefix) {
     var collection = getContext().getCollection();
 
@@ -63,7 +64,8 @@ export default class StoredProcedure {
     this.isExecuteEnabled = userContext.features.executeSproc;
   }
 
-  public static create(source: ViewModels.Collection, event: MouseEvent) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public static create(source: ViewModels.Collection, _event: MouseEvent): void {
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.StoredProcedures).length + 1;
     const storedProcedure = <StoredProcedureDefinition>{
       id: "",
@@ -89,7 +91,7 @@ export default class StoredProcedure {
     useTabs.getState().activateNewTab(storedProcedureTab);
   }
 
-  public select() {
+  public select(): void {
     useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Stored procedure node",
@@ -98,7 +100,7 @@ export default class StoredProcedure {
     });
   }
 
-  public open = () => {
+  public open = (): void => {
     this.select();
 
     const storedProcedureTabs: NewStoredProcedureTab[] = useTabs
@@ -138,7 +140,7 @@ export default class StoredProcedure {
       useTabs.getState().activateNewTab(storedProcedureTab);
     }
   };
-  public delete() {
+  public delete(): void {
     useDialog.getState().showOkCancelModalDialog(
       "Confirm delete",
       "Are you sure you want to delete the stored procedure?",
@@ -149,7 +151,8 @@ export default class StoredProcedure {
             useTabs.getState().closeTabsByComparator((tab: TabsBase) => tab.node && tab.node.rid === this.rid);
             this.collection.children.remove(this);
           },
-          (reason) => {}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          () => {}
         );
       },
       "Cancel",
