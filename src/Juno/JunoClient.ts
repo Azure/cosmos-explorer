@@ -62,7 +62,7 @@ export interface IPublishNotebookRequest {
   description: string;
   tags: string[];
   thumbnailUrl: string;
-  content: any;
+  content: unknown;
   addLinkToNotebookViewer: boolean;
 }
 

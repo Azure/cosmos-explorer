@@ -1,8 +1,8 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
+import { Upload } from "Common/Upload/Upload";
+import { UploadDetailsRecord } from "Contracts/ViewModels";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
-import { Upload } from "../../../Common/Upload/Upload";
-import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
-import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";

@@ -2,10 +2,12 @@ import { cloneDeep } from "lodash";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
+import { ConnectionStatusType } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
+import { ContainerConnectionInfo } from "../../Contracts/DataModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -14,6 +16,7 @@ import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
+import { NotebookUtil } from "./NotebookUtil";
 
 interface NotebookState {
   isNotebookEnabled: boolean;
@@ -28,6 +31,10 @@ interface NotebookState {
   myNotebooksContentRoot: NotebookContentItem;
   gitHubNotebooksContentRoot: NotebookContentItem;
   galleryContentRoot: NotebookContentItem;
+  connectionInfo: ContainerConnectionInfo;
+  notebookFolderName: string;
+  isAllocating: boolean;
+  isRefreshed: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -36,6 +43,7 @@ interface NotebookState {
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => void;
   setIsShellEnabled: (isShellEnabled: boolean) => void;
   setNotebookBasePath: (notebookBasePath: string) => void;
+  setNotebookFolderName: (notebookFolderName: string) => void;
   refreshNotebooksEnabledStateForAccount: () => Promise<void>;
   findItem: (root: NotebookContentItem, item: NotebookContentItem) => NotebookContentItem;
   insertNotebookItem: (parent: NotebookContentItem, item: NotebookContentItem, isGithubTree?: boolean) => void;
@@ -43,6 +51,10 @@ interface NotebookState {
   deleteNotebookItem: (item: NotebookContentItem, isGithubTree?: boolean) => void;
   initializeNotebooksTree: (notebookManager: NotebookManager) => Promise<void>;
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
+  setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => void;
+  setIsAllocating: (isAllocating: boolean) => void;
+  resetConatinerConnection: (connectionStatus: ContainerConnectionInfo) => void;
+  setIsRefreshed: (isAllocating: boolean) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -65,6 +77,12 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   myNotebooksContentRoot: undefined,
   gitHubNotebooksContentRoot: undefined,
   galleryContentRoot: undefined,
+  connectionInfo: {
+    status: ConnectionStatusType.Connect,
+  },
+  notebookFolderName: undefined,
+  isAllocating: false,
+  isRefreshed: false,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -75,6 +93,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setMemoryUsageInfo: (memoryUsageInfo: DataModels.MemoryUsageInfo) => set({ memoryUsageInfo }),
   setIsShellEnabled: (isShellEnabled: boolean) => set({ isShellEnabled }),
   setNotebookBasePath: (notebookBasePath: string) => set({ notebookBasePath }),
+  setNotebookFolderName: (notebookFolderName: string) => set({ notebookFolderName }),
   refreshNotebooksEnabledStateForAccount: async (): Promise<void> => {
     const { databaseAccount, authType } = userContext;
     if (
@@ -168,8 +187,10 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
+    const notebookFolderName = NotebookUtil.isPhoenixEnabled() === true ? "Temporary Notebooks" : "My Notebooks";
+    set({ notebookFolderName });
     const myNotebooksContentRoot = {
-      name: "My Notebooks",
+      name: get().notebookFolderName,
       path: get().notebookBasePath,
       type: NotebookContentItemType.Directory,
     };
@@ -185,6 +206,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
           type: NotebookContentItemType.Directory,
         }
       : undefined;
+
     set({
       myNotebooksContentRoot,
       galleryContentRoot,
@@ -246,4 +268,15 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       set({ gitHubNotebooksContentRoot });
     }
   },
+  setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => set({ connectionInfo }),
+  setIsAllocating: (isAllocating: boolean) => set({ isAllocating }),
+  resetConatinerConnection: (connectionStatus: ContainerConnectionInfo): void => {
+    useNotebook.getState().setConnectionInfo(connectionStatus);
+    useNotebook.getState().setNotebookServerInfo({
+      notebookServerEndpoint: undefined,
+      authToken: undefined,
+    });
+    useNotebook.getState().setIsAllocating(false);
+  },
+  setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
 }));

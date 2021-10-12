@@ -34,6 +34,6 @@ describe("Right Pane Form", () => {
   it("should render error in header", () => {
     render(<RightPaneForm {...props} formError="file already Exist" />);
     expect(screen.getByLabelText("error")).toBeDefined();
-    expect(screen.getByLabelText("message").innerHTML).toEqual("file already Exist");
+    expect(screen.getByRole("alert").innerHTML).toEqual("file already Exist");
   });
 });

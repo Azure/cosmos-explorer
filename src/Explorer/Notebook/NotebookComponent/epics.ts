@@ -109,7 +109,7 @@ const formWebSocketURL = (serverConfig: NotebookServiceConfig, kernelId: string,
   const q = params.toString();
   const suffix = q !== "" ? `?${q}` : "";
 
-  const url = (serverConfig.endpoint || "") + `api/kernels/${kernelId}/channels${suffix}`;
+  const url = (serverConfig.endpoint.slice(0, -1) || "") + `api/kernels/${kernelId}/channels${suffix}`;
 
   return url.replace(/^http(s)?/, "ws$1");
 };

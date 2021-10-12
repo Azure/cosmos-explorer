@@ -80,8 +80,9 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.push(createOpenTerminalButton(container));
-
-    notebookButtons.push(createNotebookWorkspaceResetButton(container));
+    if (userContext.features.phoenix === false) {
+      notebookButtons.push(createNotebookWorkspaceResetButton(container));
+    }
     if (
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
@@ -306,11 +307,18 @@ function createOpenSynapseLinkDialogButton(container: Explorer): CommandButtonCo
 
 function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   const label = "New " + getDatabaseName();
+  const newDatabaseButton = document.activeElement as HTMLElement;
+
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
     onCommandClick: () =>
-      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
+      useSidePanel
+        .getState()
+        .openSidePanel(
+          "New " + getDatabaseName(),
+          <AddDatabasePanel explorer={container} buttonElement={newDatabaseButton} />
+        ),
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -595,7 +603,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () =>
+    onCommandClick: () => {
       useSidePanel
         .getState()
         .openSidePanel(
@@ -605,7 +613,8 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
             gitHubClientProp={container.notebookManager.gitHubClient}
             junoClientProp={junoClient}
           />
-        ),
+        );
+    },
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,
