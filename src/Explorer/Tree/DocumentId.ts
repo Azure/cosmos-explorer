@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
 import { useDialog } from "../Controls/Dialog";
@@ -28,7 +29,7 @@ export default class DocumentId {
     this.isDirty = ko.observable(false);
   }
 
-  public click() {
+  public click(): void {
     if (this.container.isEditorDirty()) {
       useDialog
         .getState()
@@ -45,7 +46,7 @@ export default class DocumentId {
     }
   }
 
-  public partitionKeyHeader(): Object {
+  public partitionKeyHeader() {
     if (!this.partitionKeyProperty) {
       return undefined;
     }
