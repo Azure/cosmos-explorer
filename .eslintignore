@@ -81,17 +81,13 @@ src/Explorer/Tables/DataTable/DataTableBindingManager.ts
 src/Explorer/Tables/DataTable/DataTableBuilder.ts
 src/Explorer/Tables/DataTable/DataTableContextMenu.ts
 src/Explorer/Tables/DataTable/DataTableOperationManager.ts
-src/Explorer/Tables/DataTable/DataTableOperations.ts
+# src/Explorer/Tables/DataTable/DataTableOperations.ts
 src/Explorer/Tables/DataTable/DataTableViewModel.ts
-src/Explorer/Tables/DataTable/TableCommands.ts
-src/Explorer/Tables/DataTable/TableEntityCache.ts
+# src/Explorer/Tables/DataTable/TableCommands.ts
+# src/Explorer/Tables/DataTable/TableEntityCache.ts
 src/Explorer/Tables/DataTable/TableEntityListViewModel.ts
-src/Explorer/Tables/Entities.ts
-# src/Explorer/Tables/QueryBuilder/ClauseGroup.ts
-# src/Explorer/Tables/QueryBuilder/ClauseGroupViewModel.ts
+# src/Explorer/Tables/Entities.ts
 src/Explorer/Tables/QueryBuilder/CustomTimestampHelper.ts
-# src/Explorer/Tables/QueryBuilder/QueryBuilderViewModel.ts
-# src/Explorer/Tables/QueryBuilder/QueryClauseViewModel.ts
 src/Explorer/Tables/TableDataClient.ts
 src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts

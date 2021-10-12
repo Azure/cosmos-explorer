@@ -1,12 +1,11 @@
-import _ from "underscore";
 import Q from "q";
-
-import * as Entities from "../Entities";
+import _ from "underscore";
 import * as QueryBuilderConstants from "../Constants";
+import * as Entities from "../Entities";
 import * as Utilities from "../Utilities";
 
 export function getRowSelector(selectorSchema: Entities.IProperty[]): string {
-  var selector: string = "";
+  let selector = "";
   selectorSchema &&
     selectorSchema.forEach((p: Entities.IProperty) => {
       selector += "[" + p.key + '="' + Utilities.jQuerySelectorEscape(p.value) + '"]';
@@ -15,10 +14,10 @@ export function getRowSelector(selectorSchema: Entities.IProperty[]): string {
 }
 
 export function isRowVisible(dataTableScrollBodyQuery: JQuery, element: HTMLElement): boolean {
-  var isVisible = false;
+  let isVisible = false;
 
   if (dataTableScrollBodyQuery.length && element) {
-    var elementRect: ClientRect = element.getBoundingClientRect(),
+    const elementRect: ClientRect = element.getBoundingClientRect(),
       dataTableScrollBodyRect: ClientRect = dataTableScrollBodyQuery.get(0).getBoundingClientRect();
 
     isVisible = elementRect.bottom <= dataTableScrollBodyRect.bottom && dataTableScrollBodyRect.top <= elementRect.top;
@@ -29,17 +28,17 @@ export function isRowVisible(dataTableScrollBodyQuery: JQuery, element: HTMLElem
 
 export function scrollToRowIfNeeded(dataTableRows: JQuery, currentIndex: number, isScrollUp: boolean): void {
   if (dataTableRows.length) {
-    var dataTableScrollBodyQuery: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector),
+    const dataTableScrollBodyQuery: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector),
       selectedRowElement: HTMLElement = dataTableRows.get(currentIndex);
 
     if (dataTableScrollBodyQuery.length && selectedRowElement) {
-      var isVisible: boolean = isRowVisible(dataTableScrollBodyQuery, selectedRowElement);
+      const isVisible: boolean = isRowVisible(dataTableScrollBodyQuery, selectedRowElement);
 
       if (!isVisible) {
-        var selectedRowQuery: JQuery = $(selectedRowElement),
+        const selectedRowQuery: JQuery = $(selectedRowElement),
           scrollPosition: number = dataTableScrollBodyQuery.scrollTop(),
-          selectedElementPosition: number = selectedRowQuery.position().top,
-          newScrollPosition: number = 0;
+          selectedElementPosition: number = selectedRowQuery.position().top;
+        let newScrollPosition = 0;
 
         if (isScrollUp) {
           newScrollPosition = scrollPosition + selectedElementPosition;
@@ -55,7 +54,7 @@ export function scrollToRowIfNeeded(dataTableRows: JQuery, currentIndex: number,
 }
 
 export function scrollToTopIfNeeded(): void {
-  var $dataTableRows: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector),
+  const $dataTableRows: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableAllRowsSelector),
     $dataTableScrollBody: JQuery = $(QueryBuilderConstants.htmlSelectors.dataTableScrollBodySelector);
 
   if ($dataTableRows.length && $dataTableScrollBody.length) {
@@ -88,13 +87,14 @@ export function reorderColumns(
   table: DataTables.DataTable,
   targetOrder: number[],
   currentOrder?: number[]
+  //eslint-disable-next-line
 ): Q.Promise<any> {
-  var columnsCount: number = targetOrder.length;
-  var isCurrentOrderPassedIn: boolean = !!currentOrder;
+  const columnsCount: number = targetOrder.length;
+  const isCurrentOrderPassedIn = !!currentOrder;
   if (!isCurrentOrderPassedIn) {
     currentOrder = getInitialOrder(columnsCount);
   }
-  var isSameOrder: boolean = Utilities.isEqual(currentOrder, targetOrder);
+  const isSameOrder: boolean = Utilities.isEqual(currentOrder, targetOrder);
 
   // if the targetOrder is the same as current order, do nothing.
   if (!isSameOrder) {
@@ -104,7 +104,7 @@ export function reorderColumns(
     //  Then the transformation order will be the same as target order.
     // If current order is specified, then a transformation order is calculated.
     //  Refer to calculateTransformationOrder for details about transformation order.
-    var transformationOrder: number[] = isCurrentOrderPassedIn
+    const transformationOrder: number[] = isCurrentOrderPassedIn
       ? calculateTransformationOrder(currentOrder, targetOrder)
       : targetOrder;
     try {
@@ -143,7 +143,7 @@ export function getCurrentOrder(table: DataTables.DataTable): number[] {
  * Result:     [0, 1, 2, 5, 6, 7, 3, 4, 8]
  */
 export function invertIndexValues(inputArray: number[]): number[] {
-  var invertedArray: number[] = [];
+  const invertedArray: number[] = [];
   if (inputArray) {
     inputArray.forEach((value: number, index: number) => {
       invertedArray[inputArray[index]] = index;
@@ -170,20 +170,21 @@ export function invertIndexValues(inputArray: number[]): number[] {
  * transformation order: Trans = [0, 1, 2, 7, 3, 4, 8, 5, 6]
  */
 export function calculateTransformationOrder(currentOrder: number[], targetOrder: number[]): number[] {
-  var transformationOrder: number[] = [];
+  let transformationOrder: number[] = [];
   if (currentOrder && targetOrder && currentOrder.length === targetOrder.length) {
-    var invertedCurrentOrder: number[] = invertIndexValues(currentOrder);
+    const invertedCurrentOrder: number[] = invertIndexValues(currentOrder);
     transformationOrder = targetOrder.map((value: number) => invertedCurrentOrder[value]);
   }
   return transformationOrder;
 }
 
 export function getDataTableHeaders(table: DataTables.DataTable): string[] {
-  var columns: DataTables.ColumnsMethods = table.columns();
-  var headers: string[] = [];
+  const columns: DataTables.ColumnsMethods = table.columns();
+  let headers: string[] = [];
   if (columns) {
     // table.columns() return ColumnsMethods which is an array of arrays
-    var columnIndexes: number[] = (<any>columns)[0];
+    //eslint-disable-next-line
+    const columnIndexes: number[] = (<any>columns)[0];
     if (columnIndexes) {
       headers = columnIndexes.map((value: number) => $(table.columns(value).header()).html());
     }
