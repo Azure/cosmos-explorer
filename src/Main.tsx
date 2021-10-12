@@ -37,6 +37,7 @@ import "./Explorer/Controls/TreeComponent/treeComponent.less";
 import "./Explorer/Graph/GraphExplorerComponent/graphExplorer.less";
 import "./Explorer/Menus/CommandBar/CommandBarComponent.less";
 import { CommandBar } from "./Explorer/Menus/CommandBar/CommandBarComponentAdapter";
+import "./Explorer/Menus/CommandBar/ConnectionStatusComponent.less";
 import "./Explorer/Menus/CommandBar/MemoryTrackerComponent.less";
 import "./Explorer/Menus/NotificationConsole/NotificationConsole.less";
 import { NotificationConsole } from "./Explorer/Menus/NotificationConsole/NotificationConsoleComponent";

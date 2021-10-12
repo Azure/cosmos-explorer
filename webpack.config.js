@@ -103,7 +103,7 @@ module.exports = function (_env = {}, argv = {}) {
     envVars.NODE_ENV = "development";
     envVars.AZURE_CLIENT_ID = AZURE_CLIENT_ID;
     envVars.AZURE_TENANT_ID = AZURE_TENANT_ID;
-    envVars.AZURE_CLIENT_SECRET = AZURE_CLIENT_SECRET;
+    envVars.AZURE_CLIENT_SECRET = AZURE_CLIENT_SECRET || null;
     envVars.SUBSCRIPTION_ID = SUBSCRIPTION_ID;
     envVars.RESOURCE_GROUP = RESOURCE_GROUP;
     typescriptRule.use[0].options.compilerOptions = { target: "ES2018" };
@@ -113,6 +113,7 @@ module.exports = function (_env = {}, argv = {}) {
     new CleanWebpackPlugin(),
     new webpack.ProvidePlugin({
       process: "process/browser",
+      Buffer: ["buffer", "Buffer"],
     }),
     new CreateFileWebpack({
       path: "./dist",
@@ -226,9 +227,11 @@ module.exports = function (_env = {}, argv = {}) {
       rules,
     },
     resolve: {
+      modules: [path.resolve(__dirname, "src"), "node_modules"],
       alias: {
         process: "process/browser",
       },
+
       fallback: {
         crypto: false,
         fs: false,

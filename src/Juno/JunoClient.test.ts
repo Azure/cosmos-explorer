@@ -50,7 +50,8 @@ describe("Pinned repos", () => {
   });
 
   it("updatePinnedRepos invokes pinned repos subscribers", async () => {
-    const callback = jest.fn().mockImplementation((pinnedRepos: IPinnedRepo[]) => {});
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const callback = jest.fn().mockImplementation(() => {});
 
     junoClient.subscribeToPinnedRepos(callback);
     const response = await junoClient.updatePinnedRepos(samplePinnedRepos);
@@ -60,7 +61,8 @@ describe("Pinned repos", () => {
   });
 
   it("getPinnedRepos invokes pinned repos subscribers", async () => {
-    const callback = jest.fn().mockImplementation((pinnedRepos: IPinnedRepo[]) => {});
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    const callback = jest.fn().mockImplementation(() => {});
 
     junoClient.subscribeToPinnedRepos(callback);
     const response = await junoClient.getPinnedRepos("scope");
@@ -153,7 +155,7 @@ describe("Gallery", () => {
   it("getSampleNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.getSampleNotebooks();
@@ -165,7 +167,7 @@ describe("Gallery", () => {
   it("getPublicNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.getPublicNotebooks();
@@ -178,7 +180,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.getNotebookInfo(id);
@@ -191,7 +193,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      text: () => undefined as any,
+      text: () => undefined as undefined,
     });
 
     const response = await junoClient.getNotebookContent(id);
@@ -204,7 +206,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
     const response = await junoClient.increaseNotebookViews(id);
 
@@ -218,7 +220,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.increaseNotebookDownloadCount(id);
@@ -243,7 +245,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.favoriteNotebook(id);
@@ -268,7 +270,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.unfavoriteNotebook(id);
@@ -292,7 +294,7 @@ describe("Gallery", () => {
   it("getFavoriteNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.getFavoriteNotebooks();
@@ -315,7 +317,7 @@ describe("Gallery", () => {
   it("getPublishedNotebooks", async () => {
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.getPublishedNotebooks();
@@ -339,7 +341,7 @@ describe("Gallery", () => {
     const id = "id";
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.deleteNotebook(id);
@@ -369,7 +371,7 @@ describe("Gallery", () => {
     const addLinkToNotebookViewer = true;
     window.fetch = jest.fn().mockReturnValue({
       status: HttpStatusCodes.OK,
-      json: () => undefined as any,
+      json: () => undefined as undefined,
     });
 
     const response = await junoClient.publishNotebook(name, description, tags, thumbnailUrl, content);
