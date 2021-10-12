@@ -16,9 +16,10 @@ import "./NotebookReadOnlyRenderer.less";
 import SandboxOutputs from "./outputs/SandboxOutputs";
 
 export interface NotebookRendererProps {
-  contentRef: any;
+  contentRef: ContentRef;
   hideInputs?: boolean;
   hidePrompts?: boolean;
+  addTransform: (component: React.ComponentType & { MIMETYPE: string }) => void;
 }
 
 /**
@@ -27,7 +28,7 @@ export interface NotebookRendererProps {
 class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
   componentDidMount() {
     if (!userContext.features.sandboxNotebookOutputs) {
-      loadTransform(this.props as any);
+      loadTransform(this.props as NotebookRendererProps);
     }
   }
 
@@ -59,7 +60,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
       <div className="NotebookReadOnlyRender">
         <Cells contentRef={this.props.contentRef}>
           {{
-            code: ({ id, contentRef }: { id: any; contentRef: ContentRef }) => (
+            code: ({ id, contentRef }: { id: string; contentRef: ContentRef }) => (
               <CodeCell id={id} contentRef={contentRef}>
                 {{
                   prompt: (props: { id: string; contentRef: string }) => this.renderPrompt(props.id, props.contentRef),
@@ -73,14 +74,14 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
                 }}
               </CodeCell>
             ),
-            markdown: ({ id, contentRef }: { id: any; contentRef: ContentRef }) => (
+            markdown: ({ id, contentRef }: { id: string; contentRef: ContentRef }) => (
               <MarkdownCell id={id} contentRef={contentRef} cell_type="markdown">
                 {{
                   editor: {},
                 }}
               </MarkdownCell>
             ),
-            raw: ({ id, contentRef }: { id: any; contentRef: ContentRef }) => (
+            raw: ({ id, contentRef }: { id: string; contentRef: ContentRef }) => (
               <RawCell id={id} contentRef={contentRef} cell_type="raw">
                 {{
                   editor: {
@@ -98,6 +99,7 @@ class NotebookReadOnlyRenderer extends React.Component<NotebookRendererProps> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: NotebookRendererProps) => {
   const mapDispatchToProps = (dispatch: Dispatch) => {
     return {
@@ -114,4 +116,4 @@ const makeMapDispatchToProps = (initialDispatch: Dispatch, initialProps: Noteboo
   return mapDispatchToProps;
 };
 
-export default connect(null, makeMapDispatchToProps)(NotebookReadOnlyRenderer);
+export default connect(undefined, makeMapDispatchToProps)(NotebookReadOnlyRenderer);

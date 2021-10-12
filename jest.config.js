@@ -37,8 +37,8 @@ module.exports = {
     global: {
       branches: 25,
       functions: 25,
-      lines: 29.5,
-      statements: 29.5,
+      lines: 29,
+      statements: 29,
     },
   },
 
@@ -128,6 +128,8 @@ module.exports = {
 
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-jsdom",
+
+  modulePaths: ["node_modules", "<rootDir>/src"],
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},

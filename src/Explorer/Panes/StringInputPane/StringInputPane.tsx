@@ -1,8 +1,8 @@
 import { TextField } from "@fluentui/react";
+import * as ViewModels from "Contracts/ViewModels";
+import { useTabs } from "hooks/useTabs";
 import React, { FormEvent, FunctionComponent, useState } from "react";
-import * as ViewModels from "../../../Contracts/ViewModels";
-import { useTabs } from "../../../hooks/useTabs";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import * as FileSystemUtil from "../../Notebook/FileSystemUtil";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import NotebookV2Tab from "../../Tabs/NotebookV2Tab";

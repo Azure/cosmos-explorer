@@ -22,6 +22,7 @@ export default class Trigger {
   public triggerType: ko.Observable<string>;
   public triggerOperation: ko.Observable<string>;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(container: Explorer, collection: ViewModels.Collection, data: any) {
     this.nodeKind = "Trigger";
     this.container = container;
@@ -34,7 +35,7 @@ export default class Trigger {
     this.triggerType = ko.observable(data.triggerType);
   }
 
-  public select() {
+  public select(): void {
     useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Trigger node",
@@ -43,7 +44,8 @@ export default class Trigger {
     });
   }
 
-  public static create(source: ViewModels.Collection, event: MouseEvent) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public static create(source: ViewModels.Collection, _event: MouseEvent): void {
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
     const trigger = <StoredProcedureDefinition>{
       id: "",
@@ -99,7 +101,7 @@ export default class Trigger {
     }
   };
 
-  public delete() {
+  public delete(): void {
     useDialog.getState().showOkCancelModalDialog(
       "Confirm delete",
       "Are you sure you want to delete the trigger?",
@@ -110,7 +112,8 @@ export default class Trigger {
             useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
             this.collection.children.remove(this);
           },
-          (reason) => {}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          () => {}
         );
       },
       "Cancel",
