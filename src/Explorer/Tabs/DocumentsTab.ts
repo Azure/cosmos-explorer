@@ -92,7 +92,7 @@ export default class DocumentsTab extends TabsBase {
 
     this.partitionKeyPropertyHeader =
       (this.collection && this.collection.partitionKeyPropertyHeader) || this._getPartitionKeyPropertyHeader();
-    this.partitionKeyProperty = !!this.partitionKeyPropertyHeader
+    this.partitionKeyProperty = this.partitionKeyPropertyHeader
       ? this.partitionKeyPropertyHeader.replace(/[/]+/g, ".").substr(1).replace(/[']+/g, "")
       : null;
 
@@ -446,8 +446,8 @@ export default class DocumentsTab extends TabsBase {
             this.partitionKey as PartitionKeyDefinition
           );
           const partitionKeyValue = partitionKeyValueArray && partitionKeyValueArray[0];
-          let id = new DocumentId(this, savedDocument, partitionKeyValue);
-          let ids = this.documentIds();
+          const id = new DocumentId(this, savedDocument, partitionKeyValue);
+          const ids = this.documentIds();
           ids.push(id);
 
           this.selectedDocumentId(id);
@@ -682,10 +682,10 @@ export default class DocumentsTab extends TabsBase {
   }
 
   public createIterator(): QueryIterator<ItemDefinition & Resource> {
-    let filters = this.lastFilterContents();
+    const filters = this.lastFilterContents();
     const filter: string = this.filterContent().trim();
     const query: string = this.buildQuery(filter);
-    let options: any = {};
+    const options: any = {};
     options.enableCrossPartitionQuery = HeadersUtility.shouldEnableCrossPartitionKey();
 
     if (this._resourceTokenPartitionKey) {
@@ -778,7 +778,7 @@ export default class DocumentsTab extends TabsBase {
 
   protected _onEditorContentChange(newContent: string) {
     try {
-      let parsed: any = JSON.parse(newContent);
+      const parsed: any = JSON.parse(newContent);
       this.onValidDocumentEdit();
     } catch (e) {
       this.onInvalidDocumentEdit();

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as ViewModels from "../../Contracts/ViewModels";
 import * as Constants from "./Constants";
 import * as Entities from "./Entities";
@@ -16,12 +17,12 @@ enum DataTypes {
   Int64 = 18,
 }
 
-var tablesIndexers = {
+const tablesIndexers = {
   Value: "$v",
   Type: "$t",
 };
 
-export var keyProperties = {
+export const keyProperties = {
   PartitionKey: "$pk",
   Id: "id",
   Id2: "$id", // This should always be the same value as Id
@@ -33,14 +34,17 @@ export var keyProperties = {
 };
 
 export function convertDocumentsToEntities(documents: any[]): Entities.ITableEntityForTablesAPI[] {
-  let results: Entities.ITableEntityForTablesAPI[] = [];
+  const results: Entities.ITableEntityForTablesAPI[] = [];
   documents &&
     documents.forEach((document) => {
-      if (!document.hasOwnProperty(keyProperties.PartitionKey) || !document.hasOwnProperty(keyProperties.Id)) {
+      if (
+        !Object.prototype.hasOwnProperty.call(document, keyProperties.PartitionKey) ||
+        Object.prototype.hasOwnProperty.call(document, keyProperties.Id)
+      ) {
         //Document does not match the current required format for Tables, so we ignore it
         return; // The rest of the key properties should be guaranteed as DocumentDB properties
       }
-      let entity: Entities.ITableEntityForTablesAPI = <Entities.ITableEntityForTablesAPI>{
+      const entity: Entities.ITableEntityForTablesAPI = <Entities.ITableEntityForTablesAPI>{
         PartitionKey: {
           _: document[keyProperties.PartitionKey],
           $: Constants.TableType.String,
@@ -71,8 +75,8 @@ export function convertDocumentsToEntities(documents: any[]): Entities.ITableEnt
           $: Constants.TableType.String,
         },
       };
-      for (var property in document) {
-        if (document.hasOwnProperty(property)) {
+      for (const property in document) {
+        if (Object.prototype.hasOwnProperty.call(document, property)) {
           if (
             property !== keyProperties.PartitionKey &&
             property !== keyProperties.Id &&
@@ -83,7 +87,10 @@ export function convertDocumentsToEntities(documents: any[]): Entities.ITableEnt
             property !== keyProperties.attachments &&
             property !== keyProperties.Id2
           ) {
-            if (!document[property].hasOwnProperty("$v") || !document[property].hasOwnProperty("$t")) {
+            if (
+              !Object.prototype.hasOwnProperty.call(document[property], "$v") ||
+              !Object.prototype.hasOwnProperty.call(document[property], "$t")
+            ) {
               return; //Document property does not match the current required format for Tables, so we ignore it
             }
             if (DataTypes[document[property][tablesIndexers.Type]] === DataTypes[DataTypes.DateTime]) {
@@ -111,10 +118,10 @@ export function convertEntitiesToDocuments(
   entities: Entities.ITableEntityForTablesAPI[],
   collection: ViewModels.Collection
 ): any[] {
-  let results: any[] = [];
+  const results: any[] = [];
   entities &&
     entities.forEach((entity) => {
-      let document: any = {
+      const document: any = {
         $id: entity.RowKey._,
         id: entity.RowKey._,
         ts: DateTimeUtilities.convertJSDateToUnix(entity.Timestamp._), // Convert back to unix time
@@ -129,7 +136,7 @@ export function convertEntitiesToDocuments(
         document[collection.partitionKeyProperty] = entity.PartitionKey._;
         document["partitionKeyValue"] = entity.PartitionKey._;
       }
-      for (var property in entity) {
+      for (const property in entity) {
         if (
           property !== Constants.EntityKeyNames.PartitionKey &&
           property !== Constants.EntityKeyNames.RowKey &&
@@ -160,7 +167,7 @@ export function convertEntitiesToDocuments(
 }
 
 export function convertEntityToNewDocument(entity: Entities.ITableEntityForTablesAPI): any {
-  let document: any = {
+  const document: any = {
     $pk: entity.PartitionKey._,
     $id: entity.RowKey._,
     id: entity.RowKey._,
