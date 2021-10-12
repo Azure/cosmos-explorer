@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
 import * as ko from "knockout";
 import * as _ from "underscore";
@@ -151,28 +152,27 @@ export default class Collection implements ViewModels.Collection {
     this.focusedSubnodeKind = ko.observable<ViewModels.CollectionTabKind>();
 
     this.documentsFocused = ko.observable<boolean>();
-    this.documentsFocused.subscribe((focus) => {
-      console.log("Focus set on Documents: " + focus);
+    this.documentsFocused.subscribe(() => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     });
 
     this.settingsFocused = ko.observable<boolean>(false);
-    this.settingsFocused.subscribe((focus) => {
+    this.settingsFocused.subscribe(() => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     });
 
     this.storedProceduresFocused = ko.observable<boolean>(false);
-    this.storedProceduresFocused.subscribe((focus) => {
+    this.storedProceduresFocused.subscribe(() => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
     });
 
     this.userDefinedFunctionsFocused = ko.observable<boolean>(false);
-    this.userDefinedFunctionsFocused.subscribe((focus) => {
+    this.userDefinedFunctionsFocused.subscribe(() => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
     });
 
     this.triggersFocused = ko.observable<boolean>(false);
-    this.triggersFocused.subscribe((focus) => {
+    this.triggersFocused.subscribe(() => {
       this.focusedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
     });
 
@@ -224,7 +224,7 @@ export default class Collection implements ViewModels.Collection {
     this.isOfferRead = false;
   }
 
-  public expandCollapseCollection() {
+  public expandCollapseCollection(): void {
     useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Collection node",
@@ -247,7 +247,7 @@ export default class Collection implements ViewModels.Collection {
       );
   }
 
-  public collapseCollection() {
+  public collapseCollection(): void {
     if (!this.isCollectionExpanded()) {
       return;
     }
@@ -326,7 +326,7 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  public onConflictsClick() {
+  public onConflictsClick(): void {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Conflicts);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -344,7 +344,7 @@ export default class Collection implements ViewModels.Collection {
         ViewModels.CollectionTabKind.Conflicts,
         (tab) => tab.collection && tab.collection.databaseId === this.databaseId && tab.collection.id() === this.id()
       ) as ConflictsTab[];
-    let conflictsTab: ConflictsTab = conflictsTabs && conflictsTabs[0];
+    const conflictsTab: ConflictsTab = conflictsTabs && conflictsTabs[0];
 
     if (conflictsTab) {
       useTabs.getState().activateTab(conflictsTab);
@@ -373,7 +373,7 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  public onTableEntitiesClick() {
+  public onTableEntitiesClick(): void {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.QueryTables);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -428,7 +428,7 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  public onGraphDocumentsClick() {
+  public onGraphDocumentsClick(): void {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Graph);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -481,7 +481,7 @@ export default class Collection implements ViewModels.Collection {
     }
   }
 
-  public onMongoDBDocumentsClick = () => {
+  public onMongoDBDocumentsClick = (): void => {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -527,7 +527,7 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onSchemaAnalyzerClick = async () => {
+  public onSchemaAnalyzerClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.SchemaAnalyzer);
     const SchemaAnalyzerTab = await (await import("../Tabs/SchemaAnalyzerTab")).default;
@@ -604,7 +604,7 @@ export default class Collection implements ViewModels.Collection {
       node: this,
     };
 
-    let settingsTabV2 = matchingTabs && (matchingTabs[0] as CollectionSettingsTabV2);
+    const settingsTabV2 = matchingTabs && (matchingTabs[0] as CollectionSettingsTabV2);
     this.launchSettingsTabV2(settingsTabV2, traceStartData, settingsTabOptions);
   };
 
@@ -624,7 +624,7 @@ export default class Collection implements ViewModels.Collection {
     }
   };
 
-  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
@@ -653,7 +653,8 @@ export default class Collection implements ViewModels.Collection {
     );
   }
 
-  public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public onNewMongoQueryClick(source: any, event: MouseEvent, queryText?: string): void {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
 
@@ -685,7 +686,7 @@ export default class Collection implements ViewModels.Collection {
     useTabs.getState().activateNewTab(newMongoQueryTab);
   }
 
-  public onNewGraphClick() {
+  public onNewGraphClick(): void {
     const id: number = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Graph).length + 1;
     const title: string = "Graph Query " + id;
 
@@ -715,7 +716,7 @@ export default class Collection implements ViewModels.Collection {
     useTabs.getState().activateNewTab(graphTab);
   }
 
-  public onNewMongoShellClick() {
+  public onNewMongoShellClick(): void {
     const mongoShellTabs = useTabs.getState().getTabs(ViewModels.CollectionTabKind.MongoShell) as NewMongoShellTab[];
 
     let index = 1;
@@ -740,15 +741,15 @@ export default class Collection implements ViewModels.Collection {
     useTabs.getState().activateNewTab(mongoShellTab);
   }
 
-  public onNewStoredProcedureClick(source: ViewModels.Collection, event: MouseEvent) {
+  public onNewStoredProcedureClick(source: ViewModels.Collection, event: MouseEvent): void {
     StoredProcedure.create(source, event);
   }
 
-  public onNewUserDefinedFunctionClick(source: ViewModels.Collection) {
+  public onNewUserDefinedFunctionClick(source: ViewModels.Collection): void {
     UserDefinedFunction.create(source);
   }
 
-  public onNewTriggerClick(source: ViewModels.Collection, event: MouseEvent) {
+  public onNewTriggerClick(source: ViewModels.Collection, event: MouseEvent): void {
     Trigger.create(source, event);
   }
 
@@ -788,7 +789,7 @@ export default class Collection implements ViewModels.Collection {
     );
   }
 
-  public expandCollapseStoredProcedures() {
+  public expandCollapseStoredProcedures(): void {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.StoredProcedures);
     if (this.isStoredProceduresExpanded()) {
       this.collapseStoredProcedures();
@@ -802,7 +803,7 @@ export default class Collection implements ViewModels.Collection {
       );
   }
 
-  public expandStoredProcedures() {
+  public expandStoredProcedures(): void {
     if (this.isStoredProceduresExpanded()) {
       return;
     }
@@ -833,7 +834,7 @@ export default class Collection implements ViewModels.Collection {
     );
   }
 
-  public collapseStoredProcedures() {
+  public collapseStoredProcedures(): void {
     if (!this.isStoredProceduresExpanded()) {
       return;
     }
@@ -849,7 +850,7 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public expandCollapseUserDefinedFunctions() {
+  public expandCollapseUserDefinedFunctions(): void {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.UserDefinedFunctions);
     if (this.isUserDefinedFunctionsExpanded()) {
       this.collapseUserDefinedFunctions();
@@ -863,7 +864,7 @@ export default class Collection implements ViewModels.Collection {
       );
   }
 
-  public expandUserDefinedFunctions() {
+  public expandUserDefinedFunctions(): void {
     if (this.isUserDefinedFunctionsExpanded()) {
       return;
     }
@@ -894,7 +895,7 @@ export default class Collection implements ViewModels.Collection {
     );
   }
 
-  public collapseUserDefinedFunctions() {
+  public collapseUserDefinedFunctions(): void {
     if (!this.isUserDefinedFunctionsExpanded()) {
       return;
     }
@@ -910,7 +911,7 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public expandCollapseTriggers() {
+  public expandCollapseTriggers(): void {
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Triggers);
     if (this.isTriggersExpanded()) {
       this.collapseTriggers();
@@ -924,7 +925,7 @@ export default class Collection implements ViewModels.Collection {
       );
   }
 
-  public expandTriggers() {
+  public expandTriggers(): void {
     if (this.isTriggersExpanded()) {
       return;
     }
@@ -956,7 +957,7 @@ export default class Collection implements ViewModels.Collection {
     );
   }
 
-  public collapseTriggers() {
+  public collapseTriggers(): void {
     if (!this.isTriggersExpanded()) {
       return;
     }
@@ -972,7 +973,7 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public loadStoredProcedures(): Promise<any> {
+  public loadStoredProcedures(): Promise<void> {
     return readStoredProcedures(this.databaseId, this.id()).then((storedProcedures) => {
       const storedProceduresNodes: ViewModels.TreeNode[] = storedProcedures.map(
         (storedProcedure) => new StoredProcedure(this.container, this, storedProcedure)
@@ -983,7 +984,7 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public loadUserDefinedFunctions(): Promise<any> {
+  public loadUserDefinedFunctions(): Promise<void> {
     return readUserDefinedFunctions(this.databaseId, this.id()).then((userDefinedFunctions) => {
       const userDefinedFunctionsNodes: ViewModels.TreeNode[] = userDefinedFunctions.map(
         (udf) => new UserDefinedFunction(this.container, this, udf)
@@ -994,7 +995,7 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public loadTriggers(): Promise<any> {
+  public loadTriggers(): Promise<void> {
     return readTriggers(this.databaseId, this.id()).then((triggers) => {
       const triggerNodes: ViewModels.TreeNode[] = triggers.map(
         (trigger: SqlTriggerResource | TriggerDefinition) => new Trigger(this.container, this, trigger)
@@ -1005,12 +1006,12 @@ export default class Collection implements ViewModels.Collection {
     });
   }
 
-  public onDragOver(source: Collection, event: { originalEvent: DragEvent }) {
+  public onDragOver(source: Collection, event: { originalEvent: DragEvent }): void {
     event.originalEvent.stopPropagation();
     event.originalEvent.preventDefault();
   }
 
-  public onDrop(source: Collection, event: { originalEvent: DragEvent }) {
+  public onDrop(source: Collection, event: { originalEvent: DragEvent }): void {
     event.originalEvent.stopPropagation();
     event.originalEvent.preventDefault();
     this.uploadFiles(event.originalEvent.dataTransfer.files);
@@ -1028,7 +1029,7 @@ export default class Collection implements ViewModels.Collection {
       }
 
       return _.find(notifications, (notification: DataModels.Notification) => {
-        const throughputUpdateRegExp: RegExp = new RegExp("Throughput update (.*) in progress");
+        const throughputUpdateRegExp = new RegExp("Throughput update (.*) in progress");
         return (
           notification.kind === "message" &&
           notification.collectionName === this.id() &&

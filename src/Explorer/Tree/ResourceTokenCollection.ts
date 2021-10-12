@@ -60,7 +60,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     });
   }
 
-  public collapseCollection() {
+  public collapseCollection(): void {
     if (!this.isCollectionExpanded()) {
       return;
     }
@@ -76,7 +76,8 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     });
   }
 
-  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  public onNewQueryClick(source: any, event: MouseEvent, queryText?: string): void {
     const collection: ViewModels.Collection = source.collection || source;
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Query).length + 1;
     const title = "Query " + id;
@@ -105,7 +106,7 @@ export default class ResourceTokenCollection implements ViewModels.CollectionBas
     );
   }
 
-  public onDocumentDBDocumentsClick() {
+  public onDocumentDBDocumentsClick(): void {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Documents);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {

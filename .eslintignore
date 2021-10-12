@@ -108,11 +108,8 @@ src/Explorer/Tabs/TabsBase.ts
 src/Explorer/Tabs/TriggerTab.ts
 src/Explorer/Tabs/UserDefinedFunctionTab.ts
 src/Explorer/Tree/AccessibleVerticalList.ts
-src/Explorer/Tree/Collection.ts
 src/Explorer/Tree/ConflictId.ts
-src/Explorer/Tree/DocumentId.ts
 src/Explorer/Tree/ObjectId.ts
-src/Explorer/Tree/ResourceTokenCollection.ts
 src/Explorer/Tree/StoredProcedure.ts
 src/Explorer/Tree/TreeComponents.ts
 src/Explorer/WaitsForTemplateViewModel.ts
