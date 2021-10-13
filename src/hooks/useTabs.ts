@@ -1,5 +1,6 @@
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
+import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
 
 interface TabsState {
@@ -12,6 +13,7 @@ interface TabsState {
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void;
   closeTabsByComparator: (comparator: (tab: TabsBase) => boolean) => void;
   closeTab: (tab: TabsBase) => void;
+  closeAllTabs: (hardClose: boolean) => void;
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
@@ -77,5 +79,14 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     }
 
     set({ openedTabs: updatedTabs });
+  },
+  closeAllTabs: (hardClose): void => {
+    const tabList = get().openedTabs;
+    if (tabList && tabList.length > 0) {
+      tabList.forEach((tab: NotebookTabV2) => tab.onCloseTabButtonClick(hardClose));
+      if (get().openedTabs.length === 0) {
+        set({ activeTab: undefined });
+      }
+    }
   },
 }));

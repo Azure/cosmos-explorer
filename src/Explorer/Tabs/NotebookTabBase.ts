@@ -17,6 +17,7 @@ export interface NotebookTabBaseOptions extends ViewModels.TabOptions {
 
 /**
  * Every notebook-based tab inherits from this class. It holds the static reference to a notebook client (singleton)
+ * Re-initiating the constructor when ever a new container got allocated.
  */
 export default class NotebookTabBase extends TabsBase {
   protected static clientManager: NotebookClientV2;
@@ -27,6 +28,10 @@ export default class NotebookTabBase extends TabsBase {
 
     this.container = options.container;
 
+    useNotebook.subscribe(
+      () => (NotebookTabBase.clientManager = undefined),
+      (state) => state.notebookServerInfo
+    );
     if (!NotebookTabBase.clientManager) {
       NotebookTabBase.clientManager = new NotebookClientV2({
         connectionInfo: useNotebook.getState().notebookServerInfo,

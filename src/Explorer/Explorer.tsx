@@ -2,6 +2,7 @@ import { Link } from "@fluentui/react/lib/Link";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
+import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
@@ -13,7 +14,7 @@ import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHand
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
 import * as DataModels from "../Contracts/DataModels";
-import { ContainerConnectionInfo } from "../Contracts/DataModels";
+import { ContainerConnectionInfo, IPhoenixConnectionInfoResult, IResponse } from "../Contracts/DataModels";
 import * as ViewModels from "../Contracts/ViewModels";
 import { GitHubOAuthService } from "../GitHub/GitHubOAuthService";
 import { useSidePanel } from "../hooks/useSidePanel";
@@ -165,11 +166,9 @@ export default class Explorer {
     );
 
     useNotebook.subscribe(
-      async () => {
-        this.initiateAndRefreshNotebookList();
-        useNotebook.getState().setIsRefreshed(false);
-      },
-      (state) => state.isNotebookEnabled || state.isRefreshed
+      async () => this.initiateAndRefreshNotebookList(),
+      (state) => [state.isNotebookEnabled, state.isRefreshed],
+      shallow
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);
@@ -179,6 +178,7 @@ export default class Explorer {
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl,
         authToken: userContext.features.notebookServerToken,
+        forwardingId: undefined,
       });
     }
 
@@ -364,6 +364,7 @@ export default class Explorer {
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
         authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+        forwardingId: undefined,
       });
     }
 
@@ -376,6 +377,7 @@ export default class Explorer {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     const isAllocating = useNotebook.getState().isAllocating;
     if (isAllocating === false && notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined) {
+      useTabs.getState().closeAllTabs(true);
       const provisionData = {
         aadToken: userContext.authorizationToken,
         subscriptionId: userContext.subscriptionId,
@@ -390,25 +392,7 @@ export default class Explorer {
       try {
         useNotebook.getState().setIsAllocating(true);
         const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
-        if (
-          connectionInfo.status === HttpStatusCodes.OK &&
-          connectionInfo.data &&
-          connectionInfo.data.notebookServerUrl
-        ) {
-          connectionStatus.status = ConnectionStatusType.Connected;
-          useNotebook.getState().setConnectionInfo(connectionStatus);
-          useNotebook.getState().setNotebookServerInfo({
-            notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
-            authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
-          });
-          this.notebookManager?.notebookClient
-            .getMemoryUsage()
-            .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
-          useNotebook.getState().setIsAllocating(false);
-        } else {
-          connectionStatus.status = ConnectionStatusType.Failed;
-          useNotebook.getState().resetConatinerConnection(connectionStatus);
-        }
+        await this.setNotebookInfo(connectionInfo, connectionStatus);
       } catch (error) {
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetConatinerConnection(connectionStatus);
@@ -420,6 +404,34 @@ export default class Explorer {
     }
   }
 
+  private async setNotebookInfo(
+    connectionInfo: IResponse<IPhoenixConnectionInfoResult>,
+    connectionStatus: DataModels.ContainerConnectionInfo
+  ) {
+    if (connectionInfo.status === HttpStatusCodes.OK && connectionInfo.data && connectionInfo.data.notebookServerUrl) {
+      const containerData = {
+        forwardingId: connectionInfo.data.forwardingId,
+        dbAccountName: userContext.databaseAccount.name,
+      };
+      await this.phoenixClient.setContainerHeartBeat(containerData);
+
+      connectionStatus.status = ConnectionStatusType.Connected;
+      useNotebook.getState().setConnectionInfo(connectionStatus);
+      useNotebook.getState().setNotebookServerInfo({
+        notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
+        authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
+        forwardingId: connectionInfo.data.forwardingId,
+      });
+      this.notebookManager?.notebookClient
+        .getMemoryUsage()
+        .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
+    } else {
+      connectionStatus.status = ConnectionStatusType.Failed;
+      useNotebook.getState().resetConatinerConnection(connectionStatus);
+    }
+    useNotebook.getState().setIsAllocating(false);
+  }
+
   public resetNotebookWorkspace(): void {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookClient) {
       handleError(
@@ -428,11 +440,14 @@ export default class Explorer {
       );
       return;
     }
+    const dialogContent = NotebookUtil.isPhoenixEnabled()
+      ? "Notebooks saved in temporary workspace will also be lost. Proceed anyway?"
+      : "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?";
 
     const resetConfirmationDialogProps: DialogProps = {
       isModal: true,
       title: "Reset Workspace",
-      subText: "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?",
+      subText: dialogContent,
       primaryButtonText: "OK",
       secondaryButtonText: "Cancel",
       onPrimaryButtonClick: this._resetNotebookWorkspace,
@@ -490,16 +505,55 @@ export default class Explorer {
   private _resetNotebookWorkspace = async () => {
     useDialog.getState().closeDialog();
     const clearInProgressMessage = logConsoleProgress("Resetting notebook workspace");
+    let connectionStatus: ContainerConnectionInfo;
     try {
-      await this.notebookManager?.notebookClient.resetWorkspace();
-      logConsoleInfo("Successfully reset notebook workspace");
-      TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
+      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+      if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
+        const error = "No server endpoint detected";
+        Logger.logError(error, "NotebookContainerClient/resetWorkspace");
+        logConsoleError(error);
+        return;
+      }
+
+      if (NotebookUtil.isPhoenixEnabled()) {
+        useTabs.getState().closeAllTabs(true);
+        connectionStatus = {
+          status: ConnectionStatusType.Connecting,
+        };
+        useNotebook.getState().setConnectionInfo(connectionStatus);
+      }
+      const connectionInfo = await this.notebookManager?.notebookClient.resetWorkspace();
+      if (connectionInfo && connectionInfo.status && connectionInfo.status === HttpStatusCodes.OK) {
+        if (NotebookUtil.isPhoenixEnabled() && connectionInfo.data && connectionInfo.data.notebookServerUrl) {
+          await this.setNotebookInfo(connectionInfo, connectionStatus);
+          useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+        }
+        logConsoleInfo("Successfully reset notebook workspace");
+        TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
+      } else {
+        logConsoleError(`Failed to reset notebook workspace`);
+        TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace);
+        if (NotebookUtil.isPhoenixEnabled()) {
+          connectionStatus = {
+            status: ConnectionStatusType.Reconnect,
+          };
+          useNotebook.getState().resetConatinerConnection(connectionStatus);
+          useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+        }
+      }
     } catch (error) {
       logConsoleError(`Failed to reset notebook workspace: ${error}`);
       TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, {
         error: getErrorMessage(error),
         errorStack: getErrorStack(error),
       });
+      if (NotebookUtil.isPhoenixEnabled()) {
+        connectionStatus = {
+          status: ConnectionStatusType.Failed,
+        };
+        useNotebook.getState().setConnectionInfo(connectionStatus);
+        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+      }
       throw error;
     } finally {
       clearInProgressMessage();
@@ -692,7 +746,7 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
     if (notebookContentItem.type === NotebookContentItemType.Notebook && NotebookUtil.isPhoenixEnabled()) {
-      this.allocateContainer();
+      await this.allocateContainer();
     }
 
     const notebookTabs = useTabs
@@ -1016,8 +1070,8 @@ export default class Explorer {
         useDialog
           .getState()
           .showOkModalDialog(
-            "Failed to Connect",
-            "Failed to connect temporary workspace, this could happen because of network issue please refresh and try again."
+            "Failed to connect",
+            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again."
           );
       }
     } else {

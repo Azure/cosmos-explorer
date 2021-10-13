@@ -343,7 +343,12 @@ export enum ConnectionStatusType {
   Connecting = "Connecting",
   Connected = "Connected",
   Failed = "Connection Failed",
-  ReConnect = "Reconnect",
+  Reconnect = "Reconnect",
+}
+
+export enum ConatinerStatusType {
+  Active = "Active",
+  InActive = "InActive",
 }
 
 export const EmulatorMasterKey =
@@ -356,6 +361,7 @@ export const StyleConstants = require("less-vars-loader!../../less/Common/Consta
 export class Notebook {
   public static readonly defaultBasePath = "./notebooks";
   public static readonly heartbeatDelayMs = 60000;
+  public static readonly containerStatusHeartbeatDelayMs = 30000;
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
@@ -365,11 +371,11 @@ export class Notebook {
     "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";
   public static readonly cassandraShellTemporarilyDownMsg =
     "We have identified an issue with the Cassandra Shell and it is unavailable right now. We are actively working on the mitigation.";
-  public static saveNotebookModalTitle = "Save Notebook in temporary workspace";
+  public static saveNotebookModalTitle = "Save notebook in temporary workspace";
   public static saveNotebookModalContent =
     "This notebook will be saved in the temporary workspace and will be removed when the session expires. To save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your local machine before the session ends.";
-  public static newNotebookModalTitle = "Create Notebook in temporary workspace";
-  public static newNotebookUploadModalTitle = "Upload Notebook in temporary workspace";
+  public static newNotebookModalTitle = "Create notebook in temporary workspace";
+  public static newNotebookUploadModalTitle = "Upload notebook to temporary workspace";
   public static newNotebookModalContent1 =
     "A temporary workspace will be created to enable you to work with notebooks. When the session expires, any notebooks in the workspace will be removed.";
   public static newNotebookModalContent2 =

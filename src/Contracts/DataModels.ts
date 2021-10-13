@@ -1,4 +1,4 @@
-import { ConnectionStatusType } from "../Common/Constants";
+import { ConatinerStatusType, ConnectionStatusType } from "../Common/Constants";
 
 export interface DatabaseAccount {
   id: string;
@@ -426,6 +426,37 @@ export interface OperationStatus {
 export interface NotebookWorkspaceConnectionInfo {
   authToken: string;
   notebookServerEndpoint: string;
+  forwardingId: string;
+}
+
+export interface ConatinerInfo {
+  durationLeftInMinutes: number;
+  notebookServerInfo: NotebookWorkspaceConnectionInfo;
+  status: ConatinerStatusType;
+}
+
+export interface IProvosionData {
+  aadToken: string;
+  subscriptionId: string;
+  resourceGroup: string;
+  dbAccountName: string;
+  cosmosEndpoint: string;
+}
+
+export interface IContainerData {
+  dbAccountName: string;
+  forwardingId: string;
+}
+
+export interface IResponse<T> {
+  status: number;
+  data: T;
+}
+
+export interface IPhoenixConnectionInfoResult {
+  readonly notebookAuthToken?: string;
+  readonly notebookServerUrl?: string;
+  readonly forwardingId?: string;
 }
 
 export interface NotebookWorkspaceFeedResponse {

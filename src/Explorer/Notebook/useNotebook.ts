@@ -7,7 +7,8 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { ContainerConnectionInfo } from "../../Contracts/DataModels";
+import { ConatinerInfo, ContainerConnectionInfo } from "../../Contracts/DataModels";
+import { useTabs } from "../../hooks/useTabs";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -35,6 +36,7 @@ interface NotebookState {
   notebookFolderName: string;
   isAllocating: boolean;
   isRefreshed: boolean;
+  conatinerStatus: ConatinerInfo;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -55,6 +57,7 @@ interface NotebookState {
   setIsAllocating: (isAllocating: boolean) => void;
   resetConatinerConnection: (connectionStatus: ContainerConnectionInfo) => void;
   setIsRefreshed: (isAllocating: boolean) => void;
+  setConatinerStatus: (conatinerStatus: ConatinerInfo) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -63,6 +66,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   notebookServerInfo: {
     notebookServerEndpoint: undefined,
     authToken: undefined,
+    forwardingId: undefined,
   },
   sparkClusterConnectionInfo: {
     userName: undefined,
@@ -83,6 +87,11 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   notebookFolderName: undefined,
   isAllocating: false,
   isRefreshed: false,
+  conatinerStatus: {
+    status: undefined,
+    durationLeftInMinutes: undefined,
+    notebookServerInfo: undefined,
+  },
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -271,12 +280,20 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => set({ connectionInfo }),
   setIsAllocating: (isAllocating: boolean) => set({ isAllocating }),
   resetConatinerConnection: (connectionStatus: ContainerConnectionInfo): void => {
+    useTabs.getState().closeAllTabs(true);
     useNotebook.getState().setConnectionInfo(connectionStatus);
     useNotebook.getState().setNotebookServerInfo({
       notebookServerEndpoint: undefined,
       authToken: undefined,
+      forwardingId: undefined,
     });
     useNotebook.getState().setIsAllocating(false);
+    useNotebook.getState().setConatinerStatus({
+      status: undefined,
+      durationLeftInMinutes: undefined,
+      notebookServerInfo: undefined,
+    });
   },
   setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
+  setConatinerStatus: (conatinerStatus: ConatinerInfo) => set({ conatinerStatus }),
 }));
