@@ -15,18 +15,13 @@
     "target": "es2017",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "lib": [
-      "es5",
-      "es6",
-      "dom"
-    ],
+    "lib": ["es5", "es6", "dom"],
     "jsx": "react",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": [
-      "jest"
-    ]
+    "types": ["jest"],
+    "baseUrl": "src"
   },
   "typedocOptions": {
     "entryPoints": [
@@ -42,11 +37,6 @@
     "includes": "./src/SelfServe/Documentation",
     "disableSources": true
   },
-  "include": [
-    "./src/**/*",
-    "./utils/**/*"
-  ],
-  "exclude": [
-    "./src/**/__mocks__/**/*"
-  ]
+  "include": ["src", "./src/**/*", "./utils/**/*"],
+  "exclude": ["./src/**/__mocks__/**/*"]
 }
