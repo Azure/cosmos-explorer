@@ -54,7 +54,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
     });
   }
 
-  public onCloseTabButtonClick(): Q.Promise<any> {
+  public onCloseTabButtonClick(): Q.Promise<void> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
       super.onCloseTabButtonClick();
@@ -78,7 +78,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
     }
   }
 
-  public async reconfigureServiceEndpoints() {
+  public async reconfigureServiceEndpoints(): Promise<void> {
     if (!this.notebookComponentAdapter) {
       return;
     }
@@ -136,7 +136,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       ariaLabel: publishLabel,
     });
 
-    let buttons: CommandButtonComponentProps[] = [
+    const buttons: CommandButtonComponentProps[] = [
       {
         iconSrc: SaveIcon,
         iconAlt: saveLabel,
@@ -160,7 +160,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: kernelLabel,
-        onCommandClick: () => {},
+        onCommandClick: () => undefined,
         commandButtonLabel: null,
         hasPopup: false,
         disabled: availableKernels.length < 1,
@@ -271,7 +271,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
       {
         iconSrc: null,
         iconAlt: null,
-        onCommandClick: () => {},
+        onCommandClick: () => undefined,
         commandButtonLabel: null,
         ariaLabel: cellTypeLabel,
         hasPopup: false,
@@ -361,7 +361,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
   }
 
   private onKernelUpdate = async () => {
-    await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName()).catch((reason) => {
+    await this.configureServiceEndpoints(this.notebookComponentAdapter.getCurrentKernelName()).catch(() => {
       /* Erroring is ok here */
     });
     this.updateNavbarWithTabsButtons();

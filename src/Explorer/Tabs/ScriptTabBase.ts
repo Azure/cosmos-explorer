@@ -25,11 +25,12 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
   public errors: ko.ObservableArray<ViewModels.QueryError>;
   public statusMessge: ko.Observable<string>;
   public statusIcon: ko.Observable<string>;
-  public formFields: ko.ObservableArray<ViewModels.Editable<any>>;
+  public formFields: ko.ObservableArray<ViewModels.Editable<unknown>>;
   public formIsValid: ko.Computed<boolean>;
   public formIsDirty: ko.Computed<boolean>;
   public isNew: ko.Observable<boolean>;
   // TODO: Remove any. The SDK types for all the script.body are slightly incorrect which makes this REALLY hard to type correct.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   public resource: ko.Observable<any>;
   public isTemplateReady: ko.Observable<boolean>;
   protected _partitionKey: DataModels.PartitionKey;
@@ -85,7 +86,6 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
             this.editorState(ViewModels.ScriptEditorState.exisitingDirtyInvalid);
           }
           break;
-        case ViewModels.ScriptEditorState.exisitingDirtyValid:
         default:
           break;
       }
@@ -182,7 +182,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     this.editorContent.setBaseline(resource.body);
   }
 
-  public setBaselines() {
+  public setBaselines(): void {
     this._setBaselines();
   }
 
@@ -194,9 +194,9 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
   }
 
   public abstract onSaveClick: () => void;
-  public abstract onUpdateClick: () => Promise<any>;
+  public abstract onUpdateClick: () => Promise<void>;
 
-  public onDiscard = (): Q.Promise<any> => {
+  public onDiscard = (): Q.Promise<void> => {
     this.setBaselines();
     const original = this.editorContent.getEditableOriginalValue();
     const editorModel = this.editor() && this.editor().getModel();
@@ -289,7 +289,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     return !!value;
   }
 
-  protected async _createBodyEditor() {
+  protected async _createBodyEditor(): Promise<void> {
     const id = this.editorId;
     const container = document.getElementById(id);
     const options = {
@@ -308,7 +308,7 @@ export default abstract class ScriptTabBase extends TabsBase implements ViewMode
     editorModel.onDidChangeContent(this._onBodyContentChange.bind(this));
   }
 
-  private _onBodyContentChange(e: monaco.editor.IModelContentChangedEvent) {
+  private _onBodyContentChange() {
     const editorModel = this.editor().getModel();
     this.editorContent(editorModel.getValue());
   }
