@@ -1,5 +1,5 @@
-import * as Utilities from "../Utilities";
 import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
 import CacheBase from "./CacheBase";
 
 export default class TableEntityCache extends CacheBase<Entities.ITableEntity> {
@@ -21,7 +21,7 @@ export default class TableEntityCache extends CacheBase<Entities.ITableEntity> {
     this._tableQuery = Utilities.copyTableQuery(tableQuery);
   }
 
-  public preClear() {
+  public preClear(): void {
     this.tableQuery = null;
   }
 }

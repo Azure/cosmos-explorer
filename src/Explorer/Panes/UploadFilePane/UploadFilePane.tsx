@@ -1,7 +1,7 @@
+import { Upload } from "Common/Upload/Upload";
+import { useSidePanel } from "hooks/useSidePanel";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
-import { Upload } from "../../../Common/Upload/Upload";
-import { useSidePanel } from "../../../hooks/useSidePanel";
-import { logConsoleError, logConsoleInfo, logConsoleProgress } from "../../../Utils/NotificationConsoleUtils";
+import { logConsoleError, logConsoleInfo, logConsoleProgress } from "Utils/NotificationConsoleUtils";
 import { NotebookContentItem } from "../../Notebook/NotebookContentItem";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
