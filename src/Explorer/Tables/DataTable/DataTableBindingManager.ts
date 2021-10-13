@@ -1,20 +1,18 @@
 import * as ko from "knockout";
 import * as _ from "underscore";
-
+import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import * as Constants from "../Constants";
-import * as ViewModels from "../../../Contracts/ViewModels";
+import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
 import * as DataTableBuilder from "./DataTableBuilder";
 import DataTableOperationManager from "./DataTableOperationManager";
 import * as DataTableOperations from "./DataTableOperations";
-import QueryTablesTab from "../../Tabs/QueryTablesTab";
 import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
 
 /**
  * Custom binding manager of datatable
  */
-var tableEntityListViewModelMap: {
+const tableEntityListViewModelMap: {
   [key: string]: {
     tableViewModel: TableEntityListViewModel;
     operationManager: DataTableOperationManager;
@@ -22,12 +20,13 @@ var tableEntityListViewModelMap: {
   };
 } = {};
 
-function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewModel: any, bindingContext: any) {
-  var tableEntityListViewModel = bindingContext.$data;
+//eslint-disable-next-line
+function bindDataTable(element: any, bindingContext: any) {
+  const tableEntityListViewModel = bindingContext.$data;
   tableEntityListViewModel.notifyColumnChanges = onTableColumnChange;
-  var $dataTable = $(element);
-  var queryTablesTab = bindingContext.$parent;
-  var operationManager = new DataTableOperationManager(
+  const $dataTable = $(element);
+  const queryTablesTab = bindingContext.$parent;
+  const operationManager = new DataTableOperationManager(
     $dataTable,
     tableEntityListViewModel,
     queryTablesTab.tableCommands
@@ -44,9 +43,9 @@ function bindDataTable(element: any, valueAccessor: any, allBindings: any, viewM
   operationManager.focusTable(); // Also selects the first row if needed.
 }
 
-function onTableColumnChange(enablePrompt: boolean = true, queryTablesTab: QueryTablesTab) {
-  var columnsFilter: boolean[] = null;
-  var tableEntityListViewModel = tableEntityListViewModelMap[queryTablesTab.tabId].tableViewModel;
+function onTableColumnChange(queryTablesTab: QueryTablesTab) {
+  const columnsFilter: boolean[] = null;
+  const tableEntityListViewModel = tableEntityListViewModelMap[queryTablesTab.tabId].tableViewModel;
   if (queryTablesTab.queryViewModel()) {
     queryTablesTab.queryViewModel().queryBuilderViewModel().updateColumnOptions();
   }
@@ -63,35 +62,36 @@ function createDataTable(
   startIndex: number,
   tableEntityListViewModel: TableEntityListViewModel,
   queryTablesTab: QueryTablesTab,
-  destroy: boolean = false,
+  destroy = false,
   columnsFilter: boolean[] = null
 ): void {
-  var $dataTable = tableEntityListViewModelMap[queryTablesTab.tabId].$dataTable;
+  const $dataTable = tableEntityListViewModelMap[queryTablesTab.tabId].$dataTable;
   if (destroy) {
     // Find currently displayed columns.
-    var currentColumns: string[] = tableEntityListViewModel.headers;
+    const currentColumns: string[] = tableEntityListViewModel.headers;
 
     // Calculate how many more columns need to added to the current table.
-    var columnsToAdd: number = _.difference(tableEntityListViewModel.headers, currentColumns).length;
+    const columnsToAdd: number = _.difference(tableEntityListViewModel.headers, currentColumns).length;
 
     // This is needed as current solution of adding column is more like a workaround
     // The official support for dynamically add column is not yet there
     // Please track github issue https://github.com/DataTables/DataTables/issues/273 for its offical support
-    for (var i = 0; i < columnsToAdd; i++) {
+    for (let i = 0; i < columnsToAdd; i++) {
       $(".dataTables_scrollHead table thead tr th").eq(0).after("<th></th>");
     }
     tableEntityListViewModel.table.destroy();
     $dataTable.empty();
   }
 
-  var jsonColTable = [];
+  const jsonColTable = [];
 
-  for (var i = 0; i < tableEntityListViewModel.headers.length; i++) {
+  for (let i = 0; i < tableEntityListViewModel.headers.length; i++) {
     jsonColTable.push({
       sTitle: tableEntityListViewModel.headers[i],
       data: tableEntityListViewModel.headers[i],
       aTargets: [i],
       mRender: bindColumn,
+      // eslint-disable-next-line no-extra-boolean-cast
       visible: !!columnsFilter ? columnsFilter[i] : true,
     });
   }
@@ -154,9 +154,10 @@ function createDataTable(
       table.setAttribute("summary", `Results for container ${tableEntityListViewModel.queryTablesTab.collection.id()}`);
     });
 }
-
-function bindColumn(data: any, type: string, full: any) {
-  var displayedValue: any = null;
+//eslint-disable-next-line
+function bindColumn(data: any) {
+  //eslint-disable-next-line
+  let displayedValue: any = null;
   if (data) {
     displayedValue = data._;
 
@@ -173,7 +174,7 @@ function bindColumn(data: any, type: string, full: any) {
   }
   return displayedValue;
 }
-
+//eslint-disable-next-line
 function getServerData(sSource: any, aoData: any, fnCallback: any, oSettings: any) {
   tableEntityListViewModelMap[oSettings.ajax].tableViewModel.renderNextPageAndupdateCache(
     sSource,
@@ -191,15 +192,15 @@ function bindClientId(nRow: Node, aData: Entities.ITableEntity) {
   $(nRow).attr(Constants.htmlAttributeNames.dataTableRowKeyAttr, aData.RowKey._);
   return nRow;
 }
-
-function selectionChanged(element: any, valueAccessor: any, allBindings: any, viewModel: any, bindingContext: any) {
+//eslint-disable-next-line
+function selectionChanged(bindingContext: any) {
   $(".dataTable tr.selected").attr("tabindex", "-1").removeClass("selected");
 
   const selected =
     bindingContext && bindingContext.$data && bindingContext.$data.selected && bindingContext.$data.selected();
   selected &&
     selected.forEach((b: Entities.ITableEntity) => {
-      var sel = DataTableOperations.getRowSelector([
+      const sel = DataTableOperations.getRowSelector([
         {
           key: Constants.htmlAttributeNames.dataTableRowKeyAttr,
           value: b.RowKey && b.RowKey._ && b.RowKey._.toString(),
@@ -211,7 +212,7 @@ function selectionChanged(element: any, valueAccessor: any, allBindings: any, vi
   //selected = bindingContext.$data.selected();
 }
 
-function dataChanged(element: any, valueAccessor: any, allBindings: any, viewModel: any, bindingContext: any) {
+function dataChanged() {
   // do nothing for now
 }
 
@@ -229,20 +230,21 @@ function updateTableScrollableRegionMetrics(): void {
  * Update the table's scrollable region height. So the pagination control is always shown at the bottom of the page.
  */
 function updateTableScrollableRegionHeight(): void {
-  $(".tab-pane").each(function (index, tabElement) {
+  $(".tab-pane").each((index, tabElement) => {
     if (!$(tabElement).hasClass("tableContainer")) {
       return;
     }
 
     // Add some padding to the table so it doesn't get too close to the container border.
-    var dataTablePaddingBottom = 10;
-    var bodyHeight = $(window).height();
-    var dataTablesScrollBodyPosY = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset().top;
-    var dataTablesInfoElem = $(tabElement).find(".dataTables_info");
-    var dataTablesPaginateElem = $(tabElement).find(".dataTables_paginate");
+    const dataTablePaddingBottom = 10;
+    const bodyHeight = $(window).height();
+    const dataTablesScrollBodyPosY = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset()
+      .top;
+    const dataTablesInfoElem = $(tabElement).find(".dataTables_info");
+    const dataTablesPaginateElem = $(tabElement).find(".dataTables_paginate");
     const notificationConsoleHeight = 32; /** Header height **/
 
-    var scrollHeight =
+    let scrollHeight =
       bodyHeight -
       dataTablesScrollBodyPosY -
       dataTablesPaginateElem.outerHeight(true) -
@@ -257,10 +259,10 @@ function updateTableScrollableRegionHeight(): void {
     // TODO This is a work around for setting the outerheight since we don't have access to the JQuery.outerheight(numberValue)
     // in the current version of JQuery we are using.  Ideally, we would upgrade JQuery and use this line instead:
     // $(Constants.htmlSelectors.dataTableScrollBodySelector).outerHeight(scrollHeight);
-    var element = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector)[0];
-    var style = getComputedStyle(element);
-    var actualHeight = parseInt(style.height);
-    var change = element.offsetHeight - scrollHeight;
+    const element = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector)[0];
+    const style = getComputedStyle(element);
+    const actualHeight = parseInt(style.height);
+    const change = element.offsetHeight - scrollHeight;
     $(tabElement)
       .find(Constants.htmlSelectors.dataTableScrollBodySelector)
       .height(actualHeight - change);
@@ -271,15 +273,15 @@ function updateTableScrollableRegionHeight(): void {
  * Update the table's scrollable region width to make efficient use of the remaining space.
  */
 function updateTableScrollableRegionWidth(): void {
-  $(".tab-pane").each(function (index, tabElement) {
+  $(".tab-pane").each((index, tabElement) => {
     if (!$(tabElement).hasClass("tableContainer")) {
       return;
     }
 
-    var bodyWidth = $(window).width();
-    var dataTablesScrollBodyPosLeft = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset()
+    const bodyWidth = $(window).width();
+    const dataTablesScrollBodyPosLeft = $(tabElement).find(Constants.htmlSelectors.dataTableScrollBodySelector).offset()
       .left;
-    var scrollWidth = bodyWidth - dataTablesScrollBodyPosLeft;
+    const scrollWidth = bodyWidth - dataTablesScrollBodyPosLeft;
 
     // jquery datatables automatically sets width:100% to both the header and the body when we use it's column autoWidth feature.
     // We work around that by setting the height for it's container instead.
@@ -288,9 +290,9 @@ function updateTableScrollableRegionWidth(): void {
 }
 
 function initializeEventHandlers(): void {
-  var $headers: JQuery = $(Constants.htmlSelectors.dataTableHeaderTypeSelector);
-  var $firstHeader: JQuery = $headers.first();
-  var firstIndex: string = $firstHeader.attr(Constants.htmlAttributeNames.dataTableHeaderIndex);
+  const $headers: JQuery = $(Constants.htmlSelectors.dataTableHeaderTypeSelector);
+  const $firstHeader: JQuery = $headers.first();
+  const firstIndex: string = $firstHeader.attr(Constants.htmlAttributeNames.dataTableHeaderIndex);
 
   $headers
     .on("keydown", (event: JQueryEventObject) => {
@@ -302,7 +304,7 @@ function initializeEventHandlers(): void {
       Utilities.onTab(
         event,
         ($sourceElement: JQuery) => {
-          var sourceIndex: string = $sourceElement.attr(Constants.htmlAttributeNames.dataTableHeaderIndex);
+          const sourceIndex: string = $sourceElement.attr(Constants.htmlAttributeNames.dataTableHeaderIndex);
 
           if (sourceIndex === firstIndex) {
             event.preventDefault();
@@ -324,14 +326,14 @@ function initializeEventHandlers(): void {
       });
     });
 }
-
+//eslint-disable-next-line
 function updateSelectionStatus(oSettings: any): void {
-  var $dataTableRows: JQuery = $(Constants.htmlSelectors.dataTableAllRowsSelector);
+  const $dataTableRows: JQuery = $(Constants.htmlSelectors.dataTableAllRowsSelector);
   if ($dataTableRows) {
-    for (var i = 0; i < $dataTableRows.length; i++) {
-      var $row: JQuery = $dataTableRows.eq(i);
-      var rowKey: string = $row.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr);
-      var table = tableEntityListViewModelMap[oSettings.ajax].tableViewModel;
+    for (let i = 0; i < $dataTableRows.length; i++) {
+      const $row: JQuery = $dataTableRows.eq(i);
+      const rowKey: string = $row.attr(Constants.htmlAttributeNames.dataTableRowKeyAttr);
+      const table = tableEntityListViewModelMap[oSettings.ajax].tableViewModel;
       if (table.isItemSelected(table.getTableEntityKeys(rowKey))) {
         $row.attr("tabindex", "0");
       }
@@ -346,10 +348,10 @@ function updateSelectionStatus(oSettings: any): void {
 // TODO consider centralizing this "post-command" logic into some sort of Command Manager entity.
 // See VSO:166520: "[Storage Explorer] Consider adding a 'command manager' to track command post-effects."
 function updateDataTableFocus(queryTablesTabId: string): void {
-  var $activeElement: JQuery = $(document.activeElement);
-  var isFocusLost: boolean = $activeElement.is("body"); // When focus is lost, "body" becomes the active element.
-  var storageExplorerFrameHasFocus: boolean = document.hasFocus();
-  var operationManager = tableEntityListViewModelMap[queryTablesTabId].operationManager;
+  const $activeElement: JQuery = $(document.activeElement);
+  const isFocusLost: boolean = $activeElement.is("body"); // When focus is lost, "body" becomes the active element.
+  const storageExplorerFrameHasFocus: boolean = document.hasFocus();
+  const operationManager = tableEntityListViewModelMap[queryTablesTabId].operationManager;
   if (operationManager) {
     if (isFocusLost && storageExplorerFrameHasFocus) {
       // We get here when no control is active, meaning that the table update was triggered
@@ -371,19 +373,20 @@ function updateDataTableFocus(queryTablesTabId: string): void {
     }
   }
 }
-
+//eslint-disable-next-line
 (<any>ko.bindingHandlers).tableSource = {
   init: bindDataTable,
   update: dataChanged,
 };
-
+//eslint-disable-next-line
 (<any>ko.bindingHandlers).tableSelection = {
   update: selectionChanged,
 };
-
+//eslint-disable-next-line
 (<any>ko.bindingHandlers).readOnly = {
-  update: function (element: any, valueAccessor: any) {
-    var value = ko.utils.unwrapObservable(valueAccessor());
+  //eslint-disable-next-line
+  update: (element: any, valueAccessor: any) => {
+    const value = ko.utils.unwrapObservable(valueAccessor());
     if (value) {
       element.setAttribute("readOnly", true);
     } else {
