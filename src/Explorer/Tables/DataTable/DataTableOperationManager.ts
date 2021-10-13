@@ -1,11 +1,10 @@
 import ko from "knockout";
-
-import * as DataTableOperations from "./DataTableOperations";
 import * as Constants from "../Constants";
+import * as Entities from "../Entities";
+import * as Utilities from "../Utilities";
+import * as DataTableOperations from "./DataTableOperations";
 import TableCommands from "./TableCommands";
 import TableEntityListViewModel from "./TableEntityListViewModel";
-import * as Utilities from "../Utilities";
-import * as Entities from "../Entities";
 
 /*
  * Base class for data table row selection.
@@ -25,7 +24,7 @@ export default class DataTableOperationManager {
   }
 
   private click = (event: JQueryEventObject) => {
-    var elem: JQuery = $(event.currentTarget);
+    const elem: JQuery = $(event.currentTarget);
     this.updateLastSelectedItem(elem, event.shiftKey);
 
     if (Utilities.isEnvironmentCtrlPressed(event)) {
@@ -37,30 +36,30 @@ export default class DataTableOperationManager {
     }
   };
 
-  private doubleClick = (event: JQueryEventObject) => {
+  private doubleClick = () => {
     this.tryOpenEditor();
   };
 
   private keyDown = (event: JQueryEventObject): boolean => {
-    var isUpArrowKey: boolean = event.keyCode === Constants.keyCodes.UpArrow,
-      isDownArrowKey: boolean = event.keyCode === Constants.keyCodes.DownArrow,
-      handled: boolean = false;
+    const isUpArrowKey: boolean = event.keyCode === Constants.keyCodes.UpArrow,
+      isDownArrowKey: boolean = event.keyCode === Constants.keyCodes.DownArrow;
+    let handled = false;
 
     if (isUpArrowKey || isDownArrowKey) {
-      var lastSelectedItem: Entities.ITableEntity = this._tableEntityListViewModel.lastSelectedItem;
-      var dataTableRows: JQuery = $(Constants.htmlSelectors.dataTableAllRowsSelector);
-      var maximumIndex = dataTableRows.length - 1;
+      const lastSelectedItem: Entities.ITableEntity = this._tableEntityListViewModel.lastSelectedItem;
+      const dataTableRows: JQuery = $(Constants.htmlSelectors.dataTableAllRowsSelector);
+      const maximumIndex = dataTableRows.length - 1;
 
       // If can't find an index for lastSelectedItem, then either no item is previously selected or it goes across page.
       // Simply select the first item in this case.
-      var lastSelectedItemIndex = lastSelectedItem
+      const lastSelectedItemIndex = lastSelectedItem
         ? this._tableEntityListViewModel.getItemIndexFromCurrentPage(
             this._tableEntityListViewModel.getTableEntityKeys(lastSelectedItem.RowKey._)
           )
         : -1;
-      var nextIndex: number = isUpArrowKey ? lastSelectedItemIndex - 1 : lastSelectedItemIndex + 1;
-      var safeIndex: number = Utilities.ensureBetweenBounds(nextIndex, 0, maximumIndex);
-      var selectedRowElement: JQuery = dataTableRows.eq(safeIndex);
+      const nextIndex: number = isUpArrowKey ? lastSelectedItemIndex - 1 : lastSelectedItemIndex + 1;
+      const safeIndex: number = Utilities.ensureBetweenBounds(nextIndex, 0, maximumIndex);
+      const selectedRowElement: JQuery = dataTableRows.eq(safeIndex);
 
       if (selectedRowElement) {
         if (event.shiftKey) {
@@ -90,7 +89,7 @@ export default class DataTableOperationManager {
   // in contrast, there may be more than one key down and key
   // pressed events.
   private keyUp = (event: JQueryEventObject): boolean => {
-    var handled: boolean = false;
+    let handled = false;
 
     switch (event.keyCode) {
       case Constants.keyCodes.Enter:
@@ -105,8 +104,9 @@ export default class DataTableOperationManager {
   };
 
   private itemDropped = (event: JQueryEventObject): boolean => {
-    var handled: boolean = false;
-    var items = (<any>event.originalEvent).dataTransfer.items;
+    const handled = false;
+    //eslint-disable-next-line
+    const items = (<any>event.originalEvent).dataTransfer.items;
 
     if (!items) {
       // On browsers outside of Chromium
@@ -115,9 +115,9 @@ export default class DataTableOperationManager {
       return null;
     }
 
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
-      var entry = item.webkitGetAsEntry();
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      const entry = item.webkitGetAsEntry();
 
       if (entry.isFile) {
         // TODO: parse the file and insert content as entities
@@ -132,8 +132,8 @@ export default class DataTableOperationManager {
   }
 
   private tryHandleDeleteSelected(): boolean {
-    var selectedEntities: Entities.ITableEntity[] = this._tableEntityListViewModel.selected();
-    var handled: boolean = false;
+    const selectedEntities: Entities.ITableEntity[] = this._tableEntityListViewModel.selected();
+    let handled = false;
 
     if (selectedEntities && selectedEntities.length) {
       this._tableCommands.deleteEntitiesCommand(this._tableEntityListViewModel);
@@ -150,8 +150,8 @@ export default class DataTableOperationManager {
   }
 
   private updateLastSelectedItem($elem: JQuery, isShiftSelect: boolean) {
-    var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
-    var entity = this._tableEntityListViewModel.getItemFromCurrentPage(
+    const entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
+    const entity = this._tableEntityListViewModel.getItemFromCurrentPage(
       this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey)
     );
 
@@ -164,7 +164,7 @@ export default class DataTableOperationManager {
 
   private applySingleSelection($elem: JQuery) {
     if ($elem) {
-      var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
+      const entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
 
       this._tableEntityListViewModel.clearSelection();
       this.addToSelection(entityIdentity.RowKey);
@@ -180,12 +180,12 @@ export default class DataTableOperationManager {
   }
 
   private applyCtrlSelection($elem: JQuery): void {
-    var koSelected: ko.ObservableArray<Entities.ITableEntity> = this._tableEntityListViewModel
+    const koSelected: ko.ObservableArray<Entities.ITableEntity> = this._tableEntityListViewModel
       ? this._tableEntityListViewModel.selected
       : null;
 
     if (koSelected) {
-      var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
+      const entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
 
       if (
         !this._tableEntityListViewModel.isItemSelected(
@@ -201,7 +201,7 @@ export default class DataTableOperationManager {
   }
 
   private applyShiftSelection($elem: JQuery): void {
-    var anchorItem = this._tableEntityListViewModel.lastSelectedAnchorItem;
+    let anchorItem = this._tableEntityListViewModel.lastSelectedAnchorItem;
 
     // If anchor item doesn't exist, use the first available item of current page instead
     if (!anchorItem && this._tableEntityListViewModel.items().length > 0) {
@@ -209,16 +209,16 @@ export default class DataTableOperationManager {
     }
 
     if (anchorItem) {
-      var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
-      var elementIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
+      const entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
+      const elementIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
         this._tableEntityListViewModel.getTableEntityKeys(entityIdentity.RowKey)
       );
-      var anchorIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
+      const anchorIndex = this._tableEntityListViewModel.getItemIndexFromAllPages(
         this._tableEntityListViewModel.getTableEntityKeys(anchorItem.RowKey._)
       );
 
-      var startIndex = Math.min(elementIndex, anchorIndex);
-      var endIndex = Math.max(elementIndex, anchorIndex);
+      const startIndex = Math.min(elementIndex, anchorIndex);
+      const endIndex = Math.max(elementIndex, anchorIndex);
 
       this._tableEntityListViewModel.clearSelection();
       ko.utils.arrayPushAll<Entities.ITableEntity>(
@@ -229,7 +229,7 @@ export default class DataTableOperationManager {
   }
 
   private applyContextMenuSelection($elem: JQuery) {
-    var entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
+    const entityIdentity: Entities.ITableEntityIdentity = this.getEntityIdentity($elem);
 
     if (
       !this._tableEntityListViewModel.isItemSelected(
@@ -244,26 +244,26 @@ export default class DataTableOperationManager {
   }
 
   private addToSelection(rowKey: string) {
-    var selectedEntity: Entities.ITableEntity = this._tableEntityListViewModel.getItemFromCurrentPage(
+    const selectedEntity: Entities.ITableEntity = this._tableEntityListViewModel.getItemFromCurrentPage(
       this._tableEntityListViewModel.getTableEntityKeys(rowKey)
     );
 
-    if (selectedEntity != null) {
+    if (selectedEntity !== null) {
       this._tableEntityListViewModel.selected.push(selectedEntity);
     }
   }
 
   // Selecting first row if the selection is empty.
   public selectFirstIfNeeded(): void {
-    var koSelected: ko.ObservableArray<Entities.ITableEntity> = this._tableEntityListViewModel
+    const koSelected: ko.ObservableArray<Entities.ITableEntity> = this._tableEntityListViewModel
       ? this._tableEntityListViewModel.selected
       : null;
-    var koEntities: ko.ObservableArray<Entities.ITableEntity> = this._tableEntityListViewModel
+    const koEntities: ko.ObservableArray<Entities.ITableEntity> = this._tableEntityListViewModel
       ? this._tableEntityListViewModel.items
       : null;
 
     if (!koSelected().length && koEntities().length) {
-      var firstEntity: Entities.ITableEntity = koEntities()[0];
+      const firstEntity: Entities.ITableEntity = koEntities()[0];
 
       // Clear last selection: lastSelectedItem and lastSelectedAnchorItem
       this._tableEntityListViewModel.clearLastSelected();
@@ -278,7 +278,7 @@ export default class DataTableOperationManager {
     }
   }
 
-  public bind() {
+  public bind(): void {
     this.dataTable.on("click", "tr", this.click);
     this.dataTable.on("dblclick", "tr", this.doubleClick);
     this.dataTable.on("keydown", "td", this.keyDown);
