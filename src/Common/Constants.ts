@@ -346,7 +346,7 @@ export enum ConnectionStatusType {
   ReConnect = "Reconnect",
 }
 
-export enum ConatinerStatusType {
+export enum ContainerStatusType {
   Active = "Active",
   InActive = "InActive",
 }

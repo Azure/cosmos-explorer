@@ -7,7 +7,7 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { ConatinerInfo, ContainerConnectionInfo } from "../../Contracts/DataModels";
+import { ContainerConnectionInfo, ContainerInfo } from "../../Contracts/DataModels";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -35,7 +35,7 @@ interface NotebookState {
   notebookFolderName: string;
   isAllocating: boolean;
   isRefreshed: boolean;
-  conatinerStatus: ConatinerInfo;
+  containerStatus: ContainerInfo;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -54,9 +54,9 @@ interface NotebookState {
   initializeGitHubRepos: (pinnedRepos: IPinnedRepo[]) => void;
   setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => void;
   setIsAllocating: (isAllocating: boolean) => void;
-  resetConatinerConnection: (connectionStatus: ContainerConnectionInfo) => void;
+  resetContainerConnection: (connectionStatus: ContainerConnectionInfo) => void;
   setIsRefreshed: (isAllocating: boolean) => void;
-  setConatinerStatus: (conatinerStatus: ConatinerInfo) => void;
+  setContainerStatus: (containerStatus: ContainerInfo) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -86,7 +86,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   notebookFolderName: undefined,
   isAllocating: false,
   isRefreshed: false,
-  conatinerStatus: {
+  containerStatus: {
     status: undefined,
     durationLeftInMinutes: undefined,
     notebookServerInfo: undefined,
@@ -278,7 +278,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => set({ connectionInfo }),
   setIsAllocating: (isAllocating: boolean) => set({ isAllocating }),
-  resetConatinerConnection: (connectionStatus: ContainerConnectionInfo): void => {
+  resetContainerConnection: (connectionStatus: ContainerConnectionInfo): void => {
     useNotebook.getState().setConnectionInfo(connectionStatus);
     useNotebook.getState().setNotebookServerInfo({
       notebookServerEndpoint: undefined,
@@ -286,12 +286,12 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       forwardingId: undefined,
     });
     useNotebook.getState().setIsAllocating(false);
-    useNotebook.getState().setConatinerStatus({
+    useNotebook.getState().setContainerStatus({
       status: undefined,
       durationLeftInMinutes: undefined,
       notebookServerInfo: undefined,
     });
   },
   setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
-  setConatinerStatus: (conatinerStatus: ConatinerInfo) => set({ conatinerStatus }),
+  setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
 }));

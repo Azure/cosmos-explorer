@@ -93,7 +93,7 @@ export class NotebookContainerClient {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.Failed,
         };
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
       this.onConnectionLost();
@@ -104,13 +104,13 @@ export class NotebookContainerClient {
   private checkStatus(): boolean {
     if (NotebookUtil.isPhoenixEnabled()) {
       if (
-        useNotebook.getState().conatinerStatus.status &&
-        useNotebook.getState().conatinerStatus.status === Constants.ConatinerStatusType.InActive
+        useNotebook.getState().containerStatus.status &&
+        useNotebook.getState().containerStatus.status === Constants.ContainerStatusType.InActive
       ) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.ReConnect,
         };
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
         return false;
       }

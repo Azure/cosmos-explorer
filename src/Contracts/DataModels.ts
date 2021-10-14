@@ -1,4 +1,4 @@
-import { ConatinerStatusType, ConnectionStatusType } from "../Common/Constants";
+import { ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
 
 export interface DatabaseAccount {
   id: string;
@@ -429,10 +429,10 @@ export interface NotebookWorkspaceConnectionInfo {
   forwardingId: string;
 }
 
-export interface ConatinerInfo {
+export interface ContainerInfo {
   durationLeftInMinutes: number;
   notebookServerInfo: NotebookWorkspaceConnectionInfo;
-  status: ConatinerStatusType;
+  status: ContainerStatusType;
 }
 
 export interface NotebookWorkspaceFeedResponse {

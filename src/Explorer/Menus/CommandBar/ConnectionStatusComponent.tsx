@@ -14,7 +14,7 @@ import { useId } from "@fluentui/react-hooks";
 import { ActionButton, DefaultButton } from "@fluentui/react/lib/Button";
 import * as React from "react";
 import "../../../../less/hostedexplorer.less";
-import { ConatinerStatusType, ConnectionStatusType, Notebook } from "../../../Common/Constants";
+import { ConnectionStatusType, ContainerStatusType, Notebook } from "../../../Common/Constants";
 import Explorer from "../../Explorer";
 import { useNotebook } from "../../Notebook/useNotebook";
 import "../CommandBar/ConnectionStatusComponent.less";
@@ -30,7 +30,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   const [toolTipContent, setToolTipContent] = React.useState("Connect to temporary workspace.");
   const [isBarDismissed, setIsBarDismissed] = React.useState<boolean>(false);
   const buttonId = useId("callout-button");
-  const containerInfo = useNotebook((state) => state.conatinerStatus);
+  const containerInfo = useNotebook((state) => state.containerStatus);
 
   const styles = mergeStyleSets({
     callout: {
@@ -114,7 +114,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
       <TooltipHost
         content={
           containerInfo.status &&
-          containerInfo.status === ConatinerStatusType.Active &&
+          containerInfo.status === ContainerStatusType.Active &&
           Math.round(containerInfo.durationLeftInMinutes) <= 10
             ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
                 containerInfo.durationLeftInMinutes
@@ -147,7 +147,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
           </Stack>
           {!isBarDismissed &&
           containerInfo.status &&
-          containerInfo.status === ConatinerStatusType.Active &&
+          containerInfo.status === ContainerStatusType.Active &&
           Math.round(containerInfo.durationLeftInMinutes) <= 10 ? (
             <FocusTrapCallout
               role="alertdialog"

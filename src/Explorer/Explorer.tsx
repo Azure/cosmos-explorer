@@ -415,11 +415,11 @@ export default class Explorer {
           useNotebook.getState().setIsAllocating(false);
         } else {
           connectionStatus.status = ConnectionStatusType.Failed;
-          useNotebook.getState().resetConatinerConnection(connectionStatus);
+          useNotebook.getState().resetContainerConnection(connectionStatus);
         }
       } catch (error) {
         connectionStatus.status = ConnectionStatusType.Failed;
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         throw error;
       }
       this.refreshNotebookList();
