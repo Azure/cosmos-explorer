@@ -1,12 +1,12 @@
-import { ConatinerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
+import { ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import {
-  ConatinerInfo,
+  ContainerInfo,
   IContainerData,
   IPhoenixConnectionInfoResult,
-  IProvosionData,
+  IProvisionData,
   IResponse,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
@@ -15,7 +15,7 @@ import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
   public async containerConnectionInfo(
-    provisionData: IProvosionData
+    provisionData: IProvisionData
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
       const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/allocate`, {
@@ -38,33 +38,33 @@ export class PhoenixClient {
   }
   public async setContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
     this.getContainerStatus(containerData)
-      .then((ConatinerInfo) => useNotebook.getState().setConatinerStatus(ConatinerInfo))
+      .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
       .finally(() => {
         if (
-          useNotebook.getState().conatinerStatus.status &&
-          useNotebook.getState().conatinerStatus.status === ConatinerStatusType.Active
+          useNotebook.getState().containerStatus.status &&
+          useNotebook.getState().containerStatus.status === ContainerStatusType.Active
         ) {
-          this.scheduleConatinerHeartbeat(Notebook.containerStatusHeartbeatDelayMs, containerData);
+          this.scheduleContainerHeartbeat(Notebook.containerStatusHeartbeatDelayMs, containerData);
         }
       });
   }
 
-  private scheduleConatinerHeartbeat(delayMs: number, containerData: IContainerData): void {
+  private scheduleContainerHeartbeat(delayMs: number, containerData: IContainerData): void {
     setTimeout(() => {
       this.getContainerStatus(containerData)
-        .then((containerStatus) => useNotebook.getState().setConatinerStatus(containerStatus))
+        .then((containerStatus) => useNotebook.getState().setContainerStatus(containerStatus))
         .finally(() => {
           if (
-            useNotebook.getState().conatinerStatus.status &&
-            useNotebook.getState().conatinerStatus.status === ConatinerStatusType.Active
+            useNotebook.getState().containerStatus.status &&
+            useNotebook.getState().containerStatus.status === ContainerStatusType.Active
           ) {
-            this.scheduleConatinerHeartbeat(delayMs, containerData);
+            this.scheduleContainerHeartbeat(delayMs, containerData);
           }
         });
     }, delayMs);
   }
 
-  private async getContainerStatus(containerData: IContainerData): Promise<ConatinerInfo> {
+  private async getContainerStatus(containerData: IContainerData): Promise<ContainerInfo> {
     try {
       const response = await window.fetch(
         `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
@@ -78,20 +78,20 @@ export class PhoenixClient {
         return {
           durationLeftInMinutes: containerStatus.durationLeftInMinutes,
           notebookServerInfo: containerStatus.notebookServerInfo,
-          status: ConatinerStatusType.Active,
+          status: ContainerStatusType.Active,
         };
       }
       return {
         durationLeftInMinutes: undefined,
         notebookServerInfo: undefined,
-        status: ConatinerStatusType.InActive,
+        status: ContainerStatusType.InActive,
       };
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
         durationLeftInMinutes: undefined,
         notebookServerInfo: undefined,
-        status: ConatinerStatusType.InActive,
+        status: ContainerStatusType.InActive,
       };
     }
   }

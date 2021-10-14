@@ -10,7 +10,7 @@ import * as DataModels from "../../Contracts/DataModels";
 import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
-  IProvosionData,
+  IProvisionData,
   IResponse,
 } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
@@ -100,7 +100,7 @@ export class NotebookContainerClient {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.Failed,
         };
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
       this.onConnectionLost();
@@ -111,13 +111,13 @@ export class NotebookContainerClient {
   private checkStatus(): boolean {
     if (NotebookUtil.isPhoenixEnabled()) {
       if (
-        useNotebook.getState().conatinerStatus.status &&
-        useNotebook.getState().conatinerStatus.status === Constants.ConatinerStatusType.InActive
+        useNotebook.getState().containerStatus.status &&
+        useNotebook.getState().containerStatus.status === Constants.ContainerStatusType.InActive
       ) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.Reconnect,
         };
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
         return false;
       }
@@ -151,7 +151,7 @@ export class NotebookContainerClient {
       let data: IPhoenixConnectionInfoResult;
       let response: Response;
       if (NotebookUtil.isPhoenixEnabled()) {
-        const provisionData: IProvosionData = {
+        const provisionData: IProvisionData = {
           aadToken: userContext.authorizationToken,
           subscriptionId: userContext.subscriptionId,
           resourceGroup: userContext.resourceGroup,

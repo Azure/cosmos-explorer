@@ -395,7 +395,7 @@ export default class Explorer {
         await this.setNotebookInfo(connectionInfo, connectionStatus);
       } catch (error) {
         connectionStatus.status = ConnectionStatusType.Failed;
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         throw error;
       }
       this.refreshNotebookList();
@@ -427,7 +427,7 @@ export default class Explorer {
         .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
     } else {
       connectionStatus.status = ConnectionStatusType.Failed;
-      useNotebook.getState().resetConatinerConnection(connectionStatus);
+      useNotebook.getState().resetContainerConnection(connectionStatus);
     }
     useNotebook.getState().setIsAllocating(false);
   }
@@ -537,7 +537,7 @@ export default class Explorer {
           connectionStatus = {
             status: ConnectionStatusType.Reconnect,
           };
-          useNotebook.getState().resetConatinerConnection(connectionStatus);
+          useNotebook.getState().resetContainerConnection(connectionStatus);
           useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
         }
       }
