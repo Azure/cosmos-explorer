@@ -123,7 +123,6 @@ src/Explorer/Controls/Notebook/NotebookTerminalComponent.tsx
 src/Explorer/Controls/NotebookViewer/NotebookViewerComponent.tsx
 src/Explorer/Controls/TreeComponent/TreeComponent.tsx
 src/Explorer/Graph/GraphExplorerComponent/GraphExplorer.test.tsx
-src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.test.tsx
 src/Explorer/Graph/GraphExplorerComponent/NodePropertiesComponent.tsx
 src/Explorer/Menus/CommandBar/CommandBarUtil.tsx
 src/Explorer/Notebook/NotebookComponent/NotebookComponentAdapter.tsx

@@ -118,7 +118,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
     const saveButtonChildren = [];
     if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       saveButtonChildren.push({
-        iconName: "Copy",
+        iconName: copyToLabel,
         onCommandClick: () => this.copyNotebook(),
         commandButtonLabel: copyToLabel,
         hasPopup: false,
