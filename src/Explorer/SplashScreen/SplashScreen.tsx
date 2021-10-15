@@ -307,21 +307,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: AddDatabaseIcon,
         title: "New " + getDatabaseName(),
         description: undefined,
-        onClick: () => this.openAddDatabasePanel(),
+        onClick: () =>
+          useSidePanel
+            .getState()
+            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
       });
     }
 
     return items;
-  }
-
-  private openAddDatabasePanel() {
-    const newDatabaseButton = document.activeElement as HTMLElement;
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "New " + getDatabaseName(),
-        <AddDatabasePanel explorer={this.container} buttonElement={newDatabaseButton} />
-      );
   }
 
   private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
