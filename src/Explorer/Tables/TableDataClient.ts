@@ -202,14 +202,21 @@ export class CassandraAPIDataClient extends TableDataClient {
 
       let updateQuery = `UPDATE ${collection.databaseId}.${collection.id()}`;
       let isPropertyUpdated = false;
+      let isFirstPropertyToUpdate = true;
       for (let property in newEntity) {
         if (
           !originalDocument[property] ||
           newEntity[property]._.toString() !== originalDocument[property]._.toString()
         ) {
-          updateQuery += this.isStringType(newEntity[property].$)
-            ? ` SET ${property} = '${newEntity[property]._}',`
-            : ` SET ${property} = ${newEntity[property]._},`;
+          let propertyQuerySegment = this.isStringType(newEntity[property].$)
+            ? `${property} = '${newEntity[property]._}',`
+            : `${property} = ${newEntity[property]._},`;
+          // Only add the "SET" keyword once
+          if (isFirstPropertyToUpdate) {
+            propertyQuerySegment = " SET " + propertyQuerySegment;
+            isFirstPropertyToUpdate = false;
+          }
+          updateQuery += propertyQuerySegment;
           isPropertyUpdated = true;
         }
       }
