@@ -19,7 +19,7 @@ describe("DataSampleUtils", () => {
     const explorer = {} as Explorer;
     useDatabases.getState().addDatabases([database]);
     const dataSamplesUtil = new DataSamplesUtil(explorer);
-
+    //eslint-disable-next-line
     const fakeGenerator = sinon.createStubInstance<ContainerSampleGenerator>(ContainerSampleGenerator as any);
     fakeGenerator.getCollectionId.returns(sampleCollectionId);
     fakeGenerator.getDatabaseId.returns(sampleDatabaseId);
