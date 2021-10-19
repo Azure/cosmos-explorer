@@ -80,8 +80,7 @@ export function queryDocuments(
   };
 
   const endpoint = getFeatureEndpointOrDefault("resourcelist") || "";
-
-  const headers = {
+  const headers: HeadersInit = {
     ...defaultHeaders,
     ...authHeaders(),
     [CosmosSDKConstants.HttpHeaders.IsQuery]: "true",

@@ -12,7 +12,6 @@
     "./src/Bindings/ReactBindingHandler.ts",
     "./src/Common/ArrayHashMap.ts",
     "./src/Common/CollapsedResourceTree.tsx",
-    "./src/Common/Constants.ts",
     "./src/Common/DeleteFeedback.ts",
     "./src/Common/DocumentUtility.ts",
     "./src/Common/EnvironmentUtility.ts",
