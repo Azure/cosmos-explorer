@@ -29,7 +29,12 @@ export default class NotebookTabBase extends TabsBase {
     this.container = options.container;
 
     useNotebook.subscribe(
-      () => (NotebookTabBase.clientManager = undefined),
+      () => {
+        const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+        if (notebookServerInfo && notebookServerInfo.notebookServerEndpoint) {
+          NotebookTabBase.clientManager = undefined;
+        }
+      },
       (state) => state.notebookServerInfo
     );
     if (!NotebookTabBase.clientManager) {

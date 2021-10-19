@@ -376,8 +376,11 @@ export default class Explorer {
   public async allocateContainer(): Promise<void> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     const isAllocating = useNotebook.getState().isAllocating;
-    if (isAllocating === false && notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined) {
-      useTabs.getState().closeAllTabs(true);
+    if (
+      isAllocating === false &&
+      (notebookServerInfo === undefined ||
+        (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined))
+    ) {
       const provisionData = {
         aadToken: userContext.authorizationToken,
         subscriptionId: userContext.subscriptionId,
@@ -441,7 +444,7 @@ export default class Explorer {
       return;
     }
     const dialogContent = NotebookUtil.isPhoenixEnabled()
-      ? "Notebooks saved in temporary workspace will also be lost. Proceed anyway?"
+      ? "Notebooks saved in the temporary workspace will be deleted. Do you want to proceed?"
       : "This lets you keep your notebook files and the workspace will be restored to default. Proceed anyway?";
 
     const resetConfirmationDialogProps: DialogProps = {

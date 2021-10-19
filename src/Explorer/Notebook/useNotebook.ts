@@ -282,11 +282,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   resetContainerConnection: (connectionStatus: ContainerConnectionInfo): void => {
     useTabs.getState().closeAllTabs(true);
     useNotebook.getState().setConnectionInfo(connectionStatus);
-    useNotebook.getState().setNotebookServerInfo({
-      notebookServerEndpoint: undefined,
-      authToken: undefined,
-      forwardingId: undefined,
-    });
+    useNotebook.getState().setNotebookServerInfo(undefined);
     useNotebook.getState().setIsAllocating(false);
     useNotebook.getState().setContainerStatus({
       status: undefined,
