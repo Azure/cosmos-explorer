@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FeedOptions } from "@azure/cosmos";
 import * as ko from "knockout";
 import Q from "q";
@@ -31,8 +32,6 @@ export interface CassandraTableKey {
 }
 
 export abstract class TableDataClient {
-  constructor() {}
-
   public abstract createDocument(
     collection: ViewModels.Collection,
     entity: Entities.ITableEntity
@@ -54,7 +53,7 @@ export abstract class TableDataClient {
   public abstract deleteDocuments(
     collection: ViewModels.Collection,
     entitiesToDelete: Entities.ITableEntity[]
-  ): Promise<any>;
+  ): Promise<unknown>;
 }
 
 export class TablesAPIDataClient extends TableDataClient {
@@ -67,7 +66,7 @@ export class TablesAPIDataClient extends TableDataClient {
       collection,
       TableEntityProcessor.convertEntityToNewDocument(<Entities.ITableEntityForTablesAPI>entity)
     ).then(
-      (newDocument: any) => {
+      (newDocument: unknown) => {
         const newEntity = TableEntityProcessor.convertDocumentsToEntities([newDocument])[0];
         deferred.resolve(newEntity);
       },
@@ -146,7 +145,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     const clearInProgressMessage = logConsoleProgress(`Adding new row to table ${collection.id()}`);
     let properties = "(";
     let values = "(";
-    for (let property in entity) {
+    for (const property in entity) {
       if (entity[property]._ === null) {
         continue;
       }
@@ -164,7 +163,7 @@ export class CassandraAPIDataClient extends TableDataClient {
     const deferred = Q.defer<Entities.ITableEntity>();
     this.queryDocuments(collection, query)
       .then(
-        (data: any) => {
+        () => {
           entity[TableConstants.EntityKeyNames.RowKey] = entity[this.getCassandraPartitionKeyProperty(collection)];
           entity[TableConstants.EntityKeyNames.RowKey]._ = entity[TableConstants.EntityKeyNames.RowKey]._.toString();
           logConsoleInfo(`Successfully added new row to table ${collection.id()}`);
@@ -188,10 +187,10 @@ export class CassandraAPIDataClient extends TableDataClient {
 
     try {
       let whereSegment = " WHERE";
-      let keys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys.concat(
+      const keys: CassandraTableKey[] = collection.cassandraKeys.partitionKeys.concat(
         collection.cassandraKeys.clusteringKeys
       );
-      for (let keyIndex in keys) {
+      for (const keyIndex in keys) {
         const key = keys[keyIndex].property;
         const keyType = keys[keyIndex].type;
         whereSegment += this.isStringType(keyType)
@@ -203,7 +202,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       let updateQuery = `UPDATE ${collection.databaseId}.${collection.id()}`;
       let isPropertyUpdated = false;
       let isFirstPropertyToUpdate = true;
-      for (let property in newEntity) {
+      for (const property in newEntity) {
         if (
           !originalDocument[property] ||
           newEntity[property]._.toString() !== originalDocument[property]._.toString()
@@ -229,7 +228,7 @@ export class CassandraAPIDataClient extends TableDataClient {
 
       let deleteQuery = `DELETE `;
       let isPropertyDeleted = false;
-      for (let property in originalDocument) {
+      for (const property in originalDocument) {
         if (property !== TableConstants.EntityKeyNames.RowKey && !newEntity[property] && !!originalDocument[property]) {
           deleteQuery += ` ${property},`;
           isPropertyDeleted = true;
@@ -333,16 +332,16 @@ export class CassandraAPIDataClient extends TableDataClient {
     resourceId: string,
     explorer: Explorer,
     createKeyspaceQuery: string
-  ): Q.Promise<any> {
+  ): Q.Promise<unknown> {
     if (!createKeyspaceQuery) {
       return Q.reject("No query specified");
     }
 
-    const deferred: Q.Deferred<any> = Q.defer();
+    const deferred: Q.Deferred<unknown> = Q.defer();
     const clearInProgressMessage = logConsoleProgress(`Creating a new keyspace with query ${createKeyspaceQuery}`);
     this.createOrDeleteQuery(cassandraEndpoint, resourceId, createKeyspaceQuery)
       .then(
-        (data: any) => {
+        () => {
           logConsoleInfo(`Successfully created a keyspace with query ${createKeyspaceQuery}`);
           deferred.resolve();
         },
@@ -366,8 +365,8 @@ export class CassandraAPIDataClient extends TableDataClient {
     explorer: Explorer,
     createTableQuery: string,
     createKeyspaceQuery?: string
-  ): Q.Promise<any> {
-    let createKeyspacePromise: Q.Promise<any>;
+  ): Q.Promise<unknown> {
+    let createKeyspacePromise: Q.Promise<unknown>;
     if (createKeyspaceQuery) {
       createKeyspacePromise = this.createKeyspace(cassandraEndpoint, resourceId, explorer, createKeyspaceQuery);
     } else {
@@ -380,7 +379,7 @@ export class CassandraAPIDataClient extends TableDataClient {
         const clearInProgressMessage = logConsoleProgress(`Creating a new table with query ${createTableQuery}`);
         this.createOrDeleteQuery(cassandraEndpoint, resourceId, createTableQuery)
           .then(
-            (data: any) => {
+            () => {
               logConsoleInfo(`Successfully created a table with query ${createTableQuery}`);
               deferred.resolve();
             },
@@ -399,7 +398,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   public getTableKeys(collection: ViewModels.Collection): Q.Promise<CassandraTableKeys> {
-    if (!!collection.cassandraKeys) {
+    if (collection.cassandraKeys) {
       return Q.resolve(collection.cassandraKeys);
     }
     const clearInProgressMessage = logConsoleProgress(`Fetching keys for table ${collection.id()}`);
@@ -408,7 +407,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestKeysApi
         : Constants.CassandraBackend.keysApi;
-    let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
+    const endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKeys>();
 
     $.ajax(endpoint, {
@@ -429,7 +428,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           logConsoleInfo(`Successfully fetched keys for table ${collection.id()}`);
           deferred.resolve(data);
         },
-        (error: any) => {
+        (error: Error) => {
           handleError(error, "FetchKeysCassandra", `Error fetching keys for table ${collection.id()}`);
           deferred.reject(error);
         }
@@ -439,7 +438,7 @@ export class CassandraAPIDataClient extends TableDataClient {
   }
 
   public getTableSchema(collection: ViewModels.Collection): Q.Promise<CassandraTableKey[]> {
-    if (!!collection.cassandraSchema) {
+    if (collection.cassandraSchema) {
       return Q.resolve(collection.cassandraSchema);
     }
     const clearInProgressMessage = logConsoleProgress(`Fetching schema for table ${collection.id()}`);
@@ -448,7 +447,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       authType === AuthType.EncryptedToken
         ? Constants.CassandraBackend.guestSchemaApi
         : Constants.CassandraBackend.schemaApi;
-    let endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
+    const endpoint = `${configContext.BACKEND_ENDPOINT}/${apiEndpoint}`;
     const deferred = Q.defer<CassandraTableKey[]>();
 
     $.ajax(endpoint, {
@@ -469,7 +468,7 @@ export class CassandraAPIDataClient extends TableDataClient {
           logConsoleInfo(`Successfully fetched schema for table ${collection.id()}`);
           deferred.resolve(data.columns);
         },
-        (error: any) => {
+        (error: Error) => {
           handleError(error, "FetchSchemaCassandra", `Error fetching schema for table ${collection.id()}`);
           deferred.reject(error);
         }
@@ -496,7 +495,7 @@ export class CassandraAPIDataClient extends TableDataClient {
       beforeSend: this.setAuthorizationHeader,
       cache: false,
     }).then(
-      (data: any) => {
+      () => {
         deferred.resolve();
       },
       (reason) => {
