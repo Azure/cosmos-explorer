@@ -40,8 +40,8 @@ src/Explorer/Controls/DiffEditor/DiffEditorComponent.ts
 
 src/Explorer/Controls/Editor/EditorComponent.ts
 src/Explorer/Controls/JsonEditor/JsonEditorComponent.ts
-src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
-src/Explorer/DataSamples/ContainerSampleGenerator.ts
+# src/Explorer/DataSamples/ContainerSampleGenerator.test.ts
+# src/Explorer/DataSamples/ContainerSampleGenerator.ts
 src/Explorer/DataSamples/DataSamplesUtil.test.ts
 src/Explorer/DataSamples/DataSamplesUtil.ts
 src/Explorer/Graph/GraphExplorerComponent/ArraysByKeyCache.test.ts

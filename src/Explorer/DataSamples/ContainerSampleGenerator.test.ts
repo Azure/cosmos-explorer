@@ -1,3 +1,4 @@
+/*eslint-disable @typescript-eslint/no-empty-function*/
 jest.mock("../Graph/GraphExplorerComponent/GremlinClient");
 jest.mock("../../Common/dataAccess/createCollection");
 jest.mock("../../Common/dataAccess/createDocument");
@@ -69,6 +70,7 @@ describe("ContainerSampleGenerator", () => {
     expect(createDocument).toHaveBeenCalled();
   });
 
+  // eslint-disable-next-line jest/expect-expect
   it("should send gremlin queries for Graph API account", async () => {
     updateUserContext({
       databaseAccount: {
@@ -134,6 +136,7 @@ describe("ContainerSampleGenerator", () => {
     });
 
     // Rejects with error that contains experience
+    // eslint-disable-next-line jest/valid-expect
     expect(ContainerSampleGenerator.createSampleGeneratorAsync(explorerStub)).rejects.toMatch(experience);
   });
 
