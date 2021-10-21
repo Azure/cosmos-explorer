@@ -115,7 +115,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
         content={
           containerInfo.status &&
           containerInfo.status === ContainerStatusType.Active &&
-          Math.round(containerInfo.durationLeftMin) <= Notebook.reminingTimeMin
+          containerInfo.durationLeftMin <= Notebook.reminingTimeMin
             ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
                 containerInfo.durationLeftMin
               )} minutes.`
