@@ -30,7 +30,7 @@ import {
   get as getWorkspace,
   listByDatabaseAccount,
   listConnectionInfo,
-  start,
+  start
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -1232,13 +1232,9 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
+
+    // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     let isNotebookEnabled = true;
-    if (!userContext.features.phoenix) {
-      isNotebookEnabled =
-        userContext.authType !== AuthType.ResourceToken &&
-        ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-          userContext.features.enableNotebooks);
-    }
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook.getState().setIsShellEnabled(isNotebookEnabled && isPublicInternetAccessAllowed());
 
