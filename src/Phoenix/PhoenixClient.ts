@@ -52,35 +52,17 @@ export class PhoenixClient {
       throw error;
     }
   }
-  public async setContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
-    this.getContainerStatus(containerData)
-      .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
-      .finally(() => {
-        if (
-          useNotebook.getState().containerStatus.status &&
-          useNotebook.getState().containerStatus.status === ContainerStatusType.Active
-        ) {
-          this.scheduleContainerHeartbeat(Notebook.containerStatusHeartbeatDelayMs, containerData);
-        }
-      });
+  public async initiateContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
+    this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
   }
 
   private scheduleContainerHeartbeat(delayMs: number, containerData: IContainerData): void {
     setTimeout(() => {
-      this.getContainerStatus(containerData)
-        .then((containerStatus) => useNotebook.getState().setContainerStatus(containerStatus))
-        .finally(() => {
-          if (
-            useNotebook.getState().containerStatus.status &&
-            useNotebook.getState().containerStatus.status === ContainerStatusType.Active
-          ) {
-            this.scheduleContainerHeartbeat(delayMs, containerData);
-          }
-        });
+      this.getContainerHealth(delayMs, containerData);
     }, delayMs);
   }
 
-  private async getContainerStatus(containerData: IContainerData): Promise<ContainerInfo> {
+  private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
       const response = await window.fetch(
         `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
@@ -110,6 +92,19 @@ export class PhoenixClient {
         status: ContainerStatusType.InActive,
       };
     }
+  }
+
+  private getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
+    this.getContainerStatusAsync(containerData)
+      .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
+      .finally(() => {
+        if (
+          useNotebook.getState().containerStatus.status &&
+          useNotebook.getState().containerStatus.status === ContainerStatusType.Active
+        ) {
+          this.scheduleContainerHeartbeat(delayMs, containerData);
+        }
+      });
   }
 
   public static getPhoenixEndpoint(): string {

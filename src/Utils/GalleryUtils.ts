@@ -240,7 +240,7 @@ export function downloadItem(
           .getState()
           .showOkModalDialog(
             "Failed to connect",
-            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again."
+            "Failed to connect to temporary workspace. Please refresh the page and try again."
           );
       }
     },

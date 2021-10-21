@@ -400,7 +400,7 @@ export default class Explorer {
             forwardingId: connectionInfo.data.forwardingId,
             dbAccountName: userContext.databaseAccount.name,
           };
-          await this.phoenixClient.setContainerHeartBeat(containerData);
+          await this.phoenixClient.initiateContainerHeartBeat(containerData);
 
           connectionStatus.status = ConnectionStatusType.Connected;
           useNotebook.getState().setConnectionInfo(connectionStatus);
