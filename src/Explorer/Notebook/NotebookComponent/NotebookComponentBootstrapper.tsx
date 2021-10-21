@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CellId, CellType, ImmutableNotebook } from "@nteract/commutable";
 // Vendor modules
 import {
@@ -30,6 +31,19 @@ export interface NotebookComponentBootstrapperOptions {
   contentRef: ContentRef;
 }
 
+interface IWrapModel {
+  name: string;
+  path: string;
+  last_modified: Date;
+  created: string;
+  content: unknown;
+  format: string;
+  mimetype: unknown;
+  size: number;
+  writeable: boolean;
+  type: string;
+}
+
 export class NotebookComponentBootstrapper {
   public contentRef: ContentRef;
   protected renderExtraComponent: () => JSX.Element;
@@ -41,7 +55,7 @@ export class NotebookComponentBootstrapper {
     this.contentRef = options.contentRef;
   }
 
-  protected static wrapModelIntoContent(name: string, path: string, content: any) {
+  protected static wrapModelIntoContent(name: string, path: string, content: unknown): IWrapModel {
     return {
       name,
       path,
@@ -49,7 +63,7 @@ export class NotebookComponentBootstrapper {
       created: "",
       content,
       format: "json",
-      mimetype: null as any,
+      mimetype: undefined,
       size: 0,
       writeable: false,
       type: "notebook",
@@ -85,7 +99,7 @@ export class NotebookComponentBootstrapper {
     };
   }
 
-  public setContent(name: string, content: any): void {
+  public setContent(name: string, content: unknown): void {
     this.getStore().dispatch(
       actions.fetchContentFulfilled({
         filepath: undefined,
@@ -270,7 +284,6 @@ export class NotebookComponentBootstrapper {
   public isContentDirty(): boolean {
     const content = selectors.content(this.getStore().getState(), { contentRef: this.contentRef });
     if (!content) {
-      console.log("No error");
       return false;
     }
 

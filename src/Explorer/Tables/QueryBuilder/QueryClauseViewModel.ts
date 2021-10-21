@@ -14,7 +14,7 @@ export default class QueryClauseViewModel {
   public field: ko.Observable<string>;
   public type: ko.Observable<string>;
   public operator: ko.Observable<string>;
-  public value: ko.Observable<any>;
+  public value: ko.Observable<string>;
   public timeValue: ko.Observable<string>;
   public customTimeValue: ko.Observable<string>;
   public canAnd: ko.Observable<boolean>;
@@ -39,7 +39,7 @@ export default class QueryClauseViewModel {
     field: string,
     type: string,
     operator: string,
-    value: any,
+    value: string,
     canAnd: boolean,
     timeValue: string,
     customTimeValue: string,
@@ -88,30 +88,30 @@ export default class QueryClauseViewModel {
         userContext.apiType !== "Cassandra"
     );
 
-    this.and_or.subscribe((value) => {
+    this.and_or.subscribe(() => {
       this._queryBuilderViewModel.checkIfClauseChanged();
     });
-    this.field.subscribe((value) => {
+    this.field.subscribe(() => {
       this.changeField();
     });
-    this.type.subscribe((value) => {
+    this.type.subscribe(() => {
       this.changeType();
     });
-    this.timeValue.subscribe((value) => {
+    this.timeValue.subscribe(() => {
       // if (this.timeValue() === QueryBuilderConstants.timeOptions.custom) {
       //     this.customTimestampDialog();
       // }
     });
-    this.customTimeValue.subscribe((value) => {
+    this.customTimeValue.subscribe(() => {
       this._queryBuilderViewModel.checkIfClauseChanged();
     });
-    this.value.subscribe((value) => {
+    this.value.subscribe(() => {
       this._queryBuilderViewModel.checkIfClauseChanged();
     });
-    this.operator.subscribe((value) => {
+    this.operator.subscribe(() => {
       this._queryBuilderViewModel.checkIfClauseChanged();
     });
-    this._groupCheckSubscription = this.checkedForGrouping.subscribe((value) => {
+    this._groupCheckSubscription = this.checkedForGrouping.subscribe(() => {
       this._queryBuilderViewModel.updateCanGroupClauses();
     });
     this.isAndOrFocused = ko.observable<boolean>(false);
@@ -280,7 +280,7 @@ export default class QueryClauseViewModel {
       this._groupCheckSubscription.dispose();
     }
 
-    this.clauseGroup = null;
-    this._queryBuilderViewModel = null;
+    this.clauseGroup = undefined;
+    this._queryBuilderViewModel = undefined;
   }
 }
