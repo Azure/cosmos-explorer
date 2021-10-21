@@ -519,7 +519,7 @@ export default class Explorer {
       }
 
       if (NotebookUtil.isPhoenixEnabled()) {
-        useTabs.getState().closeAllTabs(true);
+        useTabs.getState().closeAllNotebookTabs(true);
         connectionStatus = {
           status: ConnectionStatusType.Connecting,
         };

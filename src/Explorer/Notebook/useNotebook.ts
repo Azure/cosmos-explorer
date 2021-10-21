@@ -280,7 +280,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => set({ connectionInfo }),
   setIsAllocating: (isAllocating: boolean) => set({ isAllocating }),
   resetContainerConnection: (connectionStatus: ContainerConnectionInfo): void => {
-    useTabs.getState().closeAllTabs(true);
+    useTabs.getState().closeAllNotebookTabs(true);
     useNotebook.getState().setConnectionInfo(connectionStatus);
     useNotebook.getState().setNotebookServerInfo(undefined);
     useNotebook.getState().setIsAllocating(false);

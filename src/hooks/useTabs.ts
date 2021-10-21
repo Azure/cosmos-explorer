@@ -1,3 +1,6 @@
+import * as InMemoryContentProviderUtils from "Explorer/Notebook/NotebookComponent/ContentProviders/InMemoryContentProviderUtils";
+import { NotebookUtil } from "Explorer/Notebook/NotebookUtil";
+import * as GitHubUtils from "Utils/GitHubUtils";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
 import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
@@ -13,7 +16,7 @@ interface TabsState {
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void;
   closeTabsByComparator: (comparator: (tab: TabsBase) => boolean) => void;
   closeTab: (tab: TabsBase) => void;
-  closeAllTabs: (hardClose: boolean) => void;
+  closeAllNotebookTabs: (hardClose: boolean) => void;
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
@@ -80,10 +83,27 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
 
     set({ openedTabs: updatedTabs });
   },
-  closeAllTabs: (hardClose): void => {
+  closeAllNotebookTabs: (hardClose): void => {
+    const isNotebook = (path: string): boolean => {
+      if (
+        InMemoryContentProviderUtils.fromContentUri(path) ||
+        GitHubUtils.fromContentUri(path) ||
+        NotebookUtil.isNotebookFile(path)
+      ) {
+        return true;
+      }
+      return false;
+    };
+
     const tabList = get().openedTabs;
     if (tabList && tabList.length > 0) {
-      tabList.forEach((tab: NotebookTabV2) => tab.onCloseTabButtonClick(hardClose));
+      tabList.forEach((tab: NotebookTabV2) => {
+        const tabpath: string = tab.tabPath();
+        if (tabpath && isNotebook(tabpath)) {
+          tab.onCloseTabButtonClick(hardClose);
+        }
+      });
+
       if (get().openedTabs.length === 0) {
         set({ activeTab: undefined });
       }
