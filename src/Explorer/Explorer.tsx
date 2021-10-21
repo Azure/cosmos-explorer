@@ -30,7 +30,7 @@ import {
   get as getWorkspace,
   listByDatabaseAccount,
   listConnectionInfo,
-  start
+  start,
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -1234,7 +1234,7 @@ export default class Explorer {
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
-    let isNotebookEnabled = true;
+    const isNotebookEnabled = true;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook.getState().setIsShellEnabled(isNotebookEnabled && isPublicInternetAccessAllowed());
 
