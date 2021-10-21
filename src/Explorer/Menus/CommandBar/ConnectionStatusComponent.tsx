@@ -115,9 +115,9 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
         content={
           containerInfo.status &&
           containerInfo.status === ContainerStatusType.Active &&
-          Math.round(containerInfo.durationLeftInMinutes) <= 10
+          Math.round(containerInfo.durationLeftMin) <= Notebook.reminingTimeMin
             ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
-                containerInfo.durationLeftInMinutes
+                containerInfo.durationLeftMin
               )} minutes.`
             : toolTipContent
         }
@@ -139,7 +139,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
             )}
             {connectionInfo.status === ConnectionStatusType.Connected && !isActive && (
               <ProgressIndicator
-                className={usedGB / totalGB > 0.8 ? "lowMemory" : ""}
+                className={usedGB / totalGB > Notebook.lowMemoryBar ? "lowMemory" : ""}
                 description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
                 percentComplete={usedGB / totalGB}
               />
@@ -148,7 +148,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
           {!isBarDismissed &&
           containerInfo.status &&
           containerInfo.status === ContainerStatusType.Active &&
-          Math.round(containerInfo.durationLeftInMinutes) <= 10 ? (
+          containerInfo.durationLeftMin <= Notebook.reminingTimeMin ? (
             <FocusTrapCallout
               role="alertdialog"
               className={styles.callout}
@@ -158,16 +158,16 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
               setInitialFocus
             >
               <Text block variant="xLarge" className={styles.title}>
-                Remaining Time
+                Remaining time
               </Text>
               <Text block variant="small">
-                This temporary workspace will get disconnected in {Math.round(containerInfo.durationLeftInMinutes)}{" "}
-                minutes. To save your work permanently, save your notebooks to a GitHub repository or download the
-                notebooks to your local machine before the session ends.
+                This temporary workspace will get deleted in {Math.round(containerInfo.durationLeftMin)} minutes. To
+                save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your
+                local machine before the session ends.
               </Text>
               <FocusZone handleTabKey={FocusZoneTabbableElements.all} isCircularNavigation>
                 <Stack className={styles.buttons} gap={8} horizontal>
-                  <DefaultButton onClick={() => setIsBarDismissed(true)}>Dimiss</DefaultButton>
+                  <DefaultButton onClick={() => setIsBarDismissed(true)}>Dismiss</DefaultButton>
                 </Stack>
               </FocusZone>
             </FocusTrapCallout>

@@ -92,20 +92,20 @@ export class PhoenixClient {
       if (response.status === HttpStatusCodes.OK) {
         const containerStatus = await response.json();
         return {
-          durationLeftInMinutes: containerStatus.durationLeftInMinutes,
+          durationLeftMin: containerStatus.durationLeftInMinutes,
           notebookServerInfo: containerStatus.notebookServerInfo,
           status: ContainerStatusType.Active,
         };
       }
       return {
-        durationLeftInMinutes: undefined,
+        durationLeftMin: undefined,
         notebookServerInfo: undefined,
         status: ContainerStatusType.InActive,
       };
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
-        durationLeftInMinutes: undefined,
+        durationLeftMin: undefined,
         notebookServerInfo: undefined,
         status: ContainerStatusType.InActive,
       };

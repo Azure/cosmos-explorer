@@ -104,8 +104,8 @@ export class NotebookContainerClient {
   private checkStatus(): boolean {
     if (NotebookUtil.isPhoenixEnabled()) {
       if (
-        useNotebook.getState().containerStatus.status &&
-        useNotebook.getState().containerStatus.status === Constants.ContainerStatusType.InActive
+        useNotebook.getState().containerStatus?.status &&
+        useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.InActive
       ) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.ReConnect,

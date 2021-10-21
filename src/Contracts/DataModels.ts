@@ -430,7 +430,7 @@ export interface NotebookWorkspaceConnectionInfo {
 }
 
 export interface ContainerInfo {
-  durationLeftInMinutes: number;
+  durationLeftMin: number;
   notebookServerInfo: NotebookWorkspaceConnectionInfo;
   status: ContainerStatusType;
 }

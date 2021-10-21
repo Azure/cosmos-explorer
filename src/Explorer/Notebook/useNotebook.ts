@@ -88,7 +88,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   isRefreshed: false,
   containerStatus: {
     status: undefined,
-    durationLeftInMinutes: undefined,
+    durationLeftMin: undefined,
     notebookServerInfo: undefined,
   },
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
@@ -288,7 +288,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     useNotebook.getState().setIsAllocating(false);
     useNotebook.getState().setContainerStatus({
       status: undefined,
-      durationLeftInMinutes: undefined,
+      durationLeftMin: undefined,
       notebookServerInfo: undefined,
     });
   },
