@@ -97,6 +97,7 @@ export class Flights {
   public static readonly PartitionKeyTest = "partitionkeytest";
   public static readonly PKPartitionKeyTest = "pkpartitionkeytest";
   public static readonly Phoenix = "phoenix";
+  public static readonly NotebooksDownBanner = "notebooksdownbanner";
 }
 
 export class AfecFeatures {
@@ -351,6 +352,11 @@ export enum ContainerStatusType {
   InActive = "InActive",
 }
 
+export enum ContainerStatusType {
+  Active = "Active",
+  InActive = "InActive",
+}
+
 export const EmulatorMasterKey =
   //[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Well known public masterKey for emulator")]
   "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
@@ -366,6 +372,8 @@ export class Notebook {
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
   public static readonly memoryGuageToGB = 1048576;
+  public static readonly lowMemoryBar = 0.8;
+  public static readonly reminingTimeMin = 10;
   public static readonly temporarilyDownMsg = "Notebooks is currently not available. We are working on it.";
   public static readonly mongoShellTemporarilyDownMsg =
     "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";

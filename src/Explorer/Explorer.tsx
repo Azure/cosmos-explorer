@@ -1,4 +1,5 @@
 import { Link } from "@fluentui/react/lib/Link";
+import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
@@ -9,7 +10,6 @@ import * as Constants from "../Common/Constants";
 import { ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
-import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
@@ -31,7 +31,7 @@ import {
   get as getWorkspace,
   listByDatabaseAccount,
   listConnectionInfo,
-  start,
+  start
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -1289,15 +1289,11 @@ export default class Explorer {
       ? this.refreshDatabaseForResourceToken()
       : this.refreshAllDatabases();
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
-    let isNotebookEnabled = true;
-    if (!userContext.features.phoenix) {
-      isNotebookEnabled =
-        userContext.authType !== AuthType.ResourceToken &&
-        ((await this._containsDefaultNotebookWorkspace(userContext.databaseAccount)) ||
-          userContext.features.enableNotebooks);
-    }
+
+    // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
+    const isNotebookEnabled = userContext.features.notebooksDownBanner || userContext.features.phoenix;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
-    useNotebook.getState().setIsShellEnabled(isNotebookEnabled && isPublicInternetAccessAllowed());
+    useNotebook.getState().setIsShellEnabled(userContext.features.phoenix && isPublicInternetAccessAllowed());
 
     TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
       isNotebookEnabled,

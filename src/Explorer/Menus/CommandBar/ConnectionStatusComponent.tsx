@@ -8,7 +8,7 @@ import {
   ProgressIndicator,
   Stack,
   Text,
-  TooltipHost,
+  TooltipHost
 } from "@fluentui/react";
 import { useId } from "@fluentui/react-hooks";
 import { ActionButton, DefaultButton } from "@fluentui/react/lib/Button";

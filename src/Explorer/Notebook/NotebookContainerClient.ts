@@ -11,7 +11,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse,
+  IResponse
 } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";

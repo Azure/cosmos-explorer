@@ -239,7 +239,7 @@ export function downloadItem(
         useDialog
           .getState()
           .showOkModalDialog(
-            "Failed to Connect",
+            "Failed to connect",
             "Failed to connect to temporary workspace. Please refresh the page and try again."
           );
       }
