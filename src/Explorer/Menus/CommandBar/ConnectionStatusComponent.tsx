@@ -70,7 +70,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
 
   React.useEffect(() => {
     if (connectionInfo && connectionInfo.status === ConnectionStatusType.Reconnect) {
-      setToolTipContent("Reconnect to temporary workspace.");
+      setToolTipContent("Click here to Reconnect to temporary workspace.");
     }
   }, [connectionInfo.status]);
 

@@ -1,8 +1,6 @@
-import * as InMemoryContentProviderUtils from "Explorer/Notebook/NotebookComponent/ContentProviders/InMemoryContentProviderUtils";
-import { NotebookUtil } from "Explorer/Notebook/NotebookUtil";
-import * as GitHubUtils from "Utils/GitHubUtils";
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
+import { CollectionTabKind } from "../Contracts/ViewModels";
 import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
 
@@ -84,11 +82,12 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     set({ openedTabs: updatedTabs });
   },
   closeAllNotebookTabs: (hardClose): void => {
-    const isNotebook = (path: string): boolean => {
+    const isNotebook = (tabKind: CollectionTabKind): boolean => {
       if (
-        InMemoryContentProviderUtils.fromContentUri(path) ||
-        GitHubUtils.fromContentUri(path) ||
-        NotebookUtil.isNotebookFile(path)
+        tabKind === CollectionTabKind.Notebook ||
+        tabKind === CollectionTabKind.NotebookV2 ||
+        tabKind === CollectionTabKind.SchemaAnalyzer ||
+        tabKind === CollectionTabKind.Terminal
       ) {
         return true;
       }
@@ -98,8 +97,8 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     const tabList = get().openedTabs;
     if (tabList && tabList.length > 0) {
       tabList.forEach((tab: NotebookTabV2) => {
-        const tabpath: string = tab.tabPath();
-        if (tabpath && isNotebook(tabpath)) {
+        const tabKind: CollectionTabKind = tab.tabKind;
+        if (tabKind && isNotebook(tabKind)) {
           tab.onCloseTabButtonClick(hardClose);
         }
       });
