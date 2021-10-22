@@ -1,4 +1,5 @@
 import { Link } from "@fluentui/react/lib/Link";
+import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
@@ -8,7 +9,6 @@ import * as Constants from "../Common/Constants";
 import { ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
-import { isPublicInternetAccessAllowed } from "../Common/DatabaseAccountUtility";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { QueriesClient } from "../Common/QueriesClient";
@@ -1236,7 +1236,7 @@ export default class Explorer {
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled = true;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
-    useNotebook.getState().setIsShellEnabled(isNotebookEnabled && isPublicInternetAccessAllowed());
+    useNotebook.getState().setIsShellEnabled(userContext.features.phoenix && isPublicInternetAccessAllowed());
 
     TelemetryProcessor.trace(Action.NotebookEnabled, ActionModifiers.Mark, {
       isNotebookEnabled,
