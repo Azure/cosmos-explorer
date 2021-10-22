@@ -97,6 +97,7 @@ export class Flights {
   public static readonly PartitionKeyTest = "partitionkeytest";
   public static readonly PKPartitionKeyTest = "pkpartitionkeytest";
   public static readonly Phoenix = "phoenix";
+  public static readonly NotebooksDownBanner = "notebooksdownbanner";
 }
 
 export class AfecFeatures {

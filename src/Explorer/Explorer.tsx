@@ -1234,7 +1234,7 @@ export default class Explorer {
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
-    const isNotebookEnabled = true;
+    const isNotebookEnabled = userContext.features.notebooksDownBanner || userContext.features.phoenix;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);
     useNotebook.getState().setIsShellEnabled(userContext.features.phoenix && isPublicInternetAccessAllowed());
 
