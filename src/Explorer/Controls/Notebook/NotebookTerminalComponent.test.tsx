@@ -35,16 +35,19 @@ const testCassandraAccount: DataModels.DatabaseAccount = {
 const testNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
   authToken: "authToken",
   notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com",
+  forwardingId: "Id",
 };
 
 const testMongoNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
   authToken: "authToken",
   notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/mongo",
+  forwardingId: "Id",
 };
 
 const testCassandraNotebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo = {
   authToken: "authToken",
   notebookServerEndpoint: "https://testNotebookServerEndpoint.azure.com/cassandra",
+  forwardingId: "Id",
 };
 
 describe("NotebookTerminalComponent", () => {

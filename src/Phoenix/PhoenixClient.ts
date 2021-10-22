@@ -1,5 +1,9 @@
-import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
+import { ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
+import { getErrorMessage } from "../Common/ErrorHandlingUtils";
+import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
+import { ContainerInfo } from "../Contracts/DataModels";
+import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
@@ -10,17 +14,24 @@ export interface IPhoenixResponse<T> {
 export interface IPhoenixConnectionInfoResult {
   readonly notebookAuthToken?: string;
   readonly notebookServerUrl?: string;
+  readonly forwardingId?: string;
 }
-export interface IProvosionData {
+export interface IProvisionData {
   cosmosEndpoint: string;
   dbAccountName: string;
   aadToken: string;
   resourceGroup: string;
   subscriptionId: string;
 }
+
+export interface IContainerData {
+  dbAccountName: string;
+  forwardingId: string;
+}
+
 export class PhoenixClient {
   public async containerConnectionInfo(
-    provisionData: IProvosionData
+    provisionData: IProvisionData
   ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
     try {
       const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/allocate`, {
@@ -40,6 +51,60 @@ export class PhoenixClient {
       console.error(error);
       throw error;
     }
+  }
+  public async initiateContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
+    this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
+  }
+
+  private scheduleContainerHeartbeat(delayMs: number, containerData: IContainerData): void {
+    setTimeout(() => {
+      this.getContainerHealth(delayMs, containerData);
+    }, delayMs);
+  }
+
+  private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
+    try {
+      const response = await window.fetch(
+        `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
+        {
+          method: "GET",
+          headers: PhoenixClient.getHeaders(),
+        }
+      );
+      if (response.status === HttpStatusCodes.OK) {
+        const containerStatus = await response.json();
+        return {
+          durationLeftMin: containerStatus.durationLeftInMinutes,
+          notebookServerInfo: containerStatus.notebookServerInfo,
+          status: ContainerStatusType.Active,
+        };
+      }
+      return {
+        durationLeftMin: undefined,
+        notebookServerInfo: undefined,
+        status: ContainerStatusType.InActive,
+      };
+    } catch (error) {
+      Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
+      return {
+        durationLeftMin: undefined,
+        notebookServerInfo: undefined,
+        status: ContainerStatusType.InActive,
+      };
+    }
+  }
+
+  private getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
+    this.getContainerStatusAsync(containerData)
+      .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
+      .finally(() => {
+        if (
+          useNotebook.getState().containerStatus.status &&
+          useNotebook.getState().containerStatus.status === ContainerStatusType.Active
+        ) {
+          this.scheduleContainerHeartbeat(delayMs, containerData);
+        }
+      });
   }
 
   public static getPhoenixEndpoint(): string {

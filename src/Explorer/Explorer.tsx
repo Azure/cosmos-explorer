@@ -3,6 +3,7 @@ import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import * as ko from "knockout";
 import React from "react";
 import _ from "underscore";
+import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
@@ -165,11 +166,9 @@ export default class Explorer {
     );
 
     useNotebook.subscribe(
-      async () => {
-        this.initiateAndRefreshNotebookList();
-        useNotebook.getState().setIsRefreshed(false);
-      },
-      (state) => state.isNotebookEnabled || state.isRefreshed
+      async () => this.initiateAndRefreshNotebookList(),
+      (state) => [state.isNotebookEnabled, state.isRefreshed],
+      shallow
     );
 
     this.resourceTree = new ResourceTreeAdapter(this);
@@ -179,6 +178,7 @@ export default class Explorer {
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl,
         authToken: userContext.features.notebookServerToken,
+        forwardingId: undefined,
       });
     }
 
@@ -364,6 +364,7 @@ export default class Explorer {
       useNotebook.getState().setNotebookServerInfo({
         notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.notebookServerEndpoint,
         authToken: userContext.features.notebookServerToken || connectionInfo.authToken,
+        forwardingId: undefined,
       });
     }
 
@@ -395,11 +396,18 @@ export default class Explorer {
           connectionInfo.data &&
           connectionInfo.data.notebookServerUrl
         ) {
+          const containerData = {
+            forwardingId: connectionInfo.data.forwardingId,
+            dbAccountName: userContext.databaseAccount.name,
+          };
+          await this.phoenixClient.initiateContainerHeartBeat(containerData);
+
           connectionStatus.status = ConnectionStatusType.Connected;
           useNotebook.getState().setConnectionInfo(connectionStatus);
           useNotebook.getState().setNotebookServerInfo({
             notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
             authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
+            forwardingId: connectionInfo.data.forwardingId,
           });
           this.notebookManager?.notebookClient
             .getMemoryUsage()
@@ -407,11 +415,11 @@ export default class Explorer {
           useNotebook.getState().setIsAllocating(false);
         } else {
           connectionStatus.status = ConnectionStatusType.Failed;
-          useNotebook.getState().resetConatinerConnection(connectionStatus);
+          useNotebook.getState().resetContainerConnection(connectionStatus);
         }
       } catch (error) {
         connectionStatus.status = ConnectionStatusType.Failed;
-        useNotebook.getState().resetConatinerConnection(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         throw error;
       }
       this.refreshNotebookList();
@@ -692,7 +700,7 @@ export default class Explorer {
       throw new Error(`Invalid notebookContentItem: ${notebookContentItem}`);
     }
     if (notebookContentItem.type === NotebookContentItemType.Notebook && NotebookUtil.isPhoenixEnabled()) {
-      this.allocateContainer();
+      await this.allocateContainer();
     }
 
     const notebookTabs = useTabs
@@ -1016,8 +1024,8 @@ export default class Explorer {
         useDialog
           .getState()
           .showOkModalDialog(
-            "Failed to Connect",
-            "Failed to connect temporary workspace, this could happen because of network issue please refresh and try again."
+            "Failed to connect",
+            "Failed to connect to temporary workspace. This could happen because of network issues. Please refresh the page and try again."
           );
       }
     } else {
