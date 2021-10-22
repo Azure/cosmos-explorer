@@ -8,7 +8,7 @@ import {
   ProgressIndicator,
   Stack,
   Text,
-  TooltipHost
+  TooltipHost,
 } from "@fluentui/react";
 import { useId } from "@fluentui/react-hooks";
 import { ActionButton, DefaultButton } from "@fluentui/react/lib/Button";
@@ -118,9 +118,8 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     <>
       <TooltipHost
         content={
-          containerInfo.status &&
-          containerInfo.status === ContainerStatusType.Active &&
-          Math.round(containerInfo.durationLeftInMinutes) <= 10
+          containerInfo?.status === ContainerStatusType.Active &&
+          Math.round(containerInfo.durationLeftInMinutes) <= Notebook.remainingTimeForAlert
             ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
                 containerInfo.durationLeftInMinutes
               )} minutes.`
@@ -144,16 +143,16 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
             )}
             {connectionInfo.status === ConnectionStatusType.Connected && !isActive && (
               <ProgressIndicator
-                className={usedGB / totalGB > 0.8 ? "lowMemory" : ""}
+                className={totalGB !== 0 && usedGB / totalGB > 0.8 ? "lowMemory" : ""}
                 description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
-                percentComplete={usedGB / totalGB}
+                percentComplete={totalGB !== 0 ? usedGB / totalGB : 0}
               />
             )}
           </Stack>
           {!isBarDismissed &&
           containerInfo.status &&
           containerInfo.status === ContainerStatusType.Active &&
-          Math.round(containerInfo.durationLeftInMinutes) <= 10 ? (
+          Math.round(containerInfo.durationLeftInMinutes) <= Notebook.remainingTimeForAlert ? (
             <FocusTrapCallout
               role="alertdialog"
               className={styles.callout}

@@ -11,7 +11,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
@@ -110,10 +110,7 @@ export class NotebookContainerClient {
 
   private checkStatus(): boolean {
     if (NotebookUtil.isPhoenixEnabled()) {
-      if (
-        useNotebook.getState().containerStatus.status &&
-        useNotebook.getState().containerStatus.status === Constants.ContainerStatusType.InActive
-      ) {
+      if (useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Disconnected) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.Reconnect,
         };

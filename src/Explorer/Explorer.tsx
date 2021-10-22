@@ -31,7 +31,7 @@ import {
   get as getWorkspace,
   listByDatabaseAccount,
   listConnectionInfo,
-  start
+  start,
 } from "../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { stringToBlob } from "../Utils/BlobUtils";
 import { isCapabilityEnabled } from "../Utils/CapabilityUtils";
@@ -416,7 +416,7 @@ export default class Explorer {
         forwardingId: connectionInfo.data.forwardingId,
         dbAccountName: userContext.databaseAccount.name,
       };
-      await this.phoenixClient.setContainerHeartBeat(containerData);
+      await this.phoenixClient.initiateContainerHeartBeat(containerData);
 
       connectionStatus.status = ConnectionStatusType.Connected;
       useNotebook.getState().setConnectionInfo(connectionStatus);

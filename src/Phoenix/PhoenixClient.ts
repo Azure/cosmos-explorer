@@ -7,7 +7,7 @@ import {
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
@@ -36,6 +36,7 @@ export class PhoenixClient {
       throw error;
     }
   }
+
   public async initiateContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
     this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
   }
@@ -58,22 +59,22 @@ export class PhoenixClient {
       if (response.status === HttpStatusCodes.OK) {
         const containerStatus = await response.json();
         return {
-          durationLeftInMinutes: containerStatus.durationLeftInMinutes,
-          notebookServerInfo: containerStatus.notebookServerInfo,
+          durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
+          notebookServerInfo: containerStatus?.notebookServerInfo,
           status: ContainerStatusType.Active,
         };
       }
       return {
         durationLeftInMinutes: undefined,
         notebookServerInfo: undefined,
-        status: ContainerStatusType.InActive,
+        status: ContainerStatusType.Disconnected,
       };
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
         durationLeftInMinutes: undefined,
         notebookServerInfo: undefined,
-        status: ContainerStatusType.InActive,
+        status: ContainerStatusType.Disconnected,
       };
     }
   }
@@ -82,10 +83,7 @@ export class PhoenixClient {
     this.getContainerStatusAsync(containerData)
       .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
       .finally(() => {
-        if (
-          useNotebook.getState().containerStatus.status &&
-          useNotebook.getState().containerStatus.status === ContainerStatusType.Active
-        ) {
+        if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
           this.scheduleContainerHeartbeat(delayMs, containerData);
         }
       });

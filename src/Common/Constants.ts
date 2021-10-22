@@ -349,12 +349,7 @@ export enum ConnectionStatusType {
 
 export enum ContainerStatusType {
   Active = "Active",
-  InActive = "InActive",
-}
-
-export enum ContainerStatusType {
-  Active = "Active",
-  InActive = "InActive",
+  Disconnected = "Disconnected",
 }
 
 export const EmulatorMasterKey =
@@ -372,8 +367,8 @@ export class Notebook {
   public static readonly kernelRestartMaxDelayMs = 20000;
   public static readonly autoSaveIntervalMs = 120000;
   public static readonly memoryGuageToGB = 1048576;
-  public static readonly lowMemoryBar = 0.8;
-  public static readonly reminingTimeMin = 10;
+  public static readonly lowMemoryThreshold = 0.8;
+  public static readonly remainingTimeForAlert = 10;
   public static readonly temporarilyDownMsg = "Notebooks is currently not available. We are working on it.";
   public static readonly mongoShellTemporarilyDownMsg =
     "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";
