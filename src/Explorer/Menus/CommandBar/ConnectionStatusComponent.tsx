@@ -22,6 +22,7 @@ interface Props {
   container: Explorer;
 }
 export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Element => {
+  const connectionInfo = useNotebook((state) => state.connectionInfo);
   const [second, setSecond] = React.useState("00");
   const [minute, setMinute] = React.useState("00");
   const [isActive, setIsActive] = React.useState(false);
@@ -67,6 +68,12 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     return () => clearInterval(intervalId);
   }, [isActive, counter]);
 
+  React.useEffect(() => {
+    if (connectionInfo && connectionInfo.status === ConnectionStatusType.Reconnect) {
+      setToolTipContent("Click here to Reconnect to temporary workspace.");
+    }
+  }, [connectionInfo.status]);
+
   const stopTimer = () => {
     setIsActive(false);
     setCounter(0);
@@ -74,15 +81,13 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     setMinute("00");
   };
 
-  const connectionInfo = useNotebook((state) => state.connectionInfo);
   const memoryUsageInfo = useNotebook((state) => state.memoryUsageInfo);
-
   const totalGB = memoryUsageInfo ? memoryUsageInfo.totalKB / Notebook.memoryGuageToGB : 0;
   const usedGB = totalGB > 0 ? totalGB - memoryUsageInfo.freeKB / Notebook.memoryGuageToGB : 0;
 
   if (
     connectionInfo &&
-    (connectionInfo.status === ConnectionStatusType.Connect || connectionInfo.status === ConnectionStatusType.ReConnect)
+    (connectionInfo.status === ConnectionStatusType.Connect || connectionInfo.status === ConnectionStatusType.Reconnect)
   ) {
     return (
       <ActionButton className="commandReactBtn" onClick={() => container.allocateContainer()}>
@@ -113,11 +118,10 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     <>
       <TooltipHost
         content={
-          containerInfo.status &&
-          containerInfo.status === ContainerStatusType.Active &&
-          containerInfo.durationLeftMin <= Notebook.reminingTimeMin
-            ? `Connected to temporary workspace. This temporary workspace will get deleted in ${Math.round(
-                containerInfo.durationLeftMin
+          containerInfo?.status === ContainerStatusType.Active &&
+          Math.round(containerInfo.durationLeftInMinutes) <= Notebook.remainingTimeForAlert
+            ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
+                containerInfo.durationLeftInMinutes
               )} minutes.`
             : toolTipContent
         }
@@ -139,16 +143,16 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
             )}
             {connectionInfo.status === ConnectionStatusType.Connected && !isActive && (
               <ProgressIndicator
-                className={usedGB / totalGB > Notebook.lowMemoryBar ? "lowMemory" : ""}
+                className={totalGB !== 0 && usedGB / totalGB > 0.8 ? "lowMemory" : ""}
                 description={usedGB.toFixed(1) + " of " + totalGB.toFixed(1) + " GB"}
-                percentComplete={usedGB / totalGB}
+                percentComplete={totalGB !== 0 ? usedGB / totalGB : 0}
               />
             )}
           </Stack>
           {!isBarDismissed &&
           containerInfo.status &&
           containerInfo.status === ContainerStatusType.Active &&
-          containerInfo.durationLeftMin <= Notebook.reminingTimeMin ? (
+          Math.round(containerInfo.durationLeftInMinutes) <= Notebook.remainingTimeForAlert ? (
             <FocusTrapCallout
               role="alertdialog"
               className={styles.callout}
@@ -158,16 +162,16 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
               setInitialFocus
             >
               <Text block variant="xLarge" className={styles.title}>
-                Remaining time
+                Remaining Time
               </Text>
               <Text block variant="small">
-                This temporary workspace will get deleted in {Math.round(containerInfo.durationLeftMin)} minutes. To
-                save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your
-                local machine before the session ends.
+                This temporary workspace will get disconnected in {Math.round(containerInfo.durationLeftInMinutes)}{" "}
+                minutes. To save your work permanently, save your notebooks to a GitHub repository or download the
+                notebooks to your local machine before the session ends.
               </Text>
               <FocusZone handleTabKey={FocusZoneTabbableElements.all} isCircularNavigation>
                 <Stack className={styles.buttons} gap={8} horizontal>
-                  <DefaultButton onClick={() => setIsBarDismissed(true)}>Dismiss</DefaultButton>
+                  <DefaultButton onClick={() => setIsBarDismissed(true)}>Dimiss</DefaultButton>
                 </Stack>
               </FocusZone>
             </FocusTrapCallout>

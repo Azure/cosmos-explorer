@@ -1,5 +1,7 @@
 import create, { UseStore } from "zustand";
 import * as ViewModels from "../Contracts/ViewModels";
+import { CollectionTabKind } from "../Contracts/ViewModels";
+import NotebookTabV2 from "../Explorer/Tabs/NotebookV2Tab";
 import TabsBase from "../Explorer/Tabs/TabsBase";
 
 interface TabsState {
@@ -12,6 +14,7 @@ interface TabsState {
   refreshActiveTab: (comparator: (tab: TabsBase) => boolean) => void;
   closeTabsByComparator: (comparator: (tab: TabsBase) => boolean) => void;
   closeTab: (tab: TabsBase) => void;
+  closeAllNotebookTabs: (hardClose: boolean) => void;
 }
 
 export const useTabs: UseStore<TabsState> = create((set, get) => ({
@@ -77,5 +80,32 @@ export const useTabs: UseStore<TabsState> = create((set, get) => ({
     }
 
     set({ openedTabs: updatedTabs });
+  },
+  closeAllNotebookTabs: (hardClose): void => {
+    const isNotebook = (tabKind: CollectionTabKind): boolean => {
+      if (
+        tabKind === CollectionTabKind.Notebook ||
+        tabKind === CollectionTabKind.NotebookV2 ||
+        tabKind === CollectionTabKind.SchemaAnalyzer ||
+        tabKind === CollectionTabKind.Terminal
+      ) {
+        return true;
+      }
+      return false;
+    };
+
+    const tabList = get().openedTabs;
+    if (tabList && tabList.length > 0) {
+      tabList.forEach((tab: NotebookTabV2) => {
+        const tabKind: CollectionTabKind = tab.tabKind;
+        if (tabKind && isNotebook(tabKind)) {
+          tab.onCloseTabButtonClick(hardClose);
+        }
+      });
+
+      if (get().openedTabs.length === 0) {
+        set({ activeTab: undefined });
+      }
+    }
   },
 }));

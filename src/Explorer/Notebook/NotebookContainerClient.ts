@@ -1,14 +1,21 @@
 /**
  * Notebook container related stuff
  */
+import { PhoenixClient } from "Phoenix/PhoenixClient";
 import * as Constants from "../../Common/Constants";
-import { ConnectionStatusType } from "../../Common/Constants";
+import { ConnectionStatusType, HttpHeaders, HttpStatusCodes } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
-import { ContainerConnectionInfo } from "../../Contracts/DataModels";
+import {
+  ContainerConnectionInfo,
+  IPhoenixConnectionInfoResult,
+  IProvisionData,
+  IResponse,
+} from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
+import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
 import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
@@ -103,12 +110,9 @@ export class NotebookContainerClient {
 
   private checkStatus(): boolean {
     if (NotebookUtil.isPhoenixEnabled()) {
-      if (
-        useNotebook.getState().containerStatus?.status &&
-        useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.InActive
-      ) {
+      if (useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Disconnected) {
         const connectionStatus: ContainerConnectionInfo = {
-          status: ConnectionStatusType.ReConnect,
+          status: ConnectionStatusType.Reconnect,
         };
         useNotebook.getState().resetContainerConnection(connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
@@ -117,17 +121,21 @@ export class NotebookContainerClient {
     }
     return true;
   }
-  public async resetWorkspace(): Promise<void> {
+
+  public async resetWorkspace(): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     this.isResettingWorkspace = true;
+    let response: IResponse<IPhoenixConnectionInfoResult>;
     try {
-      await this._resetWorkspace();
+      response = await this._resetWorkspace();
     } catch (error) {
       Promise.reject(error);
+      return response;
     }
     this.isResettingWorkspace = false;
+    return response;
   }
 
-  private async _resetWorkspace(): Promise<void> {
+  private async _resetWorkspace(): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (!notebookServerInfo || !notebookServerInfo.notebookServerEndpoint) {
       const error = "No server endpoint detected";
@@ -137,13 +145,40 @@ export class NotebookContainerClient {
 
     const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
     try {
-      await fetch(`${notebookServerEndpoint}/api/shutdown`, {
-        method: "POST",
-        headers: { Authorization: authToken },
-      });
+      let data: IPhoenixConnectionInfoResult;
+      let response: Response;
+      if (NotebookUtil.isPhoenixEnabled()) {
+        const provisionData: IProvisionData = {
+          aadToken: userContext.authorizationToken,
+          subscriptionId: userContext.subscriptionId,
+          resourceGroup: userContext.resourceGroup,
+          dbAccountName: userContext.databaseAccount.name,
+          cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        };
+        response = await fetch(`${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/reset`, {
+          method: "POST",
+          headers: this.getHeaders(),
+          body: JSON.stringify(provisionData),
+        });
+        if (response.status === HttpStatusCodes.OK) {
+          data = await response.json();
+        }
+      } else {
+        response = await fetch(`${notebookServerEndpoint}/api/shutdown`, {
+          method: "POST",
+          headers: { Authorization: authToken },
+        });
+      }
+      return {
+        status: response.status,
+        data,
+      };
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/resetWorkspace");
-      await this.recreateNotebookWorkspaceAsync();
+      if (!NotebookUtil.isPhoenixEnabled()) {
+        await this.recreateNotebookWorkspaceAsync();
+      }
+      throw error;
     }
   }
 
@@ -174,5 +209,13 @@ export class NotebookContainerClient {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
       return Promise.reject(error);
     }
+  }
+
+  private getHeaders(): HeadersInit {
+    const authorizationHeader = getAuthorizationHeader();
+    return {
+      [authorizationHeader.header]: authorizationHeader.token,
+      [HttpHeaders.contentType]: "application/json",
+    };
   }
 }

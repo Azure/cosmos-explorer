@@ -430,9 +430,33 @@ export interface NotebookWorkspaceConnectionInfo {
 }
 
 export interface ContainerInfo {
-  durationLeftMin: number;
+  durationLeftInMinutes: number;
   notebookServerInfo: NotebookWorkspaceConnectionInfo;
   status: ContainerStatusType;
+}
+
+export interface IProvisionData {
+  aadToken: string;
+  subscriptionId: string;
+  resourceGroup: string;
+  dbAccountName: string;
+  cosmosEndpoint: string;
+}
+
+export interface IContainerData {
+  dbAccountName: string;
+  forwardingId: string;
+}
+
+export interface IResponse<T> {
+  status: number;
+  data: T;
+}
+
+export interface IPhoenixConnectionInfoResult {
+  readonly notebookAuthToken?: string;
+  readonly notebookServerUrl?: string;
+  readonly forwardingId?: string;
 }
 
 export interface NotebookWorkspaceFeedResponse {

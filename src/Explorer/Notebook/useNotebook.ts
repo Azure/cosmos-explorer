@@ -8,6 +8,7 @@ import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
 import { ContainerConnectionInfo, ContainerInfo } from "../../Contracts/DataModels";
+import { useTabs } from "../../hooks/useTabs";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
@@ -88,7 +89,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   isRefreshed: false,
   containerStatus: {
     status: undefined,
-    durationLeftMin: undefined,
+    durationLeftInMinutes: undefined,
     notebookServerInfo: undefined,
   },
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
@@ -279,16 +280,13 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setConnectionInfo: (connectionInfo: ContainerConnectionInfo) => set({ connectionInfo }),
   setIsAllocating: (isAllocating: boolean) => set({ isAllocating }),
   resetContainerConnection: (connectionStatus: ContainerConnectionInfo): void => {
+    useTabs.getState().closeAllNotebookTabs(true);
     useNotebook.getState().setConnectionInfo(connectionStatus);
-    useNotebook.getState().setNotebookServerInfo({
-      notebookServerEndpoint: undefined,
-      authToken: undefined,
-      forwardingId: undefined,
-    });
+    useNotebook.getState().setNotebookServerInfo(undefined);
     useNotebook.getState().setIsAllocating(false);
     useNotebook.getState().setContainerStatus({
       status: undefined,
-      durationLeftMin: undefined,
+      durationLeftInMinutes: undefined,
       notebookServerInfo: undefined,
     });
   },

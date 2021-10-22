@@ -2,37 +2,21 @@ import { ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
-import { ContainerInfo } from "../Contracts/DataModels";
+import {
+  ContainerInfo,
+  IContainerData,
+  IPhoenixConnectionInfoResult,
+  IProvisionData,
+  IResponse,
+} from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
-export interface IPhoenixResponse<T> {
-  status: number;
-  data: T;
-}
-export interface IPhoenixConnectionInfoResult {
-  readonly notebookAuthToken?: string;
-  readonly notebookServerUrl?: string;
-  readonly forwardingId?: string;
-}
-export interface IProvisionData {
-  cosmosEndpoint: string;
-  dbAccountName: string;
-  aadToken: string;
-  resourceGroup: string;
-  subscriptionId: string;
-}
-
-export interface IContainerData {
-  dbAccountName: string;
-  forwardingId: string;
-}
-
 export class PhoenixClient {
   public async containerConnectionInfo(
     provisionData: IProvisionData
-  ): Promise<IPhoenixResponse<IPhoenixConnectionInfoResult>> {
+  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
       const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/allocate`, {
         method: "POST",
@@ -52,6 +36,7 @@ export class PhoenixClient {
       throw error;
     }
   }
+
   public async initiateContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
     this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
   }
@@ -74,22 +59,22 @@ export class PhoenixClient {
       if (response.status === HttpStatusCodes.OK) {
         const containerStatus = await response.json();
         return {
-          durationLeftMin: containerStatus.durationLeftInMinutes,
-          notebookServerInfo: containerStatus.notebookServerInfo,
+          durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
+          notebookServerInfo: containerStatus?.notebookServerInfo,
           status: ContainerStatusType.Active,
         };
       }
       return {
-        durationLeftMin: undefined,
+        durationLeftInMinutes: undefined,
         notebookServerInfo: undefined,
-        status: ContainerStatusType.InActive,
+        status: ContainerStatusType.Disconnected,
       };
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
-        durationLeftMin: undefined,
+        durationLeftInMinutes: undefined,
         notebookServerInfo: undefined,
-        status: ContainerStatusType.InActive,
+        status: ContainerStatusType.Disconnected,
       };
     }
   }
@@ -98,10 +83,7 @@ export class PhoenixClient {
     this.getContainerStatusAsync(containerData)
       .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
       .finally(() => {
-        if (
-          useNotebook.getState().containerStatus.status &&
-          useNotebook.getState().containerStatus.status === ContainerStatusType.Active
-        ) {
+        if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
           this.scheduleContainerHeartbeat(delayMs, containerData);
         }
       });
