@@ -37,9 +37,9 @@ export type FetchPricesResponse = {
 };
 
 export type PriceMapAndCurrencyCode = {
-  priceMap: Map<string, Map<string, number>>
-  currencyCode: string
-}
+  priceMap: Map<string, Map<string, number>>;
+  currencyCode: string;
+};
 
 export type PriceItem = {
   retailPrice: number;

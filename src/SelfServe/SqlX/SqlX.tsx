@@ -3,7 +3,7 @@ import {
   selfServeTrace,
   selfServeTraceFailure,
   selfServeTraceStart,
-  selfServeTraceSuccess
+  selfServeTraceSuccess,
 } from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
@@ -15,7 +15,7 @@ import {
   OnSaveResult,
   RefreshResult,
   SelfServeBaseClass,
-  SmartUiInput
+  SmartUiInput,
 } from "../SelfServeTypes";
 import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
@@ -24,7 +24,7 @@ import {
   getPriceMapAndCurrencyCode,
   getRegions,
   refreshDedicatedGatewayProvisioning,
-  updateDedicatedGatewayResource
+  updateDedicatedGatewayResource,
 } from "./SqlX.rp";
 
 const costPerHourDefaultValue: Description = {

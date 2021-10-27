@@ -9,7 +9,7 @@ import {
   PriceMapAndCurrencyCode,
   RegionsResponse,
   SqlxServiceResource,
-  UpdateDedicatedGatewayRequestParameters
+  UpdateDedicatedGatewayRequestParameters,
 } from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";
@@ -190,7 +190,7 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
 
   try {
     const priceMap = new Map<string, Map<string, number>>();
-    var currencyCode;
+    let currencyCode;
     for (const region of regions) {
       const regionPriceMap = new Map<string, number>();
 
@@ -208,11 +208,10 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
       });
 
       for (const item of response.result.Items) {
-        if (currencyCode == undefined) {
+        if (currencyCode === undefined) {
           currencyCode = item.currencyCode;
-        }
-        else if (item.currencyCode != currencyCode) {
-          throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.")
+        } else if (item.currencyCode !== currencyCode) {
+          throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
         }
         regionPriceMap.set(item.skuName, item.retailPrice);
       }
