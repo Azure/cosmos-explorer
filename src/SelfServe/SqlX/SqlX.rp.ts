@@ -223,6 +223,6 @@ export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promis
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
     selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
-    return { priceMap: undefined, currencyCode: currencyCode };
+    return { priceMap: undefined, currencyCode: undefined };
   }
 };
