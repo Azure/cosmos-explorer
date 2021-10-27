@@ -36,9 +36,15 @@ export type FetchPricesResponse = {
   Count: number;
 };
 
+export type PriceMapAndCurrencyCode = {
+  priceMap: Map<string, Map<string, number>>
+  currencyCode: string
+}
+
 export type PriceItem = {
   retailPrice: number;
   skuName: string;
+  currencyCode: string;
 };
 
 export type RegionsResponse = {
