@@ -92,6 +92,7 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
       isSharded={true}
       onCostAcknowledgeChange={[Function]}
       setIsAutoscale={[Function]}
+      setIsThroughputCapExceeded={[Function]}
       setThroughputValue={[Function]}
     />
   </div>

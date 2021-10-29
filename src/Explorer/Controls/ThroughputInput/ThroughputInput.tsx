@@ -38,7 +38,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   setIsAutoscale(isAutoscaleSelected);
   setThroughputValue(throughput);
 
-  const throughputCap = userContext.databaseAccount.properties.capacity?.totalThroughputLimit;
+  const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
   let totalThroughputUsed = 0;
   (useDatabases.getState().databases || []).forEach((database) => {
     if (database.offer()) {
