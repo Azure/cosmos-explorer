@@ -26,6 +26,7 @@ export interface DatabaseAccountExtendedProperties {
   isVirtualNetworkFilterEnabled?: boolean;
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
+  capacity?: { totalThroughputLimit: number };
 }
 
 export interface DatabaseAccountResponseLocation {

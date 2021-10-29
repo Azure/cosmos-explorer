@@ -32,6 +32,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   let throughput: number;
   let isAutoscaleSelected: boolean;
   let isCostAcknowledged: boolean;
+  let isThroughputCapExceeded: boolean;
   const { subscriptionType } = userContext;
   const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
   const databaseLabel: string = isCassandraAccount ? "keyspace" : "database";
@@ -152,6 +153,11 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       return false;
     }
 
+    if (isThroughputCapExceeded) {
+      setFormErrors("Total throughput limit exceeded.");
+      return false;
+    }
+
     return true;
   };
 
@@ -236,6 +242,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             isSharded={databaseCreateNewShared}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
+            setIsThroughputCapExceeded={(isCapExceeded: boolean) => (isThroughputCapExceeded = isCapExceeded)}
             onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
           />
         )}

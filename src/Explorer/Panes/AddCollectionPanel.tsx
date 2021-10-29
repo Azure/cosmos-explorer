@@ -100,6 +100,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
   private collectionThroughput: number;
   private isCollectionAutoscale: boolean;
   private isCostAcknowledged: boolean;
+  private isThroughputCapExceeded: boolean;
 
   constructor(props: AddCollectionPanelProps) {
     super(props);
@@ -249,6 +250,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
+                    setIsThroughputCapExceeded={(isCapExceeded: boolean) =>
+                      (this.isThroughputCapExceeded = isCapExceeded)
+                    }
                     onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
                   />
                 )}
@@ -480,6 +484,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               isSharded={this.state.isSharded}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
+              setIsThroughputCapExceeded={(isCapExceeded: boolean) => (this.isThroughputCapExceeded = isCapExceeded)}
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {
                 this.isCostAcknowledged = isAcknowledged;
               }}
@@ -961,6 +966,11 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       (this.state.partitionKey === "/id" || this.state.partitionKey === "/label")
     ) {
       this.setState({ errorMessage: "/id and /label as partition keys are not allowed for graph." });
+      return false;
+    }
+
+    if (this.isThroughputCapExceeded) {
+      this.setState({ errorMessage: "Total throughput limit exceeded." });
       return false;
     }
 

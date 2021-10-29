@@ -30,6 +30,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   let tableThroughput: number;
   let isTableAutoscale: boolean;
   let isCostAcknowledged: boolean;
+  let isThroughputCapExceeded: boolean;
 
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   const [newKeyspaceId, setNewKeyspaceId] = useState<string>("");
@@ -73,6 +74,11 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           ? "Please acknowledge the estimated monthly spend."
           : "Please acknowledge the estimated daily spend.";
       setFormError(errorMessage);
+      return;
+    }
+
+    if (isThroughputCapExceeded) {
+      setFormError("Total throughput limit exceeded.");
       return;
     }
 
@@ -262,6 +268,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               isSharded
               setThroughputValue={(throughput: number) => (newKeySpaceThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (isNewKeySpaceAutoscale = isAutoscale)}
+              setIsThroughputCapExceeded={(isCapExceeded: boolean) => (isThroughputCapExceeded = isCapExceeded)}
               onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
             />
           )}
@@ -334,6 +341,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             isSharded={false}
             setThroughputValue={(throughput: number) => (tableThroughput = throughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isTableAutoscale = isAutoscale)}
+            setIsThroughputCapExceeded={(isCapExceeded: boolean) => (isThroughputCapExceeded = isCapExceeded)}
             onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
           />
         )}

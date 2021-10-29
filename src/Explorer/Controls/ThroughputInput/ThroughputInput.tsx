@@ -1,4 +1,5 @@
 import { Checkbox, DirectionalHint, Link, Stack, Text, TextField, TooltipHost } from "@fluentui/react";
+import { useDatabases } from "Explorer/useDatabases";
 import React, { FunctionComponent, useState } from "react";
 import * as Constants from "../../../Common/Constants";
 import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
@@ -16,6 +17,7 @@ export interface ThroughputInputProps {
   showFreeTierExceedThroughputTooltip: boolean;
   setThroughputValue: (throughput: number) => void;
   setIsAutoscale: (isAutoscale: boolean) => void;
+  setIsThroughputCapExceeded: (isThroughputCapExceeded: boolean) => void;
   onCostAcknowledgeChange: (isAcknowledged: boolean) => void;
 }
 
@@ -24,6 +26,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   showFreeTierExceedThroughputTooltip,
   setThroughputValue,
   setIsAutoscale,
+  setIsThroughputCapExceeded,
   isSharded,
   onCostAcknowledgeChange,
 }: ThroughputInputProps) => {
@@ -34,6 +37,41 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
 
   setIsAutoscale(isAutoscaleSelected);
   setThroughputValue(throughput);
+
+  const throughputCap = userContext.databaseAccount.properties.capacity?.totalThroughputLimit;
+  let totalThroughputUsed = 0;
+  (useDatabases.getState().databases || []).forEach((database) => {
+    if (database.offer()) {
+      const dbThroughput = database.offer().autoscaleMaxThroughput || database.offer().manualThroughput;
+      totalThroughputUsed += dbThroughput;
+    }
+
+    (database.collections() || []).forEach((collection) => {
+      if (collection.offer()) {
+        const colThroughput = collection.offer().autoscaleMaxThroughput || collection.offer().manualThroughput;
+        totalThroughputUsed += colThroughput;
+      }
+    });
+  });
+
+  const checkThroughputCap = (newThroughput: number): boolean => {
+    const throughputAvailable = throughputCap - totalThroughputUsed;
+    if (throughputAvailable < newThroughput) {
+      if (!throughputError) {
+        setThroughputError(
+          `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
+            totalThroughputUsed + newThroughput
+          } RU/s. Change total throughput limit in cost management.`
+        );
+      }
+
+      setIsThroughputCapExceeded(true);
+      return false;
+    }
+
+    setIsThroughputCapExceeded(false);
+    return true;
+  };
 
   const getThroughputLabelText = (): string => {
     let throughputHeaderText: string;
@@ -60,11 +98,17 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     const newThroughput = parseInt(newInput);
     setThroughput(newThroughput);
     setThroughputValue(newThroughput);
+
+    if (!checkThroughputCap(newThroughput)) {
+      return;
+    }
+
     if (!isSharded && newThroughput > 10000) {
       setThroughputError("Unsharded collections support up to 10,000 RUs");
-    } else {
-      setThroughputError("");
+      return;
     }
+
+    setThroughputError("");
   };
 
   const getAutoScaleTooltip = (): string => {
@@ -103,6 +147,8 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
       setIsAutoscale(false);
     }
   };
+
+  checkThroughputCap(throughput);
 
   return (
     <div className="throughputInputContainer throughputInputSpacing">
