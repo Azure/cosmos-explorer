@@ -75,6 +75,7 @@ export interface ThroughputInputAutoPilotV3Props {
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
   getThroughputWarningMessage: () => JSX.Element;
   usageSizeInKB: number;
+  throughputError?: string;
 }
 
 interface ThroughputInputAutoPilotV3State {
@@ -540,6 +541,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         value={this.overrideWithProvisionedThroughputSettings() ? "" : this.props.maxAutoPilotThroughput?.toString()}
         onChange={this.onAutoPilotThroughputChange}
         min={minAutoPilotThroughput}
+        errorMessage={this.props.throughputError}
       />
       {!this.overrideWithProvisionedThroughputSettings() && this.getAutoPilotUsageCost()}
       {this.minRUperGBSurvey()}
@@ -579,6 +581,7 @@ export class ThroughputInputAutoPilotV3Component extends React.Component<
         }
         onChange={this.onThroughputChange}
         min={this.props.minimum}
+        errorMessage={this.props.throughputError}
       />
       {this.state.exceedFreeTierThroughput && (
         <MessageBar

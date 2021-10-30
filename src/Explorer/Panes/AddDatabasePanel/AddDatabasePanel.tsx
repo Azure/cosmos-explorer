@@ -32,7 +32,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   let throughput: number;
   let isAutoscaleSelected: boolean;
   let isCostAcknowledged: boolean;
-  let isThroughputCapExceeded: boolean;
   const { subscriptionType } = userContext;
   const isCassandraAccount: boolean = userContext.apiType === "Cassandra";
   const databaseLabel: string = isCassandraAccount ? "keyspace" : "database";
@@ -51,6 +50,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   );
   const [formErrors, setFormErrors] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [isThroughputCapExceeded, setIsThroughputCapExceeded] = useState<boolean>(false);
 
   const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
@@ -153,11 +153,6 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       return false;
     }
 
-    if (isThroughputCapExceeded) {
-      setFormErrors("Total throughput limit exceeded.");
-      return false;
-    }
-
     return true;
   };
 
@@ -172,6 +167,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     formError: formErrors,
     isExecuting,
     submitButtonText: "OK",
+    isSubmitButtonDisabled: isThroughputCapExceeded,
     onSubmit,
   };
 
@@ -242,7 +238,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             isSharded={databaseCreateNewShared}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
-            setIsThroughputCapExceeded={(isCapExceeded: boolean) => (isThroughputCapExceeded = isCapExceeded)}
+            setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
             onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
           />
         )}
