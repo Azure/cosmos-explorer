@@ -9,7 +9,7 @@
 import { configContext } from "../../../../ConfigContext";
 import { armRequest } from "../../request";
 import * as Types from "./types";
-const apiVersion = "2021-04-15";
+const apiVersion = "2021-10-15";
 
 /* Lists the SQL databases under an existing Azure Cosmos DB database account. */
 export async function listSqlDatabases(

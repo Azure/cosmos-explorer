@@ -1,4 +1,5 @@
 import { IPivotItemProps, IPivotProps, Pivot, PivotItem } from "@fluentui/react";
+import { useDatabases } from "Explorer/useDatabases";
 import * as React from "react";
 import DiscardIcon from "../../../../images/discard.svg";
 import SaveIcon from "../../../../images/save-cosmos.svg";
@@ -71,6 +72,7 @@ export interface SettingsComponentState {
   wasAutopilotOriginallySet: boolean;
   isScaleSaveable: boolean;
   isScaleDiscardable: boolean;
+  throughputError: string;
 
   timeToLive: TtlType;
   timeToLiveBaseline: TtlType;
@@ -124,6 +126,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private changeFeedPolicyVisible: boolean;
   private isFixedContainer: boolean;
   private shouldShowIndexingPolicyEditor: boolean;
+  private totalThroughputUsed: number;
   public mongoDBCollectionResource: MongoDBCollectionResource;
 
   constructor(props: SettingsComponentProps) {
@@ -155,6 +158,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       wasAutopilotOriginallySet: false,
       isScaleSaveable: false,
       isScaleDiscardable: false,
+      throughputError: undefined,
 
       timeToLive: undefined,
       timeToLiveBaseline: undefined,
@@ -208,6 +212,21 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
         return true;
       },
     };
+
+    this.totalThroughputUsed = 0;
+    (useDatabases.getState().databases || []).forEach((database) => {
+      if (database.offer()) {
+        const dbThroughput = database.offer().autoscaleMaxThroughput || database.offer().manualThroughput;
+        this.totalThroughputUsed += dbThroughput;
+      }
+
+      (database.collections() || []).forEach((collection) => {
+        if (collection.offer()) {
+          const colThroughput = collection.offer().autoscaleMaxThroughput || collection.offer().manualThroughput;
+          this.totalThroughputUsed += colThroughput;
+        }
+      });
+    });
   }
 
   componentDidMount(): void {
@@ -251,6 +270,10 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
   public isSaveSettingsButtonEnabled = (): boolean => {
     if (this.isOfferReplacePending()) {
+      return false;
+    }
+
+    if (this.state.throughputError) {
       return false;
     }
 
@@ -643,10 +666,27 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     return buttons;
   };
 
-  private onMaxAutoPilotThroughputChange = (newThroughput: number): void =>
-    this.setState({ autoPilotThroughput: newThroughput });
+  private onMaxAutoPilotThroughputChange = (newThroughput: number): void => {
+    let throughputError = "";
+    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.autoscaleMaxThroughput) {
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
+        this.totalThroughputUsed + newThroughput
+      } RU/s. Change total throughput limit in cost management.`;
+    }
+    this.setState({ autoPilotThroughput: newThroughput, throughputError });
+  };
 
-  private onThroughputChange = (newThroughput: number): void => this.setState({ throughput: newThroughput });
+  private onThroughputChange = (newThroughput: number): void => {
+    let throughputError = "";
+    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.manualThroughput) {
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
+        this.totalThroughputUsed + newThroughput
+      } RU/s. Change total throughput limit in cost management.`;
+    }
+    this.setState({ throughput: newThroughput, throughputError });
+  };
 
   private onAutoPilotSelected = (isAutoPilotSelected: boolean): void =>
     this.setState({ isAutoPilotSelected: isAutoPilotSelected });
@@ -893,6 +933,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       onScaleSaveableChange: this.onScaleSaveableChange,
       onScaleDiscardableChange: this.onScaleDiscardableChange,
       initialNotification: this.props.settingsTab.pendingNotification(),
+      throughputError: this.state.throughputError,
     };
 
     if (!this.isCollectionSettingsTab) {

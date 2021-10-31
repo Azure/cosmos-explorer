@@ -9,6 +9,7 @@ export interface RightPaneFormProps {
   onSubmit: () => void;
   submitButtonText: string;
   isSubmitButtonHidden?: boolean;
+  isSubmitButtonDisabled?: boolean;
   children?: ReactNode;
 }
 
@@ -18,6 +19,7 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
   onSubmit,
   submitButtonText,
   isSubmitButtonHidden = false,
+  isSubmitButtonDisabled = false,
   children,
 }: RightPaneFormProps) => {
   const handleOnSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -30,7 +32,9 @@ export const RightPaneForm: FunctionComponent<RightPaneFormProps> = ({
       <form className="panelFormWrapper" onSubmit={handleOnSubmit}>
         {formError && <PanelInfoErrorComponent messageType="error" message={formError} showErrorDetails={true} />}
         {children}
-        {!isSubmitButtonHidden && <PanelFooterComponent buttonLabel={submitButtonText} />}
+        {!isSubmitButtonHidden && (
+          <PanelFooterComponent buttonLabel={submitButtonText} isButtonDisabled={isSubmitButtonDisabled} />
+        )}
       </form>
       {isExecuting && <PanelLoadingScreen />}
     </>
