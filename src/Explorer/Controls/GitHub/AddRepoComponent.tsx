@@ -1,14 +1,14 @@
 import { DefaultButton, IButtonProps, ITextFieldProps, TextField } from "@fluentui/react";
 import * as React from "react";
 import * as Constants from "../../../Common/Constants";
+import * as UrlUtility from "../../../Common/UrlUtility";
+import { IGitHubRepo } from "../../../GitHub/GitHubClient";
 import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
+import * as GitHubUtils from "../../../Utils/GitHubUtils";
+import Explorer from "../../Explorer";
 import { RepoListItem } from "./GitHubReposComponent";
 import { ChildrenMargin } from "./GitHubStyleConstants";
-import * as GitHubUtils from "../../../Utils/GitHubUtils";
-import { IGitHubRepo } from "../../../GitHub/GitHubClient";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import * as UrlUtility from "../../../Common/UrlUtility";
-import Explorer from "../../Explorer";
 
 export interface AddRepoComponentProps {
   container: Explorer;
@@ -27,7 +27,6 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
   private static readonly ButtonText = "Add";
   private static readonly TextFieldPlaceholder = "https://github.com/owner/repo/tree/branch";
   private static readonly TextFieldErrorMessage = "Invalid url";
-  private static readonly DefaultBranchName = "master";
 
   constructor(props: AddRepoComponentProps) {
     super(props);
@@ -78,7 +77,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
     });
     let enteredUrl = this.state.textFieldValue;
     if (enteredUrl.indexOf("/tree/") === -1) {
-      enteredUrl = UrlUtility.createUri(enteredUrl, `tree/${AddRepoComponent.DefaultBranchName}`);
+      enteredUrl = UrlUtility.createUri(enteredUrl, `tree/`);
     }
 
     const repoInfo = GitHubUtils.fromRepoUri(enteredUrl);
@@ -93,11 +92,7 @@ export class AddRepoComponent extends React.Component<AddRepoComponentProps, Add
         const item: RepoListItem = {
           key: GitHubUtils.toRepoFullName(repo.owner, repo.name),
           repo,
-          branches: [
-            {
-              name: repoInfo.branch,
-            },
-          ],
+          branches: repoInfo.branch ? [{ name: repoInfo.branch }] : [],
         };
 
         TelemetryProcessor.traceSuccess(

@@ -369,18 +369,21 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
       </div>
       <PanelFooterComponent
         buttonLabel="OK"
+        isButtonDisabled={false}
       >
         <div
           className="panelFooter"
         >
           <CustomizedPrimaryButton
             ariaLabel="OK"
+            disabled={false}
             id="sidePanelOkButton"
             text="OK"
             type="submit"
           >
             <PrimaryButton
               ariaLabel="OK"
+              disabled={false}
               id="sidePanelOkButton"
               text="OK"
               theme={
@@ -660,6 +663,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
             >
               <CustomizedDefaultButton
                 ariaLabel="OK"
+                disabled={false}
                 id="sidePanelOkButton"
                 onRenderDescription={[Function]}
                 primary={true}
@@ -941,6 +945,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
               >
                 <DefaultButton
                   ariaLabel="OK"
+                  disabled={false}
                   id="sidePanelOkButton"
                   onRenderDescription={[Function]}
                   primary={true}
@@ -1223,6 +1228,7 @@ exports[`Delete Collection Confirmation Pane submit() should call delete collect
                   <BaseButton
                     ariaLabel="OK"
                     baseClassName="ms-Button"
+                    disabled={false}
                     id="sidePanelOkButton"
                     onRenderDescription={[Function]}
                     primary={true}

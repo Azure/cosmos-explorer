@@ -92,6 +92,7 @@ export interface AddCollectionPanelState {
   errorMessage: string;
   showErrorDetails: boolean;
   isExecuting: boolean;
+  isThroughputCapExceeded: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -122,6 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       errorMessage: "",
       showErrorDetails: false,
       isExecuting: false,
+      isThroughputCapExceeded: false,
     };
   }
 
@@ -249,6 +251,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
+                    setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                      this.setState({ isThroughputCapExceeded })
+                    }
                     onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
                   />
                 )}
@@ -480,6 +485,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               isSharded={this.state.isSharded}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
+              setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                this.setState({ isThroughputCapExceeded })
+              }
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {
                 this.isCostAcknowledged = isAcknowledged;
               }}
@@ -676,7 +684,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           )}
         </div>
 
-        <PanelFooterComponent buttonLabel="OK" />
+        <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
 
         {this.state.isExecuting && <PanelLoadingScreen />}
       </form>

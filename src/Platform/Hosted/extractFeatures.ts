@@ -34,6 +34,7 @@ export type Features = {
   readonly mongoProxyEndpoint?: string;
   readonly mongoProxyAPIs?: string;
   readonly notebooksTemporarilyDown: boolean;
+  readonly enableThroughputCap: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -86,6 +87,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
     phoenix: "true" === get("phoenix"),
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
+    enableThroughputCap: "true" === get("enablethroughputcap"),
   };
 }
 
