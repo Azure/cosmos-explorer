@@ -401,6 +401,7 @@ export default class Explorer {
         useNotebook.getState().resetContainerConnection(connectionStatus);
         throw error;
       }
+      this.refreshCommandBarButtons();
       this.refreshNotebookList();
 
       this._isInitializingNotebooks = false;

@@ -71,6 +71,9 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   React.useEffect(() => {
     if (connectionInfo && connectionInfo.status === ConnectionStatusType.Reconnect) {
       setToolTipContent("Click here to Reconnect to temporary workspace.");
+    } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Failed) {
+      setStatusColor("status failed is-animating");
+      setToolTipContent("Click here to Reconnect to temporary workspace.");
     }
   }, [connectionInfo.status]);
 
@@ -102,6 +105,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   }
 
   if (connectionInfo && connectionInfo.status === ConnectionStatusType.Connecting && isActive === false) {
+    stopTimer();
     setIsActive(true);
     setStatusColor("status connecting is-animating");
     setToolTipContent("Connecting to temporary workspace.");
@@ -118,8 +122,7 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
     <>
       <TooltipHost
         content={
-          containerInfo?.status === ContainerStatusType.Active &&
-          Math.round(containerInfo.durationLeftInMinutes) <= Notebook.remainingTimeForAlert
+          containerInfo?.status === ContainerStatusType.Active
             ? `Connected to temporary workspace. This temporary workspace will get disconnected in ${Math.round(
                 containerInfo.durationLeftInMinutes
               )} minutes.`

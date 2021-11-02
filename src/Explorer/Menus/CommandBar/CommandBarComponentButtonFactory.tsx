@@ -80,7 +80,9 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.push(createOpenTerminalButton(container));
-    notebookButtons.push(createNotebookWorkspaceResetButton(container));
+    if (selectedNodeState.isConnectedToContainer()) {
+      notebookButtons.push(createNotebookWorkspaceResetButton(container));
+    }
     if (
       (userContext.apiType === "Mongo" &&
         useNotebook.getState().isShellEnabled &&
