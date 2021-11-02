@@ -69,9 +69,9 @@ export const ConnectionStatus: React.FC<Props> = ({ container }: Props): JSX.Ele
   }, [isActive, counter]);
 
   React.useEffect(() => {
-    if (connectionInfo && connectionInfo.status === ConnectionStatusType.Reconnect) {
+    if (connectionInfo?.status === ConnectionStatusType.Reconnect) {
       setToolTipContent("Click here to Reconnect to temporary workspace.");
-    } else if (connectionInfo && connectionInfo.status === ConnectionStatusType.Failed) {
+    } else if (connectionInfo?.status === ConnectionStatusType.Failed) {
       setStatusColor("status failed is-animating");
       setToolTipContent("Click here to Reconnect to temporary workspace.");
     }
