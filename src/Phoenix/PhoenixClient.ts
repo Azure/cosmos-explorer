@@ -1,3 +1,5 @@
+import { NotebookUtil } from "Explorer/Notebook/NotebookUtil";
+import promiseRetry, { AbortError } from "p-retry";
 import { ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
@@ -49,26 +51,34 @@ export class PhoenixClient {
 
   private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
-      const response = await window.fetch(
-        `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
-        {
-          method: "GET",
-          headers: PhoenixClient.getHeaders(),
+      const runContainerStatusAsync = async () => {
+        const response = await window.fetch(
+          `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
+          {
+            method: "GET",
+            headers: PhoenixClient.getHeaders(),
+          }
+        );
+        if (response.status === HttpStatusCodes.OK) {
+          const containerStatus = await response.json();
+          return {
+            durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
+            notebookServerInfo: containerStatus?.notebookServerInfo,
+            status: ContainerStatusType.Active,
+          };
+        } else if (response.status === HttpStatusCodes.NotFound) {
+          throw new AbortError(response.statusText);
         }
-      );
-      if (response.status === HttpStatusCodes.OK) {
-        const containerStatus = await response.json();
-        return {
-          durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
-          notebookServerInfo: containerStatus?.notebookServerInfo,
-          status: ContainerStatusType.Active,
-        };
-      }
-      return {
-        durationLeftInMinutes: undefined,
-        notebookServerInfo: undefined,
-        status: ContainerStatusType.Disconnected,
+        throw new Error(response.statusText);
       };
+      return (async () => {
+        return await promiseRetry(runContainerStatusAsync, {
+          onFailedAttempt: () => {
+            NotebookUtil.sleep(Notebook.retryAttemptDelayMs);
+          },
+          retries: Notebook.retryAttempts,
+        });
+      })();
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
@@ -79,9 +89,20 @@ export class PhoenixClient {
     }
   }
 
-  private getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
-    this.getContainerStatusAsync(containerData)
-      .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
+  private async getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
+    await this.getContainerStatusAsync(containerData)
+      .then((ContainerInfo) => {
+        if (ContainerInfo) {
+          useNotebook.getState().setContainerStatus(ContainerInfo);
+        }
+      })
+      .catch(() => {
+        useNotebook.getState().setContainerStatus({
+          durationLeftInMinutes: undefined,
+          notebookServerInfo: undefined,
+          status: ContainerStatusType.Disconnected,
+        });
+      })
       .finally(() => {
         if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
           this.scheduleContainerHeartbeat(delayMs, containerData);
@@ -104,6 +125,7 @@ export class PhoenixClient {
   public getPhoenixContainerPoolingEndPoint(): string {
     return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer`;
   }
+
   private static getHeaders(): HeadersInit {
     const authorizationHeader = getAuthorizationHeader();
     return {
