@@ -15,7 +15,7 @@ export async function fetchDatabaseAccounts(subscriptionId: string, accessToken:
   headers.append("Authorization", bearer);
 
   let accounts: Array<DatabaseAccount> = [];
-  const apiVersion = userContext.features.enableThroughputCap ? "2021-10-15" : "2021-06-15";
+  const apiVersion = userContext.features.enableThroughputCap ? "2021-10-15-preview" : "2021-06-15";
   let nextLink = `${configContext.ARM_ENDPOINT}/subscriptions/${subscriptionId}/providers/Microsoft.DocumentDB/databaseAccounts?api-version=${apiVersion}`;
 
   while (nextLink) {
