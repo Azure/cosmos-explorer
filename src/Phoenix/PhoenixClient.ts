@@ -17,14 +17,14 @@ export class PhoenixClient {
   private containerHealthHandler: NodeJS.Timeout;
 
   public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
-    return this.getContainerInfo(provisionData, "allocate");
+    return this.executeContainerAssignmentOperation(provisionData, "allocate");
   }
 
   public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
-    return this.getContainerInfo(provisionData, "reset");
+    return this.executeContainerAssignmentOperation(provisionData, "reset");
   }
 
-  private async getContainerInfo(
+  private async executeContainerAssignmentOperation(
     provisionData: IProvisionData,
     operation: string
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
@@ -53,12 +53,12 @@ export class PhoenixClient {
     if (this.containerHealthHandler) {
       clearTimeout(this.containerHealthHandler);
     }
-    this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
+    await this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
   }
 
   private scheduleContainerHeartbeat(delayMs: number, containerData: IContainerData): void {
-    this.containerHealthHandler = setTimeout(() => {
-      this.getContainerHealth(delayMs, containerData);
+    this.containerHealthHandler = setTimeout(async () => {
+      await this.getContainerHealth(delayMs, containerData);
     }, delayMs);
   }
 
@@ -94,14 +94,12 @@ export class PhoenixClient {
     }
   }
 
-  private getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
-    this.getContainerStatusAsync(containerData)
-      .then((ContainerInfo) => useNotebook.getState().setContainerStatus(ContainerInfo))
-      .finally(() => {
-        if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
-          this.scheduleContainerHeartbeat(delayMs, containerData);
-        }
-      });
+  private async getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
+    const containerInfo = await this.getContainerStatusAsync(containerData);
+    useNotebook.getState().setContainerStatus(containerInfo);
+    if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
+      this.scheduleContainerHeartbeat(delayMs, containerData);
+    }
   }
 
   public static getPhoenixEndpoint(): string {
