@@ -394,7 +394,7 @@ export default class Explorer {
       useNotebook.getState().setConnectionInfo(connectionStatus);
       try {
         useNotebook.getState().setIsAllocating(true);
-        const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
+        const connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         await this.setNotebookInfo(connectionInfo, connectionStatus);
       } catch (error) {
         connectionStatus.status = ConnectionStatusType.Failed;

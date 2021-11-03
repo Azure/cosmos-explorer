@@ -14,15 +14,27 @@ import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
-  public async containerConnectionInfo(
-    provisionData: IProvisionData
+  private containerHealthHandler: NodeJS.Timeout;
+
+  public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    return this.getContainerInfo(provisionData, "allocate");
+  }
+
+  public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    return this.getContainerInfo(provisionData, "reset");
+  }
+
+  private async getContainerInfo(
+    provisionData: IProvisionData,
+    operation: string
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
-      const response = await window.fetch(`${this.getPhoenixContainerPoolingEndPoint()}/allocate`, {
+      const response = await fetch(`${this.getPhoenixContainerPoolingEndPoint()}/${operation}`, {
         method: "POST",
         headers: PhoenixClient.getHeaders(),
         body: JSON.stringify(provisionData),
       });
+
       let data: IPhoenixConnectionInfoResult;
       if (response.status === HttpStatusCodes.OK) {
         data = await response.json();
@@ -38,11 +50,14 @@ export class PhoenixClient {
   }
 
   public async initiateContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
+    if (this.containerHealthHandler) {
+      clearTimeout(this.containerHealthHandler);
+    }
     this.getContainerHealth(Notebook.containerStatusHeartbeatDelayMs, containerData);
   }
 
   private scheduleContainerHeartbeat(delayMs: number, containerData: IContainerData): void {
-    setTimeout(() => {
+    this.containerHealthHandler = setTimeout(() => {
       this.getContainerHealth(delayMs, containerData);
     }, delayMs);
   }
@@ -104,6 +119,7 @@ export class PhoenixClient {
   public getPhoenixContainerPoolingEndPoint(): string {
     return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer`;
   }
+
   private static getHeaders(): HeadersInit {
     const authorizationHeader = getAuthorizationHeader();
     return {

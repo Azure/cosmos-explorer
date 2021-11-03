@@ -3,7 +3,7 @@
  */
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import * as Constants from "../../Common/Constants";
-import { ConnectionStatusType, HttpHeaders, HttpStatusCodes } from "../../Common/Constants";
+import { ConnectionStatusType, HttpHeaders } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
@@ -23,8 +23,10 @@ import { useNotebook } from "./useNotebook";
 export class NotebookContainerClient {
   private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
+  private phoenixClient: PhoenixClient;
 
   constructor(private onConnectionLost: () => void) {
+    this.phoenixClient = new PhoenixClient();
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (notebookServerInfo?.notebookServerEndpoint) {
       this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
@@ -143,10 +145,7 @@ export class NotebookContainerClient {
       return Promise.reject(error);
     }
 
-    const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
     try {
-      let data: IPhoenixConnectionInfoResult;
-      let response: Response;
       if (NotebookUtil.isPhoenixEnabled()) {
         const provisionData: IProvisionData = {
           aadToken: userContext.authorizationToken,
@@ -155,24 +154,9 @@ export class NotebookContainerClient {
           dbAccountName: userContext.databaseAccount.name,
           cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
         };
-        response = await fetch(`${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/reset`, {
-          method: "POST",
-          headers: this.getHeaders(),
-          body: JSON.stringify(provisionData),
-        });
-        if (response.status === HttpStatusCodes.OK) {
-          data = await response.json();
-        }
-      } else {
-        response = await fetch(`${notebookServerEndpoint}/api/shutdown`, {
-          method: "POST",
-          headers: { Authorization: authToken },
-        });
+        return await this.phoenixClient.resetContainer(provisionData);
       }
-      return {
-        status: response.status,
-        data,
-      };
+      return null;
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/resetWorkspace");
       if (!NotebookUtil.isPhoenixEnabled()) {
