@@ -40,6 +40,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   setThroughputValue(throughput);
 
   const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+  const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
 
   useEffect(() => {
     // throughput cap check for the initial state
@@ -57,12 +58,12 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         }
       });
     });
+    totalThroughput *= numberOfRegions;
     setTotalThroughputUsed(totalThroughput);
 
     if (throughputCap && throughputCap - totalThroughput < throughput) {
       setThroughputError(
-        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-          totalThroughputUsed + throughput
+        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${totalThroughputUsed + throughput
         } RU/s. Change total throughput limit in cost management.`
       );
 
@@ -73,8 +74,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   const checkThroughputCap = (newThroughput: number): boolean => {
     if (throughputCap && throughputCap - totalThroughputUsed < newThroughput) {
       setThroughputError(
-        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-          totalThroughputUsed + newThroughput
+        `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${totalThroughputUsed + newThroughput
         } RU/s. Change total throughput limit in cost management.`
       );
       setIsThroughputCapExceeded(true);

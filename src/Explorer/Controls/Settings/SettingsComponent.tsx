@@ -24,12 +24,12 @@ import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import {
   ConflictResolutionComponent,
-  ConflictResolutionComponentProps,
+  ConflictResolutionComponentProps
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
   MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps,
+  MongoIndexingPolicyComponentProps
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
@@ -45,7 +45,7 @@ import {
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
   SettingsV2TabTypes,
-  TtlType,
+  TtlType
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -213,20 +213,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       },
     };
 
-    this.totalThroughputUsed = 0;
-    (useDatabases.getState().databases || []).forEach((database) => {
-      if (database.offer()) {
-        const dbThroughput = database.offer().autoscaleMaxThroughput || database.offer().manualThroughput;
-        this.totalThroughputUsed += dbThroughput;
-      }
-
-      (database.collections() || []).forEach((collection) => {
-        if (collection.offer()) {
-          const colThroughput = collection.offer().autoscaleMaxThroughput || collection.offer().manualThroughput;
-          this.totalThroughputUsed += colThroughput;
-        }
-      });
-    });
+    this.calculateTotalThroughputUsed();
   }
 
   componentDidMount(): void {
@@ -504,6 +491,30 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onMongoIndexingPolicyDiscardableChange = (isMongoIndexingPolicyDiscardable: boolean): void =>
     this.setState({ isMongoIndexingPolicyDiscardable });
 
+  private calculateTotalThroughputUsed = async (): Promise<void> => {
+    this.totalThroughputUsed = 0;
+    (useDatabases.getState().databases || []).forEach(async (database) => {
+      await database.loadOffer();
+      await database.loadCollections();
+
+      if (database.offer()) {
+        const dbThroughput = database.offer().autoscaleMaxThroughput || database.offer().manualThroughput;
+        this.totalThroughputUsed += dbThroughput;
+      }
+
+      (database.collections() || []).forEach(async (collection) => {
+        await collection.loadOffer();
+        if (collection.offer()) {
+          const colThroughput = collection.offer().autoscaleMaxThroughput || collection.offer().manualThroughput;
+          this.totalThroughputUsed += colThroughput;
+        }
+      });
+    });
+
+    const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
+    this.totalThroughputUsed *= numberOfRegions;
+  }
+
   public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {
       if (this.state.analyticalStorageTtlSelection === TtlType.On) {
@@ -670,9 +681,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     let throughputError = "";
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
     if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.autoscaleMaxThroughput) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + newThroughput
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + newThroughput - this.offer.autoscaleMaxThroughput
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
   };
@@ -681,9 +691,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     let throughputError = "";
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
     if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.manualThroughput) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + newThroughput
-      } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + newThroughput - this.offer.manualThroughput
+        } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });
   };
@@ -768,8 +777,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
           ? {
-              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
-            }
+            retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
+          }
           : undefined;
 
       newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
