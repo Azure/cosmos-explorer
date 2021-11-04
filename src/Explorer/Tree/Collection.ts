@@ -576,7 +576,9 @@ export default class Collection implements ViewModels.Collection {
 
   public onSettingsClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
-    await this.loadOffer();
+    userContext.databaseAccount?.properties.capacity?.totalThroughputLimit
+      ? await useDatabases.getState().loadAllOffers()
+      : await this.loadOffer();
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.Settings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Settings node",
