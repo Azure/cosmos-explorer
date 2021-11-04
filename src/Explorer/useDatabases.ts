@@ -18,6 +18,7 @@ interface DatabasesState {
   findCollection: (databaseId: string, collectionId: string) => ViewModels.Collection;
   isLastCollection: () => boolean;
   loadDatabaseOffers: () => Promise<void>;
+  loadAllOffers: () => Promise<void>;
   isFirstResourceCreated: () => boolean;
   findSelectedDatabase: () => ViewModels.Database;
   validateDatabaseId: (id: string) => boolean;
@@ -94,6 +95,19 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     await Promise.all(
       get().databases?.map(async (database: ViewModels.Database) => {
         await database.loadOffer();
+      })
+    );
+  },
+  loadAllOffers: async () => {
+    await Promise.all(
+      get().databases?.map(async (database: ViewModels.Database) => {
+        await database.loadOffer();
+        await database.loadCollections();
+        await Promise.all(
+          (database.collections() || []).map(async (collection: ViewModels.Collection) => {
+            await collection.loadOffer();
+          })
+        );
       })
     );
   },

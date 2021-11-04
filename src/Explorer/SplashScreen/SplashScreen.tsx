@@ -307,10 +307,14 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         iconSrc: AddDatabaseIcon,
         title: "New " + getDatabaseName(),
         description: undefined,
-        onClick: () =>
+        onClick: async () => {
+          if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+            await useDatabases.getState().loadAllOffers();
+          }
           useSidePanel
             .getState()
-            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />),
+            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />);
+        },
       });
     }
 

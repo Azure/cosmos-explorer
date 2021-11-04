@@ -213,7 +213,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       },
     };
 
-    this.calculateTotalThroughputUsed();
+    if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+      this.calculateTotalThroughputUsed();
+    }
   }
 
   componentDidMount(): void {
