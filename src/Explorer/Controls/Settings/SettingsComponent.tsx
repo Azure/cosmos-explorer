@@ -24,12 +24,12 @@ import "./SettingsComponent.less";
 import { mongoIndexingPolicyAADError } from "./SettingsRenderUtils";
 import {
   ConflictResolutionComponent,
-  ConflictResolutionComponentProps
+  ConflictResolutionComponentProps,
 } from "./SettingsSubComponents/ConflictResolutionComponent";
 import { IndexingPolicyComponent, IndexingPolicyComponentProps } from "./SettingsSubComponents/IndexingPolicyComponent";
 import {
   MongoIndexingPolicyComponent,
-  MongoIndexingPolicyComponentProps
+  MongoIndexingPolicyComponentProps,
 } from "./SettingsSubComponents/MongoIndexingPolicy/MongoIndexingPolicyComponent";
 import { ScaleComponent, ScaleComponentProps } from "./SettingsSubComponents/ScaleComponent";
 import { SubSettingsComponent, SubSettingsComponentProps } from "./SettingsSubComponents/SubSettingsComponent";
@@ -45,7 +45,7 @@ import {
   parseConflictResolutionMode,
   parseConflictResolutionProcedure,
   SettingsV2TabTypes,
-  TtlType
+  TtlType,
 } from "./SettingsUtils";
 
 interface SettingsV2TabInfo {
@@ -513,7 +513,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
 
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     this.totalThroughputUsed *= numberOfRegions;
-  }
+  };
 
   public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {
@@ -681,8 +681,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     let throughputError = "";
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
     if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.autoscaleMaxThroughput) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + newThroughput - this.offer.autoscaleMaxThroughput
-        } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
+        this.totalThroughputUsed + newThroughput - this.offer.autoscaleMaxThroughput
+      } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
   };
@@ -691,8 +692,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     let throughputError = "";
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
     if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.manualThroughput) {
-      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${this.totalThroughputUsed + newThroughput - this.offer.manualThroughput
-        } RU/s. Change total throughput limit in cost management.`;
+      throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
+        this.totalThroughputUsed + newThroughput - this.offer.manualThroughput
+      } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });
   };
@@ -777,8 +779,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       newCollection.changeFeedPolicy =
         this.changeFeedPolicyVisible && this.state.changeFeedPolicy === ChangeFeedPolicyState.On
           ? {
-            retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
-          }
+              retentionDuration: Constants.BackendDefaults.maxChangeFeedRetentionDuration,
+            }
           : undefined;
 
       newCollection.analyticalStorageTtl = this.getAnalyticalStorageTtl();
