@@ -213,20 +213,9 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       },
     };
 
-    this.totalThroughputUsed = 0;
-    (useDatabases.getState().databases || []).forEach((database) => {
-      if (database.offer()) {
-        const dbThroughput = database.offer().autoscaleMaxThroughput || database.offer().manualThroughput;
-        this.totalThroughputUsed += dbThroughput;
-      }
-
-      (database.collections() || []).forEach((collection) => {
-        if (collection.offer()) {
-          const colThroughput = collection.offer().autoscaleMaxThroughput || collection.offer().manualThroughput;
-          this.totalThroughputUsed += colThroughput;
-        }
-      });
-    });
+    if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+      this.calculateTotalThroughputUsed();
+    }
   }
 
   componentDidMount(): void {
@@ -504,6 +493,26 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onMongoIndexingPolicyDiscardableChange = (isMongoIndexingPolicyDiscardable: boolean): void =>
     this.setState({ isMongoIndexingPolicyDiscardable });
 
+  private calculateTotalThroughputUsed = (): void => {
+    this.totalThroughputUsed = 0;
+    (useDatabases.getState().databases || []).forEach(async (database) => {
+      if (database.offer()) {
+        const dbThroughput = database.offer().autoscaleMaxThroughput || database.offer().manualThroughput;
+        this.totalThroughputUsed += dbThroughput;
+      }
+
+      (database.collections() || []).forEach(async (collection) => {
+        if (collection.offer()) {
+          const colThroughput = collection.offer().autoscaleMaxThroughput || collection.offer().manualThroughput;
+          this.totalThroughputUsed += colThroughput;
+        }
+      });
+    });
+
+    const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
+    this.totalThroughputUsed *= numberOfRegions;
+  };
+
   public getAnalyticalStorageTtl = (): number => {
     if (this.isAnalyticalStorageEnabled) {
       if (this.state.analyticalStorageTtlSelection === TtlType.On) {
@@ -669,9 +678,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onMaxAutoPilotThroughputChange = (newThroughput: number): void => {
     let throughputError = "";
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
-    if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.autoscaleMaxThroughput) {
+    const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
+    const throughputDelta = (newThroughput - this.offer.autoscaleMaxThroughput) * numberOfRegions;
+    if (throughputCap && throughputCap - this.totalThroughputUsed < throughputDelta) {
       throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + newThroughput
+        this.totalThroughputUsed + throughputDelta
       } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ autoPilotThroughput: newThroughput, throughputError });
@@ -680,9 +691,11 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
   private onThroughputChange = (newThroughput: number): void => {
     let throughputError = "";
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
+    const throughputDelta = (newThroughput - this.offer.manualThroughput) * numberOfRegions;
     if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.manualThroughput) {
       throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-        this.totalThroughputUsed + newThroughput
+        this.totalThroughputUsed + throughputDelta
       } RU/s. Change total throughput limit in cost management.`;
     }
     this.setState({ throughput: newThroughput, throughputError });

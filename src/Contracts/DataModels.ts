@@ -27,6 +27,7 @@ export interface DatabaseAccountExtendedProperties {
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
   capacity?: { totalThroughputLimit: number };
+  locations?: DatabaseAccountResponseLocation[];
 }
 
 export interface DatabaseAccountResponseLocation {

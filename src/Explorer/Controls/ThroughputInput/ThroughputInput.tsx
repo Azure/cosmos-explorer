@@ -40,6 +40,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
   setThroughputValue(throughput);
 
   const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+  const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
 
   useEffect(() => {
     // throughput cap check for the initial state
@@ -57,12 +58,13 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
         }
       });
     });
+    totalThroughput *= numberOfRegions;
     setTotalThroughputUsed(totalThroughput);
 
     if (throughputCap && throughputCap - totalThroughput < throughput) {
       setThroughputError(
         `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-          totalThroughputUsed + throughput
+          totalThroughput + throughput * numberOfRegions
         } RU/s. Change total throughput limit in cost management.`
       );
 
@@ -74,7 +76,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     if (throughputCap && throughputCap - totalThroughputUsed < newThroughput) {
       setThroughputError(
         `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
-          totalThroughputUsed + newThroughput
+          totalThroughputUsed + newThroughput * numberOfRegions
         } RU/s. Change total throughput limit in cost management.`
       );
       setIsThroughputCapExceeded(true);
