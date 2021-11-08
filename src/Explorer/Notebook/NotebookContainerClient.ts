@@ -89,7 +89,7 @@ export class NotebookContainerClient {
     const { notebookServerEndpoint, authToken } = this.getNotebookServerConfig();
     try {
       const runMemoryAsync = async () => {
-        return this._getMemoryAsync(notebookServerEndpoint, authToken);
+        return await this._getMemoryAsync(notebookServerEndpoint, authToken);
       };
 
       return (async () => {
