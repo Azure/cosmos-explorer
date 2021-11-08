@@ -91,10 +91,7 @@ export class NotebookContainerClient {
       const runMemoryAsync = async () => {
         return await this._getMemoryAsync(notebookServerEndpoint, authToken);
       };
-
-      return (async () => {
-        return await promiseRetry(runMemoryAsync, this.retryOptions);
-      })();
+      return await promiseRetry(runMemoryAsync, this.retryOptions);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/getMemoryUsage");
       if (!this.clearReconnectionAttemptMessage) {

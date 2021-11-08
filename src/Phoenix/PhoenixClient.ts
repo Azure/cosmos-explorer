@@ -90,9 +90,7 @@ export class PhoenixClient {
         }
         throw new Error(response.statusText);
       };
-      return (async () => {
-        return await promiseRetry(runContainerStatusAsync, this.retryOptions);
-      })();
+      return await promiseRetry(runContainerStatusAsync, this.retryOptions);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
