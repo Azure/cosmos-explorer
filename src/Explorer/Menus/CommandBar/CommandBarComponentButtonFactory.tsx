@@ -310,8 +310,12 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
-    onCommandClick: () =>
-      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
+    onCommandClick: async () => {
+      if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+        await useDatabases.getState().loadAllOffers();
+      }
+      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />);
+    },
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,

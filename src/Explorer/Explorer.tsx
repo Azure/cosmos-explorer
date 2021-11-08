@@ -394,7 +394,7 @@ export default class Explorer {
       useNotebook.getState().setConnectionInfo(connectionStatus);
       try {
         useNotebook.getState().setIsAllocating(true);
-        const connectionInfo = await this.phoenixClient.containerConnectionInfo(provisionData);
+        const connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         await this.setNotebookInfo(connectionInfo, connectionStatus);
       } catch (error) {
         connectionStatus.status = ConnectionStatusType.Failed;
@@ -1177,7 +1177,9 @@ export default class Explorer {
           <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
         );
     } else {
-      await useDatabases.getState().loadDatabaseOffers();
+      userContext.databaseAccount?.properties.capacity?.totalThroughputLimit
+        ? await useDatabases.getState().loadAllOffers()
+        : await useDatabases.getState().loadDatabaseOffers();
       useSidePanel
         .getState()
         .openSidePanel("New " + getCollectionName(), <AddCollectionPanel explorer={this} databaseId={databaseId} />);

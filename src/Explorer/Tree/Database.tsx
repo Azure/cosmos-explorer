@@ -57,7 +57,7 @@ export default class Database implements ViewModels.Database {
     this.isOfferRead = false;
   }
 
-  public onSettingsClick = (): void => {
+  public onSettingsClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -65,6 +65,10 @@ export default class Database implements ViewModels.Database {
 
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
+
+    if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+      await useDatabases.getState().loadAllOffers();
+    }
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
     const tabKind = ViewModels.CollectionTabKind.DatabaseSettingsV2;
