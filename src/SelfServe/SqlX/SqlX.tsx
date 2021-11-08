@@ -21,7 +21,7 @@ import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
-  getPriceMap,
+  getPriceMapAndCurrencyCode,
   getRegions,
   refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource,
@@ -207,6 +207,7 @@ const ApproximateCostDropDownInfo: Info = {
 };
 
 let priceMap: Map<string, Map<string, number>>;
+let currencyCode: string;
 let regions: Array<string>;
 
 const calculateCost = (skuName: string, instanceCount: number): Description => {
@@ -237,7 +238,7 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
 
     selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
     return {
-      textTKey: `${costPerHour} USD`,
+      textTKey: `${costPerHour} ${currencyCode}`,
       type: DescriptionType.Text,
     };
   } catch (err) {
@@ -346,7 +347,9 @@ export default class SqlX extends SelfServeBaseClass {
     });
 
     regions = await getRegions();
-    priceMap = await getPriceMap(regions);
+    const priceMapAndCurrencyCode = await getPriceMapAndCurrencyCode(regions);
+    priceMap = priceMapAndCurrencyCode.priceMap;
+    currencyCode = priceMapAndCurrencyCode.currencyCode;
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {

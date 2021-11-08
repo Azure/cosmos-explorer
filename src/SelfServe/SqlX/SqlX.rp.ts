@@ -6,6 +6,7 @@ import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
 import {
   FetchPricesResponse,
+  PriceMapAndCurrencyCode,
   RegionsResponse,
   SqlxServiceResource,
   UpdateDedicatedGatewayRequestParameters,
@@ -178,18 +179,18 @@ const getFetchPricesPathForRegion = (subscriptionId: string): string => {
   return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
 };
 
-export const getPriceMap = async (regions: Array<string>): Promise<Map<string, Map<string, number>>> => {
+export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promise<PriceMapAndCurrencyCode> => {
   const telemetryData = {
     feature: "Calculate approximate cost",
-    function: "getPriceMap",
+    function: "getPriceMapAndCurrencyCode",
     description: "fetch prices API call",
     selfServeClassName: SqlX.name,
   };
-  const getPriceMapTimestamp = selfServeTraceStart(telemetryData);
+  const getPriceMapAndCurrencyCodeTimestamp = selfServeTraceStart(telemetryData);
 
   try {
     const priceMap = new Map<string, Map<string, number>>();
-
+    let currencyCode;
     for (const region of regions) {
       const regionPriceMap = new Map<string, number>();
 
@@ -207,17 +208,21 @@ export const getPriceMap = async (regions: Array<string>): Promise<Map<string, M
       });
 
       for (const item of response.result.Items) {
+        if (currencyCode === undefined) {
+          currencyCode = item.currencyCode;
+        } else if (item.currencyCode !== currencyCode) {
+          throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
+        }
         regionPriceMap.set(item.skuName, item.retailPrice);
       }
       priceMap.set(region, regionPriceMap);
     }
 
-    selfServeTraceSuccess(telemetryData, getPriceMapTimestamp);
-    return priceMap;
+    selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);
+    return { priceMap: priceMap, currencyCode: currencyCode };
   } catch (err) {
     const failureTelemetry = { err, selfServeClassName: SqlX.name };
-    selfServeTraceFailure(failureTelemetry, getPriceMapTimestamp);
-
-    return undefined;
+    selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
+    return { priceMap: undefined, currencyCode: undefined };
   }
 };
