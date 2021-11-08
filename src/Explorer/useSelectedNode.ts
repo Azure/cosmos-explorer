@@ -63,7 +63,6 @@ export const useSelectedNode: UseStore<SelectedNodeState> = create((set, get) =>
     );
   },
   isConnectedToContainer: (): boolean => {
-    const connectionInfo = useNotebook.getState().connectionInfo;
-    return connectionInfo?.status === ConnectionStatusType.Connected;
+    return useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Connected;
   },
 }));

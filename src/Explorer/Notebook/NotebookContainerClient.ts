@@ -4,7 +4,7 @@
 import promiseRetry, { AbortError } from "p-retry";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import * as Constants from "../../Common/Constants";
-import { ConnectionStatusType, HttpHeaders, HttpStatusCodes } from "../../Common/Constants";
+import { ConnectionStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../../Common/Constants";
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
@@ -12,7 +12,7 @@ import {
   ContainerConnectionInfo,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
@@ -22,12 +22,18 @@ import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
-  private clearReconnectionAttemptMessage?= () => { };
+  private clearReconnectionAttemptMessage? = () => {};
   private isResettingWorkspace: boolean;
   private phoenixClient: PhoenixClient;
+  private retryOptions: promiseRetry.Options;
 
   constructor(private onConnectionLost: () => void) {
     this.phoenixClient = new PhoenixClient();
+    this.retryOptions = {
+      retries: Notebook.retryAttempts,
+      maxTimeout: Notebook.retryAttemptDelayMs,
+      minTimeout: Notebook.retryAttemptDelayMs,
+    };
     const notebookServerInfo = useNotebook.getState().notebookServerInfo;
     if (notebookServerInfo?.notebookServerEndpoint) {
       this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
@@ -48,24 +54,23 @@ export class NotebookContainerClient {
    * Heartbeat: each ping schedules another ping
    */
   private scheduleHeartbeat(delayMs: number): void {
-    setTimeout(() => {
-      this.getMemoryUsage()
-        .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo))
-        .catch(() => {
-          if (NotebookUtil.isPhoenixEnabled()) {
-            const connectionStatus: ContainerConnectionInfo = {
-              status: ConnectionStatusType.Failed,
-            };
-            useNotebook.getState().resetContainerConnection(connectionStatus);
-            useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-          }
-        })
-        .finally(() => {
-          const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-          if (notebookServerInfo?.notebookServerEndpoint) {
-            this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-          }
-        });
+    setTimeout(async () => {
+      try {
+        const memoryUsageInfo = await this.getMemoryUsage();
+        useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo);
+        const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+        if (notebookServerInfo?.notebookServerEndpoint) {
+          this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
+        }
+      } catch (exception) {
+        if (NotebookUtil.isPhoenixEnabled()) {
+          const connectionStatus: ContainerConnectionInfo = {
+            status: ConnectionStatusType.Failed,
+          };
+          useNotebook.getState().resetContainerConnection(connectionStatus);
+          useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+        }
+      }
     }, delayMs);
   }
 
@@ -88,13 +93,7 @@ export class NotebookContainerClient {
       };
 
       return (async () => {
-        return await promiseRetry(runMemoryAsync, {
-          onFailedAttempt: (err) => {
-            NotebookUtil.sleep(Notebook.retryAttemptDelayMs);
-            console.log(err.attemptNumber);
-          },
-          retries: Notebook.retryAttempts,
-        });
+        return await promiseRetry(runMemoryAsync, this.retryOptions);
       })();
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/getMemoryUsage");
@@ -179,7 +178,6 @@ export class NotebookContainerClient {
     try {
       if (NotebookUtil.isPhoenixEnabled()) {
         const provisionData: IProvisionData = {
-          aadToken: userContext.authorizationToken,
           subscriptionId: userContext.subscriptionId,
           resourceGroup: userContext.resourceGroup,
           dbAccountName: userContext.databaseAccount.name,

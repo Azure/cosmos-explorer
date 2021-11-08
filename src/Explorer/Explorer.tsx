@@ -382,7 +382,6 @@ export default class Explorer {
         (notebookServerInfo && notebookServerInfo.notebookServerEndpoint === undefined))
     ) {
       const provisionData = {
-        aadToken: userContext.authorizationToken,
         subscriptionId: userContext.subscriptionId,
         resourceGroup: userContext.resourceGroup,
         dbAccountName: userContext.databaseAccount.name,

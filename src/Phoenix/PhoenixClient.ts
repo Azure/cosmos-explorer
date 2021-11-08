@@ -1,4 +1,3 @@
-import { NotebookUtil } from "Explorer/Notebook/NotebookUtil";
 import promiseRetry, { AbortError } from "p-retry";
 import { ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
@@ -9,7 +8,7 @@ import {
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
@@ -17,6 +16,11 @@ import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
   private containerHealthHandler: NodeJS.Timeout;
+  private retryOptions: promiseRetry.Options = {
+    retries: Notebook.retryAttempts,
+    maxTimeout: Notebook.retryAttemptDelayMs,
+    minTimeout: Notebook.retryAttemptDelayMs,
+  };
 
   public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     return this.executeContainerAssignmentOperation(provisionData, "allocate");
@@ -87,12 +91,7 @@ export class PhoenixClient {
         throw new Error(response.statusText);
       };
       return (async () => {
-        return await promiseRetry(runContainerStatusAsync, {
-          onFailedAttempt: () => {
-            NotebookUtil.sleep(Notebook.retryAttemptDelayMs);
-          },
-          retries: Notebook.retryAttempts,
-        });
+        return await promiseRetry(runContainerStatusAsync, this.retryOptions);
       })();
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
@@ -111,8 +110,7 @@ export class PhoenixClient {
       if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
         this.scheduleContainerHeartbeat(delayMs, containerData);
       }
-    }
-    catch (exception) {
+    } catch (exception) {
       useNotebook.getState().setContainerStatus({
         durationLeftInMinutes: undefined,
         notebookServerInfo: undefined,

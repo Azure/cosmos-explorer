@@ -341,8 +341,4 @@ export class NotebookUtil {
   public static isPhoenixEnabled(): boolean {
     return userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true;
   }
-
-  public static sleep(seconds: number) {
-    return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-  }
 }
