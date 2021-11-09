@@ -1,3 +1,4 @@
+import promiseRetry, { AbortError } from "p-retry";
 import { ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
@@ -15,6 +16,11 @@ import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
 export class PhoenixClient {
   private containerHealthHandler: NodeJS.Timeout;
+  private retryOptions: promiseRetry.Options = {
+    retries: Notebook.retryAttempts,
+    maxTimeout: Notebook.retryAttemptDelayMs,
+    minTimeout: Notebook.retryAttemptDelayMs,
+  };
 
   public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     return this.executeContainerAssignmentOperation(provisionData, "allocate");
@@ -64,26 +70,27 @@ export class PhoenixClient {
 
   private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
-      const response = await window.fetch(
-        `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
-        {
-          method: "GET",
-          headers: PhoenixClient.getHeaders(),
+      const runContainerStatusAsync = async () => {
+        const response = await window.fetch(
+          `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
+          {
+            method: "GET",
+            headers: PhoenixClient.getHeaders(),
+          }
+        );
+        if (response.status === HttpStatusCodes.OK) {
+          const containerStatus = await response.json();
+          return {
+            durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
+            notebookServerInfo: containerStatus?.notebookServerInfo,
+            status: ContainerStatusType.Active,
+          };
+        } else if (response.status === HttpStatusCodes.NotFound) {
+          throw new AbortError(response.statusText);
         }
-      );
-      if (response.status === HttpStatusCodes.OK) {
-        const containerStatus = await response.json();
-        return {
-          durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
-          notebookServerInfo: containerStatus?.notebookServerInfo,
-          status: ContainerStatusType.Active,
-        };
-      }
-      return {
-        durationLeftInMinutes: undefined,
-        notebookServerInfo: undefined,
-        status: ContainerStatusType.Disconnected,
+        throw new Error(response.statusText);
       };
+      return await promiseRetry(runContainerStatusAsync, this.retryOptions);
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       return {
@@ -95,10 +102,18 @@ export class PhoenixClient {
   }
 
   private async getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
-    const containerInfo = await this.getContainerStatusAsync(containerData);
-    useNotebook.getState().setContainerStatus(containerInfo);
-    if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
-      this.scheduleContainerHeartbeat(delayMs, containerData);
+    try {
+      const containerInfo = await this.getContainerStatusAsync(containerData);
+      useNotebook.getState().setContainerStatus(containerInfo);
+      if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
+        this.scheduleContainerHeartbeat(delayMs, containerData);
+      }
+    } catch (exception) {
+      useNotebook.getState().setContainerStatus({
+        durationLeftInMinutes: undefined,
+        notebookServerInfo: undefined,
+        status: ContainerStatusType.Disconnected,
+      });
     }
   }
 

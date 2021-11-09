@@ -438,7 +438,6 @@ export interface ContainerInfo {
 }
 
 export interface IProvisionData {
-  aadToken: string;
   subscriptionId: string;
   resourceGroup: string;
   dbAccountName: string;

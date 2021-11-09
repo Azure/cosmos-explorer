@@ -369,6 +369,8 @@ export class Notebook {
   public static readonly memoryGuageToGB = 1048576;
   public static readonly lowMemoryThreshold = 0.8;
   public static readonly remainingTimeForAlert = 10;
+  public static readonly retryAttempts = 3;
+  public static readonly retryAttemptDelayMs = 5000;
   public static readonly temporarilyDownMsg = "Notebooks is currently not available. We are working on it.";
   public static readonly mongoShellTemporarilyDownMsg =
     "We have identified an issue with the Mongo Shell and it is unavailable right now. We are actively working on the mitigation.";
