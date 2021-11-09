@@ -58,6 +58,7 @@ let configContext: Readonly<ConfigContext> = {
   allowedJunoOrigins: [
     "https://juno-test.documents-dev.windows-int.net",
     "https://juno-test2.documents-dev.windows-int.net",
+    "https://juno-test3.documents-dev.windows-int.net",
     "https://tools.cosmos.azure.com",
     "https://tools-staging.cosmos.azure.com",
     "https://localhost",
@@ -145,3 +146,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
