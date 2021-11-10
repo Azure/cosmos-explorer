@@ -1,7 +1,6 @@
 import { ImmutableCodeCell, ImmutableNotebook } from "@nteract/commutable";
 import { AppState, selectors } from "@nteract/core";
 import domtoimage from "dom-to-image";
-import { useNotebook } from "Explorer/Notebook/useNotebook";
 import Html2Canvas from "html2canvas";
 import path from "path";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
@@ -328,13 +327,5 @@ export class NotebookUtil {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
-
-  public static getNotebookBtnTitle(fileName: string): string {
-    if (useNotebook.getState().isPhoenix) {
-      return `Download to ${fileName}`;
-    } else {
-      return `Download to my notebooks`;
-    }
   }
 }
