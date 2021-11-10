@@ -165,7 +165,7 @@ export class PhoenixClient {
   }
 
   public getPhoenixContainerPoolingEndPoint(): string {
-    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer`;
+    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts`;
   }
 
   private static getHeaders(): HeadersInit {
