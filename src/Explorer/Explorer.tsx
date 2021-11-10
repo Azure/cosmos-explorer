@@ -1204,10 +1204,9 @@ export default class Explorer {
   }
 
   public async handleOpenFileAction(path: string): Promise<void> {
-    if (
-      userContext.features.phoenix === false &&
-      !(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))
-    ) {
+    if (userContext.features.phoenix) {
+      await this.allocateContainer();
+    } else if (!(await this._containsDefaultNotebookWorkspace(userContext.databaseAccount))) {
       this._openSetupNotebooksPaneForQuickstart();
     }
 
