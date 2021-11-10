@@ -10,7 +10,6 @@ import CosmosTerminalIcon from "../../../../images/Cosmos-Terminal.svg";
 import FeedbackIcon from "../../../../images/Feedback-Command.svg";
 import GitHubIcon from "../../../../images/github.svg";
 import HostedTerminalIcon from "../../../../images/Hosted-Terminal.svg";
-import EnableNotebooksIcon from "../../../../images/notebook/Notebook-enable.svg";
 import NewNotebookIcon from "../../../../images/notebook/Notebook-new.svg";
 import ResetWorkspaceIcon from "../../../../images/notebook/Notebook-reset-workspace.svg";
 import OpenInTabIcon from "../../../../images/open-in-tab.svg";
@@ -98,7 +97,7 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (userContext.features.notebooksTemporarilyDown) {
+      if (useNotebook.getState().isPhoenix === false && userContext.features.notebooksDownBanner) {
         if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
         } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
@@ -109,11 +108,6 @@ export function createStaticCommandBarButtons(
       }
       buttons.push(btn);
     });
-  } else {
-    if (!isRunningOnNationalCloud() && !userContext.features.notebooksTemporarilyDown) {
-      buttons.push(createDivider());
-      buttons.push(createEnableNotebooksButton(container));
-    }
   }
 
   if (!selectedNodeState.isDatabaseNodeOrNoneSelected()) {
@@ -168,7 +162,7 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          if (!userContext.features.notebooksTemporarilyDown) {
+          if (useNotebook.getState().isPhoenix) {
             container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
           }
         } else {
@@ -179,12 +173,12 @@ export function createContextCommandBarButtons(
       ariaLabel: label,
       hasPopup: true,
       tooltipText:
-        useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown
+        useNotebook.getState().isShellEnabled && useNotebook.getState().isPhoenix === false
           ? Constants.Notebook.mongoShellTemporarilyDownMsg
           : undefined,
       disabled:
         (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
-        (useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown),
+        (useNotebook.getState().isShellEnabled && useNotebook.getState().isPhoenix === false),
     };
     buttons.push(newMongoShellBtn);
   }
@@ -473,33 +467,6 @@ function createOpenQueryFromDiskButton(): CommandButtonComponentProps {
     ariaLabel: label,
     hasPopup: true,
     disabled: false,
-  };
-}
-
-function createEnableNotebooksButton(container: Explorer): CommandButtonComponentProps {
-  if (configContext.platform === Platform.Emulator) {
-    return undefined;
-  }
-  const label = "Enable Notebooks (Preview)";
-  const tooltip =
-    "Notebooks are not yet available in your account's region. View supported regions here: https://aka.ms/cosmos-enable-notebooks.";
-  const description =
-    "Looks like you have not yet created a notebooks workspace for this account. To proceed and start using notebooks, we'll need to create a default notebooks workspace in this account.";
-  return {
-    iconSrc: EnableNotebooksIcon,
-    iconAlt: label,
-    onCommandClick: () =>
-      useSidePanel
-        .getState()
-        .openSidePanel(
-          label,
-          <SetupNoteBooksPanel explorer={container} panelTitle={label} panelDescription={description} />
-        ),
-    commandButtonLabel: label,
-    hasPopup: false,
-    disabled: !useNotebook.getState().isNotebooksEnabledForAccount,
-    ariaLabel: label,
-    tooltipText: useNotebook.getState().isNotebooksEnabledForAccount ? "" : tooltip,
   };
 }
 

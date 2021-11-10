@@ -194,29 +194,26 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsPhoenix(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
 
-      //TODO: modify once notebooks are available
-      expect(openMongoShellBtn.disabled).toBe(true);
-      //expect(openMongoShellBtn.disabled).toBe(false);
-      //expect(openMongoShellBtn.tooltipText).toBe("");
+      expect(openMongoShellBtn.disabled).toBe(false);
+      expect(openMongoShellBtn.tooltipText).toBe("");
     });
 
     it("Notebooks is enabled and is available - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsPhoenix(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openMongoShellBtn = buttons.find((button) => button.commandButtonLabel === openMongoShellBtnLabel);
       expect(openMongoShellBtn).toBeDefined();
-
-      //TODO: modify once notebooks are available
-      expect(openMongoShellBtn.disabled).toBe(true);
-      //expect(openMongoShellBtn.disabled).toBe(false);
-      //expect(openMongoShellBtn.tooltipText).toBe("");
+      expect(openMongoShellBtn.disabled).toBe(false);
+      expect(openMongoShellBtn.tooltipText).toBe("");
     });
 
     it("Notebooks is enabled and is available, terminal is unavailable due to ipRules - button should be hidden", () => {
@@ -299,30 +296,27 @@ describe("CommandBarComponentButtonFactory tests", () => {
 
     it("Notebooks is enabled and is unavailable - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsPhoenix(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
 
       expect(openCassandraShellBtn).toBeDefined();
 
-      //TODO: modify once notebooks are available
-      expect(openCassandraShellBtn.disabled).toBe(true);
-      //expect(openCassandraShellBtn.disabled).toBe(false);
-      //expect(openCassandraShellBtn.tooltipText).toBe("");
+      expect(openCassandraShellBtn.disabled).toBe(false);
+      expect(openCassandraShellBtn.tooltipText).toBe("");
     });
 
     it("Notebooks is enabled and is available - button should be shown and enabled", () => {
       useNotebook.getState().setIsNotebookEnabled(true);
+      useNotebook.getState().setIsPhoenix(true);
       useNotebook.getState().setIsNotebooksEnabledForAccount(true);
 
       const buttons = CommandBarComponentButtonFactory.createStaticCommandBarButtons(mockExplorer, selectedNodeState);
       const openCassandraShellBtn = buttons.find((button) => button.commandButtonLabel === openCassandraShellBtnLabel);
       expect(openCassandraShellBtn).toBeDefined();
-
-      //TODO: modify once notebooks are available
-      expect(openCassandraShellBtn.disabled).toBe(true);
-      //expect(openCassandraShellBtn.disabled).toBe(false);
-      //expect(openCassandraShellBtn.tooltipText).toBe("");
+      expect(openCassandraShellBtn.disabled).toBe(false);
+      expect(openCassandraShellBtn.tooltipText).toBe("");
     });
   });
 

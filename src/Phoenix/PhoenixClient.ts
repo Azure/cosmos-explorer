@@ -5,6 +5,7 @@ import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
 import {
   ContainerInfo,
+  IAccountData,
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
@@ -22,24 +23,36 @@ export class PhoenixClient {
     minTimeout: Notebook.retryAttemptDelayMs,
   };
 
-  public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
-    return this.executeContainerAssignmentOperation(provisionData, "allocate");
+  public async allocateContainer(
+    provisionData: IProvisionData,
+    accountData: IAccountData
+  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    return this.executeContainerAssignmentOperation(provisionData, accountData, "allocate");
   }
 
-  public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
-    return this.executeContainerAssignmentOperation(provisionData, "reset");
+  public async resetContainer(
+    provisionData: IProvisionData,
+    accountData: IAccountData
+  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    return this.executeContainerAssignmentOperation(provisionData, accountData, "reset");
   }
 
   private async executeContainerAssignmentOperation(
     provisionData: IProvisionData,
+    accountData: IAccountData,
     operation: string
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
-      const response = await fetch(`${this.getPhoenixContainerPoolingEndPoint()}/${operation}`, {
-        method: "POST",
-        headers: PhoenixClient.getHeaders(),
-        body: JSON.stringify(provisionData),
-      });
+      const response = await fetch(
+        `${this.getPhoenixContainerPoolingEndPoint()}/subscriptions/${accountData.subscriptionId}/resourceGroups/${
+          accountData.resourceGroup
+        }/providers/Microsoft.DocumentDB/databaseAccounts/${accountData.dbAccountName}/containerconnections`,
+        {
+          method: operation === "allocate" ? "POST" : "PATCH",
+          headers: PhoenixClient.getHeaders(),
+          body: JSON.stringify(provisionData),
+        }
+      );
 
       let data: IPhoenixConnectionInfoResult;
       if (response.status === HttpStatusCodes.OK) {
@@ -55,7 +68,7 @@ export class PhoenixClient {
     }
   }
 
-  public async initiateContainerHeartBeat(containerData: { forwardingId: string; dbAccountName: string }) {
+  public async initiateContainerHeartBeat(containerData: IContainerData) {
     if (this.containerHealthHandler) {
       clearTimeout(this.containerHealthHandler);
     }
@@ -72,7 +85,11 @@ export class PhoenixClient {
     try {
       const runContainerStatusAsync = async () => {
         const response = await window.fetch(
-          `${this.getPhoenixContainerPoolingEndPoint()}/${containerData.dbAccountName}/${containerData.forwardingId}`,
+          `${this.getPhoenixContainerPoolingEndPoint()}/subscriptions/${containerData.subscriptionId}/resourceGroups/${
+            containerData.resourceGroup
+          }/providers/Microsoft.DocumentDB/databaseAccounts/${containerData.dbAccountName}/${
+            containerData.forwardingId
+          }`,
           {
             method: "GET",
             headers: PhoenixClient.getHeaders(),
@@ -101,7 +118,7 @@ export class PhoenixClient {
     }
   }
 
-  private async getContainerHealth(delayMs: number, containerData: { forwardingId: string; dbAccountName: string }) {
+  private async getContainerHealth(delayMs: number, containerData: IContainerData) {
     try {
       const containerInfo = await this.getContainerStatusAsync(containerData);
       useNotebook.getState().setContainerStatus(containerInfo);
@@ -114,6 +131,24 @@ export class PhoenixClient {
         notebookServerInfo: undefined,
         status: ContainerStatusType.Disconnected,
       });
+    }
+  }
+
+  public async IsDbAcountWhitelisted(accountData: IAccountData) {
+    try {
+      const response = await window.fetch(
+        `${this.getPhoenixContainerPoolingEndPoint()}/subscriptions/${accountData.subscriptionId}/resourceGroups/${
+          accountData.resourceGroup
+        }/providers/Microsoft.DocumentDB/databaseAccounts/${accountData.dbAccountName}`,
+        {
+          method: "GET",
+          headers: PhoenixClient.getHeaders(),
+        }
+      );
+      return response.status === HttpStatusCodes.OK;
+    } catch (error) {
+      Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
+      return false;
     }
   }
 

@@ -1,5 +1,5 @@
 import { Resource, StoredProcedureDefinition, TriggerDefinition, UserDefinedFunctionDefinition } from "@azure/cosmos";
-import { NotebookUtil } from "Explorer/Notebook/NotebookUtil";
+import { useNotebook } from "Explorer/Notebook/useNotebook";
 import * as ko from "knockout";
 import * as _ from "underscore";
 import * as Constants from "../../Common/Constants";
@@ -529,7 +529,7 @@ export default class Collection implements ViewModels.Collection {
   };
 
   public onSchemaAnalyzerClick = async () => {
-    if (NotebookUtil.isPhoenixEnabled()) {
+    if (useNotebook.getState().isPhoenix) {
       await this.container.allocateContainer();
     }
     useSelectedNode.getState().setSelectedNode(this);

@@ -11,7 +11,6 @@ export type Features = {
   autoscaleDefault: boolean;
   partitionKeyDefault: boolean;
   partitionKeyDefault2: boolean;
-  phoenix: boolean;
   notebooksDownBanner: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
@@ -33,7 +32,6 @@ export type Features = {
   readonly ttl90Days: boolean;
   readonly mongoProxyEndpoint?: string;
   readonly mongoProxyAPIs?: string;
-  readonly notebooksTemporarilyDown: boolean;
   readonly enableThroughputCap: boolean;
 };
 
@@ -84,8 +82,6 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     autoscaleDefault: "true" === get("autoscaledefault"),
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
-    notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
-    phoenix: "true" === get("phoenix"),
     notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
   };
