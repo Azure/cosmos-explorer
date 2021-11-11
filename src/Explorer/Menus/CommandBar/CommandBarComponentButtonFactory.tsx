@@ -311,7 +311,8 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
     onCommandClick: async () => {
-      if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+      const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+      if (throughputCap && throughputCap !== -1) {
         await useDatabases.getState().loadAllOffers();
       }
       useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />);

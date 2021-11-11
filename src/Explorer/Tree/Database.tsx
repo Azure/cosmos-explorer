@@ -66,7 +66,8 @@ export default class Database implements ViewModels.Database {
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
 
-    if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    if (throughputCap && throughputCap !== -1) {
       await useDatabases.getState().loadAllOffers();
     }
 

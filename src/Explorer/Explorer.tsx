@@ -1176,7 +1176,8 @@ export default class Explorer {
           <CassandraAddCollectionPane explorer={this} cassandraApiClient={new CassandraAPIDataClient()} />
         );
     } else {
-      userContext.databaseAccount?.properties.capacity?.totalThroughputLimit
+      const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+      throughputCap && throughputCap !== -1
         ? await useDatabases.getState().loadAllOffers()
         : await useDatabases.getState().loadDatabaseOffers();
       useSidePanel

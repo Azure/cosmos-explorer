@@ -308,7 +308,8 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
         title: "New " + getDatabaseName(),
         description: undefined,
         onClick: async () => {
-          if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+          const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+          if (throughputCap && throughputCap !== -1) {
             await useDatabases.getState().loadAllOffers();
           }
           useSidePanel

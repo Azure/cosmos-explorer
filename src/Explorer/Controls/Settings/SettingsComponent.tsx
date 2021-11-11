@@ -213,7 +213,8 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
       },
     };
 
-    if (userContext.databaseAccount?.properties.capacity?.totalThroughputLimit) {
+    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    if (throughputCap && throughputCap !== -1) {
       this.calculateTotalThroughputUsed();
     }
   }
@@ -680,7 +681,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.autoscaleMaxThroughput) * numberOfRegions;
-    if (throughputCap && throughputCap - this.totalThroughputUsed < throughputDelta) {
+    if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
       throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
         this.totalThroughputUsed + throughputDelta
       } RU/s. Change total throughput limit in cost management.`;
@@ -693,7 +694,7 @@ export class SettingsComponent extends React.Component<SettingsComponentProps, S
     const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
     const numberOfRegions = userContext.databaseAccount?.properties.locations?.length || 1;
     const throughputDelta = (newThroughput - this.offer.manualThroughput) * numberOfRegions;
-    if (throughputCap && throughputCap - this.totalThroughputUsed < newThroughput - this.offer.manualThroughput) {
+    if (throughputCap && throughputCap !== -1 && throughputCap - this.totalThroughputUsed < throughputDelta) {
       throughputError = `Your account is currently configured with a total throughput limit of ${throughputCap} RU/s. This update isn't possible because it would increase the total throughput to ${
         this.totalThroughputUsed + throughputDelta
       } RU/s. Change total throughput limit in cost management.`;
