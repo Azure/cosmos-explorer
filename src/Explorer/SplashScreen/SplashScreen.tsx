@@ -84,7 +84,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
     let recentItems = this.createRecentItems();
-    if (userContext.features.notebooksTemporarilyDown) {
+    if (useNotebook.getState().isPhoenix) {
       recentItems = recentItems.filter((item) => item.description !== "Notebook");
     }
 
@@ -223,7 +223,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (useNotebook.getState().isNotebookEnabled && !userContext.features.notebooksTemporarilyDown) {
+    if (useNotebook.getState().isNotebookEnabled && useNotebook.getState().isPhoenix) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",

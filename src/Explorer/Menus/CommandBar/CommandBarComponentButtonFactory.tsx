@@ -98,7 +98,7 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (userContext.features.notebooksTemporarilyDown) {
+      if (!useNotebook.getState().isPhoenix) {
         if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
         } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
@@ -110,7 +110,7 @@ export function createStaticCommandBarButtons(
       buttons.push(btn);
     });
   } else {
-    if (!isRunningOnNationalCloud() && !userContext.features.notebooksTemporarilyDown) {
+    if (!isRunningOnNationalCloud() && useNotebook.getState().isPhoenix) {
       buttons.push(createDivider());
       buttons.push(createEnableNotebooksButton(container));
     }
@@ -168,7 +168,7 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          if (!userContext.features.notebooksTemporarilyDown) {
+          if (useNotebook.getState().isPhoenix) {
             container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
           }
         } else {
@@ -179,12 +179,12 @@ export function createContextCommandBarButtons(
       ariaLabel: label,
       hasPopup: true,
       tooltipText:
-        useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown
+        useNotebook.getState().isShellEnabled && !useNotebook.getState().isPhoenix
           ? Constants.Notebook.mongoShellTemporarilyDownMsg
           : undefined,
       disabled:
         (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
-        (useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown),
+        (useNotebook.getState().isShellEnabled && !useNotebook.getState().isPhoenix),
     };
     buttons.push(newMongoShellBtn);
   }

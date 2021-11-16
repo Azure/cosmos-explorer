@@ -1,4 +1,5 @@
 import { cloneDeep } from "lodash";
+import { PhoenixClient } from "Phoenix/PhoenixClient";
 import create, { UseStore } from "zustand";
 import { AuthType } from "../../AuthType";
 import * as Constants from "../../Common/Constants";
@@ -7,7 +8,7 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { ContainerConnectionInfo, ContainerInfo } from "../../Contracts/DataModels";
+import { ContainerConnectionInfo, ContainerInfo, IAccountData } from "../../Contracts/DataModels";
 import { useTabs } from "../../hooks/useTabs";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -17,7 +18,6 @@ import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import { NotebookContentItem, NotebookContentItemType } from "./NotebookContentItem";
 import NotebookManager from "./NotebookManager";
-import { NotebookUtil } from "./NotebookUtil";
 
 interface NotebookState {
   isNotebookEnabled: boolean;
@@ -37,6 +37,7 @@ interface NotebookState {
   isAllocating: boolean;
   isRefreshed: boolean;
   containerStatus: ContainerInfo;
+  isPhoenix: boolean;
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => void;
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => void;
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) => void;
@@ -58,6 +59,8 @@ interface NotebookState {
   resetContainerConnection: (connectionStatus: ContainerConnectionInfo) => void;
   setIsRefreshed: (isAllocating: boolean) => void;
   setContainerStatus: (containerStatus: ContainerInfo) => void;
+  getPhoenixStatus: () => Promise<void>;
+  setIsPhoenix: (isPhoenix: boolean) => void;
 }
 
 export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
@@ -92,6 +95,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     durationLeftInMinutes: undefined,
     notebookServerInfo: undefined,
   },
+  isPhoenix: undefined,
   setIsNotebookEnabled: (isNotebookEnabled: boolean) => set({ isNotebookEnabled }),
   setIsNotebooksEnabledForAccount: (isNotebooksEnabledForAccount: boolean) => set({ isNotebooksEnabledForAccount }),
   setNotebookServerInfo: (notebookServerInfo: DataModels.NotebookWorkspaceConnectionInfo) =>
@@ -104,6 +108,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setNotebookBasePath: (notebookBasePath: string) => set({ notebookBasePath }),
   setNotebookFolderName: (notebookFolderName: string) => set({ notebookFolderName }),
   refreshNotebooksEnabledStateForAccount: async (): Promise<void> => {
+    await get().getPhoenixStatus();
     const { databaseAccount, authType } = userContext;
     if (
       authType === AuthType.EncryptedToken ||
@@ -196,7 +201,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    const notebookFolderName = NotebookUtil.isPhoenixEnabled() === true ? "Temporary Notebooks" : "My Notebooks";
+    const notebookFolderName = get().isPhoenix === true ? "Temporary Notebooks" : "My Notebooks";
     set({ notebookFolderName });
     const myNotebooksContentRoot = {
       name: get().notebookFolderName,
@@ -292,4 +297,18 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   },
   setIsRefreshed: (isRefreshed: boolean) => set({ isRefreshed }),
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
+  getPhoenixStatus: async () => {
+    if (get().isPhoenix === undefined) {
+      const phoenixClient = new PhoenixClient();
+      const accountData: IAccountData = {
+        subscriptionId: userContext.subscriptionId,
+        resourceGroup: userContext.resourceGroup,
+        dbAccountName: userContext.databaseAccount.name,
+      };
+      const isPhoenix =
+        userContext.features.phoenix === true && (await phoenixClient.IsDbAcountWhitelisted(accountData));
+      set({ isPhoenix });
+    }
+  },
+  setIsPhoenix: (isPhoenix: boolean) => set({ isPhoenix }),
 }));

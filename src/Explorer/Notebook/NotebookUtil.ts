@@ -3,7 +3,6 @@ import { AppState, selectors } from "@nteract/core";
 import domtoimage from "dom-to-image";
 import Html2Canvas from "html2canvas";
 import path from "path";
-import { userContext } from "../../UserContext";
 import * as GitHubUtils from "../../Utils/GitHubUtils";
 import * as StringUtils from "../../Utils/StringUtils";
 import { SnapshotFragment } from "./NotebookComponent/types";
@@ -328,17 +327,5 @@ export class NotebookUtil {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  }
-
-  public static getNotebookBtnTitle(fileName: string): string {
-    if (this.isPhoenixEnabled()) {
-      return `Download to ${fileName}`;
-    } else {
-      return `Download to my notebooks`;
-    }
-  }
-
-  public static isPhoenixEnabled(): boolean {
-    return userContext.features.notebooksTemporarilyDown === false && userContext.features.phoenix === true;
   }
 }

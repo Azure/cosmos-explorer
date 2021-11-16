@@ -10,6 +10,7 @@ import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
 import {
   ContainerConnectionInfo,
+  IAccountData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
   IResponse,
@@ -18,7 +19,6 @@ import { userContext } from "../../UserContext";
 import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
@@ -63,7 +63,7 @@ export class NotebookContainerClient {
           this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
         }
       } catch (exception) {
-        if (NotebookUtil.isPhoenixEnabled()) {
+        if (useNotebook.getState().isPhoenix) {
           const connectionStatus: ContainerConnectionInfo = {
             status: ConnectionStatusType.Failed,
           };
@@ -131,20 +131,28 @@ export class NotebookContainerClient {
       } else if (response.status === HttpStatusCodes.NotFound) {
         throw new AbortError(response.statusText);
       }
-      throw new Error();
+      throw new Error(response.statusText);
     } else {
       return undefined;
     }
   }
 
   private checkStatus(): boolean {
-    if (NotebookUtil.isPhoenixEnabled()) {
-      if (useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Disconnected) {
+    if (useNotebook.getState().isPhoenix) {
+      if (
+        useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Disconnected &&
+        useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Connect
+      ) {
         const connectionStatus: ContainerConnectionInfo = {
           status: ConnectionStatusType.Reconnect,
         };
         useNotebook.getState().resetContainerConnection(connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+        return false;
+      } else if (
+        useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Disconnected ||
+        useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Reconnect
+      ) {
         return false;
       }
     }
@@ -173,19 +181,21 @@ export class NotebookContainerClient {
     }
 
     try {
-      if (NotebookUtil.isPhoenixEnabled()) {
+      if (useNotebook.getState().isPhoenix) {
         const provisionData: IProvisionData = {
+          cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
+        };
+        const accountData: IAccountData = {
           subscriptionId: userContext.subscriptionId,
           resourceGroup: userContext.resourceGroup,
           dbAccountName: userContext.databaseAccount.name,
-          cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
         };
-        return await this.phoenixClient.resetContainer(provisionData);
+        return await this.phoenixClient.resetContainer(provisionData, accountData);
       }
       return null;
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/resetWorkspace");
-      if (!NotebookUtil.isPhoenixEnabled()) {
+      if (!useNotebook.getState().isPhoenix) {
         await this.recreateNotebookWorkspaceAsync();
       }
       throw error;
