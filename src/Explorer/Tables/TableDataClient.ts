@@ -535,7 +535,8 @@ export class CassandraAPIDataClient extends TableDataClient {
       dataType === TableConstants.CassandraType.Text ||
       dataType === TableConstants.CassandraType.Inet ||
       dataType === TableConstants.CassandraType.Ascii ||
-      dataType === TableConstants.CassandraType.Varchar
+      dataType === TableConstants.CassandraType.Varchar ||
+      dataType === TableConstants.CassandraType.Timestamp
     );
   }
 
