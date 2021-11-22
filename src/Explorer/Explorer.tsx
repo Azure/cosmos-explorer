@@ -7,7 +7,7 @@ import shallow from "zustand/shallow";
 import { AuthType } from "../AuthType";
 import { BindingHandlersRegisterer } from "../Bindings/BindingHandlersRegisterer";
 import * as Constants from "../Common/Constants";
-import { ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
+import { Areas, ConnectionStatusType, HttpStatusCodes, Notebook } from "../Common/Constants";
 import { readCollection } from "../Common/dataAccess/readCollection";
 import { readDatabases } from "../Common/dataAccess/readDatabases";
 import { getErrorMessage, getErrorStack, handleError } from "../Common/ErrorHandlingUtils";
@@ -393,9 +393,29 @@ export default class Explorer {
       useNotebook.getState().setConnectionInfo(connectionStatus);
       try {
         useNotebook.getState().setIsAllocating(true);
+        TelemetryProcessor.trace(Action.PhoenixConnection, ActionModifiers.Start, {
+          dataExplorerArea: Areas.Notebook,
+        });
         const connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        await this.setNotebookInfo(connectionInfo, connectionStatus);
+        if (connectionInfo.status === HttpStatusCodes.OK && connectionInfo?.data?.notebookServerUrl) {
+          TelemetryProcessor.trace(Action.PhoenixConnection, ActionModifiers.Success, {
+            dataExplorerArea: Areas.Notebook,
+          });
+          await this.setNotebookInfo(connectionInfo, connectionStatus);
+        } else {
+          TelemetryProcessor.trace(Action.PhoenixConnection, ActionModifiers.Failed, {
+            dataExplorerArea: Areas.Notebook,
+          });
+          connectionStatus.status = ConnectionStatusType.Failed;
+          useNotebook.getState().resetContainerConnection(connectionStatus);
+        }
+        useNotebook.getState().setIsAllocating(false);
       } catch (error) {
+        TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
+          dataExplorerArea: Areas.Notebook,
+          error: getErrorMessage(error),
+          errorStack: getErrorStack(error),
+        });
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetContainerConnection(connectionStatus);
         throw error;
@@ -411,28 +431,22 @@ export default class Explorer {
     connectionInfo: IResponse<IPhoenixConnectionInfoResult>,
     connectionStatus: DataModels.ContainerConnectionInfo
   ) {
-    if (connectionInfo.status === HttpStatusCodes.OK && connectionInfo.data && connectionInfo.data.notebookServerUrl) {
-      const containerData = {
-        forwardingId: connectionInfo.data.forwardingId,
-        dbAccountName: userContext.databaseAccount.name,
-      };
-      await this.phoenixClient.initiateContainerHeartBeat(containerData);
+    const containerData = {
+      forwardingId: connectionInfo.data.forwardingId,
+      dbAccountName: userContext.databaseAccount.name,
+    };
+    await this.phoenixClient.initiateContainerHeartBeat(containerData);
 
-      connectionStatus.status = ConnectionStatusType.Connected;
-      useNotebook.getState().setConnectionInfo(connectionStatus);
-      useNotebook.getState().setNotebookServerInfo({
-        notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
-        authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
-        forwardingId: connectionInfo.data.forwardingId,
-      });
-      this.notebookManager?.notebookClient
-        .getMemoryUsage()
-        .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
-    } else {
-      connectionStatus.status = ConnectionStatusType.Failed;
-      useNotebook.getState().resetContainerConnection(connectionStatus);
-    }
-    useNotebook.getState().setIsAllocating(false);
+    connectionStatus.status = ConnectionStatusType.Connected;
+    useNotebook.getState().setConnectionInfo(connectionStatus);
+    useNotebook.getState().setNotebookServerInfo({
+      notebookServerEndpoint: userContext.features.notebookServerUrl || connectionInfo.data.notebookServerUrl,
+      authToken: userContext.features.notebookServerToken || connectionInfo.data.notebookAuthToken,
+      forwardingId: connectionInfo.data.forwardingId,
+    });
+    this.notebookManager?.notebookClient
+      .getMemoryUsage()
+      .then((memoryUsageInfo) => useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo));
   }
 
   public resetNotebookWorkspace(): void {
@@ -525,6 +539,9 @@ export default class Explorer {
         };
         useNotebook.getState().setConnectionInfo(connectionStatus);
       }
+      TelemetryProcessor.trace(Action.PhoenixResetWorkspace, ActionModifiers.Start, {
+        dataExplorerArea: Areas.Notebook,
+      });
       const connectionInfo = await this.notebookManager?.notebookClient.resetWorkspace();
       if (connectionInfo && connectionInfo.status && connectionInfo.status === HttpStatusCodes.OK) {
         if (NotebookUtil.isPhoenixEnabled() && connectionInfo.data && connectionInfo.data.notebookServerUrl) {
@@ -532,10 +549,14 @@ export default class Explorer {
           useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
         }
         logConsoleInfo("Successfully reset notebook workspace");
-        TelemetryProcessor.traceSuccess(Action.ResetNotebookWorkspace);
+        TelemetryProcessor.trace(Action.PhoenixResetWorkspace, ActionModifiers.Success, {
+          dataExplorerArea: Areas.Notebook,
+        });
       } else {
         logConsoleError(`Failed to reset notebook workspace`);
-        TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace);
+        TelemetryProcessor.trace(Action.PhoenixResetWorkspace, ActionModifiers.Failed, {
+          dataExplorerArea: Areas.Notebook,
+        });
         if (NotebookUtil.isPhoenixEnabled()) {
           connectionStatus = {
             status: ConnectionStatusType.Reconnect,
@@ -546,7 +567,7 @@ export default class Explorer {
       }
     } catch (error) {
       logConsoleError(`Failed to reset notebook workspace: ${error}`);
-      TelemetryProcessor.traceFailure(Action.ResetNotebookWorkspace, {
+      TelemetryProcessor.traceFailure(Action.PhoenixResetWorkspace, {
         error: getErrorMessage(error),
         errorStack: getErrorStack(error),
       });
