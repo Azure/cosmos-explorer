@@ -80,6 +80,7 @@ export enum Action {
   NotebooksInsertTextCellAboveFromMenu,
   NotebooksInsertTextCellBelowFromMenu,
   NotebooksMoveCellUpFromMenu,
+  NotebooksMoveCellDownFromMenu,
   PhoenixConnection,
   PhoenixResetWorkspace,
   DeleteCellFromMenu,
