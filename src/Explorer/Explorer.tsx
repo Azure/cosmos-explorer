@@ -392,24 +392,21 @@ export default class Explorer {
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
       try {
-        useNotebook.getState().setIsAllocating(true);
-        TelemetryProcessor.trace(Action.PhoenixConnection, ActionModifiers.Start, {
+        TelemetryProcessor.traceStart(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
         });
+        useNotebook.getState().setIsAllocating(true);
         const connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
-        if (connectionInfo.status === HttpStatusCodes.OK && connectionInfo?.data?.notebookServerUrl) {
-          TelemetryProcessor.trace(Action.PhoenixConnection, ActionModifiers.Success, {
-            dataExplorerArea: Areas.Notebook,
-          });
-          await this.setNotebookInfo(connectionInfo, connectionStatus);
-        } else {
-          TelemetryProcessor.trace(Action.PhoenixConnection, ActionModifiers.Failed, {
-            dataExplorerArea: Areas.Notebook,
-          });
-          connectionStatus.status = ConnectionStatusType.Failed;
-          useNotebook.getState().resetContainerConnection(connectionStatus);
+        if (connectionInfo.status !== HttpStatusCodes.OK) {
+          throw new Error(`Received status code: ${connectionInfo?.status}`);
         }
-        useNotebook.getState().setIsAllocating(false);
+        if (!connectionInfo?.data?.notebookServerUrl) {
+          throw new Error(`NotebookServerUrl is invalid!`);
+        }
+        await this.setNotebookInfo(connectionInfo, connectionStatus);
+        TelemetryProcessor.traceSuccess(Action.PhoenixConnection, {
+          dataExplorerArea: Areas.Notebook,
+        });
       } catch (error) {
         TelemetryProcessor.traceFailure(Action.PhoenixConnection, {
           dataExplorerArea: Areas.Notebook,
@@ -419,11 +416,12 @@ export default class Explorer {
         connectionStatus.status = ConnectionStatusType.Failed;
         useNotebook.getState().resetContainerConnection(connectionStatus);
         throw error;
+      } finally {
+        useNotebook.getState().setIsAllocating(false);
+        this.refreshCommandBarButtons();
+        this.refreshNotebookList();
+        this._isInitializingNotebooks = false;
       }
-      this.refreshCommandBarButtons();
-      this.refreshNotebookList();
-
-      this._isInitializingNotebooks = false;
     }
   }
 
@@ -531,7 +529,9 @@ export default class Explorer {
         logConsoleError(error);
         return;
       }
-
+      TelemetryProcessor.traceStart(Action.PhoenixResetWorkspace, {
+        dataExplorerArea: Areas.Notebook,
+      });
       if (NotebookUtil.isPhoenixEnabled()) {
         useTabs.getState().closeAllNotebookTabs(true);
         connectionStatus = {
@@ -539,35 +539,25 @@ export default class Explorer {
         };
         useNotebook.getState().setConnectionInfo(connectionStatus);
       }
-      TelemetryProcessor.trace(Action.PhoenixResetWorkspace, ActionModifiers.Start, {
+      const connectionInfo = await this.notebookManager?.notebookClient.resetWorkspace();
+      if (connectionInfo?.status !== HttpStatusCodes.OK) {
+        throw new Error(`Reset Workspace: Received status code- ${connectionInfo?.status}`);
+      }
+      if (!connectionInfo?.data?.notebookServerUrl) {
+        throw new Error(`Reset Workspace: NotebookServerUrl is invalid!`);
+      }
+      if (NotebookUtil.isPhoenixEnabled()) {
+        await this.setNotebookInfo(connectionInfo, connectionStatus);
+        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
+      }
+      logConsoleInfo("Successfully reset notebook workspace");
+      TelemetryProcessor.traceSuccess(Action.PhoenixResetWorkspace, {
         dataExplorerArea: Areas.Notebook,
       });
-      const connectionInfo = await this.notebookManager?.notebookClient.resetWorkspace();
-      if (connectionInfo && connectionInfo.status && connectionInfo.status === HttpStatusCodes.OK) {
-        if (NotebookUtil.isPhoenixEnabled() && connectionInfo.data && connectionInfo.data.notebookServerUrl) {
-          await this.setNotebookInfo(connectionInfo, connectionStatus);
-          useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-        }
-        logConsoleInfo("Successfully reset notebook workspace");
-        TelemetryProcessor.trace(Action.PhoenixResetWorkspace, ActionModifiers.Success, {
-          dataExplorerArea: Areas.Notebook,
-        });
-      } else {
-        logConsoleError(`Failed to reset notebook workspace`);
-        TelemetryProcessor.trace(Action.PhoenixResetWorkspace, ActionModifiers.Failed, {
-          dataExplorerArea: Areas.Notebook,
-        });
-        if (NotebookUtil.isPhoenixEnabled()) {
-          connectionStatus = {
-            status: ConnectionStatusType.Reconnect,
-          };
-          useNotebook.getState().resetContainerConnection(connectionStatus);
-          useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-        }
-      }
     } catch (error) {
       logConsoleError(`Failed to reset notebook workspace: ${error}`);
       TelemetryProcessor.traceFailure(Action.PhoenixResetWorkspace, {
+        dataExplorerArea: Areas.Notebook,
         error: getErrorMessage(error),
         errorStack: getErrorStack(error),
       });
@@ -575,7 +565,7 @@ export default class Explorer {
         connectionStatus = {
           status: ConnectionStatusType.Failed,
         };
-        useNotebook.getState().setConnectionInfo(connectionStatus);
+        useNotebook.getState().resetContainerConnection(connectionStatus);
         useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
       }
       throw error;
