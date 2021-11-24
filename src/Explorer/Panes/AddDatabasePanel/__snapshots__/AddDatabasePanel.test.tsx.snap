@@ -4,6 +4,7 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
 <RightPaneForm
   formError=""
   isExecuting={false}
+  isSubmitButtonDisabled={false}
   onSubmit={[Function]}
   submitButtonText="OK"
 >
@@ -92,6 +93,7 @@ exports[`AddDatabasePane Pane should render Default properly 1`] = `
       isSharded={true}
       onCostAcknowledgeChange={[Function]}
       setIsAutoscale={[Function]}
+      setIsThroughputCapExceeded={[Function]}
       setThroughputValue={[Function]}
     />
   </div>

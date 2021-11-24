@@ -19,6 +19,7 @@ export const CassandraType = {
   Float: "Float",
   Int: "Int",
   Text: "Text",
+  Timestamp: "Timestamp",
   Uuid: "Uuid",
   Varchar: "Varchar",
   Varint: "Varint",

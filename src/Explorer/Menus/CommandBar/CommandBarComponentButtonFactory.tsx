@@ -80,7 +80,7 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.push(createOpenTerminalButton(container));
-    if (userContext.features.phoenix === false) {
+    if (selectedNodeState.isConnectedToContainer()) {
       notebookButtons.push(createNotebookWorkspaceResetButton(container));
     }
     if (
@@ -310,8 +310,13 @@ function createNewDatabase(container: Explorer): CommandButtonComponentProps {
   return {
     iconSrc: AddDatabaseIcon,
     iconAlt: label,
-    onCommandClick: () =>
-      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />),
+    onCommandClick: async () => {
+      const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+      if (throughputCap && throughputCap !== -1) {
+        await useDatabases.getState().loadAllOffers();
+      }
+      useSidePanel.getState().openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={container} />);
+    },
     commandButtonLabel: label,
     ariaLabel: label,
     hasPopup: true,
@@ -596,7 +601,7 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
   return {
     iconSrc: GitHubIcon,
     iconAlt: label,
-    onCommandClick: () =>
+    onCommandClick: () => {
       useSidePanel
         .getState()
         .openSidePanel(
@@ -606,7 +611,8 @@ function createManageGitHubAccountButton(container: Explorer): CommandButtonComp
             gitHubClientProp={container.notebookManager.gitHubClient}
             junoClientProp={junoClient}
           />
-        ),
+        );
+    },
     commandButtonLabel: label,
     hasPopup: false,
     disabled: false,

@@ -1,13 +1,13 @@
 import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton, Stack, Text } from "@fluentui/react";
+import * as Constants from "Common/Constants";
+import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
+import { configContext } from "ConfigContext";
+import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
-import * as Constants from "../../../Common/Constants";
-import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
-import { configContext } from "../../../ConfigContext";
-import { useSidePanel } from "../../../hooks/useSidePanel";
-import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
-import * as StringUtility from "../../../Shared/StringUtility";
-import { userContext } from "../../../UserContext";
-import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import * as StringUtility from "Shared/StringUtility";
+import { userContext } from "UserContext";
+import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export const SettingsPane: FunctionComponent = () => {

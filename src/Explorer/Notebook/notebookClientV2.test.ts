@@ -35,6 +35,7 @@ describe("auto start kernel", () => {
         connectionInfo: {
           authToken: "autToken",
           notebookServerEndpoint: "notebookServerEndpoint",
+          forwardingId: "Id",
         },
         databaseAccountName: undefined,
         defaultExperience: undefined,

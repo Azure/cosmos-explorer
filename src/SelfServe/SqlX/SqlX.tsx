@@ -1,5 +1,10 @@
 import { IsDisplayable, OnChange, PropertyInfo, RefreshOptions, Values } from "../Decorators";
-import { selfServeTrace } from "../SelfServeTelemetryProcessor";
+import {
+  selfServeTrace,
+  selfServeTraceFailure,
+  selfServeTraceStart,
+  selfServeTraceSuccess,
+} from "../SelfServeTelemetryProcessor";
 import {
   ChoiceItem,
   Description,
@@ -16,7 +21,7 @@ import { BladeType, generateBladeLink } from "../SelfServeUtils";
 import {
   deleteDedicatedGatewayResource,
   getCurrentProvisioningState,
-  getPriceMap,
+  getPriceMapAndCurrencyCode,
   getRegions,
   refreshDedicatedGatewayProvisioning,
   updateDedicatedGatewayResource,
@@ -202,9 +207,18 @@ const ApproximateCostDropDownInfo: Info = {
 };
 
 let priceMap: Map<string, Map<string, number>>;
+let currencyCode: string;
 let regions: Array<string>;
 
 const calculateCost = (skuName: string, instanceCount: number): Description => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "calculateCost",
+    description: "performs final calculation",
+    selfServeClassName: SqlX.name,
+  };
+  const calculateCostTimestamp = selfServeTraceStart(telemetryData);
+
   try {
     let costPerHour = 0;
     for (const region of regions) {
@@ -215,14 +229,22 @@ const calculateCost = (skuName: string, instanceCount: number): Description => {
       costPerHour += incrementalCost;
     }
 
+    if (costPerHour === 0) {
+      throw new Error("Cost per hour = 0");
+    }
+
     costPerHour *= instanceCount;
     costPerHour = Math.round(costPerHour * 100) / 100;
 
+    selfServeTraceSuccess(telemetryData, calculateCostTimestamp);
     return {
-      textTKey: `${costPerHour} USD`,
+      textTKey: `${costPerHour} ${currencyCode}`,
       type: DescriptionType.Text,
     };
   } catch (err) {
+    const failureTelemetry = { err, regions, priceMap, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, calculateCostTimestamp);
+
     return costPerHourDefaultValue;
   }
 };
@@ -325,7 +347,9 @@ export default class SqlX extends SelfServeBaseClass {
     });
 
     regions = await getRegions();
-    priceMap = await getPriceMap(regions);
+    const priceMapAndCurrencyCode = await getPriceMapAndCurrencyCode(regions);
+    priceMap = priceMapAndCurrencyCode.priceMap;
+    currencyCode = priceMapAndCurrencyCode.currencyCode;
 
     const response = await getCurrentProvisioningState();
     if (response.status && response.status !== "Deleting") {

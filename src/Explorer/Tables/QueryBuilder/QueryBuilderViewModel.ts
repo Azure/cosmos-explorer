@@ -29,7 +29,7 @@ export default class QueryBuilderViewModel {
   public removeThisFilterLine = "Remove this filter line"; // localize
   public groupSelectedClauses = "Group selected clauses"; // localize
   public clauseArray = ko.observableArray<QueryClauseViewModel>(); // This is for storing the clauses in flattened form queryClauses for easier UI data binding.
-  public queryClauses = new ClauseGroup(true, null); // The actual data structure containing the clause information.
+  public queryClauses = new ClauseGroup(true, undefined); // The actual data structure containing the clause information.
   public columnOptions: ko.ObservableArray<string>;
   public canGroupClauses = ko.observable<boolean>(false);
 
@@ -107,7 +107,7 @@ export default class QueryBuilderViewModel {
   }
 
   public setExample() {
-    var example1 = new QueryClauseViewModel(
+    const example1 = new QueryClauseViewModel(
       this,
       "",
       "PartitionKey",
@@ -121,7 +121,7 @@ export default class QueryBuilderViewModel {
       //null,
       true
     );
-    var example2 = new QueryClauseViewModel(
+    const example2 = new QueryClauseViewModel(
       this,
       "And",
       "RowKey",
@@ -140,13 +140,13 @@ export default class QueryBuilderViewModel {
   }
 
   public getODataFilterFromClauses = (): string => {
-    var filterString: string = "";
-    var treeTraversal = (group: ClauseGroup): void => {
-      for (var i = 0; i < group.children.length; i++) {
-        var currentItem = group.children[i];
+    let filterString = "";
+    const treeTraversal = (group: ClauseGroup): void => {
+      for (let i = 0; i < group.children.length; i++) {
+        const currentItem = group.children[i];
 
         if (currentItem instanceof QueryClauseViewModel) {
-          var clause = <QueryClauseViewModel>currentItem;
+          const clause = <QueryClauseViewModel>currentItem;
           this.timestampToValue(clause);
           filterString = filterString.concat(
             this.constructODataClause(
@@ -173,7 +173,7 @@ export default class QueryBuilderViewModel {
   };
 
   public getSqlFilterFromClauses = (): string => {
-    var filterString: string = "SELECT * FROM c";
+    let filterString = "SELECT * FROM c";
     if (this._queryViewModel.selectText() && this._queryViewModel.selectText().length > 0) {
       filterString = "SELECT";
       const selectText = this._queryViewModel && this._queryViewModel.selectText && this._queryViewModel.selectText();
@@ -199,15 +199,15 @@ export default class QueryBuilderViewModel {
       return filterString;
     }
     filterString = filterString.concat(" WHERE");
-    var first = true;
-    var treeTraversal = (group: ClauseGroup): void => {
-      for (var i = 0; i < group.children.length; i++) {
-        var currentItem = group.children[i];
+    let first = true;
+    const treeTraversal = (group: ClauseGroup): void => {
+      for (let i = 0; i < group.children.length; i++) {
+        const currentItem = group.children[i];
 
         if (currentItem instanceof QueryClauseViewModel) {
-          var clause = <QueryClauseViewModel>currentItem;
-          let timeStampValue: string = this.timestampToSqlValue(clause);
-          var value = clause.value();
+          const clause = <QueryClauseViewModel>currentItem;
+          const timeStampValue: string = this.timestampToSqlValue(clause);
+          let value = clause.value();
           if (!clause.isValue()) {
             value = timeStampValue;
           }
@@ -240,7 +240,7 @@ export default class QueryBuilderViewModel {
     const databaseId = this._queryViewModel.queryTablesTab.collection.databaseId;
     const collectionId = this._queryViewModel.queryTablesTab.collection.id();
     const tableToQuery = `${getQuotedCqlIdentifier(databaseId)}.${getQuotedCqlIdentifier(collectionId)}`;
-    var filterString: string = `SELECT * FROM ${tableToQuery}`;
+    let filterString = `SELECT * FROM ${tableToQuery}`;
     if (this._queryViewModel.selectText() && this._queryViewModel.selectText().length > 0) {
       filterString = "SELECT";
       const selectText = this._queryViewModel && this._queryViewModel.selectText && this._queryViewModel.selectText();
@@ -255,15 +255,15 @@ export default class QueryBuilderViewModel {
       return filterString;
     }
     filterString = filterString.concat(" WHERE");
-    var first = true;
-    var treeTraversal = (group: ClauseGroup): void => {
-      for (var i = 0; i < group.children.length; i++) {
-        var currentItem = group.children[i];
+    let first = true;
+    const treeTraversal = (group: ClauseGroup): void => {
+      for (let i = 0; i < group.children.length; i++) {
+        const currentItem = group.children[i];
 
         if (currentItem instanceof QueryClauseViewModel) {
-          var clause = <QueryClauseViewModel>currentItem;
-          let timeStampValue: string = this.timestampToSqlValue(clause);
-          var value = clause.value();
+          const clause = <QueryClauseViewModel>currentItem;
+          const timeStampValue = this.timestampToSqlValue(clause);
+          let value = clause.value();
           if (!clause.isValue()) {
             value = timeStampValue;
           }
@@ -293,13 +293,13 @@ export default class QueryBuilderViewModel {
   };
 
   public updateColumnOptions = (): void => {
-    let originalHeaders = this.columnOptions();
-    let newHeaders = this.tableEntityListViewModel.headers;
+    // let originalHeaders = this.columnOptions();
+    const newHeaders = this.tableEntityListViewModel.headers;
     this.columnOptions(newHeaders.sort(DataTableUtilities.compareTableColumns));
   };
 
   private generateLeftParentheses(clause: QueryClauseViewModel): string {
-    var result = "";
+    let result = "";
 
     if (clause.clauseGroup.isRootGroup || clause.clauseGroup.children.indexOf(clause) !== 0) {
       return result;
@@ -307,7 +307,7 @@ export default class QueryBuilderViewModel {
       result = result.concat("(");
     }
 
-    var currentGroup: ClauseGroup = clause.clauseGroup;
+    let currentGroup: ClauseGroup = clause.clauseGroup;
 
     while (
       !currentGroup.isRootGroup &&
@@ -322,7 +322,7 @@ export default class QueryBuilderViewModel {
   }
 
   private generateRightParentheses(clause: QueryClauseViewModel): string {
-    var result = "";
+    let result = "";
 
     if (
       clause.clauseGroup.isRootGroup ||
@@ -333,7 +333,7 @@ export default class QueryBuilderViewModel {
       result = result.concat(")");
     }
 
-    var currentGroup: ClauseGroup = clause.clauseGroup;
+    let currentGroup: ClauseGroup = clause.clauseGroup;
 
     while (
       !currentGroup.isRootGroup &&
@@ -364,14 +364,17 @@ export default class QueryBuilderViewModel {
       case Constants.TableType.String:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
           operator
+          // eslint-disable-next-line no-useless-escape
         )} \'${value}\'${rightParentheses}`;
       case Constants.TableType.Guid:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
           operator
+          // eslint-disable-next-line no-useless-escape
         )} guid\'${value}\'${rightParentheses}`;
       case Constants.TableType.Binary:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
           operator
+          // eslint-disable-next-line no-useless-escape
         )} binary\'${value}\'${rightParentheses}`;
       default:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}${propertyName} ${this.operatorConverter(
@@ -391,9 +394,11 @@ export default class QueryBuilderViewModel {
   ): string => {
     if (propertyName === Constants.EntityKeyNames.PartitionKey) {
       propertyName = TableEntityProcessor.keyProperties.PartitionKey;
+      // eslint-disable-next-line no-useless-escape
       return ` ${clauseRule.toLowerCase()} ${leftParentheses}c["${propertyName}"] ${operator} \'${value}\'${rightParentheses}`;
     } else if (propertyName === Constants.EntityKeyNames.RowKey) {
       propertyName = TableEntityProcessor.keyProperties.Id;
+      // eslint-disable-next-line no-useless-escape
       return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName} ${operator} \'${value}\'${rightParentheses}`;
     } else if (propertyName === Constants.EntityKeyNames.Timestamp) {
       propertyName = TableEntityProcessor.keyProperties.Timestamp;
@@ -403,16 +408,21 @@ export default class QueryBuilderViewModel {
     }
     switch (type) {
       case Constants.TableType.DateTime:
+        // eslint-disable-next-line no-useless-escape
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName}["$v"] ${operator} \'${DateTimeUtilities.convertJSDateToTicksWithPadding(
           value
+          // eslint-disable-next-line no-useless-escape
         )}\'${rightParentheses}`;
       case Constants.TableType.Int64:
+        // eslint-disable-next-line no-useless-escape
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName}["$v"] ${operator} \'${Utilities.padLongWithZeros(
           value
+          // eslint-disable-next-line no-useless-escape
         )}\'${rightParentheses}`;
       case Constants.TableType.String:
       case Constants.TableType.Guid:
       case Constants.TableType.Binary:
+        // eslint-disable-next-line no-useless-escape
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName}["$v"] ${operator} \'${value}\'${rightParentheses}`;
       default:
         return ` ${clauseRule.toLowerCase()} ${leftParentheses}c.${propertyName}["$v"] ${operator} ${value}${rightParentheses}`;
@@ -434,6 +444,7 @@ export default class QueryBuilderViewModel {
       type === Constants.CassandraType.Ascii ||
       type === Constants.CassandraType.Varchar
     ) {
+      // eslint-disable-next-line no-useless-escape
       return ` ${clauseRule.toLowerCase()} ${leftParentheses} ${propertyName} ${operator} \'${value}\'${rightParentheses}`;
     }
     return ` ${clauseRule.toLowerCase()} ${leftParentheses} ${propertyName} ${operator} ${value}${rightParentheses}`;
@@ -454,7 +465,7 @@ export default class QueryBuilderViewModel {
       case Constants.Operator.NotEqualTo:
         return Constants.ODataOperator.NotEqualTo;
     }
-    return null;
+    return undefined;
   };
 
   public groupClauses = (): void => {
@@ -463,11 +474,11 @@ export default class QueryBuilderViewModel {
     this.updateCanGroupClauses();
   };
 
-  public addClauseIndex = (index: number, data: any): void => {
+  public addClauseIndex = (index: number): void => {
     if (index < 0) {
       index = 0;
     }
-    var newClause = new QueryClauseViewModel(
+    const newClause = new QueryClauseViewModel(
       this,
       "And",
       "",
@@ -492,28 +503,28 @@ export default class QueryBuilderViewModel {
 
   // adds a new clause to the end of the array
   public addNewClause = (): void => {
-    this.addClauseIndex(this.clauseArray().length, null);
+    this.addClauseIndex(this.clauseArray().length);
   };
 
-  public onAddClauseKeyDown = (index: number, data: any, event: KeyboardEvent, source: any): boolean => {
+  public onAddClauseKeyDown = (index: number, event: KeyboardEvent): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
-      this.addClauseIndex(index, data);
+      this.addClauseIndex(index);
       event.stopPropagation();
       return false;
     }
     return true;
   };
 
-  public onAddNewClauseKeyDown = (source: any, event: KeyboardEvent): boolean => {
+  public onAddNewClauseKeyDown = (event: KeyboardEvent): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
-      this.addClauseIndex(this.clauseArray().length - 1, null);
+      this.addClauseIndex(this.clauseArray().length - 1);
       event.stopPropagation();
       return false;
     }
     return true;
   };
 
-  public deleteClause = (index: number, data: any): void => {
+  public deleteClause = (index: number): void => {
     this.deleteClauseImpl(index);
     if (this.clauseArray().length !== 0) {
       this.clauseArray()[0].and_or("");
@@ -523,9 +534,9 @@ export default class QueryBuilderViewModel {
     $(window).resize();
   };
 
-  public onDeleteClauseKeyDown = (index: number, data: any, event: KeyboardEvent, source: any): boolean => {
+  public onDeleteClauseKeyDown = (index: number, event: KeyboardEvent): boolean => {
     if (event.keyCode === KeyCodes.Enter || event.keyCode === KeyCodes.Space) {
-      this.deleteClause(index, data);
+      this.deleteClause(index);
       event.stopPropagation();
       return false;
     }
@@ -539,25 +550,26 @@ export default class QueryBuilderViewModel {
    * (transparent) or its parent group view models.
    */
   public getClauseGroupViewModels = (clause: QueryClauseViewModel): ClauseGroupViewModel[] => {
-    var placeHolderGroupViewModel = new ClauseGroupViewModel(this.queryClauses, false, this);
-    var treeDepth = this.queryClauses.getTreeDepth();
-    var groupViewModels = new Array<ClauseGroupViewModel>(treeDepth);
+    const placeHolderGroupViewModel = new ClauseGroupViewModel(this.queryClauses, false, this);
+    const treeDepth = this.queryClauses.getTreeDepth();
+    const groupViewModels = new Array<ClauseGroupViewModel>(treeDepth);
 
     // Prefill the arry with placeholders.
-    for (var i = 0; i < groupViewModels.length; i++) {
+    for (let i = 0; i < groupViewModels.length; i++) {
       groupViewModels[i] = placeHolderGroupViewModel;
     }
 
-    var currentGroup = clause.clauseGroup;
+    let currentGroup = clause.clauseGroup;
 
     // This function determines whether the path from clause to the current group is on the left most.
-    var isLeftMostPath = (): boolean => {
-      var group = clause.clauseGroup;
+    const isLeftMostPath = (): boolean => {
+      let group = clause.clauseGroup;
 
       if (group.children.indexOf(clause) !== 0) {
         return false;
       }
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         if (group.getId() === currentGroup.getId()) {
           break;
@@ -573,13 +585,14 @@ export default class QueryBuilderViewModel {
     };
 
     // This function determines whether the path from clause to the current group is on the right most.
-    var isRightMostPath = (): boolean => {
-      var group = clause.clauseGroup;
+    const isRightMostPath = (): boolean => {
+      let group = clause.clauseGroup;
 
       if (group.children.indexOf(clause) !== group.children.length - 1) {
         return false;
       }
 
+      // eslint-disable-next-line no-constant-condition
       while (true) {
         if (group.getId() === currentGroup.getId()) {
           break;
@@ -594,26 +607,26 @@ export default class QueryBuilderViewModel {
       return true;
     };
 
-    var vmIndex = groupViewModels.length - 1;
-    var skipIndex = -1;
-    var lastDepth = clause.groupDepth;
+    let vmIndex = groupViewModels.length - 1;
+    let skipIndex = -1;
+    let lastDepth = clause.groupDepth;
 
     while (!currentGroup.isRootGroup) {
       // The current group will be rendered at least once, and if there are any sibling groups deeper
       // than the current group, we will repeat rendering the current group to fill up the gap between
       // current & deepest sibling.
-      var deepestInSiblings = currentGroup.findDeepestGroupInChildren(skipIndex).getCurrentGroupDepth();
+      const deepestInSiblings = currentGroup.findDeepestGroupInChildren(skipIndex).getCurrentGroupDepth();
       // Find out the depth difference between the deepest group under the siblings of currentGroup and
       // the deepest group under currentGroup. If the result n is a positive number, it means there are
       // deeper groups in siblings and we need to draw n + 1 group blocks on UI to fill up the depth
       // differences. If the result n is a negative number, it means current group contains the deepest
       // sub-group, we only need to draw the group block once.
-      var repeatCount = Math.max(deepestInSiblings - lastDepth, 0);
+      const repeatCount = Math.max(deepestInSiblings - lastDepth, 0);
 
-      for (var i = 0; i <= repeatCount; i++) {
-        var isLeftMost = isLeftMostPath();
-        var isRightMost = isRightMostPath();
-        var groupViewModel = new ClauseGroupViewModel(currentGroup, i === 0 && isLeftMost, this);
+      for (let i = 0; i <= repeatCount; i++) {
+        const isLeftMost = isLeftMostPath();
+        const isRightMost = isRightMostPath();
+        const groupViewModel = new ClauseGroupViewModel(currentGroup, i === 0 && isLeftMost, this);
 
         groupViewModel.showTopBorder(isLeftMost);
         groupViewModel.showBottomBorder(isRightMost);
@@ -635,9 +648,9 @@ export default class QueryBuilderViewModel {
   };
 
   public addCustomRange(timestamp: CustomTimestampHelper.ITimestampQuery, clauseToAdd: QueryClauseViewModel): void {
-    var index = this.clauseArray.peek().indexOf(clauseToAdd);
+    const index = this.clauseArray.peek().indexOf(clauseToAdd);
 
-    var newClause = new QueryClauseViewModel(
+    const newClause = new QueryClauseViewModel(
       this,
       //this._tableEntityListViewModel.tableExplorerContext.hostProxy,
       "And",
@@ -662,10 +675,10 @@ export default class QueryBuilderViewModel {
   }
 
   private scrollToBottom(): void {
-    var scrollBox = document.getElementById("scroll");
+    const scrollBox = document.getElementById("scroll");
     if (!this.scrollEventListener) {
       scrollBox.addEventListener("scroll", function () {
-        var translate = "translate(0," + this.scrollTop + "px)";
+        const translate = "translate(0," + this.scrollTop + "px)";
         const allTh = <NodeListOf<HTMLElement>>this.querySelectorAll("thead td");
         for (let i = 0; i < allTh.length; i++) {
           allTh[i].style.transform = translate;
@@ -673,7 +686,7 @@ export default class QueryBuilderViewModel {
       });
       this.scrollEventListener = true;
     }
-    var isScrolledToBottom = scrollBox.scrollHeight - scrollBox.clientHeight <= scrollBox.scrollHeight + 1;
+    const isScrolledToBottom = scrollBox.scrollHeight - scrollBox.clientHeight <= scrollBox.scrollHeight + 1;
     if (isScrolledToBottom) {
       scrollBox.scrollTop = scrollBox.scrollHeight - scrollBox.clientHeight;
     }
@@ -685,8 +698,8 @@ export default class QueryBuilderViewModel {
   }
 
   private deleteClauseImpl(index: number): void {
-    var clause = this.clauseArray()[index];
-    var previousClause = index === 0 ? 0 : index - 1;
+    const clause = this.clauseArray()[index];
+    const previousClause = index === 0 ? 0 : index - 1;
     this.queryClauses.deleteClause(clause);
     this.updateClauseArray();
     if (this.clauseArray()[previousClause]) {
@@ -731,7 +744,7 @@ export default class QueryBuilderViewModel {
 
   private timestampToSqlValue(clause: QueryClauseViewModel): string {
     if (clause.isValue()) {
-      return null;
+      return undefined;
     } else if (clause.isTimestamp()) {
       return this.getTimeStampToSqlQuery(clause);
       // } else if (clause.isCustomLastTimestamp()) {
@@ -743,7 +756,7 @@ export default class QueryBuilderViewModel {
         return clause.customTimeValue();
       }
     }
-    return null;
+    return undefined;
   }
 
   private getTimeStampToQuery(clause: QueryClauseViewModel): void {
@@ -789,7 +802,7 @@ export default class QueryBuilderViewModel {
       case Constants.timeOptions.currentYear:
         return CustomTimestampHelper._queryCurrentYearLocal();
     }
-    return null;
+    return undefined;
   }
 
   public checkIfClauseChanged(): void {

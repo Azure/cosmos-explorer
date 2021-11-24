@@ -342,6 +342,9 @@ function updateContextsFromPortalMessage(inputs: DataExplorerInputsFrame) {
     if (inputs.flights.indexOf(Flights.Phoenix) !== -1) {
       userContext.features.phoenix = true;
     }
+    if (inputs.flights.indexOf(Flights.NotebooksDownBanner) !== -1) {
+      userContext.features.notebooksDownBanner = true;
+    }
   }
 }
 

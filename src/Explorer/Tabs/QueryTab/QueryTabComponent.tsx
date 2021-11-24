@@ -999,7 +999,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                               "data-order": 2,
                               "data-title": "Query Stats",
                             }}
-                            style={{ height: "100%" }}
+                            style={{ height: "100%", overflowY: "scroll" }}
                           >
                             {this.state.allResultsMetadata.length > 0 && !this.state.error && (
                               <div className="queryMetricsSummaryContainer">

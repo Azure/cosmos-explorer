@@ -53,14 +53,16 @@ export default class NotebookTabV2 extends NotebookTabBase {
       onUpdateKernelInfo: this.onKernelUpdate,
     });
   }
-
-  public onCloseTabButtonClick(): Q.Promise<any> {
+  /*
+   * Hard cleaning the workspace(Closing tabs connected with old container connection) when new container got allocated.
+   */
+  public onCloseTabButtonClick(hardClose = false): Q.Promise<any> {
     const cleanup = () => {
       this.notebookComponentAdapter.notebookShutdown();
       super.onCloseTabButtonClick();
     };
 
-    if (this.notebookComponentAdapter.isContentDirty()) {
+    if (this.notebookComponentAdapter.isContentDirty() && hardClose === false) {
       useDialog
         .getState()
         .showOkCancelModalDialog(
@@ -118,7 +120,7 @@ export default class NotebookTabV2 extends NotebookTabBase {
     const saveButtonChildren = [];
     if (this.container.notebookManager?.gitHubOAuthService.isLoggedIn()) {
       saveButtonChildren.push({
-        iconName: "Copy",
+        iconName: copyToLabel,
         onCommandClick: () => this.copyNotebook(),
         commandButtonLabel: copyToLabel,
         hasPopup: false,
