@@ -1,4 +1,4 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
+import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton, Stack, Text } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
@@ -113,20 +113,44 @@ export const SettingsPane: FunctionComponent = () => {
   const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
     setPageOption(option.key);
   };
+
+  const choiceButtonStyles = {
+    flexContainer: [
+      {
+        selectors: {
+          ".ms-ChoiceField-wrapper label": {
+            fontSize: 12,
+            paddingTop: 0,
+          },
+          ".ms-ChoiceField": {
+            marginTop: 0,
+          },
+        },
+      },
+    ],
+  };
   return (
     <RightPaneForm {...genericPaneProps}>
       <div className="paneMainContent">
         {shouldShowQueryPageOptions && (
           <div className="settingsSection">
-            <div className="settingsSectionPart pageOptionsPart">
-              <div className="settingsSectionLabel">
-                Page options
+            <div className="settingsSectionPart">
+              <Stack horizontal>
+                <Text id="pageOptions" className="settingsSectionLabel" variant="small">
+                  Page options
+                </Text>
                 <InfoTooltip>
                   Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many
                   query results per page.
                 </InfoTooltip>
-              </div>
-              <ChoiceGroup selectedKey={pageOption} options={pageOptionList} onChange={handleOnPageOptionChange} />
+              </Stack>
+              <ChoiceGroup
+                ariaLabelledBy="pageOptions"
+                selectedKey={pageOption}
+                options={pageOptionList}
+                styles={choiceButtonStyles}
+                onChange={handleOnPageOptionChange}
+              />
             </div>
             <div className="tabs settingsSectionPart">
               {isCustomPageOptionSelected() && (
