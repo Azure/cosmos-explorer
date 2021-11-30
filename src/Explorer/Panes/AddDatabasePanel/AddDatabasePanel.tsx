@@ -79,7 +79,9 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
     TelemetryProcessor.trace(Action.CreateDatabase, ActionModifiers.Open, addDatabasePaneOpenMessage);
-    buttonElement.focus();
+    if (buttonElement) {
+      buttonElement.focus();
+    }
   }, []);
 
   const onSubmit = () => {
