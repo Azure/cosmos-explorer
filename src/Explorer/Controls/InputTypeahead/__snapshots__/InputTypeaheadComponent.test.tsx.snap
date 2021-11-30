@@ -7,16 +7,22 @@ exports[`inputTypeahead renders <input /> 1`] = `
   <Stack
     horizontal={true}
   >
-    <StyledTextFieldBase
-      ariaLabel="Input query"
-      className="input-type-head-text-field"
-      multiline={false}
-      onChange={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      placeholder="placeholder"
-      rows={1}
-    />
+    <form
+      aria-labelledby="input"
+      className="input-query-form"
+    >
+      <StyledTextFieldBase
+        ariaLabel="Input query"
+        className="input-type-head-text-field"
+        id="input"
+        multiline={false}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        placeholder="placeholder"
+        rows={1}
+      />
+    </form>
   </Stack>
 </div>
 `;
@@ -28,16 +34,22 @@ exports[`inputTypeahead renders <textarea /> 1`] = `
   <Stack
     horizontal={true}
   >
-    <StyledTextFieldBase
-      ariaLabel="Input query"
-      className="input-type-head-text-field"
-      multiline={true}
-      onChange={[Function]}
-      onFocus={[Function]}
-      onKeyDown={[Function]}
-      placeholder="placeholder"
-      rows={1}
-    />
+    <form
+      aria-labelledby="input"
+      className="input-query-form"
+    >
+      <StyledTextFieldBase
+        ariaLabel="Input query"
+        className="input-type-head-text-field"
+        id="input"
+        multiline={true}
+        onChange={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        placeholder="placeholder"
+        rows={1}
+      />
+    </form>
   </Stack>
 </div>
 `;

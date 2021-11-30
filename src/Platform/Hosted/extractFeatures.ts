@@ -12,6 +12,7 @@ export type Features = {
   partitionKeyDefault: boolean;
   partitionKeyDefault2: boolean;
   phoenix: boolean;
+  notebooksDownBanner: boolean;
   readonly enableSDKoperations: boolean;
   readonly enableSpark: boolean;
   readonly enableTtl: boolean;
@@ -20,6 +21,7 @@ export type Features = {
   readonly enableKoResourceTree: boolean;
   readonly hostedDataExplorer: boolean;
   readonly junoEndpoint?: string;
+  readonly phoenixEndpoint?: string;
   readonly livyEndpoint?: string;
   readonly notebookBasePath?: string;
   readonly notebookServerToken?: string;
@@ -32,6 +34,7 @@ export type Features = {
   readonly mongoProxyEndpoint?: string;
   readonly mongoProxyAPIs?: string;
   readonly notebooksTemporarilyDown: boolean;
+  readonly enableThroughputCap: boolean;
 };
 
 export function extractFeatures(given = new URLSearchParams(window.location.search)): Features {
@@ -68,6 +71,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     mongoProxyEndpoint: get("mongoproxyendpoint"),
     mongoProxyAPIs: get("mongoproxyapis"),
     junoEndpoint: get("junoendpoint"),
+    phoenixEndpoint: get("phoenixendpoint"),
     livyEndpoint: get("livyendpoint"),
     notebookBasePath: get("notebookbasepath"),
     notebookServerToken: get("notebookservertoken"),
@@ -82,6 +86,8 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
     notebooksTemporarilyDown: "true" === get("notebookstemporarilydown", "true"),
     phoenix: "true" === get("phoenix"),
+    notebooksDownBanner: "true" === get("notebooksDownBanner"),
+    enableThroughputCap: "true" === get("enablethroughputcap"),
   };
 }
 

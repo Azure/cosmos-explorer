@@ -272,7 +272,7 @@ export const manualToAutoscaleDisclaimerElement: JSX.Element = (
   <Text styles={infoAndToolTipTextStyle} id="manualToAutoscaleDisclaimerElement">
     The starting autoscale max RU/s will be determined by the system, based on the current manual throughput settings
     and storage of your resource. After autoscale has been enabled, you can change the max RU/s.{" "}
-    <a href={Urls.autoscaleMigration}>Learn more</a>
+    <Link href={Urls.autoscaleMigration}>Learn more</Link>
   </Text>
 );
 

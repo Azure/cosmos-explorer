@@ -30,6 +30,7 @@ export interface DialogState {
     onOk: () => void,
     cancelLabel: string,
     onCancel: () => void,
+    contentHtml?: JSX.Element,
     choiceGroupProps?: IChoiceGroupProps,
     textFieldProps?: TextFieldProps,
     primaryButtonDisabled?: boolean
@@ -58,6 +59,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
     onOk: () => void,
     cancelLabel: string,
     onCancel: () => void,
+    contentHtml?: JSX.Element,
     choiceGroupProps?: IChoiceGroupProps,
     textFieldProps?: TextFieldProps,
     primaryButtonDisabled?: boolean
@@ -76,6 +78,7 @@ export const useDialog: UseStore<DialogState> = create((set, get) => ({
         get().closeDialog();
         onCancel && onCancel();
       },
+      contentHtml,
       choiceGroupProps,
       textFieldProps,
       primaryButtonDisabled,
@@ -124,6 +127,7 @@ export interface DialogProps {
   type?: DialogType;
   showCloseButton?: boolean;
   onDismiss?: () => void;
+  contentHtml?: JSX.Element;
 }
 
 const DIALOG_MIN_WIDTH = "400px";
@@ -150,6 +154,7 @@ export const Dialog: FC = () => {
     type,
     showCloseButton,
     onDismiss,
+    contentHtml,
   } = props || {};
 
   const dialogProps: IDialogProps = {
@@ -191,6 +196,7 @@ export const Dialog: FC = () => {
           {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
         </Link>
       )}
+      {contentHtml}
       {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
       <DialogFooter>
         <PrimaryButton {...primaryButtonProps} />

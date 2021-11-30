@@ -212,6 +212,7 @@ export default class NotebookManager {
         "Cancel",
         () => reject(new Error("Commit dialog canceled")),
         undefined,
+        undefined,
         {
           label: "Commit message",
           autoAdjustHeight: true,

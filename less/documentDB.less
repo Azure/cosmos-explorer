@@ -2357,6 +2357,8 @@ a:link {
   height: 100%;
   flex-grow: 1;
   overflow: hidden;
+  min-height: 300px;
+  overflow-y: scroll;
 }
 
 .tabs {
@@ -2832,7 +2834,7 @@ a:link {
 
 #explorerNotificationConsole {
   z-index: 1000;
-  overflow-y:auto;
+  overflow-y: auto;
   overflow-x: clip;
 }
 
@@ -2867,31 +2869,31 @@ a:link {
   }
 }
 
-settings-pane {
-  .settingsSection {
-    border-bottom: 1px solid @BaseMedium;
-    margin-right: 24px;
-    padding: @MediumSpace 0px;
+.settingsSection {
+  border-bottom: 1px solid @BaseMedium;
+  margin-right: 24px;
+  padding: @MediumSpace 0px;
 
-    &:first-child {
-      padding-top: 0px;
-    }
+  &:first-child {
+    padding-top: 0px;
+    padding-bottom: 10px;
+  }
 
-    &:last-child {
-      border-bottom: none;
-    }
+  &:last-child {
+    border-bottom: none;
+  }
 
-    .settingsSectionPart {
-      padding-left: 8px;
-    }
+  .settingsSectionPart {
+    padding-left: 8px;
+  }
 
-    .settingsSectionLabel {
-      margin-bottom: @DefaultSpace;
-    }
+  .settingsSectionLabel {
+    margin-bottom: @DefaultSpace;
+    margin-right: 5px;
+  }
 
-    .pageOptionsPart {
-      padding-bottom: @MediumSpace;
-    }
+  .pageOptionsPart {
+    padding-bottom: @MediumSpace;
   }
 }
 

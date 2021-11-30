@@ -52,6 +52,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   );
   const [formErrors, setFormErrors] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [isThroughputCapExceeded, setIsThroughputCapExceeded] = useState<boolean>(false);
 
   const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
@@ -171,6 +172,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     formError: formErrors,
     isExecuting,
     submitButtonText: "OK",
+    isSubmitButtonDisabled: isThroughputCapExceeded,
     onSubmit,
   };
 
@@ -241,6 +243,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             isSharded={databaseCreateNewShared}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
+            setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
             onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
           />
         )}

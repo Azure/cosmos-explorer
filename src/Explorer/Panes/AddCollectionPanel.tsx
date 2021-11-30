@@ -13,21 +13,21 @@ import {
   Text,
   TooltipHost,
 } from "@fluentui/react";
+import * as Constants from "Common/Constants";
+import { createCollection } from "Common/dataAccess/createCollection";
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { configContext, Platform } from "ConfigContext";
+import * as DataModels from "Contracts/DataModels";
+import { SubscriptionType } from "Contracts/SubscriptionType";
+import { useSidePanel } from "hooks/useSidePanel";
 import React from "react";
-import * as Constants from "../../Common/Constants";
-import { createCollection } from "../../Common/dataAccess/createCollection";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { configContext, Platform } from "../../ConfigContext";
-import * as DataModels from "../../Contracts/DataModels";
-import { SubscriptionType } from "../../Contracts/SubscriptionType";
-import { useSidePanel } from "../../hooks/useSidePanel";
-import { CollectionCreation } from "../../Shared/Constants";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
-import { getCollectionName } from "../../Utils/APITypeUtils";
-import { isCapabilityEnabled, isServerlessAccount } from "../../Utils/CapabilityUtils";
-import { getUpsellMessage } from "../../Utils/PricingUtils";
+import { CollectionCreation } from "Shared/Constants";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "UserContext";
+import { getCollectionName } from "Utils/APITypeUtils";
+import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils";
+import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../Explorer";
@@ -92,6 +92,7 @@ export interface AddCollectionPanelState {
   errorMessage: string;
   showErrorDetails: boolean;
   isExecuting: boolean;
+  isThroughputCapExceeded: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -122,6 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       errorMessage: "",
       showErrorDetails: false,
       isExecuting: false,
+      isThroughputCapExceeded: false,
     };
   }
 
@@ -249,6 +251,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
+                    setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                      this.setState({ isThroughputCapExceeded })
+                    }
                     onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
                   />
                 )}
@@ -480,6 +485,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               isSharded={this.state.isSharded}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
+              setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                this.setState({ isThroughputCapExceeded })
+              }
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {
                 this.isCostAcknowledged = isAcknowledged;
               }}
@@ -676,7 +684,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
           )}
         </div>
 
-        <PanelFooterComponent buttonLabel="OK" />
+        <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
 
         {this.state.isExecuting && <PanelLoadingScreen />}
       </form>
@@ -999,7 +1007,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     const collectionId: string = this.state.collectionId.trim();
     let databaseId = this.state.createNewDatabase ? this.state.newDatabaseId.trim() : this.state.selectedDatabaseId;
-    let partitionKeyString = this.state.partitionKey.trim();
+    let partitionKeyString = this.state.isSharded ? this.state.partitionKey.trim() : undefined;
 
     if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'
