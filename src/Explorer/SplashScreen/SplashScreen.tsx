@@ -314,22 +314,15 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           }
           useSidePanel
             .getState()
-            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />);
+            .openSidePanel(
+              "New " + getDatabaseName(),
+              <AddDatabasePanel explorer={this.container} buttonElement={document.activeElement as HTMLElement} />
+            );
         },
       });
     }
 
     return items;
-  }
-
-  private openAddDatabasePanel() {
-    const newDatabaseButton = document.activeElement as HTMLElement;
-    useSidePanel
-      .getState()
-      .openSidePanel(
-        "New " + getDatabaseName(),
-        <AddDatabasePanel explorer={this.container} buttonElement={newDatabaseButton} />
-      );
   }
 
   private decorateOpenCollectionActivity({ databaseId, collectionId }: MostRecentActivity.OpenCollectionItem) {
