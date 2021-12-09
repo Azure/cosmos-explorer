@@ -114,7 +114,7 @@ export const ThroughputInput: FunctionComponent<ThroughputInputProps> = ({
     setThroughput(newThroughput);
     setThroughputValue(newThroughput);
 
-    if (!isSharded && newThroughput > 10000 && userContext.apiType !== "Cassandra") {
+    if (!isSharded && newThroughput > 10000) {
       setThroughputError("Unsharded collections support up to 10,000 RUs");
       return;
     }
