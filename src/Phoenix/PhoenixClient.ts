@@ -9,7 +9,7 @@ import {
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse,
+  IResponse
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
@@ -37,7 +37,7 @@ export class PhoenixClient {
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
       const response = await fetch(
-        `${this.getPhoenixControlPlaneEndpoint()}${userContext.databaseAccount.id}/containerconnections`,
+        `${this.getPhoenixControlPlaneEndpoint()}/containerconnections`,
         {
           method: operation === "allocate" ? "POST" : "PATCH",
           headers: PhoenixClient.getHeaders(),
@@ -76,7 +76,7 @@ export class PhoenixClient {
     try {
       const runContainerStatusAsync = async () => {
         const response = await window.fetch(
-          `${this.getPhoenixControlPlaneEndpoint()}${userContext.databaseAccount.id}/${containerData.forwardingId}`,
+          `${this.getPhoenixControlPlaneEndpoint()}/${containerData.forwardingId}`,
           {
             method: "GET",
             headers: PhoenixClient.getHeaders(),
@@ -125,7 +125,7 @@ export class PhoenixClient {
 
   public async IsDbAcountWhitelisted() {
     try {
-      const response = await window.fetch(`${this.getPhoenixControlPlaneEndpoint()}${userContext.databaseAccount.id}`, {
+      const response = await window.fetch(`${this.getPhoenixControlPlaneEndpoint()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
       });
@@ -149,7 +149,7 @@ export class PhoenixClient {
   }
 
   public getPhoenixControlPlaneEndpoint(): string {
-    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts`;
+    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts${userContext.databaseAccount.id}`;
   }
 
   private static getHeaders(): HeadersInit {
