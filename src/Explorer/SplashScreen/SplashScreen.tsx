@@ -314,7 +314,10 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
           }
           useSidePanel
             .getState()
-            .openSidePanel("New " + getDatabaseName(), <AddDatabasePanel explorer={this.container} />);
+            .openSidePanel(
+              "New " + getDatabaseName(),
+              <AddDatabasePanel explorer={this.container} buttonElement={document.activeElement as HTMLElement} />
+            );
         },
       });
     }

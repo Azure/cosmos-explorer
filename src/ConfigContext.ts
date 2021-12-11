@@ -1,3 +1,5 @@
+import { JunoEndpoints } from "Common/Constants";
+
 export enum Platform {
   Portal = "Portal",
   Hosted = "Hosted",
@@ -23,6 +25,7 @@ export interface ConfigContext {
   PROXY_PATH?: string;
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
+  GITHUB_TEST_ENV_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
   IS_MPAC: boolean;
   hostedExplorerURL: string;
@@ -53,16 +56,17 @@ let configContext: Readonly<ConfigContext> = {
   GRAPH_API_VERSION: "1.6",
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
-  GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
+  GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1189306
+  GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
   IS_MPAC: false,
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   allowedJunoOrigins: [
-    "https://juno-test.documents-dev.windows-int.net",
-    "https://juno-test2.documents-dev.windows-int.net",
-    "https://juno-test3.documents-dev.windows-int.net",
-    "https://tools.cosmos.azure.com",
-    "https://tools-staging.cosmos.azure.com",
+    JunoEndpoints.Test,
+    JunoEndpoints.Test2,
+    JunoEndpoints.Test3,
+    JunoEndpoints.Prod,
+    JunoEndpoints.Stage,
     "https://localhost",
   ],
 };
@@ -148,3 +152,4 @@ export async function initializeConfiguration(): Promise<ConfigContext> {
 }
 
 export { configContext };
+
