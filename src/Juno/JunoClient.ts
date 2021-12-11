@@ -1,4 +1,5 @@
 import ko from "knockout";
+import { GetGithubClientId } from "Utils/GitHubUtils";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
@@ -522,7 +523,7 @@ export class JunoClient {
 
   private static getGitHubClientParams(): URLSearchParams {
     const githubParams = new URLSearchParams({
-      client_id: configContext.GITHUB_CLIENT_ID,
+      client_id: GetGithubClientId(),
     });
 
     if (configContext.GITHUB_CLIENT_SECRET) {

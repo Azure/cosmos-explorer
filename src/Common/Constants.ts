@@ -412,3 +412,11 @@ export class TerminalQueryParams {
   public static readonly SubscriptionId = "subscriptionId";
   public static readonly TerminalEndpoint = "terminalEndpoint";
 }
+
+export class JunoEndpoints {
+  public static readonly Test = "https://juno-test.documents-dev.windows-int.net";
+  public static readonly Test2 = "https://juno-test2.documents-dev.windows-int.net";
+  public static readonly Test3 = "https://juno-test3.documents-dev.windows-int.net";
+  public static readonly Prod = "https://tools.cosmos.azure.com";
+  public static readonly Stage = "https://tools-staging.cosmos.azure.com";
+}
