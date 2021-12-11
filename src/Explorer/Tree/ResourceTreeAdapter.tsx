@@ -808,7 +808,7 @@ export class ResourceTreeAdapter implements ReactAdapter {
       },
     ];
 
-    // For Temporary workspaces removing "Rename" in context menu.
+    //disallow renaming of temporary notebook workspace
     if (item?.path === useNotebook.getState().notebookBasePath) {
       items = items.filter((item) => item.label !== "Rename");
     }
