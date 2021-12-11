@@ -24,6 +24,7 @@ export interface ConfigContext {
   JUNO_ENDPOINT: string;
   GITHUB_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
+  IS_MPAC: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
   allowedJunoOrigins: string[];
@@ -53,6 +54,7 @@ let configContext: Readonly<ConfigContext> = {
   ARCADIA_ENDPOINT: "https://workspaceartifacts.projectarcadia.net",
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/settings/applications/1189306
+  IS_MPAC: false,
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   allowedJunoOrigins: [

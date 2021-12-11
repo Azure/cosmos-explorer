@@ -6,7 +6,6 @@ import { configContext } from "../ConfigContext";
 import {
   ContainerConnectionInfo,
   ContainerInfo,
-  IAccountData,
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
@@ -24,30 +23,21 @@ export class PhoenixClient {
     minTimeout: Notebook.retryAttemptDelayMs,
   };
 
-  public async allocateContainer(
-    provisionData: IProvisionData,
-    accountData: IAccountData
-  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
-    return this.executeContainerAssignmentOperation(provisionData, accountData, "allocate");
+  public async allocateContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    return this.executeContainerAssignmentOperation(provisionData, "allocate");
   }
 
-  public async resetContainer(
-    provisionData: IProvisionData,
-    accountData: IAccountData
-  ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
-    return this.executeContainerAssignmentOperation(provisionData, accountData, "reset");
+  public async resetContainer(provisionData: IProvisionData): Promise<IResponse<IPhoenixConnectionInfoResult>> {
+    return this.executeContainerAssignmentOperation(provisionData, "reset");
   }
 
   private async executeContainerAssignmentOperation(
     provisionData: IProvisionData,
-    accountData: IAccountData,
     operation: string
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
       const response = await fetch(
-        `${this.getPhoenixContainerPoolingEndPoint()}/subscriptions/${accountData.subscriptionId}/resourceGroups/${
-          accountData.resourceGroup
-        }/providers/Microsoft.DocumentDB/databaseAccounts/${accountData.dbAccountName}/containerconnections`,
+        `${this.getPhoenixControlPlaneEndpoint()}${userContext.databaseAccount.id}/containerconnections`,
         {
           method: operation === "allocate" ? "POST" : "PATCH",
           headers: PhoenixClient.getHeaders(),
@@ -86,11 +76,7 @@ export class PhoenixClient {
     try {
       const runContainerStatusAsync = async () => {
         const response = await window.fetch(
-          `${this.getPhoenixContainerPoolingEndPoint()}/subscriptions/${containerData.subscriptionId}/resourceGroups/${
-            containerData.resourceGroup
-          }/providers/Microsoft.DocumentDB/databaseAccounts/${containerData.dbAccountName}/${
-            containerData.forwardingId
-          }`,
+          `${this.getPhoenixControlPlaneEndpoint()}${userContext.databaseAccount.id}/${containerData.forwardingId}`,
           {
             method: "GET",
             headers: PhoenixClient.getHeaders(),
@@ -130,37 +116,19 @@ export class PhoenixClient {
   }
 
   private async getContainerHealth(delayMs: number, containerData: IContainerData) {
-    try {
-      const containerInfo = await this.getContainerStatusAsync(containerData);
-      useNotebook.getState().setContainerStatus(containerInfo);
-      if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
-        this.scheduleContainerHeartbeat(delayMs, containerData);
-      }
-    } catch (exception) {
-      const connectionStatus: ContainerConnectionInfo = {
-        status: ConnectionStatusType.Reconnect,
-      };
-      useNotebook.getState().resetContainerConnection(connectionStatus);
-      useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-      useNotebook.getState().setContainerStatus({
-        durationLeftInMinutes: undefined,
-        notebookServerInfo: undefined,
-        status: ContainerStatusType.Disconnected,
-      });
+    const containerInfo = await this.getContainerStatusAsync(containerData);
+    useNotebook.getState().setContainerStatus(containerInfo);
+    if (useNotebook.getState().containerStatus?.status === ContainerStatusType.Active) {
+      this.scheduleContainerHeartbeat(delayMs, containerData);
     }
   }
 
-  public async IsDbAcountWhitelisted(accountData: IAccountData) {
+  public async IsDbAcountWhitelisted() {
     try {
-      const response = await window.fetch(
-        `${this.getPhoenixContainerPoolingEndPoint()}/subscriptions/${accountData.subscriptionId}/resourceGroups/${
-          accountData.resourceGroup
-        }/providers/Microsoft.DocumentDB/databaseAccounts/${accountData.dbAccountName}`,
-        {
-          method: "GET",
-          headers: PhoenixClient.getHeaders(),
-        }
-      );
+      const response = await window.fetch(`${this.getPhoenixControlPlaneEndpoint()}${userContext.databaseAccount.id}`, {
+        method: "GET",
+        headers: PhoenixClient.getHeaders(),
+      });
       return response.status === HttpStatusCodes.OK;
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/IsDbAcountWhitelisted");
@@ -180,7 +148,7 @@ export class PhoenixClient {
     return phoenixEndpoint;
   }
 
-  public getPhoenixContainerPoolingEndPoint(): string {
+  public getPhoenixControlPlaneEndpoint(): string {
     return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts`;
   }
 

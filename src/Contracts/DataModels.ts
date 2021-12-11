@@ -441,13 +441,7 @@ export interface IProvisionData {
   cosmosEndpoint: string;
 }
 
-export interface IAccountData {
-  subscriptionId: string;
-  resourceGroup: string;
-  dbAccountName: string;
-}
-
-export interface IContainerData extends IAccountData {
+export interface IContainerData {
   forwardingId: string;
 }
 

@@ -16,7 +16,6 @@ import { QueriesClient } from "../Common/QueriesClient";
 import * as DataModels from "../Contracts/DataModels";
 import {
   ContainerConnectionInfo,
-  IAccountData,
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
@@ -373,18 +372,13 @@ export default class Explorer {
       const provisionData: IProvisionData = {
         cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
       };
-      const accountData: IAccountData = {
-        subscriptionId: userContext.subscriptionId,
-        resourceGroup: userContext.resourceGroup,
-        dbAccountName: userContext.databaseAccount.name,
-      };
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Connecting,
       };
       useNotebook.getState().setConnectionInfo(connectionStatus);
       try {
         useNotebook.getState().setIsAllocating(true);
-        const connectionInfo = await this.phoenixClient.allocateContainer(provisionData, accountData);
+        const connectionInfo = await this.phoenixClient.allocateContainer(provisionData);
         await this.setNotebookInfo(connectionInfo, connectionStatus);
       } catch (error) {
         connectionStatus.status = ConnectionStatusType.Failed;
@@ -404,9 +398,6 @@ export default class Explorer {
   ) {
     if (connectionInfo.status === HttpStatusCodes.OK && connectionInfo.data && connectionInfo.data.notebookServerUrl) {
       const containerData: IContainerData = {
-        subscriptionId: userContext.subscriptionId,
-        resourceGroup: userContext.resourceGroup,
-        dbAccountName: userContext.databaseAccount.name,
         forwardingId: connectionInfo.data.forwardingId,
       };
       await this.phoenixClient.initiateContainerHeartBeat(containerData);
@@ -1285,7 +1276,7 @@ export default class Explorer {
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
     //Disable phoenix in case of Vnet or Firewall was enabled.
-    if (useNotebook.getState().isPhoenix && !isPublicInternetAccessAllowed()) {
+    if (!isPublicInternetAccessAllowed()) {
       useNotebook.getState().setIsPhoenix(false);
     }
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
@@ -1299,12 +1290,7 @@ export default class Explorer {
     });
 
     if (useNotebook.getState().isPhoenix) {
-      if (isNotebookEnabled) {
-        await this.initNotebooks(userContext.databaseAccount);
-      } else if (this.notebookToImport) {
-        // if notebooks is not enabled but the user is trying to do a quickstart setup with notebooks, open the SetupNotebooksPane
-        this._openSetupNotebooksPaneForQuickstart();
-      }
+      await this.initNotebooks(userContext.databaseAccount);
     }
   }
 }

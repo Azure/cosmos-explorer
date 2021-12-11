@@ -8,7 +8,7 @@ import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import { configContext } from "../../ConfigContext";
 import * as DataModels from "../../Contracts/DataModels";
-import { ContainerConnectionInfo, ContainerInfo, IAccountData } from "../../Contracts/DataModels";
+import { ContainerConnectionInfo, ContainerInfo } from "../../Contracts/DataModels";
 import { useTabs } from "../../hooks/useTabs";
 import { IPinnedRepo } from "../../Juno/JunoClient";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
@@ -300,13 +300,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   getPhoenixStatus: async () => {
     if (get().isPhoenix === undefined) {
       const phoenixClient = new PhoenixClient();
-      const accountData: IAccountData = {
-        subscriptionId: userContext.subscriptionId,
-        resourceGroup: userContext.resourceGroup,
-        dbAccountName: userContext.databaseAccount.name,
-      };
-      const isPhoenix =
-        userContext.features.phoenix === true && (await phoenixClient.IsDbAcountWhitelisted(accountData));
+      const isPhoenix = userContext.features.phoenix === true && (await phoenixClient.IsDbAcountWhitelisted());
       set({ isPhoenix });
     }
   },
