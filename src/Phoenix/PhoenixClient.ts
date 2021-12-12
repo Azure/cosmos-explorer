@@ -9,7 +9,7 @@ import {
   IContainerData,
   IPhoenixConnectionInfoResult,
   IProvisionData,
-  IResponse
+  IResponse,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
 import { userContext } from "../UserContext";
@@ -36,14 +36,11 @@ export class PhoenixClient {
     operation: string
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
-      const response = await fetch(
-        `${this.getPhoenixControlPlaneEndpoint()}/containerconnections`,
-        {
-          method: operation === "allocate" ? "POST" : "PATCH",
-          headers: PhoenixClient.getHeaders(),
-          body: JSON.stringify(provisionData),
-        }
-      );
+      const response = await fetch(`${this.getPhoenixControlPlaneEndpoint()}/containerconnections`, {
+        method: operation === "allocate" ? "POST" : "PATCH",
+        headers: PhoenixClient.getHeaders(),
+        body: JSON.stringify(provisionData),
+      });
 
       let data: IPhoenixConnectionInfoResult;
       if (response.status === HttpStatusCodes.OK) {
@@ -75,13 +72,10 @@ export class PhoenixClient {
   private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
       const runContainerStatusAsync = async () => {
-        const response = await window.fetch(
-          `${this.getPhoenixControlPlaneEndpoint()}/${containerData.forwardingId}`,
-          {
-            method: "GET",
-            headers: PhoenixClient.getHeaders(),
-          }
-        );
+        const response = await window.fetch(`${this.getPhoenixControlPlaneEndpoint()}/${containerData.forwardingId}`, {
+          method: "GET",
+          headers: PhoenixClient.getHeaders(),
+        });
         if (response.status === HttpStatusCodes.OK) {
           const containerStatus = await response.json();
           return {
@@ -149,7 +143,9 @@ export class PhoenixClient {
   }
 
   public getPhoenixControlPlaneEndpoint(): string {
-    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts${userContext.databaseAccount.id}`;
+    return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts${
+      userContext.databaseAccount.id
+    }`;
   }
 
   private static getHeaders(): HeadersInit {
