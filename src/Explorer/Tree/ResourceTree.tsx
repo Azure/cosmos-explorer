@@ -121,7 +121,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       children: [],
     };
 
-    if (userContext.features.notebooksTemporarilyDown) {
+    if (!useNotebook.getState().isPhoenix) {
       notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
     } else {
       if (galleryContentRoot) {
