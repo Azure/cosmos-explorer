@@ -6,6 +6,7 @@
 import { CommandBar as FluentCommandBar, ICommandBarItemProps } from "@fluentui/react";
 import { useNotebook } from "Explorer/Notebook/useNotebook";
 import * as React from "react";
+import { userContext } from "UserContext";
 import create, { UseStore } from "zustand";
 import { StyleConstants } from "../../../Common/Constants";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
@@ -53,7 +54,7 @@ export const CommandBar: React.FC<Props> = ({ container }: Props) => {
   const uiFabricControlButtons = CommandBarUtil.convertButton(controlButtons, backgroundColor);
   uiFabricControlButtons.forEach((btn: ICommandBarItemProps) => (btn.iconOnly = true));
 
-  if (useNotebook.getState().isPhoenix) {
+  if (!userContext.features.notebooksTemporarilyDown && useNotebook.getState().isPhoenix) {
     uiFabricControlButtons.unshift(CommandBarUtil.createConnectionStatus(container, "connectionStatus"));
   }
 
