@@ -1286,10 +1286,6 @@ export default class Explorer {
       : this.refreshAllDatabases();
     await useNotebook.getState().refreshNotebooksEnabledStateForAccount();
 
-    //Disable phoenix in case of Vnet or Firewall was enabled.
-    if (!isPublicInternetAccessAllowed()) {
-      useNotebook.getState().setIsPhoenix(false);
-    }
     // TODO: remove reference to isNotebookEnabled and isNotebooksEnabledForAccount
     const isNotebookEnabled = userContext.features.notebooksDownBanner || useNotebook.getState().isPhoenix;
     useNotebook.getState().setIsNotebookEnabled(isNotebookEnabled);

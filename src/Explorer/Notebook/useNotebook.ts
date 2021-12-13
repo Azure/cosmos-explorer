@@ -299,8 +299,11 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   setContainerStatus: (containerStatus: ContainerInfo) => set({ containerStatus }),
   getPhoenixStatus: async () => {
     if (get().isPhoenix === undefined) {
-      const phoenixClient = new PhoenixClient();
-      const isPhoenix = userContext.features.phoenix === true && (await phoenixClient.IsDbAcountWhitelisted());
+      let isPhoenix = false;
+      if (userContext.features.phoenix === true) {
+        const phoenixClient = new PhoenixClient();
+        isPhoenix = await phoenixClient.IsDbAcountWhitelisted();
+      }
       set({ isPhoenix });
     }
   },

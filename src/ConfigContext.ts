@@ -27,7 +27,7 @@ export interface ConfigContext {
   GITHUB_CLIENT_ID: string;
   GITHUB_TEST_ENV_CLIENT_ID: string;
   GITHUB_CLIENT_SECRET?: string; // No need to inject secret for prod. Juno already knows it.
-  IS_MPAC: boolean;
+  IsTerminalEnabled: boolean;
   hostedExplorerURL: string;
   armAPIVersion?: string;
   allowedJunoOrigins: string[];
@@ -58,7 +58,7 @@ let configContext: Readonly<ConfigContext> = {
   ARCADIA_LIVY_ENDPOINT_DNS_ZONE: "dev.azuresynapse.net",
   GITHUB_CLIENT_ID: "6cb2f63cf6f7b5cbdeca", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1189306
   GITHUB_TEST_ENV_CLIENT_ID: "b63fc8cbf87fd3c6e2eb", // Registered OAuth app: https://github.com/organizations/AzureCosmosDBNotebooks/settings/applications/1777772
-  IS_MPAC: false,
+  IsTerminalEnabled: false,
   JUNO_ENDPOINT: "https://tools.cosmos.azure.com",
   BACKEND_ENDPOINT: "https://main.documentdb.ext.azure.com",
   allowedJunoOrigins: [

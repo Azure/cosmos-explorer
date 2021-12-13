@@ -1,5 +1,13 @@
 import promiseRetry, { AbortError } from "p-retry";
-import { ConnectionStatusType, ContainerStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "../Common/Constants";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import {
+  Areas,
+  ConnectionStatusType,
+  ContainerStatusType,
+  HttpHeaders,
+  HttpStatusCodes,
+  Notebook,
+} from "../Common/Constants";
 import { getErrorMessage } from "../Common/ErrorHandlingUtils";
 import * as Logger from "../Common/Logger";
 import { configContext } from "../ConfigContext";
@@ -12,6 +20,7 @@ import {
   IResponse,
 } from "../Contracts/DataModels";
 import { useNotebook } from "../Explorer/Notebook/useNotebook";
+import * as TelemetryProcessor from "../Shared/Telemetry/TelemetryProcessor";
 import { userContext } from "../UserContext";
 import { getAuthorizationHeader } from "../Utils/AuthorizationUtils";
 
@@ -36,7 +45,7 @@ export class PhoenixClient {
     operation: string
   ): Promise<IResponse<IPhoenixConnectionInfoResult>> {
     try {
-      const response = await fetch(`${this.getPhoenixControlPlaneEndpoint()}/containerconnections`, {
+      const response = await fetch(`${this.getPhoenixControlPlanePathPrefix()}/containerconnections`, {
         method: operation === "allocate" ? "POST" : "PATCH",
         headers: PhoenixClient.getHeaders(),
         body: JSON.stringify(provisionData),
@@ -72,10 +81,13 @@ export class PhoenixClient {
   private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
       const runContainerStatusAsync = async () => {
-        const response = await window.fetch(`${this.getPhoenixControlPlaneEndpoint()}/${containerData.forwardingId}`, {
-          method: "GET",
-          headers: PhoenixClient.getHeaders(),
-        });
+        const response = await window.fetch(
+          `${this.getPhoenixControlPlanePathPrefix()}/${containerData.forwardingId}`,
+          {
+            method: "GET",
+            headers: PhoenixClient.getHeaders(),
+          }
+        );
         if (response.status === HttpStatusCodes.OK) {
           const containerStatus = await response.json();
           return {
@@ -84,6 +96,9 @@ export class PhoenixClient {
             status: ContainerStatusType.Active,
           };
         } else if (response.status === HttpStatusCodes.NotFound) {
+          TelemetryProcessor.traceMark(Action.PhoenixReconnect, {
+            dataExplorerArea: Areas.Notebook,
+          });
           const connectionStatus: ContainerConnectionInfo = {
             status: ConnectionStatusType.Reconnect,
           };
@@ -97,7 +112,7 @@ export class PhoenixClient {
     } catch (error) {
       Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
       const connectionStatus: ContainerConnectionInfo = {
-        status: ConnectionStatusType.Reconnect,
+        status: ConnectionStatusType.Failed,
       };
       useNotebook.getState().resetContainerConnection(connectionStatus);
       useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
@@ -119,7 +134,7 @@ export class PhoenixClient {
 
   public async IsDbAcountWhitelisted() {
     try {
-      const response = await window.fetch(`${this.getPhoenixControlPlaneEndpoint()}`, {
+      const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",
         headers: PhoenixClient.getHeaders(),
       });
@@ -142,7 +157,7 @@ export class PhoenixClient {
     return phoenixEndpoint;
   }
 
-  public getPhoenixControlPlaneEndpoint(): string {
+  public getPhoenixControlPlanePathPrefix(): string {
     return `${PhoenixClient.getPhoenixEndpoint()}/api/controlplane/toolscontainer/cosmosaccounts${
       userContext.databaseAccount.id
     }`;

@@ -82,6 +82,7 @@ export enum Action {
   NotebooksMoveCellUpFromMenu,
   NotebooksMoveCellDownFromMenu,
   PhoenixConnection,
+  PhoenixReconnect,
   PhoenixResetWorkspace,
   DeleteCellFromMenu,
   OpenTerminal,

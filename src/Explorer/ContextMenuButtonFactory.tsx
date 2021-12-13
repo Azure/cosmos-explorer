@@ -83,7 +83,6 @@ export const createCollectionContextMenuButton = (
 
     items.push({
       iconSrc: HostedTerminalIcon,
-      isDisabled: useNotebook.getState().isShellEnabled && !useNotebook.getState().isPhoenix,
       onClick: () => {
         const selectedCollection: ViewModels.Collection = useSelectedNode.getState().findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {

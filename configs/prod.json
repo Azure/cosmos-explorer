@@ -1,4 +1,4 @@
 {
  "JUNO_ENDPOINT": "https://tools.cosmos.azure.com",
- "IS_MPAC" : false
+ "IsTerminalEnabled" : false
 }

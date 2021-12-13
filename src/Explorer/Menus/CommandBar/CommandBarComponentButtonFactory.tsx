@@ -78,7 +78,7 @@ export function createStaticCommandBarButtons(
     if (container.notebookManager?.gitHubOAuthService) {
       notebookButtons.push(createManageGitHubAccountButton(container));
     }
-    if (useNotebook.getState().isPhoenix && configContext.IS_MPAC) {
+    if (useNotebook.getState().isPhoenix && configContext.IsTerminalEnabled) {
       notebookButtons.push(createOpenTerminalButton(container));
     }
     if (selectedNodeState.isConnectedToContainer()) {
@@ -169,9 +169,7 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          if (useNotebook.getState().isPhoenix) {
-            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
-          }
+          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
@@ -179,13 +177,6 @@ export function createContextCommandBarButtons(
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      tooltipText:
-        useNotebook.getState().isShellEnabled && !useNotebook.getState().isPhoenix
-          ? Constants.Notebook.mongoShellTemporarilyDownMsg
-          : undefined,
-      disabled:
-        (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
-        (useNotebook.getState().isShellEnabled && !useNotebook.getState().isPhoenix),
     };
     buttons.push(newMongoShellBtn);
   }
