@@ -82,7 +82,7 @@ export enum Action {
   NotebooksMoveCellUpFromMenu,
   NotebooksMoveCellDownFromMenu,
   PhoenixConnection,
-  PhoenixReconnect,
+  PhoenixHeartBeat,
   PhoenixResetWorkspace,
   DeleteCellFromMenu,
   OpenTerminal,

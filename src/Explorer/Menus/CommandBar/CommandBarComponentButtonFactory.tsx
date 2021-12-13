@@ -99,7 +99,7 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (!useNotebook.getState().isPhoenix) {
+      if (userContext.features.notebooksTemporarilyDown) {
         if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
         } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
@@ -111,7 +111,7 @@ export function createStaticCommandBarButtons(
       buttons.push(btn);
     });
   } else {
-    if (!isRunningOnNationalCloud() && useNotebook.getState().isPhoenix) {
+    if (!isRunningOnNationalCloud() && !userContext.features.notebooksTemporarilyDown) {
       buttons.push(createDivider());
       buttons.push(createEnableNotebooksButton(container));
     }
@@ -169,7 +169,9 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          if (!userContext.features.notebooksTemporarilyDown) {
+            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
+          }
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
@@ -177,6 +179,13 @@ export function createContextCommandBarButtons(
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
+      tooltipText:
+        useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown
+          ? Constants.Notebook.mongoShellTemporarilyDownMsg
+          : undefined,
+      disabled:
+        (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
+        (useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown),
     };
     buttons.push(newMongoShellBtn);
   }

@@ -121,7 +121,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       children: [],
     };
 
-    if (!useNotebook.getState().isPhoenix) {
+    if (userContext.features.notebooksTemporarilyDown) {
       notebooksTree.children.push(buildNotebooksTemporarilyDownTree());
     } else {
       if (galleryContentRoot) {
@@ -516,7 +516,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       isNotebookEnabled &&
       userContext.apiType === "Mongo" &&
       isPublicInternetAccessAllowed() &&
-      useNotebook.getState().isPhoenix
+      !userContext.features.notebooksTemporarilyDown
     ) {
       children.push({
         label: "Schema (Preview)",

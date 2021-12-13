@@ -221,7 +221,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
       });
     }
 
-    if (useNotebook.getState().isNotebookEnabled && useNotebook.getState().isPhoenix) {
+    if (useNotebook.getState().isNotebookEnabled && !userContext.features.notebooksTemporarilyDown) {
       heroes.push({
         iconSrc: NewNotebookIcon,
         title: "New Notebook",

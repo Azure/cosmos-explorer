@@ -81,6 +81,9 @@ export class PhoenixClient {
   private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
       const runContainerStatusAsync = async () => {
+        TelemetryProcessor.traceStart(Action.PhoenixHeartBeat, {
+          dataExplorerArea: Areas.Notebook,
+        });
         const response = await window.fetch(
           `${this.getPhoenixControlPlanePathPrefix()}/${containerData.forwardingId}`,
           {
@@ -89,6 +92,9 @@ export class PhoenixClient {
           }
         );
         if (response.status === HttpStatusCodes.OK) {
+          TelemetryProcessor.traceSuccess(Action.PhoenixHeartBeat, {
+            dataExplorerArea: Areas.Notebook,
+          });
           const containerStatus = await response.json();
           return {
             durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
@@ -96,12 +102,15 @@ export class PhoenixClient {
             status: ContainerStatusType.Active,
           };
         } else if (response.status === HttpStatusCodes.NotFound) {
-          TelemetryProcessor.traceMark(Action.PhoenixReconnect, {
-            dataExplorerArea: Areas.Notebook,
-          });
+          const error = "Container got disconnected from the workspace";
+          Logger.logError(error, "PhoenixClient/getContainerStatusAsync");
           const connectionStatus: ContainerConnectionInfo = {
             status: ConnectionStatusType.Reconnect,
           };
+          TelemetryProcessor.traceMark(Action.PhoenixHeartBeat, {
+            dataExplorerArea: Areas.Notebook,
+            message: getErrorMessage(error),
+          });
           useNotebook.getState().resetContainerConnection(connectionStatus);
           useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
           throw new AbortError(response.statusText);
@@ -110,7 +119,10 @@ export class PhoenixClient {
       };
       return await promiseRetry(runContainerStatusAsync, this.retryOptions);
     } catch (error) {
-      Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatus");
+      TelemetryProcessor.traceFailure(Action.PhoenixHeartBeat, {
+        dataExplorerArea: Areas.Notebook,
+      });
+      Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatusAsync");
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
