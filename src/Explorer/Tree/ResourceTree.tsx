@@ -380,6 +380,11 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
       },
     ];
 
+    //disallow renaming of temporary notebook workspace
+    if (item?.path === useNotebook.getState().notebookBasePath) {
+      items = items.filter((item) => item.label !== "Rename");
+    }
+
     // For GitHub paths remove "Delete", "Rename", "New Directory", "Upload File"
     if (GitHubUtils.fromContentUri(item.path)) {
       items = items.filter(

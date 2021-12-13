@@ -961,7 +961,7 @@ export default class Explorer {
   /**
    * This creates a new notebook file, then opens the notebook
    */
-  public onNewNotebookClicked(parent?: NotebookContentItem, isGithubTree?: boolean): void {
+  public async onNewNotebookClicked(parent?: NotebookContentItem, isGithubTree?: boolean): Promise<void> {
     if (!useNotebook.getState().isNotebookEnabled || !this.notebookManager?.notebookContentClient) {
       const error = "Attempt to create new notebook, but notebook is not enabled";
       handleError(error, "Explorer/onNewNotebookClicked");
@@ -969,11 +969,9 @@ export default class Explorer {
     }
     if (useNotebook.getState().isPhoenix) {
       if (isGithubTree) {
-        async () => {
-          await this.allocateContainer();
-          parent = parent || this.resourceTree.myNotebooksContentRoot;
-          this.createNewNoteBook(parent, isGithubTree);
-        };
+        await this.allocateContainer();
+        parent = parent || this.resourceTree.myNotebooksContentRoot;
+        this.createNewNoteBook(parent, isGithubTree);
       } else {
         useDialog.getState().showOkCancelModalDialog(
           Notebook.newNotebookModalTitle,
