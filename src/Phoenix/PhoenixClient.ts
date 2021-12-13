@@ -96,8 +96,8 @@ export class PhoenixClient {
             status: ContainerStatusType.Active,
           };
         } else if (response.status === HttpStatusCodes.NotFound) {
-          const error = "Container got disconnected from the workspace";
-          Logger.logError(error, "PhoenixClient/getContainerStatusAsync");
+          const error = "Disconnected from compute workspace";
+          Logger.logError(error, "PhoenixClient/ContainerStatus");
           const connectionStatus: ContainerConnectionInfo = {
             status: ConnectionStatusType.Reconnect,
           };
