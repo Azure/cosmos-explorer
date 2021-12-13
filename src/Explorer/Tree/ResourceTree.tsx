@@ -130,9 +130,8 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
 
       if (
         myNotebooksContentRoot &&
-        ((NotebookUtil.isPhoenixEnabled() &&
-          useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected) ||
-          userContext.features.phoenix === false)
+        useNotebook.getState().isPhoenix &&
+        useNotebook.getState().connectionInfo.status === ConnectionStatusType.Connected
       ) {
         notebooksTree.children.push(buildMyNotebooksTree());
       }
@@ -166,15 +165,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     const myNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       myNotebooksContentRoot,
       (item: NotebookContentItem) => {
-        container.openNotebook(item).then((hasOpened) => {
-          if (
-            hasOpened &&
-            userContext.features.notebooksTemporarilyDown === false &&
-            userContext.features.phoenix === false
-          ) {
-            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
-          }
-        });
+        container.openNotebook(item);
       }
     );
 
@@ -189,15 +180,7 @@ export const ResourceTree: React.FC<ResourceTreeProps> = ({ container }: Resourc
     const gitHubNotebooksTree: TreeNode = buildNotebookDirectoryNode(
       gitHubNotebooksContentRoot,
       (item: NotebookContentItem) => {
-        container.openNotebook(item).then((hasOpened) => {
-          if (
-            hasOpened &&
-            userContext.features.notebooksTemporarilyDown === false &&
-            userContext.features.phoenix === false
-          ) {
-            mostRecentActivity.notebookWasItemOpened(userContext.databaseAccount?.id, item);
-          }
-        });
+        container.openNotebook(item);
       },
       true
     );

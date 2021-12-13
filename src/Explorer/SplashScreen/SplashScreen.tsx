@@ -84,9 +84,7 @@ export class SplashScreen extends React.Component<SplashScreenProps> {
     const mainItems = this.createMainItems();
     const commonTaskItems = this.createCommonTaskItems();
     let recentItems = this.createRecentItems();
-    if (userContext.features.notebooksTemporarilyDown) {
-      recentItems = recentItems.filter((item) => item.description !== "Notebook");
-    }
+    recentItems = recentItems.filter((item) => item.description !== "Notebook");
 
     const tipsItems = this.createTipsItems();
     const onClearRecent = this.clearMostRecent;
