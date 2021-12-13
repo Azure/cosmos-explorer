@@ -201,7 +201,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
     isGithubTree ? set({ gitHubNotebooksContentRoot: root }) : set({ myNotebooksContentRoot: root });
   },
   initializeNotebooksTree: async (notebookManager: NotebookManager): Promise<void> => {
-    const notebookFolderName = get().isPhoenix === true ? "Temporary Notebooks" : "My Notebooks";
+    const notebookFolderName = get().isPhoenix ? "Temporary Notebooks" : "My Notebooks";
     set({ notebookFolderName });
     const myNotebooksContentRoot = {
       name: get().notebookFolderName,
@@ -300,9 +300,9 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
   getPhoenixStatus: async () => {
     if (get().isPhoenix === undefined) {
       let isPhoenix = false;
-      if (userContext.features.phoenix === true) {
+      if (userContext.features.phoenix) {
         const phoenixClient = new PhoenixClient();
-        isPhoenix = await phoenixClient.IsDbAcountWhitelisted();
+        isPhoenix = await phoenixClient.isDbAcountWhitelisted();
       }
       set({ isPhoenix });
     }

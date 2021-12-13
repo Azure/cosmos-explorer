@@ -97,7 +97,7 @@ export class PhoenixClient {
           };
         } else if (response.status === HttpStatusCodes.NotFound) {
           const error = "Disconnected from compute workspace";
-          Logger.logError(error, "PhoenixClient/ContainerStatus");
+          Logger.logError(error, "");
           const connectionStatus: ContainerConnectionInfo = {
             status: ConnectionStatusType.Reconnect,
           };
@@ -116,7 +116,7 @@ export class PhoenixClient {
       TelemetryProcessor.traceFailure(Action.PhoenixHeartBeat, {
         dataExplorerArea: Areas.Notebook,
       });
-      Logger.logError(getErrorMessage(error), "PhoenixClient/getContainerStatusAsync");
+      Logger.logError(getErrorMessage(error), "");
       const connectionStatus: ContainerConnectionInfo = {
         status: ConnectionStatusType.Failed,
       };
@@ -138,7 +138,7 @@ export class PhoenixClient {
     }
   }
 
-  public async IsDbAcountWhitelisted() {
+  public async isDbAcountWhitelisted(): Promise<boolean> {
     try {
       const response = await window.fetch(`${this.getPhoenixControlPlanePathPrefix()}`, {
         method: "GET",

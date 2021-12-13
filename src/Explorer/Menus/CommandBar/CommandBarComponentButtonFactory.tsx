@@ -78,7 +78,7 @@ export function createStaticCommandBarButtons(
     if (container.notebookManager?.gitHubOAuthService) {
       notebookButtons.push(createManageGitHubAccountButton(container));
     }
-    if (useNotebook.getState().isPhoenix && configContext.IsTerminalEnabled) {
+    if (useNotebook.getState().isPhoenix && configContext.isTerminalEnabled) {
       notebookButtons.push(createOpenTerminalButton(container));
     }
     if (selectedNodeState.isConnectedToContainer()) {

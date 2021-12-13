@@ -121,13 +121,10 @@ export class NotebookContainerClient {
   }
 
   private shouldExecuteMemoryCall(): boolean {
-    if (
+    return (
       useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Active &&
       useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Connected
-    ) {
-      return true;
-    }
-    return false;
+    );
   }
 
   public async resetWorkspace(): Promise<IResponse<IPhoenixConnectionInfoResult>> {

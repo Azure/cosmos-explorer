@@ -1,4 +1,4 @@
 {
   "JUNO_ENDPOINT": "https://tools-staging.cosmos.azure.com",
-  "IsTerminalEnabled" : true
+  "isTerminalEnabled" : true
 }
