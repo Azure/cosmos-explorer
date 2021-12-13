@@ -81,9 +81,6 @@ export class PhoenixClient {
   private async getContainerStatusAsync(containerData: IContainerData): Promise<ContainerInfo> {
     try {
       const runContainerStatusAsync = async () => {
-        TelemetryProcessor.traceStart(Action.PhoenixHeartBeat, {
-          dataExplorerArea: Areas.Notebook,
-        });
         const response = await window.fetch(
           `${this.getPhoenixControlPlanePathPrefix()}/${containerData.forwardingId}`,
           {
@@ -92,9 +89,6 @@ export class PhoenixClient {
           }
         );
         if (response.status === HttpStatusCodes.OK) {
-          TelemetryProcessor.traceSuccess(Action.PhoenixHeartBeat, {
-            dataExplorerArea: Areas.Notebook,
-          });
           const containerStatus = await response.json();
           return {
             durationLeftInMinutes: containerStatus?.durationLeftInMinutes,
