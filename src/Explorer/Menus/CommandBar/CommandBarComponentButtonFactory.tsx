@@ -99,7 +99,7 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (userContext.features.notebooksTemporarilyDown) {
+      if (!useNotebook.getState().isPhoenix) {
         if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
         } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {
