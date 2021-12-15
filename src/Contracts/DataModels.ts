@@ -438,14 +438,10 @@ export interface ContainerInfo {
 }
 
 export interface IProvisionData {
-  subscriptionId: string;
-  resourceGroup: string;
-  dbAccountName: string;
   cosmosEndpoint: string;
 }
 
 export interface IContainerData {
-  dbAccountName: string;
   forwardingId: string;
 }
 

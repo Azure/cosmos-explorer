@@ -431,7 +431,7 @@ export default class TableEntityListViewModel extends DataTableViewModel {
           if (newHeaders.length > 0) {
             // Any new columns found will be added into headers array, which will trigger a re-render of the DataTable.
             // So there is no need to call it here.
-            this.updateHeaders(newHeaders, /* notifyColumnChanges */ true);
+            this.updateHeaders(selectedHeadersUnion, /* notifyColumnChanges */ true);
           } else {
             if (columnSortOrder) {
               this.sortColumns(columnSortOrder, oSettings);

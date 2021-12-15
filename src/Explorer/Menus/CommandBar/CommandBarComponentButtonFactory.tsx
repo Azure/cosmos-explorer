@@ -78,8 +78,9 @@ export function createStaticCommandBarButtons(
     if (container.notebookManager?.gitHubOAuthService) {
       notebookButtons.push(createManageGitHubAccountButton(container));
     }
-
-    notebookButtons.push(createOpenTerminalButton(container));
+    if (useNotebook.getState().isPhoenix && configContext.isTerminalEnabled) {
+      notebookButtons.push(createOpenTerminalButton(container));
+    }
     if (selectedNodeState.isConnectedToContainer()) {
       notebookButtons.push(createNotebookWorkspaceResetButton(container));
     }
@@ -98,7 +99,7 @@ export function createStaticCommandBarButtons(
     }
 
     notebookButtons.forEach((btn) => {
-      if (userContext.features.notebooksTemporarilyDown) {
+      if (!useNotebook.getState().isPhoenix) {
         if (btn.commandButtonLabel.indexOf("Cassandra") !== -1) {
           applyNotebooksTemporarilyDownStyle(btn, Constants.Notebook.cassandraShellTemporarilyDownMsg);
         } else if (btn.commandButtonLabel.indexOf("Mongo") !== -1) {

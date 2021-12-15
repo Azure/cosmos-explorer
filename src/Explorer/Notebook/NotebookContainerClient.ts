@@ -8,17 +8,10 @@ import { ConnectionStatusType, HttpHeaders, HttpStatusCodes, Notebook } from "..
 import { getErrorMessage } from "../../Common/ErrorHandlingUtils";
 import * as Logger from "../../Common/Logger";
 import * as DataModels from "../../Contracts/DataModels";
-import {
-  ContainerConnectionInfo,
-  IPhoenixConnectionInfoResult,
-  IProvisionData,
-  IResponse,
-} from "../../Contracts/DataModels";
+import { IPhoenixConnectionInfoResult, IProvisionData, IResponse } from "../../Contracts/DataModels";
 import { userContext } from "../../UserContext";
-import { createOrUpdate, destroy } from "../../Utils/arm/generatedClients/cosmosNotebooks/notebookWorkspaces";
 import { getAuthorizationHeader } from "../../Utils/AuthorizationUtils";
 import { logConsoleProgress } from "../../Utils/NotificationConsoleUtils";
-import { NotebookUtil } from "./NotebookUtil";
 import { useNotebook } from "./useNotebook";
 
 export class NotebookContainerClient {
@@ -55,21 +48,11 @@ export class NotebookContainerClient {
    */
   private scheduleHeartbeat(delayMs: number): void {
     setTimeout(async () => {
-      try {
-        const memoryUsageInfo = await this.getMemoryUsage();
-        useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo);
-        const notebookServerInfo = useNotebook.getState().notebookServerInfo;
-        if (notebookServerInfo?.notebookServerEndpoint) {
-          this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
-        }
-      } catch (exception) {
-        if (NotebookUtil.isPhoenixEnabled()) {
-          const connectionStatus: ContainerConnectionInfo = {
-            status: ConnectionStatusType.Failed,
-          };
-          useNotebook.getState().resetContainerConnection(connectionStatus);
-          useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-        }
+      const memoryUsageInfo = await this.getMemoryUsage();
+      useNotebook.getState().setMemoryUsageInfo(memoryUsageInfo);
+      const notebookServerInfo = useNotebook.getState().notebookServerInfo;
+      if (notebookServerInfo?.notebookServerEndpoint) {
+        this.scheduleHeartbeat(Constants.Notebook.heartbeatDelayMs);
       }
     }, delayMs);
   }
@@ -108,7 +91,7 @@ export class NotebookContainerClient {
     notebookServerEndpoint: string,
     authToken: string
   ): Promise<DataModels.MemoryUsageInfo> {
-    if (this.checkStatus()) {
+    if (this.shouldExecuteMemoryCall()) {
       const response = await fetch(`${notebookServerEndpoint}api/metrics/memory`, {
         method: "GET",
         headers: {
@@ -131,24 +114,17 @@ export class NotebookContainerClient {
       } else if (response.status === HttpStatusCodes.NotFound) {
         throw new AbortError(response.statusText);
       }
-      throw new Error();
+      throw new Error(response.statusText);
     } else {
       return undefined;
     }
   }
 
-  private checkStatus(): boolean {
-    if (NotebookUtil.isPhoenixEnabled()) {
-      if (useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Disconnected) {
-        const connectionStatus: ContainerConnectionInfo = {
-          status: ConnectionStatusType.Reconnect,
-        };
-        useNotebook.getState().resetContainerConnection(connectionStatus);
-        useNotebook.getState().setIsRefreshed(!useNotebook.getState().isRefreshed);
-        return false;
-      }
-    }
-    return true;
+  private shouldExecuteMemoryCall(): boolean {
+    return (
+      useNotebook.getState().containerStatus?.status === Constants.ContainerStatusType.Active &&
+      useNotebook.getState().connectionInfo?.status === ConnectionStatusType.Connected
+    );
   }
 
   public async resetWorkspace(): Promise<IResponse<IPhoenixConnectionInfoResult>> {
@@ -173,11 +149,8 @@ export class NotebookContainerClient {
     }
 
     try {
-      if (NotebookUtil.isPhoenixEnabled()) {
+      if (useNotebook.getState().isPhoenix) {
         const provisionData: IProvisionData = {
-          subscriptionId: userContext.subscriptionId,
-          resourceGroup: userContext.resourceGroup,
-          dbAccountName: userContext.databaseAccount.name,
           cosmosEndpoint: userContext.databaseAccount.properties.documentEndpoint,
         };
         return await this.phoenixClient.resetContainer(provisionData);
@@ -185,9 +158,6 @@ export class NotebookContainerClient {
       return null;
     } catch (error) {
       Logger.logError(getErrorMessage(error), "NotebookContainerClient/resetWorkspace");
-      if (!NotebookUtil.isPhoenixEnabled()) {
-        await this.recreateNotebookWorkspaceAsync();
-      }
       throw error;
     }
   }
@@ -200,25 +170,6 @@ export class NotebookContainerClient {
       notebookServerEndpoint: notebookServerInfo.notebookServerEndpoint,
       authToken,
     };
-  }
-
-  private async recreateNotebookWorkspaceAsync(): Promise<void> {
-    const { databaseAccount } = userContext;
-    if (!databaseAccount?.id) {
-      throw new Error("DataExplorer not initialized");
-    }
-    try {
-      await destroy(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name, "default");
-      await createOrUpdate(
-        userContext.subscriptionId,
-        userContext.resourceGroup,
-        userContext.databaseAccount.name,
-        "default"
-      );
-    } catch (error) {
-      Logger.logError(getErrorMessage(error), "NotebookContainerClient/recreateNotebookWorkspaceAsync");
-      return Promise.reject(error);
-    }
   }
 
   private getHeaders(): HeadersInit {
