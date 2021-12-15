@@ -334,7 +334,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           <ThroughputInput
             showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={false}
-            isSharded={false}
+            isSharded
             setThroughputValue={(throughput: number) => (tableThroughput = throughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isTableAutoscale = isAutoscale)}
             setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
