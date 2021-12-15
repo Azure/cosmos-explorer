@@ -1,4 +1,4 @@
-import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton, Stack, Text } from "@fluentui/react";
+import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
 import * as Constants from "Common/Constants";
 import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
 import { configContext } from "ConfigContext";
@@ -115,9 +115,15 @@ export const SettingsPane: FunctionComponent = () => {
   };
 
   const choiceButtonStyles = {
+    root: {
+      clear: "both",
+    },
     flexContainer: [
       {
         selectors: {
+          ".ms-ChoiceFieldGroup root-133": {
+            clear: "both",
+          },
           ".ms-ChoiceField-wrapper label": {
             fontSize: 12,
             paddingTop: 0,
@@ -135,22 +141,27 @@ export const SettingsPane: FunctionComponent = () => {
         {shouldShowQueryPageOptions && (
           <div className="settingsSection">
             <div className="settingsSectionPart">
-              <Stack horizontal>
-                <Text id="pageOptions" className="settingsSectionLabel" variant="small">
-                  Page options
-                </Text>
+              <fieldset>
+                <legend id="pageOptions" className="settingsSectionLabel legendLabel">
+                  Page Options
+                </legend>
                 <InfoTooltip>
                   Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many
                   query results per page.
                 </InfoTooltip>
-              </Stack>
-              <ChoiceGroup
-                ariaLabelledBy="pageOptions"
-                selectedKey={pageOption}
-                options={pageOptionList}
-                styles={choiceButtonStyles}
-                onChange={handleOnPageOptionChange}
-              />
+                {/* <Stack horizontal>
+                  <Text id="pageOptions" className="settingsSectionLabel" variant="small">
+                    Page options
+                  </Text>
+                </Stack> */}
+                <ChoiceGroup
+                  ariaLabelledBy="pageOptions"
+                  selectedKey={pageOption}
+                  options={pageOptionList}
+                  styles={choiceButtonStyles}
+                  onChange={handleOnPageOptionChange}
+                />
+              </fieldset>
             </div>
             <div className="tabs settingsSectionPart">
               {isCustomPageOptionSelected() && (
