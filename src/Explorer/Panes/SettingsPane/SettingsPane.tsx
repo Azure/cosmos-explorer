@@ -149,11 +149,6 @@ export const SettingsPane: FunctionComponent = () => {
                   Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many
                   query results per page.
                 </InfoTooltip>
-                {/* <Stack horizontal>
-                  <Text id="pageOptions" className="settingsSectionLabel" variant="small">
-                    Page options
-                  </Text>
-                </Stack> */}
                 <ChoiceGroup
                   ariaLabelledBy="pageOptions"
                   selectedKey={pageOption}
