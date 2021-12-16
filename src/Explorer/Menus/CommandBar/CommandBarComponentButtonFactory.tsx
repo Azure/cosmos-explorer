@@ -111,7 +111,7 @@ export function createStaticCommandBarButtons(
       buttons.push(btn);
     });
   } else {
-    if (!isRunningOnNationalCloud() && !userContext.features.notebooksTemporarilyDown) {
+    if (!isRunningOnNationalCloud() && useNotebook.getState().isPhoenix) {
       buttons.push(createDivider());
       buttons.push(createEnableNotebooksButton(container));
     }
@@ -169,9 +169,7 @@ export function createContextCommandBarButtons(
       onCommandClick: () => {
         const selectedCollection: ViewModels.Collection = selectedNodeState.findSelectedCollection();
         if (useNotebook.getState().isShellEnabled) {
-          if (!userContext.features.notebooksTemporarilyDown) {
-            container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
-          }
+          container.openNotebookTerminal(ViewModels.TerminalKind.Mongo);
         } else {
           selectedCollection && selectedCollection.onNewMongoShellClick();
         }
@@ -179,13 +177,6 @@ export function createContextCommandBarButtons(
       commandButtonLabel: label,
       ariaLabel: label,
       hasPopup: true,
-      tooltipText:
-        useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown
-          ? Constants.Notebook.mongoShellTemporarilyDownMsg
-          : undefined,
-      disabled:
-        (selectedNodeState.isDatabaseNodeOrNoneSelected() && userContext.apiType === "Mongo") ||
-        (useNotebook.getState().isShellEnabled && userContext.features.notebooksTemporarilyDown),
     };
     buttons.push(newMongoShellBtn);
   }
