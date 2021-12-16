@@ -16,54 +16,57 @@ exports[`Settings Pane should render Default properly 1`] = `
       <div
         className="settingsSectionPart"
       >
-        <Stack
-          horizontal={true}
-        >
-          <Text
-            className="settingsSectionLabel"
+        <fieldset>
+          <legend
+            className="settingsSectionLabel legendLabel"
             id="pageOptions"
-            variant="small"
           >
-            Page options
-          </Text>
+            Page Options
+          </legend>
           <InfoTooltip>
             Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many query results per page.
           </InfoTooltip>
-        </Stack>
-        <StyledChoiceGroup
-          ariaLabelledBy="pageOptions"
-          onChange={[Function]}
-          options={
-            Array [
-              Object {
-                "key": "custom",
-                "text": "Custom",
-              },
-              Object {
-                "key": "unlimited",
-                "text": "Unlimited",
-              },
-            ]
-          }
-          selectedKey="custom"
-          styles={
-            Object {
-              "flexContainer": Array [
+          <StyledChoiceGroup
+            ariaLabelledBy="pageOptions"
+            onChange={[Function]}
+            options={
+              Array [
                 Object {
-                  "selectors": Object {
-                    ".ms-ChoiceField": Object {
-                      "marginTop": 0,
-                    },
-                    ".ms-ChoiceField-wrapper label": Object {
-                      "fontSize": 12,
-                      "paddingTop": 0,
+                  "key": "custom",
+                  "text": "Custom",
+                },
+                Object {
+                  "key": "unlimited",
+                  "text": "Unlimited",
+                },
+              ]
+            }
+            selectedKey="custom"
+            styles={
+              Object {
+                "flexContainer": Array [
+                  Object {
+                    "selectors": Object {
+                      ".ms-ChoiceField": Object {
+                        "marginTop": 0,
+                      },
+                      ".ms-ChoiceField-wrapper label": Object {
+                        "fontSize": 12,
+                        "paddingTop": 0,
+                      },
+                      ".ms-ChoiceFieldGroup root-133": Object {
+                        "clear": "both",
+                      },
                     },
                   },
+                ],
+                "root": Object {
+                  "clear": "both",
                 },
-              ],
+              }
             }
-          }
-        />
+          />
+        </fieldset>
       </div>
       <div
         className="tabs settingsSectionPart"
