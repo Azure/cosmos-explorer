@@ -17,7 +17,7 @@ export interface NotebookTabBaseOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
   masterKey: string;
   container: Explorer;
-  notebookContentItem: NotebookContentItem;
+  notebookContentItem?: NotebookContentItem;
 }
 
 /**

@@ -365,7 +365,7 @@ export class Notebook {
   public static readonly containerStatusHeartbeatDelayMs = 30000;
   public static readonly kernelRestartInitialDelayMs = 1000;
   public static readonly kernelRestartMaxDelayMs = 20000;
-  public static readonly autoSaveIntervalMs = 120000;
+  public static readonly autoSaveIntervalMs = 300000;
   public static readonly memoryGuageToGB = 1048576;
   public static readonly lowMemoryThreshold = 0.8;
   public static readonly remainingTimeForAlert = 10;
