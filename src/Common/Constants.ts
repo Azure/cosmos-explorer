@@ -378,7 +378,7 @@ export class Notebook {
     "We have identified an issue with the Cassandra Shell and it is unavailable right now. We are actively working on the mitigation.";
   public static saveNotebookModalTitle = "Save notebook in temporary workspace";
   public static saveNotebookModalContent =
-    "This notebook will be saved in the temporary workspace and will be removed when the session expires. To save your work permanently, save your notebooks to a GitHub repository or download the notebooks to your local machine before the session ends.";
+    "This notebook will be saved in the temporary workspace and will be removed when the session expires.";
   public static newNotebookModalTitle = "Create notebook in temporary workspace";
   public static newNotebookUploadModalTitle = "Upload notebook to temporary workspace";
   public static newNotebookModalContent1 =

@@ -1,3 +1,7 @@
+import { configOption } from "@nteract/mythic-configuration";
+import { NotebookContentItem } from "Explorer/Notebook/NotebookContentItem";
+import { NotebookContentProviderType, NotebookUtil } from "Explorer/Notebook/NotebookUtil";
+import * as Constants from "../../Common/Constants";
 import { Areas } from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -13,6 +17,7 @@ export interface NotebookTabBaseOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
   masterKey: string;
   container: Explorer;
+  notebookContentItem: NotebookContentItem;
 }
 
 /**
@@ -44,6 +49,20 @@ export default class NotebookTabBase extends TabsBase {
         defaultExperience: userContext.apiType,
         contentProvider: this.container.notebookManager?.notebookContentProvider,
       });
+    }
+    if (
+      options.notebookContentItem &&
+      NotebookUtil.getContentProviderType(options.notebookContentItem.path) ===
+        NotebookContentProviderType.JupyterContentProviderType
+    ) {
+      // There is no way to turn off auto-save, set to 1 year
+      NotebookTabBase.clientManager
+        ?.getStore()
+        .dispatch(configOption("autoSaveInterval").action(365 * 24 * 3600 * 1000));
+    } else {
+      NotebookTabBase.clientManager
+        ?.getStore()
+        .dispatch(configOption("autoSaveInterval").action(Constants.Notebook.autoSaveIntervalMs));
     }
   }
 
