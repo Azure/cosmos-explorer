@@ -14,6 +14,7 @@ export const CassandraType = {
   Bigint: "Bigint",
   Blob: "Blob",
   Boolean: "Boolean",
+  Date: "Date",
   Decimal: "Decimal",
   Double: "Double",
   Float: "Float",
