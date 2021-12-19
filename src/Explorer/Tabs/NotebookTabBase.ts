@@ -1,4 +1,3 @@
-import { NotebookContentItem } from "Explorer/Notebook/NotebookContentItem";
 import { Areas } from "../../Common/Constants";
 import * as DataModels from "../../Contracts/DataModels";
 import * as ViewModels from "../../Contracts/ViewModels";
@@ -14,7 +13,6 @@ export interface NotebookTabBaseOptions extends ViewModels.TabOptions {
   account: DataModels.DatabaseAccount;
   masterKey: string;
   container: Explorer;
-  notebookContentItem?: NotebookContentItem;
 }
 
 /**
