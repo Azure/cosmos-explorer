@@ -244,6 +244,9 @@ export class NotebookClientV2 {
     // Additional configuration
     this.store.dispatch(configOption("editorType").action(params.cellEditorType ?? "codemirror"));
     this.store.dispatch(configOption("codeMirror.lineNumbers").action(true));
+    this.store.dispatch(
+      configOption("autoSaveInterval").action(params.autoSaveInterval ?? Constants.Notebook.autoSaveIntervalMs)
+    );
 
     const readOnlyConfigOption = configOption("codeMirror.readOnly");
     const readOnlyValue = params.isReadOnly ? "nocursor" : undefined;
