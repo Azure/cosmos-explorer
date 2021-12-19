@@ -84,7 +84,7 @@ export function extractFeatures(given = new URLSearchParams(window.location.sear
     partitionKeyDefault: "true" === get("partitionkeytest"),
     partitionKeyDefault2: "true" === get("pkpartitionkeytest"),
     phoenix: "true" === get("phoenix"),
-    notebooksDownBanner: "true" === get("notebooksDownBanner", "true"),
+    notebooksDownBanner: "true" === get("notebooksDownBanner"),
     enableThroughputCap: "true" === get("enablethroughputcap"),
   };
 }
