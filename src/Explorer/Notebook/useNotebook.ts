@@ -1,3 +1,4 @@
+import { isPublicInternetAccessAllowed } from "Common/DatabaseAccountUtility";
 import { cloneDeep } from "lodash";
 import { PhoenixClient } from "Phoenix/PhoenixClient";
 import create, { UseStore } from "zustand";
@@ -302,7 +303,7 @@ export const useNotebook: UseStore<NotebookState> = create((set, get) => ({
       let isPhoenix = false;
       if (userContext.features.phoenix) {
         const phoenixClient = new PhoenixClient();
-        isPhoenix = await phoenixClient.isDbAcountWhitelisted();
+        isPhoenix = isPublicInternetAccessAllowed() && (await phoenixClient.isDbAcountWhitelisted());
       }
       set({ isPhoenix });
     }
