@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Cosmos from "@azure/cosmos";
 import { RequestInfo, setAuthorizationTokenHeaderUsingMasterKey } from "@azure/cosmos";
 import { configContext, Platform } from "../ConfigContext";
@@ -80,7 +81,9 @@ export async function getTokenFromAuthService(verb: string, resourceType: string
 let _client: Cosmos.CosmosClient;
 
 export function client(): Cosmos.CosmosClient {
-  if (_client) return _client;
+  if (_client) {
+    return _client;
+  }
   const options: Cosmos.CosmosClientOptions = {
     endpoint: endpoint() || "https://cosmos.azure.com", // CosmosClient gets upset if we pass a bad URL. This should never actually get called
     key: userContext.masterKey,
