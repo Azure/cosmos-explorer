@@ -10,7 +10,7 @@ describe("Documents tab", () => {
   describe("buildQuery", () => {
     it("should generate the right select query for SQL API", () => {
       const documentsTab = new DocumentsTab({
-        partitionKey: null,
+        partitionKey: undefined,
         documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
@@ -82,9 +82,9 @@ describe("Documents tab", () => {
       container: mongoExplorer,
     });
 
-    it("should be false for null or undefined collection", () => {
+    it("should be false for undefined or undefined collection", () => {
       const documentsTab = new DocumentsTab({
-        partitionKey: null,
+        partitionKey: undefined,
         documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
@@ -94,10 +94,10 @@ describe("Documents tab", () => {
       expect(documentsTab.showPartitionKey).toBe(false);
     });
 
-    it("should be false for null or undefined partitionKey", () => {
+    it("should be false for undefined or undefined partitionKey", () => {
       const documentsTab = new DocumentsTab({
         collection: collectionWithoutPartitionKey,
-        partitionKey: null,
+        partitionKey: undefined,
         documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
@@ -110,7 +110,7 @@ describe("Documents tab", () => {
     it("should be true for non-Mongo accounts with system partitionKey", () => {
       const documentsTab = new DocumentsTab({
         collection: collectionWithSystemPartitionKey,
-        partitionKey: null,
+        partitionKey: undefined,
         documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
@@ -126,7 +126,7 @@ describe("Documents tab", () => {
       });
       const documentsTab = new DocumentsTab({
         collection: mongoCollectionWithSystemPartitionKey,
-        partitionKey: null,
+        partitionKey: undefined,
         documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",
@@ -139,7 +139,7 @@ describe("Documents tab", () => {
     it("should be true for non-system partitionKey", () => {
       const documentsTab = new DocumentsTab({
         collection: collectionWithNonSystemPartitionKey,
-        partitionKey: null,
+        partitionKey: undefined,
         documentIds: ko.observableArray<DocumentId>(),
         tabKind: ViewModels.CollectionTabKind.Documents,
         title: "",

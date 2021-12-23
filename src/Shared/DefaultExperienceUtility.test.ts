@@ -1,13 +1,13 @@
 import * as DataModels from "../Contracts/DataModels";
 import { userContext } from "../UserContext";
-import { DefaultExperienceUtility } from "./DefaultExperienceUtility";
+import * as DefaultExperienceUtility from "./DefaultExperienceUtility";
 
 describe("Default Experience Utility", () => {
   describe("getDefaultExperienceFromApiKind()", () => {
-    function runScenario(apiKind: number, expectedExperience: typeof userContext.apiType): void {
+    const runScenario = (apiKind: number, expectedExperience: typeof userContext.apiType): void => {
       const resolvedExperience = DefaultExperienceUtility.getDefaultExperienceFromApiKind(apiKind);
       expect(resolvedExperience).toEqual(expectedExperience);
-    }
+    };
 
     describe("On SQL", () => {
       it("should return SQL", () => runScenario(DataModels.ApiKind.SQL, "SQL"));
@@ -35,10 +35,10 @@ describe("Default Experience Utility", () => {
   });
 
   describe("getApiKindFromDefaultExperience()", () => {
-    function runScenario(defaultExperience: typeof userContext.apiType | null, expectedApiKind: number): void {
+    const runScenario = (defaultExperience: typeof userContext.apiType | null, expectedApiKind: number): void => {
       const resolvedApiKind = DefaultExperienceUtility.getApiKindFromDefaultExperience(defaultExperience);
       expect(resolvedApiKind).toEqual(expectedApiKind);
-    }
+    };
 
     describe("On SQL", () => {
       it("should return SQL", () => runScenario("SQL", DataModels.ApiKind.SQL));
@@ -60,8 +60,8 @@ describe("Default Experience Utility", () => {
       it("should return Graph", () => runScenario("Gremlin", DataModels.ApiKind.Graph));
     });
 
-    describe("On null", () => {
-      it("should return SQL", () => runScenario(null, DataModels.ApiKind.SQL));
+    describe("On undefined", () => {
+      it("should return SQL", () => runScenario(undefined, DataModels.ApiKind.SQL));
     });
   });
 });

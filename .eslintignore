@@ -89,7 +89,6 @@ src/Explorer/Tables/TableEntityProcessor.ts
 src/Explorer/Tables/Utilities.ts
 src/Explorer/Tabs/ConflictsTab.ts
 src/Explorer/Tabs/DatabaseSettingsTab.ts
-src/Explorer/Tabs/DocumentsTab.test.ts
 src/Explorer/Tabs/DocumentsTab.ts
 src/Explorer/Tabs/GraphTab.ts
 src/Explorer/Tabs/MongoDocumentsTab.ts
@@ -114,8 +113,6 @@ src/Index.ts
 src/Platform/Hosted/Authorization.ts
 src/ReactDevTools.ts
 src/Shared/Constants.ts
-src/Shared/DefaultExperienceUtility.test.ts
-src/Shared/DefaultExperienceUtility.ts
 src/Shared/appInsights.ts
 src/SparkClusterManager/ArcadiaResourceManager.ts
 src/SparkClusterManager/SparkClusterManager.ts
