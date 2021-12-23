@@ -25,12 +25,12 @@ const notebookRecord = makeNotebookRecord({
     "0": makeMarkdownCell({
       cell_type: "markdown",
       source: "abc",
-      metadata: undefined,
+      metadata: Map(),
     } as MarkdownCellParams),
     "1": makeCodeCell({
       cell_type: "code",
-      execution_count: undefined,
-      metadata: undefined,
+      execution_count: 0,
+      metadata: Map(),
       source: "print(5)",
       outputs: List.of({
         name: "stdout",
@@ -40,8 +40,8 @@ const notebookRecord = makeNotebookRecord({
     } as CodeCellParams),
     "2": makeCodeCell({
       cell_type: "code",
-      execution_count: undefined,
-      metadata: undefined,
+      execution_count: 0,
+      metadata: Map(),
       source: 'display(HTML("<h1>Sample html</h1>"))',
       outputs: List.of({
         data: Object.freeze({
@@ -54,8 +54,8 @@ const notebookRecord = makeNotebookRecord({
     } as CodeCellParams),
     "3": makeCodeCell({
       cell_type: "code",
-      execution_count: undefined,
-      metadata: undefined,
+      execution_count: 0,
+      metadata: Map(),
       source: 'print("hello world")',
       outputs: List.of({
         name: "stdout",

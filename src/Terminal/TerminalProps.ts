@@ -5,9 +5,9 @@ import { ApiType } from "../UserContext";
 export interface TerminalProps {
   authToken: string;
   notebookServerEndpoint: string;
-  terminalEndpoint: string;
-  databaseAccount: DataModels.DatabaseAccount;
-  authType: AuthType;
+  terminalEndpoint: string | undefined;
+  databaseAccount: DataModels.DatabaseAccount | undefined;
+  authType: AuthType | undefined;
   apiType: ApiType;
-  subscriptionId: string;
+  subscriptionId: string | undefined;
 }

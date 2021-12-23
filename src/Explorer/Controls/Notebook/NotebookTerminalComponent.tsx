@@ -15,10 +15,13 @@ export interface NotebookTerminalComponentProps {
 }
 
 export class NotebookTerminalComponent extends React.Component<NotebookTerminalComponentProps> {
-  private terminalWindow: Window;
+  // Need to declare as Window | null as contentWindow is typeof Window | null.
+  // Only Window type declaration throws compilation typeScript error in compile strict mode
+  private terminalWindow: Window | null;
 
   constructor(props: NotebookTerminalComponentProps) {
     super(props);
+    this.terminalWindow = window;
   }
 
   componentDidMount(): void {
