@@ -279,7 +279,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
-                {`${getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
+                {`${getCollectionName()} id`}
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
