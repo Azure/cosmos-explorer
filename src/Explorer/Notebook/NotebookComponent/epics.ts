@@ -955,6 +955,10 @@ const { selector: autoSaveInterval } = defineConfigOption({
   defaultValue: 120_000,
 });
 
+/**
+ * Override autoSaveCurrentContentEpic to disable auto save for notebooks under temporary workspace.
+ * @param action$
+ */
 export function autoSaveCurrentContentEpic(
   action$: Observable<Action>,
   state$: StateObservable<AppState>
