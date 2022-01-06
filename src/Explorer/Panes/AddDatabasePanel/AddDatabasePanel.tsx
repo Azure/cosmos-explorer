@@ -23,10 +23,12 @@ import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneFor
 
 export interface AddDatabasePaneProps {
   explorer: Explorer;
+  buttonElement?: HTMLElement;
 }
 
 export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   explorer: container,
+  buttonElement,
 }: AddDatabasePaneProps) => {
   const closeSidePanel = useSidePanel((state) => state.closeSidePanel);
   let throughput: number;
@@ -50,6 +52,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
   );
   const [formErrors, setFormErrors] = useState<string>("");
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
+  const [isThroughputCapExceeded, setIsThroughputCapExceeded] = useState<boolean>(false);
 
   const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
@@ -77,6 +80,9 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
       dataExplorerArea: Constants.Areas.ContextualPane,
     };
     TelemetryProcessor.trace(Action.CreateDatabase, ActionModifiers.Open, addDatabasePaneOpenMessage);
+    if (buttonElement) {
+      buttonElement.focus();
+    }
   }, []);
 
   const onSubmit = () => {
@@ -166,6 +172,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
     formError: formErrors,
     isExecuting,
     submitButtonText: "OK",
+    isSubmitButtonDisabled: isThroughputCapExceeded,
     onSubmit,
   };
 
@@ -236,6 +243,7 @@ export const AddDatabasePanel: FunctionComponent<AddDatabasePaneProps> = ({
             isSharded={databaseCreateNewShared}
             setThroughputValue={(newThroughput: number) => (throughput = newThroughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isAutoscaleSelected = isAutoscale)}
+            setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
             onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
           />
         )}

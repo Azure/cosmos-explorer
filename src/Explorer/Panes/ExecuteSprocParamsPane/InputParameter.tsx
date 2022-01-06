@@ -55,34 +55,41 @@ export const InputParameter: FunctionComponent<InputParameterProps> = ({
       <Stack horizontal>
         <Dropdown
           label={dropdownLabel && dropdownLabel}
-          selectedKey={selectedKey}
+          defaultSelectedKey={selectedKey}
           onChange={onParamKeyChange}
           options={options}
           styles={dropdownStyles}
+          tabIndex={0}
         />
         <TextField
           label={inputLabel && inputLabel}
           id="confirmCollectionId"
-          autoFocus
-          value={paramValue}
+          defaultValue={paramValue}
           onChange={onParamValueChange}
+          tabIndex={0}
         />
         {isAddRemoveVisible && (
           <>
-            <Image
-              {...imageProps}
-              src={EntityCancelIcon}
-              alt="Delete param"
-              id="deleteparam"
-              onClick={onDeleteParamKeyPress}
-            />
-            <Image
-              {...imageProps}
-              src={AddPropertyIcon}
-              alt="Add param"
-              id="addparam"
-              onClick={onAddNewParamKeyPress}
-            />
+            <div tabIndex={0}>
+              <Image
+                {...imageProps}
+                src={EntityCancelIcon}
+                alt="Delete param"
+                id="deleteparam"
+                role="button"
+                onClick={onDeleteParamKeyPress}
+              />
+            </div>
+            <div tabIndex={0}>
+              <Image
+                {...imageProps}
+                src={AddPropertyIcon}
+                alt="Add param"
+                id="addparam"
+                role="button"
+                onClick={onAddNewParamKeyPress}
+              />
+            </div>
           </>
         )}
       </Stack>

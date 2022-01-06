@@ -13,21 +13,21 @@ import {
   Text,
   TooltipHost,
 } from "@fluentui/react";
+import * as Constants from "Common/Constants";
+import { createCollection } from "Common/dataAccess/createCollection";
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { configContext, Platform } from "ConfigContext";
+import * as DataModels from "Contracts/DataModels";
+import { SubscriptionType } from "Contracts/SubscriptionType";
+import { useSidePanel } from "hooks/useSidePanel";
 import React from "react";
-import * as Constants from "../../Common/Constants";
-import { createCollection } from "../../Common/dataAccess/createCollection";
-import { getErrorMessage, getErrorStack } from "../../Common/ErrorHandlingUtils";
-import { configContext, Platform } from "../../ConfigContext";
-import * as DataModels from "../../Contracts/DataModels";
-import { SubscriptionType } from "../../Contracts/SubscriptionType";
-import { useSidePanel } from "../../hooks/useSidePanel";
-import { CollectionCreation } from "../../Shared/Constants";
-import { Action } from "../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../UserContext";
-import { getCollectionName } from "../../Utils/APITypeUtils";
-import { isCapabilityEnabled, isServerlessAccount } from "../../Utils/CapabilityUtils";
-import { getUpsellMessage } from "../../Utils/PricingUtils";
+import { CollectionCreation } from "Shared/Constants";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "UserContext";
+import { getCollectionName } from "Utils/APITypeUtils";
+import { isCapabilityEnabled, isServerlessAccount } from "Utils/CapabilityUtils";
+import { getUpsellMessage } from "Utils/PricingUtils";
 import { CollapsibleSectionComponent } from "../Controls/CollapsiblePanel/CollapsibleSectionComponent";
 import { ThroughputInput } from "../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../Explorer";
@@ -92,6 +92,7 @@ export interface AddCollectionPanelState {
   errorMessage: string;
   showErrorDetails: boolean;
   isExecuting: boolean;
+  isThroughputCapExceeded: boolean;
 }
 
 export class AddCollectionPanel extends React.Component<AddCollectionPanelProps, AddCollectionPanelState> {
@@ -113,7 +114,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       collectionId: "",
       enableIndexing: true,
       isSharded: userContext.apiType !== "Tables",
-      partitionKey: "",
+      partitionKey: this.getPartitionKey(),
       enableDedicatedThroughput: false,
       createMongoWildCardIndex: isCapabilityEnabled("EnableMongo"),
       useHashV2: false,
@@ -122,6 +123,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
       errorMessage: "",
       showErrorDetails: false,
       isExecuting: false,
+      isThroughputCapExceeded: false,
     };
   }
 
@@ -161,7 +163,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   true
                 ).toLocaleLowerCase()}.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
               </TooltipHost>
             </Stack>
 
@@ -210,6 +212,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   className="panelTextField"
                   aria-label="New database id"
                   autoFocus
+                  tabIndex={0}
                   value={this.state.newDatabaseId}
                   onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                     this.setState({ newDatabaseId: event.target.value })
@@ -236,7 +239,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         true
                       ).toLocaleLowerCase()} within the database.`}
                     >
-                      <Icon iconName="Info" className="panelInfoIcon" />
+                      <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                     </TooltipHost>
                   </Stack>
                 )}
@@ -248,6 +251,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     isSharded={this.state.isSharded}
                     setThroughputValue={(throughput: number) => (this.newDatabaseThroughput = throughput)}
                     setIsAutoscale={(isAutoscale: boolean) => (this.isNewDatabaseAutoscale = isAutoscale)}
+                    setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                      this.setState({ isThroughputCapExceeded })
+                    }
                     onCostAcknowledgeChange={(isAcknowledge: boolean) => (this.isCostAcknowledged = isAcknowledge)}
                   />
                 )}
@@ -273,13 +279,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             <Stack horizontal>
               <span className="mandatoryStar">*&nbsp;</span>
               <Text className="panelTextBold" variant="small">
-                {`${getCollectionName()} ${userContext.apiType === "Mongo" ? "name" : "id"}`}
+                {`${getCollectionName()} id`}
               </Text>
               <TooltipHost
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 content={`Unique identifier for the ${getCollectionName().toLocaleLowerCase()} and used for id-based routing through REST and all SDKs.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
               </TooltipHost>
             </Stack>
 
@@ -362,7 +368,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       "Sharded collections split your data across many replica sets (shards) to achieve unlimited scalability. Sharded collections require choosing a shard key (field) to evenly distribute your data."
                     }
                   >
-                    <Icon iconName="Info" className="panelInfoIcon" />
+                    <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                   </TooltipHost>
                 </Stack>
 
@@ -409,9 +415,13 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   directionalHint={DirectionalHint.bottomLeftEdge}
                   content={this.getPartitionKeyTooltipText()}
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" />
+                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                 </TooltipHost>
               </Stack>
+
+              <Text variant="small" aria-label="pkDescription">
+                {this.getPartitionKeySubtext()}
+              </Text>
 
               <input
                 type="text"
@@ -463,7 +473,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                   does not count towards the throughput you provisioned for the database. This throughput amount will be
                   billed in addition to the throughput amount you provisioned at the database level.`}
               >
-                <Icon iconName="Info" className="panelInfoIcon" />
+                <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
               </TooltipHost>
             </Stack>
           )}
@@ -475,6 +485,9 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
               isSharded={this.state.isSharded}
               setThroughputValue={(throughput: number) => (this.collectionThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (this.isCollectionAutoscale = isAutoscale)}
+              setIsThroughputCapExceeded={(isThroughputCapExceeded: boolean) =>
+                this.setState({ isThroughputCapExceeded })
+              }
               onCostAcknowledgeChange={(isAcknowledged: boolean) => {
                 this.isCostAcknowledged = isAcknowledged;
               }}
@@ -493,7 +506,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                       creating a unique key policy when a container is created, you ensure the uniqueness of one or more values
                       per partition key."
                 >
-                  <Icon iconName="Info" className="panelInfoIcon" />
+                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                 </TooltipHost>
               </Stack>
 
@@ -546,6 +559,72 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
             </Stack>
           )}
 
+          {this.shouldShowAnalyticalStoreOptions() && (
+            <Stack className="panelGroupSpacing">
+              <Stack horizontal>
+                <Text className="panelTextBold" variant="small">
+                  Analytical store
+                </Text>
+                <TooltipHost
+                  directionalHint={DirectionalHint.bottomLeftEdge}
+                  content={this.getAnalyticalStorageTooltipContent()}
+                >
+                  <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
+                </TooltipHost>
+              </Stack>
+
+              <Stack horizontal verticalAlign="center">
+                <input
+                  className="panelRadioBtn"
+                  checked={this.state.enableAnalyticalStore}
+                  disabled={!this.isSynapseLinkEnabled()}
+                  aria-label="Enable analytical store"
+                  aria-checked={this.state.enableAnalyticalStore}
+                  name="analyticalStore"
+                  type="radio"
+                  role="radio"
+                  id="enableAnalyticalStoreBtn"
+                  tabIndex={0}
+                  onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">On</span>
+
+                <input
+                  className="panelRadioBtn"
+                  checked={!this.state.enableAnalyticalStore}
+                  disabled={!this.isSynapseLinkEnabled()}
+                  aria-label="Disable analytical store"
+                  aria-checked={!this.state.enableAnalyticalStore}
+                  name="analyticalStore"
+                  type="radio"
+                  role="radio"
+                  id="disableAnalyticalStoreBtn"
+                  tabIndex={0}
+                  onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
+                />
+                <span className="panelRadioBtnLabel">Off</span>
+              </Stack>
+
+              {!this.isSynapseLinkEnabled() && (
+                <Stack className="panelGroupSpacing">
+                  <Text variant="small">
+                    Azure Synapse Link is required for creating an analytical store{" "}
+                    {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
+                    <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
+                      Learn more
+                    </Link>
+                  </Text>
+                  <DefaultButton
+                    text="Enable"
+                    onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
+                    style={{ height: 27, width: 80 }}
+                    styles={{ label: { fontSize: 12 } }}
+                  />
+                </Stack>
+              )}
+            </Stack>
+          )}
+
           {userContext.apiType !== "Tables" && (
             <CollapsibleSectionComponent
               title="Advanced"
@@ -567,7 +646,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                         directionalHint={DirectionalHint.bottomLeftEdge}
                         content="The _id field is indexed by default. Creating a wildcard index for all fields will optimize queries and is recommended for development."
                       >
-                        <Icon iconName="Info" className="panelInfoIcon" />
+                        <Icon iconName="Info" className="panelInfoIcon" tabIndex={0} />
                       </TooltipHost>
                     </Stack>
 
@@ -600,78 +679,12 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
                     }
                   />
                 )}
-
-                {this.shouldShowAnalyticalStoreOptions() && (
-                  <Stack className="panelGroupSpacing">
-                    <Stack horizontal>
-                      <Text className="panelTextBold" variant="small">
-                        Analytical store
-                      </Text>
-                      <TooltipHost
-                        directionalHint={DirectionalHint.bottomLeftEdge}
-                        content={this.getAnalyticalStorageTooltipContent()}
-                      >
-                        <Icon iconName="Info" className="panelInfoIcon" />
-                      </TooltipHost>
-                    </Stack>
-
-                    <Stack horizontal verticalAlign="center">
-                      <input
-                        className="panelRadioBtn"
-                        checked={this.state.enableAnalyticalStore}
-                        disabled={!this.isSynapseLinkEnabled()}
-                        aria-label="Enable analytical store"
-                        aria-checked={this.state.enableAnalyticalStore}
-                        name="analyticalStore"
-                        type="radio"
-                        role="radio"
-                        id="enableAnalyticalStoreBtn"
-                        tabIndex={0}
-                        onChange={this.onEnableAnalyticalStoreRadioBtnChange.bind(this)}
-                      />
-                      <span className="panelRadioBtnLabel">On</span>
-
-                      <input
-                        className="panelRadioBtn"
-                        checked={!this.state.enableAnalyticalStore}
-                        disabled={!this.isSynapseLinkEnabled()}
-                        aria-label="Disable analytical store"
-                        aria-checked={!this.state.enableAnalyticalStore}
-                        name="analyticalStore"
-                        type="radio"
-                        role="radio"
-                        id="disableAnalyticalStoreBtn"
-                        tabIndex={0}
-                        onChange={this.onDisableAnalyticalStoreRadioBtnChange.bind(this)}
-                      />
-                      <span className="panelRadioBtnLabel">Off</span>
-                    </Stack>
-
-                    {!this.isSynapseLinkEnabled() && (
-                      <Stack className="panelGroupSpacing">
-                        <Text variant="small">
-                          Azure Synapse Link is required for creating an analytical store{" "}
-                          {getCollectionName().toLocaleLowerCase()}. Enable Synapse Link for this Cosmos DB account.{" "}
-                          <Link href="https://aka.ms/cosmosdb-synapselink" target="_blank">
-                            Learn more
-                          </Link>
-                        </Text>
-                        <DefaultButton
-                          text="Enable"
-                          onClick={() => this.props.explorer.openEnableSynapseLinkDialog()}
-                          style={{ height: 27, width: 80 }}
-                          styles={{ label: { fontSize: 12 } }}
-                        />
-                      </Stack>
-                    )}
-                  </Stack>
-                )}
               </Stack>
             </CollapsibleSectionComponent>
           )}
         </div>
 
-        <PanelFooterComponent buttonLabel="OK" />
+        <PanelFooterComponent buttonLabel="OK" isButtonDisabled={this.state.isThroughputCapExceeded} />
 
         {this.state.isExecuting && <PanelLoadingScreen />}
       </form>
@@ -805,6 +818,30 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
     }
 
     return tooltipText;
+  }
+
+  private getPartitionKey(): string {
+    if (userContext.apiType !== "SQL" && userContext.apiType !== "Mongo") {
+      return "";
+    }
+    if (userContext.features.partitionKeyDefault) {
+      return userContext.apiType === "SQL" ? "/id" : "_id";
+    }
+    if (userContext.features.partitionKeyDefault2) {
+      return userContext.apiType === "SQL" ? "/pk" : "pk";
+    }
+    return "";
+  }
+
+  private getPartitionKeySubtext(): string {
+    if (
+      userContext.features.partitionKeyDefault &&
+      (userContext.apiType === "SQL" || userContext.apiType === "Mongo")
+    ) {
+      const subtext = "For small workloads, the item ID is a suitable choice for the partition key.";
+      return subtext;
+    }
+    return "";
   }
 
   private getAnalyticalStorageTooltipContent(): JSX.Element {
@@ -970,7 +1007,7 @@ export class AddCollectionPanel extends React.Component<AddCollectionPanelProps,
 
     const collectionId: string = this.state.collectionId.trim();
     let databaseId = this.state.createNewDatabase ? this.state.newDatabaseId.trim() : this.state.selectedDatabaseId;
-    let partitionKeyString = this.state.partitionKey.trim();
+    let partitionKeyString = this.state.isSharded ? this.state.partitionKey.trim() : undefined;
 
     if (userContext.apiType === "Tables") {
       // Table require fixed Database: TablesDB, and fixed Partition Key: /'$pk'

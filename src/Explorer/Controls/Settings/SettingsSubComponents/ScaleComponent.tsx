@@ -36,6 +36,7 @@ export interface ScaleComponentProps {
   onScaleSaveableChange: (isScaleSaveable: boolean) => void;
   onScaleDiscardableChange: (isScaleDiscardable: boolean) => void;
   initialNotification: DataModels.Notification;
+  throughputError?: string;
 }
 
 export class ScaleComponent extends React.Component<ScaleComponentProps> {
@@ -189,6 +190,7 @@ export class ScaleComponent extends React.Component<ScaleComponentProps> {
       onScaleDiscardableChange={this.props.onScaleDiscardableChange}
       getThroughputWarningMessage={this.getThroughputWarningMessage}
       usageSizeInKB={this.props.collection?.usageSizeInKB()}
+      throughputError={this.props.throughputError}
     />
   );
 

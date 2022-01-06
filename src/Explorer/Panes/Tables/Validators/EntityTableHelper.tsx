@@ -24,6 +24,7 @@ const {
   Ascii,
   Bigint,
   Blob,
+  Date: DateType,
   Decimal,
   Float,
   Int,
@@ -33,6 +34,7 @@ const {
   Inet,
   Smallint,
   Tinyint,
+  Timestamp,
 } = TableConstants.CassandraType;
 export const cassandraOptions = [
   { key: Text, text: Text },
@@ -40,6 +42,7 @@ export const cassandraOptions = [
   { key: Bigint, text: Bigint },
   { key: Blob, text: Blob },
   { key: Boolean, text: Boolean },
+  { key: DateType, text: DateType },
   { key: Decimal, text: Decimal },
   { key: Double, text: Double },
   { key: Float, text: Float },
@@ -50,6 +53,7 @@ export const cassandraOptions = [
   { key: Inet, text: Inet },
   { key: Smallint, text: Smallint },
   { key: Tinyint, text: Tinyint },
+  { key: Timestamp, text: Timestamp },
 ];
 
 export const imageProps: IImageProps = {
@@ -80,7 +84,7 @@ export const int64Placeholder = "Enter a signed 64-bit integer, in the range (-2
 
 export const columnProps: Partial<IStackProps> = {
   tokens: { childrenGap: 10 },
-  styles: { root: { width: 680 } },
+  styles: { root: { marginBottom: 8 } },
 };
 
 // helper functions
@@ -134,8 +138,8 @@ export const getEntityValuePlaceholder = (entityType: string | number): string =
 
 export const isValidEntities = (entities: EntityRowType[]): boolean => {
   for (let i = 0; i < entities.length; i++) {
-    const { property } = entities[i];
-    if (property === "" || property === undefined) {
+    const { property, type } = entities[i];
+    if (property === "" || property === undefined || !type) {
       return false;
     }
   }
@@ -168,13 +172,6 @@ export const getDefaultEntities = (headers: string[], entityTypes: EntityType): 
     }
   });
   return defaultEntities;
-};
-
-export const getPanelTitle = (apiType: string): string => {
-  if (apiType === "Cassandra") {
-    return "Add Table Row";
-  }
-  return "Add Table Row";
 };
 
 export const getAddButtonLabel = (apiType: string): string => {

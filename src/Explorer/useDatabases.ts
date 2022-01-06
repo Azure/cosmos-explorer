@@ -2,6 +2,7 @@ import _ from "underscore";
 import create, { UseStore } from "zustand";
 import * as Constants from "../Common/Constants";
 import * as ViewModels from "../Contracts/ViewModels";
+import { userContext } from "../UserContext";
 import { useSelectedNode } from "./useSelectedNode";
 
 interface DatabasesState {
@@ -17,8 +18,11 @@ interface DatabasesState {
   findCollection: (databaseId: string, collectionId: string) => ViewModels.Collection;
   isLastCollection: () => boolean;
   loadDatabaseOffers: () => Promise<void>;
+  loadAllOffers: () => Promise<void>;
   isFirstResourceCreated: () => boolean;
   findSelectedDatabase: () => ViewModels.Database;
+  validateDatabaseId: (id: string) => boolean;
+  validateCollectionId: (databaseId: string, collectionId: string) => Promise<boolean>;
 }
 
 export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
@@ -94,6 +98,19 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
       })
     );
   },
+  loadAllOffers: async () => {
+    await Promise.all(
+      get().databases?.map(async (database: ViewModels.Database) => {
+        await database.loadOffer();
+        await database.loadCollections();
+        await Promise.all(
+          (database.collections() || []).map(async (collection: ViewModels.Collection) => {
+            await collection.loadOffer();
+          })
+        );
+      })
+    );
+  },
   isFirstResourceCreated: () => {
     const databases = get().databases;
 
@@ -128,5 +145,18 @@ export const useDatabases: UseStore<DatabasesState> = create((set, get) => ({
     }
 
     return selectedNode.collection?.database;
+  },
+  validateDatabaseId: (id: string): boolean => {
+    return !get().databases.some((database) => database.id() === id);
+  },
+  validateCollectionId: async (databaseId: string, collectionId: string): Promise<boolean> => {
+    const database = get().databases.find((db) => db.id() === databaseId);
+    // For a new tables account, database is undefined when creating the first table
+    if (!database && userContext.apiType === "Tables") {
+      return true;
+    }
+
+    await database.loadCollections();
+    return !database.collections().some((collection) => collection.id() === collectionId);
   },
 }));

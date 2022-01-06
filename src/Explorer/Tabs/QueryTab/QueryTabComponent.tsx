@@ -1,4 +1,4 @@
-import { DetailsList, DetailsListLayoutMode, IColumn, Pivot, PivotItem, SelectionMode } from "@fluentui/react";
+import { DetailsList, DetailsListLayoutMode, IColumn, Pivot, PivotItem, SelectionMode, Text } from "@fluentui/react";
 import React, { Fragment } from "react";
 import SplitterLayout from "react-splitter-layout";
 import "react-splitter-layout/lib/index.css";
@@ -121,20 +121,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     super(props);
     const columns: IColumn[] = [
       {
-        key: "column1",
-        name: "",
-        minWidth: 16,
-        maxWidth: 16,
-        data: String,
-        fieldName: "toolTip",
-        onRender: this.onRenderColumnItem,
-      },
-      {
         key: "column2",
         name: "METRIC",
         minWidth: 200,
         data: String,
         fieldName: "metric",
+        onRender: this.onRenderColumnItem,
       },
       {
         key: "column3",
@@ -206,7 +198,12 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
 
   public onRenderColumnItem(item: IDocument): JSX.Element {
     if (item.toolTip !== "") {
-      return <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>;
+      return (
+        <>
+          <InfoTooltip>{`${item.toolTip}`}</InfoTooltip>
+          <Text style={{ paddingLeft: 10, margin: 0 }}>{`${item.metric}`}</Text>
+        </>
+      );
     } else {
       return undefined;
     }
@@ -367,13 +364,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
   }
 
   public onTabClick(): void {
-    setTimeout(() => {
-      if (!this.isCloseClicked) {
-        useCommandBar.getState().setContextButtons(this.getTabsButtons());
-      } else {
-        this.isCloseClicked = false;
-      }
-    }, 0);
+    if (!this.isCloseClicked) {
+      useCommandBar.getState().setContextButtons(this.getTabsButtons());
+    } else {
+      this.isCloseClicked = false;
+    }
   }
 
   public onExecuteQueryClick = async (): Promise<void> => {
@@ -878,9 +873,11 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
   }
 
-  render(): JSX.Element {
+  componentDidMount(): void {
     useCommandBar.getState().setContextButtons(this.getTabsButtons());
+  }
 
+  render(): JSX.Element {
     return (
       <Fragment>
         <div className="tab-pane" id={this.props.tabId} role="tabpanel">
@@ -1002,7 +999,7 @@ export default class QueryTabComponent extends React.Component<IQueryTabComponen
                               "data-order": 2,
                               "data-title": "Query Stats",
                             }}
-                            style={{ height: "100%" }}
+                            style={{ height: "100%", overflowY: "scroll" }}
                           >
                             {this.state.allResultsMetadata.length > 0 && !this.state.error && (
                               <div className="queryMetricsSummaryContainer">

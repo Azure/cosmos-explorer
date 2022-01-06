@@ -57,7 +57,7 @@ export default class Database implements ViewModels.Database {
     this.isOfferRead = false;
   }
 
-  public onSettingsClick = () => {
+  public onSettingsClick = async (): Promise<void> => {
     useSelectedNode.getState().setSelectedNode(this);
     this.selectedSubnodeKind(ViewModels.CollectionTabKind.DatabaseSettings);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
@@ -65,6 +65,11 @@ export default class Database implements ViewModels.Database {
 
       dataExplorerArea: Constants.Areas.ResourceTree,
     });
+
+    const throughputCap = userContext.databaseAccount?.properties.capacity?.totalThroughputLimit;
+    if (throughputCap && throughputCap !== -1) {
+      await useDatabases.getState().loadAllOffers();
+    }
 
     const pendingNotificationsPromise: Promise<DataModels.Notification> = this.getPendingThroughputSplitNotification();
     const tabKind = ViewModels.CollectionTabKind.DatabaseSettingsV2;
@@ -193,6 +198,8 @@ export default class Database implements ViewModels.Database {
     //merge collections
     this.addCollectionsToList(collectionVMs);
     this.deleteCollectionsFromList(deltaCollections.toDelete);
+
+    useDatabases.getState().updateDatabase(this);
   }
 
   public async openAddCollection(database: Database): Promise<void> {

@@ -24,11 +24,11 @@ import { RepoListItem } from "./GitHubReposComponent";
 import {
   BranchesDropdownCheckboxStyles,
   BranchesDropdownOptionContainerStyle,
+  BranchesDropdownStyles,
+  BranchesDropdownWidth,
+  ReposListBranchesColumnWidth,
   ReposListCheckboxStyles,
   ReposListRepoColumnMinWidth,
-  ReposListBranchesColumnWidth,
-  BranchesDropdownWidth,
-  BranchesDropdownStyles,
 } from "./GitHubStyleConstants";
 
 export interface ReposListComponentProps {
@@ -44,6 +44,7 @@ export interface BranchesProps {
   lastPageInfo?: IGitHubPageInfo;
   hasMore: boolean;
   isLoading: boolean;
+  defaultBranchName: string;
   loadMore: () => void;
 }
 
@@ -64,7 +65,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
   private static readonly BranchesColumnName = "Branches";
   private static readonly LoadingText = "Loading...";
   private static readonly LoadMoreText = "Load more";
-  private static readonly DefaultBranchName = "master";
+  private static readonly DefaultBranchNames = "master/main";
   private static readonly FooterIndex = -1;
 
   public render(): JSX.Element {
@@ -155,6 +156,10 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     }
 
     const branchesProps = this.props.branchesProps[GitHubUtils.toRepoFullName(item.repo.owner, item.repo.name)];
+    if (item.branches.length === 0 && branchesProps.defaultBranchName) {
+      item.branches = [{ name: branchesProps.defaultBranchName }];
+    }
+
     const options: IDropdownOption[] = branchesProps.branches.map((branch) => ({
       key: branch.name,
       text: branch.name,
@@ -198,7 +203,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
     const dropdownProps: IDropdownProps = {
       styles: BranchesDropdownStyles,
       options: [],
-      placeholder: ReposListComponent.DefaultBranchName,
+      placeholder: ReposListComponent.DefaultBranchNames,
       disabled: true,
     };
 
@@ -272,7 +277,7 @@ export class ReposListComponent extends React.Component<ReposListComponentProps>
       styles: ReposListCheckboxStyles,
       onChange: () => {
         const repoListItem = { ...item };
-        repoListItem.branches = [{ name: ReposListComponent.DefaultBranchName }];
+        repoListItem.branches = [];
         this.props.pinRepo(repoListItem);
       },
     };

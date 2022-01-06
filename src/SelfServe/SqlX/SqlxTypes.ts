@@ -29,3 +29,29 @@ export type UpdateDedicatedGatewayRequestProperties = {
   instanceCount: number;
   serviceType: string;
 };
+
+export type FetchPricesResponse = {
+  Items: Array<PriceItem>;
+  NextPageLink: string | undefined;
+  Count: number;
+};
+
+export type PriceMapAndCurrencyCode = {
+  priceMap: Map<string, Map<string, number>>;
+  currencyCode: string;
+};
+
+export type PriceItem = {
+  retailPrice: number;
+  skuName: string;
+  currencyCode: string;
+};
+
+export type RegionsResponse = {
+  locations: Array<RegionItem>;
+  location: string;
+};
+
+export type RegionItem = {
+  locationName: string;
+};

@@ -1,13 +1,13 @@
 import { Checkbox, ChoiceGroup, IChoiceGroupOption, SpinButton } from "@fluentui/react";
+import * as Constants from "Common/Constants";
+import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
+import { configContext } from "ConfigContext";
+import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, MouseEvent, useState } from "react";
-import * as Constants from "../../../Common/Constants";
-import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
-import { configContext } from "../../../ConfigContext";
-import { useSidePanel } from "../../../hooks/useSidePanel";
-import { LocalStorageUtility, StorageKey } from "../../../Shared/StorageUtility";
-import * as StringUtility from "../../../Shared/StringUtility";
-import { userContext } from "../../../UserContext";
-import { logConsoleInfo } from "../../../Utils/NotificationConsoleUtils";
+import { LocalStorageUtility, StorageKey } from "Shared/StorageUtility";
+import * as StringUtility from "Shared/StringUtility";
+import { userContext } from "UserContext";
+import { logConsoleInfo } from "Utils/NotificationConsoleUtils";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
 
 export const SettingsPane: FunctionComponent = () => {
@@ -113,20 +113,50 @@ export const SettingsPane: FunctionComponent = () => {
   const handleOnPageOptionChange = (ev: React.FormEvent<HTMLInputElement>, option: IChoiceGroupOption): void => {
     setPageOption(option.key);
   };
+
+  const choiceButtonStyles = {
+    root: {
+      clear: "both",
+    },
+    flexContainer: [
+      {
+        selectors: {
+          ".ms-ChoiceFieldGroup root-133": {
+            clear: "both",
+          },
+          ".ms-ChoiceField-wrapper label": {
+            fontSize: 12,
+            paddingTop: 0,
+          },
+          ".ms-ChoiceField": {
+            marginTop: 0,
+          },
+        },
+      },
+    ],
+  };
   return (
     <RightPaneForm {...genericPaneProps}>
       <div className="paneMainContent">
         {shouldShowQueryPageOptions && (
           <div className="settingsSection">
-            <div className="settingsSectionPart pageOptionsPart">
-              <div className="settingsSectionLabel">
-                Page options
+            <div className="settingsSectionPart">
+              <fieldset>
+                <legend id="pageOptions" className="settingsSectionLabel legendLabel">
+                  Page Options
+                </legend>
                 <InfoTooltip>
                   Choose Custom to specify a fixed amount of query results to show, or choose Unlimited to show as many
                   query results per page.
                 </InfoTooltip>
-              </div>
-              <ChoiceGroup selectedKey={pageOption} options={pageOptionList} onChange={handleOnPageOptionChange} />
+                <ChoiceGroup
+                  ariaLabelledBy="pageOptions"
+                  selectedKey={pageOption}
+                  options={pageOptionList}
+                  styles={choiceButtonStyles}
+                  onChange={handleOnPageOptionChange}
+                />
+              </fieldset>
             </div>
             <div className="tabs settingsSectionPart">
               {isCustomPageOptionSelected() && (
@@ -195,7 +225,6 @@ export const SettingsPane: FunctionComponent = () => {
                 step={1}
                 className="textfontclr"
                 role="textbox"
-                tabIndex={0}
                 id="max-degree"
                 value={"" + maxDegreeOfParallelism}
                 onIncrement={(newValue) => setMaxDegreeOfParallelism(parseInt(newValue) + 1 || maxDegreeOfParallelism)}

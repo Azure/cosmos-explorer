@@ -4,7 +4,13 @@ import { armRequestWithoutPolling } from "../../Utils/arm/request";
 import { selfServeTraceFailure, selfServeTraceStart, selfServeTraceSuccess } from "../SelfServeTelemetryProcessor";
 import { RefreshResult } from "../SelfServeTypes";
 import SqlX from "./SqlX";
-import { SqlxServiceResource, UpdateDedicatedGatewayRequestParameters } from "./SqlxTypes";
+import {
+  FetchPricesResponse,
+  PriceMapAndCurrencyCode,
+  RegionsResponse,
+  SqlxServiceResource,
+  UpdateDedicatedGatewayRequestParameters,
+} from "./SqlxTypes";
 
 const apiVersion = "2021-04-01-preview";
 
@@ -126,5 +132,97 @@ export const refreshDedicatedGatewayProvisioning = async (): Promise<RefreshResu
   } catch {
     //TODO differentiate between different failures
     return { isUpdateInProgress: false, updateInProgressMessageTKey: undefined };
+  }
+};
+
+const getGeneralPath = (subscriptionId: string, resourceGroup: string, name: string): string => {
+  return `/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/providers/Microsoft.DocumentDB/databaseAccounts/${name}`;
+};
+
+export const getRegions = async (): Promise<Array<string>> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getRegions",
+    description: "",
+    selfServeClassName: SqlX.name,
+  };
+  const getRegionsTimestamp = selfServeTraceStart(telemetryData);
+
+  try {
+    const regions = new Array<string>();
+
+    const response = await armRequestWithoutPolling<RegionsResponse>({
+      host: configContext.ARM_ENDPOINT,
+      path: getGeneralPath(userContext.subscriptionId, userContext.resourceGroup, userContext.databaseAccount.name),
+      method: "GET",
+      apiVersion: "2021-04-01-preview",
+    });
+
+    if (response.result.location !== undefined) {
+      regions.push(response.result.location.split(" ").join("").toLowerCase());
+    } else {
+      for (const location of response.result.locations) {
+        regions.push(location.locationName.split(" ").join("").toLowerCase());
+      }
+    }
+
+    selfServeTraceSuccess(telemetryData, getRegionsTimestamp);
+    return regions;
+  } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getRegionsTimestamp);
+    return new Array<string>();
+  }
+};
+
+const getFetchPricesPathForRegion = (subscriptionId: string): string => {
+  return `/subscriptions/${subscriptionId}/providers/Microsoft.CostManagement/fetchPrices`;
+};
+
+export const getPriceMapAndCurrencyCode = async (regions: Array<string>): Promise<PriceMapAndCurrencyCode> => {
+  const telemetryData = {
+    feature: "Calculate approximate cost",
+    function: "getPriceMapAndCurrencyCode",
+    description: "fetch prices API call",
+    selfServeClassName: SqlX.name,
+  };
+  const getPriceMapAndCurrencyCodeTimestamp = selfServeTraceStart(telemetryData);
+
+  try {
+    const priceMap = new Map<string, Map<string, number>>();
+    let currencyCode;
+    for (const region of regions) {
+      const regionPriceMap = new Map<string, number>();
+
+      const response = await armRequestWithoutPolling<FetchPricesResponse>({
+        host: configContext.ARM_ENDPOINT,
+        path: getFetchPricesPathForRegion(userContext.subscriptionId),
+        method: "POST",
+        apiVersion: "2020-01-01-preview",
+        queryParams: {
+          filter:
+            "armRegionName eq '" +
+            region +
+            "' and serviceFamily eq 'Databases' and productName eq 'Azure Cosmos DB Dedicated Gateway - General Purpose'",
+        },
+      });
+
+      for (const item of response.result.Items) {
+        if (currencyCode === undefined) {
+          currencyCode = item.currencyCode;
+        } else if (item.currencyCode !== currencyCode) {
+          throw Error("Currency Code Mismatch: Currency code not same for all regions / skus.");
+        }
+        regionPriceMap.set(item.skuName, item.retailPrice);
+      }
+      priceMap.set(region, regionPriceMap);
+    }
+
+    selfServeTraceSuccess(telemetryData, getPriceMapAndCurrencyCodeTimestamp);
+    return { priceMap: priceMap, currencyCode: currencyCode };
+  } catch (err) {
+    const failureTelemetry = { err, selfServeClassName: SqlX.name };
+    selfServeTraceFailure(failureTelemetry, getPriceMapAndCurrencyCodeTimestamp);
+    return { priceMap: undefined, currencyCode: undefined };
   }
 };

@@ -1,5 +1,6 @@
 import * as ko from "knockout";
 import * as DataModels from "../../Contracts/DataModels";
+import { useDialog } from "../Controls/Dialog";
 import DocumentsTab from "../Tabs/DocumentsTab";
 
 export default class DocumentId {
@@ -28,10 +29,20 @@ export default class DocumentId {
   }
 
   public click() {
-    if (!this.container.isEditorDirty() || window.confirm("Your unsaved changes will be lost.")) {
+    if (this.container.isEditorDirty()) {
+      useDialog
+        .getState()
+        .showOkCancelModalDialog(
+          "Unsaved changes",
+          "Your unsaved changes will be lost. Do you want to continue?",
+          "OK",
+          () => this.loadDocument(),
+          "Cancel",
+          undefined
+        );
+    } else {
       this.loadDocument();
     }
-    return;
   }
 
   public partitionKeyHeader(): Object {

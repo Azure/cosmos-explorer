@@ -2077,7 +2077,7 @@ a:link {
 .resourceTreeAndTabs {
   display: flex;
   flex: 1 1 auto;
-  overflow-x: auto;
+  overflow-x: clip;
   overflow-y: auto;
   height: 100%;
 }
@@ -2245,7 +2245,7 @@ a:link {
 }
 
 .refreshColHeader {
-  padding: 3px 6px 6px 6px;
+  padding: 3px 6px 10px 0px !important;
 }
 
 .refreshColHeader:hover {
@@ -2357,6 +2357,8 @@ a:link {
   height: 100%;
   flex-grow: 1;
   overflow: hidden;
+  min-height: 300px;
+  overflow-y: scroll;
 }
 
 .tabs {
@@ -2832,6 +2834,8 @@ a:link {
 
 #explorerNotificationConsole {
   z-index: 1000;
+  overflow-y: auto;
+  overflow-x: clip;
 }
 
 .uniqueIndexesContainer {
@@ -2865,31 +2869,39 @@ a:link {
   }
 }
 
-settings-pane {
-  .settingsSection {
-    border-bottom: 1px solid @BaseMedium;
-    margin-right: 24px;
-    padding: @MediumSpace 0px;
+.settingsSection {
+  border-bottom: 1px solid @BaseMedium;
+  margin-right: 24px;
+  padding: @MediumSpace 0px;
 
-    &:first-child {
-      padding-top: 0px;
-    }
+  &:first-child {
+    padding-top: 0px;
+    padding-bottom: 10px;
+  }
 
-    &:last-child {
-      border-bottom: none;
-    }
+  &:last-child {
+    border-bottom: none;
+  }
 
-    .settingsSectionPart {
-      padding-left: 8px;
-    }
+  .settingsSectionPart {
+    padding-left: 8px;
+  }
 
-    .settingsSectionLabel {
-      margin-bottom: @DefaultSpace;
-    }
+  .settingsSectionLabel {
+    margin-bottom: @DefaultSpace;
+    margin-right: 5px;
+  }
 
-    .pageOptionsPart {
-      padding-bottom: @MediumSpace;
-    }
+  .pageOptionsPart {
+    padding-bottom: @MediumSpace;
+  }
+
+  .legendLabel {
+    border-bottom: 0px;
+    width: auto;
+    font-size: @mediumFontSize;
+    display: inline !important;
+    float: left;
   }
 }
 

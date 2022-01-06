@@ -1,8 +1,8 @@
 import { DetailsList, DetailsListLayoutMode, IColumn, SelectionMode } from "@fluentui/react";
+import { Upload } from "Common/Upload/Upload";
+import { UploadDetailsRecord } from "Contracts/ViewModels";
 import React, { ChangeEvent, FunctionComponent, useState } from "react";
-import { Upload } from "../../../Common/Upload/Upload";
-import { UploadDetailsRecord } from "../../../Contracts/ViewModels";
-import { logConsoleError } from "../../../Utils/NotificationConsoleUtils";
+import { logConsoleError } from "Utils/NotificationConsoleUtils";
 import { getErrorMessage } from "../../Tables/Utilities";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -91,9 +91,7 @@ export const UploadItemsPane: FunctionComponent = () => {
           accept="application/json"
           multiple
           tabIndex={0}
-          tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON
-              documents. The combined size of all files in an individual upload operation must be less than 2 MB. You
-              can perform multiple upload operations for larger data sets."
+          tooltip="Select one or more JSON files to upload. Each file can contain a single JSON document or an array of JSON documents. The combined size of all files in an individual upload operation must be less than 2 MB. You can perform multiple upload operations for larger data sets."
         />
         {uploadFileData?.length > 0 && (
           <div className="fileUploadSummaryContainer">

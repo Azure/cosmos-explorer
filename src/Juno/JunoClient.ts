@@ -1,4 +1,5 @@
 import ko from "knockout";
+import { GetGithubClientId } from "Utils/GitHubUtils";
 import { HttpHeaders, HttpStatusCodes } from "../Common/Constants";
 import { configContext } from "../ConfigContext";
 import * as DataModels from "../Contracts/DataModels";
@@ -61,9 +62,8 @@ export interface IPublishNotebookRequest {
   name: string;
   description: string;
   tags: string[];
-  author: string;
   thumbnailUrl: string;
-  content: any;
+  content: unknown;
   addLinkToNotebookViewer: boolean;
 }
 
@@ -359,7 +359,6 @@ export class JunoClient {
     name: string,
     description: string,
     tags: string[],
-    author: string,
     thumbnailUrl: string,
     content: string
   ): Promise<IJunoResponse<IGalleryItem>> {
@@ -370,7 +369,6 @@ export class JunoClient {
         name,
         description,
         tags,
-        author,
         thumbnailUrl,
         content: JSON.parse(content),
         addLinkToNotebookViewer: true,
@@ -525,7 +523,7 @@ export class JunoClient {
 
   private static getGitHubClientParams(): URLSearchParams {
     const githubParams = new URLSearchParams({
-      client_id: configContext.GITHUB_CLIENT_ID,
+      client_id: GetGithubClientId(),
     });
 
     if (configContext.GITHUB_CLIENT_SECRET) {

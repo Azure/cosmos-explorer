@@ -211,6 +211,7 @@ exports[`TreeNodeComponent renders a simple node (sorted children, expanded) 1`]
             },
           }
         }
+        title="More"
       />
     </div>
   </div>
@@ -423,6 +424,7 @@ exports[`TreeNodeComponent renders sorted children, expanded, leaves and parents
             },
           }
         }
+        title="More"
       />
     </div>
   </div>

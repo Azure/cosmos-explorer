@@ -6,6 +6,7 @@ import * as ViewModels from "../../Contracts/ViewModels";
 import { useTabs } from "../../hooks/useTabs";
 import { Action, ActionModifiers } from "../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../Shared/Telemetry/TelemetryProcessor";
+import { useDialog } from "../Controls/Dialog";
 import Explorer from "../Explorer";
 import TriggerTab from "../Tabs/TriggerTab";
 import { useSelectedNode } from "../useSelectedNode";
@@ -21,6 +22,7 @@ export default class Trigger {
   public triggerType: ko.Observable<string>;
   public triggerOperation: ko.Observable<string>;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   constructor(container: Explorer, collection: ViewModels.Collection, data: any) {
     this.nodeKind = "Trigger";
     this.container = container;
@@ -33,7 +35,7 @@ export default class Trigger {
     this.triggerType = ko.observable(data.triggerType);
   }
 
-  public select() {
+  public select(): void {
     useSelectedNode.getState().setSelectedNode(this);
     TelemetryProcessor.trace(Action.SelectItem, ActionModifiers.Mark, {
       description: "Trigger node",
@@ -42,7 +44,8 @@ export default class Trigger {
     });
   }
 
-  public static create(source: ViewModels.Collection, event: MouseEvent) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public static create(source: ViewModels.Collection, _event: MouseEvent): void {
     const id = useTabs.getState().getTabs(ViewModels.CollectionTabKind.Triggers).length + 1;
     const trigger = <StoredProcedureDefinition>{
       id: "",
@@ -98,17 +101,23 @@ export default class Trigger {
     }
   };
 
-  public delete() {
-    if (!window.confirm("Are you sure you want to delete the trigger?")) {
-      return;
-    }
-
-    deleteTrigger(this.collection.databaseId, this.collection.id(), this.id()).then(
+  public delete(): void {
+    useDialog.getState().showOkCancelModalDialog(
+      "Confirm delete",
+      "Are you sure you want to delete the trigger?",
+      "Delete",
       () => {
-        useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
-        this.collection.children.remove(this);
+        deleteTrigger(this.collection.databaseId, this.collection.id(), this.id()).then(
+          () => {
+            useTabs.getState().closeTabsByComparator((tab) => tab.node && tab.node.rid === this.rid);
+            this.collection.children.remove(this);
+          },
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          () => {}
+        );
       },
-      (reason) => {}
+      "Cancel",
+      undefined
     );
   }
 }

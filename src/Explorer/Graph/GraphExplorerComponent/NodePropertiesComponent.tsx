@@ -6,9 +6,9 @@
 
 import * as React from "react";
 import CancelIcon from "../../../../images/cancel.svg";
-import CheckIcon from "../../../../images/check.svg";
+import CheckIcon from "../../../../images/check-1.svg";
 import DeleteIcon from "../../../../images/delete.svg";
-import EditIcon from "../../../../images/edit.svg";
+import EditIcon from "../../../../images/edit-1.svg";
 import * as ViewModels from "../../../Contracts/ViewModels";
 import { AccessibleElement } from "../../Controls/AccessibleElement/AccessibleElement";
 import { CollapsiblePanel } from "../../Controls/CollapsiblePanel/CollapsiblePanel";
@@ -72,7 +72,7 @@ export class NodePropertiesComponent extends React.Component<
     super(props);
     this.state = {
       editedProperties: {
-        pkId: null,
+        pkId: undefined,
         readOnlyProperties: [],
         existingProperties: [],
         addedProperties: [],
@@ -98,15 +98,12 @@ export class NodePropertiesComponent extends React.Component<
     };
   }
 
-  public static getDerivedStateFromProps(
-    props: NodePropertiesComponentProps,
-    state: NodePropertiesComponentState
-  ): Partial<NodePropertiesComponentState> {
+  public static getDerivedStateFromProps(props: NodePropertiesComponentProps): Partial<NodePropertiesComponentState> {
     if (props.viewMode !== Mode.READONLY_PROP) {
       return { isDeleteConfirm: false };
     }
 
-    return null;
+    return undefined;
   }
 
   public render(): JSX.Element {
@@ -138,10 +135,10 @@ export class NodePropertiesComponent extends React.Component<
    * @param value
    */
   private static getTypeOption(value: any): ViewModels.InputPropertyValueTypeString {
-    if (value == null) {
+    if (value === undefined) {
       return "null";
     }
-    let type = typeof value;
+    const type = typeof value;
     switch (type) {
       case "number":
       case "boolean":
@@ -172,10 +169,9 @@ export class NodePropertiesComponent extends React.Component<
     ];
 
     const existingProps: ViewModels.InputProperty[] = [];
-
     if (this.props.node.hasOwnProperty("properties")) {
       const hProps = this.props.node["properties"];
-      for (let p in hProps) {
+      for (const p in hProps) {
         const propValues = hProps[p];
         (p === partitionKeyProperty ? readOnlyProps : existingProps).push({
           key: p,
@@ -437,7 +433,7 @@ export class NodePropertiesComponent extends React.Component<
         </div>
       );
     } else {
-      return null;
+      return undefined;
     }
   }
 

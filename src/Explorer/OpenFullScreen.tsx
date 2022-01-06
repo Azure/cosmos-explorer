@@ -4,6 +4,8 @@ import * as React from "react";
 import { useFullScreenURLs } from "../hooks/useFullScreenURLs";
 
 export const OpenFullScreen: React.FunctionComponent = () => {
+  const [isReadUrlCopy, setIsReadUrlCopy] = React.useState<boolean>(false);
+  const [isReadWriteUrlCopy, setIsReadWriteUrlCopy] = React.useState<boolean>(false);
   const result = useFullScreenURLs();
   if (!result) {
     return <Spinner label="Generating URLs..." ariaLive="assertive" labelPosition="right" />;
@@ -23,10 +25,12 @@ export const OpenFullScreen: React.FunctionComponent = () => {
         <TextField label="Read and Write" readOnly defaultValue={readWriteUrl} />
         <Stack horizontal tokens={{ childrenGap: 10 }}>
           <DefaultButton
+            ariaLabel={isReadWriteUrlCopy ? "Copied url" : "Copy"}
             onClick={() => {
               copyToClipboard(readWriteUrl);
+              setIsReadWriteUrlCopy(true);
             }}
-            text="Copy"
+            text={isReadWriteUrlCopy ? "Copied" : "Copy"}
             iconProps={{ iconName: "Copy" }}
           />
           <PrimaryButton
@@ -40,10 +44,12 @@ export const OpenFullScreen: React.FunctionComponent = () => {
         <TextField label="Read Only" readOnly defaultValue={readUrl} />
         <Stack horizontal tokens={{ childrenGap: 10 }}>
           <DefaultButton
+            ariaLabel={isReadUrlCopy ? "Copied url" : "Copy"}
             onClick={() => {
+              setIsReadUrlCopy(true);
               copyToClipboard(readUrl);
             }}
-            text="Copy"
+            text={isReadUrlCopy ? "Copied" : "Copy"}
             iconProps={{ iconName: "Copy" }}
           />
           <PrimaryButton

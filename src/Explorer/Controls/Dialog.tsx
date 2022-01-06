@@ -23,13 +23,78 @@ export interface DialogState {
   dialogProps?: DialogProps;
   openDialog: (props: DialogProps) => void;
   closeDialog: () => void;
+  showOkCancelModalDialog: (
+    title: string,
+    subText: string,
+    okLabel: string,
+    onOk: () => void,
+    cancelLabel: string,
+    onCancel: () => void,
+    contentHtml?: JSX.Element,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
+    primaryButtonDisabled?: boolean
+  ) => void;
+  showOkModalDialog: (title: string, subText: string) => void;
 }
 
-export const useDialog: UseStore<DialogState> = create((set) => ({
+export const useDialog: UseStore<DialogState> = create((set, get) => ({
   visible: false,
   openDialog: (props: DialogProps) => set(() => ({ visible: true, dialogProps: props })),
   closeDialog: () =>
-    set((state) => ({ visible: false, openDialog: state.openDialog, closeDialog: state.closeDialog }), true),
+    set(
+      (state) => ({
+        visible: false,
+        openDialog: state.openDialog,
+        closeDialog: state.closeDialog,
+        showOkCancelModalDialog: state.showOkCancelModalDialog,
+        showOkModalDialog: state.showOkModalDialog,
+      }),
+      true // TODO: This probably should not be true but its causing a prod bug so easier to just set the proper state above
+    ),
+  showOkCancelModalDialog: (
+    title: string,
+    subText: string,
+    okLabel: string,
+    onOk: () => void,
+    cancelLabel: string,
+    onCancel: () => void,
+    contentHtml?: JSX.Element,
+    choiceGroupProps?: IChoiceGroupProps,
+    textFieldProps?: TextFieldProps,
+    primaryButtonDisabled?: boolean
+  ): void =>
+    get().openDialog({
+      isModal: true,
+      title,
+      subText,
+      primaryButtonText: okLabel,
+      secondaryButtonText: cancelLabel,
+      onPrimaryButtonClick: () => {
+        get().closeDialog();
+        onOk && onOk();
+      },
+      onSecondaryButtonClick: () => {
+        get().closeDialog();
+        onCancel && onCancel();
+      },
+      contentHtml,
+      choiceGroupProps,
+      textFieldProps,
+      primaryButtonDisabled,
+    }),
+  showOkModalDialog: (title: string, subText: string): void =>
+    get().openDialog({
+      isModal: true,
+      title,
+      subText,
+      primaryButtonText: "Close",
+      secondaryButtonText: undefined,
+      onPrimaryButtonClick: () => {
+        get().closeDialog();
+      },
+      onSecondaryButtonClick: undefined,
+    }),
 }));
 
 export interface TextFieldProps extends ITextFieldProps {
@@ -62,6 +127,7 @@ export interface DialogProps {
   type?: DialogType;
   showCloseButton?: boolean;
   onDismiss?: () => void;
+  contentHtml?: JSX.Element;
 }
 
 const DIALOG_MIN_WIDTH = "400px";
@@ -88,6 +154,7 @@ export const Dialog: FC = () => {
     type,
     showCloseButton,
     onDismiss,
+    contentHtml,
   } = props || {};
 
   const dialogProps: IDialogProps = {
@@ -119,8 +186,7 @@ export const Dialog: FC = () => {
           text: secondaryButtonText,
           onClick: onSecondaryButtonClick,
         }
-      : {};
-
+      : undefined;
   return visible ? (
     <FluentDialog {...dialogProps}>
       {choiceGroupProps && <ChoiceGroup {...choiceGroupProps} />}
@@ -130,6 +196,7 @@ export const Dialog: FC = () => {
           {linkProps.linkText} <FontIcon iconName="NavigateExternalInline" />
         </Link>
       )}
+      {contentHtml}
       {progressIndicatorProps && <ProgressIndicator {...progressIndicatorProps} />}
       <DialogFooter>
         <PrimaryButton {...primaryButtonProps} />

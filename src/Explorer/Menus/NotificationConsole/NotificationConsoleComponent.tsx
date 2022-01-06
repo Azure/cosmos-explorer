@@ -6,7 +6,7 @@ import { Dropdown, IDropdownOption } from "@fluentui/react";
 import * as React from "react";
 import AnimateHeight from "react-animate-height";
 import LoaderIcon from "../../../../images/circular_loader_black_16x16.gif";
-import ClearIcon from "../../../../images/Clear.svg";
+import ClearIcon from "../../../../images/Clear-1.svg";
 import ErrorBlackIcon from "../../../../images/error_black.svg";
 import ErrorRedIcon from "../../../../images/error_red.svg";
 import infoBubbleIcon from "../../../../images/info-bubble-9x9.svg";
@@ -129,7 +129,7 @@ export class NotificationConsoleComponent extends React.Component<
             className="expandCollapseButton"
             role="button"
             tabIndex={0}
-            aria-label={"console button" + (this.props.isConsoleExpanded ? " collapsed" : " expanded")}
+            aria-label={"console button" + (this.props.isConsoleExpanded ? " expanded" : " collapsed")}
             aria-expanded={!this.props.isConsoleExpanded}
           >
             <img
@@ -205,7 +205,9 @@ export class NotificationConsoleComponent extends React.Component<
         {item.type === ConsoleDataType.Error && <img className="errorIcon" src={ErrorRedIcon} alt="error" />}
         {item.type === ConsoleDataType.InProgress && <img className="loaderIcon" src={LoaderIcon} alt="in progress" />}
         <span className="date">{item.date}</span>
-        <span className="message">{item.message}</span>
+        <span className="message" role="alert" aria-live="assertive">
+          {item.message}
+        </span>
       </div>
     ));
   }

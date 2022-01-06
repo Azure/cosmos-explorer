@@ -2,14 +2,17 @@ import create, { UseStore } from "zustand";
 
 export interface SidePanelState {
   isOpen: boolean;
+  panelWidth: string;
   panelContent?: JSX.Element;
   headerText?: string;
-  openSidePanel: (headerText: string, panelContent: JSX.Element, onClose?: () => void) => void;
+  openSidePanel: (headerText: string, panelContent: JSX.Element, panelWidth?: string, onClose?: () => void) => void;
   closeSidePanel: () => void;
 }
 
 export const useSidePanel: UseStore<SidePanelState> = create((set) => ({
   isOpen: false,
-  openSidePanel: (headerText, panelContent) => set((state) => ({ ...state, headerText, panelContent, isOpen: true })),
+  panelWidth: "440px",
+  openSidePanel: (headerText, panelContent, panelWidth = "440px") =>
+    set((state) => ({ ...state, headerText, panelContent, panelWidth, isOpen: true })),
   closeSidePanel: () => set((state) => ({ ...state, isOpen: false })),
 }));

@@ -1,5 +1,6 @@
 import Q from "q";
 import { userContext } from "../../../UserContext";
+import { useDialog } from "../../Controls/Dialog";
 import Explorer from "../../Explorer";
 import * as Entities from "../Entities";
 import * as DataTableUtilities from "./DataTableUtilities";
@@ -7,11 +8,11 @@ import TableEntityListViewModel from "./TableEntityListViewModel";
 
 export default class TableCommands {
   // Command Ids
-  public static editEntityCommand: string = "edit";
-  public static deleteEntitiesCommand: string = "delete";
-  public static reorderColumnsCommand: string = "reorder";
-  public static resetColumnsCommand: string = "reset";
-  public static customizeColumnsCommand: string = "customizeColumns";
+  public static editEntityCommand = "edit";
+  public static deleteEntitiesCommand = "delete";
+  public static reorderColumnsCommand = "reorder";
+  public static resetColumnsCommand = "reset";
+  public static customizeColumnsCommand = "customizeColumns";
 
   private _container: Explorer;
 
@@ -20,8 +21,8 @@ export default class TableCommands {
   }
 
   public isEnabled(commandName: string, selectedEntites: Entities.ITableEntity[]): boolean {
-    var singleItemSelected: boolean = DataTableUtilities.containSingleItem(selectedEntites);
-    var atLeastOneItemSelected: boolean = DataTableUtilities.containItems(selectedEntites);
+    const singleItemSelected = DataTableUtilities.containSingleItem(selectedEntites);
+    const atLeastOneItemSelected = DataTableUtilities.containItems(selectedEntites);
     switch (commandName) {
       case TableCommands.editEntityCommand:
         return singleItemSelected;
@@ -46,6 +47,7 @@ export default class TableCommands {
   /**
    * Edit entity
    */
+  //eslint-disable-next-line
   public editEntityCommand(viewModel: TableEntityListViewModel): Q.Promise<any> {
     if (!viewModel) {
       return null; // Error
@@ -55,12 +57,9 @@ export default class TableCommands {
       return null; // Erorr
     }
 
-    var entityToUpdate: Entities.ITableEntity = viewModel.selected()[0];
-    var originalNumberOfProperties = entityToUpdate ? 0 : Object.keys(entityToUpdate).length - 1; // .metadata is always a property for etag
-
     return null;
   }
-
+  //eslint-disable-next-line
   public deleteEntitiesCommand(viewModel: TableEntityListViewModel): Q.Promise<any> {
     if (!viewModel) {
       return null; // Error
@@ -68,20 +67,29 @@ export default class TableCommands {
     if (!DataTableUtilities.containItems(viewModel.selected())) {
       return null; // Error
     }
-    var entitiesToDelete: Entities.ITableEntity[] = viewModel.selected();
-    let deleteMessage: string = "Are you sure you want to delete the selected entities?";
-    if (userContext.apiType === "Cassandra") {
-      deleteMessage = "Are you sure you want to delete the selected rows?";
-    }
-    if (window.confirm(deleteMessage)) {
-      viewModel.queryTablesTab.container.tableDataClient
-        .deleteDocuments(viewModel.queryTablesTab.collection, entitiesToDelete)
-        .then((results: any) => {
-          return viewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
-            viewModel.redrawTableThrottled();
+    const entitiesToDelete: Entities.ITableEntity[] = viewModel.selected();
+    const deleteMessage: string =
+      userContext.apiType === "Cassandra"
+        ? "Are you sure you want to delete the selected rows?"
+        : "Are you sure you want to delete the selected entities?";
+
+    useDialog.getState().showOkCancelModalDialog(
+      "Confirm delete",
+      deleteMessage,
+      "Delete",
+      () => {
+        viewModel.queryTablesTab.container.tableDataClient
+          .deleteDocuments(viewModel.queryTablesTab.collection, entitiesToDelete)
+          .then(() => {
+            return viewModel.removeEntitiesFromCache(entitiesToDelete).then(() => {
+              viewModel.redrawTableThrottled();
+            });
           });
-        });
-    }
+      },
+      "Cancel",
+      undefined
+    );
+
     return null;
   }
 

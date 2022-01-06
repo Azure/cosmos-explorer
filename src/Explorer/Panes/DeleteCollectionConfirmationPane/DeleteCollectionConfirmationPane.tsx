@@ -1,18 +1,18 @@
 import { Text, TextField } from "@fluentui/react";
+import { Areas } from "Common/Constants";
+import { deleteCollection } from "Common/dataAccess/deleteCollection";
+import DeleteFeedback from "Common/DeleteFeedback";
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { Collection } from "Contracts/ViewModels";
+import { useSidePanel } from "hooks/useSidePanel";
+import { useTabs } from "hooks/useTabs";
 import React, { FunctionComponent, useState } from "react";
-import { Areas } from "../../../Common/Constants";
-import { deleteCollection } from "../../../Common/dataAccess/deleteCollection";
-import DeleteFeedback from "../../../Common/DeleteFeedback";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
-import { Collection } from "../../../Contracts/ViewModels";
-import { useSidePanel } from "../../../hooks/useSidePanel";
-import { useTabs } from "../../../hooks/useTabs";
-import { DefaultExperienceUtility } from "../../../Shared/DefaultExperienceUtility";
-import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../../UserContext";
-import { getCollectionName } from "../../../Utils/APITypeUtils";
-import * as NotificationConsoleUtils from "../../../Utils/NotificationConsoleUtils";
+import { DefaultExperienceUtility } from "Shared/DefaultExperienceUtility";
+import { Action, ActionModifiers } from "Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "UserContext";
+import { getCollectionName } from "Utils/APITypeUtils";
+import * as NotificationConsoleUtils from "Utils/NotificationConsoleUtils";
 import { useDatabases } from "../../useDatabases";
 import { useSelectedNode } from "../../useSelectedNode";
 import { RightPaneForm, RightPaneFormProps } from "../RightPaneForm/RightPaneForm";
@@ -38,7 +38,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
   const onSubmit = async (): Promise<void> => {
     const collection = useSelectedNode.getState().findSelectedCollection();
     if (!collection || inputCollectionName !== collection.id()) {
-      const errorMessage = "Input " + collectionName + " name does not match the selected " + collectionName;
+      const errorMessage = "Input " + collectionName + " id does not match the selected " + collectionName;
       setFormError(errorMessage);
       NotificationConsoleUtils.logConsoleError(
         `Error while deleting ${collectionName} ${collection.id()}: ${errorMessage}`
@@ -108,6 +108,8 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
     submitButtonText: "OK",
     onSubmit,
   };
+  const confirmContainer = `Confirm by typing the ${collectionName.toLowerCase()} id`;
+  const reasonInfo = `Help us improve Azure Cosmos DB! What is the reason why you are deleting this ${collectionName}?`;
   return (
     <RightPaneForm {...props}>
       <div className="panelFormWrapper">
@@ -123,6 +125,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
               onChange={(event, newInput?: string) => {
                 setInputCollectionName(newInput);
               }}
+              ariaLabel={confirmContainer}
             />
           </div>
           {shouldRecordFeedback() && (
@@ -142,6 +145,7 @@ export const DeleteCollectionConfirmationPane: FunctionComponent<DeleteCollectio
                 onChange={(event, newInput?: string) => {
                   setDeleteCollectionFeedback(newInput);
                 }}
+                ariaLabel={reasonInfo}
               />
             </div>
           )}

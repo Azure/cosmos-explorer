@@ -1,3 +1,5 @@
+import { ConnectionStatusType, ContainerStatusType } from "../Common/Constants";
+
 export interface DatabaseAccount {
   id: string;
   name: string;
@@ -24,6 +26,8 @@ export interface DatabaseAccountExtendedProperties {
   isVirtualNetworkFilterEnabled?: boolean;
   ipRules?: IpRule[];
   privateEndpointConnections?: unknown[];
+  capacity?: { totalThroughputLimit: number };
+  locations?: DatabaseAccountResponseLocation[];
 }
 
 export interface DatabaseAccountResponseLocation {
@@ -424,6 +428,32 @@ export interface OperationStatus {
 export interface NotebookWorkspaceConnectionInfo {
   authToken: string;
   notebookServerEndpoint: string;
+  forwardingId: string;
+}
+
+export interface ContainerInfo {
+  durationLeftInMinutes: number;
+  notebookServerInfo: NotebookWorkspaceConnectionInfo;
+  status: ContainerStatusType;
+}
+
+export interface IProvisionData {
+  cosmosEndpoint: string;
+}
+
+export interface IContainerData {
+  forwardingId: string;
+}
+
+export interface IResponse<T> {
+  status: number;
+  data: T;
+}
+
+export interface IPhoenixConnectionInfoResult {
+  readonly notebookAuthToken?: string;
+  readonly notebookServerUrl?: string;
+  readonly forwardingId?: string;
 }
 
 export interface NotebookWorkspaceFeedResponse {
@@ -495,4 +525,9 @@ export interface MongoParameters extends RpParameters {
 export interface MemoryUsageInfo {
   freeKB: number;
   totalKB: number;
+}
+
+export interface ContainerConnectionInfo {
+  status: ConnectionStatusType;
+  //need to add ram and rom info
 }

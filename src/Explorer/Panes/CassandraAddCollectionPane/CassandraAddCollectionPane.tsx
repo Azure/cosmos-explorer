@@ -1,14 +1,14 @@
 import { Checkbox, Dropdown, IDropdownOption, Link, Stack, Text, TextField } from "@fluentui/react";
+import * as Constants from "Common/Constants";
+import { getErrorMessage, getErrorStack } from "Common/ErrorHandlingUtils";
+import { InfoTooltip } from "Common/Tooltip/InfoTooltip";
+import { useSidePanel } from "hooks/useSidePanel";
 import React, { FunctionComponent, useState } from "react";
-import * as Constants from "../../../Common/Constants";
-import { getErrorMessage, getErrorStack } from "../../../Common/ErrorHandlingUtils";
-import { InfoTooltip } from "../../../Common/Tooltip/InfoTooltip";
-import { useSidePanel } from "../../../hooks/useSidePanel";
-import * as SharedConstants from "../../../Shared/Constants";
-import { Action } from "../../../Shared/Telemetry/TelemetryConstants";
-import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
-import { userContext } from "../../../UserContext";
-import { isServerlessAccount } from "../../../Utils/CapabilityUtils";
+import * as SharedConstants from "Shared/Constants";
+import { Action } from "Shared/Telemetry/TelemetryConstants";
+import * as TelemetryProcessor from "Shared/Telemetry/TelemetryProcessor";
+import { userContext } from "UserContext";
+import { isServerlessAccount } from "Utils/CapabilityUtils";
 import { ThroughputInput } from "../../Controls/ThroughputInput/ThroughputInput";
 import Explorer from "../../Explorer";
 import { CassandraAPIDataClient } from "../../Tables/TableDataClient";
@@ -43,6 +43,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
   const [dedicateTableThroughput, setDedicateTableThroughput] = useState<boolean>(false);
   const [isExecuting, setIsExecuting] = useState<boolean>();
   const [formError, setFormError] = useState<string>("");
+  const [isThroughputCapExceeded, setIsThroughputCapExceeded] = useState<boolean>(false);
   const isFreeTierAccount: boolean = userContext.databaseAccount?.properties?.enableFreeTier;
 
   const addCollectionPaneOpenMessage = {
@@ -149,6 +150,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
     formError,
     isExecuting,
     submitButtonText: "OK",
+    isSubmitButtonDisabled: isThroughputCapExceeded,
     onSubmit,
   };
 
@@ -198,6 +200,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
             <Stack className="panelGroupSpacing">
               <TextField
                 aria-required="true"
+                required={true}
                 autoComplete="off"
                 styles={getTextFieldStyles()}
                 pattern="[^/?#\\]*[^/?# \\]"
@@ -261,6 +264,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               isSharded
               setThroughputValue={(throughput: number) => (newKeySpaceThroughput = throughput)}
               setIsAutoscale={(isAutoscale: boolean) => (isNewKeySpaceAutoscale = isAutoscale)}
+              setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
               onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
             />
           )}
@@ -285,6 +289,7 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
               underlined
               styles={getTextFieldStyles({ fontSize: 12, width: 150 })}
               aria-required="true"
+              required={true}
               ariaLabel="addCollection-tableId"
               autoComplete="off"
               pattern="[^/?#\\]*[^/?# \\]"
@@ -329,9 +334,10 @@ export const CassandraAddCollectionPane: FunctionComponent<CassandraAddCollectio
           <ThroughputInput
             showFreeTierExceedThroughputTooltip={isFreeTierAccount && !useDatabases.getState().isFirstResourceCreated()}
             isDatabase={false}
-            isSharded={false}
+            isSharded
             setThroughputValue={(throughput: number) => (tableThroughput = throughput)}
             setIsAutoscale={(isAutoscale: boolean) => (isTableAutoscale = isAutoscale)}
+            setIsThroughputCapExceeded={(isCapExceeded: boolean) => setIsThroughputCapExceeded(isCapExceeded)}
             onCostAcknowledgeChange={(isAcknowledged: boolean) => (isCostAcknowledged = isAcknowledged)}
           />
         )}

@@ -7,6 +7,7 @@ const props = {
   isSharded: true,
   setThroughputValue: () => jest.fn(),
   setIsAutoscale: () => jest.fn(),
+  setIsThroughputCapExceeded: () => jest.fn(),
   onCostAcknowledgeChange: () => jest.fn(),
 };
 describe("ThroughputInput Pane", () => {

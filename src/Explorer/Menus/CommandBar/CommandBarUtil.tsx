@@ -13,6 +13,8 @@ import { StyleConstants } from "../../../Common/Constants";
 import { Action, ActionModifiers } from "../../../Shared/Telemetry/TelemetryConstants";
 import * as TelemetryProcessor from "../../../Shared/Telemetry/TelemetryProcessor";
 import { CommandButtonComponentProps } from "../../Controls/CommandButton/CommandButtonComponent";
+import Explorer from "../../Explorer";
+import { ConnectionStatus } from "./ConnectionStatusComponent";
 import { MemoryTracker } from "./MemoryTrackerComponent";
 
 /**
@@ -21,6 +23,13 @@ import { MemoryTracker } from "./MemoryTrackerComponent";
  */
 export const convertButton = (btns: CommandButtonComponentProps[], backgroundColor: string): ICommandBarItemProps[] => {
   const buttonHeightPx = StyleConstants.CommandBarButtonHeight;
+
+  const getFilter = (isDisabled: boolean): string => {
+    if (isDisabled) {
+      return StyleConstants.GrayScale;
+    }
+    return undefined;
+  };
 
   return btns
     .filter((btn) => btn)
@@ -37,6 +46,7 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
             style: {
               width: StyleConstants.CommandBarIconWidth, // 16
               alignSelf: btn.iconName ? "baseline" : undefined,
+              filter: getFilter(btn.disabled),
             },
             imageProps: btn.iconSrc ? { src: btn.iconSrc, alt: btn.iconAlt } : undefined,
             iconName: btn.iconName,
@@ -123,8 +133,12 @@ export const convertButton = (btns: CommandButtonComponentProps[], backgroundCol
               width: 12,
               paddingLeft: 1,
               paddingTop: 6,
+              filter: getFilter(btn.disabled),
             },
-            imageProps: { src: ChevronDownIcon, alt: btn.iconAlt },
+            imageProps: {
+              src: ChevronDownIcon,
+              alt: btn.iconAlt,
+            },
           };
         }
 
@@ -187,5 +201,12 @@ export const createMemoryTracker = (key: string): ICommandBarItemProps => {
   return {
     key,
     onRender: () => <MemoryTracker />,
+  };
+};
+
+export const createConnectionStatus = (container: Explorer, key: string): ICommandBarItemProps => {
+  return {
+    key,
+    onRender: () => <ConnectionStatus container={container} />,
   };
 };

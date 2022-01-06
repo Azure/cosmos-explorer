@@ -11,7 +11,6 @@ import {
   DropTargetConnector,
   DropTargetMonitor,
 } from "react-dnd";
-
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import styled, { StyledComponent } from "styled-components";
@@ -123,9 +122,10 @@ export const cellTarget = {
   drop(props: Props, monitor: DropTargetMonitor, component: any): void {
     if (monitor) {
       const hoverUpperHalf = isDragUpper(props, monitor, component.el);
+      const item: Props = monitor.getItem();
       // DropTargetSpec monitor definition could be undefined. we'll need a check for monitor in order to pass validation.
       props.moveCell({
-        id: monitor.getItem().id,
+        id: item.id,
         destinationId: props.id,
         above: hoverUpperHalf,
         contentRef: props.contentRef,

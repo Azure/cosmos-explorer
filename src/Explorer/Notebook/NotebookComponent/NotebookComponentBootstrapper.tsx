@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Link } from "@fluentui/react";
 import { CellId, CellType, ImmutableNotebook } from "@nteract/commutable";
 // Vendor modules
 import {
@@ -13,13 +15,15 @@ import "@nteract/styles/editor-overrides.css";
 import "@nteract/styles/global-variables.css";
 import "codemirror/addon/hint/show-hint.css";
 import "codemirror/lib/codemirror.css";
+import { Notebook } from "Common/Constants";
+import { useDialog } from "Explorer/Controls/Dialog";
 import * as Immutable from "immutable";
 import * as React from "react";
 import { Provider } from "react-redux";
 import "react-table/react-table.css";
 import { AnyAction, Store } from "redux";
 import { NotebookClientV2 } from "../NotebookClientV2";
-import { NotebookUtil } from "../NotebookUtil";
+import { NotebookContentProviderType, NotebookUtil } from "../NotebookUtil";
 import * as NteractUtil from "../NTeractUtil";
 import * as CdbActions from "./actions";
 import { NotebookComponent } from "./NotebookComponent";
@@ -28,6 +32,19 @@ import "./NotebookComponent.less";
 export interface NotebookComponentBootstrapperOptions {
   notebookClient: NotebookClientV2;
   contentRef: ContentRef;
+}
+
+interface IWrapModel {
+  name: string;
+  path: string;
+  last_modified: Date;
+  created: string;
+  content: unknown;
+  format: string;
+  mimetype: unknown;
+  size: number;
+  writeable: boolean;
+  type: string;
 }
 
 export class NotebookComponentBootstrapper {
@@ -41,7 +58,7 @@ export class NotebookComponentBootstrapper {
     this.contentRef = options.contentRef;
   }
 
-  protected static wrapModelIntoContent(name: string, path: string, content: any) {
+  protected static wrapModelIntoContent(name: string, path: string, content: unknown): IWrapModel {
     return {
       name,
       path,
@@ -49,7 +66,7 @@ export class NotebookComponentBootstrapper {
       created: "",
       content,
       format: "json",
-      mimetype: null as any,
+      mimetype: undefined,
       size: 0,
       writeable: false,
       type: "notebook",
@@ -85,7 +102,11 @@ export class NotebookComponentBootstrapper {
     };
   }
 
-  public setContent(name: string, content: any): void {
+  public getNotebookPath(): string {
+    return this.getStore().getState().core.entities.contents.byRef.get(this.contentRef)?.filepath;
+  }
+
+  public setContent(name: string, content: unknown): void {
     this.getStore().dispatch(
       actions.fetchContentFulfilled({
         filepath: undefined,
@@ -116,11 +137,32 @@ export class NotebookComponentBootstrapper {
 
   /* Notebook operations. See nteract/packages/connected-components/src/notebook-menu/index.tsx */
   public notebookSave(): void {
-    this.getStore().dispatch(
-      actions.save({
-        contentRef: this.contentRef,
-      })
-    );
+    if (
+      NotebookUtil.getContentProviderType(this.getNotebookPath()) ===
+      NotebookContentProviderType.JupyterContentProviderType
+    ) {
+      useDialog.getState().showOkCancelModalDialog(
+        Notebook.saveNotebookModalTitle,
+        undefined,
+        "Save",
+        async () => {
+          this.getStore().dispatch(
+            actions.save({
+              contentRef: this.contentRef,
+            })
+          );
+        },
+        "Cancel",
+        undefined,
+        this.getSaveNotebookSubText()
+      );
+    } else {
+      this.getStore().dispatch(
+        actions.save({
+          contentRef: this.contentRef,
+        })
+      );
+    }
   }
 
   public notebookChangeKernel(kernelSpecName: string): void {
@@ -270,11 +312,14 @@ export class NotebookComponentBootstrapper {
   public isContentDirty(): boolean {
     const content = selectors.content(this.getStore().getState(), { contentRef: this.contentRef });
     if (!content) {
-      console.log("No error");
       return false;
     }
 
     return selectors.notebook.isDirty(content.model as Immutable.RecordOf<DocumentRecordProps>);
+  }
+
+  public isNotebookUntrusted(): boolean {
+    return NotebookUtil.isNotebookUntrusted(this.getStore().getState(), this.contentRef);
   }
 
   /**
@@ -323,5 +368,20 @@ export class NotebookComponentBootstrapper {
 
   protected getStore(): Store<AppState, AnyAction> {
     return this.notebookClient.getStore();
+  }
+
+  private getSaveNotebookSubText(): JSX.Element {
+    return (
+      <>
+        <p>{Notebook.saveNotebookModalContent}</p>
+        <br />
+        <p>
+          {Notebook.newNotebookModalContent2}
+          <Link href={Notebook.cosmosNotebookHomePageUrl} target="_blank">
+            {Notebook.learnMore}
+          </Link>
+        </p>
+      </>
+    );
   }
 }
